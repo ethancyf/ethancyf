@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DecryptIdeas.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IdeasRM_DecryptCertThumbprint" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">75 65 34 d1 6e cd c4 14 f7 b4 90 93 b9 88 ca 40 62 8b e0 cb</Value>
+    </Setting>
+    <Setting Name="IdeasRM_DecryptCertStoreName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">My</Value>
+    </Setting>
+    <Setting Name="IdeasRM_DecryptCertStoreLocation" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
