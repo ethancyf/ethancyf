@@ -1,0 +1,1 @@
+<%@ WebService Language="VB" CodeBehind="GetEHSVaccine.asmx.vb" Class="InterfaceWS.EHSVaccination.GetEHSVaccine" %>

@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ScheduleList>	 
+	<Schedule>	
+		<s_id>201812090100</s_id>
+		<expiry_dtm>December 09, 2018 05:00:00</expiry_dtm>
+		<EN_Date>09 Dec 2018</EN_Date>
+		<ZH_Date>2018年12月09日 </ZH_Date>
+		<CN_Date>2018年12月09日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>		
+	<Schedule>	
+		<s_id>201901130100</s_id>
+		<expiry_dtm>January 13, 2019 05:00:00</expiry_dtm>
+		<EN_Date>13 Jan 2019</EN_Date>
+		<ZH_Date>2019年01月13日 </ZH_Date>
+		<CN_Date>2019年01月13日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201902100100</s_id>
+		<expiry_dtm>February 10, 2019 05:00:00</expiry_dtm>
+		<EN_Date>10 Feb 2019</EN_Date>
+		<ZH_Date>2019年02月10日 </ZH_Date>
+		<CN_Date>2019年02月10日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201903100100</s_id>
+		<expiry_dtm>March 10, 2019 05:00:00</expiry_dtm>
+		<EN_Date>10 Mar 2019</EN_Date>
+		<ZH_Date>2019年03月10日 </ZH_Date>
+		<CN_Date>2019年03月10日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201904070100</s_id>
+		<expiry_dtm>April 07, 2019 05:00:00</expiry_dtm>
+		<EN_Date>07 Apr 2019</EN_Date>
+		<ZH_Date>2019年04月07日 </ZH_Date>
+		<CN_Date>2019年04月07日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201905120100</s_id>
+		<expiry_dtm>May 12, 2019 05:00:00</expiry_dtm>
+		<EN_Date>12 May 2019</EN_Date>
+		<ZH_Date>2019年05月12日 </ZH_Date>
+		<CN_Date>2019年05月12日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201906090100</s_id>
+		<expiry_dtm>June 09, 2019 05:00:00</expiry_dtm>
+		<EN_Date>09 Jun 2019</EN_Date>
+		<ZH_Date>2019年06月09日 </ZH_Date>
+		<CN_Date>2019年06月09日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201907140100</s_id>
+		<expiry_dtm>July 14, 2019 05:00:00</expiry_dtm>
+		<EN_Date>14 Jul 2019</EN_Date>
+		<ZH_Date>2019年07月14日 </ZH_Date>
+		<CN_Date>2019年07月14日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201908110100</s_id>
+		<expiry_dtm>August 11, 2019 05:00:00</expiry_dtm>
+		<EN_Date>11 Aug 2019</EN_Date>
+		<ZH_Date>2019年08月11日 </ZH_Date>
+		<CN_Date>2019年08月11日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201909080100</s_id>
+		<expiry_dtm>September 08, 2019 05:00:00</expiry_dtm>
+		<EN_Date>08 Sep 2019</EN_Date>
+		<ZH_Date>2019年09月08日 </ZH_Date>
+		<CN_Date>2019年09月08日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201910130100</s_id>
+		<expiry_dtm>October 13, 2019 05:00:00</expiry_dtm>
+		<EN_Date>13 Oct 2019</EN_Date>
+		<ZH_Date>2019年10月13日 </ZH_Date>
+		<CN_Date>2019年10月13日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201911100100</s_id>
+		<expiry_dtm>November 10, 2019 05:00:00</expiry_dtm>
+		<EN_Date>10 Nov 2019</EN_Date>
+		<ZH_Date>2019年11月10日 </ZH_Date>
+		<CN_Date>2019年11月10日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+	<Schedule>	
+		<s_id>201912080100</s_id>
+		<expiry_dtm>December 08, 2019 05:00:00</expiry_dtm>
+		<EN_Date>08 Dec 2019</EN_Date>
+		<ZH_Date>2019年12月08日 </ZH_Date>
+		<CN_Date>2019年12月08日 </CN_Date>
+		<EN_Time>01:00 a.m. - 05:00 a.m.</EN_Time>
+		<ZH_Time>上午一時至上午五時</ZH_Time>
+		<CN_Time>上午一时至上午五时</CN_Time>
+		<Type>R</Type>
+	</Schedule>	
+</ScheduleList>

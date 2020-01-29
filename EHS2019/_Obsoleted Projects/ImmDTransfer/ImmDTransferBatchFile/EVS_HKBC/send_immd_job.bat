@@ -1,0 +1,2 @@
+del /Q E:\ImmDInterface\ImmDInterface\ImmDTransferBatchFile\EVS_HKBC\sent\*
+E:\ImmDInterface\ImmDInterface\ImmDTransfer\AppExeScript\ImmDTransfer.exe send E:\ImmDInterface\ImmDInterface\ImmDTransfer\ImmDTransferSend.ini E:\ImmDInterface\ImmDInterface\ImmDTransferBatchFile\EVS_HKBC\log EVS_HKBC

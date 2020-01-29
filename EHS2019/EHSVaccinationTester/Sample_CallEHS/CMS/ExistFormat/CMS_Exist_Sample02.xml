@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameter>
+	<message_id>TEST</message_id>
+	<patient>
+		<document_no> A6804325</document_no>
+		<document_count>1</document_count>
+		<patient_document>
+			<document_type>HKID</document_type>
+			<name>YU, SIU MING</name>
+			<sex>F</sex>
+			<dob>05/01/1930</dob>
+			<dob_format>DD/MM/YYYY</dob_format>
+		</patient_document>
+	</patient>
+	<vaccine>
+		<vaccine_count>3</vaccine_count>
+		<vaccine_code>001</vaccine_code>
+		<vaccine_code>002</vaccine_code>
+		<vaccine_code>003</vaccine_code>
+	</vaccine>
+	<injection_date_start/>
+	<injection_date_end />
+	<request_system>CMS</request_system>
+</parameter>

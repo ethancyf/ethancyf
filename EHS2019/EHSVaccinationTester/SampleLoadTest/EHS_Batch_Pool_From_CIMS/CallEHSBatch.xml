@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameter>
+	<message_id>M2011011800000001</message_id>
+	<health_check>N</health_check>
+	<patient_list>
+		<patient_count>40</patient_count>
+    <patient>
+      <patient_id>1</patient_id>
+      <document_no> F9667020</document_no>
+      <document_type>HKBC</document_type>
+      <name>LI, YING TAI</name>
+      <sex>F</sex>
+      <dob>15/03/2010</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>2</patient_id>
+      <document_no> G7212185</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, PA PA</name>
+      <sex>M</sex>
+      <dob>01/01/1930</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>3</patient_id>
+      <document_no>MI0183147</document_no>
+      <document_type>HKBC</document_type>
+      <name>NGAN, CHUN PO</name>
+      <sex>F</sex>
+      <dob>11/06/2009</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>4</patient_id>
+      <document_no> J2583043</document_no>
+      <document_type>EC</document_type>
+      <name>CHONG, MING</name>
+      <sex>M</sex>
+      <dob>03/04/1945</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>5</patient_id>
+      <document_no> N8538865</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI SANG</name>
+      <sex>F</sex>
+      <dob>01/05/1919</dob>
+      <dob_format>MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>6</patient_id>
+      <document_no> H2241821</document_no>
+      <document_type>EC</document_type>
+      <name>WONG, JIANG</name>
+      <sex>M</sex>
+      <dob>12/06/1944</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>7</patient_id>
+      <document_no> E6177259</document_no>
+      <document_type>EC</document_type>
+      <name>LEUNG, KA KA</name>
+      <sex>F</sex>
+      <dob>01/01/1936</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>8</patient_id>
+      <document_no> R4058177</document_no>
+      <document_type>HKBC</document_type>
+      <name>CHAN, SIU FAI</name>
+      <sex>M</sex>
+      <dob>01/01/2012</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>9</patient_id>
+      <document_no> C3804036</document_no>
+      <document_type>HKIC</document_type>
+      <name>LEE, SZE HIN</name>
+      <sex>M</sex>
+      <dob>14/03/1940</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>10</patient_id>
+      <document_no> Y464122A</document_no>
+      <document_type>EC</document_type>
+      <name>SZE-TO, MA ' MA</name>
+      <sex>F</sex>
+      <dob>11/11/1988</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>11</patient_id>
+      <document_no> S7815559</document_no>
+      <document_type>EC</document_type>
+      <name>CHENG, YAN TAK</name>
+      <sex>M</sex>
+      <dob>08/10/1966</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>12</patient_id>
+      <document_no>OA0616916</document_no>
+      <document_type>HKBC</document_type>
+      <name>FONG, HIN SUNG</name>
+      <sex>F</sex>
+      <dob>16/10/2006</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>13</patient_id>
+      <document_no>ZF7711985</document_no>
+      <document_type>EC</document_type>
+      <name>CHIN, FUNG YI</name>
+      <sex>F</sex>
+      <dob>29/01/1921</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>14</patient_id>
+      <document_no>S983921/90007</document_no>
+      <document_type>ADOPC</document_type>
+      <name>HUNG, TAI CHOO</name>
+      <sex>M</sex>
+      <dob>29/12/2013</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>15</patient_id>
+      <document_no>990015933</document_no>
+      <document_type>DOCI</document_type>
+      <name>YAU, MAN WAI</name>
+      <sex>F</sex>
+      <dob>10/11/2010</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>16</patient_id>
+      <document_no>RE9114928</document_no>
+      <document_type>REPMT</document_type>
+      <name>HUNG, OI OI</name>
+      <sex>M</sex>
+      <dob>18/01/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>17</patient_id>
+      <document_no>JAPN-9900203-78(8)</document_no>
+      <document_type>VISA</document_type>
+      <name>CHING, MUI KWAI</name>
+      <sex>M</sex>
+      <dob>22/12/2005</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>18</patient_id>
+      <document_no>EG670937A</document_no>
+      <document_type>EC</document_type>
+      <name>WONG, KWUN SANG</name>
+      <sex>F</sex>
+      <dob>09/02/1934</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>19</patient_id>
+      <document_no> G2650613</document_no>
+      <document_type>HKBC</document_type>
+      <name>LAM, SIU SIU DORIS</name>
+      <sex>F</sex>
+      <dob>21/06/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>20</patient_id>
+      <document_no>AA0529252</document_no>
+      <document_type>HKBC</document_type>
+      <name>WONG, SAI HANG</name>
+      <sex>F</sex>
+      <dob>08/07/2009</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>21</patient_id>
+      <document_no> Y3517371</document_no>
+      <document_type>HKIC</document_type>
+      <name>TSO, KWOK HUNG</name>
+      <sex>M</sex>
+      <dob>01/01/1940</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>22</patient_id>
+      <document_no>NH2390238</document_no>
+      <document_type>HKIC</document_type>
+      <name>LI, SIN YAN</name>
+      <sex>F</sex>
+      <dob>01/09/1964</dob>
+      <dob_format>MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>23</patient_id>
+      <document_no>MC964051A</document_no>
+      <document_type>EC</document_type>
+      <name>SZE, KAM SAU</name>
+      <sex>F</sex>
+      <dob>01/11/1922</dob>
+      <dob_format>MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>24</patient_id>
+      <document_no>S965008/90001</document_no>
+      <document_type>ADOPC</document_type>
+      <name>LING, TAI KWONG</name>
+      <sex>M</sex>
+      <dob>21/06/2013</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>25</patient_id>
+      <document_no>880016753</document_no>
+      <document_type>DOCI</document_type>
+      <name>CHAN, MAI</name>
+      <sex>F</sex>
+      <dob>06/06/2002</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>26</patient_id>
+      <document_no>JAPN-9900178-73(3)</document_no>
+      <document_type>VISA</document_type>
+      <name>LIU, MING LUNG</name>
+      <sex>F</sex>
+      <dob>20/02/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>27</patient_id>
+      <document_no>RE9131318</document_no>
+      <document_type>REPMT</document_type>
+      <name>YIU, YUET MUI</name>
+      <sex>F</sex>
+      <dob>04/02/2011</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>28</patient_id>
+      <document_no>PM1961433</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHEUNG, SHUK HING</name>
+      <sex>F</sex>
+      <dob>01/04/1939</dob>
+      <dob_format>MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>29</patient_id>
+      <document_no>NL2635371</document_no>
+      <document_type>EC</document_type>
+      <name>PUN, CHUI LAN</name>
+      <sex>F</sex>
+      <dob>16/04/1949</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>30</patient_id>
+      <document_no>XK2636144</document_no>
+      <document_type>EC</document_type>
+      <name>MAK, KWONG CHUEN</name>
+      <sex>F</sex>
+      <dob>01/01/1919</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>31</patient_id>
+      <document_no>ZB3363329</document_no>
+      <document_type>EC</document_type>
+      <name>LAI, KWAI CHUN</name>
+      <sex>F</sex>
+      <dob>07/01/1908</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>32</patient_id>
+      <document_no> N9007650</document_no>
+      <document_type>HKIC</document_type>
+      <name>MA, TO FUNG</name>
+      <sex>M</sex>
+      <dob>03/04/2010</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>33</patient_id>
+      <document_no> N9007650</document_no>
+      <document_type>HKBC</document_type>
+      <name>MA, TO FUNG</name>
+      <sex>M</sex>
+      <dob>03/04/2010</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>34</patient_id>
+      <document_no>BE0675987</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHENG, SAU KI</name>
+      <sex>F</sex>
+      <dob>15/12/2005</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>35</patient_id>
+      <document_no>BE0675987</document_no>
+      <document_type>HKBC</document_type>
+      <name>CHENG, SAU KI</name>
+      <sex>F</sex>
+      <dob>15/12/2005</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>36</patient_id>
+      <document_no> V9424814</document_no>
+      <document_type>HKIC</document_type>
+      <name>LEE, LING LING</name>
+      <sex>F</sex>
+      <dob>01/01/2012</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>37</patient_id>
+      <document_no> V9424814</document_no>
+      <document_type>HKBC</document_type>
+      <name>LI, LING LING</name>
+      <sex>F</sex>
+      <dob>01/01/2012</dob>
+      <dob_format>YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>38</patient_id>
+      <document_no> F2514555</document_no>
+      <document_type>HKIC</document_type>
+      <name>WONG, KA FAI</name>
+      <sex>M</sex>
+      <dob>01/03/2007</dob>
+      <dob_format>MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>39</patient_id>
+      <document_no> F2514555</document_no>
+      <document_type>HKBC</document_type>
+      <name>WONG, KA FAI</name>
+      <sex>M</sex>
+      <dob>01/03/2007</dob>
+      <dob_format>MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>40</patient_id>
+      <document_no> C4482008</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHO, YUK WING</name>
+      <sex>M</sex>
+      <dob>20/05/1978</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+  </patient_list>
+	<vaccine>
+		<vaccine_count>3</vaccine_count>
+		<vaccine_code>001</vaccine_code>
+		<vaccine_code>002</vaccine_code>
+		<vaccine_code>003</vaccine_code>
+	</vaccine>
+	<injection_date_start>01/02/2010</injection_date_start>
+	<injection_date_end />
+	<request_system>CIMS</request_system>
+</parameter>
+
+

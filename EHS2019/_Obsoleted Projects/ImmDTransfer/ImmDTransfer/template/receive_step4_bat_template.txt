@@ -1,0 +1,1 @@
+E:\Attachmate\RSecure\rftpc.exe {eHSWebServer} /RFS {step3_generated_file} /L {sectionFolder}\log\receive_step3_{executionDate}.log

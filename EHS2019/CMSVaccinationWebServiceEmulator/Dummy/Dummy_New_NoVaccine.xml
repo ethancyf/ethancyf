@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<result>
+	<message_id>[message_id]</message_id>
+	<return_code>0</return_code>
+	<patient_list>
+		<patient_count>1</patient_count>
+		<patient>
+			<patient_id>1</patient_id>
+			<patient_result_code>0</patient_result_code>
+			<vaccine_result_code>2</vaccine_result_code>
+		</patient>
+	</patient_list>
+</result>
+

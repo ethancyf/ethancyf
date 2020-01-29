@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <replaceeHSSToken>
+      <HKID>UP9002742</HKID>
+      <ExistingTokenID>999999999</ExistingTokenID>
+      <NewTokenID>999999999</NewTokenID>
+      <ReplaceReasonCode>R</ReplaceReasonCode>
+      <Timestamp>{Timestamp}</Timestamp>
+    </replaceeHSSToken>]]>
+  </data>
+</root>

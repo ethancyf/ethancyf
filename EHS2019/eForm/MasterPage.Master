@@ -1,0 +1,111 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb"
+    Inherits="eForm.MasterPage" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>E-Voucher System</title>
+    <meta http-equiv="Page-Exit" content="revealTrans(Duration=0,Transition=12)" />
+    <base id="basetag" runat="server" />
+    <link href="CSS/CommonStyle.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/comboBoxStyle.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="JS/Common.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server" autocomplete="off" defaultbutton="btnHidden">
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+        </asp:ScriptManager>
+        <table border="0" cellpadding="0" cellspacing="0" style="width: 990px">
+            <tr>
+                <td align="right" style="background-image: url(Images/master/banner_header.jpg); background-repeat: no-repeat; height: 100px"
+                    valign="top" id="tblBanner" runat="server">
+                    <table style="width: 100%; height: 100%">
+                        <tr style="height: 20px">
+                            <td align="right" valign="top" style="white-space: nowrap">
+                                <table>
+                                    <tr>
+                                        <td align="right" colspan="2" valign="top">
+                                            <asp:LinkButton ID="lnkBtnDocRead" runat="server" Text="<%$ Resources:Text, DocumentToRead %>"></asp:LinkButton>
+                                            <asp:LinkButton ID="lnkBtnContactUs" runat="server" Text="<%$ Resources:Text, ContactUs %>"></asp:LinkButton>
+                                            <asp:LinkButton ID="lnkBtnFAQs" runat="server" Text="<%$ Resources:Text, Faqs %>"></asp:LinkButton>
+                                            <asp:LinkButton ID="lnkbtnTradChinese" runat="server" CssClass="languageText" Text="<%$ Resources:Text, TraditionalChineseLang %>"></asp:LinkButton>
+                                            <asp:LinkButton ID="lnkbtnSimpleChinese" runat="server" CssClass="languageText" Text="<%$ Resources:Text, SimplifiedChineseLang %>"
+                                                Visible="false"></asp:LinkButton>
+                                            <asp:LinkButton ID="lnkbtnEnglish" runat="server" CssClass="languageText" Text="<%$ Resources:Text, EnglishLang %>"></asp:LinkButton></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="tdAppEnvironment" runat="server" style="vertical-align: top" class="AppEnvironment">
+                                <asp:Label ID="lblAppEnvironment" runat="server" Text="[CodeBehind]"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top">
+                                <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
+                                <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
+                                    <table style="width: 150px; height: 150px; background-color: #ffffff" border="0"
+                                        cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td align="center" valign="middle">
+                                                <asp:Image ID="imgLoading" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
+                                                    AlternateText="<%$ Resources:AlternateText, PleaseWait %>" /></td>
+                                        </tr>
+                                    </table>
+                                </asp:Panel>
+                                <asp:UpdateProgress runat="server" ID="UpdateProgress1" DisplayAfter="0">
+                                    <ProgressTemplate>
+                                    </ProgressTemplate>
+                                </asp:UpdateProgress>
+                                <cc1:ModalPopupExtender ID="ModalPopupExtender1" runat="server" PopupControlID="pnlPleaseWait"
+                                    TargetControlID="btnHiddenPleaseWait" BackgroundCssClass="modalBackgroundTransparent" RepositionMode="None" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-position: center bottom; background-image: url(Images/master/body_background.jpg); background-repeat: repeat-x; height: 500px;"
+                    valign="top">
+                    <table style="width: 100%; height: 545px;" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td valign="top" style="width: 10px"></td>
+                            <td valign="top">
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                </asp:ContentPlaceHolder>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #d6d6d6;" align="center">
+                    <table style="width: 98%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td colspan="2" style="height: 2px">
+                                <hr style="width: 98%; color: #ffffff; border-top-style: none; border-right-style: none; border-left-style: none; height: 1px; border-bottom-style: none;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">&nbsp;&nbsp;&nbsp;
+                                <asp:LinkButton ID="lnkBtnPrivacyPolicy" runat="server" CssClass="footerText" Text="<%$ Resources:Text, PrivacyPolicy %>"></asp:LinkButton>
+                                <asp:Label ID="lblseparator1" runat="server" CssClass="footerText" Text=" | "></asp:Label><asp:LinkButton ID="lnkBtnDisclaimer" runat="server" CssClass="footerText" Text="<%$ Resources:Text, ImportantNotices %>"></asp:LinkButton>
+                                <asp:Label ID="lblseparator2" runat="server" CssClass="footerText" Text=" | "></asp:Label><asp:LinkButton ID="lnkBtnSysMaint" runat="server" CssClass="footerText" Text="<%$ Resources:Text, SysMaint %>"></asp:LinkButton>
+                            </td>
+                            <td align="right">
+                                <asp:Label ID="lblFooterCopyright" runat="server" CssClass="footerText" Text="© Copyright Hospital Authority . All rights reserved."
+                                    Visible="False"></asp:Label>
+                                &nbsp; &nbsp; &nbsp;</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <asp:Button runat="server" ID="btnHidden" Style="display: none" OnClientClick="return false;" />
+    </form>
+</body>
+</html>

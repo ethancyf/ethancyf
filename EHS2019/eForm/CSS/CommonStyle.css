@@ -1,0 +1,333 @@
+﻿body
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial, 新細明體;
+	margin: 0px 0px 0px 0px;
+}
+
+/***** Footer Style *****/
+.footerText
+{
+	font-size: 12px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+}
+
+/***** GridView Header *****/
+.gvHeader
+{
+	text-align: left;
+	color: #666666;
+	font-weight: bold;
+}
+
+/***** Language Text Style *****/
+.languageText
+{
+	font-size: 15px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+.languageSelectedText
+{
+	font-size: 15px;
+	color: #ffffff;
+	font-family: Arial;
+	text-decoration: none;
+	background-image: url(../Images/master/language_background.png);
+	background-repeat: repeat-x;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+	background-position: center;
+}
+
+/***** Table Style*****/
+.tableText
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: Arial, 新細明體, 細明體;
+	font-weight: bold;
+}
+
+.tableChiText
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: 細明體_HKSCS, MingLiU_HKSCS,新細明體, Arial;
+	font-weight: bold;
+}
+
+.highlightTable
+{
+	width: 406px;
+	height: 386px;
+	border-right: #cccccc 3px outset;
+	border-top: #cccccc 3px outset;
+	border-left: #cccccc 3px outset;
+	border-bottom: #cccccc 3px outset;
+	cursor: pointer;
+}
+
+.unhighlightTable
+{
+	width: 400px;
+	height: 380px;
+	border-right: #d3d3d3 1px solid;
+	border-top: #d3d3d3 1px solid;
+	border-left: #d3d3d3 1px solid;
+	border-bottom: #d3d3d3 1px solid;
+	cursor: pointer;
+}
+
+.unhighlightTableWithoutCursor
+{
+	width: 400px;
+	height: 380px;
+	border-right: #d3d3d3 1px solid;
+	border-top: #d3d3d3 1px solid;
+	border-left: #d3d3d3 1px solid;
+	border-bottom: #d3d3d3 1px solid;
+}
+
+.unhighlightTableWithoutCursorNoFix
+{
+	border-right: #d3d3d3 1px solid;
+	border-top: #d3d3d3 1px solid;
+	border-left: #d3d3d3 1px solid;
+	border-bottom: #d3d3d3 1px solid;
+}
+
+.highlightTimeline
+{
+	font-size: 15px;
+	color: #ff0000;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 10px;
+	padding-top: 0px;
+	text-indent: 30px;
+	background-position: 0px top;
+	background-image: url(../Images/others/arrow.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.unhighlightTimeline
+{
+	font-size: 15px;
+	color: #666666;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 10px;
+	padding-top: 0px;
+	font-weight: bold;
+}
+
+/***** Heading Style *****/
+.headingText
+{
+	font-size: 16px;
+	color: #000000;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 24px;
+	background-position: left center;
+	background-image: url(../Images/others/circle_red.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.headingTextOtherSystem
+{
+	font-size: 16px;
+	color: #000000;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 24px;
+	background-position: left center;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.headingTextOtherSystemMultiLine
+{
+	font-size: 16px;
+	color: #000000;
+	font-family: Arial;
+	padding-left: 22px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	background-position: left top;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+/*****  RadioButton Style *****/
+.radioBtnMargin
+{
+	margin-right: 10px;
+}
+
+/***** Tabl Style  *****/
+.highlightTab
+{
+	font-weight: bold;
+	font-size: 14px;
+	background-image: url(../Images/Tab/highlightTab.png);
+	color: #000000;
+	background-repeat: no-repeat;
+	font-family: Arial;
+	text-align: center;
+	padding-top: 3px;
+	text-decoration: none;
+}
+
+.unhighlightTab
+{
+	font-weight: bold;
+	font-size: 14px;
+	background-image: url(../Images/Tab/unhighlightTab.png);
+	color: #000000;
+	background-repeat: no-repeat;
+	font-family: Arial;
+	text-align: center;
+	padding-top: 3px;
+	text-decoration: none;
+}
+
+.unhighlightUnclickedTab
+{
+	font-weight: bold;
+	font-size: 14px;
+	background-image: url(../Images/Tab/unhighlightTab.png);
+	color: #a9a9a9;
+	background-repeat: no-repeat;
+	font-family: Arial;
+	text-align: center;
+	padding-top: 3px;
+	text-decoration: none;
+}
+
+.editLink
+{
+	text-decoration: underline;
+	color: #0000ff;
+}
+
+/*****  Label Style *****/
+.dimText
+{
+	color: #CCCCCC;
+}
+
+/***** gridview style *****/
+.gvTable
+{
+	border-collapse:separate;
+}
+
+.gvTableRowNoDisplay
+{
+	display:none;
+}
+
+.gvTableRowNoWrap
+{
+	white-space:nowrap;
+}
+
+.gvTableRowNoServiceFee
+{
+    position: relative;
+    left:-5px;
+    top:1px;
+}
+
+.gvTableCell
+{
+    padding: 0px 0px 0px 0px
+}
+
+.gvTxtBoxReadOnlyBg
+{
+    background-color:#e5e5e5 ! important;
+    border-color:#bababa;
+    border-style:solid ! important;
+    border-width:thin;
+    vertical-align:middle;
+}
+
+.gvTxtBoxBg
+{
+    background-color:#ffffff ! important;
+    border-color:#666666;
+    border-style:solid ! important;
+    border-width:thin;
+    vertical-align:middle;
+}
+
+.gvImgAlert
+{
+    vertical-align:middle;
+}
+
+/****   Chinese   ***/
+.TextChi
+{
+	 font-size: 16px;
+	 color: #4D4D4D;
+     font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+     font-weight: bold;
+}
+
+.TextBoxChi
+{
+     font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+
+.rbChoice input { 
+    margin-left: -20px; 	
+    }
+.rbChoice label { 
+    font-size: 16px;
+    color: #4D4D4D;
+    font-family: Arial, 新細明體, 細明體;
+    font-weight: bold;
+    }
+
+td.AppEnvironment {
+    padding-left: 375px;
+    color: #FE0000;
+    font-size: 24px;
+    text-align: left;
+}
+
+td.AppEnvironmentZH {
+    padding-left: 135px;
+    color: #FE0000;
+    font-size: 24px;
+    text-align: left;
+}
+
+.Checkbox_Label input[type=checkbox] + label {
+    position: relative;
+    top: -2px;
+}

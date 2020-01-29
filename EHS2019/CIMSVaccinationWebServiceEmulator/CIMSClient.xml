@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<client>
+    <returnCode>20003</returnCode>
+    <docType>ID</docType>
+    <docNo>HG3930313</docNo>
+    <englishName></englishName>
+    <sex>F</sex>
+    <dob>1947</dob>
+    <dobFlag>YYYY</dobFlag>
+	</client>
+  <client>
+    <returnCode>20004</returnCode>
+    <docType>ID</docType>
+    <docNo>HG3930313</docNo>
+    <englishName>LI, TAK MING</englishName>
+    <sex>A</sex>
+    <dob>1947</dob>
+    <dobFlag>YYYY</dobFlag>
+  </client>
+  <client>
+    <returnCode>20005</returnCode>
+    <docType>ID</docType>
+    <docNo>HG3930313</docNo>
+    <englishName>LI, TAK MING</englishName>
+    <sex>F</sex>
+    <dob>1947</dob>
+    <dobFlag>DDMMYYYY</dobFlag>
+  </client>
+  <client>
+    <returnCode>20006</returnCode>
+    <docType>XX</docType>
+    <docNo>HG3930313</docNo>
+    <englishName>LI, TAK MING</englishName>
+    <sex>F</sex>
+    <dob>1947</dob>
+    <dobFlag>YYYY</dobFlag>
+  </client>
+  <client>
+    <returnCode>20007</returnCode>
+    <docType>ID</docType>
+    <docNo>HG393031A</docNo>
+    <englishName>LI, TAK MING</englishName>
+    <sex>F</sex>
+    <dob>1947</dob>
+    <dobFlag>YYYY</dobFlag>
+  </client>
+  <client>
+    <returnCode>20008</returnCode>
+    <docType>ID</docType>
+    <docNo>HG3930313</docNo>
+    <englishName>LI, TAK MING</englishName>
+    <sex>F</sex>
+    <dob>01/01/1947</dob>
+    <dobFlag>YYYY</dobFlag>
+  </client>    
+</root>

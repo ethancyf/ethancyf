@@ -1,0 +1,949 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7E436D9A-6D08-47F2-BB97-EDF94090AA13}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PrefillConsent</RootNamespace>
+    <AssemblyName>PrefillConsent</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>PrefillConsent.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>PrefillConsent.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxMin">
+      <HintPath>..\CommonBin\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\button\icon_button\btn_EasyGuide.jpg" />
+    <Content Include="Images\button\icon_button\btn_EasyGuide_tw.jpg" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_code\BasePage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BLL\EHSClaimVaccineModel.vb" />
+    <Compile Include="BLL\PracticeBankAcctBLL.vb" />
+    <Compile Include="BLL\PreFillPersonalInformationBLL.vb" />
+    <Compile Include="BLL\SessionHandler.vb" />
+    <Compile Include="BLL\VoucherAccountMaintenanceBLL.vb" />
+    <Compile Include="en\error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\error.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\index.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\invalidlink.aspx.designer.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\invalidlink.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\sessiontimeout.aspx.designer.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\sessiontimeout.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="main.aspx.designer.vb">
+      <DependentUpon>main.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="main.aspx.vb">
+      <DependentUpon>main.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="preFill.aspx.designer.vb">
+      <DependentUpon>preFill.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="preFill.aspx.vb">
+      <DependentUpon>preFill.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Printout\BasePrintoutForm.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSConsentFormPrefilled.Designer.vb">
+      <DependentUpon>CIVSSConsentFormPrefilled.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSConsentFormPrefilled.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSDeclaration.Designer.vb">
+      <DependentUpon>CIVSSDeclaration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSDeclaration.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSSignature.Designer.vb">
+      <DependentUpon>CIVSSSignature.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSSignature.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSStatementOfPurpose.Designer.vb">
+      <DependentUpon>CIVSSStatementOfPurpose.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSStatementOfPurpose.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSVaccinationInfoPrefilled.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoPrefilled.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm\CIVSSVaccinationInfoPrefilled.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSConsentFormPrefilled_CHI.Designer.vb">
+      <DependentUpon>CIVSSConsentFormPrefilled_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSConsentFormPrefilled_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSDeclaration_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclaration_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSDeclaration_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSSignature_CHI.Designer.vb">
+      <DependentUpon>CIVSSSignature_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSSignature_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSStatementOfPurpose_CHI.Designer.vb">
+      <DependentUpon>CIVSSStatementOfPurpose_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSStatementOfPurpose_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSVaccinationInfoPrefilled_CHI.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoPrefilled_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\CIVSSConsentForm_CHI\CIVSSVaccinationInfoPrefilled_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\Adoption.Designer.vb">
+      <DependentUpon>Adoption.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\Adoption.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\Adoption_CHI.Designer.vb">
+      <DependentUpon>Adoption_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\Adoption_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\DI.Designer.vb">
+      <DependentUpon>DI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\DI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\DI_CHI.Designer.vb">
+      <DependentUpon>DI_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\DI_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\EC.Designer.vb">
+      <DependentUpon>EC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\EC.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\EC_CHI.Designer.vb">
+      <DependentUpon>EC_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\EC_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKBC.Designer.vb">
+      <DependentUpon>HKBC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKBC.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKBC_CHI.Designer.vb">
+      <DependentUpon>HKBC_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKBC_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKIC.Designer.vb">
+      <DependentUpon>HKIC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKIC.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKIC_CHI.Designer.vb">
+      <DependentUpon>HKIC_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\HKIC_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ID235B.Designer.vb">
+      <DependentUpon>ID235B.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ID235B.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ID235B_CHI.Designer.vb">
+      <DependentUpon>ID235B_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ID235B_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\IdentityDocument.Designer.vb">
+      <DependentUpon>IdentityDocument.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\IdentityDocument.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\IdentityDocument_CHI.Designer.vb">
+      <DependentUpon>IdentityDocument_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\IdentityDocument_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ReentryPermit.Designer.vb">
+      <DependentUpon>ReentryPermit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ReentryPermit.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ReentryPermit_CHI.Designer.vb">
+      <DependentUpon>ReentryPermit_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\ReentryPermit_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\VISA.Designer.vb">
+      <DependentUpon>VISA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\VISA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\VISA_CHI.Designer.vb">
+      <DependentUpon>VISA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\DocType\VISA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\PersonalInfo.Designer.vb">
+      <DependentUpon>PersonalInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\PersonalInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\Common\PersonalInfo_CHI.Designer.vb">
+      <DependentUpon>PersonalInfo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\Common\PersonalInfo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EHSPrefilledClaimForm_CHI_RV.aspx.designer.vb">
+      <DependentUpon>EHSPrefilledClaimForm_CHI_RV.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EHSPrefilledClaimForm_CHI_RV.aspx.vb">
+      <DependentUpon>EHSPrefilledClaimForm_CHI_RV.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Printout\EHSPrefilledClaimForm_RV.aspx.designer.vb">
+      <DependentUpon>EHSPrefilledClaimForm_RV.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EHSPrefilledClaimForm_RV.aspx.vb">
+      <DependentUpon>EHSPrefilledClaimForm_RV.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Printout\reporttimeout.aspx.designer.vb">
+      <DependentUpon>reporttimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\reporttimeout.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>reporttimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\reporttimeout_chi.aspx.designer.vb">
+      <DependentUpon>reporttimeout_chi.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\reporttimeout_chi.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>reporttimeout_chi.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="redirectInvalidLink.aspx.designer.vb">
+      <DependentUpon>redirectInvalidLink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="redirectInvalidLink.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>redirectInvalidLink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thankyou.aspx.designer.vb">
+      <DependentUpon>thankyou.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thankyou.aspx.vb">
+      <DependentUpon>thankyou.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\ChooseCCCode.ascx.designer.vb">
+      <DependentUpon>ChooseCCCode.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ChooseCCCode.ascx.vb">
+      <DependentUpon>ChooseCCCode.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeLegend.ascx.designer.vb">
+      <DependentUpon>DocTypeLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeLegend.ascx.vb">
+      <DependentUpon>DocTypeLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucClaimSearch.ascx.designer.vb">
+      <DependentUpon>ucClaimSearch.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucClaimSearch.ascx.vb">
+      <DependentUpon>ucClaimSearch.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.designer.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDI.ascx.designer.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDI.ascx.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocTypeBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.designer.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputEC.ascx.designer.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputEC.ascx.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.designer.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKID.ascx.designer.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKID.ascx.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputID235B.ascx.designer.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputID235B.ascx.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.designer.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputVISA.ascx.designer.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputVISA.ascx.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyAdoption.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyAdoption.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyAdoption.ascx.vb">
+      <DependentUpon>ucReadOnlyAdoption.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyReentryPermit.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyReentryPermit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyReentryPermit.ascx.vb">
+      <DependentUpon>ucReadOnlyReentryPermit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="zh\error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\error.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\index.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\invalidlink.aspx.designer.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\invalidlink.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\sessiontimeout.aspx.designer.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\sessiontimeout.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm\CIVSSConsentFormPrefilled.resx">
+      <DependentUpon>CIVSSConsentFormPrefilled.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm\CIVSSDeclaration.resx">
+      <DependentUpon>CIVSSDeclaration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm\CIVSSSignature.resx">
+      <DependentUpon>CIVSSSignature.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm\CIVSSStatementOfPurpose.resx">
+      <DependentUpon>CIVSSStatementOfPurpose.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm\CIVSSVaccinationInfoPrefilled.resx">
+      <DependentUpon>CIVSSVaccinationInfoPrefilled.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm_CHI\CIVSSConsentFormPrefilled_CHI.resx">
+      <DependentUpon>CIVSSConsentFormPrefilled_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm_CHI\CIVSSDeclaration_CHI.resx">
+      <DependentUpon>CIVSSDeclaration_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm_CHI\CIVSSSignature_CHI.resx">
+      <DependentUpon>CIVSSSignature_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm_CHI\CIVSSStatementOfPurpose_CHI.resx">
+      <DependentUpon>CIVSSStatementOfPurpose_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\CIVSSConsentForm_CHI\CIVSSVaccinationInfoPrefilled_CHI.resx">
+      <DependentUpon>CIVSSVaccinationInfoPrefilled_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\Adoption.resx">
+      <DependentUpon>Adoption.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\Adoption_CHI.resx">
+      <DependentUpon>Adoption_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\DI.resx">
+      <DependentUpon>DI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\DI_CHI.resx">
+      <DependentUpon>DI_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\EC.resx">
+      <DependentUpon>EC.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\EC_CHI.resx">
+      <DependentUpon>EC_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\HKBC.resx">
+      <DependentUpon>HKBC.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\HKBC_CHI.resx">
+      <DependentUpon>HKBC_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\HKIC.resx">
+      <DependentUpon>HKIC.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\HKIC_CHI.resx">
+      <DependentUpon>HKIC_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\ID235B.resx">
+      <DependentUpon>ID235B.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\ID235B_CHI.resx">
+      <DependentUpon>ID235B_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\IdentityDocument.resx">
+      <DependentUpon>IdentityDocument.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\IdentityDocument_CHI.resx">
+      <DependentUpon>IdentityDocument_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\ReentryPermit.resx">
+      <DependentUpon>ReentryPermit.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\ReentryPermit_CHI.resx">
+      <DependentUpon>ReentryPermit_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\VISA.resx">
+      <DependentUpon>VISA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\DocType\VISA_CHI.resx">
+      <DependentUpon>VISA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\PersonalInfo.resx">
+      <DependentUpon>PersonalInfo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\Common\PersonalInfo_CHI.resx">
+      <DependentUpon>PersonalInfo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Themes\Theme_Global\Skin_Global.skin" />
+    <Content Include="CSS\CommonStyle.css" />
+    <Content Include="en\error.aspx" />
+    <Content Include="en\index.aspx" />
+    <Content Include="en\invalidlink.aspx" />
+    <Content Include="en\sessiontimeout.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\button\btn_back.png" />
+    <Content Include="Images\button\btn_back_tw.png" />
+    <Content Include="Images\button\btn_cancel.png" />
+    <Content Include="Images\button\btn_cancel_tw.png" />
+    <Content Include="Images\button\btn_close.png" />
+    <Content Include="Images\button\btn_closeENTW.png" />
+    <Content Include="Images\button\btn_close_tw.png" />
+    <Content Include="Images\button\btn_complete.png" />
+    <Content Include="Images\button\btn_complete_tw.png" />
+    <Content Include="Images\button\btn_confirm.png" />
+    <Content Include="Images\button\btn_confirm_tw.png" />
+    <Content Include="Images\button\btn_exit.png" />
+    <Content Include="Images\button\btn_exit_tw.png" />
+    <Content Include="Images\button\btn_help.png" />
+    <Content Include="Images\button\btn_help_tw.png" />
+    <Content Include="Images\button\btn_next.png" />
+    <Content Include="Images\button\btn_next_tw.png" />
+    <Content Include="Images\button\btn_no.png" />
+    <Content Include="Images\button\btn_no_tw.png" />
+    <Content Include="Images\button\btn_proceed.png" />
+    <Content Include="Images\button\btn_proceed_D.png" />
+    <Content Include="Images\button\btn_proceed_D_tw.png" />
+    <Content Include="Images\button\btn_proceed_tw.png" />
+    <Content Include="Images\button\btn_search.png" />
+    <Content Include="Images\button\btn_search_tw.png" />
+    <Content Include="Images\button\btn_yes.png" />
+    <Content Include="Images\button\btn_yes_tw.png" />
+    <Content Include="Images\button\button_nextEnquiry.png" />
+    <Content Include="Images\button\button_nextEnquiry_tw.png" />
+    <Content Include="Images\button\icon_button\btn_contactUs.jpg" />
+    <Content Include="Images\button\icon_button\btn_contactUs_tw.jpg" />
+    <Content Include="Images\button\icon_button\btn_faqs.jpg" />
+    <Content Include="Images\button\icon_button\btn_faqs_tw.jpg" />
+    <Content Include="Images\button\small_button\btn_chinesename.png" />
+    <Content Include="Images\button\small_button\btn_chinesename_tw.png" />
+    <Content Include="Images\button\small_button\btn_help.png" />
+    <Content Include="Images\button\small_button\btn_help_tw.png" />
+    <Content Include="Images\dialog\alpha.png" />
+    <Content Include="Images\dialog\bottom-left.png" />
+    <Content Include="Images\dialog\bottom-mid.png" />
+    <Content Include="Images\dialog\bottom-right.png" />
+    <Content Include="Images\dialog\bottom_content.gif" />
+    <Content Include="Images\dialog\close-down.png" />
+    <Content Include="Images\dialog\close-hover.png" />
+    <Content Include="Images\dialog\close.png" />
+    <Content Include="Images\dialog\comboItemBg.gif" />
+    <Content Include="Images\dialog\drop.gif" />
+    <Content Include="Images\dialog\drop_hover.gif" />
+    <Content Include="Images\dialog\icons\arrow.gif" />
+    <Content Include="Images\dialog\icons\pencil.gif" />
+    <Content Include="Images\dialog\icons\search.gif" />
+    <Content Include="Images\dialog\icons\x.gif" />
+    <Content Include="Images\dialog\left.png" />
+    <Content Include="Images\dialog\right.png" />
+    <Content Include="Images\dialog\spacer.gif" />
+    <Content Include="Images\dialog\top-left.png" />
+    <Content Include="Images\dialog\top-mid.png" />
+    <Content Include="Images\dialog\top-right.png" />
+    <Content Include="Images\doc\ADOPC_Sample.png" />
+    <Content Include="Images\doc\DI_Sample.png" />
+    <Content Include="Images\doc\HKBC_Sample.png" />
+    <Content Include="Images\doc\REPMT_Sample.png" />
+    <Content Include="Images\doc\VISA_Sample.jpg" />
+    <Content Include="Images\HKID\HKID_Children_Female.jpg" />
+    <Content Include="Images\HKID\HKID_Children_Male.jpg" />
+    <Content Include="Images\HKID\HKID_Empty.jpg" />
+    <Content Include="Images\HKID\HKID_Sample.jpg" />
+    <Content Include="Images\master\banner_header.jpg" />
+    <Content Include="Images\master\banner_header_tw.jpg" />
+    <Content Include="Images\master\body_background.jpg" />
+    <Content Include="Images\master\botton.jpg" />
+    <Content Include="Images\master\botton_left.jpg" />
+    <Content Include="Images\master\botton_right.jpg" />
+    <Content Include="Images\master\language_background.png" />
+    <Content Include="Images\master\left.jpg" />
+    <Content Include="Images\master\right.jpg" />
+    <Content Include="Images\master\top.jpg" />
+    <Content Include="Images\master\top_left.jpg" />
+    <Content Include="Images\master\top_right.jpg" />
+    <Content Include="Images\others\3Steps.png" />
+    <Content Include="Images\others\3Steps_tw.png" />
+    <Content Include="Images\others\acrobat.png" />
+    <Content Include="Images\others\Adobe.png" />
+    <Content Include="Images\others\arrow.png" />
+    <Content Include="Images\others\banner_downloadArea.png" />
+    <Content Include="Images\others\banner_downloadArea_tw.png" />
+    <Content Include="Images\others\banner_HA_MINGLIU.png" />
+    <Content Include="Images\others\banner_HA_MINGLIU_tw.png" />
+    <Content Include="Images\others\banner_OlinePrefillingConsentForm.png" />
+    <Content Include="Images\others\banner_OlinePrefillingConsentForm_tw.png" />
+    <Content Include="Images\others\bg.png" />
+    <Content Include="Images\others\btn_swine.jpg" />
+    <Content Include="Images\others\Bulb.png" />
+    <Content Include="Images\others\button_contactus.png" />
+    <Content Include="Images\others\button_contactus_tw.png" />
+    <Content Include="Images\others\button_FAQs.png" />
+    <Content Include="Images\others\button_FAQs_tw.png" />
+    <Content Include="Images\others\circle_blue.png" />
+    <Content Include="Images\others\doc.png" />
+    <Content Include="Images\others\Document.png" />
+    <Content Include="Images\others\floopy.PNG" />
+    <Content Include="Images\others\font.png" />
+    <Content Include="Images\others\HA_MINGLIU_Sample.png" />
+    <Content Include="Images\others\HKID_sample.png" />
+    <Content Include="Images\others\HKID_sample_tw.png" />
+    <Content Include="Images\others\icon_caution.gif" />
+    <Content Include="Images\others\icon_downloadArea.png" />
+    <Content Include="Images\others\information.png" />
+    <Content Include="Images\others\new.gif" />
+    <Content Include="Images\others\onlineprefillconsentform.png" />
+    <Content Include="Images\others\onlineprefillconsentform_tw.png" />
+    <Content Include="Images\others\Printer.png" />
+    <Content Include="Images\others\printer_small.png" />
+    <Content Include="Images\others\QuestionMark.png" />
+    <Content Include="Images\others\tick.png" />
+    <Content Include="Images\others\voucherbalanceenquiry.png" />
+    <Content Include="Images\others\voucherbalanceenquiry_tw.png" />
+    <Content Include="index.htm" />
+    <Content Include="JS\Common.js" />
+    <Content Include="main.aspx" />
+    <Content Include="preFill.aspx" />
+    <Content Include="Printout\EHSPrefilledClaimForm_CHI_RV.aspx" />
+    <Content Include="Printout\EHSPrefilledClaimForm_RV.aspx" />
+    <Content Include="Printout\reporttimeout.aspx" />
+    <Content Include="Printout\reporttimeout_chi.aspx" />
+    <Content Include="redirectInvalidLink.aspx" />
+    <Content Include="thankyou.aspx" />
+    <Content Include="UIControl\ChooseCCCode.ascx" />
+    <Content Include="UIControl\DocTypeLegend.ascx" />
+    <Content Include="UIControl\DocType\ucClaimSearch.ascx" />
+    <Content Include="UIControl\DocType\ucInputAdoption.ascx" />
+    <Content Include="UIControl\DocType\ucInputDI.ascx" />
+    <Content Include="UIControl\DocType\ucInputDocumentType.ascx" />
+    <Content Include="UIControl\DocType\ucInputEC.ascx" />
+    <Content Include="UIControl\DocType\ucInputHKBC.ascx" />
+    <Content Include="UIControl\DocType\ucInputHKID.ascx" />
+    <Content Include="UIControl\DocType\ucInputID235B.ascx" />
+    <Content Include="UIControl\DocType\ucInputReentryPermit.ascx" />
+    <Content Include="UIControl\DocType\ucInputVISA.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyAdoption.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyDI.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyEC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyHKBC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyHKIC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyID235B.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyReentryPermit.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
+    <Content Include="zh\error.aspx" />
+    <Content Include="zh\index.aspx" />
+    <Content Include="zh\invalidlink.aspx" />
+    <Content Include="zh\sessiontimeout.aspx" />
+    <None Include="Doc\CheckList.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Doc\EasyGuide.pps" />
+    <Content Include="Doc\EasyGuide_CHI.pps" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomControls\CustomControls.vbproj">
+      <Project>{EBE0EADC-F5A6-4EAF-B395-127B0EDF82F7}</Project>
+      <Name>CustomControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebControlCaptcha\WebControlCaptcha.vbproj">
+      <Project>{03D1C790-162A-4AC0-B33B-634B263C0A63}</Project>
+      <Name>WebControlCaptcha</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>2379</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/PFC_DEV</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameter>
+	<message_id>M2011011800000001</message_id>
+  <health_check>N</health_check>
+  <patient>
+    <document_count>1</document_count>
+    <patient_document>
+      <document_no> M8305531</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, SIU PAK</name>
+      <sex>M</sex>
+      <dob>02/02/2006</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient_document>
+  </patient>
+  <vaccine>
+    <vaccine_count>4</vaccine_count>
+    <vaccine_code>001</vaccine_code>
+    <vaccine_code>002</vaccine_code>
+    <vaccine_code>003</vaccine_code>
+    <vaccine_code>004</vaccine_code>
+  </vaccine>
+  <injection_date_start>01/02/2010</injection_date_start>
+  <injection_date_end />
+  <request_system>CMS</request_system>
+</parameter>

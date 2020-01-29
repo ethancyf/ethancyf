@@ -1,0 +1,6 @@
+E:\ImmDInterface\ImmDInterface\ImmDMonitor\AppExeScript\ImmDMonitor.exe E:\ImmDInterface\ImmDInterface\ImmDMonitor\ImmDMonitorSend.ini E:\ImmDInterface\ImmDInterface\ImmDMonitorLog\EVS_HKICEC EVS_HKICEC
+E:\ImmDInterface\ImmDInterface\ImmDMonitor\AppExeScript\ImmDMonitor.exe E:\ImmDInterface\ImmDInterface\ImmDMonitor\ImmDMonitorSend.ini E:\ImmDInterface\ImmDInterface\ImmDMonitorLog\EVS_ADOPC EVS_ADOPC
+E:\ImmDInterface\ImmDInterface\ImmDMonitor\AppExeScript\ImmDMonitor.exe E:\ImmDInterface\ImmDInterface\ImmDMonitor\ImmDMonitorSend.ini E:\ImmDInterface\ImmDInterface\ImmDMonitorLog\EVS_DOCI EVS_DOCI
+E:\ImmDInterface\ImmDInterface\ImmDMonitor\AppExeScript\ImmDMonitor.exe E:\ImmDInterface\ImmDInterface\ImmDMonitor\ImmDMonitorSend.ini E:\ImmDInterface\ImmDInterface\ImmDMonitorLog\EVS_HKBC EVS_HKBC
+E:\ImmDInterface\ImmDInterface\ImmDMonitor\AppExeScript\ImmDMonitor.exe E:\ImmDInterface\ImmDInterface\ImmDMonitor\ImmDMonitorSend.ini E:\ImmDInterface\ImmDInterface\ImmDMonitorLog\EVS_REPMT EVS_REPMT
+E:\ImmDInterface\ImmDInterface\ImmDMonitor\AppExeScript\ImmDMonitor.exe E:\ImmDInterface\ImmDInterface\ImmDMonitor\ImmDMonitorSend.ini E:\ImmDInterface\ImmDInterface\ImmDMonitorLog\EVS_VISA EVS_VISA

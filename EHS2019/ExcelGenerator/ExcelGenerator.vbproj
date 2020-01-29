@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5DDA2213-996E-4DFE-AEC5-B22158977EFB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <StartupObject>ExcelGenerator.Module1</StartupObject>
+    <RootNamespace>ExcelGenerator</RootNamespace>
+    <AssemblyName>ExcelGenerator</AssemblyName>
+    <MyType>Console</MyType>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>ExcelGenerator.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>ExcelGenerator.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\CommonBin\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\Microsoft.Vbe.Interop.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="OFFICE, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\OFFICE.DLL</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseGenerator.vb" />
+    <Compile Include="BNCGenerator.vb" />
+    <Compile Include="EnrolmentGenerator.vb" />
+    <Compile Include="ExcelBuilder.vb" />
+    <Compile Include="ExcelWithTemplateGenerator.vb" />
+    <Compile Include="GeneralGenerator.vb" />
+    <Compile Include="GeneratorLogger.vb" />
+    <Compile Include="GeneratorMgr.vb" />
+    <Compile Include="GeneratorUtil.vb" />
+    <Compile Include="Generator\ARReportGeneratorBase.vb" />
+    <Compile Include="Generator\AberrantReportGenerator.vb" />
+    <Compile Include="Generator\DeactivatedEHRSSTokenReportGenerator.vb" />
+    <Compile Include="Generator\PostPaymentCheckReportGenerator.vb" />
+    <Compile Include="Generator\DeactivatedEHRSSTokenReportGeneratorBase.vb" />
+    <Compile Include="Generator\PostPaymentCheckReportGeneratorBase.vb" />
+    <Compile Include="Generator\StudentFileGenerator.vb" />
+    <Compile Include="Generator\StudentFileGeneratorBase.vb" />
+    <Compile Include="IExcelGenerable.vb" />
+    <Compile Include="Module1.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PreAuthorizationCheckingFileGenerator.vb" />
+    <Compile Include="RMPDownloadGenerator.vb" />
+    <Compile Include="SuperDownloadGenerator.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Template\eHSD0029-Deactivated_eHRSS_Token_Template.xlsx" />
+    <None Include="Template\eHSD0030-Recipient_Aberrant_Age_Template.xlsx" />
+    <None Include="Template\eHSD0032-PPP Claim_Template.xlsx" />
+    <None Include="Template\eHSD0033-PPPKG Claim_Template.xlsx" />
+    <None Include="Template\eHSM0003-VSS_Aberrant_Template.xlsx" />
+    <None Include="Template\eHSM0004-Deactivated_eHRSS_Token_Template.xlsx" />
+    <None Include="Template\eHSM0005-SP_Data_File_Template.xlsx" />
+    <None Include="Template\eHSM0006-Voucher Claim_Template.xlsx" />
+    <None Include="Template\eHSM0007-VSS_PCV13_Reimbursement_Report_Template.xlsx" />
+    <None Include="Template\eHSM0008-Pneumo_Statistics_Claim_VO_Report_Template.xlsx" />
+    <None Include="Template\eHSM0009-VSS_OCSSS_Template.xlsx" />
+    <None Include="Template\eHSM0010-Voucher_OCSSS_Template.xlsx" />
+    <None Include="Template\eHSM0011-Voucher_Claim_DHC_Template.xlsx" />
+    <None Include="Template\eHSU0006-Non_Clinic_Claim_Template.xlsx" />
+    <None Include="Template\eHSU0007-SP_First_Claim_Under_HCVS_Template.xlsx" />
+    <None Include="Template\eHSU0008-SP_Most_Daily_Claim_Template.xlsx" />
+    <None Include="Template\eHSU0009-PCV13_Statistic_Template.xlsx" />
+    <None Include="Template\eHSU0010-SP_Claim_Pattern_Template.xlsx" />
+    <None Include="Template\eHSU0011_MeansOfInput_Rank_Template.xlsx" />
+    <None Include="Template\eHSVF000-VaccinationFileTemplate.xlsx" />
+    <None Include="Template\eHSVF001-VaccinationFileTemplate-MMR.xlsx" />
+    <None Include="Template\eHSVF001-VaccinationFileTemplate-PV.xlsx" />
+    <None Include="Template\eHSVF001-VaccinationFileTemplate-PV13.xlsx" />
+    <None Include="Template\eHSVF001-VaccinationFileTemplate-SIV.xlsx" />
+    <None Include="Template\eHSVF002-VaccinationFileTemplate.xlsx" />
+    <None Include="Template\eHSVF003-VaccinationFileTemplate-PV.xlsx" />
+    <None Include="Template\eHSVF003-VaccinationFileTemplate-PV13.xlsx" />
+    <None Include="Template\eHSVF003-VaccinationFileTemplate-SIV.xlsx" />
+    <None Include="Template\eHSVF004-VaccinationFileTemplate.xlsx" />
+    <None Include="Template\eHSVF005-VaccinationFileTemplate.xlsx" />
+    <None Include="Template\eHSVF006-VaccinationFileTemplate.xlsx" />
+    <None Include="Template\eHSW0002-Template.xlsx" />
+    <None Include="Template\eHSW0003-PCV13_Weekly_Statistic_Template.xlsx" />
+    <None Include="Template\eHSW0004-Vaccination_Weekly_Template.xlsx" />
+    <None Include="Template\PPC0001-Template.xlsx" />
+    <None Include="Template\PPC0002-Template.xlsx" />
+    <None Include="Template\PPC0003-Template.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonScheduleJob\CommonScheduleJob.vbproj">
+      <Project>{CF933215-594E-46B7-8E23-04EBAF254377}</Project>
+      <Name>CommonScheduleJob</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme.txt" />
+    <None Include="Template\Blank_Template.xlsx" />
+    <None Include="Template\eHSD0001-HCVS Claim-Template.xlsx" />
+    <None Include="Template\eHSD0004-RVP Claim_Template.xlsx" />
+    <None Include="Template\eHSD0014-HSIV_Claim_Report_Template.xlsx" />
+    <None Include="Template\eHSD0015-Recipient_Aberrant_Usage_Template.xlsx" />
+    <None Include="Template\eHSD0016-SP_Aberrant_Voucher_Usage_Template.xlsx" />
+    <None Include="Template\eHSD0028-VSS Claim_Template.xlsx" />
+    <None Include="Template\eHSM0001-PreAuthorizationRMB_Template.xlsx" />
+    <None Include="Template\eHSM0001-PreAuthorization_Template.xlsx" />
+    <None Include="Template\eHSM0002-SUPERRMB_Template.xlsx" />
+    <None Include="Template\eHSM0002-SUPER_Template.xlsx" />
+    <None Include="Template\eHSU0001-SP_SmartIC_Claim_Report_Template.xlsx" />
+    <None Include="Template\eHSU0002_Report_Template.xlsx" />
+    <None Include="Template\eHSU0003-SP_Token_Activation_Template.xlsx" />
+    <None Include="Template\eHSU0004-EHAPP_Transaction_Raw_Data_Template.xlsx" />
+    <None Include="Template\eHSU0005-SP_Data_File_Template.xlsx" />
+    <None Include="Template\eHSW0001-SP_Frequent_Account_Rejection_Template.xlsx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

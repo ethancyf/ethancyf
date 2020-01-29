@@ -1,0 +1,515 @@
+﻿body 
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	margin: 0px 0px 0px 1px;
+}
+
+/***** Footer Style *****/
+.footerText
+{
+	font-size: 12px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+}
+
+/***** Table Style *****/
+.tableHeading
+{
+	font-size: 16px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px center;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+}
+
+.eHSTableHeading
+{
+	font-size: 16px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px 3px;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+}
+
+
+.tableHeadingAlert
+{
+	font-size: 16px;
+	color: red;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px center;
+	background-image: url(../Images/others/circle_red.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.validateFail
+{
+	font-size: 18px;
+	color: Red;
+	font-family: Arial;
+}
+
+.tableCaption
+{
+	font-size: 20px;
+	color: Black;
+	font-family: Arial;
+}
+
+.tableTopCellVaccinationRecordProvider
+{
+    border-width: 1px 0px 1px 1px;
+    border-style: solid;
+    border-color: black
+}
+
+.tableTopLastCellVaccinationRecordProvider
+{
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: black;
+}
+
+.tableCellVaccinationRecordProvider
+{
+    border-width: 0px 0px 1px 1px;
+    border-style: solid;
+    border-color: black;
+}
+
+.tableLastCellVaccinationRecordProvider
+{
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
+    border-color: black;
+}
+
+/***** Created by Stanley Chan *****/
+.eHSTableCaption
+{
+	font-size: 20px;
+	color: Black;
+	font-family: Arial;
+	padding: 0px 0px 5px 0px;
+}
+
+.tableTitle
+{
+     font-size: 16px;
+     color: #666666;
+     font-family: Arial;
+}
+
+.tableTitleChi
+{
+	font-size: 16px;
+	color: #666666;
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+.boldText
+{	
+	font-weight: bold;
+}
+
+.boldTextChi
+{
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+	font-weight: bold;
+}
+
+
+.textChi
+{
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+.tableText
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.tableTextChi
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+	font-weight: bold;
+}
+
+
+.tableTextAlert
+{
+	font-size: 16px;
+	color: #FF0000;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.tableTextAlertChi
+{
+	font-size: 16px;
+	color: #FF0000;
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+	font-weight: bold;
+}
+
+.largeText
+{
+	font-size: 18px;
+	color: Black;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+/***** Text Style in Banner *****/
+.bannerText
+{
+	font-size: 18px;
+	color: #666666;
+	font-family: Arial;
+
+}
+
+.bannerTextChi
+{
+	font-size: 18px;
+	color: #666666;
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+/***** Tab Style *****/
+.m_ajax__tab_xp .ajax__tab_header {width:1100px; font-family:verdana,tahoma,helvetica;font-size:14px !important;background:url(../Images/AjaxControlToolkit/Tabs/tab-line.gif) repeat-x bottom;}
+
+.m_ajax__tab_xp .ajax__tab_outer {background:url(../Images/AjaxControlToolkit/Tabs/tab-right.gif) no-repeat right;height:21px;padding-right:4px;}
+
+.m_ajax__tab_xp .ajax__tab_inner {padding-left:3px;background:url(../Images/AjaxControlToolkit/Tabs/tab-left.gif) no-repeat;}
+
+.m_ajax__tab_xp .ajax__tab_tab {color:#666666; height:13px;padding:4px;margin:0;background:url(../Images/AjaxControlToolkit/Tabs/tab.gif) repeat-x;}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_outer {background:url(../Images/AjaxControlToolkit/Tabs/tab-hover-right.gif) no-repeat right;}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_inner {background:url(../Images/AjaxControlToolkit/Tabs/tab-hover-left.gif) no-repeat;}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_tab {background:url(../Images/AjaxControlToolkit/Tabs/tab-hover.gif) repeat-x;}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_outer {background:url(../Images/AjaxControlToolkit/Tabs/tab-active-right.gif) no-repeat right;}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_inner {background:url(../Images/AjaxControlToolkit/Tabs/tab-active-left.gif) no-repeat;}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_tab {background:url(../Images/AjaxControlToolkit/Tabs/tab-active.gif) repeat-x;}
+
+.m_ajax__tab_xp .ajax__tab_body {font-family:Arial !important;font-size:14px !important;border:1px solid #999999 !important;border-top:0 !important;padding:8px !important;background-color:transparent !important;}
+
+/***** Language Text Style *****/
+.languageText
+{
+	font-size: 15px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+.languageSelectedText
+{
+	font-size: 15px;
+	color: #ffffff;
+	font-family: Arial;
+	text-decoration: none;
+	background-image: url(../Images/master/language_background.png);
+	background-repeat: repeat-x;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+	background-position: center;
+}
+
+/***** Timeline Text Style *****/
+/***** For First Timeline *****/
+.highlightTimeline
+{
+	font-size: 14px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	text-indent: 30px;
+	background-position: 0px center;
+	background-image: url(../Images/others/arrow_cn.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+
+.unhighlightTimeline
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-weight: bold;
+}
+
+/***** For Second Timeline *****/
+.unhighlightTimelineLast
+{
+	font-size: 14px;
+	color: #666666;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.highlightTimelineLast
+{
+	font-size: 14px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	text-indent: 30px;
+	background-position: 0px 3px;
+	background-image: url(../Images/others/arrow_cn.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.btnHidden
+{
+	visibility: hidden;
+}
+
+.checkboxStyle
+{
+	text-align: justify;
+	border-right: #6495ed 2px solid;
+	padding-right: 5px;
+	border-top: #6495ed 2px solid;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	border-left: #6495ed 2px solid;
+	padding-top: 3px;
+	border-bottom: #6495ed 2px solid;
+	color: #000000;
+	background-color: #ffff99;
+}
+	
+.SettingsPanelStyle
+{
+	border: solid 1px gray;
+	padding: 0px 0px 0px 0px;	
+}
+
+.SettingTableCellStyle
+{
+	border: solid 1px gray;
+	padding: 5px 2px 5px 5px;
+}
+.SettingTableStyle
+{
+	border-collapse: collapse;
+}
+
+.SettingTDNoneStyle
+{
+	border-collapse:collapse;
+	padding: 0px 0px 0px 0px;
+}
+
+.SettingTDLeftStyle
+{
+	border-collapse:separate;
+	border-right: solid 1px gray;
+	padding: 5px 0px 5px 5px;
+}
+
+.SettingTDRightStyle
+{
+	border-collapse: separate;
+	border-left: solid 1px gray;
+	padding: 5px 0px 5px 5px;
+}
+
+.ChineseAddressDisplay
+{
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+.tableCellStyle
+{
+	padding: 0px 0px 5px 0px;
+}
+
+.tableCellStyleLite
+{
+	padding: 0px 0px 4px 0px;
+}
+
+.cboSpacing
+{ 
+	line-height: 160%;
+}
+
+/***** Inbox new design style *****/
+/*****        CRE12-012       *****/
+td.SideBar
+{
+    background-color: #FFFFFF;
+}
+        
+td.SideBarSelected
+{
+    background-color: #d0d0d0;
+}
+        
+td.SideBarHighlight
+{
+    background-color: #f0eef7;
+}
+
+td.TabHeaderSelected
+{
+    position: relative;
+    top: 1px;
+    z-index: 1;
+}
+
+a.InboxDisabledUnderline 
+{
+	text-decoration: none;
+	color: #4d4d4d
+}
+
+/***** Calendar Style *****/
+.ajax_cal .ajax__calendar_container   {
+    background-color: #ffffff; 
+    border:solid 1px #007fc2;
+}
+
+.ajax_cal .ajax__calendar_header  {
+    background-color: #ffffff; 
+    margin-bottom: 4px;
+}
+
+.ajax_cal .ajax__calendar_title,
+.ajax_cal .ajax__calendar_next,
+.ajax_cal .ajax__calendar_prev    {
+    color: #000000; 
+    padding-top: 3px;
+}
+
+.ajax_cal .ajax__calendar_body    {
+    background-color: #ffffff; 
+    /*border: solid 1px #cccccc;*/
+}
+
+.ajax_cal .ajax__calendar_dayname {
+    text-align:center; 
+    font-weight: bold;
+    margin-bottom: 4px; 
+    margin-top: 2px;
+    color: #000000;  
+}
+
+.ajax_cal .ajax__calendar_day {
+    text-align:center;
+    font-weight: normal;
+}
+
+.ajax_cal .ajax__calendar_days {
+    color: #000000;  
+}
+
+.ajax_cal .ajax__calendar_other {
+    color: #bbbbbb;  
+}
+
+.ajax_cal .ajax__calendar_hover .ajax__calendar_day,
+.ajax_cal .ajax__calendar_hover .ajax__calendar_month,
+.ajax_cal .ajax__calendar_hover .ajax__calendar_year {
+    color: #ffffff; 
+    font-weight: bold; 
+    background-color: #1e90ff;
+}
+
+.ajax_cal .ajax__calendar_active  {
+    /*font-weight: bold;*/ 
+    background-color: #89dbff;
+    border-color: #1e90ff;
+    color: #000000;  
+}
+
+.ajax_cal .ajax__calendar_today   {
+    color: #000000;
+}
+
+
+
+.ajax_cal .ajax__calendar_hover .ajax__calendar_today,
+.ajax_cal .ajax__calendar_hover .ajax__calendar_title {
+    color: #1e90ff;
+}
+
+.ajax_cal .ajax__calendar_invalid .ajax__calendar_day,
+.ajax_cal .ajax__calendar_invalid .ajax__calendar_month,
+.ajax_cal .ajax__calendar_invalid .ajax__calendar_year {
+    background-color: #cdcdcd;
+    border-color: #cdcdcd;
+    color: #efefef;
+    /*text-decoration: line-through;*/
+    font-weight: normal; 
+    cursor: default;
+}
+
+.ajax_cal .ajax__calendar_footer {
+    background-color: #ffffff; 
+    
+    height: 15px;
+}
+
+/***** Calendar Style *****/
+
+td.AppEnvironmentZH {
+    padding-top: 16px;
+    padding-left: 280px;
+    color: #FB358D;
+    font-size: 24px;
+    text-align: left;
+}
+
+
+td.SubsidizeCategoryHeader {
+    text-align: center;
+    font-size: 13px;
+    line-height: 12px;
+    background-color: #DDDDDD !important;
+}
+

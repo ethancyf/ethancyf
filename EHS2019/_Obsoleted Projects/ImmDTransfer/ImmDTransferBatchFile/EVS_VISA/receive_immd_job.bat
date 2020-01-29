@@ -1,0 +1,2 @@
+del /Q E:\ImmDInterface\ImmDInterface\ImmDTransferBatchFile\EVS_VISA\received\*
+E:\ImmDInterface\ImmDInterface\ImmDTransfer\AppExeScript\ImmDTransfer.exe receive E:\ImmDInterface\ImmDInterface\ImmDTransfer\ImmDTransferReceive.ini E:\ImmDInterface\ImmDInterface\ImmDTransferBatchFile\EVS_VISA\log EVS_VISA

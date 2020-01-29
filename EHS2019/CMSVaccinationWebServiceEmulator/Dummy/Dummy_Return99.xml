@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<result>
+	<message_id>[message_id]</message_id>
+	<return_code>99</return_code>
+	<patient_result_code>0</patient_result_code>
+	<vaccine_result_code>2</vaccine_result_code>
+	<source_system>CMS</source_system>
+</result>

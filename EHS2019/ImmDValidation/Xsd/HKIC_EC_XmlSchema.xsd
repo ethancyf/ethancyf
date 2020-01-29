@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<xs:schema id="HA_HealthCareVoucher" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="HA_HealthCareVoucher" msdata:IsDataSet="true" msdata:Locale="en-US">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="icList">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="icEntry" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="seqNo" type="xs:string" minOccurs="0" />
+                    <xs:element name="icPrf" type="xs:string" minOccurs="0" />
+                    <xs:element name="icNo" type="xs:string" minOccurs="0" />
+                    <xs:element name="dtIcReg" type="xs:string" minOccurs="0" />
+                    <xs:element name="dobOnCard" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ecList">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ecEntry" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="seqNo" type="xs:string" minOccurs="0" />
+                    <xs:element name="applnRefNo" type="xs:string" minOccurs="0" />
+                    <xs:element name="audNo" type="xs:string" minOccurs="0" />
+                    <xs:element name="dobFlag" type="xs:string" minOccurs="0" />
+                    <xs:element name="appltDOB" type="xs:string" minOccurs="0" />
+                    <xs:element name="appltYOB" type="xs:string" minOccurs="0" />
+                    <xs:element name="appltDtIcReg" type="xs:string" minOccurs="0" />
+                    <xs:element name="ageOnDt" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

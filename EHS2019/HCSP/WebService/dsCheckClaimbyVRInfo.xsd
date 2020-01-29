@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsCheckClaimbyVRInfo" targetNamespace="https://hcvs.dh.gov.hksar/dsCheckClaimbyVRInfo.xsd" xmlns:mstns="https://hcvs.dh.gov.hksar/dsCheckClaimbyVRInfo.xsd" xmlns="https://hcvs.dh.gov.hksar/dsCheckClaimbyVRInfo.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsCheckClaimbyVRInfo" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_DataSetName="dsCheckClaimbyVRInfo" msprop:Generator_UserDSName="dsCheckClaimbyVRInfo">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Result" msprop:Generator_UserTableName="Result" msprop:Generator_RowEvArgName="ResultRowChangeEvent" msprop:Generator_TableVarName="tableResult" msprop:Generator_TablePropName="Result" msprop:Generator_RowDeletingName="ResultRowDeleting" msprop:Generator_RowChangingName="ResultRowChanging" msprop:Generator_RowDeletedName="ResultRowDeleted" msprop:Generator_RowEvHandlerName="ResultRowChangeEventHandler" msprop:Generator_TableClassName="ResultDataTable" msprop:Generator_RowChangedName="ResultRowChanged" msprop:Generator_RowClassName="ResultRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Return" msprop:Generator_ColumnVarNameInTable="columnReturn" msprop:Generator_ColumnPropNameInRow="_Return" msprop:Generator_ColumnPropNameInTable="ReturnColumn" msprop:Generator_UserColumnName="Return" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Info" msprop:Generator_UserTableName="Info" msprop:Generator_RowEvArgName="InfoRowChangeEvent" msprop:Generator_TableVarName="tableInfo" msprop:Generator_TablePropName="Info" msprop:Generator_RowDeletingName="InfoRowDeleting" msprop:Generator_RowChangingName="InfoRowChanging" msprop:Generator_RowDeletedName="InfoRowDeleted" msprop:Generator_RowEvHandlerName="InfoRowChangeEventHandler" msprop:Generator_TableClassName="InfoDataTable" msprop:Generator_RowChangedName="InfoRowChanged" msprop:Generator_RowClassName="InfoRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="VRAcctID" msprop:Generator_ColumnVarNameInTable="columnVRAcctID" msprop:Generator_ColumnPropNameInRow="VRAcctID" msprop:Generator_ColumnPropNameInTable="VRAcctIDColumn" msprop:Generator_UserColumnName="VRAcctID" type="xs:string" minOccurs="0" />
+              <xs:element name="HKID" msprop:Generator_ColumnVarNameInTable="columnHKID" msprop:Generator_ColumnPropNameInRow="HKID" msprop:Generator_ColumnPropNameInTable="HKIDColumn" msprop:Generator_UserColumnName="HKID" type="xs:string" minOccurs="0" />
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="TSW" msprop:Generator_ColumnVarNameInTable="columnTSW" msprop:Generator_ColumnPropNameInRow="TSW" msprop:Generator_ColumnPropNameInTable="TSWColumn" msprop:Generator_UserColumnName="TSW" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Voucher_Info" msprop:Generator_UserTableName="Voucher_Info" msprop:Generator_RowEvArgName="Voucher_InfoRowChangeEvent" msprop:Generator_TableVarName="tableVoucher_Info" msprop:Generator_TablePropName="Voucher_Info" msprop:Generator_RowDeletingName="Voucher_InfoRowDeleting" msprop:Generator_RowChangingName="Voucher_InfoRowChanging" msprop:Generator_RowDeletedName="Voucher_InfoRowDeleted" msprop:Generator_RowEvHandlerName="Voucher_InfoRowChangeEventHandler" msprop:Generator_TableClassName="Voucher_InfoDataTable" msprop:Generator_RowChangedName="Voucher_InfoRowChanged" msprop:Generator_RowClassName="Voucher_InfoRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="VRAcctID" msprop:Generator_ColumnVarNameInTable="columnVRAcctID" msprop:Generator_ColumnPropNameInRow="VRAcctID" msprop:Generator_ColumnPropNameInTable="VRAcctIDColumn" msprop:Generator_UserColumnName="VRAcctID" type="xs:string" minOccurs="0" />
+              <xs:element name="Left" msprop:Generator_ColumnVarNameInTable="columnLeft" msprop:Generator_ColumnPropNameInRow="Left" msprop:Generator_ColumnPropNameInTable="LeftColumn" msprop:Generator_UserColumnName="Left" type="xs:string" minOccurs="0" />
+              <xs:element name="Value" msprop:Generator_ColumnVarNameInTable="columnValue" msprop:Generator_ColumnPropNameInRow="Value" msprop:Generator_ColumnPropNameInTable="ValueColumn" msprop:Generator_UserColumnName="Value" type="xs:string" minOccurs="0" />
+              <xs:element name="VoucherResult" msprop:Generator_ColumnVarNameInTable="columnVoucherResult" msprop:Generator_ColumnPropNameInRow="VoucherResult" msprop:Generator_ColumnPropNameInTable="VoucherResultColumn" msprop:Generator_UserColumnName="VoucherResult" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Quota" msprop:Generator_TableClassName="QuotaDataTable" msprop:Generator_TableVarName="tableQuota" msprop:Generator_RowChangedName="QuotaRowChanged" msprop:Generator_TablePropName="Quota" msprop:Generator_RowDeletingName="QuotaRowDeleting" msprop:Generator_RowChangingName="QuotaRowChanging" msprop:Generator_RowEvHandlerName="QuotaRowChangeEventHandler" msprop:Generator_RowDeletedName="QuotaRowDeleted" msprop:Generator_RowClassName="QuotaRow" msprop:Generator_UserTableName="Quota" msprop:Generator_RowEvArgName="QuotaRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Quota_Professional" msprop:Generator_ColumnVarNameInTable="columnQuota_Professional" msprop:Generator_ColumnPropNameInRow="Quota_Professional" msprop:Generator_ColumnPropNameInTable="Quota_ProfessionalColumn" msprop:Generator_UserColumnName="Quota_Professional" type="xs:string" minOccurs="0" />
+              <xs:element name="Quota_Balance" msprop:Generator_ColumnVarNameInTable="columnQuota_Balance" msprop:Generator_ColumnPropNameInRow="Quota_Balance" msprop:Generator_ColumnPropNameInTable="Quota_BalanceColumn" msprop:Generator_UserColumnName="Quota_Balance" type="xs:string" minOccurs="0" />
+              <xs:element name="Quota_MaxUsableBalance" msprop:Generator_ColumnVarNameInTable="columnQuota_MaxUsableBalance" msprop:Generator_ColumnPropNameInRow="Quota_MaxUsableBalance" msprop:Generator_ColumnPropNameInTable="Quota_MaxUsableBalanceColumn" msprop:Generator_UserColumnName="Quota_MaxUsableBalance" type="xs:string" minOccurs="0" />
+              <xs:element name="Quota_Capping" msprop:Generator_ColumnVarNameInTable="columnQuota_Capping" msprop:Generator_ColumnPropNameInRow="Quota_Capping" msprop:Generator_ColumnPropNameInTable="Quota_CappingColumn" msprop:Generator_UserColumnName="Quota_Capping" type="xs:string" minOccurs="0" />
+              <xs:element name="Quota_ExpiryDate" msprop:Generator_ColumnVarNameInTable="columnQuota_ExpiryDate" msprop:Generator_ColumnPropNameInRow="Quota_ExpiryDate" msprop:Generator_ColumnPropNameInTable="Quota_ExpiryDateColumn" msprop:Generator_UserColumnName="Quota_ExpiryDate" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

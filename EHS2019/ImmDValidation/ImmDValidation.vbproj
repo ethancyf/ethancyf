@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7093B7DA-2E16-4D8B-AF14-663AB293F5BB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <StartupObject>ImmDValidation.Module1</StartupObject>
+    <RootNamespace>ImmDValidation</RootNamespace>
+    <AssemblyName>ImmDValidation</AssemblyName>
+    <MyType>Console</MyType>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>ImmDValidation.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>ImmDValidation.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ImmBLL.vb" />
+    <Compile Include="ImmDImportXmlModel.vb" />
+    <Compile Include="ImmDLogger.vb" />
+    <Compile Include="ImmDUtil.vb" />
+    <Compile Include="Module1.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="ProgramMgr.vb" />
+    <Compile Include="XmlBuilder.vb" />
+    <Compile Include="XMLGenerator\ADOPCExportXmlGenerator.vb" />
+    <Compile Include="XMLGenerator\DOCIExportXmlGenerator.vb" />
+    <Compile Include="XMLGenerator\HKBCExportXmlGenerator.vb" />
+    <Compile Include="XMLGenerator\HKIC_ECExportXmlGenerator.vb" />
+    <Compile Include="XMLGenerator\REPMTExportXmlGenerator.vb" />
+    <Compile Include="XMLGenerator\VISAExportXmlGenerator.vb" />
+    <Compile Include="Xsd\ADOPC_XmlSchema.vb">
+      <DependentUpon>ADOPC_XmlSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Xsd\DOCI_XmlSchema.vb">
+      <DependentUpon>DOCI_XmlSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Xsd\HKBC_XmlSchema.vb">
+      <DependentUpon>HKBC_XmlSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Xsd\HKIC_EC_XmlSchema.vb">
+      <DependentUpon>HKIC_EC_XmlSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Xsd\REPMT_XmlSchema.vb">
+      <DependentUpon>REPMT_XmlSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Xsd\VISA_XmlSchema.vb">
+      <DependentUpon>VISA_XmlSchema.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Xsd\ADOPC_XmlSchema.xsc">
+      <DependentUpon>ADOPC_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\ADOPC_XmlSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\ADOPC_XmlSchema.xss">
+      <DependentUpon>ADOPC_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\DOCI_XmlSchema.xsc">
+      <DependentUpon>DOCI_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\DOCI_XmlSchema.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DOCI_XmlSchema.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\DOCI_XmlSchema.xss">
+      <DependentUpon>DOCI_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\HKBC_XmlSchema.xsc">
+      <DependentUpon>HKBC_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\HKBC_XmlSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\HKBC_XmlSchema.xss">
+      <DependentUpon>HKBC_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\HKIC_EC_XmlSchema.xsc">
+      <DependentUpon>HKIC_EC_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\HKIC_EC_XmlSchema.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HKIC_EC_XmlSchema.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\HKIC_EC_XmlSchema.xss">
+      <DependentUpon>HKIC_EC_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\REPMT_XmlSchema.xsc">
+      <DependentUpon>REPMT_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\REPMT_XmlSchema.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>REPMT_XmlSchema.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\REPMT_XmlSchema.xss">
+      <DependentUpon>REPMT_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\VISA_XmlSchema.xsc">
+      <DependentUpon>VISA_XmlSchema.xsd</DependentUpon>
+    </None>
+    <None Include="Xsd\VISA_XmlSchema.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>VISA_XmlSchema.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\VISA_XmlSchema.xss">
+      <DependentUpon>VISA_XmlSchema.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonScheduleJob\CommonScheduleJob.vbproj">
+      <Project>{CF933215-594E-46B7-8E23-04EBAF254377}</Project>
+      <Name>CommonScheduleJob</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

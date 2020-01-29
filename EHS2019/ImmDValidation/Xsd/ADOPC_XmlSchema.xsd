@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="HA_Request" msprop:Generator_UserTableName="HA_Request" msprop:Generator_RowDeletedName="HA_RequestRowDeleted" msprop:Generator_TableClassName="HA_RequestDataTable" msprop:Generator_RowChangedName="HA_RequestRowChanged" msprop:Generator_RowClassName="HA_RequestRow" msprop:Generator_RowChangingName="HA_RequestRowChanging" msprop:Generator_RowEvArgName="HA_RequestRowChangeEvent" msprop:Generator_RowEvHandlerName="HA_RequestRowChangeEventHandler" msprop:Generator_TablePropName="HA_Request" msprop:Generator_TableVarName="tableHA_Request" msprop:Generator_RowDeletingName="HA_RequestRowDeleting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Doctype" msprop:Generator_UserColumnName="Doctype" msprop:Generator_ColumnPropNameInRow="Doctype" msprop:Generator_ColumnVarNameInTable="columnDoctype" msprop:Generator_ColumnPropNameInTable="DoctypeColumn" type="xs:string" minOccurs="0" />
+        <xs:element name="NumberOfRecord" msprop:Generator_UserColumnName="NumberOfRecord" msprop:Generator_ColumnPropNameInRow="NumberOfRecord" msprop:Generator_ColumnVarNameInTable="columnNumberOfRecord" msprop:Generator_ColumnPropNameInTable="NumberOfRecordColumn" type="xs:string" minOccurs="0" />
+        <xs:element name="tdEntry" msprop:Generator_UserTableName="tdEntry" msprop:Generator_RowDeletedName="tdEntryRowDeleted" msprop:Generator_TableClassName="tdEntryDataTable" msprop:Generator_RowChangedName="tdEntryRowChanged" msprop:Generator_RowClassName="tdEntryRow" msprop:Generator_RowChangingName="tdEntryRowChanging" msprop:Generator_RowEvArgName="tdEntryRowChangeEvent" msprop:Generator_RowEvHandlerName="tdEntryRowChangeEventHandler" msprop:Generator_TablePropName="tdEntry" msprop:Generator_TableVarName="tabletdEntry" msprop:Generator_RowDeletingName="tdEntryRowDeleting" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SeqNo" msprop:Generator_UserColumnName="SeqNo" msprop:Generator_ColumnPropNameInRow="SeqNo" msprop:Generator_ColumnVarNameInTable="columnSeqNo" msprop:Generator_ColumnPropNameInTable="SeqNoColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="AdoptEntryNo" msprop:Generator_UserColumnName="AdoptEntryNo" msprop:Generator_ColumnPropNameInRow="AdoptEntryNo" msprop:Generator_ColumnVarNameInTable="columnAdoptEntryNo" msprop:Generator_ColumnPropNameInTable="AdoptEntryNoColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="DOB" msprop:Generator_UserColumnName="DOB" msprop:Generator_ColumnPropNameInRow="DOB" msprop:Generator_ColumnVarNameInTable="columnDOB" msprop:Generator_ColumnPropNameInTable="DOBColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+            <xs:attribute name="HA_Request_Id" msprop:Generator_UserColumnName="HA_Request_Id" msprop:Generator_ColumnPropNameInRow="HA_Request_Id" msprop:Generator_ColumnVarNameInTable="columnHA_Request_Id" msprop:Generator_ColumnPropNameInTable="HA_Request_IdColumn" type="xs:int" use="prohibited" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="HA_Request_Id" msdata:AutoIncrement="true" msprop:Generator_UserColumnName="HA_Request_Id" msprop:Generator_ColumnPropNameInRow="HA_Request_Id" msprop:Generator_ColumnVarNameInTable="columnHA_Request_Id" msprop:Generator_ColumnPropNameInTable="HA_Request_IdColumn" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="NewDataSet" msprop:Generator_DataSetName="NewDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="HA_Request" />
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//HA_Request" />
+      <xs:field xpath="@HA_Request_Id" />
+    </xs:unique>
+    <xs:keyref name="HA_Request_tdEntry" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="HA_Request_tdEntry" msprop:rel_Generator_RelationVarName="relationHA_Request_tdEntry" msprop:rel_Generator_UserChildTable="tdEntry" msprop:rel_Generator_UserParentTable="HA_Request" msprop:rel_Generator_ParentPropName="HA_RequestRow" msprop:rel_Generator_ChildPropName="GettdEntryRows">
+      <xs:selector xpath=".//tdEntry" />
+      <xs:field xpath="@HA_Request_Id" />
+    </xs:keyref>
+  </xs:element>
+</xs:schema>

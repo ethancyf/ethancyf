@@ -1,0 +1,976 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BA70CBA2-7085-43DC-A493-4AA48030ED88}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>eForm</RootNamespace>
+    <AssemblyName>eForm</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>eForm.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>eForm.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=19.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Export.Html.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Doc\CheckList.pdf" />
+    <Content Include="Doc\CheckList_CHI.pdf" />
+    <Content Include="En\InvalidOS.aspx" />
+    <Content Include="Images\button\btn_EasyGuide.png" />
+    <Content Include="Images\button\btn_EasyGuide_tw.png" />
+    <Content Include="Images\button\btn_ok.png" />
+    <Content Include="Images\button\btn_ok_cn.png" />
+    <Content Include="Images\button\btn_ok_tw.png" />
+    <Content Include="PrintOut\TokenSharingConsent\TokenSharingConsent_RV.aspx" />
+    <Content Include="PrintOut\TokenSharingConsent_CHI\TokenSharingConsent_CHI_RV.aspx" />
+    <Content Include="UIControl\Assessories\ucNoticePopUp.ascx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_code\BasePage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BankAccount.aspx.designer.vb">
+      <DependentUpon>BankAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BankAccount.aspx.vb">
+      <DependentUpon>BankAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BLL\ControlBLL.vb" />
+    <Compile Include="BLL\eFormBLL.vb" />
+    <Compile Include="CompletedEnrolment.aspx.designer.vb">
+      <DependentUpon>CompletedEnrolment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CompletedEnrolment.aspx.vb">
+      <DependentUpon>CompletedEnrolment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ConfirmDetails.aspx.designer.vb">
+      <DependentUpon>ConfirmDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ConfirmDetails.aspx.vb">
+      <DependentUpon>ConfirmDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Disclaimer.aspx.designer.vb">
+      <DependentUpon>Disclaimer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Disclaimer.aspx.vb">
+      <DependentUpon>Disclaimer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="En\error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="En\error.aspx.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="En\index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="En\index.aspx.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="En\invalidlink.aspx.designer.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="En\invalidlink.aspx.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="En\InvalidOS.aspx.designer.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="En\InvalidOS.aspx.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="En\sessiontimeout.aspx.designer.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="En\sessiontimeout.aspx.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="main.aspx.designer.vb">
+      <DependentUpon>main.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="main.aspx.vb">
+      <DependentUpon>main.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MasterPage.Master.designer.vb">
+      <DependentUpon>MasterPage.Master</DependentUpon>
+    </Compile>
+    <Compile Include="MasterPage.Master.vb">
+      <DependentUpon>MasterPage.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MedicalOrganization.aspx.designer.vb">
+      <DependentUpon>MedicalOrganization.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MedicalOrganization.aspx.vb">
+      <DependentUpon>MedicalOrganization.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PCDEnrolmentForm.aspx.designer.vb">
+      <DependentUpon>PCDEnrolmentForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PCDEnrolmentForm.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>PCDEnrolmentForm.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PersonalPacticulars.aspx.designer.vb">
+      <DependentUpon>PersonalPacticulars.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PersonalPacticulars.aspx.vb">
+      <DependentUpon>PersonalPacticulars.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Practice.aspx.designer.vb">
+      <DependentUpon>Practice.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Practice.aspx.vb">
+      <DependentUpon>Practice.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrintOut\BankAccountNumber.Designer.vb">
+      <DependentUpon>BankAccountNumber.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\BankAccountNumber.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\CharLabel.Designer.vb">
+      <DependentUpon>CharLabel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\CharLabel.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AddressOfPractice.Designer.vb">
+      <DependentUpon>AddressOfPractice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AddressOfPractice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AddressOfPracticeBatch.Designer.vb">
+      <DependentUpon>AddressOfPracticeBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AddressOfPracticeBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AvailPracticeMasterScheme.Designer.vb">
+      <DependentUpon>AvailPracticeMasterScheme.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AvailPracticeMasterScheme.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AvailPracticeMasterSchemeBatch.Designer.vb">
+      <DependentUpon>AvailPracticeMasterSchemeBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\AvailPracticeMasterSchemeBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS.Designer.vb">
+      <DependentUpon>DH_VSS.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS002.Designer.vb">
+      <DependentUpon>DH_VSS002.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS002.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS006.Designer.vb">
+      <DependentUpon>DH_VSS006.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS006.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS006_SignatureForm.Designer.vb">
+      <DependentUpon>DH_VSS006_SignatureForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS006_SignatureForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS_RV.aspx.designer.vb">
+      <DependentUpon>DH_VSS_RV.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\DH_VSS_RV.aspx.vb">
+      <DependentUpon>DH_VSS_RV.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\Practice.Designer.vb">
+      <DependentUpon>Practice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\Practice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\PracticeBatch.Designer.vb">
+      <DependentUpon>PracticeBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\PracticeBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\ProfessionalBatch.Designer.vb">
+      <DependentUpon>ProfessionalBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\ProfessionalBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\JoinPCDDeclaration.Designer.vb">
+      <DependentUpon>JoinPCDDeclaration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\JoinPCDDeclaration.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\Profressional.Designer.vb">
+      <DependentUpon>Profressional.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\Profressional.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\ServiceFeeExplanation.Designer.vb">
+      <DependentUpon>ServiceFeeExplanation.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\ServiceFeeExplanation.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\ServiceFeeRemark.Designer.vb">
+      <DependentUpon>ServiceFeeRemark.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS\ServiceFeeRemark.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AddressOfPractice.Designer.vb">
+      <DependentUpon>AddressOfPractice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AddressOfPractice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AddressOfPracticeBatch.Designer.vb">
+      <DependentUpon>AddressOfPracticeBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AddressOfPracticeBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AvailPracticeMasterScheme.Designer.vb">
+      <DependentUpon>AvailPracticeMasterScheme.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AvailPracticeMasterScheme.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AvailPracticeMasterSchemeBatch.Designer.vb">
+      <DependentUpon>AvailPracticeMasterSchemeBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\AvailPracticeMasterSchemeBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS.Designer.vb">
+      <DependentUpon>DH_VSS.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS002.Designer.vb">
+      <DependentUpon>DH_VSS002.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS002.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS006.Designer.vb">
+      <DependentUpon>DH_VSS006.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS006.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS006_SignatureForm.Designer.vb">
+      <DependentUpon>DH_VSS006_SignatureForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS006_SignatureForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS_CHI_RV.aspx.designer.vb">
+      <DependentUpon>DH_VSS_CHI_RV.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\DH_VSS_CHI_RV.aspx.vb">
+      <DependentUpon>DH_VSS_CHI_RV.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\Practice.Designer.vb">
+      <DependentUpon>Practice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\Practice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\PracticeBatch.Designer.vb">
+      <DependentUpon>PracticeBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\PracticeBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\ProfessionalBatch.Designer.vb">
+      <DependentUpon>ProfessionalBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\ProfessionalBatch.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\JoinPCDDeclaration.Designer.vb">
+      <DependentUpon>JoinPCDDeclaration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\JoinPCDDeclaration.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\Profressional.Designer.vb">
+      <DependentUpon>Profressional.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\Profressional.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\ServiceFeeExplanation.Designer.vb">
+      <DependentUpon>ServiceFeeExplanation.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\ServiceFeeExplanation.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\ServiceFeeRemark.Designer.vb">
+      <DependentUpon>ServiceFeeRemark.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\DH_VSS_CHI\ServiceFeeRemark.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent\TokenSharingConsent.Designer.vb">
+      <DependentUpon>TokenSharingConsent.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent\TokenSharingConsent.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent\TokenSharingConsent_RV.aspx.designer.vb">
+      <DependentUpon>TokenSharingConsent_RV.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent\TokenSharingConsent_RV.aspx.vb">
+      <DependentUpon>TokenSharingConsent_RV.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent_CHI\TokenSharingConsent_CHI.Designer.vb">
+      <DependentUpon>TokenSharingConsent_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent_CHI\TokenSharingConsent_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent_CHI\TokenSharingConsent_CHI_RV.aspx.designer.vb">
+      <DependentUpon>TokenSharingConsent_CHI_RV.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\TokenSharingConsent_CHI\TokenSharingConsent_CHI_RV.aspx.vb">
+      <DependentUpon>TokenSharingConsent_CHI_RV.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrintOut\MulitCheckBox.Designer.vb">
+      <DependentUpon>MulitCheckBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\MulitCheckBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\MulitTextBox.Designer.vb">
+      <DependentUpon>MulitTextBox.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\MulitTextBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\MulitTextValue.Designer.vb">
+      <DependentUpon>MulitTextValue.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\MulitTextValue.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="redirectinvalidlink.aspx.designer.vb">
+      <DependentUpon>redirectinvalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="redirectinvalidlink.aspx.vb">
+      <DependentUpon>redirectinvalidlink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SchemeSelection.aspx.designer.vb">
+      <DependentUpon>SchemeSelection.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SchemeSelection.aspx.vb">
+      <DependentUpon>SchemeSelection.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thankyou.aspx.designer.vb">
+      <DependentUpon>thankyou.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thankyou.aspx.vb">
+      <DependentUpon>thankyou.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.designer.vb">
+      <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.vb">
+      <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx.designer.vb">
+      <DependentUpon>ucTypeOfPracticeGrid.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx.vb">
+      <DependentUpon>ucTypeOfPracticeGrid.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Zh\error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zh\error.aspx.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Zh\index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zh\index.aspx.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Zh\invalidlink.aspx.designer.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zh\invalidlink.aspx.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Zh\InvalidOS.aspx.designer.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zh\InvalidOS.aspx.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Zh\sessiontimeout.aspx.designer.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zh\sessiontimeout.aspx.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\BankAccountNumber.resx">
+      <DependentUpon>BankAccountNumber.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\CharLabel.resx">
+      <DependentUpon>CharLabel.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\AddressOfPractice.resx">
+      <DependentUpon>AddressOfPractice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\AddressOfPracticeBatch.resx">
+      <DependentUpon>AddressOfPracticeBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\AvailPracticeMasterScheme.resx">
+      <DependentUpon>AvailPracticeMasterScheme.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\AvailPracticeMasterSchemeBatch.resx">
+      <DependentUpon>AvailPracticeMasterSchemeBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\DH_VSS.resx">
+      <DependentUpon>DH_VSS.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\DH_VSS002.resx">
+      <DependentUpon>DH_VSS002.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\DH_VSS006.resx">
+      <DependentUpon>DH_VSS006.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\DH_VSS006_SignatureForm.resx">
+      <DependentUpon>DH_VSS006_SignatureForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\Practice.resx">
+      <DependentUpon>Practice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\PracticeBatch.resx">
+      <DependentUpon>PracticeBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\ProfessionalBatch.resx">
+      <DependentUpon>ProfessionalBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\JoinPCDDeclaration.resx">
+      <DependentUpon>JoinPCDDeclaration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\Profressional.resx">
+      <DependentUpon>Profressional.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\ServiceFeeExplanation.resx">
+      <DependentUpon>ServiceFeeExplanation.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS\ServiceFeeRemark.resx">
+      <DependentUpon>ServiceFeeRemark.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\AddressOfPractice.resx">
+      <DependentUpon>AddressOfPractice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\AddressOfPracticeBatch.resx">
+      <DependentUpon>AddressOfPracticeBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\AvailPracticeMasterScheme.resx">
+      <DependentUpon>AvailPracticeMasterScheme.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\AvailPracticeMasterSchemeBatch.resx">
+      <DependentUpon>AvailPracticeMasterSchemeBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\DH_VSS.resx">
+      <DependentUpon>DH_VSS.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\DH_VSS002.resx">
+      <DependentUpon>DH_VSS002.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\DH_VSS006.resx">
+      <DependentUpon>DH_VSS006.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\DH_VSS006_SignatureForm.resx">
+      <DependentUpon>DH_VSS006_SignatureForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\Practice.resx">
+      <DependentUpon>Practice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\PracticeBatch.resx">
+      <DependentUpon>PracticeBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\ProfessionalBatch.resx">
+      <DependentUpon>ProfessionalBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\JoinPCDDeclaration.resx">
+      <DependentUpon>JoinPCDDeclaration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\Profressional.resx">
+      <DependentUpon>Profressional.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\ServiceFeeExplanation.resx">
+      <DependentUpon>ServiceFeeExplanation.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\DH_VSS_CHI\ServiceFeeRemark.resx">
+      <DependentUpon>ServiceFeeRemark.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\TokenSharingConsent\TokenSharingConsent.resx">
+      <DependentUpon>TokenSharingConsent.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\TokenSharingConsent_CHI\TokenSharingConsent_CHI.resx">
+      <DependentUpon>TokenSharingConsent_CHI.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\MulitCheckBox.resx">
+      <DependentUpon>MulitCheckBox.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\MulitTextBox.resx">
+      <DependentUpon>MulitTextBox.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\MulitTextValue.resx">
+      <DependentUpon>MulitTextValue.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Themes\Theme_Global\Skin_Global.skin" />
+    <Content Include="BankAccount.aspx" />
+    <Content Include="CompletedEnrolment.aspx" />
+    <Content Include="ConfirmDetails.aspx" />
+    <Content Include="CSS\comboBoxStyle.css" />
+    <Content Include="CSS\CommonStyle.css" />
+    <Content Include="CSS\DialogStyle.css" />
+    <Content Include="Disclaimer.aspx" />
+    <Content Include="En\error.aspx" />
+    <Content Include="En\index.aspx" />
+    <Content Include="En\invalidlink.aspx" />
+    <Content Include="En\sessiontimeout.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\banner\banner_onlineEnrol.png" />
+    <Content Include="Images\banner\banner_onlineEnrol_tw.png" />
+    <Content Include="Images\banner\banner_paperEnrol.png" />
+    <Content Include="Images\banner\banner_paperEnrol_tw.png" />
+    <Content Include="Images\banner\banner_sp_enrolment.png" />
+    <Content Include="Images\banner\banner_sp_enrolment_tw.png" />
+    <Content Include="Images\button\btn_back.png" />
+    <Content Include="Images\button\btn_back_tw.png" />
+    <Content Include="Images\button\btn_cancel.png" />
+    <Content Include="Images\button\btn_cancel_tw.png" />
+    <Content Include="Images\button\btn_clear.png" />
+    <Content Include="Images\button\btn_clear_tw.png" />
+    <Content Include="Images\button\btn_close.png" />
+    <Content Include="Images\button\btn_close_tw.png" />
+    <Content Include="Images\button\btn_complete.png" />
+    <Content Include="Images\button\btn_complete_tw.png" />
+    <Content Include="Images\button\btn_confirm.png" />
+    <Content Include="Images\button\btn_confirm_D.png" />
+    <Content Include="Images\button\btn_confirm_D_tw.png" />
+    <Content Include="Images\button\btn_confirm_tw.png" />
+    <Content Include="Images\button\btn_copy.png" />
+    <Content Include="Images\button\btn_copy_D.png" />
+    <Content Include="Images\button\btn_copy_D_tw.png" />
+    <Content Include="Images\button\btn_copy_tw.png" />
+    <Content Include="Images\button\btn_DemoTestingCase.png" />
+    <Content Include="Images\button\btn_download.png" />
+    <Content Include="Images\button\btn_download_D.png" />
+    <Content Include="Images\button\btn_download_D_tw.png" />
+    <Content Include="Images\button\btn_download_tw.png" />
+    <Content Include="Images\button\btn_EnrollNow.png" />
+    <Content Include="Images\button\btn_EnrollNow_tw.png" />
+    <Content Include="Images\button\btn_newpractice.png" />
+    <Content Include="Images\button\btn_newpractice_tw.png" />
+    <Content Include="Images\button\btn_next.png" />
+    <Content Include="Images\button\btn_next_tw.png" />
+    <Content Include="Images\button\btn_no.png" />
+    <Content Include="Images\button\btn_no_tw.png" />
+    <Content Include="Images\button\btn_print.png" />
+    <Content Include="Images\button\btn_print_tw.png" />
+    <Content Include="Images\button\btn_proceed.png" />
+    <Content Include="Images\button\btn_proceed_D.png" />
+    <Content Include="Images\button\btn_proceed_D_tw.png" />
+    <Content Include="Images\button\btn_proceed_tw.png" />
+    <Content Include="Images\button\btn_select.png" />
+    <Content Include="Images\button\btn_select_tw.png" />
+    <Content Include="Images\button\btn_skip.png" />
+    <Content Include="Images\button\btn_skip_tw.png" />
+    <Content Include="Images\button\btn_yes.png" />
+    <Content Include="Images\button\btn_yes_tw.png" />
+    <Content Include="Images\button\icon_button\btn_clearSearch.png" />
+    <Content Include="Images\button\icon_button\btn_FAQs.png" />
+    <Content Include="Images\button\icon_button\btn_FAQs_tw.png" />
+    <Content Include="Images\button\icon_button\btn_search.png" />
+    <Content Include="Images\button\icon_button\clearSearch.png" />
+    <Content Include="Images\button\icon_button\search.png" />
+    <Content Include="Images\button\small_button\btn_add.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch_D.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch_D_tw.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch_tw.png" />
+    <Content Include="Images\button\small_button\btn_add_tw.png" />
+    <Content Include="Images\button\small_button\btn_clearAddressSearch.png" />
+    <Content Include="Images\button\small_button\btn_clearAddressSearch_tw.png" />
+    <Content Include="Images\button\small_button\btn_copy.png" />
+    <Content Include="Images\button\small_button\btn_copy_D.png" />
+    <Content Include="Images\button\small_button\btn_copy_tw.png" />
+    <Content Include="Images\button\small_button\btn_copy_tw_D.png" />
+    <Content Include="Images\button\small_button\btn_delete.png" />
+    <Content Include="Images\button\small_button\btn_delete_tw.png" />
+    <Content Include="Images\dialog\alpha.png" />
+    <Content Include="Images\dialog\bottom-left.png" />
+    <Content Include="Images\dialog\bottom-mid.png" />
+    <Content Include="Images\dialog\bottom-right.png" />
+    <Content Include="Images\dialog\bottom_content.gif" />
+    <Content Include="Images\dialog\left.png" />
+    <Content Include="Images\dialog\right.png" />
+    <Content Include="Images\dialog\spacer.gif" />
+    <Content Include="Images\dialog\top-left.png" />
+    <Content Include="Images\dialog\top-mid.png" />
+    <Content Include="Images\dialog\top-right.png" />
+    <Content Include="Images\master\banner_header.jpg" />
+    <Content Include="Images\master\banner_header_eform.jpg" />
+    <Content Include="Images\master\banner_header_tw.jpg" />
+    <Content Include="Images\master\body_background.jpg" />
+    <Content Include="Images\master\language_background.png" />
+    <Content Include="Images\others\acrobat.png" />
+    <Content Include="Images\others\arrow.png" />
+    <Content Include="Images\others\arrowblank.png" />
+    <Content Include="Images\others\arrowdown.png" />
+    <Content Include="Images\others\arrowup.png" />
+    <Content Include="Images\others\bg.png" />
+    <Content Include="Images\others\btn_swine.jpg" />
+    <Content Include="Images\others\button_contactus.png" />
+    <Content Include="Images\others\button_contactus_tw.png" />
+    <Content Include="Images\others\button_FAQs.png" />
+    <Content Include="Images\others\button_FAQs_tw.png" />
+    <Content Include="Images\others\circle_blue.png" />
+    <Content Include="Images\others\circle_red.png" />
+    <Content Include="Images\others\doc.png" />
+    <Content Include="Images\others\DocToRead\btn_importantdocumenttoberead.gif" />
+    <Content Include="Images\others\DocToRead\btn_importantdocumenttoberead_tw.gif" />
+    <Content Include="Images\others\enrolment.png" />
+    <Content Include="Images\others\enrolment_tw.png" />
+    <Content Include="Images\others\icon_caution.gif" />
+    <Content Include="Images\others\information.png" />
+    <Content Include="Images\others\page_edit.png" />
+    <Content Include="Images\others\pleaseWait.gif" />
+    <Content Include="Images\others\pleaseWait_tw.gif" />
+    <Content Include="Images\others\printer.png" />
+    <Content Include="Images\others\printer_small.png" />
+    <Content Include="Images\others\questionMark.png" />
+    <Content Include="Images\others\spinner.gif" />
+    <Content Include="Images\others\tick.png" />
+    <Content Include="Images\Printout\eHealthLogo.png" />
+    <Content Include="Images\Printout\HALogo.gif" />
+    <Content Include="Images\Tab\highlightTab.png" />
+    <Content Include="Images\Tab\unhighlightTab.png" />
+    <Content Include="index.htm" />
+    <Content Include="JS\Common.js" />
+    <Content Include="main.aspx" />
+    <Content Include="MedicalOrganization.aspx" />
+    <Content Include="PCDEnrolmentForm.aspx" />
+    <Content Include="PersonalPacticulars.aspx" />
+    <Content Include="Practice.aspx" />
+    <Content Include="PrintOut\DH_VSS\DH_VSS_RV.aspx" />
+    <Content Include="PrintOut\DH_VSS_CHI\DH_VSS_CHI_RV.aspx" />
+    <Content Include="reconnect.aspx" />
+    <Content Include="redirectinvalidlink.aspx" />
+    <Content Include="SchemeSelection.aspx" />
+    <Content Include="thankyou.aspx" />
+    <Content Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx" />
+    <Content Include="Zh\error.aspx" />
+    <Content Include="Zh\index.aspx" />
+    <Content Include="Zh\invalidlink.aspx" />
+    <Content Include="Zh\InvalidOS.aspx" />
+    <Content Include="Zh\sessiontimeout.aspx" />
+    <None Include="Doc\AppendixA.pdf" />
+    <None Include="Doc\AppendixA_CHI.pdf" />
+    <None Include="Doc\AppendixB.pdf" />
+    <None Include="Doc\AppendixB_CHI.pdf" />
+    <None Include="Doc\AppendixC.pdf" />
+    <None Include="Doc\AppendixC_CHI.pdf" />
+    <None Include="Doc\AppendixF.pdf" />
+    <None Include="Doc\AppendixF_CHI.pdf" />
+    <Content Include="Doc\AppendixJ.pdf" />
+    <Content Include="Doc\AppendixK.pdf" />
+    <None Include="Doc\CoveringNotes.pdf" />
+    <None Include="Doc\CoveringNotes_CHI.pdf" />
+    <Content Include="Doc\EasyGuide.pps" />
+    <Content Include="Doc\EasyGuide_CHI.pps" />
+    <None Include="Doc\EnrolmentGuide.pdf" />
+    <None Include="Doc\EnrolmentGuide_CHI.pdf" />
+    <Content Include="MasterPage.Master" />
+    <Content Include="Doc\TokenSharingConsent.pdf" />
+    <Content Include="Doc\TokenSharingConsent_CHI.pdf" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.PCD\Common.PCD.vbproj">
+      <Project>{C77201B9-E809-4CAE-8A03-48CEE3F4BAD1}</Project>
+      <Name>Common.PCD</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomControls\CustomControls.vbproj">
+      <Project>{EBE0EADC-F5A6-4EAF-B395-127B0EDF82F7}</Project>
+      <Name>CustomControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebControlCaptcha\WebControlCaptcha.vbproj">
+      <Project>{03D1C790-162A-4AC0-B33B-634B263C0A63}</Project>
+      <Name>WebControlCaptcha</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49646</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost/eForm</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost/eForm_Dev</IISAppRootUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

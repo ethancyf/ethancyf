@@ -1,0 +1,3235 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<!-- Previous Season -->
+	<!-- Age LT 9,	001-0910 x 1-->
+	<patient>
+		<id>C1110002</id>
+		<name>CHAN, TAI MAN</name>
+		<sex>M</sex>
+		<DOB>08/04/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>+</id>
+		<name>CHAN, HIU YING</name>
+		<sex>M</sex>
+		<DOB>11/06/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>02/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>United Christian Hospital</location>
+			<location_chinese>基督教聯合醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1112226</id>
+		<name>CHAN, KA HO</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>03/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1113338</id>
+		<name>CHENG, SING WANG</name>
+		<sex>F</sex>
+		<DOB>30/01/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C111444A</id>
+		<name>CHOI, WING CHAU</name>
+		<sex>M</sex>
+		<DOB>25/12/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>06/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tseung Kwan O Hospital</location>
+			<location_chinese>將軍澳醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1115551</id>
+		<name>CHOW, HIU YAN</name>
+		<sex>F</sex>
+		<DOB>26/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>08/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1116663</id>
+		<name>HON, FONG</name>
+		<sex>M</sex>
+		<DOB>15/05/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>03/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tai Po Hospital</location>
+			<location_chinese>大埔醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1117775</id>
+		<name>HUNG, HAU PONG</name>
+		<sex>F</sex>
+		<DOB>20/09/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Pok Oi Hospital</location>
+			<location_chinese>博愛醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1118887</id>
+		<name>HUNG, KAM KONG</name>
+		<sex>M</sex>
+		<DOB>10/11/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>21/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C1119999</id>
+		<name>IP, SUNG LAI</name>
+		<sex>M</sex>
+		<DOB>16/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>23/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2225555</id>
+		<name>KWOK, KA FUNG</name>
+		<sex>F</sex>
+		<DOB>21/06/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>27/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2222238</id>
+		<name>KWONG, KA HO</name>
+		<sex>M</sex>
+		<DOB>08/10/2002</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2223331</id>
+		<name>LAI, TSEN MAN</name>
+		<sex>F</sex>
+		<DOB>09/11/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>19/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2224443</id>
+		<name>LAM, SIU YEUNG</name>
+		<sex>M</sex>
+		<DOB>10/02/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1280007</id>
+		<name>CHAN, TAI MAN</name>
+		<sex>M</sex>
+		<DOB>08/04/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1270001</id>
+		<name>CHAN, TAI MAN</name>
+		<sex>M</sex>
+		<DOB>05/04/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1260006</id>
+		<name>CHAN, TAI MAN</name>
+		<sex>M</sex>
+		<DOB>08/04/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age LT 9,	001-0910 x 2-->
+	<patient>
+		<id>C2220006</id>
+		<name>CHAN, SIU MING</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2226667</id>
+		<name>LAU, SIU LUN</name>
+		<sex>F</sex>
+		<DOB>20/09/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>TWGHs Wong Tai Sin Hospital</location>
+			<location_chinese>東華三院黃大仙醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2227779</id>
+		<name>LAU, WAI PING</name>
+		<sex>M</sex>
+		<DOB>25/12/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2228880</id>
+		<name>LEUNG, CHUNG HO</name>
+		<sex>M</sex>
+		<DOB>21/06/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Pok Oi Hospital</location>
+			<location_chinese>博愛醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2229992</id>
+		<name>LIN, CHUN CHING</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tuen Mun Hospital</location>
+			<location_chinese>屯門醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3331111</id>
+		<name>LO, HO CHEONG</name>
+		<sex>F</sex>
+		<DOB>15/05/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3332223</id>
+		<name>LO, SHUK YAN</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3333335</id>
+		<name>LUI, HOI WA</name>
+		<sex>M</sex>
+		<DOB>10/11/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3334447</id>
+		<name>MA, SUM YEE</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>02/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3335559</id>
+		<name>MAK, CHUNG PAN</name>
+		<sex>M</sex>
+		<DOB>20/09/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tseung Kwan O Hospital</location>
+			<location_chinese>將軍澳醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3336660</id>
+		<name>MUNG, SAU LAI</name>
+		<sex>F</sex>
+		<DOB>25/12/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>TWGHs Wong Tai Sin Hospital</location>
+			<location_chinese>東華三院黃大仙醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3337772</id>
+		<name>NG, LAM YAN</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Queen Elizabeth Hospital</location>
+			<location_chinese>伊利沙伯醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Queen Elizabeth Hospital</location>
+			<location_chinese>伊利沙伯醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3338884</id>
+		<name>NG, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>11/06/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1290002</id>
+		<name>CHAN, SIU MING</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1300008</id>
+		<name>CHAN, SIU MING</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1310003</id>
+		<name>CHAN, SIU MING</name>
+		<sex>M</sex>
+		<DOB>01/05/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>13/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Sai Ying Pun Clinic (Family Medicine)</location>
+			<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 9,	001-0910 x 1-->
+	<patient>
+		<id>C333000A</id>
+		<name>NG, SZE WING</name>
+		<sex>F</sex>
+		<DOB>01/01/2001</DOB>
+		<exactdob>YYYY</exactdob>
+		<Vaccination>
+			<service_date>30/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Queen Elizabeth Hospital</location>
+			<location_chinese>伊利沙伯醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3340005</id>
+		<name>MUNG, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>20/09/1930</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>30/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Queen Elizabeth Hospital</location>
+			<location_chinese>伊利沙伯醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C3350000</id>
+		<name>YAN, MEI YEE</name>
+		<sex>F</sex>
+		<DOB>10/11/1998</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>30/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Queen Elizabeth Hospital</location>
+			<location_chinese>伊利沙伯醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 2,	001-0910 x 2-->
+	<patient>
+		<id>C4440003</id>
+		<name>WONG, CHUN YIN</name>
+		<sex>M</sex>
+		<DOB>27/02/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>05/06/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4450009</id>
+		<name>LUI, LAM YAN</name>
+		<sex>M</sex>
+		<DOB>27/03/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/04/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>05/06/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 2,	001-0910 x 1-->
+	<patient>
+		<id>C4460004</id>
+		<name>HUNG, CHU MING</name>
+		<sex>M</sex>
+		<DOB>22/012/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/06/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Yan Chai Hospital</location>
+			<location_chinese>仁濟醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 65, 001-0910 x 1-->
+	<patient>
+		<id>E1110008</id>
+		<name>CHEUNG, WING KWAN</name>
+		<sex>M</sex>
+		<DOB>13/11/1928</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>17/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>United Christian Hospital</location>
+			<location_chinese>基督教聯合醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E1120003</id>
+		<name>CHOI, HON FONG</name>
+		<sex>M</sex>
+		<DOB>22/12/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>17/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>United Christian Hospital</location>
+			<location_chinese>基督教聯合醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E1130009</id>
+		<name>POON, CHUN MING</name>
+		<sex>M</sex>
+		<DOB>11/01/1921</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>17/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>United Christian Hospital</location>
+			<location_chinese>基督教聯合醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E1130017</id>
+		<name>POON, CHUN MING</name>
+		<sex>M</sex>
+		<DOB>11/01/1921</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>17/05/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>United Christian Hospital</location>
+			<location_chinese>基督教聯合醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1320009</id>
+		<name>POON, KA HO</name>
+		<sex>F</sex>
+		<DOB>16/08/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1330004</id>
+		<name>POON, KA HO</name>
+		<sex>F</sex>
+		<DOB>16/08/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 2,	003-0003 x 1-->
+	<patient>
+		<id>C5550007</id>
+		<name>LI, PUI YU</name>
+		<sex>F</sex>
+		<DOB>03/01/2008</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>TWGHs Wong Tai Sin Hospital</location>
+			<location_chinese>東華三院黃大仙醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C5560002</id>
+		<name>MA, CHEUK FAI</name>
+		<sex>M</sex>
+		<DOB>12/02/2002</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>TWGHs Wong Tai Sin Hospital</location>
+			<location_chinese>東華三院黃大仙醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C5570008</id>
+		<name>YIP, HIU YING</name>
+		<sex>F</sex>
+		<DOB>23/09/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>TWGHs Wong Tai Sin Hospital</location>
+			<location_chinese>東華三院黃大仙醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 65,	003-0003 x 1-->
+	<patient>
+		<id>E2220001</id>
+		<name>YIP, CHEUK KIT</name>
+		<sex>M</sex>
+		<DOB>01/01/1915</DOB>
+		<exactdob>YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tseung Kwan O Hospital</location>
+			<location_chinese>將軍澳醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E2230007</id>
+		<name>LIN, CHI HO</name>
+		<sex>M</sex>
+		<DOB>01/01/1921</DOB>
+		<exactdob>YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tseung Kwan O Hospital</location>
+			<location_chinese>將軍澳醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E2240002</id>
+		<name>HUNG, HAU PONG</name>
+		<sex>M</sex>
+		<DOB>1926</DOB>
+		<exactdob>YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tseung Kwan O Hospital</location>
+			<location_chinese>將軍澳醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- New Season -->
+	<!-- Age LT 9,	001-1011 x 1-->
+	<patient>
+		<id>C6661112</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6670006</id>
+		<name>MA, HOK CHING</name>
+		<sex>M</sex>
+		<DOB>22/06/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>03/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6680001</id>
+		<name>LIN, MEI YEE</name>
+		<sex>M</sex>
+		<DOB>18/12/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>02/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661120</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661139</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661147</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661155</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661163</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661171</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C666118A</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661198</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661201</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C666121A</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6661228</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age LT 9,	001-1011 x 2-->
+	<patient>
+		<id>C7770004</id>
+		<name>HO, TSZ WAH</name>
+		<sex>F</sex>
+		<DOB>23/04/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>02/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C7780069</id>
+		<name>CHOI, HIU YAN</name>
+		<sex>F</sex>
+		<DOB>23/12/2002</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>02/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C7790005</id>
+		<name>TAM, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>22/04/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>12/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C7790013</id>
+		<name>TAM, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>22/04/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>12/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C7790021</id>
+		<name>TAM, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>22/04/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>12/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C779003A</id>
+		<name>TAM, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>22/04/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>12/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C7790048</id>
+		<name>TAM, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>22/04/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>12/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C7790056</id>
+		<name>TAM, SIN TUNG</name>
+		<sex>F</sex>
+		<DOB>22/04/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>12/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>11/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 9,	001-1011 x 1-->
+	<patient>
+		<id>C8880008</id>
+		<name>LEUNG, HO WING</name>
+		<sex>M</sex>
+		<DOB>28/10/1999</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C8870002</id>
+		<name>TAM, KAM CHUN</name>
+		<sex>M</sex>
+		<DOB>21/11/1980</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>04/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C8860007</id>
+		<name>YAN, TSZ HO</name>
+		<sex>M</sex>
+		<DOB>12/10/1971</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>20/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Shatin Hospital</location>
+			<location_chinese>沙田醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 2,	001-1011 x 1-->
+	<patient>
+		<id>C9990001</id>
+		<name>WONG, HO YI</name>
+		<sex>F</sex>
+		<DOB>15/12/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>07/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tuen Mun Hospital</location>
+			<location_chinese>屯門醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C9900002</id>
+		<name>YAN, HOK CHING</name>
+		<sex>M</sex>
+		<DOB>25/11/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>07/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tuen Mun Hospital</location>
+			<location_chinese>屯門醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C9910008</id>
+		<name>MA, CHU MING</name>
+		<sex>M</sex>
+		<DOB>05/12/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>07/08/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tuen Mun Hospital</location>
+			<location_chinese>屯門醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 65, 001-1011 x 1-->
+	<patient>
+		<id>E3330005</id>
+		<name>TONG, KA TING</name>
+		<sex>F</sex>
+		<DOB>26/05/1933</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E3340000</id>
+		<name>YIP, YAT HIM</name>
+		<sex>M</sex>
+		<DOB>26/07/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E3350006</id>
+		<name>CHOI, SO NGAN</name>
+		<sex>M</sex>
+		<DOB>06/05/1911</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E3350014</id>
+		<name>CHOI, SO NGAN</name>
+		<sex>M</sex>
+		<DOB>06/05/1911</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C6662224</id>
+		<name>LEE, WAI LEUNG</name>
+		<sex>M</sex>
+		<DOB>18/11/2003</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1240005</id>
+		<name>CHOI, SO NGAN</name>
+		<sex>M</sex>
+		<DOB>06/05/1911</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>K1250000</id>
+		<name>CHOI, SO NGAN</name>
+		<sex>M</sex>
+		<DOB>06/05/1911</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 2,	003-0003 x 1-->
+	<patient>
+		<id>C2221118</id>
+		<name>MONG, HO YAN</name>
+		<sex>F</sex>
+		<DOB>10/09/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>18/07/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tai Po Hospital</location>
+			<location_chinese>大埔醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2230001</id>
+		<name>WONG, SUNG LAI</name>
+		<sex>F</sex>
+		<DOB>17/12/2001</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>18/07/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tai Po Hospital</location>
+			<location_chinese>大埔醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C2240007</id>
+		<name>YAN, KA FUNG</name>
+		<sex>F</sex>
+		<DOB>11/09/2007</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>18/07/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tai Po Hospital</location>
+			<location_chinese>大埔醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 65,	003-0003 x 1-->
+	<patient>
+		<id>E4440009</id>
+		<name>IP, KAM WA</name>
+		<sex>M</sex>
+		<DOB>05/06/1927</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>18/08/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Pok Oi Hospital</location>
+			<location_chinese>博愛醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E4450004</id>
+		<name>YIP, SIU LUN</name>
+		<sex>M</sex>
+		<DOB>05/06/1927</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>18/08/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Pok Oi Hospital</location>
+			<location_chinese>博愛醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E446000A</id>
+		<name>LIN, WING CHAU</name>
+		<sex>M</sex>
+		<DOB>05/06/1927</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>18/08/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Pok Oi Hospital</location>
+			<location_chinese>博愛醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Previous & New Season -->
+	<!-- Age LT 9,	001-0910 x 1, 001-1011 x 1-->
+	<patient>
+		<id>C4441115</id>
+		<name>MAK, HO MING</name>
+		<sex>M</sex>
+		<DOB>12/03/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4450009</id>
+		<name>TAM, MEI YEE</name>
+		<sex>M</sex>
+		<DOB>12/02/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460004</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460012</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460020</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460039</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460047</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460055</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460063</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id></id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460071</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C446008A</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460098</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C4460101</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C446011A</id>
+		<name>WONG, WAI LAM</name>
+		<sex>M</sex>
+		<DOB>12/08/2006</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age LT 9,	001-0910 x 2, 001-1011 x 1-->
+	<patient>
+		<id>C5551119</id>
+		<name>SO, KA BO</name>
+		<sex>F</sex>
+		<DOB>29/05/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/03/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C5552220</id>
+		<name>SO, KA BO</name>
+		<sex>F</sex>
+		<DOB>29/05/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/03/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C5510005</id>
+		<name>POON, SIU YEUNG</name>
+		<sex>M</sex>
+		<DOB>29/05/2005</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/03/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>C5520000</id>
+		<name>YAN, SHUK YAN</name>
+		<sex>M</sex>
+		<DOB>29/05/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/03/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>29/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 65,	001-0910 x 1, 001-1011 x 1-->
+	<patient>
+		<id>E5550002</id>
+		<name>MA, PUI SHAN</name>
+		<sex>F</sex>
+		<DOB>16/06/1929</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>19/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E5560008</id>
+		<name>WONG, KAM WA</name>
+		<sex>F</sex>
+		<DOB>11/12/1910</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>19/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E5570003</id>
+		<name>POON, KA HO</name>
+		<sex>F</sex>
+		<DOB>16/08/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>19/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E5570011</id>
+		<name>POON, KA HO</name>
+		<sex>F</sex>
+		<DOB>16/08/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>19/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E557002A</id>
+		<name>POON, KA HO</name>
+		<sex>F</sex>
+		<DOB>16/08/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>19/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>E5570038</id>
+		<name>POON, KA HO</name>
+		<sex>F</sex>
+		<DOB>16/08/1923</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>11/12/2009</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tung Wah Eastern Hospital</location>
+			<location_chinese>東華東院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>19/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Tang Shiu Kin Hospital</location>
+			<location_chinese>鄧肇堅醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	
+	<!-- Reference Record -->
+	<!-- Age GE 2,	003-0003 x 1-->
+	<patient>
+		<id>R1110003</id>
+		<name>LI, KAM WA</name>
+		<sex>M</sex>
+		<DOB>03/01/2008</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>TWGHs Wong Tai Sin Hospital</location>
+			<location_chinese>東華三院黃大仙醫院</location_chinese>
+			<onsite>N</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age LT 9,	001-0910 x 1, 001-1011 x 1-->
+	<patient>
+		<id>R1120009</id>
+		<name>MAK, MEI YEE</name>
+		<sex>F</sex>
+		<DOB>12/03/2004</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>05/01/2010</service_date>
+			<vaccine_code>001-0910</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>N</onsite>
+		</Vaccination>
+		<Vaccination>
+			<service_date>25/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Alice Ho Miu Ling Nethersole Hospital</location>
+			<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+			<onsite>N</onsite>
+		</Vaccination>
+	</patient>
+	<!-- Age GE 65, 001-1011 x 1-->
+	<patient>
+		<id>R1130004</id>
+		<name>TONG, HO MING</name>
+		<sex>M</sex>
+		<DOB>26/05/1933</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>22/07/2010</service_date>
+			<vaccine_code>001-1011</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Prince of Wales Hospital</location>
+			<location_chinese>威爾斯親王醫院</location_chinese>
+			<onsite>N</onsite>
+		</Vaccination>
+	</patient>
+
+
+
+	<!-- Others Testing -->
+	<patient>
+		<id>L003000A</id>
+		<name>CHAN, TAI MAN</name>
+		<sex>M</sex>
+		<DOB>01/01/1920</DOB>
+		<exactdob>YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/05/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+	<patient>
+		<id>UP8153062</id>
+		<name>MAK, MANGO</name>
+		<sex>M</sex>
+		<DOB>01/07/1932</DOB>
+		<exactdob>YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/05/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+
+	<patient>
+		<id>C2060556</id>
+		<name>CHAN, LOK</name>
+		<sex>F</sex>
+		<DOB>12/12/1945</DOB>
+		<exactdob>DD/MM/YYYY</exactdob>
+		<Vaccination>
+			<service_date>01/05/2010</service_date>
+			<vaccine_code>003-0003</vaccine_code>
+			<vaccine_desc></vaccine_desc>
+			<vaccine_desc_chinese></vaccine_desc_chinese>
+			<dose_seq_code>000</dose_seq_code>
+			<dose_seq_desc></dose_seq_desc>
+			<dose_seq_desc_chinese></dose_seq_desc_chinese>
+			<provider>HA</provider>
+			<location>Kowloon Hospital</location>
+			<location_chinese>九龍醫院</location_chinese>
+			<onsite>Y</onsite>
+		</Vaccination>
+	</patient>
+</root>

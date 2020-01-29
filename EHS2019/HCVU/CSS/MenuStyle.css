@@ -1,0 +1,138 @@
+﻿/***** Menu Style *****/
+.TopGroup
+{
+	color: #666666;
+	font-family: Arial;
+	font-size: 14px;
+	background-image: url(../Images/menu/menu_background.png);
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-bottom: #cccccc 1px solid;
+}
+
+.MenuGroup
+{
+	cursor: hand;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-bottom: #cccccc 1px solid;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	background-color: #ffffff;
+}
+
+.TopMenuItem
+{
+	background-color: transparent;
+	color: #666666;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: pointer;
+	border-right: #ffffff 5px solid;
+	border-top: #ffffff 3px solid;
+	border-left: #ffffff 5px solid;
+	border-bottom: #ffffff 3px solid;
+}
+
+.TopMenuItemHover 
+{
+	background-color: transparent;
+	color: #ff0000;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: pointer;
+	border-right: #ffffff 5px solid;
+	border-top: #ffffff 3px solid;
+	border-left: #ffffff 5px solid;
+	border-bottom: #ffffff 3px solid;
+}
+
+.DisabledTopMenuItem
+{
+	background-color: transparent;
+	color: #C0C0C0;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: default;
+	border-right: #ffffff 5px solid;
+	border-top: #ffffff 3px solid;
+	border-left: #ffffff 5px solid;
+	border-bottom: #ffffff 3px solid;
+}
+
+.DisabledTopMenuItemHover 
+{
+	background-color: transparent;
+	color: #C0C0C0;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: default;
+	border-right: #ffffff 5px solid;
+	border-top: #ffffff 3px solid;
+	border-left: #ffffff 5px solid;
+	border-bottom: #ffffff 3px solid;
+}
+
+.MenuItem
+{
+	cursor: hand;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+}
+
+.MenuItemHover
+{
+	cursor: hand;
+	background-image: url(../Images/menu/menu-item-middle-hover.png);
+	background-repeat: repeat-y;
+	color: #ff0000;
+}
+
+.MenuItemExpanded
+{
+	cursor: hand;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+}
+
+.MenuItemActive
+{
+	cursor: hand;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+}
+
+
+.DisabledMenuItem
+{
+	cursor: default;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	color: #C0C0C0;
+}
+
+.DisabledMenuItemHover
+{
+	cursor: default;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	color: #C0C0C0;
+}
+
+.DisabledMenuItemExpanded
+{
+	cursor: default;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	color: #C0C0C0;
+}
+
+.DisabledMenuItemActive
+{
+	cursor: default;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	color: #C0C0C0;
+}

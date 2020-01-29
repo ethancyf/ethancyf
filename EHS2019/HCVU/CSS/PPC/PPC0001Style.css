@@ -1,0 +1,311 @@
+﻿.ReportInfo_LabelWidth{
+    width: 220px !important;
+}
+
+/*UI - PPC_Numeric*/
+.PPC_Numeric_tr{
+    height: 30px !important;
+}
+
+.PPC_Numeric_LabelWidth{
+    width: 220px !important;
+}
+
+.PPC_Numeric_ValueWidth{
+    width: 660px !important;
+    vertical-align:top !important;
+}
+
+.PPC_Numeric_Textbox{
+    position:relative;
+    top:-4px;
+}
+
+.PPC_Numeric_Desc{
+    position:relative;
+    top:-4px;
+}
+
+.PPC_Numeric_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - HealthProfessionMultiple*/
+.HealthProfessionMultiple_tr{
+    height: 30px !important;
+}
+
+.HealthProfession_LabelWidth
+{
+    width: 220px !important;
+}
+
+.HealthProfession_ValueWidth{
+    width: 650px !important;
+    vertical-align:top !important;
+}
+
+.HealthProfession_ValueWidth_NoSelection {
+    width: 650px !important;
+    vertical-align:top !important;
+}
+
+.HealthProfession_td_01
+{
+    width: 150px !important;
+    vertical-align:top;
+}
+
+.HealthProfession_td_02
+{
+    width: 120px !important;
+    vertical-align:top;
+}
+
+.HealthProfession_td_03
+{
+    width: 380px !important;
+    vertical-align:top;
+}
+
+
+.HealthProfession_RadioButtonList tr td{
+    width:70px !important;
+}
+
+.HealthProfession_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.HealthProfession_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+.HealthProfession_BtnAfterRadioButtonList input
+{
+    vertical-align:top;
+}
+
+.HealthProfession_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - SchemeMultiple*/
+.SchemeMultiple_tr{
+    height: 30px !important;
+}
+
+.SchemeMultiple_LabelWidth
+{
+    width: 220px !important;
+}
+
+.SchemeMultiple_ValueWidth{
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.SchemeMultiple_ValueWidth_NoSelection {
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.SchemeMultiple_td_01
+{
+    width: 150px !important;
+    vertical-align:top;
+}
+
+.SchemeMultiple_td_02
+{
+    width: 120px !important;
+    vertical-align:top;
+}
+
+.SchemeMultiple_td_03
+{
+    width: 330px !important;
+    vertical-align:top;
+}
+
+
+.SchemeMultiple_RadioButtonList tr td{
+    width:70px !important;
+}
+
+.SchemeMultiple_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.SchemeMultiple_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+.SchemeMultiple_BtnAfterRadioButtonList input
+{
+    vertical-align:top;
+}
+
+.SchemeMultiple_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - DateType*/
+.DateType_tr{
+    height:30px !important;
+}
+
+.DateType_td_01 {
+    width:220px !important;
+    vertical-align:top !important;
+}
+
+.DateType_td_02 {
+    width:600px !important;
+    vertical-align:top !important;
+}
+
+.DateType_td_02_table tr td:first-child{
+    width:258px !important;
+    vertical-align:top !important;
+}
+
+.DateType_td_02_table tr td{
+    vertical-align:top !important;
+}
+
+.DateType_RadioButtonList tr td:first-child{
+    width:123px !important;
+}
+
+.DateType_RadioButtonList tr td{
+    width:135px;
+    vertical-align:top;
+}
+
+.DateType_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.DateType_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+    width:100px
+}
+
+.DateType_Alert{
+    position:relative;
+    left:2px;
+    top:-2px;
+}
+
+/*UI - TransStatusMultiple*/
+
+.TransStatusMultiple_tr{
+    height: 30px !important;
+}
+
+.TransStatusMultiple_LabelWidth
+{
+    width: 220px !important;
+}
+
+.TransStatusMultiple_ValueWidth{
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.TransStatusMultiple_ValueWidth_NoSelection {
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.TransStatusMultiple_td_01
+{
+    width: 150px !important;
+    vertical-align:top;
+}
+
+.TransStatusMultiple_td_02
+{
+    width: 120px !important;
+    vertical-align:top;
+}
+
+.TransStatusMultiple_td_03
+{
+    width: 330px !important;
+    vertical-align:top;
+}
+
+.TransStatusMultiple_RadioButtonList tr td{
+    width:70px;
+}
+
+.TransStatusMultiple_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.TransStatusMultiple_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+.TransStatusMultiple_BtnAfterRadioButtonList input{
+    vertical-align:top;
+}
+
+.TransStatusMultiple_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - DateFormat*/
+
+.FormatOfDate_RadioButtonList tr td{
+    width:120px;
+}
+
+.FormatOfDate_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.FormatOfDate_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+/*UI - CheckBox*/
+.CheckBox_Checkbox{
+    height:30px;
+}
+
+.CheckBox_Checkbox td{
+    vertical-align:top;
+}
+
+.CheckBox_Checkbox input {
+    position:relative;
+    left:-3px;
+    top:-2px;
+}

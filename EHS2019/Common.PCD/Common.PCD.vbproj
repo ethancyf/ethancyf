@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C77201B9-E809-4CAE-8A03-48CEE3F4BAD1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Common.PCD</RootNamespace>
+    <AssemblyName>Common.PCD</AssemblyName>
+    <MyType>Windows</MyType>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Common.PCD.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Common.PCD.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ComConfig\EnumConstant.vb" />
+    <Compile Include="ComFunction.vb" />
+    <Compile Include="ComObject\AuditLogBase.vb" />
+    <Compile Include="ComObject\AuditLogPCDCheckAccountStatus.vb" />
+    <Compile Include="ComObject\AuditLogPCDUploadEnrolInfo.vb" />
+    <Compile Include="ComObject\AuditLogInterface.vb" />
+    <Compile Include="ComObject\AuditLogPCDTransferPracticeInfo.vb" />
+    <Compile Include="ComObject\AuditLogPCDCreatePCDSPAcct.vb" />
+    <Compile Include="ComObject\AuditLogPCDCheckIsActiveSP.vb" />
+    <Compile Include="ComObject\AuditLogGetEHSPracticeScheme.vb" />
+    <Compile Include="ComObject\AuditLogPCDCheckAvailableForVerifiedEnrolment.vb" />
+    <Compile Include="ComObject\AuditLogPCDUploadVerifiedEnrolment.vb" />
+    <Compile Include="Component\PCDStatus\PCDStatusBLL.vb" />
+    <Compile Include="Component\PCDStatus\PCDStatusUpdaterQueueModel.vb" />
+    <Compile Include="EnumConstant.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PCDWebService.vb" />
+    <Compile Include="Printout\EnrolmentInformation\Component\Core.Designer.vb">
+      <DependentUpon>Core.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\Core.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\GovProg.Designer.vb">
+      <DependentUpon>GovProg.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\GovProg.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\GovProgText.Designer.vb">
+      <DependentUpon>GovProgText.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\GovProgText.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\Practice.Designer.vb">
+      <DependentUpon>Practice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\Practice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\PracticeInformation.Designer.vb">
+      <DependentUpon>PracticeInformation.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\PracticeInformation.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\GovProgList.Designer.vb">
+      <DependentUpon>GovProgList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\GovProgList.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\PracticeList.Designer.vb">
+      <DependentUpon>PracticeList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\PracticeList.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\Profession.Designer.vb">
+      <DependentUpon>Profession.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\Profession.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\ProfessionList.Designer.vb">
+      <DependentUpon>ProfessionList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\ProfessionList.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\TypeOfCMP.Designer.vb">
+      <DependentUpon>TypeOfCMP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\EnrolmentInformation\Component\TypeOfCMP.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\PrintoutHelper.vb" />
+    <Compile Include="WebService\Interface\BaseResult.vb" />
+    <Compile Include="WebService\Interface\PCDCheckAccountStatusResult.vb" />
+    <Compile Include="WebService\Interface\PCDUploadVerifiedEnrolmentResult.vb" />
+    <Compile Include="WebService\Interface\PCDCheckAvailableForVerifiedEnrolmentResult.vb" />
+    <Compile Include="WebService\Interface\EHSPracticeSchemeResult.vb" />
+    <Compile Include="WebService\Interface\PCDCheckIsActiveSPResult.vb" />
+    <Compile Include="WebService\Interface\PCDCreatePCDSPAcctResult.vb" />
+    <Compile Include="WebService\Interface\PCDTransferPracticeInfoResult.vb" />
+    <Compile Include="WebService\Interface\PCDUploadEnrolInfoResult.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDCheckAccountStatusRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDUploadVerifiedEnrolmentRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDCheckAvailableForVerifiedEnrolmentRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDCheckIsActiveSPRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDCreatePCDSPAcctRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDTransferPracticeInfoRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\PCDUploadEnrolInfoRequest.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\WSXmlGenerator.vb" />
+    <Compile Include="WebService\Proxy\PcdForEhsWS.vb" />
+    <Compile Include="WebService\Proxy\PCDInterface.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\Core.resx">
+      <DependentUpon>Core.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\GovProg.resx">
+      <DependentUpon>GovProg.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\GovProgText.resx">
+      <DependentUpon>GovProgText.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\Practice.resx">
+      <DependentUpon>Practice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\PracticeInformation.resx">
+      <DependentUpon>PracticeInformation.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\GovProgList.resx">
+      <DependentUpon>GovProgList.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\PracticeList.resx">
+      <DependentUpon>PracticeList.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\Profession.resx">
+      <DependentUpon>Profession.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\ProfessionList.resx">
+      <DependentUpon>ProfessionList.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\EnrolmentInformation\Component\TypeOfCMP.resx">
+      <DependentUpon>TypeOfCMP.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

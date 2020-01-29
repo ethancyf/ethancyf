@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameter>
+	<message_id>TEST</message_id>
+	<health_check>N</health_check>
+	<patient_list>
+		<patient_count>2</patient_count>
+		<patient>
+			<patient_id>1</patient_id>
+			<document_no> A2221112</document_no>
+			<document_type>HKID</document_type>
+			<name>CHEUNG, MAN KIT</name>
+			<sex>M</sex>
+			<dob>23/10/1930</dob>
+			<dob_format>DD/MM/YYYY</dob_format>
+		</patient>
+		<patient>
+			<patient_id>2</patient_id>
+			<document_no> A6804300</document_no>
+			<document_type>HKID</document_type>
+			<name>CHAN, TAI MAN</name>
+			<sex>M</sex>
+			<dob>16/09/2009</dob>
+			<dob_format>DD/MM/YYYY</dob_format>
+		</patient>
+	</patient_list>
+	<vaccine>
+		<vaccine_count>0</vaccine_count>
+	</vaccine>
+	<injection_date_start/>
+	<injection_date_end />
+	<request_system>CIMS</request_system>
+</parameter>
+
+

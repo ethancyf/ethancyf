@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<patientList>
+  <patient>
+    <patient_ID>CIMS_001</patient_ID>
+    <docType>ID</docType>
+    <docNo>U2433556</docNo>
+    <englishName>CHAN, TAI MAN</englishName>
+    <sex>M</sex>
+    <dob>21/06/2003</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_002</patient_ID>
+    <docType>ID</docType>
+    <docNo>AA2433554</docNo>
+    <englishName>LAM, HA MAY</englishName>
+    <sex>F</sex>
+    <dob>2001</dob>
+    <dobFlag>YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_003</patient_ID>
+    <docType>BC</docType>
+    <docNo>R1443576</docNo>
+    <englishName>WONG, KA HO</englishName>
+    <sex>M</sex>
+    <dob>06/2002</dob>
+    <dobFlag>MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_004</patient_ID>
+    <docType>BC</docType>
+    <docNo>AR1443579</docNo>
+    <englishName>TAI, CHI WAI</englishName>
+    <sex>F</sex>
+    <dob>27/01/2006</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_005</patient_ID>
+    <docType>EC</docType>
+    <docNo>Q3752972</docNo>
+    <englishName>MO, YAN SING</englishName>
+    <sex>M</sex>
+    <dob>03/04/1945</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_006</patient_ID>
+    <docType>EC</docType>
+    <docNo>AQ3752975</docNo>
+    <englishName>SIU, WAY LEE</englishName>
+    <sex>F</sex>
+    <dob>1944</dob>
+    <dobFlag>YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_007</patient_ID>
+    <docType>EC</docType>
+    <docNo>H11189380238</docNo>
+    <englishName>AU YEUNG, WA FAI</englishName>
+    <sex>M</sex>
+    <dob>06/1936</dob>
+    <dobFlag>MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_008</patient_ID>
+    <docType>AR</docType>
+    <docNo>AR201805001</docNo>
+    <englishName>SUNG, LEE KEN</englishName>
+    <sex>F</sex>
+    <dob>11/11/1988</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_009</patient_ID>
+    <docType>RE</docType>
+    <docNo>RE201805001</docNo>
+    <englishName>LEE, HO MA</englishName>
+    <sex>M</sex>
+    <dob>08/10/1966</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_010</patient_ID>
+    <docType>DI</docType>
+    <docNo>DI201805001</docNo>
+    <englishName>SZE-TO, NA NA</englishName>
+    <sex>F</sex>
+    <dob>29/01/1921</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_011</patient_ID>
+    <docType>OC</docType>
+    <docNo>OC201805001</docNo>
+    <englishName>YAM, SIU TONG</englishName>
+    <sex>M</sex>
+    <dob>09/02/1934</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_012</patient_ID>
+    <docType>OP</docType>
+    <docNo>OP201805001</docNo>
+    <englishName>KWAN, KA WAI</englishName>
+    <sex>F</sex>
+    <dob>01/11/1922</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_013</patient_ID>
+    <docType>OW</docType>
+    <docNo>OW201805001</docNo>
+    <englishName>LIU, CHEUNG TIN</englishName>
+    <sex>M</sex>
+    <dob>16/04/1949</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_014</patient_ID>
+    <docType>RP</docType>
+    <docNo>RP201805001</docNo>
+    <englishName>CHENG, WING IN</englishName>
+    <sex>F</sex>
+    <dob>02/01/1919</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_015</patient_ID>
+    <docType>TW</docType>
+    <docNo>TW201805001</docNo>
+    <englishName>TAI, WAN ONE</englishName>
+    <sex>M</sex>
+    <dob>07/01/1928</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_016</patient_ID>
+    <docType>ED</docType>
+    <docNo>ED201805001</docNo>
+    <englishName>SIN, CHI LUNG</englishName>
+    <sex>F</sex>
+    <dob>30/12/1923</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_017</patient_ID>
+    <docType>MD</docType>
+    <docNo>MD201805001</docNo>
+    <englishName>CHAN, HO NAM</englishName>
+    <sex>M</sex>
+    <dob>29/03/1926</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_018</patient_ID>
+    <docType>ID</docType>
+    <docNo>F3262444</docNo>
+    <englishName>THAI, KWOK YAN</englishName>
+    <sex>U</sex>
+    <dob>19/09/1934</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_019</patient_ID>
+    <docType>BC</docType>
+    <docNo>L8128637</docNo>
+    <englishName>NG, NAM LUI</englishName>
+    <sex>U</sex>
+    <dob>18/01/2004</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_020</patient_ID>
+    <docType>EC</docType>
+    <docNo>A1492783</docNo>
+    <englishName>MAK, DOU YAU</englishName>
+    <sex>U</sex>
+    <dob>16/03/2007</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+  <patient>
+    <patient_ID>CIMS_021</patient_ID>
+    <docType>ID</docType>
+    <docNo>L2019100</docNo>
+    <englishName>FAT, LAN ZA</englishName>
+    <sex>F</sex>
+    <dob>22/10/2013</dob>
+    <dobFlag>DD/MM/YYYY</dobFlag>
+  </patient>
+
+
+</patientList>

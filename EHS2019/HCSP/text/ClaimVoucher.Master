@@ -1,0 +1,66 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" Codebehind="ClaimVoucher.master.vb" Inherits="HCSP.ClaimVoucherMaster" EnableViewState="True" %>
+<%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc1" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">    
+    <title>E-Voucher System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+    <link href="../CSS/TextVersionStyle.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../JS/TextVersionCommon.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <!-- INT11-0041 HCSP Text only version layout fix [Start] -->
+                    <td>
+                        <asp:Label ID="lblTitle" runat="server" style="white-space:nowrap"></asp:Label>
+                    </td>
+                    <td align="right">  
+                        <table cellpadding="0" cellspacing="0">
+                        <tr>
+                        <td>
+                        <asp:Button ID="lnkbtnTradChinese" runat="server" Text="繁體" SkinID="TextOnlyVersionLinkButton" /><asp:Label ID="lblCurrentLanguageTradChinese" runat="server" Text="繁體"></asp:Label>
+                        </td>
+                        <td>
+                        <asp:Button ID="lnkbtnEnglish" runat="server" Text="English" SkinID="TextOnlyVersionLinkButton" /><asp:Label ID="lblCurrentLanguageEnglish" runat="server" Text="English"></asp:Label>
+                        </td>
+                        <td>
+                        <asp:Button ID="lnkbtnLogout" runat="server" Text="<%$ Resources:AlternateText, LogoutBtn %>" SkinID="TextOnlyVersionLinkButton" />
+                        </td>
+                        </tr>
+                         </table>      
+                    </td>
+                    <!-- INT11-0041 HCSP Text only version layout fix [End] -->
+                </tr>
+                <tr>
+                    <td colspan="2">
+                    <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
+                            
+                    <asp:TextBox ID="PageKey" runat="server" Style="display: none"/>
+                    
+                    <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="2">
+                        <asp:Panel ID="panMenu" runat="server">
+                        </asp:Panel>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background-color: silver;" valign="top" colspan="2">
+                        <asp:Label ID="lblSubTitle" runat="server"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="2">
+                        <asp:Label ID="lblClaimVoucherStep" runat="server" CssClass="masterPageSteps"></asp:Label></td>
+                </tr>
+            </table>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,542 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Common</RootNamespace>
+    <AssemblyName>Common</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Common.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Common.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\CommonBin\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\Microsoft.Vbe.Interop.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\Microsoft.Web.Services3.dll</HintPath>
+    </Reference>
+    <Reference Include="OFFICE, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\OFFICE.DLL</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="rsaws-ci, Version=7.1.3979.37973, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\rsaws-ci.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="wnvsecurepdf, Version=2.0.2.0, Culture=neutral, PublicKeyToken=5b5f377bc08a4d32, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\wnvsecurepdf.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ComFunction\AccountSecurity.vb" />
+    <Compile Include="ComFunction\CommonJSFunction.vb" />
+    <Compile Include="ComFunction\DataSetFunction.vb" />
+    <Compile Include="ComFunction\Generator\AbstractXmlGenerator.vb" />
+    <Compile Include="ComFunction\Generator\XsltXmlGenerator.vb" />
+    <Compile Include="ComFunction\ParameterFunction.vb" />
+    <Compile Include="ComFunction\ReportFunction.vb" />
+    <Compile Include="ComFunction\XmlFunction.vb" />
+    <Compile Include="ComFunction\Xml\CommonXsltExtension.vb" />
+    <Compile Include="ComObject\AuditLogEntry.vb" />
+    <Compile Include="ComObject\AuditLogInfo.vb" />
+    <Compile Include="ComObject\AuditLogIVRSEntry.vb" />
+    <Compile Include="ComObject\AuditLogMaster.vb" />
+    <Compile Include="ComObject\AuditLogStartKey.vb" />
+    <Compile Include="ComObject\BaseAuditLogEntry.vb" />
+    <Compile Include="ComObject\CacheHandler.vb" />
+    <Compile Include="ComObject\Encrypt.vb" />
+    <Compile Include="ComObject\ErrorHandler.vb" />
+    <Compile Include="ComInterface\IWorkingData.vb" />
+    <Compile Include="ComObject\FunctionActionListModel.vb" />
+    <Compile Include="ComObject\IVRSConnectionMapping.vb" />
+    <Compile Include="ComObject\MasterPage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ComObject\ScheduleJobLogEntry.vb" />
+    <Compile Include="ComObject\SearchCriteria.vb" />
+    <Compile Include="ComObject\ObsoletedOSHandler.vb" />
+    <Compile Include="ComObject\SessionHandler.vb" />
+    <Compile Include="ComObject\SystemResource.vb" />
+    <Compile Include="ComObject\UserAgentInfoMapping.vb" />
+    <Compile Include="Component\AccessRight\AccessRightModel.vb" />
+    <Compile Include="Component\AccessRight\AccessRightModelCollection.vb" />
+    <Compile Include="Component\Address\AddressBLL.vb" />
+    <Compile Include="Component\Area\AreaBLL.vb" />
+    <Compile Include="Component\Area\AreaModel.vb" />
+    <Compile Include="Component\Area\AreaModelCollection.vb" />
+    <Compile Include="Component\BankAcct\BankAcctBLL.vb" />
+    <Compile Include="Component\BankAcct\BankAcctModel.vb" />
+    <Compile Include="Component\BankAcct\BankAcctModelCollection.vb" />
+    <Compile Include="Component\BaseBLL.vb" />
+    <Compile Include="Component\BaseModel.vb" />
+    <Compile Include="Component\CCCode\CCCodeBLL.vb" />
+    <Compile Include="Component\ClaimCategory\ClaimCategoryBLL.vb" />
+    <Compile Include="Component\ClaimCategory\ClaimCategoryModel.vb" />
+    <Compile Include="Component\ClaimCategory\ClaimCategoryModelCollection.vb" />
+    <Compile Include="Component\ClaimCategory\ClaimCategoryEligibilityModel.vb" />
+    <Compile Include="Component\ClaimCategory\ClaimCategoryEligibilityModelCollection.vb" />
+    <Compile Include="Component\ClaimRules\ClaimRulesBLL.vb" />
+    <Compile Include="Component\ClaimRules\ClaimRuleModel.vb" />
+    <Compile Include="Component\ClaimRules\ClaimRuleModelCollection.vb" />
+    <Compile Include="Component\ClaimRules\EligibilityExceptionRuleModelCollection.vb" />
+    <Compile Include="Component\ClaimRules\EligibilityExceptionRuleModel.vb" />
+    <Compile Include="Component\ClaimRules\EligibilityRuleModel.vb" />
+    <Compile Include="Component\ClaimRules\EligibilityRuleModelCollection.vb" />
+    <Compile Include="Component\ClaimRules\SubsidizeItemDetailRuleModel.vb" />
+    <Compile Include="Component\ClaimRules\SubsidizeItemDetailRuleModelCollection.vb" />
+    <Compile Include="Component\ClaimTrans\ClaimTransBLL.vb" />
+    <Compile Include="Component\CMSHealthCheck\CMSHealthCheckBLL.vb" />
+    <Compile Include="Component\DataEntryUser\DataEntryUserBLL.vb" />
+    <Compile Include="Component\DataEntryUser\DataEntryUserModel.vb" />
+    <Compile Include="Component\DHTransaction\DHClientModel.vb" />
+    <Compile Include="Component\DHTransaction\DHClientModelCollection.vb" />
+    <Compile Include="Component\DHTransaction\DHVaccineL3IdenModel.vb" />
+    <Compile Include="Component\DHTransaction\DHVaccineL2IdenModel.vb" />
+    <Compile Include="Component\DHTransaction\HKMTTVaccineSeasonMappingCollection.vb" />
+    <Compile Include="Component\DHTransaction\HKMTTVaccineMappingModel.vb" />
+    <Compile Include="Component\DHTransaction\HKMTTVaccineSeasonMappingModel.vb" />
+    <Compile Include="Component\DHTransaction\HKMTTVaccineMappingCollection.vb" />
+    <Compile Include="Component\DistrictBoard\DistrictBoardBLL.vb" />
+    <Compile Include="Component\DistrictBoard\DistrictBoardModel.vb" />
+    <Compile Include="Component\DistrictBoard\DistrictBoardModelCollection.vb" />
+    <Compile Include="Component\District\DistrictBLL.vb" />
+    <Compile Include="Component\District\DistrictModel.vb" />
+    <Compile Include="Component\District\DistrictModelCollection.vb" />
+    <Compile Include="Component\DocType\DocTypeBLL.vb" />
+    <Compile Include="Component\DocType\DocTypeModel.vb" />
+    <Compile Include="Component\DocType\DocTypeModelCollection.vb" />
+    <Compile Include="Component\DocType\SchemeDocTypeModel.vb" />
+    <Compile Include="Component\DocType\SchemeDocTypeModelCollection.vb" />
+    <Compile Include="Component\eHealthAccountDeathRecord\eHealthAccountDeathRecordBLL.vb" />
+    <Compile Include="Component\eHealthAccountDeathRecord\DeathRecordEntryModel.vb" />
+    <Compile Include="Component\eHealthAccountDeathRecord\DeathRecordEntryModelCollection.vb" />
+    <Compile Include="Component\EHSAccount\EHSAccountBLL.vb" />
+    <Compile Include="Component\Profession\ProfessionDHCModel.vb" />
+    <Compile Include="Component\Profession\ProfessionDHCModelCollection.vb" />
+    <Compile Include="Component\VoucherInfo\VoucherQuotaModelCollection.vb" />
+    <Compile Include="Component\VoucherInfo\VoucherQuotaModel.vb" />
+    <Compile Include="Component\EHSAccount\EHSAccountModel.vb" />
+    <Compile Include="Component\EHSAccount\EHSAccountModelCollection.vb" />
+    <Compile Include="Component\EHSAccount\EHSPersonalInformationDemographicModel.vb" />
+    <Compile Include="Component\EHSAccount\EHSPersonalInformationDemographicModelCollection.vb" />
+    <Compile Include="Component\EHSAccount\EHSPersonalInformationModel.vb" />
+    <Compile Include="Component\EHSAccount\EHSPersonalInformationModelCollection.vb" />
+    <Compile Include="Component\EHSAccount\SubsidizeWriteOffGeneratorQueue.vb" />
+    <Compile Include="Component\EHSClaimVaccine\EHSClaimVaccineModel.vb" />
+    <Compile Include="Component\EHSClaim\EHSClaimBLL.vb" />
+    <Compile Include="Component\EHSClaim\EHSClaimValidationBLL.vb" />
+    <Compile Include="Component\EHSClaim\EHSClaimValidationRuleModel.vb" />
+    <Compile Include="Component\EHSClaim\EHSClaimValidationRuleModelCollection.vb" />
+    <Compile Include="Component\EHSTransaction\EHSTransactionBLL.vb" />
+    <Compile Include="Component\EHSTransaction\EHSTransactionModel.vb" />
+    <Compile Include="Component\EHSTransaction\EHSTransactionModelCollection.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionAdditionalFieldModel.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionAdditionalFieldModelCollection.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionDetailModel.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionDetailModelCollection.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionDetailVaccineModel.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionDetailVaccineModelCollection.vb" />
+    <Compile Include="Component\EHSTransaction\TransactionInvalidationModel.vb" />
+    <Compile Include="Component\EHSTransaction\VaccinationBLL.vb" />
+    <Compile Include="Component\ERNProcessed\ERNProcessedBLL.vb" />
+    <Compile Include="Component\ERNProcessed\ERNProcessedModel.vb" />
+    <Compile Include="Component\ERNProcessed\ERNProcessedModelCollection.vb" />
+    <Compile Include="Component\DHTransaction\DHVaccineBLL.vb" />
+    <Compile Include="Component\DHTransaction\DHVaccineModel.vb" />
+    <Compile Include="Component\DHTransaction\DHVaccineModelCollection.vb" />
+    <Compile Include="Component\HATransaction\HAPatientModel.vb" />
+    <Compile Include="Component\HATransaction\HAPatientModelCollection.vb" />
+    <Compile Include="Component\School\SchoolBLL.vb" />
+    <Compile Include="Component\School\SchoolModel.vb" />
+    <Compile Include="Component\ProfessionVoucherQuota\ProfessionVoucherQuotaBLL.vb" />
+    <Compile Include="Component\ProfessionVoucherQuota\ProfessionVoucherQuotaModel.vb" />
+    <Compile Include="Component\ProfessionVoucherQuota\ProfessionVoucherQuotaModelCollection.vb" />
+    <Compile Include="Component\StudentFile\StudentFileBLL.vb" />
+    <Compile Include="Component\StudentFile\StudentFileEntryModel.vb" />
+    <Compile Include="Component\StudentFile\StudentFileEntryModelCollection.vb" />
+    <Compile Include="Component\StudentFile\StudentFileHeaderModel.vb" />
+    <Compile Include="Component\VoucherInfo\VoucherDetailModel.vb" />
+    <Compile Include="Component\VoucherInfo\VoucherDetailModelCollection.vb" />
+    <Compile Include="Component\VoucherInfo\VoucherInfoModel.vb" />
+    <Compile Include="Component\VoucherRefund\VoucherRefundBLL.vb" />
+    <Compile Include="Component\VoucherRefund\VoucherRefundModel.vb" />
+    <Compile Include="Component\ExchangeRate\ExchangeRateBLL.vb" />
+    <Compile Include="Component\ExchangeRate\ExchangeRateModel.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationBLL.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationModel.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationModelCollection.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationQueueModel.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationQueueModelCollection.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationUserControlModel.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Component\FileGeneration\FileGenerationUserControlModelCollection.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Component\FunctionInformation\FeatureOpenHourModel.vb" />
+    <Compile Include="Component\FunctionInformation\FeatureOpenHourModelCollection.vb" />
+    <Compile Include="Component\FunctionInformation\FunctionFeatureModel.vb" />
+    <Compile Include="Component\FunctionInformation\FunctionFeatureModelCollection.vb" />
+    <Compile Include="Component\FunctionInformation\FunctionInformationBLL.vb" />
+    <Compile Include="Component\InputPicker\InputVaccineModelCollection.vb" />
+    <Compile Include="Component\InputPicker\InputVaccineModel.vb" />
+    <Compile Include="Component\InputPicker\InputPickerModel.vb" />
+    <Compile Include="Component\Mapping\CodeMappingBLL.vb" />
+    <Compile Include="Component\Mapping\CodeMappingCollection.vb" />
+    <Compile Include="Component\Mapping\CodeMappingModel.vb" />
+    <Compile Include="Component\PracticeType_PCD\PracticeType_PCDBLL.vb" />
+    <Compile Include="Component\PracticeType_PCD\PracticeType_PCDModel.vb" />
+    <Compile Include="Component\PracticeType_PCD\PracticeType_PCDModelCollection.vb" />
+    <Compile Include="Component\ProfessionPracticeType\ProfessionPracticeTypeBLL.vb" />
+    <Compile Include="Component\ProfessionPracticeType\ProfessionPracticeTypeModel.vb" />
+    <Compile Include="Component\ProfessionPracticeType\ProfessionPracticeTypeModelCollection.vb" />
+    <Compile Include="Component\Profession\SubProfessionModelCollection.vb" />
+    <Compile Include="Component\Profession\SubProfessionModel.vb" />
+    <Compile Include="Component\RVPHomeList\RVPHomeListModel.vb" />
+    <Compile Include="Component\SchemeDetails\CrossSubsidizeRelationModel.vb" />
+    <Compile Include="Component\SchemeDetails\CrossSubsidizeRelationModelCollection.vb" />
+    <Compile Include="Component\Scheme\SubsidizeBLL.vb" />
+    <Compile Include="Component\Scheme\SchemeNoticeBLL.vb" />
+    <Compile Include="Component\Scheme\SchemeNoticeModel.vb" />
+    <Compile Include="Component\Scheme\SchemeNoticeModelCollection.vb" />
+    <Compile Include="Component\Scheme\SchemeSetupModel.vb" />
+    <Compile Include="Component\Scheme\SchemeSetupBLL.vb" />
+    <Compile Include="Component\Scheme\SchemeSetupModelCollection.vb" />
+    <Compile Include="Component\Scheme\SubsidizeFeeModel.vb" />
+    <Compile Include="Component\Scheme\SubsidizeFeeModelCollection.vb" />
+    <Compile Include="Component\EHSAccount\SubsidizeWriteOffBLL.vb" />
+    <Compile Include="Component\EHSAccount\SubsidizeWriteOffModel.vb" />
+    <Compile Include="Component\EHSAccount\SubsidizeWriteOffModelCollection.vb" />
+    <Compile Include="Component\SentOutMessage\MessageParameterModel.vb" />
+    <Compile Include="Component\SentOutMessage\MessageParameterModelCollection.vb" />
+    <Compile Include="Component\SentOutMessage\MessageTemplateModel.vb" />
+    <Compile Include="Component\SentOutMessage\SentOutMessageBLL.vb" />
+    <Compile Include="Component\SentOutMessage\SentOutMessageModel.vb" />
+    <Compile Include="Component\SentOutMessage\SentOutMsgRecipientModel.vb" />
+    <Compile Include="Component\SentOutMessage\SentOutMsgRecipientModelCollection.vb" />
+    <Compile Include="Component\ThirdParty\ThirdPartyBLL.vb" />
+    <Compile Include="Component\ThirdParty\ThirdPartyAdditionalFieldEnrolmentCollection.vb" />
+    <Compile Include="Component\ThirdParty\ThirdPartyAdditionalFieldEnrolmentModel.vb" />
+    <Compile Include="Component\ThirdParty\ThirdPartyEnrollRecordModel.vb" />
+    <Compile Include="Component\ThirdParty\ThirdPartyEnrollRecordModelCollection.vb" />
+    <Compile Include="Component\Token\AuthService.vb" />
+    <Compile Include="Component\VersionControl\VersionControlBLL.vb" />
+    <Compile Include="Component\VersionControl\VersionControlModel.vb" />
+    <Compile Include="Component\VersionControl\VersionControlModelCollection.vb" />
+    <Compile Include="Component\HATransaction\HAVaccineBLL.vb" />
+    <Compile Include="Component\HATransaction\HAVaccineModel.vb" />
+    <Compile Include="Component\HATransaction\HAVaccineModelCollection.vb" />
+    <Compile Include="Component\HATransaction\VaccineCodeBySchemeMappingCollection.vb" />
+    <Compile Include="Component\HATransaction\VaccineCodeBySchemeMappingModel.vb" />
+    <Compile Include="Component\HATransaction\VaccineCodeMappingCollection.vb" />
+    <Compile Include="Component\HATransaction\VaccineCodeMappingModel.vb" />
+    <Compile Include="Component\HATransaction\VaccineDoseSeqCodeMappingCollection.vb" />
+    <Compile Include="Component\HATransaction\VaccineDoseSeqCodeMappingModel.vb" />
+    <Compile Include="Component\ImmD\ImmDBLL.vb" />
+    <Compile Include="Component\InBox\InboxBLL.vb" />
+    <Compile Include="Component\InBox\MessageModel.vb" />
+    <Compile Include="Component\InBox\MessageModelCollection.vb" />
+    <Compile Include="Component\InBox\MessageReaderModel.vb" />
+    <Compile Include="Component\InBox\MessageReaderModelCollection.vb" />
+    <Compile Include="Component\InternetMail\InternetMailBLL.vb" />
+    <Compile Include="Component\InternetMail\InternetMailModel.vb" />
+    <Compile Include="Component\InternetMail\InternetMailModelCollection.vb" />
+    <Compile Include="Component\InternetMail\MailTemplateModel.vb" />
+    <Compile Include="Component\InternetMail\MailTemplateModelCollection.vb" />
+    <Compile Include="Component\MedicalOrganization\MedicalOrganizationBLL.vb" />
+    <Compile Include="Component\MedicalOrganization\MedicalOrganizationModel.vb" />
+    <Compile Include="Component\MedicalOrganization\MedicalOrganizationModelCollection.vb" />
+    <Compile Include="Component\NewsMessage\NewsMessageBLL.vb" />
+    <Compile Include="Component\NewsMessage\NewsMessageModel.vb" />
+    <Compile Include="Component\NewsMessage\NewsMessageModelCollection.vb" />
+    <Compile Include="Component\PracticeSchemeInfo\PracticeSchemeInfoBLL.vb" />
+    <Compile Include="Component\PracticeSchemeInfo\PracticeSchemeInfoModel.vb" />
+    <Compile Include="Component\PracticeSchemeInfo\PracticeSchemeInfoModelCollection.vb" />
+    <Compile Include="Component\Practice\PracticeBLL.vb" />
+    <Compile Include="Component\Practice\PracticeModel.vb" />
+    <Compile Include="Component\Practice\PracticeModelCollection.vb" />
+    <Compile Include="Component\Printout\CategoryDescriptionResourceMappingModel.vb" />
+    <Compile Include="Component\Printout\CategoryDescriptionResourceMappingModelCollectio.vb" />
+    <Compile Include="Component\Printout\PrintoutBLL.vb" />
+    <Compile Include="Component\Professional\ProfessionalBLL.vb" />
+    <Compile Include="Component\Professional\ProfessionalModel.vb" />
+    <Compile Include="Component\Professional\ProfessionalModelCollection.vb" />
+    <Compile Include="Component\Profession\ProfessionBLL.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Component\Profession\ProfessionModel.vb" />
+    <Compile Include="Component\Profession\ProfessionModelCollection.vb" />
+    <Compile Include="Component\ReasonForVisit\ReasonForVisitBLL.vb" />
+    <Compile Include="Component\RedirectParameter\RedirectParameterBLL.vb" />
+    <Compile Include="Component\RedirectParameter\RedirectParameterModel.vb" />
+    <Compile Include="Component\RedirectParameter\SearchCriteriaCollection.vb" />
+    <Compile Include="Component\RVPHomeList\RVPHomeListBLL.vb" />
+    <Compile Include="Component\SchemeDetails\EqvSubsidizeMapModel.vb" />
+    <Compile Include="Component\SchemeDetails\EqvSubsidizeMapModelCollection.vb" />
+    <Compile Include="Component\SchemeDetails\EqvSubsidizePrevSeasonMapModel.vb" />
+    <Compile Include="Component\SchemeDetails\EqvSubsidizePrevSeasonMapModelCollection.vb" />
+    <Compile Include="Component\SchemeDetails\SchemeDetailBLL.vb" />
+    <Compile Include="Component\SchemeDetails\SchemeDosePeriodModel.vb" />
+    <Compile Include="Component\SchemeDetails\SchemeDosePeriodModelCollection.vb" />
+    <Compile Include="Component\SchemeDetails\SchemeVaccineDetailModel.vb" />
+    <Compile Include="Component\SchemeDetails\SchemeVaccineDetailModelCollection.vb" />
+    <Compile Include="Component\SchemeDetails\SubsidizeClaimAdditionalFieldModel.vb" />
+    <Compile Include="Component\SchemeDetails\SubsidizeClaimAdditionalFieldModelCollection.vb" />
+    <Compile Include="Component\SchemeDetails\SubsidizeGroupClaimItemDetailsModel.vb" />
+    <Compile Include="Component\SchemeDetails\SubsidizeGroupClaimItemDetailsModelCollection.vb" />
+    <Compile Include="Component\SchemeInformation\SchemeInformationBLL.vb" />
+    <Compile Include="Component\SchemeInformation\SchemeInformationModel.vb" />
+    <Compile Include="Component\SchemeInformation\SchemeInformationModelCollection.vb" />
+    <Compile Include="Component\Scheme\SchemeBackOfficeBLL.vb" />
+    <Compile Include="Component\Scheme\SchemeBackOfficeModel.vb" />
+    <Compile Include="Component\Scheme\SchemeBackOfficeModelCollection.vb" />
+    <Compile Include="Component\Scheme\SchemeClaimBLL.vb" />
+    <Compile Include="Component\Scheme\SchemeClaimModel.vb" />
+    <Compile Include="Component\Scheme\SchemeClaimModelCollection.vb" />
+    <Compile Include="Component\Scheme\SchemeEFormBLL.vb" />
+    <Compile Include="Component\Scheme\SchemeEFormModel.vb" />
+    <Compile Include="Component\Scheme\SchemeEFormModelCollection.vb" />
+    <Compile Include="Component\Scheme\SubsidizeGroupBackOfficeModel.vb" />
+    <Compile Include="Component\Scheme\SubsidizeGroupBackOfficeModelCollection.vb" />
+    <Compile Include="Component\Scheme\SubsidizeGroupClaimModel.vb" />
+    <Compile Include="Component\Scheme\SubsidizeGroupClaimModelCollection.vb" />
+    <Compile Include="Component\Scheme\SubsidizeGroupEFormModel.vb" />
+    <Compile Include="Component\Scheme\SubsidizeGroupEFormModelCollection.vb" />
+    <Compile Include="Component\ServiceProvider\ServiceProviderBLL.vb" />
+    <Compile Include="Component\ServiceProvider\ServiceProviderModel.vb" />
+    <Compile Include="Component\ServiceProvider\ServiceProviderModelCollection.vb" />
+    <Compile Include="Component\SortedGridviewHeader\SortedGridviewHeaderModel.vb" />
+    <Compile Include="Component\SortedGridviewHeader\SortedGridviewHeaderModelCollection.vb" />
+    <Compile Include="Component\StaticData\StaticDataBLL.vb" />
+    <Compile Include="Component\StaticData\StaticDataModel.vb" />
+    <Compile Include="Component\StaticData\StaticDataModelCollection.vb" />
+    <Compile Include="Component\SchemeDetails\SubsidizeItemDetailsModel.vb" />
+    <Compile Include="Component\SchemeDetails\SubsidizeItemDetailsModelCollection.vb" />
+    <Compile Include="Component\TokenRSAInterface\RSAServerHandler.vb" />
+    <Compile Include="Component\Token\TokenBLL.vb" />
+    <Compile Include="Component\Token\TokenModel.vb" />
+    <Compile Include="Component\UserAC\UserACBLL.vb" />
+    <Compile Include="Component\UserAC\UserACModel.vb" />
+    <Compile Include="Component\UserRole\UserRoleBLL.vb" />
+    <Compile Include="Component\UserRole\UserRoleModel.vb" />
+    <Compile Include="Component\UserRole\UserRoleModelCollection.vb" />
+    <Compile Include="Component\VoucherAccount\VoucherRecipientAccountBLL.vb" />
+    <Compile Include="ComFunction\GridviewFunction.vb" />
+    <Compile Include="ComObject\EDSymmetric.vb" />
+    <Compile Include="ComObject\SystemMessage.vb" />
+    <Compile Include="Component\VoucherAccount\VoucherRecipientAccountModelCollection.vb" />
+    <Compile Include="Component\VoucherRefund\VoucherRefundModelCollection.vb" />
+    <Compile Include="Component\VoucherScheme\VoucherSchemeBLL.vb" />
+    <Compile Include="Component\VoucherScheme\VoucherSchemeModel.vb" />
+    <Compile Include="Component\HCVUUser\HCVUUserBLL.vb" />
+    <Compile Include="Component\HCVUUser\HCVUUserModel.vb" />
+    <Compile Include="Component\VoucherScheme\VoucherSchemeModelCollection.vb" />
+    <Compile Include="Component\VoucherTransaction\VoucherTransactionBLL.vb" />
+    <Compile Include="Component\VoucherTransaction\VoucherTransactionModel.vb" />
+    <Compile Include="Component\VoucherTransaction\VoucherTransactionModelCollection.vb" />
+    <Compile Include="DataAccess\Database.vb" />
+    <Compile Include="Component\Address\AddressModel.vb" />
+    <Compile Include="Component\ClaimTrans\ClaimTransModel.vb" />
+    <Compile Include="Component\EnumConstant.vb" />
+    <Compile Include="Format\Formatter.vb" />
+    <Compile Include="ComFunction\GeneralFunction.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Resource\CustomResourceProvider.vb" />
+    <Compile Include="Validation\Validator.vb" />
+    <Compile Include="Component\VoucherAccount\VoucherRecipientAccountModel.vb" />
+    <Compile Include="WebService\AuditLog\AuditLogBase.vb" />
+    <Compile Include="WebService\AuditLog\AuditLogCMSHealthCheck.vb" />
+    <Compile Include="WebService\AuditLog\AuditLogEVacc.vb" />
+    <Compile Include="WebService\AuditLog\AuditLogInterface.vb" />
+    <Compile Include="WebService\Interface\DHVaccineResult.vb" />
+    <Compile Include="WebService\Interface\HAVaccineResult.vb" />
+    <Compile Include="WebService\Interface\VaccineResultCollection.vb" />
+    <Compile Include="WebService\Interface\WSProxyDHCIMS.vb" />
+    <Compile Include="WebService\Proxy\HKIPVREnqServiceProxy.vb" />
+    <Compile Include="WebService\Interface\WSProxyCMS.vb" />
+    <Compile Include="WebService\Interface\XmlGenerator\WSVaccineQueryRequestXmlGenerator.vb" />
+    <Compile Include="WebService\Proxy\HKIPVRSecurityAssertion.vb" />
+    <Compile Include="WebService\Proxy\ImmuEnquiryWebS.vb">
+      <SubType>code</SubType>
+    </Compile>
+    <Compile Include="WebService\Proxy\ImmuEnquiryWebS_EndPoint_EAIWSProxy.vb" />
+    <Compile Include="WebService\Proxy\ImmuEnquiryWebS_EndPoint.vb" />
+    <Compile Include="WebService\Proxy\ImmuEnquiryWebS_EndPoint_WebLogic.vb">
+      <SubType>code</SubType>
+    </Compile>
+    <Compile Include="WebService\Proxy\PPI_EVS_WS.vb" />
+    <Compile Include="WebService\Proxy\TokenReplacementWS.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>61243</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

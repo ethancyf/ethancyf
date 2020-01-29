@@ -1,0 +1,404 @@
+﻿body {
+    font-size: 14px;
+    color: #666666;
+    font-family: Arial;
+    margin: 0px 0px 0px 0px;
+}
+/***** Footer Style *****/
+.footerText {
+    font-size: 12px;
+    color: #000000;
+    font-family: Arial;
+    text-decoration: none;
+}
+
+/***** Login Style *****/
+.loginTitleText {
+    font-size: 20px;
+    color: #666666;
+    font-family: Arial;
+    font-weight: bold;
+}
+
+.loginLableText {
+    font-size: 18px;
+    color: #666666;
+    font-family: Arial;
+}
+
+/***** Tab Style*****/
+.tabText {
+    font-size: 14px;
+    color: #666666;
+    font-family: Arial;
+}
+
+.tabIcon {
+    vertical-align: top;
+}
+
+.m_ajax__tab_xp .ajax__tab_header {
+    font-family: Arial;
+    font-size: 14px !important;
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-line.gif) repeat-x bottom;
+}
+
+.m_ajax__tab_xp .ajax__tab_outer {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-right.gif) no-repeat right;
+    height: 21px;
+    padding-right: 4px;
+}
+
+.m_ajax__tab_xp .ajax__tab_inner {
+    padding-left: 3px;
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-left.gif) no-repeat;
+}
+
+.m_ajax__tab_xp .ajax__tab_tab {
+    color: #666666;
+    height: 13px;
+    padding: 4px;
+    margin: 0;
+    background: url(../Images/AjaxControlToolkit/Tabs/tab.gif) repeat-x;
+}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_outer {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-hover-right.gif) no-repeat right;
+}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_inner {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-hover-left.gif) no-repeat;
+}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_tab {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-hover.gif) repeat-x;
+}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_outer {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-active-right.gif) no-repeat right;
+}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_inner {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-active-left.gif) no-repeat;
+}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_tab {
+    background: url(../Images/AjaxControlToolkit/Tabs/tab-active.gif) repeat-x;
+}
+
+.m_ajax__tab_xp .ajax__tab_body {
+    font-family: Arial !important;
+    font-size: 14px !important;
+    border: 1px solid #999999 !important;
+    border-top: 0 !important;
+    padding: 8px !important;
+    background-color: transparent !important;
+}
+
+/***** GridView Header *****/
+.gvHeader {
+    text-align: center;
+}
+
+.headingText {
+    font-size: 16px;
+    color: #000000;
+    font-family: Arial;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-indent: 24px;
+    background-position: left center;
+    background-image: url(../Images/others/circle_red.png);
+    background-repeat: no-repeat;
+    font-weight: bold;
+}
+
+/***** Table Style*****/
+.tableText {
+    font-size: 16px;
+    color: #4D4D4D;
+    font-family: Arial;
+    font-weight: bold;
+}
+
+/***** News Message Style in Login Page*****/
+.messageText {
+    font-size: 14px;
+    color: #666666;
+    font-family: Arial;
+    text-align: left;
+    background-color: #fff5ee;
+    font-weight: normal;
+}
+
+/**** Image Button cursor *****/
+.ibtnEnabled {
+    cursor: Hand;
+}
+
+.ibtnDisabled {
+    cursor: default;
+}
+
+table.inboxMessageSystemParameter {
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 4px;
+    border-style: solid solid solid solid;
+    border-color: #dedfde #dedfde #dedfde #dedfde;
+    border-collapse: collapse;
+}
+
+    table.inboxMessageSystemParameter th {
+        border-width: 1px 1px 1px 1px;
+        padding: 4px 4px 4px 4px;
+        border-style: solid solid solid solid;
+        border-color: #dedfde #dedfde #dedfde #dedfde;
+        background-color: darkgray;
+        text-align: center;
+        color: white;
+        vertical-align: bottom;
+    }
+
+    table.inboxMessageSystemParameter td {
+        border-width: 1px 1px 1px 1px;
+        padding: 4px 4px 4px 4px;
+        border-style: solid solid solid solid;
+        border-color: #dedfde #dedfde #dedfde #dedfde;
+        vertical-align: top;
+        text-align: left;
+        background-color: #F0EEF7;
+    }
+
+/****   Chinese   ***/
+.TextChi {
+    font-size: 16px;
+    color: #4D4D4D;
+    font-family: "細明體_HKSCS","MingLiu_HKSCS","Arial";
+    font-weight: bold;
+}
+
+.TextBoxChi {
+    font-family: "細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+
+.TextGridChi {
+    font-family: "細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+.GridViewItemPadding {
+    padding-right: 10px;
+}
+
+.GridViewHeaderPadding {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.TextBoxDisable {
+    background-color: #D4D0C8;
+}
+
+/***** Heading Style *****/
+.headingTextOtherSystem {
+    font-size: 16px;
+    color: #000000;
+    font-family: Arial;
+    padding-left: 24px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    background-position: 0 6px;
+    background-image: url(../Images/others/circle_blue.png);
+    background-repeat: no-repeat;
+    font-weight: bold;
+}
+
+/***** Inbox new design style *****/
+/*****        CRE12-012       *****/
+td.SideBar {
+    background-color: #FFFFFF;
+}
+
+td.SideBarSelected {
+    background-color: #d0d0d0;
+}
+
+td.SideBarHighlight {
+    background-color: #f0eef7;
+}
+
+td.TabHeaderSelected {
+    position: relative;
+    top: 1px;
+    z-index: 1;
+}
+
+a.InboxDisabledUnderline {
+    text-decoration: none;
+    color: #4d4d4d;
+}
+
+/***** Table Style matched with GridView Style *****/
+/*****        CRE12-012       *****/
+.tblMatchWithGridView {
+    background-color: White;
+    border: 1px solid #dedfde;
+    border-collapse: collapse;
+    padding: 4px 4px 4px 4px;
+}
+
+.trMatchWithGridViewHeader {
+    background-color: DarkGray;
+    color: White;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.tdMatchWithGridViewItem {
+    background-color: #f0eef7;
+    vertical-align: top;
+}
+
+/***** Panel's GroupingText Built-in Style *****/
+/*****        CRE14-002       *****/
+fieldset {
+    padding-left: 10px;
+    border: 1px solid #4D4D4D;
+}
+/* this is the border style of GroupingText */
+
+legend {
+    color: #4D4D4D;
+    font-family: Arial;
+    font-size: 14px;
+}
+/* this is the style of GroupingText */
+
+/***** Calendar Style *****/
+.ajax_cal .ajax__calendar_container {
+    background-color: #ffffff;
+    border: solid 1px #007fc2;
+}
+
+.ajax_cal .ajax__calendar_header {
+    background-color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.ajax_cal .ajax__calendar_title,
+.ajax_cal .ajax__calendar_next,
+.ajax_cal .ajax__calendar_prev {
+    color: #000000;
+    padding-top: 3px;
+}
+
+.ajax_cal .ajax__calendar_body {
+    background-color: #ffffff;
+    /*border: solid 1px #cccccc;*/
+}
+
+.ajax_cal .ajax__calendar_dayname {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 4px;
+    margin-top: 2px;
+    color: #000000;
+}
+
+.ajax_cal .ajax__calendar_day {
+    text-align: center;
+    font-weight: normal;
+}
+
+.ajax_cal .ajax__calendar_days {
+    color: #000000;
+}
+
+.ajax_cal .ajax__calendar_other {
+    color: #bbbbbb;
+}
+
+.ajax_cal .ajax__calendar_hover .ajax__calendar_day,
+.ajax_cal .ajax__calendar_hover .ajax__calendar_month,
+.ajax_cal .ajax__calendar_hover .ajax__calendar_year {
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #1e90ff;
+}
+
+.ajax_cal .ajax__calendar_active {
+    /*font-weight: bold;*/
+    background-color: #89dbff;
+    border-color: #1e90ff;
+    color: #000000;
+}
+
+.ajax_cal .ajax__calendar_today {
+    color: #000000;
+}
+
+
+
+.ajax_cal .ajax__calendar_hover .ajax__calendar_today,
+.ajax_cal .ajax__calendar_hover .ajax__calendar_title {
+    color: #1e90ff;
+}
+
+.ajax_cal .ajax__calendar_invalid .ajax__calendar_day,
+.ajax_cal .ajax__calendar_invalid .ajax__calendar_month,
+.ajax_cal .ajax__calendar_invalid .ajax__calendar_year {
+    background-color: #cdcdcd;
+    border-color: #cdcdcd;
+    color: #efefef;
+    /*text-decoration: line-through;*/
+    font-weight: normal;
+    cursor: default;
+}
+
+.ajax_cal .ajax__calendar_footer {
+    background-color: #ffffff;
+    height: 15px;
+}
+
+/***** Calendar Style *****/
+
+td.AppEnvironment {
+    padding-top: 16px;
+    padding-left: 375px;
+    color: #FE0000;
+    font-size: 24px;
+    text-align: left;
+}
+
+td.SubsidizeCategoryHeader {
+    text-align: center;
+    font-size: 13px;
+    line-height: 12px;
+    background-color: #DDDDDD;
+}
+
+.inline-list tr td
+{
+    width:168px;
+    /*background-color:#ffff99;*/
+    background-color:transparent;
+}
+
+.inline-list input[type="checkbox"], .inline-list input[type="radio"]
+{
+    width: auto;
+    position:relative;
+    left:-3px;
+}
+
+.inline-list label
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: Arial;
+	font-weight: bold;
+    position:relative;
+    left:-3px;
+}

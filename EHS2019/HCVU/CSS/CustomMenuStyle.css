@@ -1,0 +1,185 @@
+﻿nav {
+    display: block;
+
+}
+
+
+nav > ul {
+    margin: 2px 0 2px 2px;
+    padding:0;
+    list-style: none;        
+    border:1px solid #cccccc;    
+    float:left;
+    /*overflow: hidden;*/
+
+}
+
+nav li ul  {
+    margin: 3px 0 0 0;
+    padding:0;
+    list-style: none;        
+    border:1px solid #cccccc;    
+    float:left;
+    /*overflow: hidden;*/
+
+}
+
+
+.nav a {
+    display:block;    
+    padding:0;
+    position: relative;
+    text-decoration: none;
+}
+.nav {    
+}
+.nav li {
+    position: relative;
+
+}
+
+/*Parent*/
+/*.nav > li*/
+.TopMenuItem {
+    /*.nav > li{*/
+    background-image: url(../Images/menu/menu_background.png);
+    float:left;
+	background-repeat: repeat-y;
+	background-color: #ffffff; 
+    background-position-y: center;
+    margin: 3px 5px 3px 5px;
+}
+/*.nav > li > a*/
+.TopMenuItem a {
+	color: #666666;
+	font-family: Arial;
+	font-size: 14px;
+    padding: 1px 0 1px 5px;
+}
+
+/*.nav > li:hover >a, .nav > li.active >a */
+.TopMenuItem:hover >a, .TopMenuItem.active >a {
+	background-color: transparent;
+	color: #ff0000;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: pointer;        
+}
+
+.DisabledTopMenuItem {
+    background-image: url(../Images/menu/menu_background.png);
+    float:left;
+	background-repeat: repeat-y;
+	background-color: #ffffff;
+	margin: 3px 5px 3px 5px;
+    background-position-y: center;
+}
+
+.DisabledTopMenuItem a
+{
+	background-color: transparent;
+	color: #C0C0C0;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: default;
+    padding: 1px 0 1px 5px;
+}
+
+.DisabledTopMenuItem:hover >a, .DisabledTopMenuItem.active >a {
+	background-color: transparent;
+	color: #C0C0C0;
+	font-family: Arial;
+	font-size: 14px;
+	cursor: default;
+    padding: 1px 0 1px 5px;      
+}
+
+
+
+/* submenu positioning*/
+ .nav ul {
+    position: absolute;
+    white-space: nowrap;
+    z-index: 10;
+    left: -99999em;
+    overflow: visible;
+}
+.nav > li > ul {
+    left: auto;    
+    min-width: 100%;
+    display: none;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-bottom: #cccccc 1px solid;
+}
+.nav > li li ul {
+    border-left:1px solid #fff;
+    display: none;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-bottom: #cccccc 1px solid;
+    line-height: none;    
+}
+.nav > li li > ul {
+    /* margin-left: 1px */
+    left: 100%;
+    top: -1px;
+}
+
+
+/*.nav > li :hover > a {
+	cursor: pointer;
+	background-image: url(../Images/menu/menu-item-middle-hover.png);
+	background-repeat: repeat-y;
+	color: #ff0000;    
+    background-position:left center;
+}
+
+.nav li li a {    
+	cursor: pointer;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	background-color: #ffffff;
+    padding: 3px 20px 3px 20px;     
+    color: #666666;
+}*/
+
+
+/* Handle Enable Item*/
+.DefaultMenuItem:hover > a{  
+	cursor: pointer;
+	background-image: url(../Images/menu/menu-item-middle-hover.png);
+	background-repeat: repeat-y;
+	color: #ff0000;
+    background-position:left center;
+}
+
+.DefaultMenuItem a {    
+	cursor: pointer;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	background-color: #ffffff;
+    padding: 3px 10px 4px 22px;     
+    color: #666666; 
+}
+     
+.DisabledMenuItem a
+{
+	cursor: default;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+    background-color: #ffffff;
+    padding: 3px 10px 4px 22px;
+	color: #C0C0C0;
+}
+
+.DisabledMenuItem:hover > a
+{
+	cursor: default;
+	background-image: url(../Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+	color: #C0C0C0;    
+}
+

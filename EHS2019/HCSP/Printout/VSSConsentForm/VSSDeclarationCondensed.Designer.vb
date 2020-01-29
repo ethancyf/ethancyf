@@ -1,0 +1,140 @@
+Namespace PrintOut.VSSConsentForm
+    <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+    Partial Public Class VSSDeclarationCondensed
+        Inherits GrapeCity.ActiveReports.SectionReport
+
+        'Form overrides dispose to clean up the component list.
+        Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+            If disposing Then
+            End If
+            MyBase.Dispose(disposing)
+        End Sub
+
+        'NOTE: The following procedure is required by the ActiveReports Designer
+        'It can be modified using the ActiveReports Designer.
+        'Do not modify it using the code editor.
+        Private WithEvents Detail As GrapeCity.ActiveReports.SectionReportModel.Detail
+        <System.Diagnostics.DebuggerStepThrough()> _
+        Private Sub InitializeComponent()
+            Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(VSSDeclarationCondensed))
+            Me.Detail = New GrapeCity.ActiveReports.SectionReportModel.Detail()
+            Me.TextBox12 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox6 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox43 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtDocumentExplainedBy2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtDocumentExplainedBy1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            CType(Me.TextBox12, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox43, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtDocumentExplainedBy2, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtDocumentExplainedBy1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
+            '
+            'Detail
+            '
+            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.TextBox12, Me.TextBox6, Me.TextBox43, Me.TextBox1, Me.txtDocumentExplainedBy2, Me.txtDocumentExplainedBy1})
+            Me.Detail.Height = 0.9479166!
+            Me.Detail.Name = "Detail"
+            '
+            'TextBox12
+            '
+            Me.TextBox12.Height = 0.1875!
+            Me.TextBox12.Left = 0.0!
+            Me.TextBox12.MultiLine = False
+            Me.TextBox12.Name = "TextBox12"
+            Me.TextBox12.Style = "font-size: 11.25pt; font-style: normal; text-align: justify; white-space: nowrap;" & _
+        " ddo-char-set: 0"
+            Me.TextBox12.Text = "Scheme  have been read and  explained to me by"
+            Me.TextBox12.Top = 0.1875!
+            Me.TextBox12.Width = 3.469!
+            '
+            'TextBox6
+            '
+            Me.TextBox6.Height = 0.1875!
+            Me.TextBox6.Left = 0.0!
+            Me.TextBox6.MultiLine = False
+            Me.TextBox6.Name = "TextBox6"
+            Me.TextBox6.Style = "font-size: 11.25pt; font-style: normal; text-align: justify; text-justify: distri" & _
+        "bute; white-space: nowrap; ddo-char-set: 0"
+            Me.TextBox6.Text = "The Undertaking  and  Declaration  in  the  ""Consent  to  transfer  personal  dat" & _
+        "a""  of  Vaccination Subsidy"
+            Me.TextBox6.Top = 0.0!
+            Me.TextBox6.Width = 7.375!
+            '
+            'TextBox43
+            '
+            Me.TextBox43.Height = 0.1875!
+            Me.TextBox43.Left = 4.53125!
+            Me.TextBox43.MultiLine = False
+            Me.TextBox43.Name = "TextBox43"
+            Me.TextBox43.Style = "font-size: 11.25pt; font-style: normal; text-align: justify; white-space: nowrap;" & _
+        " ddo-char-set: 0"
+            Me.TextBox43.Text = ".  I understand and agree to the contents"
+            Me.TextBox43.Top = 0.3850001!
+            Me.TextBox43.Width = 2.84375!
+            '
+            'TextBox1
+            '
+            Me.TextBox1.Height = 0.1875!
+            Me.TextBox1.Left = 0.0!
+            Me.TextBox1.MultiLine = False
+            Me.TextBox1.Name = "TextBox1"
+            Me.TextBox1.Style = "font-size: 11.25pt; font-style: normal; text-align: justify; ddo-char-set: 0"
+            Me.TextBox1.Text = "of the Undertaking and Declaration."
+            Me.TextBox1.Top = 0.5930001!
+            Me.TextBox1.Width = 7.375!
+            '
+            'txtDocumentExplainedBy2
+            '
+            Me.txtDocumentExplainedBy2.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.txtDocumentExplainedBy2.Height = 0.1875!
+            Me.txtDocumentExplainedBy2.Left = 0.0!
+            Me.txtDocumentExplainedBy2.Name = "txtDocumentExplainedBy2"
+            Me.txtDocumentExplainedBy2.Style = "font-size: 11.25pt; text-align: center"
+            Me.txtDocumentExplainedBy2.Text = Nothing
+            Me.txtDocumentExplainedBy2.Top = 0.3850001!
+            Me.txtDocumentExplainedBy2.Width = 4.531!
+            '
+            'txtDocumentExplainedBy1
+            '
+            Me.txtDocumentExplainedBy1.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.txtDocumentExplainedBy1.Height = 0.1875!
+            Me.txtDocumentExplainedBy1.Left = 3.469!
+            Me.txtDocumentExplainedBy1.Name = "txtDocumentExplainedBy1"
+            Me.txtDocumentExplainedBy1.Style = "font-size: 11.25pt; text-align: center"
+            Me.txtDocumentExplainedBy1.Text = Nothing
+            Me.txtDocumentExplainedBy1.Top = 0.1875!
+            Me.txtDocumentExplainedBy1.Width = 3.906!
+            '
+            'VSSDeclarationCondensed
+            '
+            Me.MasterReport = False
+            Me.PageSettings.PaperHeight = 11.69!
+            Me.PageSettings.PaperWidth = 8.27!
+            Me.PrintWidth = 7.4!
+            Me.Sections.Add(Me.Detail)
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Arial; font-style: normal; text-decoration: none; font-weight: norma" & _
+                "l; font-size: 10pt; color: Black", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 16pt; font-weight: bold", "Heading1", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Times New Roman; font-size: 14pt; font-weight: bold; font-style: ita" & _
+                "lic", "Heading2", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 13pt; font-weight: bold", "Heading3", "Normal"))
+            CType(Me.TextBox12, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox43, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtDocumentExplainedBy2, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtDocumentExplainedBy1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
+
+        End Sub
+        Friend WithEvents TextBox12 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox6 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox43 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents txtDocumentExplainedBy1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents txtDocumentExplainedBy2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    End Class
+End Namespace

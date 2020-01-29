@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TextBox6.Text" xml:space="preserve">
+    <value>In consideration of the Government of the Hong Kong Special Administrative Region ("Government"), as represented by the Director of Health, considering and/or approving  this application for enrolment in the relevant scheme(s) as specified by the Applicant in Part I of this form, the Applicant and the Medical Organization hereby jointly and severally acknowledge, confirm, undertake, warrant, declare and agree with continuing effect as follows:</value>
+  </data>
+  <data name="TextBox9.Text" xml:space="preserve">
+    <value>we have carefully read and fully understood the Application Form and all other relevant Transaction Documents with respect to the relevant scheme(s) as specified by the Applicant in Part I of this form;</value>
+  </data>
+  <data name="TextBox10.Text" xml:space="preserve">
+    <value>the Applicant is eligible to apply for enrolment in the scheme(s) as specified by the Applicant in Part I of this form according to the Covering Notes for Application by Health Care Provider for Enrolment in the Health Care Voucher Scheme, Vaccination Subsidy Scheme, Residential Care Home Vaccination Programme and Primary Care Directory ( "Covering Notes" );</value>
+  </data>
+  <data name="TextBox13.Text" xml:space="preserve">
+    <value>all information and documents provided  to the Government  in or with this Application Form and from time to time in relation to the scheme(s) as specified by the Applicant in Part I of this form (whether  in any of our own hands or not) are up-to-date, true, accurate and complete in all respects;</value>
+  </data>
+  <data name="TextBox14.Text" xml:space="preserve">
+    <value>none of us has withheld, and none of us is aware  of, any material facts or circumstances that have not been disclosed to the Government  which may influence the assessment of this application or the decision of the Government in considering whether or not to approve this application;</value>
+  </data>
+  <data name="TextBox21.Text" xml:space="preserve">
+    <value>each of us shall inform in writing the Programme Management and Vaccination Division, Department  of Health of the Government  (i) 2 working days before  raising the service fee as specified in Part II, Section (E) of the Application Form and (ii) immediately of any change in any information  submitted in relation to this application or if any such information is no longer  applicable, true, accurate or complete and of any material change in circumstances affecting  the Applicant's  eligibility for enrolment  in the scheme(s) as specified by the Applicant in Part I of this form or otherwise this application including any incidents of professional misconduct or negligence (substantiated or alleged);</value>
+  </data>
+  <data name="TextBox24.Text" xml:space="preserve">
+    <value>each of us fully understands that non-disclosure  or misrepresentation  of any information required or provided in connection with this application shall entitle the Government to reject this application;</value>
+  </data>
+  <data name="TextBox26.Text" xml:space="preserve">
+    <value>until this application is rejected by the Government  or, if this application is successful, until the Applicant ceases to be an Enrolled Health Care Provider, each of us shall comply at all times with all the terms and conditions of this Application Form and the other  relevant  Transaction  Documents with respect to the relevant scheme(s) as specified by the Applicant in Part I of this form;</value>
+  </data>
+  <data name="TextBox28.Text" xml:space="preserve">
+    <value>the Government, any of its agents or officers (including the Director of Health) and any other persons authorized by the Government  shall have full access to and may transfer and use the Applicant's personal data provided  in relation to the scheme(s) for the purposes set out in the Statement of Purpose with respect to the relevant  scheme(s) as specified by the Applicant in Part I of this form, and the word "use" shall have the meaning given to it under the Personal Data (Privacy) Ordinance, Cap.486.</value>
+  </data>
+  <data name="TextBox30.Text" xml:space="preserve">
+    <value>the Applicant hereby gives consent for each of the following professional regulatory board and council to release at any time the Applicant's personal data held by any of them to the Director of Health, Government, any agents or officers of the Government  and any other person authorized by the Government  for the purpose of processing this application and, where  necessary, for a verification  procedure by electronic means to be carried out for that purpose:</value>
+  </data>
+  <data name="TextBox7.Text" xml:space="preserve">
+    <value>if any information, undertaking, warranty or declaration given by any of us in this Application Form is not up-to-date, true, accurate or complete or if any of us fails to comply with any provision  of this Undertaking  and Declaration, without prejudice to any powers, rights, remedies and claims that the Government  may have under this Undertaking and Declaration or in law, this application shall be rejected immediately and if this application has already been approved, the approval for the Applicant's enrolment in the relevant scheme(s) as specified by the Applicant in Part I of this form shall be revoked immediately;</value>
+  </data>
+  <data name="TextBox32.Text" xml:space="preserve">
+    <value>the Authorized Signatory(ies) stated in Section (B) of Part V is duly authorized by the Medical Organization to execute this Application Form for and on behalf of the Medical Organization and to bind it by his/their signatures(s) to the terms and conditions of this Application Form and all other relevant Transaction Documents with respect to the relevant scheme(s) as specified by the Applicant in Part I of this form; and</value>
+  </data>
+  <data name="TextBox34.Text" xml:space="preserve">
+    <value>this Undertaking and Declaration shall be governed  by and construed in accordance with the laws of the Hong Kong Special Administrative Region of the People's Republic of China ( "Hong Kong" ) and each of us shall irrevocably submit to the exclusive jurisdiction of the Courts of Hong Kong.</value>
+  </data>
+  <data name="TextBox57.Text" xml:space="preserve">
+    <value>Whilst the information provided  by the Government  in this Application Form and the Covering  Notes have been prepared  in good faith, none of them claims to be comprehensive or to have been independently verified. Neither the Government,  nor any of its officers, agents or advisors, accepts any liability or responsibility as to, or in relation to, the adequacy, accuracy or completeness of the information contained in this Application Form, the Covering  Notes or any other written or oral information which is, has been or will be provided  or made available to any Applicant or Medical Organization; nor do they make any representation, statement or warranty, express or implied, with respect to such information or to the information on which the Application Form or the Covering  Notes are based. Any liability in respect of any such information or any inaccuracy in the Application Form or the Covering  Notes or omission from the Application Form or the Covering  Notes is expressly disclaimed. Nothing in the Application Form, the Covering  Notes nor in any other written or oral information  which is, has been or will be provided  or made available  to any Applicant should be relied on as a representation, statement or warranty as to the intentions, policy or action in future of the Government, its officers or agents.</value>
+  </data>
+  <data name="resource.Encoding" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAEAQAAABhTeXN0ZW0uVGV4dC5VVEY4RW5jb2RpbmcLAAAAEmVtaXRVVEY4
+        SWRlbnRpZmllchBpc1Rocm93RXhjZXB0aW9uCm1fY29kZVBhZ2UIZGF0YUl0ZW0PZW5jb2RlckZhbGxi
+        YWNrD2RlY29kZXJGYWxsYmFjaxNFbmNvZGluZyttX2NvZGVQYWdlEUVuY29kaW5nK2RhdGFJdGVtFUVu
+        Y29kaW5nK21faXNSZWFkT25seRhFbmNvZGluZytlbmNvZGVyRmFsbGJhY2sYRW5jb2RpbmcrZGVjb2Rl
+        ckZhbGxiYWNrAAAAAwMDAAMAAwMBAQglU3lzdGVtLkdsb2JhbGl6YXRpb24uQ29kZVBhZ2VEYXRhSXRl
+        bSZTeXN0ZW0uVGV4dC5FbmNvZGVyUmVwbGFjZW1lbnRGYWxsYmFjayZTeXN0ZW0uVGV4dC5EZWNvZGVy
+        UmVwbGFjZW1lbnRGYWxsYmFjawglU3lzdGVtLkdsb2JhbGl6YXRpb24uQ29kZVBhZ2VEYXRhSXRlbQEm
+        U3lzdGVtLlRleHQuRW5jb2RlclJlcGxhY2VtZW50RmFsbGJhY2smU3lzdGVtLlRleHQuRGVjb2RlclJl
+        cGxhY2VtZW50RmFsbGJhY2sBAOn9AAAKCQIAAAAJAwAAAOn9AAAKAQkCAAAACQMAAAAEAgAAACZTeXN0
+        ZW0uVGV4dC5FbmNvZGVyUmVwbGFjZW1lbnRGYWxsYmFjawMAAAAKc3RyRGVmYXVsdBtiSXNNaWNyb3Nv
+        ZnRCZXN0Rml0RmFsbGJhY2srRW5jb2RlckZhbGxiYWNrK2JJc01pY3Jvc29mdEJlc3RGaXRGYWxsYmFj
+        awEAAAEBBgYAAAAD77+9AAAEAwAAACZTeXN0ZW0uVGV4dC5EZWNvZGVyUmVwbGFjZW1lbnRGYWxsYmFj
+        awMAAAAKc3RyRGVmYXVsdBtiSXNNaWNyb3NvZnRCZXN0Rml0RmFsbGJhY2srRGVjb2RlckZhbGxiYWNr
+        K2JJc01pY3Jvc29mdEJlc3RGaXRGYWxsYmFjawEAAAEBCQYAAAAAAAs=
+</value>
+  </data>
+  <data name="TextBox113.Text" xml:space="preserve">
+    <value>I am practicing as: (Please provide a copy of the relevant valid practising certificate (except in the case of a registration under section 85 of the Chinese Medicine Ordinance (Cap. 549)). For the Professional Registration Number, it refers to the number assigned by relevant professional body or council to the Applicant upon registration with that body or council.)</value>
+  </data>
+  <data name="TextBox69.Text" xml:space="preserve">
+    <value>The personal data provided  will be used by the Department of Health (for enrolment in the HCVS, VSS and/or RVP) and/or the Food and Health Bureau (for enrolment in the PCD) for one or more of the following purposes:</value>
+  </data>
+  <data name="TextBox74.Text" xml:space="preserve">
+    <value>The personal data you provide  are mainly for use within the Department of Health (for enrolment in the HCVS, VSS and/or RVP) and/or the Food and Health Bureau (for enrolment in the PCD) but they may also be disclosed to other Government  bureaux and departments, respective professional regulatory boards and councils and other organizations for the purpose stated in paragraph 1 above, if required.</value>
+  </data>
+  <data name="TextBox77.Text" xml:space="preserve">
+    <value>You have a right to request access to and to request the correction of your personal data under sections 18 and 22 and Data Protection Principle 6, Schedule 1 of the Personal Data (Privacy) Ordinance.  A fee may be imposed for complying with a data access request.</value>
+  </data>
+  <data name="TextBox82.Text" xml:space="preserve">
+    <value>processing the application for enrolment  in the scheme(s)/programme as specified in Part I of this form, payment by the Government, and the administration and monitoring of the scheme(s) as specified in 
+Part I of this form;</value>
+  </data>
+  <data name="TextBox134.Text" xml:space="preserve">
+    <value>With respect to the relevant scheme(s)/programme the enrolment in which is being applied for, the name of applicant, practice’s name(s), address(es), telephone number(s), and service fee (if applicable) provided above will be published in the directories of the HCVS, VSS, RVP and PCD and/or other Government programmes to promote primary care, as appropriate on the internet or in hardcopies for reference by the public. </value>
+  </data>
+  <data name="txtDeclaration.Text" xml:space="preserve">
+    <value>I/We, the above Applicant/ the above Applicant and Medical Organization, have read and agree to the contents in Parts I to IV of this application form and solemnly repeat each and every statement set out in the Undertaking and Declaration as set out in Part III of this application form. I/We also declare that the information given by me/us in this application form is up-to-date, true, accurate and complete in all respects.</value>
+  </data>
+  <data name="TextBox40.Text" xml:space="preserve">
+    <value>Application for enrolment by a health care provider to the Scheme/Programme is subject to consideration by the Government of the Hong Kong Special Administrative Region ("Government"), of all the circumstances and factors as the Government thinks fit which include but are not limited to the conduct, integrity, reputation, management and past and recent performance of the health care provider. In any event, acceptance of enrolment of a health care provider in the Scheme/Programme is at the absolute discretion of the Government.</value>
+  </data>
+  <data name="TextBox41.Text" xml:space="preserve">
+    <value>The Applicant has carefully read and fully understood the Terms and Conditions and all other relevant documents with respect to the PCD including the Notes on Use of Personal Data as set out in Appendix F and updated at</value>
+  </data>
+  <metadata name="$this.ScriptEditorPositionForUndo" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>0, 0</value>
+  </metadata>
+  <metadata name="$this.ScriptEditorPositionForRedo" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>0, 0</value>
+  </metadata>
+  <metadata name="$this.TrayLargeIcon" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+</root>

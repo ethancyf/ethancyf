@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ErrorMessage>
+	<MessageItem InternalCode = "I00000">
+		<InternalMessage>No Record found</InternalMessage>
+		<ExternalCode>E00005</ExternalCode>
+		<ExternalMessage>No record found</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00001">
+		<InternalMessage>Unknown Integrated System</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00002">
+		<InternalMessage>Fail to decrypt or verify the signature of input XML</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00003">
+		<InternalMessage>Invalid XML</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00004">
+		<InternalMessage>Incorrect XML format</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00005">
+		<InternalMessage>Incorrect input parameter</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00006">
+		<InternalMessage>Incorrect XML format of SP information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00007">
+		<InternalMessage>Incorrect input parameter of SP information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00008">
+		<InternalMessage>Incorrect XML format of eHS Account information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00009">
+		<InternalMessage>Incorrect input parameter of eHS account information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00010">
+		<InternalMessage>Incorrect XML format of claim information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00011">
+		<InternalMessage>Incorrect input parameter of claim information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00012">
+		<InternalMessage>Incorrect input parameter of SP ID</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00013">
+		<InternalMessage>Incorrect input parameter of SP Name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00014">
+		<InternalMessage>Incorrect input parameter of Practice ID</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00015">
+		<InternalMessage>Incorrect input parameter of Practice Name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00016">
+		<InternalMessage>Incorrect input parameter of Document Type</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00017">
+		<InternalMessage>Incorrect input parameter of No. of Entry</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00018">
+		<InternalMessage>Incorrect input parameter of Document No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00019">
+		<InternalMessage>Incorrect input parameter of HKIC No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00020">
+		<InternalMessage>Incorrect input parameter of Registration No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00021">
+		<InternalMessage>Incorrect input parameter of Birth Entry No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00022">
+		<InternalMessage>Incorrect input parameter of Re-entry Permit No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00023">
+		<InternalMessage>Incorrect input parameter of Visa / Reference No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00024">
+		<InternalMessage>Incorrect input parameter of Name in English</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00025">
+		<InternalMessage>Incorrect input parameter of Gender</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00026">
+		<InternalMessage>Incorrect input parameter of Date of Birth</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00027">
+		<InternalMessage>Incorrect input parameter of Date of Birth Type</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00028">
+		<InternalMessage>Incorrect input parameter of AgeOn</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00029">
+		<InternalMessage>Incorrect input parameter of Date of Registration</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00030">
+		<InternalMessage>Incorrect input parameter of Date of Birth in Word</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00031">
+		<InternalMessage>Incorrect input parameter of Name in Chinese</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00032">
+		<InternalMessage>Incorrect input parameter of Date of Issue</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00033">
+		<InternalMessage>Incorrect input parameter of Serial No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00034">
+		<InternalMessage>Incorrect input parameter of Reference</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00035">
+		<InternalMessage>Incorrect input parameter of Permitted to Remain Until</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00036">
+		<InternalMessage>Incorrect input parameter of Passport No.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00037">
+		<InternalMessage>Incorrect input parameter of Service date</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00038">
+		<InternalMessage>Incorrect input parameter of Scheme Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00039">
+		<InternalMessage>Incorrect input parameter of No. of voucher claim</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00040">
+		<InternalMessage>Incorrect input parameter of Reason For Visit</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00041">
+		<InternalMessage>Incorrect input parameter of Subsidy Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00042">
+		<InternalMessage>Incorrect input parameter of Dose Information</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00043">
+		<InternalMessage>Incorrect input parameter of Reason For Visit</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00044">
+		<InternalMessage>Incorrect input parameter of RCH Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00045">
+		<InternalMessage>Incorrect input parameter of PreSchoolInd</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00046">
+		<InternalMessage>Invalid SP information or SP status</InternalMessage>
+		<ExternalCode>E00002</ExternalCode>
+		<ExternalMessage>Incorrect SP information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00047">
+		<InternalMessage>Invalid eHS Account information or eHS account status</InternalMessage>
+		<ExternalCode>E00003</ExternalCode>
+		<ExternalMessage>Incorrect eHS account information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00048">
+		<InternalMessage>Invalid claim information</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00049">
+		<InternalMessage>Block by eligibility checking (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail:The service recipient is not eligible for the claim</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00050">
+		<InternalMessage>This error is obsolete</InternalMessage>
+		<ExternalCode>E99999</ExternalCode>
+		<ExternalMessage>Other Error</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00051">
+		<InternalMessage>Block by entitlement checking (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail:There is no available subsidy in the selected scheme for this eHealth Account</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00052">
+		<InternalMessage>Block by service date checking</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: Invalid service date</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00053">
+		<InternalMessage>Block by TSW warning (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail:The service provider and service recipient had joined the pilot project to purchase primary care service from the private sector in Tin Shui Wai</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00054">
+		<InternalMessage>Block by Pre School warning(ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail:The service recipient is not eligible for the claim</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00055">
+		<InternalMessage>Block by inner dose warning (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail:The 1st and 2nd dose vaccination should be at least 4 weeks apart</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00056">
+		<InternalMessage>Incorrect input parameter of DoseIntervalInd</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00057">
+		<InternalMessage>Incorrect input parameter of TSWInd</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00058">
+		<InternalMessage>Only Hong Kong Identity Card or Certificate of Exemption would be accepted for person at the age of 11 or above. / Certificate of Exemption would be accepted for person at the age of 11 or above.</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00059">
+		<InternalMessage>The patient is not eligible for HCVS (Aged 70 or above)</InternalMessage>
+		<ExternalCode>E00003</ExternalCode>
+		<ExternalMessage>Invalid eHS account information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00060">
+		<InternalMessage>The selected scheme is not joined by the practice</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00061">
+		<InternalMessage>Invalid RCH Code</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00062">
+		<InternalMessage>Account Validation - HKIC vs EC checking fail</InternalMessage>
+		<ExternalCode>E00003</ExternalCode>
+		<ExternalMessage>Invalid eHS account information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00063">
+		<InternalMessage>Account Validation - Adoption Cert checking fail</InternalMessage>
+		<ExternalCode>E00003</ExternalCode>
+		<ExternalMessage>Invalid eHS account information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00064">
+		<InternalMessage>(HL7) Fail to locate node to read English name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00065">
+		<InternalMessage>(HL7) Fail to read English surname</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00066">
+		<InternalMessage>(HL7) Fail to read English given name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00067">
+		<InternalMessage>(HL7) Fail to locate node to read patient info</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00068">
+		<InternalMessage>(HL7) Fail to read Identity Number</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00069">
+		<InternalMessage>(HL7) Fail to read Chinese Name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00070">
+		<InternalMessage>(HL7) Fail to read CCC Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00071">
+		<InternalMessage>(HL7) Fail to read Gender</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00072">
+		<InternalMessage>(HL7) Fail to read Birth Date</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00073">
+		<InternalMessage>
+			(HL7) Fail to locate node "Provider Organization"
+		</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00074">
+		<InternalMessage>(HL7) Fail to read SP ID</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00075">
+		<InternalMessage>(HL7) Fail to read SP Name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00076">
+		<InternalMessage>
+			(HL7) Fail to locate node "ComponentOf"
+		</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00077">
+		<InternalMessage>(HL7) Fail to read Service Date</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00078">
+		<InternalMessage>
+			(HL7) Fail to locate node "HealthCarefacility"
+		</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00079">
+		<InternalMessage>(HL7) Fail to read Practice ID</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00080">
+		<InternalMessage>(HL7) Fail to read Practice Name</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00081">
+		<InternalMessage>(HL7) Fail to locate node to read account info</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00082">
+		<InternalMessage>(HL7) Fail to locate node to read Doc Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00083">
+		<InternalMessage>
+			(HL7) Fail to locate node "qualifier"
+		</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00084">
+		<InternalMessage>(HL7) Identity number is not consistent</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00085">
+		<InternalMessage>(HL7) Service Date is not consistent</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00086">
+		<InternalMessage>(HL7) Incomplete info for claim</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00087">
+		<InternalMessage>(HL7) Fail to read Scheme Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00088">
+		<InternalMessage>(HL7) Fail to read Subsidy Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00089">
+		<InternalMessage>(HL7) Fail to read Dose Sequence</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00090">
+		<InternalMessage>(HL7) Fail to read Voucher Claimed</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00091">
+		<InternalMessage>(HL7) Fail to read Prof Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00092">
+		<InternalMessage>(HL7) Fail to read L1 Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00093">
+		<InternalMessage>(HL7) Fail to read L1 Desc</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00094">
+		<InternalMessage>(HL7) Fail to read L2 Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00095">
+		<InternalMessage>(HL7) Fail to read L2 Desc</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00096">
+		<InternalMessage>(HL7) Fail to read TSW Indicator</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00097">
+		<InternalMessage>(HL7) Fail to read PreSchool Indicator</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00098">
+		<InternalMessage>(HL7) Fail to read Dose Interval Indicator</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00099">
+		<InternalMessage>(HL7) Fail to read RCH Code</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00100">
+		<InternalMessage>(HL7) Fail to read Message ID</InternalMessage>
+		<ExternalCode>E00100</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00101">
+		<InternalMessage>Scheme not joined by practice (ClaimRule)</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00102">
+		<InternalMessage>Practice not joined the profession (ClaimRule)</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00103">
+		<InternalMessage>Not a valid subsidy for this scheme (ClaimRule)</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00104">
+		<InternalMessage>Account inactive</InternalMessage>
+		<ExternalCode>E00003</ExternalCode>
+		<ExternalMessage>Incorrect eHS account information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00105">
+		<InternalMessage>DOB exceed document limit</InternalMessage>
+		<ExternalCode>E00003</ExternalCode>
+		<ExternalMessage>Incorrect eHS account information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00106">
+		<InternalMessage>Duplicate Subsidize Code</InternalMessage>
+		<ExternalCode>E00004</ExternalCode>
+		<ExternalMessage>Incorrect eHS transaction information</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00107">
+		<InternalMessage>Transaction No. Exceed Max Allowed</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00108">
+		<InternalMessage>Invalid Service Date: Cannot obtain scheme claim objtect at BaseWSClaimRequest</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: Invalid service date</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00109">
+		<InternalMessage>Validation Rule - Dose Sequence</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>The 2nd dose vaccination should not be earlier than the 1st dose vaccination</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00110">
+		<InternalMessage>Failed to obtain CMS vaccine result (Connection Fail or Suspended)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: Cannot retrieve immunization record from Hospital Authority</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00111">
+		<InternalMessage>Message ID not found / Invalid</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00112">
+		<InternalMessage>Failed to obtain CMS vaccine result (Demographic not match) </InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: Cannot retrieve immunization record from Hospital Authority due to patient demographics not match</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00113">
+		<InternalMessage>Incorrect input parameter of Copayment Fee</InternalMessage>
+		<ExternalCode>E00001</ExternalCode>
+		<ExternalMessage>Invalid input message</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00114">
+		<InternalMessage>Copayment Fee and Secondary Reason For Visit are not enabled</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: Invalid service date</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00115">
+		<InternalMessage>Block by subsidize sequence checking (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: "Service Date" of new season should not be earlier than previous season of the same subsidy</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00116">
+		<InternalMessage>Block by inner dose warning (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: Two 23vPPV vaccination should be at least 5 years apart</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00117">
+		<InternalMessage>Block by duplicate warning (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: The selected subsidy was already claimed</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I00118">
+		<InternalMessage>Block by subsidize sequence date checking (ClaimRule)</InternalMessage>
+		<ExternalCode>E00006</ExternalCode>
+		<ExternalMessage>Validation Fail: There same subsidy cannot be claimed on the same "Service Date"</ExternalMessage>
+	</MessageItem>
+	<MessageItem InternalCode = "I99999">
+		<InternalMessage>Unexpected Error</InternalMessage>
+		<ExternalCode>E99999</ExternalCode>
+		<ExternalMessage>Other Error</ExternalMessage>
+	</MessageItem>
+
+
+
+</ErrorMessage>

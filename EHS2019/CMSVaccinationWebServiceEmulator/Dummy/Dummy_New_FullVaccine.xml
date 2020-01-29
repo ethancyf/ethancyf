@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<result>
+	<message_id>[message_id]</message_id>
+	<return_code>0</return_code>
+	<patient_list>
+	<patient_count>1</patient_count>
+		<patient>
+			<patient_id>1</patient_id>
+			<patient_result_code>0</patient_result_code>
+			<vaccine_result_code>0</vaccine_result_code>
+			<return_data>
+			<record_count>3</record_count>
+				<vaccination_record>
+					<record_creation_dtm>2009/12/13 12:34:56</record_creation_dtm>
+					<injection_date>25/07/2010</injection_date>
+					<vaccine_code>001-1011</vaccine_code>
+					<vaccine_desc></vaccine_desc>
+					<vaccine_desc_chinese></vaccine_desc_chinese>
+					<dose_seq_code>000</dose_seq_code>
+					<dose_seq_desc></dose_seq_desc>
+					<dose_seq_desc_chinese></dose_seq_desc_chinese>
+					<provider>HA</provider>
+					<location>Alice Ho Miu Ling Nethersole Hospital</location>
+					<location_chinese>雅麗氏何妙齡那打素醫院</location_chinese>
+					<onsite>Y</onsite>
+				</vaccination_record>
+				<vaccination_record>
+					<record_creation_dtm>2009/12/13 12:34:56</record_creation_dtm>
+					<injection_date>01/08/2011</injection_date>
+					<vaccine_code>001-1011</vaccine_code>
+					<vaccine_desc>Seasonal Influenza 2010/2011</vaccine_desc>
+					<vaccine_desc_chinese></vaccine_desc_chinese>
+					<dose_seq_code>000</dose_seq_code>
+					<dose_seq_desc></dose_seq_desc>
+					<dose_seq_desc_chinese></dose_seq_desc_chinese>
+					<provider>HA</provider>
+					<location>Sai Ying Pun Clinic (Family Medicine)</location>
+					<location_chinese>西營盤診所 (家庭醫學)</location_chinese>
+					<onsite>Y</onsite>
+				</vaccination_record>
+				<vaccination_record>
+					<record_creation_dtm>2009/12/13 12:34:56</record_creation_dtm>
+					<injection_date>15/12/2009</injection_date>
+					<vaccine_code>003-0003</vaccine_code>
+					<vaccine_desc>Pneumococcal (23vPPV)</vaccine_desc>
+					<vaccine_desc_chinese/>
+					<dose_seq_code>000</dose_seq_code>
+					<dose_seq_desc />
+					<dose_seq_desc_chinese />
+					<provider>HA</provider>
+					<location>Queen Mary Hospital </location>
+					<location_chinese>瑪麗醫院</location_chinese>
+					<onsite>Y</onsite>
+				</vaccination_record>
+			</return_data>
+		</patient>
+    </patient_list>
+	<source_system>CMS</source_system>
+</result>

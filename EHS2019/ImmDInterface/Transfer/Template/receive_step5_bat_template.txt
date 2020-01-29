@@ -1,0 +1,4 @@
+cd {ImmDFolder}
+rm {contentFileName}
+rm {controlFileName}
+exit

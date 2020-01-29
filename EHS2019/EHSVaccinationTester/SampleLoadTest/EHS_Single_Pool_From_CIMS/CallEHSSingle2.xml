@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameter>
+	<message_id>M2011011800000001</message_id>
+	<health_check>N</health_check>
+	<patient_list>
+		<patient_count>1</patient_count>
+		<patient>
+			<patient_id>1</patient_id>
+			<document_no> C3804036</document_no>
+			<document_type>HKIC</document_type>
+			<name>LEE, SZE HIN</name>
+			<sex>M</sex>
+			<dob>14/03/1940</dob>
+			<dob_format>DD/MM/YYYY</dob_format>
+		</patient>
+	</patient_list>
+	<vaccine>
+		<vaccine_count>3</vaccine_count>
+		<vaccine_code>001</vaccine_code>
+		<vaccine_code>002</vaccine_code>
+		<vaccine_code>003</vaccine_code>
+	</vaccine>
+	<injection_date_start>01/02/2010</injection_date_start>
+	<injection_date_end />
+	<request_system>CIMS</request_system>
+</parameter>

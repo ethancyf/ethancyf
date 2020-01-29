@@ -1,0 +1,305 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb"
+    Inherits="HCVU.MasterPage" %>
+
+<%@ Register Src="~/UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp" TagPrefix="uc1" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>E-Voucher System</title>
+    <meta http-equiv="Page-Exit" content="revealTrans(Duration=0,Transition=12)" />
+    <base id="basetag" runat="server" />
+    <link href="CSS/CommonStyle.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/comboBoxStyle.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../JS/Common.js"></script>
+    <script type="text/javascript" src="../JS/Clock.js"></script>
+
+
+    <script type="text/javascript" src="../JS/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="../JS/hoverIntent.js"></script>
+    <link href="CSS/CustomMenuStyle.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        var ddmenuitem = 0;
+        var ddmenuitem2 = 0;
+        var isMenuOpen = false;
+        var speed = 100; // 0: no slide animation, number = milliseconds for animation
+        var delay = 50;  // number = milliseconds for onMouseOver polling interval  
+        var sensitivity = 7;  // number = sensitivity threshold (must be 1 or higher)   
+
+        function openLV2SubMenu() {
+            ddmenuitem.css('display', 'none');
+            ddmenuitem.stop(true, true).slideDown(speed);
+            ddmenuitem.css('display', 'block');
+        };
+
+        function openLV3SubMenu() {
+            ddmenuitem2.css('display', 'none');
+            ddmenuitem2.animate({ width: 'toggle' }, speed);
+            ddmenuitem2.css('display', 'block');
+        };
+
+        function closeLV2SubMenu() {
+            if (ddmenuitem) {
+                ddmenuitem.css('display', 'block');
+                ddmenuitem.stop(true, true).slideUp(speed);
+            }
+            ddmenuitem = 0;
+            $('li.active').removeClass('active');
+        };
+
+        function closeLV3SubMenu() {
+            if (ddmenuitem2) {
+                ddmenuitem2.css('display', 'block');
+                ddmenuitem2.animate({ width: 'toggle' }, speed);
+            }
+            ddmenuitem2 = 0;
+        };
+
+        function closeMenu() {
+            closeLV3SubMenu();
+            closeLV2SubMenu();
+            isMenuOpen = false;
+        }
+
+        $(document).ready(function () {
+
+            $('ul.level2 > li')
+            .hoverIntent({
+                sensitivity: sensitivity,
+                interval: delay,
+
+                over: function () {
+
+                    if (isMenuOpen) {
+
+                        if (ddmenuitem2 && ($(this).closest('li').find('ul:first').css('display') != 'block')) {
+                            //close other lv3 submenu
+                            closeLV3SubMenu();
+                        }
+                        ddmenuitem2 = $(this).closest('li').find('ul:first');
+
+                        if (ddmenuitem2 && ($(this).closest('li').find('ul:first').css('display') == 'none')) {
+                            openLV3SubMenu();
+                        }
+
+                    }
+                },
+
+                out: function () {
+                    //do nth
+                }
+            });
+
+            $('a.level1')
+                .on('click', function (event) {
+
+                    event.stopPropagation();
+
+                    ddmenuitem = $(this).closest('li').find('ul:first');
+                    if (ddmenuitem.length == 0)
+                        //do nth if parent do not have submenu
+                        return;
+
+
+                    if (!isMenuOpen) {
+                        openLV2SubMenu();
+                        $(this).parent('li').addClass('active');
+                        isMenuOpen = true;
+                    }
+                })
+            .hover(function () {
+
+                if (isMenuOpen) {
+                    closeLV3SubMenu();
+                }
+            }, function () {
+                //do nth
+            });
+
+            $('ul.level1 > li')
+            .hoverIntent({
+                sensitivity: sensitivity,
+                interval: delay,
+                over: function () {
+
+                    //if ismenuopen & not self submenu open, close other first, then open self submenu
+                    if (isMenuOpen) {
+
+                        var targetitem = $(this).closest('li').find('ul:first');
+                        if ((targetitem.length == 0) || (targetitem.css('display') == 'none')) {
+
+                            closeLV2SubMenu();
+
+                            ddmenuitem = targetitem;
+
+                            if (ddmenuitem.length > 0) {
+                                openLV2SubMenu();
+                                $(this).addClass('active');
+                            }
+                        }
+
+                        ddmenuitem = targetitem;
+                    }
+
+                },
+
+                out: function () {
+
+                }
+            });
+        });
+
+        $(document).click(function (event) {
+            if (!$(event.target).closest('nav').length) {
+                //close all menu when click outside the menu bar
+                closeMenu();
+            }
+
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        function MenuClick(url) {
+            $find('ctl00_ModalPopupExtender1').show();
+            document.getElementById('ctl00_ModalPopupExtender1_backgroundElement').style.height = document.documentElement.clientHeight + document.documentElement.scrollTop;
+            setTimeout("document.getElementById('ctl00_pnlPleaseWait').style.visibility='visible'", 1000);
+            setTimeout("window.location = '" + url + "'", 4000);
+        }
+    </script>
+    <asp:ContentPlaceHolder ID="ContentPlaceHolderHead" runat="server"></asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server" defaultbutton="btnHidden" autocomplete="off">
+        <div>
+            <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
+            <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
+                <table style="width: 150px; height: 150px; background-color: #ffffff" border="0"
+                    cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" valign="middle">
+                            <asp:Image ID="imgLoading" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
+                                AlternateText="<%$ Resources:AlternateText, PleaseWait %>" /></td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <asp:UpdateProgress runat="server" ID="UpdateProgress1" DisplayAfter="0">
+                <ProgressTemplate>
+                </ProgressTemplate>
+            </asp:UpdateProgress>
+            <cc2:ModalPopupExtender ID="ModalPopupExtender1" runat="server" PopupControlID="pnlPleaseWait"
+                TargetControlID="btnHiddenPleaseWait" BackgroundCssClass="modalBackgroundTransparent" />
+            <table border="0" cellpadding="0" cellspacing="0" style="background-image: url(Images/master/banner_header.jpg); width: 994px; background-repeat: no-repeat; height: 100px"
+                id="tblBanner" runat="server">
+                <tr>
+                    <td class="AppEnvironment" style="vertical-align: top">
+                        <asp:Label ID="lblAppEnvironment" runat="server" Text="[CodeBehind]"></asp:Label>
+                    </td>
+                </tr>
+            </table>
+            <table style="width: 986px;">
+                <tr valign="bottom">
+                    <td>
+                        <asp:ImageButton
+                            ID="ibtnLogout" runat="server" AlternateText="<%$ Resources:AlternateText, LogoutBtn %>" ImageUrl="<%$ Resources:ImageUrl, LogoutBtn %>" />
+                        <asp:ImageButton ID="ibtnInbox" runat="server" AlternateText="<%$ Resources:AlternateText, InboxBtn %>" ImageUrl="<%$ Resources:ImageUrl, InboxBtn %>" />
+                        <asp:ImageButton ID="ibtnHome" runat="server" AlternateText="<%$ Resources:AlternateText, HomeBtn %>" ImageUrl="<%$ Resources:ImageUrl, HomeBtn %>" /><asp:Label ID="lblWelcome" runat="server" CssClass="bannerText" Text="<%$ Resources:Text, Welcome %>"></asp:Label>
+                        <asp:Label ID="lblLoginName" runat="server" CssClass="bannerText"></asp:Label></td>
+                    <%-- CRE11-010 Relax back date limit request [Start][Tommy L] ----------------------------------------------------%>
+                    <td align="right">
+                        <asp:ImageButton ID="ibtnChangePW" runat="server" AlternateText="<%$ Resources:AlternateText, ChangePasswordBtn %>" ImageUrl="<%$ Resources:ImageUrl, ChangePasswordBtn %>" OnClick="ibtnChangePW_Click" />
+                    </td>
+                    <td align="right" style="width: 140px">
+                        <%-- CRE11-010 Relax back date limit request [End][Tommy L] ----------------------------------------------------%>
+                        <asp:Label ID="lblClock" runat="server"></asp:Label></td>
+                </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0" style="width: 994px">
+                <tr>
+                    <td>
+                        <nav>
+                        <ul class="nav level1" id="ulMenu" runat="server"></ul>
+                    </nav>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <table border="0" cellpadding="0" cellspacing="0" style="background-position: bottom; background-image: url(../Images/master/body_background.jpg); width: 994px; background-repeat: repeat-x">
+                <tr>
+                    <td style="width: 5px; height: 515px;" valign="top">
+                        <img src="../Images/others/transparent.gif" alt="" width="5px" />
+                    </td>
+                    <td style="height: 515px" valign="top">
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        </asp:ContentPlaceHolder>
+                        <%-- CRE12-014 Relax 500 row limit in back office platform [Start][Twinsen] --%>
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                            </asp:UpdatePanel>
+                        </asp:ContentPlaceHolder>
+                        <%-- CRE12-014 Relax 500 row limit in back office platform [End][Twinsen] --%>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="background-color: #dbdbdb" valign="top">
+                        <table style="width: 98%" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td colspan="2" style="height: 2px">
+                                    <hr style="width: 98%; color: #ffffff; border-top-style: none; border-right-style: none; border-left-style: none; height: 1px; border-bottom-style: none;" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left">&nbsp;&nbsp;&nbsp;
+                                <asp:LinkButton ID="lnkBtnPrivacyPolicy" runat="server" CssClass="footerText" Text="<%$ Resources:Text, PrivacyPolicy %>"></asp:LinkButton>
+                                    <asp:Label ID="lblseparator1" runat="server" CssClass="footerText" Text=" | "></asp:Label><asp:LinkButton ID="lnkBtnDisclaimer" runat="server" CssClass="footerText" Text="<%$ Resources:Text, ImportantNotices %>"></asp:LinkButton>
+                                    <asp:Label ID="lblseparator2" runat="server" CssClass="footerText" Text=" | "></asp:Label><asp:LinkButton ID="lnkBtnSysMaint" runat="server" CssClass="footerText" Text="<%$ Resources:Text, SysMaint %>"></asp:LinkButton>
+                                </td>
+                                <td align="right">
+                                    <asp:Label ID="lblFooterCopyright" runat="server" CssClass="footerText" Text="© Copyright Hospital Authority . All rights reserved."
+                                        Visible="False"></asp:Label>
+                                    &nbsp; &nbsp; &nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <asp:Button runat="server" ID="btnHidden" Style="display: none" OnClientClick="return false;" />
+        <!-- Timeout Reminder -->
+        <script type="text/javascript" src="../JS/TimeoutReminder.js"></script>
+        <asp:Panel ID="panTimeoutReminder" runat="server" Style="display: none"  Width="500px" >
+            <uc1:ucNoticePopUp ID="ucNoticePopUpTimeoutReminder" runat="server" NoticeMode="Timeout" ButtonMode="OK"
+                MessageText="<%$ Resources: Text, TimeoutReminderMessage %>" />
+        </asp:Panel>
+        <asp:Button ID="btnHiddenTimeoutReminder" runat="server" Style="display: none" />
+        <cc2:ModalPopupExtender ID="ModalPopupExtenderTimeoutReminder" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+            TargetControlID="btnHiddenTimeoutReminder" PopupControlID="panTimeoutReminder" RepositionMode="None"
+            PopupDragHandleControlID="">
+        </cc2:ModalPopupExtender>
+    </form>
+    <script type="text/javascript">
+        //alert(document.getElementById('ctl00_caMenu').innerHTML)
+
+        //CRE15-004 TIV & QIV [Start][Winnie] Overwrite existing tab function
+        Sys.Extended.UI.TabContainer.prototype._app_onload = function (sender, e) {
+            if (this._cachedActiveTabIndex != -1) {
+                this.set_activeTabIndex(this._cachedActiveTabIndex);
+                this._cachedActiveTabIndex = -1;
+
+                var activeTab = this.get_tabs()[this._activeTabIndex];
+                if (activeTab) {
+                    activeTab._wasLoaded = true;
+                    //activeTab._setFocus(activeTab); //-- disable focus on active tab in the last TabContainer
+                }
+            }
+            this._loaded = true;
+        }
+        //CRE15-004 TIV & QIV [End][Winnie]
+    </script>
+</body>
+</html>

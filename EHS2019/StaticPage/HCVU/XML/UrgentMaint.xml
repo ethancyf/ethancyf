@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ScheduleList>
+	<Schedule>
+		<s_id>201003061359</s_id>
+		<!-- 200812171200 = 2008-12-17 12:00 -->
+		<expiry_dtm>March 16, 2010 01:00:00</expiry_dtm>
+		<EN_Date>16 Mar 2010</EN_Date>
+		<ZH_Date>2010年03月16日</ZH_Date>
+		<EN_Time>00:30 a.m. - 01:00 a.m.</EN_Time>
+		<ZH_Time>上午零時三十分至上午一時</ZH_Time>
+		<Type>U</Type>
+	</Schedule>
+</ScheduleList>

@@ -1,0 +1,518 @@
+﻿.ReportInfo_LabelWidth{
+    width: 220px !important;
+}
+
+/*UI - TextboxWithDesc*/
+.TextboxWithDesc_tr{
+    height: 30px !important;
+}
+
+.TextboxWithDesc_LabelWidth{
+    width: 220px !important;
+}
+
+.TextboxWithDesc_ValueWidth{
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.TextboxWithDesc_Textbox{
+    width: 30px !important; 
+    position:relative;
+    top:-4px;
+}
+
+.TextboxWithDesc_Desc{
+    position:relative;
+    top:-4px;
+}
+
+.TextboxWithDesc_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - SchemeProf Scheme*/
+.SchemeProf_Scheme_tr{
+    height: 25px !important;
+    vertical-align:top !important;
+}
+
+/*UI - HealthProfessionMultiple*/
+.HealthProfessionMultiple_tr{
+    height: 25px !important;
+}
+
+.HealthProfession_LabelWidth
+{
+    width: 175px !important;
+}
+
+.HealthProfession_ValueWidth{
+    width: 640px !important;
+    vertical-align:top !important;
+}
+
+.HealthProfession_ValueWidth_NoSelection {
+    width: 350px !important;
+    vertical-align:top !important;
+}
+
+.HealthProfession_td_01
+{
+    width: 150px !important;
+    vertical-align:top;
+}
+
+.HealthProfession_td_02
+{
+    width: 110px !important;
+    vertical-align:top;
+}
+
+.HealthProfession_td_03
+{
+    width: 350px !important;
+    vertical-align:top;
+}
+
+
+.HealthProfession_RadioButtonList tr td{
+    width: 70px !important;
+}
+
+.HealthProfession_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.HealthProfession_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+.HealthProfession_BtnAfterRadioButtonList input
+{
+    vertical-align:top;
+}
+
+.HealthProfession_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - SchemeMultiple*/
+.SchemeMultiple_tr{
+    height: 30px !important;
+}
+
+.SchemeMultiple_LabelWidth
+{
+    width: 175px !important;
+}
+
+.SchemeMultiple_ValueWidth{
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.SchemeMultiple_ValueWidth_NoSelection {
+    width: 350px !important;
+    vertical-align:top !important;
+}
+
+.SchemeMultiple_td_01
+{
+    width: 150px !important;
+    vertical-align:top;
+}
+
+.SchemeMultiple_td_02
+{
+    width: 110px !important;
+    vertical-align:top;
+}
+
+.SchemeMultiple_td_03
+{
+    width: 330px !important;
+    vertical-align:top;
+}
+
+
+.SchemeMultiple_RadioButtonList tr td{
+    width: 70px !important;
+}
+
+.SchemeMultiple_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.SchemeMultiple_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+.SchemeMultiple_BtnAfterRadioButtonList input
+{
+    vertical-align:top;
+}
+
+.SchemeMultiple_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - DateType*/
+.DateType_tr{
+    height:24px !important;
+}
+
+.DateType_td_01 {
+    width: 180px !important;
+    vertical-align: top !important;
+}
+
+.DateType_td_01_label {
+    position:relative !important;
+    left:-2px !important;
+}
+
+.DateType_td_02 {
+    width:300px !important;
+    vertical-align:top !important;
+}
+
+.DateType_td_02_table tr td:first-child{
+    width:258px !important;
+    vertical-align:top !important;
+}
+
+.DateType_td_02_table tr td{
+    vertical-align:top !important;
+}
+
+.DateType_RadioButtonList tr td:first-child{
+    width:130px !important;
+}
+
+.DateType_RadioButtonList tr td{
+    width:135px;
+    vertical-align:top;
+}
+
+.DateType_RadioButtonList tr td input{
+    position:relative;
+    left:-7px;
+    top:-2px;
+}
+
+.DateType_RadioButtonList tr td label{
+    position:relative;
+    left:-6px;
+    top:-3px;
+    width:100px
+}
+
+.DateType_Alert{
+    position:relative;
+    left:2px;
+    top:-2px;
+}
+
+/*UI - TransStatusMultiple*/
+
+.TransStatusMultiple_tr{
+    height: 24px !important;
+}
+
+.TransStatusMultiple_LabelWidth
+{
+    width: 180px !important;
+}
+
+.TransStatusMultiple_Label
+{
+    position: relative !important;
+    left: -2px !important;
+}
+
+.TransStatusMultiple_ValueWidth{
+    width: 600px !important;
+    vertical-align:top !important;
+}
+
+.TransStatusMultiple_Value{
+    position: relative !important;
+    left: 0px !important;
+}
+
+.TransStatusMultiple_ValueWidth_NoSelection {
+    width: 350px !important;
+    vertical-align:top !important;
+}
+
+.TransStatusMultiple_td_01
+{
+    width: 150px !important;
+    vertical-align:top;
+}
+
+.TransStatusMultiple_td_02
+{
+    width: 110px !important;
+    vertical-align:top;
+}
+
+.TransStatusMultiple_td_03
+{
+    width: 330px !important;
+    vertical-align:top;
+}
+
+.TransStatusMultiple_RadioButtonList tr td{
+    width:70px;
+}
+
+.TransStatusMultiple_RadioButtonList tr td input{
+    position:relative;
+    left:-7px;
+    top:-2px;
+}
+
+.TransStatusMultiple_RadioButtonList tr td label{
+    position:relative;
+    left:-6px;
+    top:-3px;
+}
+
+.TransStatusMultiple_BtnAfterRadioButtonList input{
+    vertical-align:top;
+}
+
+.TransStatusMultiple_Alert{
+    position:relative;
+    top:-1px;
+}
+
+/*UI - DateFormat*/
+
+.FormatOfDate_LabelWidth
+{
+    width: 146px !important;
+}
+
+.FormatOfDate_ValueWidth {
+    width: 350px !important;
+}
+
+.FormatOfDate_RadioButtonList tr td{
+    width:122px !important;
+}
+
+.FormatOfDate_RadioButtonList tr td input{
+    position:relative;
+    left:-2px;
+    top:-2px;
+}
+
+.FormatOfDate_RadioButtonList tr td label{
+    position:relative;
+    left:-2px;
+    top:-3px;
+}
+
+/*UI - DateFormatMonthAndYear*/
+
+.FormatOfDateMY_tr{
+    height: 24px !important;
+}
+
+.FormatOfDateMY_FormatLabelWidth{
+    width: 180px !important;
+}
+
+.FormatOfDateMY_FormatLabel {
+    position:relative !important;
+    left:-2px !important;
+}
+
+.FormatOfDateMY_FormatValueWidth {
+    width: 350px !important;
+}
+
+.FormatOfDateMY_FormatValue {
+    position:relative !important;
+    left:-3px !important;
+    font-size: 16px !important;
+    color: #4D4D4D !important;
+    font-family: Arial !important;
+    font-weight: bold !important;
+}
+
+.FormatOfDateMY_DateLabel {
+    position:relative !important;
+    left:-2px !important;
+}
+
+.FormatOfDateMY_DateValue {
+    position:relative !important;
+    left:-3px !important;
+}
+
+/*UI - CheckBox*/
+.CheckBox_Checkbox{
+    height:30px;
+}
+
+.CheckBox_LabelWidth {
+    width: 220px !important;
+}
+
+.CheckBox_ValueWidth {
+    width: 50px !important;
+}
+
+.CheckBox_Checkbox td{
+    vertical-align:top;
+}
+
+.CheckBox_Checkbox input {
+    position:relative;
+    left:-3px;
+    top:-2px;
+}
+
+/*UI - FindServiceProvider*/
+.FindSP_tr{
+    height: 24px !important;
+}
+
+.FindSP_SPIDLabelWidth{
+    width: 180px !important;
+}
+
+.FindSP_SPIDLabel {
+    position:relative !important;
+    left:-2px !important;
+}
+
+.FindSP_SPIDValueWidth {
+    width: 600px !important;
+}
+
+.FindSP_SPIDValue {
+    position:relative !important;
+    left:-4px !important;
+}
+
+.FindSP_SPIDTextBox {
+    width: 70px;
+    position:relative !important;
+    top:-2px !important;
+}
+
+.FindSP_SPIDErrorImage {
+    position:relative !important;
+    top:-2px !important;
+}
+
+.FindSP_SearchBtn {
+    position:relative !important;
+    top:0px !important;
+}
+
+.FindSP_ClearBtn {
+    position:relative !important;
+    top:0px !important;
+}
+
+.FindSP_NameLabel {
+    position:relative !important;
+    left:-2px !important;
+}
+
+.FindSP_NameValue {
+    position:relative !important;
+    left:-3px !important;
+    top:2px !important;
+    font-size: 16px !important;
+    color: #4D4D4D !important;
+    font-family: Arial !important;
+    font-weight: bold !important;
+}
+
+/*UI - Percentile*/
+.Percentile_LabelWidth {
+    width: 175px !important;
+}
+
+.Percentile_ValueWidth {
+    width: 90px !important;
+    vertical-align: top !important;
+}
+
+.Percentile_Checkbox input
+{
+    padding-right: 5px !important;
+    vertical-align:top !important;
+}
+
+/*UI - ExactDatePeriod*/
+.ExactDatePeriod_tr{
+    height:25px;
+    vertical-align:top;
+}
+
+.ExactDatePeriod_LabelWidth{
+    width:175px !important;
+}
+
+.ExactDatePeriod_FromDateWidth textbox{
+    position:relative !important;
+    top:-2px !important;
+}
+
+.ExactDatePeriod_LabelToWidth label{
+    position:relative !important;
+    top:-2px !important;
+}
+
+.ExactDatePeriod_ToDateWidth textbox {
+    position: relative !important;
+    top: -2px !important;
+}
+
+/*UI - NumericComparison*/
+.NumericComparison_LabelWidth {
+    width: 180px !important;
+}
+
+.NumericComparison_InputTextbox {
+    width: 50px !important;
+    vertical-align: top;
+    position:relative !important;
+    top:-2px !important;
+}
+
+.Numeric_CompareItemLabel {
+    position:relative !important;
+    left:-3px !important;
+}
+
+.Numeric_OperatorLabel {
+    padding-left: 5px;
+    padding-right: 5px;
+    vertical-align: top;
+}
+
+.NumericComparison_ErrorImage {
+    position:relative !important;
+    top:-1px !important;
+    vertical-align: top;
+}

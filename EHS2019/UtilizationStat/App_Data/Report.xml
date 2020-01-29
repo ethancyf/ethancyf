@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReportList>
+	<Report>
+		<ReportID>R0001</ReportID>
+		<ReportName>eHS(S)D0013-eHS(S) Immd Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0013-eHS(S) Immd Summary (Daily)</ReportDesc>
+		<ExecSP>proc_ImmD_getStatistic</ExecSP>
+		<TemplateName>Immd_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>8,4,4,5,4,4</StartRowNo>
+		<FileNameFormat>eHS(S)D0013-Immd_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>T</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0002</ReportID>
+		<ReportName>eHS(S) Rectify Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S) Rectify Summary (Daily)</ReportDesc>
+		<ExecSP>proc_Rectify_getStat</ExecSP>
+		<TemplateName>Rectify_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>3,3,2</StartRowNo>
+		<FileNameFormat>eHS_RectifySummary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0003</ReportID>
+		<ReportName>eHS(S) Claim Duration (Daily)</ReportName>
+		<ReportDesc>eHS(S) Claim Duration (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_ClaimDuration_Stat_Schedule_get</ExecSP>
+		<TemplateName>ClaimDuration_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>3,4,3,4</StartRowNo>
+		<FileNameFormat>eHS_ClaimDuration</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0004</ReportID>
+		<ReportName>eHS(S)D0011-Claim By Other Mean Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0011-Claim By Other Mean Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_eHSD0011_Claim_By_Other_Mean_Stat_Read</ExecSP>
+		<TemplateName>eHSD0011_Claim_By_Other_Mean_Summary_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>11,4,5,5,5,5,5,5,4</StartRowNo>
+		<FileNameFormat>eHS(S)D0011-Claim_By_Other_Mean_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>T</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0005</ReportID>
+		<ReportName>eHS(S)D0009-Utilization Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0009-Utilization Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_Utilization_Stat</ExecSP>
+		<TemplateName>eHSD0009-Utilization_Summary_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>9,5,5,5,5,5,4</StartRowNo>
+		<FileNameFormat>eHSD0009-Utilization_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0006</ReportID>
+		<ReportName>eHS(S)D0010-Transaction Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0010-Transaction Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_TransactionHourly_Stat</ExecSP>
+		<TemplateName>eHSD0010-Transaction_Summary</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>7,3,4,4,1</StartRowNo>
+		<FileNameFormat>eHS(S)D0010-Transaction_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>T</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0007</ReportID>
+		<ReportName>eHS(S) SDIR Daily Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S) SDIR Daily Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_SDIR_Daily_stat_read</ExecSP>
+		<TemplateName>SDIR_DailyStat_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>4</StartRowNo>
+		<FileNameFormat>eHS_SDIR_Daily_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0008</ReportID>
+		<ReportName>eHS(S) HCVR Daily Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S) HCVR Daily Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_HCVRAll_Stat_Read</ExecSP>
+		<TemplateName>VoucherBalanceEnquiry_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>4,4</StartRowNo>
+		<FileNameFormat>eHS_HCVR_Daily_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0009</ReportID>
+		<ReportName>eHS(S) PFC Utilization Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S) PFC Utilization Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_PFCUsageAll_Stat_Read</ExecSP>
+		<TemplateName>PFC_Utilization_Summary_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>1,1</StartRowNo>
+		<FileNameFormat>eHS_PFC_Utilization_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0010</ReportID>
+		<ReportName>eHS(S)D0005-eHS(S) Account Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0005-eHS(S) Account Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_eHSD0005_Report_get</ExecSP>
+		<TemplateName>AccountSummary_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>6,3,3,3</StartRowNo>
+		<FileNameFormat>eHS(S)D0005-Account_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>T</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<!--CRE13-016 Excel Upgrade [Karl] - Report Obsoleted-->
+	<!--<Report>-->
+	<!--<ReportID>R0011</ReportID>-->
+	<!--<ReportName>eHS HSIV Claim Report</ReportName>-->
+	<!--<ReportDesc>eHS HSIV Claim Report</ReportDesc>-->
+	<!--<ExecSP>proc_EHS_HSIVSSRVPHSIVCategoryReport_Stat</ExecSP>-->
+	<!--<TemplateName>HSIVClaimReport_Template</TemplateName>-->
+	<!--<ReportFileExt>XLSX</ReportFileExt>-->
+	<!--<StartRowNo>1,1</StartRowNo>-->
+	<!--<FileNameFormat>eHS_HSIV_Claim_Report</FileNameFormat>-->
+	<!--<MinusDateForFileName>0</MinusDateForFileName>-->
+	<!--<DailyGenerate>F</DailyGenerate>-->
+	<!--<DBFlag>DBFlag2</DBFlag>-->
+	<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	<!--</Report>-->
+	<Report>
+		<ReportID>R0012</ReportID>
+		<ReportName>Matching Token PPI eHS(S) (Monthly)</ReportName>
+		<ReportDesc>Matching Token PPI eHS(S) (Monthly)</ReportDesc>
+		<ExecSP>proc_MatchTokenWith_EHS_PPIEPR</ExecSP>
+		<TemplateName>Matching_Token_PPI_EHS_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>3</StartRowNo>
+		<FileNameFormat>Matching_Token_PPI_EHS</FileNameFormat>
+		<MinusDateForFileName>0</MinusDateForFileName>
+		<DailyGenerate>F</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<!--CRE13-016 Excel Upgrade [Karl] - Report Obsoleted-->
+	<!--<Report>-->
+	<!--<ReportID>R0013</ReportID>-->
+	<!--<ReportName>Enquire CMS</ReportName>-->
+	<!--<ReportDesc>Enquire CMS</ReportDesc>-->
+	<!--<ExecSP>proc_EHS_CMSVaccinationRecord_Stat_Read</ExecSP>-->
+	<!--<TemplateName>CMSVaccinationRecordStat_Template</TemplateName>-->
+	<!--<ReportFileExt>XLSX</ReportFileExt>-->
+	<!--<StartRowNo>4,2</StartRowNo>-->
+	<!--<FileNameFormat>EnquireCMS</FileNameFormat>-->
+	<!--<MinusDateForFileName>1</MinusDateForFileName>-->
+	<!--<DailyGenerate>F</DailyGenerate>-->
+	<!--<DBFlag>DBFlag2</DBFlag>-->
+	<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	<!--</Report>-->
+	<Report>
+		<ReportID>R0014</ReportID>
+		<ReportName>eHS(S)D0018-eVaccination Record Connection Report (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0018-eVaccination Record Connection Report (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_CMSVaccinationRecordConnection_Stat_Read</ExecSP>
+		<TemplateName>eVaccine_Connection_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<!--CRE11-029 Add CMS health check log [Start][Tommy]-->
+		<StartRowNo>12,4,4,4,4,3,3,3,3,3</StartRowNo>
+		<!--CRE11-029 Add CMS health check log [End][Tommy]-->
+		<FileNameFormat>eHS(S)D0018-eVaccination Record Connection Daily Report</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>T</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+	<Report>
+		<ReportID>R0015</ReportID>
+		<ReportName>eHS(S)D0021-Culmulative Transaction Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0021-Culmulative Transaction Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_eHSD0021</ExecSP>
+		<TemplateName>eHSD0021_Cumulative_Transaction_Summary_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+    <StartRowNo>1,1,1,1,1,1,1,1,1</StartRowNo>
+    <FileNameFormat>eHS(S)D0021-Cumulative Transaction Summary Report</FileNameFormat>
+    <MinusDateForFileName>1</MinusDateForFileName>
+    <DailyGenerate>T</DailyGenerate>
+    <DBFlag>DBFlag2</DBFlag>
+    <!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+  </Report>
+	<Report>
+		<ReportID>R0016</ReportID>
+		<ReportName>eHS(S)D0024-SP_Summary (Daily)</ReportName>
+		<ReportDesc>eHS(S)D0024-SP_Summary (Daily)</ReportDesc>
+		<ExecSP>proc_EHS_eHSD0024</ExecSP>
+		<TemplateName>eHSD0024-SP_Summary_Template</TemplateName>
+		<ReportFileExt>XLSX</ReportFileExt>
+		<StartRowNo>9,3,3,3,3,3,4</StartRowNo>
+		<FileNameFormat>eHS(S)D0024-SP_Summary</FileNameFormat>
+		<MinusDateForFileName>1</MinusDateForFileName>
+		<DailyGenerate>T</DailyGenerate>
+		<DBFlag>DBFlag2</DBFlag>
+		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+	</Report>
+</ReportList>

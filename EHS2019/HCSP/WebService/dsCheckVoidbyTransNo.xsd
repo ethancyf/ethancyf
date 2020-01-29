@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsCheckVoidbyTransNo" targetNamespace="https://hcvs.dh.gov.hksar/dsCheckVoidbyTransNo.xsd" xmlns:mstns="https://hcvs.dh.gov.hksar/dsCheckVoidbyTransNo.xsd" xmlns="https://hcvs.dh.gov.hksar/dsCheckVoidbyTransNo.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsCheckVoidbyTransNo" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="dsCheckVoidbyTransNo" msprop:Generator_DataSetName="dsCheckVoidbyTransNo">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Result" msprop:Generator_UserTableName="Result" msprop:Generator_RowDeletedName="ResultRowDeleted" msprop:Generator_TableClassName="ResultDataTable" msprop:Generator_RowChangedName="ResultRowChanged" msprop:Generator_RowClassName="ResultRow" msprop:Generator_RowChangingName="ResultRowChanging" msprop:Generator_RowEvArgName="ResultRowChangeEvent" msprop:Generator_RowEvHandlerName="ResultRowChangeEventHandler" msprop:Generator_TablePropName="Result" msprop:Generator_TableVarName="tableResult" msprop:Generator_RowDeletingName="ResultRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Return" msprop:Generator_UserColumnName="Return" msprop:Generator_ColumnPropNameInRow="_Return" msprop:Generator_ColumnVarNameInTable="columnReturn" msprop:Generator_ColumnPropNameInTable="ReturnColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Info" msprop:Generator_UserTableName="Info" msprop:Generator_RowDeletedName="InfoRowDeleted" msprop:Generator_TableClassName="InfoDataTable" msprop:Generator_RowChangedName="InfoRowChanged" msprop:Generator_RowClassName="InfoRow" msprop:Generator_RowChangingName="InfoRowChanging" msprop:Generator_RowEvArgName="InfoRowChangeEvent" msprop:Generator_RowEvHandlerName="InfoRowChangeEventHandler" msprop:Generator_TablePropName="Info" msprop:Generator_TableVarName="tableInfo" msprop:Generator_RowDeletingName="InfoRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HKID" msprop:Generator_UserColumnName="HKID" msprop:Generator_ColumnPropNameInRow="HKID" msprop:Generator_ColumnVarNameInTable="columnHKID" msprop:Generator_ColumnPropNameInTable="HKIDColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Transaction" msprop:Generator_UserTableName="Transaction" msprop:Generator_RowDeletedName="TransactionRowDeleted" msprop:Generator_TableClassName="TransactionDataTable" msprop:Generator_RowChangedName="TransactionRowChanged" msprop:Generator_RowClassName="TransactionRow" msprop:Generator_RowChangingName="TransactionRowChanging" msprop:Generator_RowEvArgName="TransactionRowChangeEvent" msprop:Generator_RowEvHandlerName="TransactionRowChangeEventHandler" msprop:Generator_TablePropName="Transaction" msprop:Generator_TableVarName="tableTransaction" msprop:Generator_RowDeletingName="TransactionRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Number" msprop:Generator_UserColumnName="Number" msprop:Generator_ColumnPropNameInRow="Number" msprop:Generator_ColumnVarNameInTable="columnNumber" msprop:Generator_ColumnPropNameInTable="NumberColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Datetime" msprop:Generator_UserColumnName="Datetime" msprop:Generator_ColumnPropNameInRow="Datetime" msprop:Generator_ColumnVarNameInTable="columnDatetime" msprop:Generator_ColumnPropNameInTable="DatetimeColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

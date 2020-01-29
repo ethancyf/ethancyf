@@ -1,0 +1,62 @@
+﻿.comboBox 
+{ 
+  border: 1px solid #A6A7AA; 
+  background-color: white; 
+}
+
+.comboBoxHover
+{ 
+  border: 1px solid #555555; 
+  background-color: white; 
+}
+
+.comboDropDown 
+{ 
+  border: 1px solid #868686; 
+  background-color: white; 
+  padding: 1px;
+  padding-right: 0px;
+  cursor: default;
+}
+
+.comboTextBox
+{
+	padding-left: 2px;
+	padding-right: 2px;
+	background-color: white;
+	border-right: darkgray 1px outset;
+	border-top: darkgray 1px outset;
+	border-left: darkgray 1px outset;
+	border-bottom: darkgray 1px outset;
+	font-size: 14px;
+	color: #000000;
+	font-family: Arial;
+}
+
+.comboTextBoxHover
+{
+
+}
+
+.comboItem
+{
+	font-family: Arial;
+	font-size: 14px;
+	padding: 3px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	color: #000000;
+}
+
+.comboItemHover
+{
+  background-color: #B2B4BF; 
+  background-image: url(../Images/ComboBox/comboItemBg.gif);
+  font-family: Arial; 
+  font-size: 14px; 
+  border: 1px solid #DBCE99;
+  padding: 2px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  color: #000000;
+}

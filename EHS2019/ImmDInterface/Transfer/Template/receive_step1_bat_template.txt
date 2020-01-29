@@ -1,0 +1,6 @@
+lcd {fileStore}
+cd {ImmDFolder}
+binary
+mget {filePrefix}*{contentFileSuffix}
+mget {filePrefix}*{controlFileSuffix}
+exit

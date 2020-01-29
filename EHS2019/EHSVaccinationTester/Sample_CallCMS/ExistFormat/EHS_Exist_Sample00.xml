@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<parameter>
+	<message_id>TEST</message_id>
+  	<health_check>N</health_check>
+	<patient>
+		<document_count>1</document_count>
+		<patient_document>
+			<document_no> L0002006</document_no>
+			<document_type>HKID</document_type>
+			<name>CHAN, KIN HONG</name>
+			<sex>M</sex>
+			<dob>01/01/1920</dob>
+			<dob_format>YYYY</dob_format>
+		</patient_document>
+	</patient>
+	<vaccine>
+		<vaccine_count>3</vaccine_count>
+		<vaccine_code>001</vaccine_code>
+		<vaccine_code>002</vaccine_code>
+		<vaccine_code>003</vaccine_code>
+	</vaccine>
+	<injection_date_start/>
+	<injection_date_end />
+	<request_system>eHS</request_system>
+</parameter>

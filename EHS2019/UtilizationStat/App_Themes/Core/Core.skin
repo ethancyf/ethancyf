@@ -1,0 +1,8 @@
+<asp:GridView runat="server" SkinID="IC" BorderColor="#cccccc" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" UseAccessibleHeader="False" ForeColor="Black" PageSize="10">
+    <PagerStyle BackColor="#6B696B" ForeColor="White" HorizontalAlign="Left" />
+    <HeaderStyle BackColor="#6B696B" CssClass = "gvHeader" ForeColor="White"/>
+    <RowStyle BackColor="#F7F7DE" />
+    <SelectedRowStyle BackColor="#D0D0D0" Font-Bold="True"  />
+    <AlternatingRowStyle BackColor="White" />
+    <HeaderStyle VerticalAlign="Bottom" HorizontalAlign="Center" />
+</asp:GridView>

@@ -1,0 +1,29 @@
+﻿/*Modal Popup*/
+.modalBackground
+{
+	background-color: #dcdcdc;
+	filter: alpha(opacity=70);
+	opacity: 0.7;
+}
+
+.modalBackgroundTransparent
+{
+	background-image: url(../Images/others/bg.png);
+
+}
+
+.headerCss
+{
+	cursor: hand;
+	cursor: pointer;
+	font-size: 14px;
+	color: #ffffff;
+	font-weight: bold;
+}
+.contentCss
+{
+	border-right: #000000 7px solid;
+	border-left: #000000 7px solid;
+	background-color: #ffffff;
+}
+

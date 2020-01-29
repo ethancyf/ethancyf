@@ -1,0 +1,30 @@
+<script language="javascript">
+	function redirectOutput(myForm) {
+	var w = window.open('about:blank','Popup_Window', "directories=no,location=no,menubar=no,resizable=yes,status=yes,toolbar=no,scrollbars=yes,left=0,top=0");
+	myForm.target = 'Popup_Window';
+	Maximize();
+	return true;
+	}
+
+function Maximize() 
+{
+window.innerWidth = screen.width;
+window.innerHeight = screen.height;
+window.screenX = 0;
+window.screenY = 0;
+alwaysLowered = false;
+}
+
+</script>
+<form name="form1" action="http://CS5-DerekLEUNG/HCSP_SmartID_DEV/login.aspx" method="post" onSubmit="redirectOutput(this)" >
+
+        
+SPID:
+<input id="spid" name="spid" type="text" /><br />
+<br />
+<input  id="Button1" type="submit" value="Open Login Page"  />
+<br />
+<br />
+
+<a  href="main.aspx">Back to main page</a></td>
+</form>

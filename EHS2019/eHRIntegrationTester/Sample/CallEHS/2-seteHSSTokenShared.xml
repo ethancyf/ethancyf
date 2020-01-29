@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <seteHSSTokenShared>
+      <HKID>UP9002742</HKID>
+      <ExistingTokenID>999999999</ExistingTokenID>
+      <NewTokenID>999999999</NewTokenID>
+      <Shared>Y</Shared> 
+      <Timestamp>{Timestamp}</Timestamp>
+    </seteHSSTokenShared>]]>
+  </data>
+</root>

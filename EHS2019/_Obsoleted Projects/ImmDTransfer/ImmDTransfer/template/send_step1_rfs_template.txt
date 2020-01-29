@@ -1,0 +1,10 @@
+SET ABORT-ON-ERROR NO
+cd HCVS\IMMED
+lcd {fileStore}
+BINARY
+CONTINUE ON
+MGET {filePrefix}*{contentFileSuffix}
+CONTINUE ON
+MGET {filePrefix}*{controlFileSuffix}
+SET ABORT-ON-ERROR YES
+quit

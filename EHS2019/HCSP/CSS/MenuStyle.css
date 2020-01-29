@@ -1,0 +1,46 @@
+﻿/***** Menu Style *****/
+.menuUnSelect
+{
+	font-size: 18px;
+	color: #666666;
+	font-family: Arial;
+	text-decoration: none;
+	background-image: none;
+	/*height: 60px;*/
+	cursor: pointer;
+    display:inline-block;
+    width: 170px;
+}
+
+.menuSelect
+{
+	font-size: 18px;
+	color: #ff9900;
+	font-family: Arial;
+	background-image: url(../Images/menu/selectedMenuBackground.png);
+	/*height: 60px;*/
+	text-decoration: none;
+	cursor: pointer;
+    display:inline-block;
+    width: 170px;
+}
+
+.menuTable
+{
+	border-top: #cccccc 1px solid;
+	border-bottom: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	width: 100%;
+	background-color: transparent;
+}
+
+/***** Splitter Style *****/
+.HorizontalSplitterBar
+{
+	background: url(Images/menu/splitter_horBg.png);
+}
+
+.CollapsedHorizontalSplitterBar
+{
+	background: url(Images/menu/splitter_horBg.png);
+}

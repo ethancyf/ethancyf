@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ppi.ha.org.hk/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://ppi.ha.org.hk/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://ppi.ha.org.hk/">
+      <s:element name="getSSOAssertionByArtifact">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strSecuredArtifactResolveRequest" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strArtifactResolveRequestIssuerSSOAppIdP" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strSSOTxnId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strSSOArtifact" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSSOAssertionByArtifactResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSSOAssertionByArtifactResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSSOAuthen">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strHKID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTokenSerialNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strTokenPassCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strRelySecuredAuthenTicket" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strSourceAppID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSSOAuthenResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSSOAuthenResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="getSSORedirect">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strSecuredAuthenTicket" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strRelyAppID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSSORedirectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSSORedirectResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="getSSOAssertionByArtifactSoapIn">
+    <wsdl:part name="parameters" element="tns:getSSOAssertionByArtifact" />
+  </wsdl:message>
+  <wsdl:message name="getSSOAssertionByArtifactSoapOut">
+    <wsdl:part name="parameters" element="tns:getSSOAssertionByArtifactResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSSOAuthenSoapIn">
+    <wsdl:part name="parameters" element="tns:getSSOAuthen" />
+  </wsdl:message>
+  <wsdl:message name="getSSOAuthenSoapOut">
+    <wsdl:part name="parameters" element="tns:getSSOAuthenResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSSORedirectSoapIn">
+    <wsdl:part name="parameters" element="tns:getSSORedirect" />
+  </wsdl:message>
+  <wsdl:message name="getSSORedirectSoapOut">
+    <wsdl:part name="parameters" element="tns:getSSORedirectResponse" />
+  </wsdl:message>
+  <wsdl:portType name="SSOIdPWebServicesSoap">
+    <wsdl:operation name="getSSOAssertionByArtifact">
+      <wsdl:input message="tns:getSSOAssertionByArtifactSoapIn" />
+      <wsdl:output message="tns:getSSOAssertionByArtifactSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getSSOAuthen">
+      <wsdl:input message="tns:getSSOAuthenSoapIn" />
+      <wsdl:output message="tns:getSSOAuthenSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getSSORedirect">
+      <wsdl:input message="tns:getSSORedirectSoapIn" />
+      <wsdl:output message="tns:getSSORedirectSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SSOIdPWebServicesSoap" type="tns:SSOIdPWebServicesSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getSSOAssertionByArtifact">
+      <soap:operation soapAction="http://ppi.ha.org.hk/getSSOAssertionByArtifact" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSSOAuthen">
+      <soap:operation soapAction="http://ppi.ha.org.hk/getSSOAuthen" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSSORedirect">
+      <soap:operation soapAction="http://ppi.ha.org.hk/getSSORedirect" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="SSOIdPWebServicesSoap12" type="tns:SSOIdPWebServicesSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getSSOAssertionByArtifact">
+      <soap12:operation soapAction="http://ppi.ha.org.hk/getSSOAssertionByArtifact" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSSOAuthen">
+      <soap12:operation soapAction="http://ppi.ha.org.hk/getSSOAuthen" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSSORedirect">
+      <soap12:operation soapAction="http://ppi.ha.org.hk/getSSORedirect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SSOIdPWebServices">
+    <wsdl:port name="SSOIdPWebServicesSoap" binding="tns:SSOIdPWebServicesSoap">
+      <soap:address location="http://localhost/HCVU_SmartID_DEV/SSOModule/IdP/WebServices/SSOIdPWebServices.asmx" />
+    </wsdl:port>
+    <wsdl:port name="SSOIdPWebServicesSoap12" binding="tns:SSOIdPWebServicesSoap12">
+      <soap12:address location="http://localhost/HCVU_SmartID_DEV/SSOModule/IdP/WebServices/SSOIdPWebServices.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

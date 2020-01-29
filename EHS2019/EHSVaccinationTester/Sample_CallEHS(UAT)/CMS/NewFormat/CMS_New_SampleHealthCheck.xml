@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<parameter>
+	<message_id>C2012042000000001</message_id>
+	<health_check>Y</health_check>
+	<request_system>CMS</request_system>
+</parameter>

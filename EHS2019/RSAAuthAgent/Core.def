@@ -1,0 +1,5 @@
+LIBRARY Simple
+      DESCRIPTION 'Sample C DLL for use with .NET'
+      EXPORTS
+		auth
+		clearRSA

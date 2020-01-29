@@ -1,0 +1,277 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb"
+    Inherits="HCSP.MasterPage" %>
+
+<%@ Register Src="UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp"
+    TagPrefix="uc1" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" <%=PageLanguage%>>
+<head id="Head1" runat="server">
+    <title>eHealth System (Subsidies)</title>    
+    <meta http-equiv="Page-Exit" content="revealTrans(Duration=0,Transition=12)" />
+    <base id="basetag" runat="server" />
+    <link href="CSS/ComboBoxStyle.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
+
+    <script language="javascript" src="../JS/Common.js" type="text/javascript" />
+    <!-- Don't remove the below line, otherwise will cause javascript error in home page -->
+
+    <script type="text/javascript"></script>
+
+</head>
+<body>
+    <form id="form1" runat="server" defaultbutton="btnhidden" autocomplete="off">
+        <div>
+            <asp:ScriptManager ID="ScriptManager1" runat="server" EnableScriptGlobalization="true"
+                EnableScriptLocalization="true" EnablePartialRendering="true">
+                <Scripts>
+                    <asp:ScriptReference Path="~/JS/WebKit.js" />
+                    <asp:ScriptReference Path="~/JS/Clock.js" />
+                    <asp:ScriptReference Path="~/JS/TimeoutReminder.js" />
+                </Scripts>
+            </asp:ScriptManager>
+            <%--<cc2:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnableScriptGlobalization="true"
+                EnableScriptLocalization="true" EnablePartialRendering="true">
+                <Scripts>
+                    <asp:ScriptReference Path="~/JS/WebKit.js" />
+                    <asp:ScriptReference Path="~/JS/Clock.js" />
+                    <asp:ScriptReference Path="~/JS/TimeoutReminder.js" />
+                </Scripts>
+            </cc2:ToolkitScriptManager>--%>
+
+            <script type="text/javascript">
+            </script>
+
+            <table id="tblBanner" runat="server" border="0" cellpadding="0" cellspacing="0" style="background-image: url(Images/master/banner_header.jpg); width: 985px; background-repeat: no-repeat; height: 100px">
+                <tr>
+                    <td id="tdAppEnvironment" runat="server" style="vertical-align: top" class="AppEnvironment">
+                        <asp:Label ID="lblAppEnvironment" runat="server" Text="[CodeBehind]"></asp:Label>
+                    </td>
+                    <td align="right" valign="top" style="white-space: nowrap">
+                        <asp:LinkButton ID="lnkbtnTradChinese" runat="server" CssClass="languageText" Text="<%$ Resources:Text, TraditionalChineseLang %>"></asp:LinkButton>
+                        <asp:LinkButton ID="lnkbtnSimpChinese" runat="server" CssClass="languageText" Text="<%$ Resources:Text, SimplifiedChineseLang %>"
+                            Visible="false"></asp:LinkButton>
+                        <asp:LinkButton ID="lnkbtnEnglish" runat="server" CssClass="languageText" Text="<%$ Resources:Text, EnglishLang %>"></asp:LinkButton></td>
+                </tr>
+                <tr>
+                    <td align="left" valign="bottom">&nbsp;
+                        <asp:Label ID="lblWelcome" runat="server" CssClass="bannerText" Visible="False"></asp:Label>
+                        <asp:Label ID="lblLoginName" runat="server" CssClass="bannerText"></asp:Label>
+                        <asp:Button ID="btnhidden" runat="server" BackColor="Transparent" BorderStyle="None"
+                            Height="1px" Width="1px" OnClientClick="return false;" /></td>
+                </tr>
+            </table>
+        </div>
+        <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
+        <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
+            <table style="width: 150px; height: 150px; background-color: #ffffff" border="0"
+                cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" valign="middle">
+                        <asp:Image ID="imgLoading" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
+                            AlternateText="<%$ Resources:AlternateText, PleaseWait %>" /></td>
+                </tr>
+            </table>
+        </asp:Panel>
+        <asp:UpdateProgress runat="server" ID="UpdateProgress1" DisplayAfter="0">
+            <ProgressTemplate>
+            </ProgressTemplate>
+        </asp:UpdateProgress>
+        <cc2:ModalPopupExtender ID="ModalPopupExtender1" runat="server" PopupControlID="pnlPleaseWait"
+            TargetControlID="btnHiddenPleaseWait" BackgroundCssClass="modalBackgroundTransparent" />
+        <table border="0" cellpadding="0" cellspacing="0" style="width: 985px;">
+            <tr>
+                <td>
+                    <!-- Home Button Row-->
+                    <table cellpadding="0" cellspacing="0" width="985px">
+                        <tr>
+                            <td>
+                                <!-- Home Button -->
+                                <asp:ImageButton ID="ibtnHome" runat="server" AlternateText="<%$ Resources:AlternateText, HomeBtn %>"
+                                    ImageUrl="<%$ Resources:ImageUrl, HomeBtn %>" />
+                                <asp:ImageButton ID="btnInbox" runat="server" AlternateText="<%$ Resources:AlternateText, InboxBtn %>"
+                                    ImageUrl="<%$ Resources:ImageUrl, InboxBtn %>" />
+                                <!--PPIEPR-SSO  button   -->
+                                <asp:ImageButton ID="ibtnPPIePR" runat="server" AlternateText="<%$ Resources:AlternateText, PPIePRBtn %>"
+                                    ImageUrl="<%$ Resources:ImageUrl, PPIePRBtn %>" />
+                                <asp:ImageButton ID="ibtnLogout" runat="server" AlternateText="<%$ Resources:AlternateText, LogoutBtn %>"
+                                    ImageUrl="<%$ Resources:ImageUrl, LogoutBtn %>" />
+                                <asp:ImageButton ID="ibtnChangeSP" runat="server" AlternateText="Change Service Provider"
+                                    ImageUrl="~/Images/button/icon_button/btn_changeSP.png" />
+                                <asp:TextBox ID="txtSSOButton" runat="Server" Style="display: none" />
+                                <asp:TextBox ID="txtSSORedirect" runat="Server" Style="display: none" />
+                                <!--<asp:button ID="btnRedirectSSO" runat="Server" Visible="false" />-->
+                                <!--<button ID="Button1" title="PPI-ePR"  onclick="javascript:return perform_SSO('UATApp');">PPI-ePR</button>-->
+                            </td>
+                            <td align="right">
+                                <!-- Clock  -->
+                                <asp:Label ID="lblClock" runat="server" Text="dd/MM/yyyy HH:mm:ss"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-image: url(../Images/master/background.jpg); background-position: bottom; background-repeat: repeat-x; height: 524px;"
+                    valign="top">
+                    <asp:UpdatePanel ID="UpdatePanelMaster" runat="server">
+                        <ContentTemplate>
+                            <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
+                            <p>
+                                <asp:TextBox ID="PageKey" runat="server" Style="display: none" />
+                            </p>
+                            <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
+                            <table style="width: 100%" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td valign="top">
+                                        <asp:Panel ID="panMenu" runat="server" CssClass="menuTable" Width="220px" ForeColor="Transparent">
+                                            <asp:GridView ID="gvMenu" runat="server" AutoGenerateColumns="false" ShowFooter="false"
+                                                ShowHeader="false" Width="100%" SkinID="GridViewSkin">
+                                                <Columns>
+                                                    <asp:TemplateField>
+                                                        <ItemTemplate>
+                                                            <table style="width: 100%">
+                                                                <tr>
+                                                                    <td align="center" style="width: 45px" valign="middle">
+                                                                        <asp:ImageButton ID="ibtnMenuItem" runat="server" ImageUrl='<%# Eval("ImageUrl") %>' /></td>
+                                                                    <td align="left" valign="middle">
+                                                                        <asp:Label ID="lblbtnMenuItem" runat="server" Text='<%# Eval("Menu_Name") %>'></asp:Label>
+                                                                        <asp:LinkButton ID="lnkbtnMenuItemReal" runat="server" Width="0px" Height="0px"
+                                                                            CommandArgument='<%# Eval("URL") %>' CommandName="Redirect"></asp:LinkButton>
+                                                                        <asp:Label ID="lblbtnMenuChiItem" runat="server" Text='<%# Eval("Menu_Name_Chi") %>'></asp:Label>
+                                                                        <asp:LinkButton ID="lnkbtnMenuChiItemReal" runat="server" Width="0px" Height="0px"
+                                                                            CommandArgument='<%# Eval("URL") %>' CommandName="Redirect"></asp:LinkButton>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <asp:HiddenField ID="hfMenuRole" runat="server" Value='<%# Eval("Role") %>' />
+                                                            <asp:HiddenField ID="hfEffectiveDate" runat="server" Value='<%# Eval("Effective_Date") %>' />
+                                                        </ItemTemplate>
+                                                        <ItemStyle Height="58px" VerticalAlign="Middle" />
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+                                        </asp:Panel>
+                                    </td>
+                                    <td align="left" valign="top">
+                                        <asp:Panel ID="panMenuImg" runat="server" Width="30px">
+                                            <asp:ImageButton ID="ibtnMenu" runat="server" OnClick="ibtnMenu_Click" />
+                                        </asp:Panel>
+                                    </td>
+                                    <td valign="top" style="width: 100%">
+                                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                        </asp:ContentPlaceHolder>
+                                    </td>
+                                </tr>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #d3d3d3" valign="top">
+                    <table style="width: 98%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td colspan="2" style="height: 2px">
+                                <hr style="width: 98%; color: #ffffff; border-top-style: none; border-right-style: none; border-left-style: none; height: 1px; border-bottom-style: none;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">&nbsp;&nbsp;&nbsp;
+                                <asp:LinkButton ID="lnkBtnPrivacyPolicy" runat="server" CssClass="footerText" Text="<%$ Resources:Text, PrivacyPolicy %>"
+                                    TabIndex="-1"></asp:LinkButton>
+                                <asp:Label ID="lblseparator1" runat="server" CssClass="footerText" Text=" | "></asp:Label><asp:LinkButton
+                                    ID="lnkBtnDisclaimer" runat="server" CssClass="footerText" Text="<%$ Resources:Text, ImportantNotices %>"
+                                    TabIndex="-1"></asp:LinkButton>
+                                <asp:Label ID="lblseparator2" runat="server" CssClass="footerText" Text=" | "></asp:Label><asp:LinkButton
+                                    ID="lnkBtnSysMaint" runat="server" CssClass="footerText" Text="<%$ Resources:Text, SysMaint %>"
+                                    TabIndex="-1"></asp:LinkButton>
+                            </td>
+                            <td align="right">
+                                <asp:Label ID="lblFooterCopyright" runat="server" CssClass="footerText" Text="© Copyright Hospital Authority . All rights reserved."
+                                    Visible="False"></asp:Label>
+                                &nbsp; &nbsp; &nbsp;</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <!-- Popup Panel Confirm Message for Single Log On (PPI-ePR) -->
+        <asp:Panel ID="panSSOConfirmMsg" runat="server" Style="display: none">
+            <asp:Panel ID="panSSOConfirmHeading" runat="server" Style="cursor: move">
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 600px">
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/top-left.png); width: 9px; height: 35px"></td>
+                        <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <asp:Label ID="lblSSOConfirmMsgTitle" runat="server" Text="<%$ Resources:Text, ConfirmBoxTitle %>"></asp:Label></td>
+                        <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <table border="0" cellpadding="0" cellspacing="0" style="width: 600px">
+                <tr>
+                    <td style="background-image: url(../Images/dialog/left.png); width: 9px; background-repeat: repeat-y"></td>
+                    <td style="background-color: #ffffff">
+                        <table style="width: 100%">
+                            <tr>
+                                <td align="right" style="width: auto; height: 42px" valign="middle">
+                                    <asp:Image ID="imgSSOConfirmMsg" runat="server" ImageUrl="~/Images/others/Information.png" /></td>
+                                <td align="left" style="width: auto; height: 42px">
+                                    <asp:Label ID="lblSSOConfirmMsg" runat="server" Font-Bold="True" Text="<%$ Resources:Text, ConfirmPPIePRLogon %>"></asp:Label></td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <asp:ImageButton ID="ibtnSSOConfirmCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, CancelBtn %>" OnClick="ibtnSSOConfirmCancel_Click" />
+                                    <asp:ImageButton ID="ibtnSSOConfirmOK" runat="server" AlternateText="<%$ Resources:AlternateText, OKBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, OKBtn %>" OnClick="ibtnSSOConfirmOK_Click" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                </tr>
+                <tr>
+                    <td style="background-image: url(../Images/dialog/bottom-left.png); width: 9px; height: 7px"></td>
+                    <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                    <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
+                </tr>
+            </table>
+        </asp:Panel>
+        <asp:Button Style="display: none" ID="btnHiddenSSOConfirm" runat="server" />
+        <cc2:ModalPopupExtender ID="ModalPopupExtenderSSOConfirm" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+            TargetControlID="btnHiddenSSOConfirm" PopupControlID="panSSOConfirmMsg" RepositionMode="None"
+            PopupDragHandleControlID="panSSOConfirmHeading">
+        </cc2:ModalPopupExtender>
+        <!-- Timeout Reminder -->
+        <asp:Panel ID="panTimeoutReminder" runat="server" Width="500px" Style="display: none">
+            <uc1:ucNoticePopUp ID="ucNoticePopUpTimeoutReminder" runat="server" NoticeMode="Timeout"
+                ButtonMode="OK" MessageText="<%$ Resources: Text, TimeoutReminderMessage %>" />
+        </asp:Panel>
+        <asp:Button ID="btnHiddenTimeoutReminder" runat="server" Style="display: none" />
+        <cc2:ModalPopupExtender ID="ModalPopupExtenderTimeoutReminder" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+            TargetControlID="btnHiddenTimeoutReminder" PopupControlID="panTimeoutReminder"
+            RepositionMode="None" PopupDragHandleControlID="">
+        </cc2:ModalPopupExtender>
+
+
+        <script type="text/javascript">
+            //INT16-0011 Prevent auto focus to the tab panel [Start][Winnie] 
+            //Overwrite existing tab function
+            Sys.Extended.UI.TabContainer.prototype._app_onload = function (sender, e) {
+                if (this._cachedActiveTabIndex != -1) {
+                    this.set_activeTabIndex(this._cachedActiveTabIndex);
+                    this._cachedActiveTabIndex = -1;
+
+                    var activeTab = this.get_tabs()[this._activeTabIndex];
+                    if (activeTab) {
+                        activeTab._wasLoaded = true;
+                        //activeTab._setFocus(activeTab); //-- disable focus on active tab
+                    }
+                }
+                this._loaded = true;
+            }
+            //INT16-0011 Prevent auto focus to the tab panel [End][Winnie]
+        </script>
+    </form>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <VerificationPass>{VP}</VerificationPass>
+  <SysID>1000000250</SysID>
+  <servicecode>ESAMUAMSHARETOKEN</servicecode>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <healthCheckeHRSS>
+      <Timestamp>{Timestamp}</Timestamp>
+    </healthCheckeHRSS>]]>
+  </data>
+</root>

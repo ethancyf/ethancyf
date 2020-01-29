@@ -1,0 +1,539 @@
+﻿/***** Prevent auto-adjustment of font size on mobile device *****/
+html * 
+{
+    max-height:1000000px;
+}
+
+body 
+{
+	font-size: 14px;
+	color: #000000;
+	font-family: Arial;
+	margin: 0px 0px 0px 1px;
+}
+
+/***** Header Style*****/
+.headerText{
+	font-size: 18px;
+	color: #000000;
+	font-weight: bold;
+	font-family: Arial;
+}
+
+/***** Footer Style *****/
+.footerText
+{
+	font-size: 12px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+}
+
+/***** Table Style *****/
+.tableHeading
+{
+	font-size: 16px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px center;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+}
+
+.eHSTableHeading
+{
+	font-size: 16px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 13px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px 3px;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+}
+
+
+.tableHeadingAlert
+{
+	font-size: 16px;
+	color: red;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px center;
+	background-image: url(../Images/others/circle_red.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.validateFail
+{
+	font-size: 18px;
+	color: Red;
+	font-family: Arial;
+}
+
+.tableCaption
+{
+	font-size: 20px;
+	color: Black;
+	font-family: Arial;
+}
+
+.tableTitle
+{
+     font-size: 16px;
+     color: #666666;
+     font-family: Arial;
+}
+
+.tableText
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.tableTextChi
+{
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+
+.largeText
+{
+	font-size: 18px;
+	color: Black;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+/***** Text Style in Banner *****/
+.bannerText
+{
+	font-size: 18px;
+	color: #666666;
+	font-family: Arial;
+
+}
+
+/***** Tab Style *****/
+.m_ajax__tab_xp .ajax__tab_header {width:1100px; font-family:verdana,tahoma,helvetica;font-size:14px !important;background:url(../Images/AjaxControlToolkit/Tabs/tab-line.gif) repeat-x bottom;}
+
+.m_ajax__tab_xp .ajax__tab_outer {background:url(../Images/AjaxControlToolkit/Tabs/tab-right.gif) no-repeat right;height:21px;padding-right:4px;}
+
+.m_ajax__tab_xp .ajax__tab_inner {padding-left:3px;background:url(../Images/AjaxControlToolkit/Tabs/tab-left.gif) no-repeat;}
+
+.m_ajax__tab_xp .ajax__tab_tab {color:#666666; height:13px;padding:4px;margin:0;background:url(../Images/AjaxControlToolkit/Tabs/tab.gif) repeat-x;}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_outer {background:url(../Images/AjaxControlToolkit/Tabs/tab-hover-right.gif) no-repeat right;}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_inner {background:url(../Images/AjaxControlToolkit/Tabs/tab-hover-left.gif) no-repeat;}
+
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_tab {background:url(../Images/AjaxControlToolkit/Tabs/tab-hover.gif) repeat-x;}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_outer {background:url(../Images/AjaxControlToolkit/Tabs/tab-active-right.gif) no-repeat right;}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_inner {background:url(../Images/AjaxControlToolkit/Tabs/tab-active-left.gif) no-repeat;}
+
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_tab {background:url(../Images/AjaxControlToolkit/Tabs/tab-active.gif) repeat-x;}
+
+.m_ajax__tab_xp .ajax__tab_body {font-family:Arial !important;font-size:14px !important;border:1px solid #999999 !important;border-top:0 !important;padding:8px !important;background-color:transparent !important;}
+
+/***** Language Text Style *****/
+.languageText
+{
+	font-size: 15px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+.languageSelectedText
+{
+	font-size: 15px;
+	color: #ffffff;
+	font-family: Arial;
+	text-decoration: none;
+	background-image: url(../Images/master/language_background.png);
+	background-repeat: repeat-x;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+	background-position: center;
+}
+
+/***** Timeline Text Style *****/
+/***** For First Timeline *****/
+.highlightTimeline
+{
+	font-size: 14px;
+	color: #ff9900;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	text-indent: 30px;
+	background-position: 0px center;
+	background-image: url(../Images/others/arrow.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+
+.unhighlightTimeline
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-weight: bold;
+}
+
+/***** For Second Timeline *****/
+.unhighlightTimelineLast
+{
+	font-size: 14px;
+	color: #666666;
+	padding-top: 3px;
+	padding-bottom: 10px;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.highlightTimelineLast
+{
+	font-size: 14px;
+	color: #ff9900;
+	font-family: Arial;
+	padding-bottom: 10px;
+	padding-top: 3px;
+	text-indent: 30px;
+	background-position: 0px 3px;
+	background-image: url(../Images/others/arrow.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+.btnHidden
+{
+	visibility: hidden;
+}
+
+.checkboxStyle
+{
+	text-align: justify;
+	border-right: #6495ed 2px solid;
+	padding-right: 5px;
+	border-top: #6495ed 2px solid;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	border-left: #6495ed 2px solid;
+	padding-top: 3px;
+	border-bottom: #6495ed 2px solid;
+	color: #000000;
+	background-color: #ffff99;
+}
+	
+.SettingsPanelStyle
+{
+	border: solid 1px gray;
+	padding: 0px 0px 0px 0px;	
+}
+
+.SettingTableCellStyle
+{
+	border: solid 1px gray;
+	padding: 5px 2px 5px 5px;
+}
+.SettingTableStyle
+{
+	border-collapse: collapse;
+}
+
+.SettingTDNoneStyle
+{
+	border-collapse:collapse;
+	padding: 0px 0px 0px 0px;
+}
+
+.SettingTDLeftStyle
+{
+	border-collapse:separate;
+	border-right: solid 1px gray;
+	padding: 5px 0px 5px 5px;
+}
+
+.SettingTDRightStyle
+{
+	border-collapse: separate;
+	border-left: solid 1px gray;
+	padding: 5px 0px 5px 5px;
+}
+
+/***** For GridView ResultSet *****/
+.gvHeaderResult
+{
+	vertical-align:bottom;
+}
+
+/***** Footer Style *****/
+.searchCriteriaText
+{
+	font-size: 15.52px;
+	color: #000000;
+	font-family: Arial, HA_MingLiu;
+	text-decoration:none;
+	font-style:normal;
+}
+
+/***** GridView Header Style *****/
+.gvHeaderRow
+{
+	border-color:#C6C6C6;
+	vertical-align:bottom;
+}
+
+.gvDataRow
+{
+	border-color:#C6C6C6;
+	vertical-align:top;
+}
+
+.gvHeaderTransparentCell
+{
+	background-color:#F9F9F9;
+	border-style:none;
+	border-color:#F9F9F9;
+}
+
+.tblCellProfHeader
+{
+	background-color:#FFFFC0;
+	border-bottom-width:1px;
+	border-bottom-color:Red;
+}
+
+.tblCellServiceHeader
+{
+	background-color:#FFFFC0;
+	border-bottom-width:1px;
+	border-bottom-color:Red;
+}
+
+.tblCellDistrictHeader
+{
+	background-color:#FFFFC0;
+	border-bottom-width:1px;
+	border-bottom-color:Red;
+}
+
+.tblCellDistrictbody
+{
+	background-color:#F2F2F2;
+}
+
+.cb_area_text
+{
+	font-size: 15.52px;
+	color: #000000;
+	font-family: Arial, HA_MingLiu;
+	text-decoration:none;
+	font-style:normal;	
+}
+
+.rboProf
+{
+	background-color:#E5E5E5;
+}
+
+.tvService
+{
+	background-color:#E5E5E5;
+}
+
+td.AppEnvironment {
+    padding-top: 16px;
+    padding-left: 375px;
+    color: #0033FF;
+    font-size: 24px;
+    text-align: left;
+}
+
+td.AppEnvironmentZH {
+    padding-top: 16px;
+    padding-left: 135px;
+    color: #0033FF;
+    font-size: 24px;
+    text-align: left;
+}
+
+#tdKeywordsSearchGuide {
+    padding-bottom: 10px;
+    font-size:15.5px;
+}
+
+#divMagnifier {
+    z-index: 3; 
+    position: absolute;
+}
+
+#imgMagnifierIcon {
+    margin: -10px 0 0 5px;
+}
+
+#divKeywordsSearchTitle,
+#divKeywordsSearchTitle>table {
+    width:100%;
+    font-size:15.5px;
+}
+
+#lblKeywords {
+    font-size:16px; 
+    font-weight:bold;
+}
+
+#tdKeywordsSearchTitle {
+    background-color: dodgerblue; 
+    color: white; 
+    text-indent: 60px;
+}
+
+    #tdKeywordsSearchTitle+td {
+        -ms-filter: 'progid:DXImageTransform.Microsoft.gradient (GradientType=1, startColorstr=#1e90ff, endColorstr=#F9F9F9)';
+        background: linear-gradient(to right, #1e90ff, #F9F9F9); 
+        min-width:200px;
+    }
+
+    #tdKeywordsSearchTitle + td + td {
+        background-color: #F9F9F9;
+        padding-right:4px;
+    }
+
+#tblKeywordsSearch {
+    width: 100%;  
+    border: 2px solid #1e90ff; 
+    padding-left:25px;
+}
+
+#tblKeywordsSearch tr:first-child {
+    height:20px;
+}
+
+#tblKeywordsSearch td {
+    padding:7px 0 2px 0;
+}
+
+#lblServiceProvider,
+#lblPracticeName,
+#lblPracticeAddr {
+    padding-right:15px;
+}
+
+#lblOR1,
+#lblOR2 {
+    margin-left:15px;
+}
+
+
+#txtServiceProvider,
+#txtPracticeName,
+#txtPracticeAddr {
+    min-width: 600px;
+    width: auto;
+}
+
+#imgProfessionIcon,
+#imgServiceIcon,
+#imgMapmarkerIcon {
+    margin: 0 5px 0 5px;
+}
+
+.tblSearchCriteriaHeader {
+    padding: 5px;
+    width:100%;
+    
+}
+
+.tdSearchCriteriaHeaderIcon {
+    width:30px;
+}
+
+.tdSearchCriteriaHeaderText {    
+    font-size:15.5px;
+    font-weight:bold;
+    color:#ffa500;
+}
+
+.trSearchCriteriaHeaderBorder {
+    height:3px;
+}
+
+.tdSearchCriteriaHeaderBorder {
+    background-color: #ffa500;
+}
+
+.btnSearchClearClass {
+    margin:3px;
+    color: #1e90ff;
+    text-decoration: none;
+    cursor:pointer;
+    font-size:15.5px;
+}
+
+#tblSearchButton {
+    width: 100%; 
+    margin-top:15px;
+}
+
+#udcMessageBox , 
+#udcInfoMessageBox   {
+   width:880px;
+   padding-left:2px;
+}
+
+#udcMessageBox , 
+#udcInfoMessageBox, 
+#udcMessageBox>div , 
+#udcInfoMessageBox>div  {
+    float:left;
+}
+
+#rboProfessional {
+    height:auto;
+}
+
+#rboProfessional td {
+   padding:2px 0 2px 0;
+}
+
+#trKeywordsSearch >td{
+    padding-bottom:3px;
+}
+
+#ibtnResult {
+    width:0 !important;
+    height: 0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border: 0 !important;
+    visibility:hidden;
+}
+
+.lblOptionalLabel {
+    padding-left:10px;
+}

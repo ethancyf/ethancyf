@@ -1,0 +1,210 @@
+﻿body
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	margin: 0px 0px 0px 1px;
+}
+
+/***** Lable Style*****/
+.labelText{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+}
+
+/***** Warning Style*****/
+.warningText
+{
+	font-size: 14px;
+	color: #ff0000;
+	font-family: Arial;
+}
+
+
+/***** Footer Style *****/
+.footerText
+{
+	font-size: 12px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+}
+
+/***** Header Style*****/
+.headerText{
+	font-size: 32px;
+	color: #666666;
+	font-weight: bold;
+	font-family: Arial;
+}
+
+/***** Language Text Style *****/
+.languageText
+{
+	font-size: 15px;
+	color: #000000;
+	font-family: Arial;
+	text-decoration: none;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+.languageSelectedText
+{
+	font-size: 15px;
+	color: #ffffff;
+	font-family: Arial;
+	text-decoration: none;
+	background-image: url(../Images/master/language_background.png);
+	background-repeat: repeat-x;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+	background-position: center;
+}
+
+.captchaTextBox
+{
+	font-size: 22px	
+}
+
+/***** Table Style *****/
+.tableHeading
+{
+	font-size: 16px;
+	color: #1e90ff;
+	font-family: Arial;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	text-indent: 20px;
+	background-position: 0px center;
+	background-image: url(../Images/others/circle_blue.png);
+	background-repeat: no-repeat;
+}
+
+.tableText
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.HKIDGenderText
+{
+	font-size: 11px;
+	color: #4D4D4D;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+
+/***** Lable Style*****/
+.tableTitle
+{
+	font-size: 16px;
+	color: #000000;
+	font-family: Arial;
+}
+
+.tableTip
+{
+     font-size: 16px;
+     color: #666666;
+     font-family: Arial;
+}
+
+.highlightTimeline
+{
+	font-size: 14px;
+	color: #ff9900;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	text-indent: 30px;
+	background-position: 0px center;
+	background-image: url(../Images/others/arrow.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+
+
+.unhighlightTimeline
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	font-weight: bold;
+}
+
+.largeText
+{
+	font-size: 18px;
+	color: Black;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.largeChiText
+{
+	font-size: 16px;
+	color: Black;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+/***** GridView Header *****/
+.gvHeader
+{
+	text-align: left;
+	color: #666666;
+	font-weight: bold;
+}
+
+/***** gridview style *****/
+.gvTable
+{
+	border-collapse:separate;
+
+}
+
+/*Modal Popup*/
+.modalBackground
+{
+	background-color: #dcdcdc;
+	filter: alpha(opacity=70);
+	opacity: 0.7;
+}
+
+.modalBackgroundTransparent
+{ 
+	/*background-color: #FFFFFF;
+	filter: alpha(opacity=5);
+	opacity: 0.7;*/	
+ background-image: url(../Images/others/bg.png); }
+
+
+td.AppEnvironment {
+    padding-top: 16px;
+    padding-left: 375px;
+    color: #0033FF;
+    font-size: 24px;
+    text-align: left;
+}
+
+td.AppEnvironmentZH {
+    padding-top: 16px;
+    padding-left: 135px;
+    color: #0033FF;
+    font-size: 24px;
+    text-align: left;
+}
+
+

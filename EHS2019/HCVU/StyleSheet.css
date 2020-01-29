@@ -1,0 +1,309 @@
+﻿body
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	margin: 0px 0px 0px 0px;
+}
+
+/***** Menu Style *****/
+.menuUnSelect
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+	background-position: center center;
+	background-image: url(Images/menu/menu_background.png);
+	background-repeat: repeat-x;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+.menuSelect
+{
+	font-size: 14px;
+	color: #ff0000;
+	font-family: Arial;
+	background-position: center center;
+	background-image: url(Images/menu/menu_background.png);
+	background-repeat: repeat-x;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+.item
+{
+	background-image: url(Images/menu/menu-item-middle.png);
+	background-repeat: repeat-y;
+}
+
+.item-hover
+{
+	background-image: url(Images/menu/menu-item-middle-hover.png);
+	background-repeat: repeat-y;
+}
+
+.item-hover A:link
+{
+	background-image: none
+}
+
+.item-hover A:visited 
+{
+	background-image: none
+}
+
+.item A:link
+{
+	background-image: none
+}
+
+.item A:visited 
+{
+	background-image: none
+}
+
+
+/***** Footer Style *****/
+.footerText
+{
+	font-size: 12px;
+	color: #ffffff;
+	font-family: Arial;
+}
+
+/***** Login Style *****/
+.loginTitleText
+{
+	font-size: 20px;
+	color: #666666;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.loginLableText
+{
+	font-size: 18px;
+	color: #666666;
+	font-family: Arial;
+}
+
+/***** Tab Style*****/
+.tabText
+{
+	font-size: 14px;
+	color: #666666;
+	font-family: Arial;
+}
+
+.m_ajax__tab_xp .ajax__tab_header {font-family:Arial;font-size:14px;background:url(Images/AjaxControlToolkit/Tabs/tab-line.gif) repeat-x bottom;}
+.m_ajax__tab_xp .ajax__tab_outer {background:url(Images/AjaxControlToolkit/Tabs/tab-right.gif) no-repeat right;height:21px;}
+.m_ajax__tab_xp .ajax__tab_inner {padding-left:3px;background:url(Images/AjaxControlToolkit/Tabs/tab-left.gif) no-repeat;}
+.m_ajax__tab_xp .ajax__tab_tab {height:13px;padding:4px;margin:0;background:url(Images/AjaxControlToolkit/Tabs/tab.gif) repeat-x;}
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_outer {background:url(Images/AjaxControlToolkit/Tabs/tab-hover-right.gif) no-repeat right;}
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_inner {background:url(Images/AjaxControlToolkit/Tabs/tab-hover-left.gif) no-repeat;}
+.m_ajax__tab_xp .ajax__tab_hover .ajax__tab_tab {background:url(Images/AjaxControlToolkit/Tabs/tab-hover.gif) repeat-x;}
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_outer {background:url(Images/AjaxControlToolkit/Tabs/tab-active-right.gif) no-repeat right;}
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_inner {background:url(Images/AjaxControlToolkit/Tabs/tab-active-left.gif) no-repeat;}
+.m_ajax__tab_xp .ajax__tab_active .ajax__tab_tab {background:url(Images/AjaxControlToolkit/Tabs/tab-active.gif) repeat-x;}
+.m_ajax__tab_xp .ajax__tab_body {font-family:Arial;font-size:14px;border:1px solid #999999;border-top:0;padding:8px;background-color:transparent;}
+
+.autocomplete_completionListElement 
+{  
+	visibility : hidden;
+	margin : 0px!important;
+	background-color : inherit;
+	color : windowtext;
+	border : buttonshadow;
+	border-width : 1px;
+	border-style : solid;
+	cursor : 'default';
+	overflow : auto;
+	height : 200px;
+    text-align : left; 
+    list-style-type : none;
+}
+
+/* AutoComplete highlighted item */
+
+.autocomplete_highlightedListItem
+{
+	background-color: #ffff99;
+	color: black;
+	padding: 1px;
+}
+
+/* AutoComplete item */
+
+.autocomplete_listItem 
+{
+	background-color : window;
+	color : windowtext;
+	padding : 1px;
+}
+
+/* Title Style */
+.titleText
+{
+	font-size: 18px;
+	color: #666666;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+
+/* ComponentArt Grid style */
+.Grid 
+{ 
+  border: 1px solid #7C7C94; 
+  background-color: #FFFFFF; 
+  cursor: pointer; 
+}
+
+.HeadingRow 
+{ 
+  background-color: #E2E2E2; 
+}
+
+.HeadingCell 
+{ 
+  background-color: #E2E2E2; 
+  border: 1px solid #FFFFFF; 
+  border-right-color: #B5B5B5; 
+  border-bottom-color: #B5B5B5; 
+  padding: 3px;
+}
+
+.HeadingCellText
+{
+  font-family: verdana; 
+  font-size: 12px; 
+  font-weight: bold; 
+  text-align: left;
+}
+
+.DataRow 
+{ 
+  background-color: #FFFFFF; 
+}
+
+.DataCell 
+{ 
+  cursor: default;
+  padding: 3px; 
+  border-right: 1px solid #EAE9E1; 
+  border-bottom: 1px solid #EAE9E1; 
+  font-family: verdana; 
+  font-size: 12px; 
+} 
+
+.EditDataCell
+{ 
+  padding: 0px!important; 
+  background-color: #E2E2E2; 
+  border-width:0px!important;
+} 
+
+.EditDataField
+{ 
+  padding: 0px; 
+  padding-left: 1px; 
+  font-family: verdana; 
+  font-size: 12px; 
+  height: 14px;
+  width: 98%!important; 
+} 
+
+.DataRow td.FirstDataCell 
+{ 
+  padding-left: 3px; 
+} 
+
+.SelectedRow 
+{ 
+  background-color: #FFEEC2; 
+}
+
+.SelectedRow td.DataCell 
+{ 
+  cursor: default; 
+  padding: 2px; 
+  padding-left: 3px; 
+  padding-bottom: 3px; 
+  font-family: verdana; 
+  font-size: 12px; 
+  border-bottom: 1px solid #4B4B6F; 
+  border-top: 1px solid #4B4B6F; 
+  border-right: 0px; 
+}
+
+.SelectorCell 
+{ 
+  background-color: #E2E2E2; 
+  border: 1px solid #FFFFFF; 
+  border-right-color: #B5B5B5; 
+  border-bottom-color: #B5B5B5; 
+}
+
+.GridFooter
+{
+  cursor: default;
+  padding:5px;
+}
+
+.GridFooter a 
+{
+  color: Black;
+  font-weight: bold;
+  vertical-align: bottom;
+}
+
+.PagerText
+{ 
+  font-family: verdana; 
+  font-size: 12px; 
+} 
+
+/* Popup menu */
+.modalBackground {
+	        background-color:Gray;
+	        filter:alpha(opacity=70);
+	        opacity:0.7;
+}
+
+/***** GridView Header *****/
+.gvHeader
+{
+	text-align: center;
+}
+
+/* Title Style */
+/*.headingText
+{
+	font-size: 16px;
+	color: #666666;
+	font-family: Arial;
+	font-weight: bold;
+	padding-bottom: 2px;
+	padding-top: 10px;
+}*/
+
+.headingText
+{
+	font-size: 16px;
+	color: darkmagenta;
+	font-family: Arial;
+	font-weight: bold;
+	padding-bottom: 1px;
+	padding-top: 10px;
+	border-bottom: thistle 1px solid;
+}
+
+/***** Table Style*****/
+.tableText
+{
+	font-size: 16px;
+	color: #4D4D4D;
+	font-family: Arial;
+	font-weight: bold;
+}

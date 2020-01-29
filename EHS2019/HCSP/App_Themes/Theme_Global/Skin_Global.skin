@@ -1,0 +1,36 @@
+<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+
+<%-- Textbox Skin --%>
+<asp:textbox runat="server" autocomplete="off"></asp:textbox>
+
+<%-- GridView Skin --%>
+<asp:GridView runat="server" BorderColor="#cccccc" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" UseAccessibleHeader="False" ForeColor="Black" PageSize="10">
+    <PagerStyle BackColor="#6B696B" ForeColor="White" HorizontalAlign="Left" />
+    <HeaderStyle BackColor="#6B696B" CssClass = "gvHeader" ForeColor="White"/>
+    <RowStyle BackColor="#F7F7DE" />
+    <SelectedRowStyle BackColor="#D0D0D0" Font-Bold="True"  />
+    <AlternatingRowStyle BackColor="White" />
+    <HeaderStyle VerticalAlign="Bottom" HorizontalAlign="Center" />
+</asp:GridView>
+
+<%-- Empty skin to avoid default GridView skin just --%>
+<asp:GridView runat="server" BorderColor="Transparent" GridLines="None" SkinID="GridViewSkin" />
+
+
+<%-- Button Skin --%>
+<asp:Button runat="server" SkinID="TextOnlyVersionLinkButton" BackColor="White" BorderStyle="None" Font-Underline="True" ForeColor="Blue" style="text-align: left;" />
+<asp:Button runat="server" SkinID="TextOnlyVersionLinkButtonAlignRight" BackColor="White" BorderStyle="None" Font-Underline="True" ForeColor="Blue" style="text-align: right;" />

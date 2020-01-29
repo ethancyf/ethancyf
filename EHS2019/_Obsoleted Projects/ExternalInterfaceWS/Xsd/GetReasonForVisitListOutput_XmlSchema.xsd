@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Output" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Output" msdata:IsDataSet="true" msdata:Locale="en-US" msprop:Generator_UserDSName="Output" msprop:Generator_DataSetName="Output">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ReasonForVisitL1" msprop:Generator_UserTableName="ReasonForVisitL1" msprop:Generator_RowDeletedName="ReasonForVisitL1RowDeleted" msprop:Generator_TableClassName="ReasonForVisitL1DataTable" msprop:Generator_RowChangedName="ReasonForVisitL1RowChanged" msprop:Generator_RowClassName="ReasonForVisitL1Row" msprop:Generator_RowChangingName="ReasonForVisitL1RowChanging" msprop:Generator_RowEvArgName="ReasonForVisitL1RowChangeEvent" msprop:Generator_RowEvHandlerName="ReasonForVisitL1RowChangeEventHandler" msprop:Generator_TablePropName="ReasonForVisitL1" msprop:Generator_TableVarName="tableReasonForVisitL1" msprop:Generator_RowDeletingName="ReasonForVisitL1RowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="L1Entry" msprop:Generator_UserTableName="L1Entry" msprop:Generator_RowDeletedName="L1EntryRowDeleted" msprop:Generator_TableClassName="L1EntryDataTable" msprop:Generator_RowChangedName="L1EntryRowChanged" msprop:Generator_RowClassName="L1EntryRow" msprop:Generator_RowChangingName="L1EntryRowChanging" msprop:Generator_RowEvArgName="L1EntryRowChangeEvent" msprop:Generator_RowEvHandlerName="L1EntryRowChangeEventHandler" msprop:Generator_TablePropName="L1Entry" msprop:Generator_TableVarName="tableL1Entry" msprop:Generator_RowDeletingName="L1EntryRowDeleting" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ProfCode" msprop:Generator_UserColumnName="ProfCode" msprop:Generator_ColumnPropNameInRow="ProfCode" msprop:Generator_ColumnVarNameInTable="columnProfCode" msprop:Generator_ColumnPropNameInTable="ProfCodeColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L1Code" msprop:Generator_UserColumnName="L1Code" msprop:Generator_ColumnPropNameInRow="L1Code" msprop:Generator_ColumnVarNameInTable="columnL1Code" msprop:Generator_ColumnPropNameInTable="L1CodeColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L1DescEng" msprop:Generator_UserColumnName="L1DescEng" msprop:Generator_ColumnPropNameInRow="L1DescEng" msprop:Generator_ColumnVarNameInTable="columnL1DescEng" msprop:Generator_ColumnPropNameInTable="L1DescEngColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L1DescChi" msprop:Generator_UserColumnName="L1DescChi" msprop:Generator_ColumnPropNameInRow="L1DescChi" msprop:Generator_ColumnVarNameInTable="columnL1DescChi" msprop:Generator_ColumnPropNameInTable="L1DescChiColumn" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                  <xs:attribute name="ReasonForVisitL1_Id" msprop:Generator_UserColumnName="ReasonForVisitL1_Id" msprop:Generator_ColumnPropNameInRow="ReasonForVisitL1_Id" msprop:Generator_ColumnVarNameInTable="columnReasonForVisitL1_Id" msprop:Generator_ColumnPropNameInTable="ReasonForVisitL1_IdColumn" type="xs:int" use="prohibited" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="ReasonForVisitL1_Id" msdata:AutoIncrement="true" msprop:Generator_UserColumnName="ReasonForVisitL1_Id" msprop:Generator_ColumnPropNameInRow="ReasonForVisitL1_Id" msprop:Generator_ColumnVarNameInTable="columnReasonForVisitL1_Id" msprop:Generator_ColumnPropNameInTable="ReasonForVisitL1_IdColumn" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ReasonForVisitL2" msprop:Generator_UserTableName="ReasonForVisitL2" msprop:Generator_RowDeletedName="ReasonForVisitL2RowDeleted" msprop:Generator_TableClassName="ReasonForVisitL2DataTable" msprop:Generator_RowChangedName="ReasonForVisitL2RowChanged" msprop:Generator_RowClassName="ReasonForVisitL2Row" msprop:Generator_RowChangingName="ReasonForVisitL2RowChanging" msprop:Generator_RowEvArgName="ReasonForVisitL2RowChangeEvent" msprop:Generator_RowEvHandlerName="ReasonForVisitL2RowChangeEventHandler" msprop:Generator_TablePropName="ReasonForVisitL2" msprop:Generator_TableVarName="tableReasonForVisitL2" msprop:Generator_RowDeletingName="ReasonForVisitL2RowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="L2Entry" msprop:Generator_UserTableName="L2Entry" msprop:Generator_RowDeletedName="L2EntryRowDeleted" msprop:Generator_TableClassName="L2EntryDataTable" msprop:Generator_RowChangedName="L2EntryRowChanged" msprop:Generator_RowClassName="L2EntryRow" msprop:Generator_RowChangingName="L2EntryRowChanging" msprop:Generator_RowEvArgName="L2EntryRowChangeEvent" msprop:Generator_RowEvHandlerName="L2EntryRowChangeEventHandler" msprop:Generator_TablePropName="L2Entry" msprop:Generator_TableVarName="tableL2Entry" msprop:Generator_RowDeletingName="L2EntryRowDeleting" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ProfCode" msprop:Generator_UserColumnName="ProfCode" msprop:Generator_ColumnPropNameInRow="ProfCode" msprop:Generator_ColumnVarNameInTable="columnProfCode" msprop:Generator_ColumnPropNameInTable="ProfCodeColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L1Code" msprop:Generator_UserColumnName="L1Code" msprop:Generator_ColumnPropNameInRow="L1Code" msprop:Generator_ColumnVarNameInTable="columnL1Code" msprop:Generator_ColumnPropNameInTable="L1CodeColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L2Code" msprop:Generator_UserColumnName="L2Code" msprop:Generator_ColumnPropNameInRow="L2Code" msprop:Generator_ColumnVarNameInTable="columnL2Code" msprop:Generator_ColumnPropNameInTable="L2CodeColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L2DescEng" msprop:Generator_UserColumnName="L2DescEng" msprop:Generator_ColumnPropNameInRow="L2DescEng" msprop:Generator_ColumnVarNameInTable="columnL2DescEng" msprop:Generator_ColumnPropNameInTable="L2DescEngColumn" type="xs:string" minOccurs="0" />
+                    <xs:element name="L2DescChi" msprop:Generator_UserColumnName="L2DescChi" msprop:Generator_ColumnPropNameInRow="L2DescChi" msprop:Generator_ColumnVarNameInTable="columnL2DescChi" msprop:Generator_ColumnPropNameInTable="L2DescChiColumn" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                  <xs:attribute name="ReasonForVisitL2_Id" msprop:Generator_UserColumnName="ReasonForVisitL2_Id" msprop:Generator_ColumnPropNameInRow="ReasonForVisitL2_Id" msprop:Generator_ColumnVarNameInTable="columnReasonForVisitL2_Id" msprop:Generator_ColumnPropNameInTable="ReasonForVisitL2_IdColumn" type="xs:int" use="prohibited" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="ReasonForVisitL2_Id" msdata:AutoIncrement="true" msprop:Generator_UserColumnName="ReasonForVisitL2_Id" msprop:Generator_ColumnPropNameInRow="ReasonForVisitL2_Id" msprop:Generator_ColumnVarNameInTable="columnReasonForVisitL2_Id" msprop:Generator_ColumnPropNameInTable="ReasonForVisitL2_IdColumn" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//ReasonForVisitL1" />
+      <xs:field xpath="@ReasonForVisitL1_Id" />
+    </xs:unique>
+    <xs:unique name="ReasonForVisitL2_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//ReasonForVisitL2" />
+      <xs:field xpath="@ReasonForVisitL2_Id" />
+    </xs:unique>
+    <xs:keyref name="ReasonForVisitL2_L2Entry" refer="ReasonForVisitL2_Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="ReasonForVisitL2_L2Entry" msprop:rel_Generator_RelationVarName="relationReasonForVisitL2_L2Entry" msprop:rel_Generator_UserChildTable="L2Entry" msprop:rel_Generator_UserParentTable="ReasonForVisitL2" msprop:rel_Generator_ParentPropName="ReasonForVisitL2Row" msprop:rel_Generator_ChildPropName="GetL2EntryRows">
+      <xs:selector xpath=".//L2Entry" />
+      <xs:field xpath="@ReasonForVisitL2_Id" />
+    </xs:keyref>
+    <xs:keyref name="ReasonForVisitL1_L1Entry" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="ReasonForVisitL1_L1Entry" msprop:rel_Generator_RelationVarName="relationReasonForVisitL1_L1Entry" msprop:rel_Generator_UserChildTable="L1Entry" msprop:rel_Generator_UserParentTable="ReasonForVisitL1" msprop:rel_Generator_ParentPropName="ReasonForVisitL1Row" msprop:rel_Generator_ChildPropName="GetL1EntryRows">
+      <xs:selector xpath=".//L1Entry" />
+      <xs:field xpath="@ReasonForVisitL1_Id" />
+    </xs:keyref>
+  </xs:element>
+</xs:schema>

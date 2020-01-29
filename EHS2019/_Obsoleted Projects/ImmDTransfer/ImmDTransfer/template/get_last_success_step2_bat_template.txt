@@ -1,0 +1,1 @@
+E:\Attachmate\RSecure\rftpc.exe {eHSWebServer} /RFS {get_last_success_step1_generated_file} \L {sectionFolder}\log\ha_ftp_housekeep.log

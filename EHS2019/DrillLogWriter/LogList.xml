@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LogList>
+  <!--<Log>
+    <EventSource>Vaccination Health Check</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) Vaccination Health Check fail</Message>
+  </Log>
+  <Log>
+    <EventSource>Vaccination Health Check</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) Vaccination Health Check fail</Message>
+  </Log>-->
+  <Log>
+    <EventSource>EHS2EHRSS_HealthCheckFail</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHS to EHRSS Health Check fail</Message>
+  </Log>
+  <Log>
+    <EventSource>EHS2EHRSS_HealthCheckFail</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHS to EHRSS Health Check fail</Message>
+  </Log>
+  <Log>
+    <EventSource>EHS2EHRSS_ConnectFail</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHS to EHRSS connection fail</Message>
+  </Log>  
+  <Log>
+    <EventSource>EHS2EHRSS_ConnectFail</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHS to EHRSS connection fail</Message>
+  </Log>
+  <Log>
+    <EventSource>EHS2EHRSS_AutoResilience</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHS to EHRSS auto resilience</Message>
+  </Log>
+  <Log>
+    <EventSource>EHS2EHRSS_AutoResilience</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHS to EHRSS auto resilience</Message>
+  </Log>
+  <Log>
+    <EventSource>EHS2EHRSS_RerunJobFail</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHS to EHRSS rerun job fail</Message>
+  </Log>
+  <Log>
+    <EventSource>EHS2EHRSS_RerunJobFail</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHS to EHRSS rerun job fail</Message>
+  </Log>
+  <Log>
+    <EventSource>EHRSS2EHS_OutSyncCase</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHRSS to EHS out sync case</Message>
+  </Log>  
+  <Log>
+    <EventSource>EHRSS2EHS_OutSyncCase</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHRSS to EHS out sync case</Message>
+  </Log>  
+</LogList>
+

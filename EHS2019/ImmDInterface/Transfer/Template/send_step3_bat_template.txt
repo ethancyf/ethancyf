@@ -1,0 +1,6 @@
+lcd {sectionFolder}
+cd {ImmDFolder}
+binary
+put sent\{contentFileName} {contentFileName}
+put sent\{controlFileName} {controlFileName}
+exit

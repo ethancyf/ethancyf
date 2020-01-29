@@ -1,0 +1,201 @@
+Namespace PrintOut.CIVSSConsentForm_CHI
+    <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+    Partial Public Class CIVSSDeclarationCondensedSmartID_CHI
+        Inherits GrapeCity.ActiveReports.SectionReport
+
+        'Form overrides dispose to clean up the component list.
+        Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+            If disposing Then
+            End If
+            MyBase.Dispose(disposing)
+        End Sub
+
+        'NOTE: The following procedure is required by the ActiveReports Designer
+        'It can be modified using the ActiveReports Designer.
+        'Do not modify it using the code editor.
+        Private WithEvents Detail As GrapeCity.ActiveReports.SectionReportModel.Detail
+        <System.Diagnostics.DebuggerStepThrough()> _
+        Private Sub InitializeComponent()
+            Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(CIVSSDeclarationCondensedSmartID_CHI))
+            Me.Detail = New GrapeCity.ActiveReports.SectionReportModel.Detail
+            Me.srDeclaration = New GrapeCity.ActiveReports.SectionReportModel.SubReport
+            Me.txtDeclaration1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.txtDeclaration2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.TextBox5 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.TextBox2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.TextBox3 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            CType(Me.txtDeclaration1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtDeclaration2, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox3, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
+            '
+            'Detail
+            '
+            Me.Detail.ColumnSpacing = 0.0!
+            Me.Detail.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.srDeclaration, Me.txtDeclaration1, Me.txtDeclaration2, Me.TextBox5, Me.TextBox1, Me.TextBox2, Me.TextBox3})
+            Me.Detail.Height = 0.96875!
+            Me.Detail.Name = "Detail"
+            '
+            'srDeclaration
+            '
+            Me.srDeclaration.Border.BottomColor = System.Drawing.Color.Black
+            Me.srDeclaration.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.srDeclaration.Border.LeftColor = System.Drawing.Color.Black
+            Me.srDeclaration.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.srDeclaration.Border.RightColor = System.Drawing.Color.Black
+            Me.srDeclaration.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.srDeclaration.Border.TopColor = System.Drawing.Color.Black
+            Me.srDeclaration.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.srDeclaration.CloseBorder = False
+            Me.srDeclaration.Height = 0.21875!
+            Me.srDeclaration.Left = 0.25!
+            Me.srDeclaration.Name = "srDeclaration"
+            Me.srDeclaration.Report = Nothing
+            Me.srDeclaration.ReportName = "SubReport1"
+            Me.srDeclaration.Top = 0.0!
+            Me.srDeclaration.Width = 7.15625!
+            '
+            'txtDeclaration1
+            '
+            Me.txtDeclaration1.Border.BottomColor = System.Drawing.Color.Black
+            Me.txtDeclaration1.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration1.Border.LeftColor = System.Drawing.Color.Black
+            Me.txtDeclaration1.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration1.Border.RightColor = System.Drawing.Color.Black
+            Me.txtDeclaration1.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration1.Border.TopColor = System.Drawing.Color.Black
+            Me.txtDeclaration1.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration1.Height = 0.21875!
+            Me.txtDeclaration1.Left = 0.0!
+            Me.txtDeclaration1.Name = "txtDeclaration1"
+            Me.txtDeclaration1.Style = "ddo-char-set: 136; text-align: left; font-size: 12pt; font-family: HA_MingLiu; "
+            Me.txtDeclaration1.Text = "1."
+            Me.txtDeclaration1.Top = 0.0!
+            Me.txtDeclaration1.Width = 0.22!
+            '
+            'txtDeclaration2
+            '
+            Me.txtDeclaration2.Border.BottomColor = System.Drawing.Color.Black
+            Me.txtDeclaration2.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration2.Border.LeftColor = System.Drawing.Color.Black
+            Me.txtDeclaration2.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration2.Border.RightColor = System.Drawing.Color.Black
+            Me.txtDeclaration2.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration2.Border.TopColor = System.Drawing.Color.Black
+            Me.txtDeclaration2.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.txtDeclaration2.Height = 0.21875!
+            Me.txtDeclaration2.Left = 0.0!
+            Me.txtDeclaration2.Name = "txtDeclaration2"
+            Me.txtDeclaration2.Style = "ddo-char-set: 136; text-align: left; font-size: 12pt; font-family: HA_MingLiu; "
+            Me.txtDeclaration2.Text = "2."
+            Me.txtDeclaration2.Top = 0.3125!
+            Me.txtDeclaration2.Width = 0.22!
+            '
+            'TextBox5
+            '
+            Me.TextBox5.Border.BottomColor = System.Drawing.Color.Black
+            Me.TextBox5.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox5.Border.LeftColor = System.Drawing.Color.Black
+            Me.TextBox5.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox5.Border.RightColor = System.Drawing.Color.Black
+            Me.TextBox5.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox5.Border.TopColor = System.Drawing.Color.Black
+            Me.TextBox5.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox5.Height = 0.21875!
+            Me.TextBox5.Left = 0.25!
+            Me.TextBox5.Name = "TextBox5"
+            Me.TextBox5.Style = "ddo-char-set: 136; text-align: left; font-size: 12pt; font-family: HA_MingLiu; "
+            Me.TextBox5.Text = "本人同意授權醫生讀取儲存在本人子女"
+            Me.TextBox5.Top = 0.3125!
+            Me.TextBox5.Width = 7.15625!
+            '
+            'TextBox1
+            '
+            Me.TextBox1.Border.BottomColor = System.Drawing.Color.Black
+            Me.TextBox1.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox1.Border.LeftColor = System.Drawing.Color.Black
+            Me.TextBox1.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox1.Border.RightColor = System.Drawing.Color.Black
+            Me.TextBox1.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox1.Border.TopColor = System.Drawing.Color.Black
+            Me.TextBox1.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox1.Height = 0.40625!
+            Me.TextBox1.Left = 0.25!
+            Me.TextBox1.Name = "TextBox1"
+            Me.TextBox1.Style = "ddo-char-set: 136; text-align: left; font-size: 12pt; font-family: HA_MingLiu; "
+            Me.TextBox1.Text = "證號碼，中英文姓名，出生日期和香港身份證簽發日期），以供政府於「收集個人資料目的」所述的用途 。"
+            Me.TextBox1.Top = 0.53125!
+            Me.TextBox1.Width = 7.15625!
+            '
+            'TextBox2
+            '
+            Me.TextBox2.Border.BottomColor = System.Drawing.Color.Black
+            Me.TextBox2.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox2.Border.LeftColor = System.Drawing.Color.Black
+            Me.TextBox2.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox2.Border.RightColor = System.Drawing.Color.Black
+            Me.TextBox2.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox2.Border.TopColor = System.Drawing.Color.Black
+            Me.TextBox2.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox2.Height = 0.21875!
+            Me.TextBox2.Left = 3.25!
+            Me.TextBox2.Name = "TextBox2"
+            Me.TextBox2.Style = "ddo-char-set: 136; text-align: left; font-size: 12pt; font-family: HA_MingLiu; "
+            Me.TextBox2.Text = "受監護者智能身份證晶片內的個人資料（只限香港身份"
+            Me.TextBox2.Top = 0.3125!
+            Me.TextBox2.Width = 4.0625!
+            '
+            'TextBox3
+            '
+            Me.TextBox3.Border.BottomColor = System.Drawing.Color.Black
+            Me.TextBox3.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox3.Border.LeftColor = System.Drawing.Color.Black
+            Me.TextBox3.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox3.Border.RightColor = System.Drawing.Color.Black
+            Me.TextBox3.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox3.Border.TopColor = System.Drawing.Color.Black
+            Me.TextBox3.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
+            Me.TextBox3.Height = 0.1875!
+            Me.TextBox3.Left = 3.125!
+            Me.TextBox3.Name = "TextBox3"
+            Me.TextBox3.Style = "ddo-char-set: 136; text-align: justify; font-size: 12pt; font-family: HA_MingLiu;" & _
+                " "
+            Me.TextBox3.Text = "/"
+            Me.TextBox3.Top = 0.3125!
+            Me.TextBox3.Width = 0.09375!
+            '
+            'CIVSSDeclarationCondensedSmartID_CHI
+            '
+            Me.MasterReport = False
+            Me.PageSettings.PaperHeight = 11.69!
+            Me.PageSettings.PaperWidth = 8.27!
+            Me.PrintWidth = 7.40625!
+            Me.Sections.Add(Me.Detail)
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Arial; font-style: normal; text-decoration: none; font-weight: norma" & _
+                        "l; font-size: 10pt; color: Black; ", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 16pt; font-weight: bold; ", "Heading1", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Times New Roman; font-size: 14pt; font-weight: bold; font-style: ita" & _
+                        "lic; ", "Heading2", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 13pt; font-weight: bold; ", "Heading3", "Normal"))
+            CType(Me.txtDeclaration1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtDeclaration2, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox3, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
+
+        End Sub
+        Friend WithEvents srDeclaration As GrapeCity.ActiveReports.SectionReportModel.SubReport
+        Friend WithEvents txtDeclaration1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents txtDeclaration2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox5 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents TextBox3 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    End Class
+End Namespace

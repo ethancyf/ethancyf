@@ -1,0 +1,375 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B51EEEF9-B767-426E-83E5-AEA7EA83329C}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ServiceDirectory</RootNamespace>
+    <AssemblyName>ServiceDirectory</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>ServiceDirectory.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>ServiceDirectory.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=19.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CSS\CommonStyle.css" />
+    <Content Include="CSS\DialogStyle.css" />
+    <Content Include="en\error.aspx" />
+    <Content Include="en\invalidlink.aspx" />
+    <Content Include="en\InvalidOS.aspx" />
+    <Content Include="en\sessiontimeout.aspx" />
+    <Content Include="Images\button\btn_clear_all.png" />
+    <Content Include="Images\button\btn_clear_all_cn.png" />
+    <Content Include="Images\button\btn_clear_all_tw.png" />
+    <Content Include="Images\button\btn_ok.png" />
+    <Content Include="Images\button\btn_ok_cn.png" />
+    <Content Include="Images\button\btn_ok_tw.png" />
+    <Content Include="Images\button\btn_reset.png" />
+    <Content Include="Images\button\btn_reset_tw.png" />
+    <Content Include="Images\button\btn_search.png" />
+    <Content Include="Images\button\btn_search_tw.png" />
+    <Content Include="Images\dialog\alpha.png" />
+    <Content Include="Images\dialog\bottom-left.png" />
+    <Content Include="Images\dialog\bottom-mid.png" />
+    <Content Include="Images\dialog\bottom-right.png" />
+    <Content Include="Images\dialog\bottom_content.gif" />
+    <Content Include="Images\dialog\close-down.png" />
+    <Content Include="Images\dialog\close-hover.png" />
+    <Content Include="Images\dialog\close.png" />
+    <Content Include="Images\dialog\comboItemBg.gif" />
+    <Content Include="Images\dialog\drop.gif" />
+    <Content Include="Images\dialog\drop_hover.gif" />
+    <Content Include="Images\dialog\icons\arrow.gif" />
+    <Content Include="Images\dialog\icons\pencil.gif" />
+    <Content Include="Images\dialog\icons\search.gif" />
+    <Content Include="Images\dialog\icons\x.gif" />
+    <Content Include="Images\dialog\left.png" />
+    <Content Include="Images\dialog\right.png" />
+    <Content Include="Images\dialog\spacer.gif" />
+    <Content Include="Images\dialog\top-left.png" />
+    <Content Include="Images\dialog\top-mid.png" />
+    <Content Include="Images\dialog\top-right.png" />
+    <Content Include="Images\others\arrowblank.png" />
+    <Content Include="Images\others\arrowdown.png" />
+    <Content Include="Images\others\arrowup.png" />
+    <Content Include="Images\others\bg.png" />
+    <Content Include="Images\others\exclamation.png" />
+    <Content Include="Images\others\icon-magnifier.png" />
+    <Content Include="Images\others\icon-mapmarker.png" />
+    <Content Include="Images\others\icon-profession.png" />
+    <Content Include="Images\others\icon-service.png" />
+    <Content Include="Images\scheme\HCVS_logo.jpg" />
+    <Content Include="Images\others\icon_caution.gif" />
+    <Content Include="Images\others\Information.png" />
+    <Content Include="Images\others\pleaseWait.gif" />
+    <Content Include="Images\others\pleaseWait_tw.gif" />
+    <Content Include="Images\others\top.png" />
+    <Content Include="Images\others\transparent.gif" />
+    <Content Include="Images\scheme\VSS_logo.jpg" />
+    <Content Include="JS\Common.js" />
+    <Content Include="main.aspx" />
+    <Content Include="UIControl\Assessories\ucNoticePopUp.ascx" />
+    <Content Include="Web.config" />
+    <Content Include="zh\error.aspx" />
+    <Content Include="zh\invalidlink.aspx" />
+    <Content Include="zh\InvalidOS.aspx" />
+    <Content Include="zh\sessiontimeout.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Code\BasePage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_Code\BasePageWithGridView.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="en\error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\error.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\index.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\invalidlink.aspx.designer.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\invalidlink.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\InvalidOS.aspx.designer.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\InvalidOS.aspx.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="en\sessiontimeout.aspx.designer.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="en\sessiontimeout.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="ComFunction\GridviewFunction.vb" />
+    <Compile Include="main.aspx.designer.vb">
+      <DependentUpon>main.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="main.aspx.vb">
+      <DependentUpon>main.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="BLL\ServiceDirectoryBLL.vb" />
+    <Compile Include="redirectInvalidLink.aspx.designer.vb">
+      <DependentUpon>redirectInvalidLink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="redirectInvalidLink.aspx.vb">
+      <DependentUpon>redirectInvalidLink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.designer.vb">
+      <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.vb">
+      <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="zh\error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\error.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\index.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\invalidlink.aspx.designer.vb">
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\invalidlink.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>invalidlink.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\InvalidOS.aspx.designer.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\InvalidOS.aspx.vb">
+      <DependentUpon>InvalidOS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="zh\sessiontimeout.aspx.designer.vb">
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="zh\sessiontimeout.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>sessiontimeout.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Themes\Theme_Global\Skin_Global.skin" />
+    <Content Include="en\index.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\master\background.jpg" />
+    <Content Include="Images\master\banner_header.jpg" />
+    <Content Include="Images\master\banner_header_tw.jpg" />
+    <Content Include="Images\master\language_background.png" />
+    <Content Include="Images\others\arrowblank5x5.png" />
+    <Content Include="Images\others\btn_swine.jpg" />
+    <Content Include="Images\others\button_contactus.png" />
+    <Content Include="Images\others\button_contactus_tw.png" />
+    <Content Include="Images\others\button_FAQs.png" />
+    <Content Include="Images\others\button_FAQs_tw.png" />
+    <Content Include="Images\others\button_listofHealthcareSP.png" />
+    <Content Include="Images\others\button_listofHealthcareSP_tw.png" />
+    <Content Include="Images\others\checkbox_D.png" />
+    <Content Include="Images\others\circle_red.png" />
+    <Content Include="Images\others\Collapse.png" />
+    <Content Include="Images\others\District.png" />
+    <Content Include="Images\others\District_tw.png" />
+    <Content Include="Images\others\expand.png" />
+    <Content Include="Images\others\HealthCarePro.png" />
+    <Content Include="Images\others\HealthCarePro_tw.png" />
+    <Content Include="Images\others\note.png" />
+    <Content Include="Images\others\Service.png" />
+    <Content Include="Images\others\Service_tw.png" />
+    <Content Include="index.htm" />
+    <Content Include="reconnect.aspx" />
+    <Content Include="redirectInvalidLink.aspx" />
+    <Content Include="zh\index.aspx" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomControls\CustomControls.vbproj">
+      <Project>{EBE0EADC-F5A6-4EAF-B395-127B0EDF82F7}</Project>
+      <Name>CustomControls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49646</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/SDIR</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

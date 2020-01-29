@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="EHSVaccinationTester_ImmuEnquiryWebSRef_ImmuEnquiryWebS" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://cms-hafm-sit:7500/cms-immu/immu-ehr/0_0_8/ImmuEnquiryWebS</Value>
+    </Setting>
+    <Setting Name="EHSVaccinationTester_GetEHSVaccine_GetEHSVaccine" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost/EHSVaccination/GetEHSVaccine.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

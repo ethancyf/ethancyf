@@ -1,0 +1,127 @@
+﻿.textVersionTable
+{
+	width: 100%;
+}
+
+
+.validateFailText
+{
+	color: Red;
+}
+
+.tableTextForInComplete
+{
+	color: Red;
+}
+
+.tableTitle
+{
+	font-weight: bold;
+}
+
+.tableText
+{
+}
+
+.tableTitleChi
+{
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+.tableTextChi
+{
+	font-family:"細明體_HKSCS","MingLiu_HKSCS","Arial";
+}
+
+.tableHeader
+{
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.tableRemark
+{
+	padding-right: 4px;
+	padding-left: 4px;
+	padding-bottom: 4px;
+	padding-top: 4px;
+	border-right: black thin solid;
+	border-top: black thin solid;
+	border-left: black thin solid;
+	border-bottom: black thin solid;
+}
+
+.tableRemarkHighlight
+{
+	padding-right: 4px;
+	padding-left: 4px;
+	padding-bottom: 4px;
+	padding-top: 4px;
+	border-right: black thin solid;
+	border-top: black thin solid;
+	border-left: black thin solid;
+	border-bottom: black thin solid;
+	background-color: #FFFF99;
+}
+
+.linkButton
+{
+	color: blue;
+	background-color: white;
+	text-decoration: underline;
+}
+
+.masterPageSteps
+{
+	font-style: italic;
+}
+
+/* Vaccination Record table */
+
+td.VR
+{
+	border-bottom: dashed 1px gray;
+}
+
+.ReasonForVisitTable
+{
+	background-color:Gray;
+}
+
+.ReasonForVisitTableHeading
+{
+	background-color:#e1e0d4;
+	width:100%;
+}
+
+.ReasonForVisitGroupTable1
+{
+	background-color:#eaebeb;
+	width:100%;
+}
+
+.ReasonForVisitGroupTable2
+{
+	background-color:#f7f7f7;
+	width:100%;
+}
+
+.SeparationLine
+{
+	text-align:left;
+	vertical-align:top;
+	width:100%;
+}
+
+.rbSelectRFVGroup
+{
+	padding-left:20px;
+	padding-right:4px;
+}
+
+.rbSelectRFVGroupDisplay
+{
+	padding-left:4px;
+	padding-right:4px;
+}
+

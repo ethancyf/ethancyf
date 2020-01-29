@@ -1,0 +1,44 @@
+<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+<%-- Textbox Skin --%>
+<asp:textbox runat="server" autocomplete="off"></asp:textbox>
+
+<%-- GridView Skin --%>
+<asp:GridView runat="server" BorderColor="#999999" BackColor="#999999" UseAccessibleHeader="False" GridLines="Horizontal" BorderWidth="0px" CellPadding="2" CellSpacing="1" CssClass="gvTable">
+    <PagerStyle BackColor="#F7F7DE" ForeColor="Black" HorizontalAlign="Left" />
+    <HeaderStyle BackColor="#F7F7DE" CssClass = "gvHeader"/>
+    <RowStyle BackColor="White"/>
+</asp:GridView>
+
+<asp:GridView runat="server" BorderColor="#cccccc" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" UseAccessibleHeader="False" SkinID="GridViewSkin">
+    <PagerStyle BackColor="#6B696B" ForeColor="White" HorizontalAlign="Left" />
+    <HeaderStyle BackColor="#6B696B" CssClass = "gvHeader" ForeColor="White"/>    
+</asp:GridView>
+
+
+<%-- CRE16-002 (Revamp VSS) [Start][Chris YIM] --%>
+<%-- ----------------------------------------------------------------------------------------- --%>
+<%-- <asp:GridView runat="server" BorderColor="transparent" BorderStyle="None" BorderWidth="0px" CellPadding="4" UseAccessibleHeader="False" SkinID="GridViewSubSchemeSkin" GridLines="None">
+</asp:GridView> --%>
+
+<asp:GridView runat="server" BorderColor="#AAAAAA" BorderStyle="Solid" BorderWidth="1px" CellPadding="4" UseAccessibleHeader="False" SkinID="GridViewSubSchemeSkin" CssClass="gvTable">
+    <HeaderStyle BackColor="#EEEEEE" Font-Bold="true"/>  
+    <RowStyle BackColor="White" BorderColor="#AAAAAA" BorderWidth="1px" ForeColor="#666666"/>
+</asp:GridView>
+
+<asp:GridView runat="server" BorderColor="transparent" BorderStyle="None" BorderWidth="0px" CellPadding="4" UseAccessibleHeader="False" SkinID="GridViewSchemeToEnrollSkin" GridLines="None" CssClass="gvTable">
+</asp:GridView>
+<%-- CRE16-002 (Revamp VSS) [End][Chris YIM] --%>

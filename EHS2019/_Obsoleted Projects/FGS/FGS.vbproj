@@ -1,0 +1,2134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AC07BCE5-BB4E-4AB9-B2AA-0448C20380AE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ConsentFormEHS</RootNamespace>
+    <AssemblyName>FGS</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>FGS.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>FGS.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ActiveReports.PdfExport, Version=5.2.1013.2, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ActiveReports.Viewer3, Version=5.2.1013.2, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ActiveReports.Web, Version=5.2.1013.2, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ActiveReports.Web.Design, Version=5.2.1013.2, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ActiveReports3, Version=5.2.1013.2, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Error.htm" />
+    <Content Include="gencsf.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Image\background.png" />
+    <Content Include="Image\banner.png" />
+    <Content Include="Image\banner_tw.png" />
+    <Content Include="Image\icon_caution.gif" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Component\Cache\CacheHandler.vb" />
+    <Compile Include="Component\ConsentFormInformation\ConsentFormInformationBLL.vb" />
+    <Compile Include="Component\ConsentFormInformation\ConsentFormInformationModel.vb" />
+    <Compile Include="Component\Database\Database.vb" />
+    <Compile Include="Component\Database\EDSymmetric.vb" />
+    <Compile Include="Component\EnumConstant.vb" />
+    <Compile Include="Component\Formatter\Formatter.vb" />
+    <Compile Include="Component\GeneralFunction\GeneralFunction.vb" />
+    <Compile Include="Component\SystemLog\ErrorHandler.vb" />
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSConsentCondensedForm_CHI.Designer.vb">
+      <DependentUpon>CIVSSConsentCondensedForm_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSConsentCondensedForm_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSConsentForm_CHI.Designer.vb">
+      <DependentUpon>CIVSSConsentForm_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSConsentForm_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDSPName30_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPName30_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDSPName30_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDSPNameNA_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPNameNA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDSPNameNA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartID_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartID_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartID_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSPName30_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSPName30_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSPName30_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSPNameNA_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSPNameNA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSPNameNA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensed_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensed_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensed_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationSmartID_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationSmartID_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationSmartID_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclaration_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclaration_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclaration_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSSignature_CHI.Designer.vb">
+      <DependentUpon>CIVSSSignature_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSSignature_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSStatementOfPurpose_CHI.Designer.vb">
+      <DependentUpon>CIVSSStatementOfPurpose_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSStatementOfPurpose_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSSubsidyInfo_CHI.Designer.vb">
+      <DependentUpon>CIVSSSubsidyInfo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSSubsidyInfo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPName30_CHI.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPName30_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPName30_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPNameNA_CHI.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPNameNA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfo_CHI.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPName30NoDate_CHI.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPName30NoDate_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPName30NoDate_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPNameNANoDate_CHI.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNANoDate_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPNameNANoDate_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationSmartIDUnknown_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationSmartIDUnknown_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationSmartIDUnknown_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDUnknown_CHI.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDUnknown_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDUnknown_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSConsentCondensedForm.Designer.vb">
+      <DependentUpon>CIVSSConsentCondensedForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSConsentCondensedForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSConsentForm.Designer.vb">
+      <DependentUpon>CIVSSConsentForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSConsentForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclaration.Designer.vb">
+      <DependentUpon>CIVSSDeclaration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclaration.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensed.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensed.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensed.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartID.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDSPName30.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDSPNameNA.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSPName30.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSPNameNA.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationSmartID.Designer.vb">
+      <DependentUpon>CIVSSDeclarationSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSSignature.Designer.vb">
+      <DependentUpon>CIVSSSignature.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSSignature.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSStatementOfPurpose.Designer.vb">
+      <DependentUpon>CIVSSStatementOfPurpose.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSStatementOfPurpose.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSSubsidyInfo.Designer.vb">
+      <DependentUpon>CIVSSSubsidyInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSSubsidyInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfo.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPName30.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPNameNA.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationSmartIDUnknown.Designer.vb">
+      <DependentUpon>CIVSSDeclarationSmartIDUnknown.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationSmartIDUnknown.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDUnknown.Designer.vb">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDUnknown.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDUnknown.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPName30NoDate.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPName30NoDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPName30NoDate.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPNameNANoDate.Designer.vb">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNANoDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPNameNANoDate.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\Adoption.Designer.vb">
+      <DependentUpon>Adoption.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\Adoption.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\Adoption_CHI.Designer.vb">
+      <DependentUpon>Adoption_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\Adoption_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\DI.Designer.vb">
+      <DependentUpon>DI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\DI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\DI_CHI.Designer.vb">
+      <DependentUpon>DI_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\DI_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\EC.Designer.vb">
+      <DependentUpon>EC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\EC.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\EC_CHI.Designer.vb">
+      <DependentUpon>EC_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\EC_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKBC.Designer.vb">
+      <DependentUpon>HKBC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKBC.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKBC_CHI.Designer.vb">
+      <DependentUpon>HKBC_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKBC_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKIC.Designer.vb">
+      <DependentUpon>HKIC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKIC.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKIC_CHI.Designer.vb">
+      <DependentUpon>HKIC_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\HKIC_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ID235B.Designer.vb">
+      <DependentUpon>ID235B.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ID235B.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ID235B_CHI.Designer.vb">
+      <DependentUpon>ID235B_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ID235B_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\IdentityDocument.Designer.vb">
+      <DependentUpon>IdentityDocument.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\IdentityDocument.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\IdentityDocument_CHI.Designer.vb">
+      <DependentUpon>IdentityDocument_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\IdentityDocument_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ReentryPermit.Designer.vb">
+      <DependentUpon>ReentryPermit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ReentryPermit.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ReentryPermit_CHI.Designer.vb">
+      <DependentUpon>ReentryPermit_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\ReentryPermit_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\VISA.Designer.vb">
+      <DependentUpon>VISA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\VISA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\VISA_CHI.Designer.vb">
+      <DependentUpon>VISA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\DocType\VISA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\PersonalInfo.Designer.vb">
+      <DependentUpon>PersonalInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\PersonalInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\PersonalInfo_CHI.Designer.vb">
+      <DependentUpon>PersonalInfo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\PersonalInfo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\VSSSubsidyInfo.Designer.vb">
+      <DependentUpon>VSSSubsidyInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\VSSSubsidyInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\Common\VSSSubsidyInfo_CHI.Designer.vb">
+      <DependentUpon>VSSSubsidyInfo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\Common\VSSSubsidyInfo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDUnknown_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDUnknown_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDUnknown_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSConsentCondensedForm_CHI.Designer.vb">
+      <DependentUpon>EVSSConsentCondensedForm_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSConsentCondensedForm_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDSPName30_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPName30_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDSPName30_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDSPNameNA_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPNameNA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDSPNameNA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartID_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartID_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartID_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSPName30_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSPName30_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSPName30_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSPNameNA_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSPNameNA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSPNameNA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensed_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensed_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensed_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSSignatureDocType_CHI.Designer.vb">
+      <DependentUpon>EVSSSignatureDocType_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSSignatureDocType_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationSmartIDUnknown_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationSmartIDUnknown_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationSmartIDUnknown_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPNameNANoDate_CHI.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPNameNANoDate_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPNameNANoDate_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPName30NoDate_CHI.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPName30NoDate_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPName30NoDate_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSConsentForm_CHI.Designer.vb">
+      <DependentUpon>EVSSConsentForm_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSConsentForm_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationSmartID_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclarationSmartID_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclarationSmartID_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclaration_CHI.Designer.vb">
+      <DependentUpon>EVSSDeclaration_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSDeclaration_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSSignature_CHI.Designer.vb">
+      <DependentUpon>EVSSSignature_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSSignature_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSStatementOfPurpose_CHI.Designer.vb">
+      <DependentUpon>EVSSStatementOfPurpose_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSStatementOfPurpose_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPName30_CHI.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPName30_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPName30_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPNameNA_CHI.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPNameNA_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPNameNA_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfo_CHI.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSCHI\EVSSVaccinationInfo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPNameNANoDate.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPNameNANoDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPNameNANoDate.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPName30NoDate.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPName30NoDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPName30NoDate.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDUnknown.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDUnknown.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDUnknown.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationSmartIDUnknown.Designer.vb">
+      <DependentUpon>EVSSDeclarationSmartIDUnknown.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationSmartIDUnknown.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSConsentCondensedForm.Designer.vb">
+      <DependentUpon>EVSSConsentCondensedForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSConsentCondensedForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSConsentForm.Designer.vb">
+      <DependentUpon>EVSSConsentForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSConsentForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclaration.Designer.vb">
+      <DependentUpon>EVSSDeclaration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclaration.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensed.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensed.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensed.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartID.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDSPName30.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDSPNameNA.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSPName30.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSPNameNA.Designer.vb">
+      <DependentUpon>EVSSDeclarationCondensedSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationSmartID.Designer.vb">
+      <DependentUpon>EVSSDeclarationSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSDeclarationSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSSignature.Designer.vb">
+      <DependentUpon>EVSSSignature.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSSignature.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSSignatureDocType.Designer.vb">
+      <DependentUpon>EVSSSignatureDocType.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSSignatureDocType.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSStatementOfPurpose.Designer.vb">
+      <DependentUpon>EVSSStatementOfPurpose.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSStatementOfPurpose.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfo.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPName30.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPNameNA.Designer.vb">
+      <DependentUpon>EVSSVaccinationInfoSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent1SPName30.Designer.vb">
+      <DependentUpon>ClaimConsent1SPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent1SPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent1SPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsent1SPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent1SPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent2SPName30.Designer.vb">
+      <DependentUpon>ClaimConsent2SPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent2SPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent2SPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsent2SPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent2SPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPName30.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1FullVersionSPName30.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1FullVersionSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1FullVersionSPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1FullVersionSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2FullVersionSPName30.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2FullVersionSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2FullVersionSPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2FullVersionSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPName30.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnknownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnknownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnknownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPName30UnknownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName30UnknownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPName30UnknownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPNameNAUnknownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNAUnknownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPNameNAUnknownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent1SPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsent1SPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent1SPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent1SPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsent1SPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent1SPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent2SPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsent2SPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent2SPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent2SPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsent2SPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent2SPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPName40UnknownSmartID_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName40UnknownSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPName40UnknownSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPNameNAUnknownSmartID_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNAUnknownSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPNameNAUnknownSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration3FullVersion_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersion_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration3FullVersion_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureFormFullVersionSmartID_v2.Designer.vb">
+      <DependentUpon>SignatureFormFullVersionSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureFormFullVersionSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureFormFullVersion_v2.Designer.vb">
+      <DependentUpon>SignatureFormFullVersion_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureFormFullVersion_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureFormSmartID_v2.Designer.vb">
+      <DependentUpon>SignatureFormSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureFormSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureForm_v2.Designer.vb">
+      <DependentUpon>SignatureForm_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\SignatureForm_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\VoucherConsentCondensedForm_v2.Designer.vb">
+      <DependentUpon>VoucherConsentCondensedForm_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\VoucherConsentCondensedForm_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\VoucherConsentForm_v2.Designer.vb">
+      <DependentUpon>VoucherConsentForm_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\VoucherConsentForm_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureForm.Designer.vb">
+      <DependentUpon>SignatureForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureFormFullVersion.Designer.vb">
+      <DependentUpon>SignatureFormFullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureFormFullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureFormFullVersionSmartID.Designer.vb">
+      <DependentUpon>SignatureFormFullVersionSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureFormFullVersionSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureFormSmartID.Designer.vb">
+      <DependentUpon>SignatureFormSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\SignatureFormSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\VoucherNotice_v2.Designer.vb">
+      <DependentUpon>VoucherNotice_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\v2\VoucherNotice_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\VoucherConsentCondensedForm.Designer.vb">
+      <DependentUpon>VoucherConsentCondensedForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\VoucherConsentCondensedForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\VoucherConsentForm.Designer.vb">
+      <DependentUpon>VoucherConsentForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\VoucherConsentForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\VoucherNotice.Designer.vb">
+      <DependentUpon>VoucherNotice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm\VoucherNotice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent1SPName30.Designer.vb">
+      <DependentUpon>ClaimConsent1SPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent1SPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent1SPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsent1SPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent1SPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent2SPName30.Designer.vb">
+      <DependentUpon>ClaimConsent2SPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent2SPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent2SPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsent2SPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent2SPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPName30.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1FullVersionSPName30.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1FullVersionSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1FullVersionSPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1FullVersionSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2FullVersionSPName30.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2FullVersionSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2FullVersionSPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2FullVersionSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPName30.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPName30.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPNameNA.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPNameNA.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnkownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnkownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnkownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPName30UnknownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName30UnknownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPName30UnknownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPNameNAUnkownSmartID.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNAUnkownSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPNameNAUnkownSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent1SPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsent1SPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent1SPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent1SPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsent1SPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent1SPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent2SPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsent2SPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent2SPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent2SPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsent2SPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent2SPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPName40UnknownSmartID_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPName40UnknownSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPName40UnknownSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPNameNAUnknownSmartID_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNAUnknownSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPNameNAUnknownSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsent3SPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration3FullVersion_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersion_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration3FullVersion_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormFullVersion_v2.Designer.vb">
+      <DependentUpon>SignatureFormFullVersion_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormFullVersion_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormFullVersionSmartID_v2.Designer.vb">
+      <DependentUpon>SignatureFormFullVersionSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormFullVersionSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureForm_v2.Designer.vb">
+      <DependentUpon>SignatureForm_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureForm_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormSmartID_v2.Designer.vb">
+      <DependentUpon>SignatureFormSmartID_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormSmartID_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherConsentCondensedForm_CHI_v2.Designer.vb">
+      <DependentUpon>VoucherConsentCondensedForm_CHI_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherConsentCondensedForm_CHI_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureForm.Designer.vb">
+      <DependentUpon>SignatureForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureForm.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormFullVersion.Designer.vb">
+      <DependentUpon>SignatureFormFullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormFullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormFullVersionSmartID.Designer.vb">
+      <DependentUpon>SignatureFormFullVersionSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormFullVersionSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormSmartID.Designer.vb">
+      <DependentUpon>SignatureFormSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherConsentForm_CHI_v2.Designer.vb">
+      <DependentUpon>VoucherConsentForm_CHI_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherConsentForm_CHI_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherNotice_v2.Designer.vb">
+      <DependentUpon>VoucherNotice_v2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherNotice_v2.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\VoucherConsentCondensedForm_CHI.Designer.vb">
+      <DependentUpon>VoucherConsentCondensedForm_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\VoucherConsentCondensedForm_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\VoucherConsentForm_CHI.Designer.vb">
+      <DependentUpon>VoucherConsentForm_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\VoucherConsentForm_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\VoucherNotice.Designer.vb">
+      <DependentUpon>VoucherNotice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConsentForm\VoucherConsentForm_CHI\VoucherNotice.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gencsf.aspx.designer.vb">
+      <DependentUpon>gencsf.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="gencsf.aspx.vb">
+      <DependentUpon>gencsf.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSConsentCondensedForm_CHI.resx">
+      <DependentUpon>CIVSSConsentCondensedForm_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSConsentForm_CHI.resx">
+      <DependentUpon>CIVSSConsentForm_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDSPName30_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPName30_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDSPNameNA_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPNameNA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartID_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartID_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSPName30_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSPName30_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSPNameNA_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSPNameNA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensed_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensed_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationSmartID_CHI.resx">
+      <DependentUpon>CIVSSDeclarationSmartID_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclaration_CHI.resx">
+      <DependentUpon>CIVSSDeclaration_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSSignature_CHI.resx">
+      <DependentUpon>CIVSSSignature_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSStatementOfPurpose_CHI.resx">
+      <DependentUpon>CIVSSStatementOfPurpose_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSSubsidyInfo_CHI.resx">
+      <DependentUpon>CIVSSSubsidyInfo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPName30_CHI.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPName30_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPNameNA_CHI.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfo_CHI.resx">
+      <DependentUpon>CIVSSVaccinationInfo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPName30NoDate_CHI.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPName30NoDate_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSVaccinationInfoSPNameNANoDate_CHI.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNANoDate_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationSmartIDUnknown_CHI.resx">
+      <DependentUpon>CIVSSDeclarationSmartIDUnknown_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSChi\CIVSSDeclarationCondensedSmartIDUnknown_CHI.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDUnknown_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSConsentCondensedForm.resx">
+      <DependentUpon>CIVSSConsentCondensedForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSConsentForm.resx">
+      <DependentUpon>CIVSSConsentForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclaration.resx">
+      <DependentUpon>CIVSSDeclaration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensed.resx">
+      <DependentUpon>CIVSSDeclarationCondensed.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartID.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDSPName30.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDSPNameNA.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSPName30.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSPNameNA.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationSmartID.resx">
+      <DependentUpon>CIVSSDeclarationSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSSignature.resx">
+      <DependentUpon>CIVSSSignature.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSStatementOfPurpose.resx">
+      <DependentUpon>CIVSSStatementOfPurpose.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSSubsidyInfo.resx">
+      <DependentUpon>CIVSSSubsidyInfo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfo.resx">
+      <DependentUpon>CIVSSVaccinationInfo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPName30.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPNameNA.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationSmartIDUnknown.resx">
+      <DependentUpon>CIVSSDeclarationSmartIDUnknown.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSDeclarationCondensedSmartIDUnknown.resx">
+      <DependentUpon>CIVSSDeclarationCondensedSmartIDUnknown.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPName30NoDate.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPName30NoDate.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\CIVSSConsentForm\CIVSSVaccinationInfoSPNameNANoDate.resx">
+      <DependentUpon>CIVSSVaccinationInfoSPNameNANoDate.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\Adoption.resx">
+      <DependentUpon>Adoption.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\Adoption_CHI.resx">
+      <DependentUpon>Adoption_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\DI.resx">
+      <DependentUpon>DI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\DI_CHI.resx">
+      <DependentUpon>DI_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\EC.resx">
+      <DependentUpon>EC.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\EC_CHI.resx">
+      <DependentUpon>EC_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\HKBC.resx">
+      <DependentUpon>HKBC.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\HKBC_CHI.resx">
+      <DependentUpon>HKBC_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\HKIC.resx">
+      <DependentUpon>HKIC.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\HKIC_CHI.resx">
+      <DependentUpon>HKIC_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\ID235B.resx">
+      <DependentUpon>ID235B.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\ID235B_CHI.resx">
+      <DependentUpon>ID235B_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\IdentityDocument.resx">
+      <DependentUpon>IdentityDocument.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\IdentityDocument_CHI.resx">
+      <DependentUpon>IdentityDocument_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\ReentryPermit.resx">
+      <DependentUpon>ReentryPermit.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\ReentryPermit_CHI.resx">
+      <DependentUpon>ReentryPermit_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\VISA.resx">
+      <DependentUpon>VISA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\DocType\VISA_CHI.resx">
+      <DependentUpon>VISA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\PersonalInfo.resx">
+      <DependentUpon>PersonalInfo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\PersonalInfo_CHI.resx">
+      <DependentUpon>PersonalInfo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\VSSSubsidyInfo.resx">
+      <DependentUpon>VSSSubsidyInfo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\Common\VSSSubsidyInfo_CHI.resx">
+      <DependentUpon>VSSSubsidyInfo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDUnknown_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDUnknown_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSConsentCondensedForm_CHI.resx">
+      <DependentUpon>EVSSConsentCondensedForm_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDSPName30_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPName30_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartIDSPNameNA_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPNameNA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSmartID_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartID_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSPName30_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensedSPName30_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensedSPNameNA_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensedSPNameNA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationCondensed_CHI.resx">
+      <DependentUpon>EVSSDeclarationCondensed_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSSignatureDocType_CHI.resx">
+      <DependentUpon>EVSSSignatureDocType_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationSmartIDUnknown_CHI.resx">
+      <DependentUpon>EVSSDeclarationSmartIDUnknown_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPNameNANoDate_CHI.resx">
+      <DependentUpon>EVSSVaccinationInfoSPNameNANoDate_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPName30NoDate_CHI.resx">
+      <DependentUpon>EVSSVaccinationInfoSPName30NoDate_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSConsentForm_CHI.resx">
+      <DependentUpon>EVSSConsentForm_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclarationSmartID_CHI.resx">
+      <DependentUpon>EVSSDeclarationSmartID_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSDeclaration_CHI.resx">
+      <DependentUpon>EVSSDeclaration_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSSignature_CHI.resx">
+      <DependentUpon>EVSSSignature_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSStatementOfPurpose_CHI.resx">
+      <DependentUpon>EVSSStatementOfPurpose_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPName30_CHI.resx">
+      <DependentUpon>EVSSVaccinationInfoSPName30_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSVaccinationInfoSPNameNA_CHI.resx">
+      <DependentUpon>EVSSVaccinationInfoSPNameNA_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSCHI\EVSSVaccinationInfo_CHI.resx">
+      <DependentUpon>EVSSVaccinationInfo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPNameNANoDate.resx">
+      <DependentUpon>EVSSVaccinationInfoSPNameNANoDate.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPName30NoDate.resx">
+      <DependentUpon>EVSSVaccinationInfoSPName30NoDate.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDUnknown.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDUnknown.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationSmartIDUnknown.resx">
+      <DependentUpon>EVSSDeclarationSmartIDUnknown.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSConsentCondensedForm.resx">
+      <DependentUpon>EVSSConsentCondensedForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSConsentForm.resx">
+      <DependentUpon>EVSSConsentForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclaration.resx">
+      <DependentUpon>EVSSDeclaration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensed.resx">
+      <DependentUpon>EVSSDeclarationCondensed.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartID.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDSPName30.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSmartIDSPNameNA.resx">
+      <DependentUpon>EVSSDeclarationCondensedSmartIDSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSPName30.resx">
+      <DependentUpon>EVSSDeclarationCondensedSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationCondensedSPNameNA.resx">
+      <DependentUpon>EVSSDeclarationCondensedSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSDeclarationSmartID.resx">
+      <DependentUpon>EVSSDeclarationSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSSignature.resx">
+      <DependentUpon>EVSSSignature.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSSignatureDocType.resx">
+      <DependentUpon>EVSSSignatureDocType.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSStatementOfPurpose.resx">
+      <DependentUpon>EVSSStatementOfPurpose.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfo.resx">
+      <DependentUpon>EVSSVaccinationInfo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPName30.resx">
+      <DependentUpon>EVSSVaccinationInfoSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\EVSSConsentForm\EVSSVaccinationInfoSPNameNA.resx">
+      <DependentUpon>EVSSVaccinationInfoSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent1SPNameNA.resx">
+      <DependentUpon>ClaimConsent1SPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent2SPName30.resx">
+      <DependentUpon>ClaimConsent2SPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent2SPNameNA.resx">
+      <DependentUpon>ClaimConsent2SPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPName30.resx">
+      <DependentUpon>ClaimConsent3SPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPNameNA.resx">
+      <DependentUpon>ClaimConsent3SPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1FullVersionSPName30.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration1FullVersionSPNameNA.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2FullVersionSPName30.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration2FullVersionSPNameNA.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPName30.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPNameNA.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnknownSmartID.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnknownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPName30UnknownSmartID.resx">
+      <DependentUpon>ClaimConsent3SPName30UnknownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\ClaimConsent3SPNameNAUnknownSmartID.resx">
+      <DependentUpon>ClaimConsent3SPNameNAUnknownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent1SPName40_v2.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ClaimConsent1SPName40_v2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent1SPNameNA_v2.resx">
+      <DependentUpon>ClaimConsent1SPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent2SPName40_v2.resx">
+      <DependentUpon>ClaimConsent2SPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent2SPNameNA_v2.resx">
+      <DependentUpon>ClaimConsent2SPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPName40_v2.resx">
+      <DependentUpon>ClaimConsent3SPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPName40UnknownSmartID_v2.resx">
+      <DependentUpon>ClaimConsent3SPName40UnknownSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPNameNAUnknownSmartID_v2.resx">
+      <DependentUpon>ClaimConsent3SPNameNAUnknownSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsent3SPNameNA_v2.resx">
+      <DependentUpon>ClaimConsent3SPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration3FullVersion_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersion_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\SignatureFormFullVersionSmartID_v2.resx">
+      <DependentUpon>SignatureFormFullVersionSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\SignatureFormFullVersion_v2.resx">
+      <DependentUpon>SignatureFormFullVersion_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\SignatureFormSmartID_v2.resx">
+      <DependentUpon>SignatureFormSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\SignatureForm_v2.resx">
+      <DependentUpon>SignatureForm_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\VoucherConsentCondensedForm_v2.resx">
+      <DependentUpon>VoucherConsentCondensedForm_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\VoucherConsentForm_v2.resx">
+      <DependentUpon>VoucherConsentForm_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\SignatureForm.resx">
+      <DependentUpon>SignatureForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\SignatureFormFullVersion.resx">
+      <DependentUpon>SignatureFormFullVersion.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\SignatureFormFullVersionSmartID.resx">
+      <DependentUpon>SignatureFormFullVersionSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\SignatureFormSmartID.resx">
+      <DependentUpon>SignatureFormSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\v2\VoucherNotice_v2.resx">
+      <DependentUpon>VoucherNotice_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\VoucherConsentCondensedForm.resx">
+      <DependentUpon>VoucherConsentCondensedForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\VoucherConsentForm.resx">
+      <DependentUpon>VoucherConsentForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm\VoucherNotice.resx">
+      <DependentUpon>VoucherNotice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent1SPName30.resx">
+      <DependentUpon>ClaimConsent1SPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent1SPNameNA.resx">
+      <DependentUpon>ClaimConsent1SPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent2SPName30.resx">
+      <DependentUpon>ClaimConsent2SPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent2SPNameNA.resx">
+      <DependentUpon>ClaimConsent2SPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPName30.resx">
+      <DependentUpon>ClaimConsent3SPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPNameNA.resx">
+      <DependentUpon>ClaimConsent3SPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1FullVersionSPName30.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration1FullVersionSPNameNA.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2FullVersionSPName30.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration2FullVersionSPNameNA.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPName30.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPNameNA.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNA.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPName30UnknownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnkownSmartID.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionSPNameNAUnkownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPName30UnknownSmartID.resx">
+      <DependentUpon>ClaimConsent3SPName30UnknownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\ClaimConsent3SPNameNAUnkownSmartID.resx">
+      <DependentUpon>ClaimConsent3SPNameNAUnkownSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent1SPName40_v2.resx">
+      <DependentUpon>ClaimConsent1SPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent1SPNameNA_v2.resx">
+      <DependentUpon>ClaimConsent1SPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent2SPName40_v2.resx">
+      <DependentUpon>ClaimConsent2SPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent2SPNameNA_v2.resx">
+      <DependentUpon>ClaimConsent2SPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPName40_v2.resx">
+      <DependentUpon>ClaimConsent3SPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPName40UnknownSmartID_v2.resx">
+      <DependentUpon>ClaimConsent3SPName40UnknownSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPNameNAUnknownSmartID_v2.resx">
+      <DependentUpon>ClaimConsent3SPNameNAUnknownSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsent3SPNameNA_v2.resx">
+      <DependentUpon>ClaimConsent3SPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersionSPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPName40_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersionSPNameNA_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration3FullVersion_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersion_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormFullVersion_v2.resx">
+      <DependentUpon>SignatureFormFullVersion_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormFullVersionSmartID_v2.resx">
+      <DependentUpon>SignatureFormFullVersionSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureForm_v2.resx">
+      <DependentUpon>SignatureForm_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\SignatureFormSmartID_v2.resx">
+      <DependentUpon>SignatureFormSmartID_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherConsentCondensedForm_CHI_v2.resx">
+      <DependentUpon>VoucherConsentCondensedForm_CHI_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\SignatureForm.resx">
+      <DependentUpon>SignatureForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormFullVersion.resx">
+      <DependentUpon>SignatureFormFullVersion.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormFullVersionSmartID.resx">
+      <DependentUpon>SignatureFormFullVersionSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\SignatureFormSmartID.resx">
+      <DependentUpon>SignatureFormSmartID.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherConsentForm_CHI_v2.resx">
+      <DependentUpon>VoucherConsentForm_CHI_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\v2\VoucherNotice_v2.resx">
+      <DependentUpon>VoucherNotice_v2.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\VoucherConsentCondensedForm_CHI.resx">
+      <DependentUpon>VoucherConsentCondensedForm_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\VoucherConsentForm_CHI.resx">
+      <DependentUpon>VoucherConsentForm_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsentForm\VoucherConsentForm_CHI\VoucherNotice.resx">
+      <DependentUpon>VoucherNotice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Component\AuditLog\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/FGS</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

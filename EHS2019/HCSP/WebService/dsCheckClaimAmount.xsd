@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsCheckClaimAmount" targetNamespace="https://hcvs.dh.gov.hksar/dsCheckClaimAmount.xsd" xmlns:mstns="https://hcvs.dh.gov.hksar/dsCheckClaimAmount.xsd" xmlns="https://hcvs.dh.gov.hksar/dsCheckClaimAmount.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsCheckClaimAmount" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="dsCheckClaimAmount" msprop:Generator_DataSetName="dsCheckClaimAmount">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Result" msprop:Generator_UserTableName="Result" msprop:Generator_RowDeletedName="ResultRowDeleted" msprop:Generator_TableClassName="ResultDataTable" msprop:Generator_RowChangedName="ResultRowChanged" msprop:Generator_RowClassName="ResultRow" msprop:Generator_RowChangingName="ResultRowChanging" msprop:Generator_RowEvArgName="ResultRowChangeEvent" msprop:Generator_RowEvHandlerName="ResultRowChangeEventHandler" msprop:Generator_TablePropName="Result" msprop:Generator_TableVarName="tableResult" msprop:Generator_RowDeletingName="ResultRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Return" msprop:Generator_UserColumnName="Return" msprop:Generator_ColumnPropNameInRow="_Return" msprop:Generator_ColumnVarNameInTable="columnReturn" msprop:Generator_ColumnPropNameInTable="ReturnColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Amount" msprop:Generator_UserTableName="Amount" msprop:Generator_RowDeletedName="AmountRowDeleted" msprop:Generator_TableClassName="AmountDataTable" msprop:Generator_RowChangedName="AmountRowChanged" msprop:Generator_RowClassName="AmountRow" msprop:Generator_RowChangingName="AmountRowChanging" msprop:Generator_RowEvArgName="AmountRowChangeEvent" msprop:Generator_RowEvHandlerName="AmountRowChangeEventHandler" msprop:Generator_TablePropName="Amount" msprop:Generator_TableVarName="tableAmount" msprop:Generator_RowDeletingName="AmountRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Value" msprop:Generator_UserColumnName="Value" msprop:Generator_ColumnPropNameInRow="Value" msprop:Generator_ColumnVarNameInTable="columnValue" msprop:Generator_ColumnPropNameInTable="ValueColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

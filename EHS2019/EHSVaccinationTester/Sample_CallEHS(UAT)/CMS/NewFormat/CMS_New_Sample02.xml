@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameter>
+	<message_id>TEST</message_id>
+	<health_check>N</health_check>
+	<patient_list>
+		<patient_count>1</patient_count>
+    <patient>
+      <patient_id>3</patient_id>
+      <document_no> U4415164</document_no>
+      <document_type>HKID</document_type>
+      <name>MULLER, ALBAN</name>
+      <sex>M</sex>
+      <dob>11/11/2016</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+	</patient_list>
+	<vaccine>
+		<vaccine_count>3</vaccine_count>
+		<vaccine_code>001</vaccine_code>
+		<vaccine_code>002</vaccine_code>
+		<vaccine_code>003</vaccine_code>
+	</vaccine>
+	<injection_date_start/>
+	<injection_date_end />
+	<request_system>CMS</request_system>
+</parameter>
+
+

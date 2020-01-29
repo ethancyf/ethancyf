@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsLogin" targetNamespace="https://hcvs.dh.gov.hksar/dsLogin.xsd" xmlns:mstns="https://hcvs.dh.gov.hksar/dsLogin.xsd" xmlns="https://hcvs.dh.gov.hksar/dsLogin.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsLogin" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="dsLogin" msprop:Generator_DataSetName="dsLogin">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Result" msprop:Generator_UserTableName="Result" msprop:Generator_RowDeletedName="ResultRowDeleted" msprop:Generator_RowChangedName="ResultRowChanged" msprop:Generator_RowClassName="ResultRow" msprop:Generator_RowChangingName="ResultRowChanging" msprop:Generator_RowEvArgName="ResultRowChangeEvent" msprop:Generator_RowEvHandlerName="ResultRowChangeEventHandler" msprop:Generator_TableClassName="ResultDataTable" msprop:Generator_TableVarName="tableResult" msprop:Generator_RowDeletingName="ResultRowDeleting" msprop:Generator_TablePropName="Result">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Return" msprop:Generator_UserColumnName="Return" msprop:Generator_ColumnVarNameInTable="columnReturn" msprop:Generator_ColumnPropNameInRow="_Return" msprop:Generator_ColumnPropNameInTable="ReturnColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Practice" msprop:Generator_UserTableName="Practice" msprop:Generator_RowDeletedName="PracticeRowDeleted" msprop:Generator_RowChangedName="PracticeRowChanged" msprop:Generator_RowClassName="PracticeRow" msprop:Generator_RowChangingName="PracticeRowChanging" msprop:Generator_RowEvArgName="PracticeRowChangeEvent" msprop:Generator_RowEvHandlerName="PracticeRowChangeEventHandler" msprop:Generator_TableClassName="PracticeDataTable" msprop:Generator_TableVarName="tablePractice" msprop:Generator_RowDeletingName="PracticeRowDeleting" msprop:Generator_TablePropName="Practice">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Practice_No" msprop:Generator_UserColumnName="Practice_No" msprop:Generator_ColumnVarNameInTable="columnPractice_No" msprop:Generator_ColumnPropNameInRow="Practice_No" msprop:Generator_ColumnPropNameInTable="Practice_NoColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Professional" msprop:Generator_UserColumnName="Professional" msprop:Generator_ColumnVarNameInTable="columnProfessional" msprop:Generator_ColumnPropNameInRow="Professional" msprop:Generator_ColumnPropNameInTable="ProfessionalColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

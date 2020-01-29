@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <VerificationPass>{VP}</VerificationPass>
+  <SysID>1000000250</SysID>
+  <servicecode>ESAMUAMSHARETOKEN</servicecode>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <replaceeHRSSToken>
+      <HKID>A1234563</HKID>
+      <ExistingTokenID>111111111</ExistingTokenID>
+      <NewTokenID>222222222</NewTokenID>
+      <ReplaceReasonCode>R</ReplaceReasonCode>
+      <Timestamp>{Timestamp}</Timestamp>
+    </replaceeHRSSToken>]]>
+  </data>
+</root>

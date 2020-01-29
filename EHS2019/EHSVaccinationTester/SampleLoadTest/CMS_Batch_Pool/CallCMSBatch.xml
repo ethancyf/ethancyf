@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameter>
+  <message_id>M2018052300000001</message_id>
+  <health_check>N</health_check>
+  <patient_list>
+    <patient_count>40</patient_count>
+    <patient>
+      <patient_id>1</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>2</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>3</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>4</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>5</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>6</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>7</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>8</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>9</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>10</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>11</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>12</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>13</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>14</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>15</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>16</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>17</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>18</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>19</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>20</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>21</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>22</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>23</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>24</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>25</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>26</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>27</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>28</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>29</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>30</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>31</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>32</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>33</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>34</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>35</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>36</patient_id>
+      <document_no>IJ2092527</document_no>
+      <document_type>HKIC</document_type>
+      <name>TO, YUET KWAI</name>
+      <sex>M</sex>
+      <dob>24/09/1959</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>37</patient_id>
+      <document_no>OE4509414</document_no>
+      <document_type>HKIC</document_type>
+      <name>SHUM, MEI YIN</name>
+      <sex>F</sex>
+      <dob>11/11/1957</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>38</patient_id>
+      <document_no> B1122334</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TA TA</name>
+      <sex>F</sex>
+      <dob>01/01/1954</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>39</patient_id>
+      <document_no> H373791A</document_no>
+      <document_type>HKIC</document_type>
+      <name>CHAN, TAI MAN MKU</name>
+      <sex>M</sex>
+      <dob>27/04/2014</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+    <patient>
+      <patient_id>40</patient_id>
+      <document_no> A5682544</document_no>
+      <document_type>HKIC</document_type>
+      <name>KU, KE KE</name>
+      <sex>F</sex>
+      <dob>25/09/2017</dob>
+      <dob_format>DD/MM/YYYY</dob_format>
+    </patient>
+  </patient_list>
+  <vaccine>
+    <vaccine_count>3</vaccine_count>
+    <vaccine_code>001</vaccine_code>
+    <vaccine_code>002</vaccine_code>
+    <vaccine_code>003</vaccine_code>
+  </vaccine>
+  <injection_date_start/>
+  <injection_date_end />
+  <request_system>eHS</request_system>
+</parameter>

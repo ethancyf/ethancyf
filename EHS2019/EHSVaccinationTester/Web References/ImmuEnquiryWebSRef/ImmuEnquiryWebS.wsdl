@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="http://immu_ws.immu.biz/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ImmuEnquiryWebS" targetNamespace="http://immu_ws.immu.biz/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" elementFormDefault="qualified" targetNamespace="http://immu_ws.immu.biz/" />
+  </types>
+  <message name="ImmuEnquiryWebService_getCmsVaccination">
+    <part name="inputParm" type="xsd:string" />
+  </message>
+  <message name="ImmuEnquiryWebService_getCmsVaccinationResponse">
+    <part name="cmsVaccinationResult" type="xsd:string" />
+  </message>
+  <message name="ImmuEnquiryWebService_getEhsVaccination">
+    <part name="inputParm" type="xsd:string" />
+    <part name="hashCode" type="xsd:string" />
+  </message>
+  <message name="ImmuEnquiryWebService_getEhsVaccinationResponse">
+    <part name="ehsVaccinationResult" type="xsd:string" />
+  </message>
+  <message name="ImmuEnquiryWebService_getVersion" />
+  <message name="ImmuEnquiryWebService_getVersionResponse">
+    <part name="versionResult" type="xsd:string" />
+  </message>
+  <portType name="ImmuEnquiryBean">
+    <operation name="getCmsVaccination" parameterOrder="inputParm">
+      <input message="tns:ImmuEnquiryWebService_getCmsVaccination" />
+      <output message="tns:ImmuEnquiryWebService_getCmsVaccinationResponse" />
+    </operation>
+    <operation name="getEhsVaccination" parameterOrder="inputParm hashCode">
+      <input message="tns:ImmuEnquiryWebService_getEhsVaccination" />
+      <output message="tns:ImmuEnquiryWebService_getEhsVaccinationResponse" />
+    </operation>
+    <operation name="getVersion">
+      <input message="tns:ImmuEnquiryWebService_getVersion" />
+      <output message="tns:ImmuEnquiryWebService_getVersionResponse" />
+    </operation>
+  </portType>
+  <binding name="ImmuEnquiryWebServiceSoapHttp" type="tns:ImmuEnquiryBean">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <operation name="getCmsVaccination">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="encoded" namespace="http://immu_ws.immu.biz/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" parts="inputParm" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="http://immu_ws.immu.biz/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" parts="cmsVaccinationResult" />
+      </output>
+    </operation>
+    <operation name="getEhsVaccination">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="encoded" namespace="http://immu_ws.immu.biz/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" parts="inputParm hashCode" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="http://immu_ws.immu.biz/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" parts="ehsVaccinationResult" />
+      </output>
+    </operation>
+    <operation name="getVersion">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="encoded" namespace="http://immu_ws.immu.biz/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="http://immu_ws.immu.biz/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" parts="versionResult" />
+      </output>
+    </operation>
+  </binding>
+  <service name="ImmuEnquiryWebS">
+    <port name="ImmuEnquiryWebS" binding="tns:ImmuEnquiryWebServiceSoapHttp">
+      <soap:address location="http://cms-hafm-sit:7500/cms-immu/immu-ehr/0_0_8/ImmuEnquiryWebS" />
+    </port>
+  </service>
+</definitions>

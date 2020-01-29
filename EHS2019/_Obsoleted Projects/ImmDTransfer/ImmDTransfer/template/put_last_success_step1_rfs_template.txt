@@ -1,0 +1,7 @@
+SET ABORT-ON-ERROR NO
+cd HCVS\IMMED
+lcd {sectionFolder}
+ASCII
+PUT {lastSuccessIndicator} {lastSuccessIndicatorSyn} overwrite
+SET ABORT-ON-ERROR YES
+quit

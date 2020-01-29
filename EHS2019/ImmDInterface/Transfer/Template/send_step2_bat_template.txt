@@ -1,0 +1,1 @@
+E:\Attachmate\RSecure\rftpc.exe {eHSWebServer} /RFS {step1_generated_file}

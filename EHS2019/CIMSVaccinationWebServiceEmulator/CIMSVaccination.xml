@@ -1,0 +1,861 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<clientList>
+	<client>   
+    <returnCode></returnCode><!--20003 to 20008-->
+		<engName>LI, TAK MING</engName>
+		<dob>1947</dob>
+		<dobInd>YYYY</dobInd>
+		<sex>F</sex> 
+    <docType>ID</docType>
+		<docNum>HG3930313</docNum>
+    <vaccineGroupList>    
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L2</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>05/01/2018</admDate>
+            <admLocEng>EHS Dummy Elderly Health Centre</admLocEng>
+            <admLocChi>測試老人中心</admLocChi>
+            <doseSeq>2DO</doseSeq>
+            <doseSeqDescEng>2nd Dose</doseSeqDescEng>
+            <doseSeqDescChi>第二劑</doseSeqDescChi>
+            <vaccineL2Iden>
+              <vaccineDesc>seasonal influenza vaccine</vaccineDesc>
+            </vaccineL2Iden>
+		      </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>25/02/2017</admDate>
+            <admLocEng>EHS Dummy Elderly Health Centre</admLocEng>
+            <admLocChi>測試老人中心</admLocChi>
+            <doseSeq>1DO</doseSeq>
+            <!--<doseSeq>XXX</doseSeq>-->
+            <doseSeqDescEng>1st Dose</doseSeqDescEng>
+            <doseSeqDescChi>第一劑</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>57318</hkRegNum>
+              <vaccineProdName>INFLUENZA VACCINE (SPLIT VIRION)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>N</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>20/12/2016</admDate>
+            <admLocEng>EHS Dummy Elderly Health Centre</admLocEng>
+            <admLocChi>測試老人中心</admLocChi>
+            <doseSeq>1DO</doseSeq>
+            <doseSeqDescEng>1st Dose</doseSeqDescEng>
+            <doseSeqDescChi>第一劑</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>57318</hkRegNum>
+              <vaccineProdName>INFLUENZA VACCINE (SPLIT VIRION)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+      <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>26/08/2017</admDate>
+            <admLocEng>EHS Dummy Elderly Health Centre</admLocEng>
+            <admLocChi>測試老人中心</admLocChi>
+            <doseSeq>1BO</doseSeq>
+            <doseSeqDescEng>Booster 1</doseSeqDescEng>
+            <doseSeqDescChi>加強劑一</doseSeqDescChi>
+            <!--<vaccineL3Iden>
+              <hkRegNum>62449</hkRegNum>
+              <vaccineProdName>PCV13</vaccineProdName>
+            </vaccineL3Iden>-->
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>23vPPV</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>  
+	</client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, TAI MAN</engName>
+    <dob>22/10/2015</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>BC</docType>
+    <docNum>B3456787</docNum>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, TAI MAN</engName>
+    <dob>21/06/2003</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>ID</docType>
+    <docNum>U2433556</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/10/2013</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58801</hkRegNum>
+              <vaccineProdName>TTB FLU VACCINE S 0.5ML/VIAL</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>          
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>WONG, MING</engName>
+    <dob>1947</dob>
+    <dobInd>YYYY</dobInd>
+    <sex>M</sex>
+    <docType>EC</docType>
+    <docNum>C2448368</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/10/2013</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58801</hkRegNum>
+              <vaccineProdName>TTB FLU VACCINE S 0.5ML/VIAL</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>WONG, MING</engName>
+    <dob>1947</dob>
+    <dobInd>YYYY</dobInd>
+    <sex>M</sex>
+    <docType>EC</docType>
+    <docNum>56781234</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/10/2017</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>PNEUMO 23 POLYVALENT PNEUMOCOCCAL VAC.</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, TAI MAN</engName>
+    <dob>10/10/2016</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>ID</docType>
+    <docNum>S2502080</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/01/2018</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>1DO</doseSeq>
+            <doseSeqDescEng>1st Dose</doseSeqDescEng>
+            <doseSeqDescChi>第一劑</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>63010</hkRegNum>
+              <vaccineProdName>FLUQUADRI QUADRIVALENT INFLUENZA VACCINE (PEDIATRIC FOR 6-35 MONTHS OF AGE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>          
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, MAN MAN</engName>
+    <dob>10/10/2016</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>F</sex>
+    <docType>BC</docType>
+    <docNum>Y9531856</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/01/2018</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>1DO</doseSeq>
+            <doseSeqDescEng>1st Dose</doseSeqDescEng>
+            <doseSeqDescChi>第一劑</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>63010</hkRegNum>
+              <vaccineProdName>FLUQUADRI QUADRIVALENT INFLUENZA VACCINE (PEDIATRIC FOR 6-35 MONTHS OF AGE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, MING</engName>
+    <dob>10/10/2014</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>DI</docType>
+    <docNum>D11111111</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/01/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>65577</hkRegNum>
+              <vaccineProdName>VAXIGRIPTETRA VACCINE 0.5ML</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, PAK</engName>
+    <dob>1947</dob>
+    <dobInd>YYYY</dobInd>
+    <sex>M</sex>
+    <docType>EC</docType>
+    <docNum>U5273282</docNum>
+    <vaccineGroupList>
+	  <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/01/2015</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>PNEUMO 23 POLYVALENT PNEUMOCOCCAL VAC.</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/02/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>59600</hkRegNum>
+              <vaccineProdName>PREVENAR 13 VACCINE</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>          
+        </vaccineRecordList>
+      </vaccineGroup>
+      
+    </vaccineGroupList>
+  </client>  
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, KO</engName>
+    <dob>10/10/2012</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>OP</docType>
+    <docNum>ABCD-1234567-89(9)</docNum>
+    <vaccineGroupList>
+		<vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/01/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58586</hkRegNum>
+              <vaccineProdName>VAXIGRIP VACCINE (SOUTHERN HEMISPHERE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>     
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, KONG</engName>
+    <dob>10/10/2012</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>AR</docType>
+    <docNum>K445566/45678</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/01/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58586</hkRegNum>
+              <vaccineProdName>VAXIGRIP VACCINE (SOUTHERN HEMISPHERE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>  
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHIN, KAM SING</engName>
+    <dob>23/10/2004</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>F</sex>
+    <docType>RP</docType>
+    <docNum>RE9033561</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/07/2015</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>55335</hkRegNum>
+              <vaccineProdName>INFLUVAC VACCINE (SOUTHERN HEMISPHERE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <!--<vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/02/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58586</hkRegNum>
+              <vaccineProdName>VAXIGRIP VACCINE (SOUTHERN HEMISPHERE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>-->
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/03/2017</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58801</hkRegNum>
+              <vaccineProdName>TTB FLU VACCINE S 0.5ML/VIAL</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/04/2017</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>63010</hkRegNum>
+              <vaccineProdName>FLUQUADRI QUADRIVALENT INFLUENZA VACCINE (PEDIATRIC FOR 6-35 MONTHS OF AGE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/05/2014</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>65577</hkRegNum>
+              <vaccineProdName>VAXIGRIPTETRA VACCINE 0.5ML</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/06/2010</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>88888</hkRegNum>
+              <vaccineProdName>Human Swine Influenza</vaccineProdName>
+            </vaccineL3Iden>            
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>      
+      <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <!--<vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/07/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>PNEUMO 23 POLYVALENT PNEUMOCOCCAL VAC.</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/08/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>59600</hkRegNum>
+              <vaccineProdName>PREVENAR 13 VACCINE</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>-->
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/09/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>08283</hkRegNum>
+              <vaccineProdName>PNEUMOVAX (PNEUMOCOCCAL VAC POLYVALENT)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord> 
+          <vaccineRecord>
+            <vaccineIdenType>L2</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/10/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL2Iden>
+              <vaccineDesc>pneumococcal 13 valent vaccine</vaccineDesc>
+            </vaccineL2Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L2</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/11/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL2Iden>
+              <vaccineDesc>pneumococcal 23 valent vaccine</vaccineDesc>
+            </vaccineL2Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>SUN, AH YUI</engName>
+    <dob>08/12/2005</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>RP</docType>
+    <docNum>RE9037575</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Influenza</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/07/2015</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>55335</hkRegNum>
+              <vaccineProdName>INFLUVAC VACCINE (SOUTHERN HEMISPHERE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <!--<vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/02/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58586</hkRegNum>
+              <vaccineProdName>VAXIGRIP VACCINE (SOUTHERN HEMISPHERE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>-->
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/03/2017</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>58801</hkRegNum>
+              <vaccineProdName>TTB FLU VACCINE S 0.5ML/VIAL</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/04/2017</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>63010</hkRegNum>
+              <vaccineProdName>FLUQUADRI QUADRIVALENT INFLUENZA VACCINE (PEDIATRIC FOR 6-35 MONTHS OF AGE)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/05/2014</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>65577</hkRegNum>
+              <vaccineProdName>VAXIGRIPTETRA VACCINE 0.5ML</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/06/2010</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>88888</hkRegNum>
+              <vaccineProdName>Human Swine Influenza</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+      <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <!--<vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/07/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>PNEUMO 23 POLYVALENT PNEUMOCOCCAL VAC.</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/08/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>59600</hkRegNum>
+              <vaccineProdName>PREVENAR 13 VACCINE</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>-->
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/09/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>08283</hkRegNum>
+              <vaccineProdName>PNEUMOVAX (PNEUMOCOCCAL VAC POLYVALENT)</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L2</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/10/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL2Iden>
+              <vaccineDesc>pneumococcal 13 valent vaccine</vaccineDesc>
+            </vaccineL2Iden>
+          </vaccineRecord>
+          <vaccineRecord>
+            <vaccineIdenType>L2</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>11/11/2016</admDate>
+            <admLocEng>Lam Tin Student Health Service Centre</admLocEng>
+            <admLocChi>藍田學生健康服務中心</admLocChi>
+            <doseSeq>NA</doseSeq>
+            <doseSeqDescEng>Not Applicable</doseSeqDescEng>
+            <doseSeqDescChi>不適用</doseSeqDescChi>
+            <vaccineL2Iden>
+              <vaccineDesc>pneumococcal 23 valent vaccine</vaccineDesc>
+            </vaccineL2Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode><!--20003 to 20008-->
+    <engName>CHAN, TAI MAN</engName>
+    <dob>10/10/1947</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>ID</docType>
+    <docNum>V2433885</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>26/08/2017</admDate>
+            <admLocEng>EHS Dummy Elderly Health Centre</admLocEng>
+            <admLocChi>測試老人中心</admLocChi>
+            <doseSeq>1BO</doseSeq>
+            <doseSeqDescEng>Booster 1</doseSeqDescEng>
+            <doseSeqDescChi>加強劑一</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>23vPPV</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+  <client>
+    <returnCode></returnCode>
+    <!--20003 to 20008-->
+    <engName>PAU, AH CHOI</engName>
+    <dob>2004/02/2004</dob>
+    <dobInd>DD/MM/YYYY</dobInd>
+    <sex>M</sex>
+    <docType>DI</docType>
+    <docNum>990017930</docNum>
+    <vaccineGroupList>
+      <vaccineGroup>
+        <vaccineType>Pneumococcal</vaccineType>
+        <vaccineRecordList>
+          <vaccineRecord>
+            <vaccineIdenType>L3</vaccineIdenType>
+            <validDoseInd>Y</validDoseInd>
+            <vaccineProviderEng>DH clinic</vaccineProviderEng>
+            <vaccineProviderChi>衞生署診所</vaccineProviderChi>
+            <admDate>26/08/2017</admDate>
+            <admLocEng>EHS Dummy Elderly Health Centre</admLocEng>
+            <admLocChi>測試老人中心</admLocChi>
+            <doseSeq>1BO</doseSeq>
+            <doseSeqDescEng>Booster 1</doseSeqDescEng>
+            <doseSeqDescChi>加強劑一</doseSeqDescChi>
+            <vaccineL3Iden>
+              <hkRegNum>37915</hkRegNum>
+              <vaccineProdName>23vPPV</vaccineProdName>
+            </vaccineL3Iden>
+          </vaccineRecord>
+        </vaccineRecordList>
+      </vaccineGroup>
+    </vaccineGroupList>
+  </client>
+</clientList>

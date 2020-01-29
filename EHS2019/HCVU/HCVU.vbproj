@@ -1,0 +1,2348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2F37A4CD-9005-4CE6-B01E-CAF243A0B354}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HCVU</RootNamespace>
+    <AssemblyName>HCVU</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>HCVU.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>HCVU.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\CommonBin\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\Microsoft.Vbe.Interop.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="OFFICE, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CommonBin\OFFICE.DLL</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClaimManagement\ClaimCreation.aspx" />
+    <Content Include="ClaimManagement\ConversionRateEnquiry.aspx" />
+    <Content Include="ClaimManagement\ConversionRateManagement.aspx" />
+    <Content Include="ClaimManagement\ConversionRateRequestApproval.aspx" />
+    <Content Include="ClaimManagement\VaccinationFileClaimCreation.aspx" />
+    <Content Include="ClaimManagement\VaccinationFileEnquiry.aspx" />
+    <Content Include="ClaimManagement\VaccinationFileConfirmation.aspx" />
+    <Content Include="ClaimManagement\VaccinationFileRectification.aspx" />
+    <Content Include="ClaimManagement\VaccinationFileUpload.aspx" />
+    <Content Include="CSS\CustomMenuStyle.css" />
+    <Content Include="CSS\PPC\PPC0001Style.css" />
+    <Content Include="CSS\PPC\PPC0002Style.css" />
+    <Content Include="CSS\PPC\PPC0003Style.css" />
+    <Content Include="CSS\ReportSubmission\CommonControlStyle.css" />
+    <Content Include="Images\banner\ClaimManagement\banner_ClaimCreation.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_ConversionRateEnquiry.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_ConversionRateManagement.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_ConversionRateRequestApproval.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_StudentFileClaimCreation.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_StudentFileConfirmation.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_StudentFileEnquiry.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_StudentFileRectification.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_StudentFileUpload.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileClaimCreation.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileConfirmation.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileEnquiry.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileRectification.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileUpload.png" />
+    <Content Include="Images\banner\ReportAndDownload\banner_PostPaymentCheck.png" />
+    <Content Include="Images\button\btn_ConfirmAndAcceptWarning.png" />
+    <Content Include="Images\button\btn_DownloadLater.png" />
+    <Content Include="Images\button\btn_DownloadNow.png" />
+    <Content Include="Images\button\btn_DownloadRectificationReport.png" />
+    <Content Include="Images\button\btn_DownloadRectificationReport_D.png" />
+    <Content Include="Images\button\btn_EditInformation.png" />
+    <Content Include="Images\button\btn_ExportLatestStudentReport.png" />
+    <Content Include="Images\button\btn_ExportLatestStudentReport_D.png" />
+    <Content Include="Images\button\btn_ExportReport.png" />
+    <Content Include="Images\button\btn_GetFromEHRSS.png" />
+    <Content Include="Images\button\btn_joinPCD_D.png" />
+    <Content Include="Images\button\btn_NewClaimTransaction_D.png" />
+    <Content Include="Images\button\btn_ReactivateTransaction.png" />
+    <Content Include="Images\button\btn_RemoveRectifiedFile.png" />
+    <Content Include="Images\button\btn_RemoveRectifiedFile_D.png" />
+    <Content Include="Images\button\btn_RemoveStudentFile.png" />
+    <Content Include="Images\button\btn_RemoveVaccinationClaim.png" />
+    <Content Include="Images\button\btn_RemoveVaccinationClaim_D.png" />
+    <Content Include="Images\button\btn_RemoveVaccinationFile.png" />
+    <Content Include="Images\button\btn_RemoveVaccinationFile_D.png" />
+    <Content Include="Images\button\btn_ReplaceToken_D.png" />
+    <Content Include="Images\button\btn_ShowRectificationRecord.png" />
+    <Content Include="Images\button\btn_ShowVaccinationClaimRecord.png" />
+    <Content Include="Images\button\btn_SuspendEnquiry_D.png" />
+    <Content Include="Images\button\btn_UploadFile.png" />
+    <Content Include="Images\button\btn_UploadRectifiedFile.png" />
+    <Content Include="Images\button\btn_UploadRectifiedFile_D.png" />
+    <Content Include="Images\button\btn_UploadVaccinationClaim.png" />
+    <Content Include="Images\button\btn_UploadVaccinationClaim_D.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationClaimCreationReport.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFirstReport.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationReport.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationSecondReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingNameList.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationClaimCreationReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFirstReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationSecondReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressClaim.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressClaim_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressClaim_tw.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressInputting.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressInputting_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressInputting_tw.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressRectify.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressRectify_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressRectify_tw.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressReview.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressReview_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressReview_tw.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressSubmitted.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressSubmitted_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProgressSubmitted_tw.png" />
+    <Content Include="Images\button\small_button\btn_change.png" />
+    <Content Include="Images\button\small_button\btn_ImportS.png" />
+    <Content Include="Images\button\small_button\btn_RemoveX.png" />
+    <Content Include="Images\button\small_button\btn_RemoveX_red.png" />
+    <Content Include="Images\button\small_button\btn_View.png" />
+    <Content Include="Images\others\ProgressCompletePoint.png" />
+    <Content Include="Images\others\ProgressEmptyPoint.png" />
+    <Content Include="Images\others\ProgressLine.png" />
+    <Content Include="JS\hoverIntent.js" />
+    <Content Include="JS\jquery-1.10.2.js" />
+    <Content Include="JS\ReportSubmission\CommonControl.js" />
+    <Content Include="ReportAndDownload\PostPaymentCheck.aspx" />
+    <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
+    <Content Include="UIControl\DocType\ucInputOW.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyOW.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputHCVS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputPIDVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputENHVSSO.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputPPP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyENHVSSO.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\PCDIntegration\ucPCDWarningPopup.ascx" />
+    <Content Include="UIControl\SchoolListSearch.ascx" />
+    <Content Include="UIControl\Statistics\udcNumericComparison.ascx" />
+    <Content Include="UIControl\Statistics\udcPercentile.ascx" />
+    <Content Include="UIControl\Statistics\udcCheckBox.ascx" />
+    <Content Include="UIControl\Statistics\udcFindServiceProvider.ascx" />
+    <Content Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx" />
+    <Content Include="UIControl\Statistics\udcDateFormat.ascx" />
+    <Content Include="UIControl\Statistics\udcDescription.ascx" />
+    <Content Include="UIControl\Statistics\udcNumeric.ascx" />
+    <Content Include="UIControl\Statistics\udcSchemeMultiple.ascx" />
+    <Content Include="UIControl\Statistics\udcTransStatusMultiple.ascx" />
+    <Content Include="UIControl\StudentFile\ucStudentFileDetail.ascx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Administration\parametermaintenance.aspx.designer.vb">
+      <DependentUpon>parametermaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Administration\parametermaintenance.aspx.vb">
+      <DependentUpon>parametermaintenance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Administration\RVPHomeListMaintenance.aspx.designer.vb">
+      <DependentUpon>RVPHomeListMaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Administration\RVPHomeListMaintenance.aspx.vb">
+      <DependentUpon>RVPHomeListMaintenance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Administration\SendMessageConfirmation.aspx.designer.vb">
+      <DependentUpon>SendMessageConfirmation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Administration\SendMessageConfirmation.aspx.vb">
+      <DependentUpon>SendMessageConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Administration\UserAccountMaint.aspx.designer.vb">
+      <DependentUpon>UserAccountMaint.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Administration\UserAccountMaint.aspx.vb">
+      <DependentUpon>UserAccountMaint.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_code\BaseControlWithGridView.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_code\BasePage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="App_code\BasePageWithGridView.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePageWithControl.aspx.designer.vb">
+      <DependentUpon>BasePageWithControl.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BasePageWithControl.aspx.vb">
+      <DependentUpon>BasePageWithControl.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BLL\AccountChangeMaintenance\AccountChangeMaintenanceBLL.vb" />
+    <Compile Include="BLL\AccountChangeMaintenance\AccountChangeMaintenanceModel.vb" />
+    <Compile Include="BLL\BankAccVerification\BankAcctVerificationModel.vb" />
+    <Compile Include="BLL\BankAccVerification\BankAccVerificationBLL.vb" />
+    <Compile Include="BLL\Datadownload\DatadownloadBLL.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\eHSAccountMaint\eHSAccountMaintBLL.vb">
+    </Compile>
+    <Compile Include="BLL\EHSClaimBLL.vb" />
+    <Compile Include="BLL\LoginBLL.vb" />
+    <Compile Include="BLL\MenuControlBLL.vb" />
+    <Compile Include="BLL\ParameteMaintenance\ParameteMaintenanceBLL.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ParameteMaintenance\ParameteMaintenanceModel.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\ParameteMaintenance\ParameteMaintenanceModelCollection.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\PPI_EVS_WS.vb" />
+    <Compile Include="BLL\ProfessionalVerification\ProfessionalSubmissionHeaderModel.vb" />
+    <Compile Include="BLL\ProfessionalVerification\ProfessionalSubmissionModel.vb" />
+    <Compile Include="BLL\ProfessionalVerification\ProfessionalSubmissionModelCollection.vb" />
+    <Compile Include="BLL\ProfessionalVerification\ProfessionalVerificationBLL.vb" />
+    <Compile Include="BLL\ProfessionalVerification\ProfessionalVerificationModel.vb" />
+    <Compile Include="BLL\ProfessionalVerification\ProfessionalVerificationModelCollection.vb" />
+    <Compile Include="BLL\ReimbursementBLL.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BLL\SearchEngineBLL.vb" />
+    <Compile Include="BLL\SerivceProviderVerification\ServiceProviderVerificationBLL.vb" />
+    <Compile Include="BLL\SerivceProviderVerification\ServiceProviderVerificationModel.vb" />
+    <Compile Include="BLL\SessionHandler\SessionHandlerBLL.vb" />
+    <Compile Include="BLL\SPAccountUpdate\SPAccountUpdateBLL.vb" />
+    <Compile Include="BLL\SPAccountUpdate\SPAccountUpdateModel.vb" />
+    <Compile Include="BLL\SPProfileBLL.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BLL\Statistics\StatisticCriteriaAdditionDetailModel.vb" />
+    <Compile Include="BLL\Statistics\StatisticCriteriaAdditionDetailModelCollection.vb" />
+    <Compile Include="BLL\Statistics\StatisticCriteriaDetailModel.vb" />
+    <Compile Include="BLL\Statistics\StatisticCriteriaDetailModelCollection.vb" />
+    <Compile Include="BLL\Statistics\StatisticCriteriaSetupModel.vb" />
+    <Compile Include="BLL\Statistics\StatisticCriteriaSetupModelCollection.vb" />
+    <Compile Include="BLL\Statistics\StatisticResultSetupModel.vb" />
+    <Compile Include="BLL\Statistics\StatisticResultSetupModelCollection.vb" />
+    <Compile Include="BLL\Statistics\StatisticsBLL.vb" />
+    <Compile Include="BLL\Statistics\StatisticsModel.vb" />
+    <Compile Include="BLL\Statistics\StatisticsModelCollection.vb" />
+    <Compile Include="BLL\TaskListControlBLL.vb" />
+    <Compile Include="BLL\TokenManagementBLL.vb" />
+    <Compile Include="BLL\UserAccountMaintBLL.vb" />
+    <Compile Include="BLL\VoucherAccount\VoucherAccountBLL.vb" />
+    <Compile Include="ChangePassword\ChangePassword.aspx.designer.vb">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ChangePassword\ChangePassword.aspx.vb">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ChangePassword\LoginChangePassword.aspx.designer.vb">
+      <DependentUpon>LoginChangePassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ChangePassword\LoginChangePassword.aspx.vb">
+      <DependentUpon>LoginChangePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\claimCreationApproval.aspx.designer.vb">
+      <DependentUpon>claimCreationApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\claimCreationApproval.aspx.vb">
+      <DependentUpon>claimCreationApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\claimTransEnquiry.aspx.designer.vb">
+      <DependentUpon>claimTransEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\claimTransEnquiry.aspx.vb">
+      <DependentUpon>claimTransEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\ClaimCreation.aspx.designer.vb">
+      <DependentUpon>ClaimCreation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\ClaimCreation.aspx.vb">
+      <DependentUpon>ClaimCreation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\claimTransManagement.aspx.designer.vb">
+      <DependentUpon>claimTransManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\claimTransManagement.aspx.vb">
+      <DependentUpon>claimTransManagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\ConversionRateEnquiry.aspx.designer.vb">
+      <DependentUpon>ConversionRateEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\ConversionRateEnquiry.aspx.vb">
+      <DependentUpon>ConversionRateEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\ConversionRateManagement.aspx.designer.vb">
+      <DependentUpon>ConversionRateManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\ConversionRateManagement.aspx.vb">
+      <DependentUpon>ConversionRateManagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\ConversionRateRequestApproval.aspx.designer.vb">
+      <DependentUpon>ConversionRateRequestApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\ConversionRateRequestApproval.aspx.vb">
+      <DependentUpon>ConversionRateRequestApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileClaimCreation.aspx.designer.vb">
+      <DependentUpon>VaccinationFileClaimCreation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileClaimCreation.aspx.vb">
+      <DependentUpon>VaccinationFileClaimCreation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileEnquiry.aspx.designer.vb">
+      <DependentUpon>VaccinationFileEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileEnquiry.aspx.vb">
+      <DependentUpon>VaccinationFileEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileConfirmation.aspx.designer.vb">
+      <DependentUpon>VaccinationFileConfirmation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileConfirmation.aspx.vb">
+      <DependentUpon>VaccinationFileConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileRectification.aspx.designer.vb">
+      <DependentUpon>VaccinationFileRectification.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileRectification.aspx.vb">
+      <DependentUpon>VaccinationFileRectification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileUpload.aspx.designer.vb">
+      <DependentUpon>VaccinationFileUpload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccinationFileUpload.aspx.vb">
+      <DependentUpon>VaccinationFileUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Component\FileGeneration\FileGenerationBLL.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationModel.vb" />
+    <Compile Include="Component\FileGeneration\FileGenerationModelCollection.vb" />
+    <Compile Include="Component\FunctionInformation\FunctionInformationBLL.vb" />
+    <Compile Include="Component\Menu\MenuBLL.vb" />
+    <Compile Include="Component\RoleSecurity\RoleSecurityBLL.vb" />
+    <Compile Include="Component\RoleType\RoleTypeBLL.vb" />
+    <Compile Include="Component\TaskList\TaskListBLL.vb" />
+    <Compile Include="Component\TaskList\TaskListModel.vb" />
+    <Compile Include="Component\TaskList\TaskListModelCollection.vb" />
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordMaintenance.aspx.designer.vb">
+      <DependentUpon>eHealthAccountDeathRecordMaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordMaintenance.aspx.vb">
+      <DependentUpon>eHealthAccountDeathRecordMaintenance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordEnquiry.aspx.designer.vb">
+      <DependentUpon>eHealthAccountDeathRecordEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordEnquiry.aspx.vb">
+      <DependentUpon>eHealthAccountDeathRecordEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordFileConfirmation.aspx.designer.vb">
+      <DependentUpon>eHealthAccountDeathRecordFileConfirmation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordFileConfirmation.aspx.vb">
+      <DependentUpon>eHealthAccountDeathRecordFileConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordFileImport.aspx.designer.vb">
+      <DependentUpon>eHealthAccountDeathRecordFileImport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordFileImport.aspx.vb">
+      <DependentUpon>eHealthAccountDeathRecordFileImport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="General\KeepSessionAlive.aspx.designer.vb">
+      <DependentUpon>KeepSessionAlive.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="General\KeepSessionAlive.aspx.vb">
+      <DependentUpon>KeepSessionAlive.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\TokenReplacementLetter.designer.vb">
+      <DependentUpon>TokenReplacementLetter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\TokenReplacementLetter.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\DetailedPaymentAnalysisRmbRpt.Designer.vb">
+      <DependentUpon>DetailedPaymentAnalysisRmbRpt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\DetailedPaymentAnalysisRmbRpt.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\PostPaymentCheck.aspx.designer.vb">
+      <DependentUpon>PostPaymentCheck.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\PostPaymentCheck.aspx.vb">
+      <DependentUpon>PostPaymentCheck.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaBase.ascx.designer.vb">
+      <DependentUpon>reportCriteriaBase.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaBase.ascx.vb">
+      <DependentUpon>reportCriteriaBase.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaPeriodFromToDate.ascx.designer.vb">
+      <DependentUpon>reportCriteriaPeriodFromToDate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaPeriodFromToDate.ascx.vb">
+      <DependentUpon>reportCriteriaPeriodFromToDate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaPeriodType.ascx.designer.vb">
+      <DependentUpon>reportCriteriaPeriodType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaPeriodType.ascx.vb">
+      <DependentUpon>reportCriteriaPeriodType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaScheme.ascx.designer.vb">
+      <DependentUpon>reportCriteriaScheme.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaScheme.ascx.vb">
+      <DependentUpon>reportCriteriaScheme.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaSP.ascx.designer.vb">
+      <DependentUpon>reportCriteriaSP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaSP.ascx.vb">
+      <DependentUpon>reportCriteriaSP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaStatUC.ascx.designer.vb">
+      <DependentUpon>reportCriteriaStatUC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportCriteriaStatUC.ascx.vb">
+      <DependentUpon>reportCriteriaStatUC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\Statistics.aspx.designer.vb">
+      <DependentUpon>Statistics.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\Statistics.aspx.vb">
+      <DependentUpon>Statistics.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnquirePCDStatus.aspx.designer.vb">
+      <DependentUpon>spEnquirePCDStatus.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnquirePCDStatus.aspx.vb">
+      <DependentUpon>spEnquirePCDStatus.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spTokenReplacementPrintOutViewer.aspx.designer.vb">
+      <DependentUpon>spTokenReplacementPrintOutViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spTokenReplacementPrintOutViewer.aspx.vb">
+      <DependentUpon>spTokenReplacementPrintOutViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.designer.vb">
+      <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.vb">
+      <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DistrictLegend.ascx.designer.vb">
+      <DependentUpon>DistrictLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DistrictLegend.ascx.vb">
+      <DependentUpon>DistrictLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputOTHER.ascx.designer.vb">
+      <DependentUpon>ucInputOTHER.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputOTHER.ascx.vb">
+      <DependentUpon>ucInputOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputOW.ascx.designer.vb">
+      <DependentUpon>ucInputOW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputOW.ascx.vb">
+      <DependentUpon>ucInputOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCommon.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCommon.ascx.vb">
+      <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyOTHER.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyOTHER.ascx.vb">
+      <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyOW.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyOW.ascx.vb">
+      <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DropDownListNoValidation.vb" />
+    <Compile Include="UIControl\eHealthAccountDeathRecord\eHealthAccountDeathRecordMaint.ascx.designer.vb">
+      <DependentUpon>eHealthAccountDeathRecordMaint.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\eHealthAccountDeathRecord\eHealthAccountDeathRecordMaint.ascx.vb">
+      <DependentUpon>eHealthAccountDeathRecordMaint.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordMatchingResult.aspx.designer.vb">
+      <DependentUpon>eHealthAccountDeathRecordMatchingResult.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHealthAccountDeathRecordMatchingResult.aspx.vb">
+      <DependentUpon>eHealthAccountDeathRecordMatchingResult.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountEnquiry.aspx.designer.vb">
+      <DependentUpon>eHSAccountEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountEnquiry.aspx.vb">
+      <DependentUpon>eHSAccountEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountMaint.aspx.designer.vb">
+      <DependentUpon>eHSAccountMaint.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountMaint.aspx.vb">
+      <DependentUpon>eHSAccountMaint.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountRectification.aspx.designer.vb">
+      <DependentUpon>eHSAccountRectification.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountRectification.aspx.vb">
+      <DependentUpon>eHSAccountRectification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Error.aspx.designer.vb">
+      <DependentUpon>Error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Error.aspx.vb">
+      <DependentUpon>Error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Home\home.aspx.designer.vb">
+      <DependentUpon>home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Home\home.aspx.vb">
+      <DependentUpon>home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Home\Inbox.aspx.designer.vb">
+      <DependentUpon>Inbox.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Home\Inbox.aspx.vb">
+      <DependentUpon>Inbox.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="index.aspx.designer.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="index.aspx.vb">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="login.aspx.designer.vb">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="login.aspx.vb">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MasterPage.Master.designer.vb">
+      <DependentUpon>MasterPage.Master</DependentUpon>
+    </Compile>
+    <Compile Include="MasterPage.Master.vb">
+      <DependentUpon>MasterPage.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\ConfirmationLetter.aspx.designer.vb">
+      <DependentUpon>ConfirmationLetter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\ConfirmationLetter.aspx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ConfirmationLetter.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\DH_eHS001.Designer.vb">
+      <DependentUpon>DH_eHS001.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\DH_eHS001.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\DH_eHS002.Designer.vb">
+      <DependentUpon>DH_eHS002.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\DH_eHS002.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\DH_eHS004.Designer.vb">
+      <DependentUpon>DH_eHS004.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\DH_eHS004.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\EnrolmentScheme.Designer.vb">
+      <DependentUpon>EnrolmentScheme.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\EnrolmentScheme.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\EnrolmentScheme_CHI.Designer.vb">
+      <DependentUpon>EnrolmentScheme_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\EnrolmentScheme_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\LetterEnding.Designer.vb">
+      <DependentUpon>LetterEnding.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\LetterEnding.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\LetterEnding_CHI.Designer.vb">
+      <DependentUpon>LetterEnding_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\LetterEnding_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\LetterHeader.Designer.vb">
+      <DependentUpon>LetterHeader.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\LetterHeader.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\NameOfMO.Designer.vb">
+      <DependentUpon>NameOfMO.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\NameOfMO.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\NameOfMO_CHI.Designer.vb">
+      <DependentUpon>NameOfMO_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\NameOfMO_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\SPIDandTokenNo.Designer.vb">
+      <DependentUpon>SPIDandTokenNo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\SPIDandTokenNo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\SPIDandTokenNo_CHI.Designer.vb">
+      <DependentUpon>SPIDandTokenNo_CHI.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\ConfirmationLetter\SPIDandTokenNo_CHI.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PrintOut\NewActiveReport1.Designer.vb">
+      <DependentUpon>NewActiveReport1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PrintOut\NewActiveReport1.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\ClaimTransDetail.ascx.designer.vb">
+      <DependentUpon>ClaimTransDetail.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\ClaimTransDetail.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ClaimTransDetail.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\DetailedPaymentAnalysisRpt.Designer.vb">
+      <DependentUpon>DetailedPaymentAnalysisRpt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\DetailedPaymentAnalysisRpt.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementCancelAuthorization.aspx.designer.vb">
+      <DependentUpon>reimbursementCancelAuthorization.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementCancelAuthorization.aspx.vb">
+      <DependentUpon>reimbursementCancelAuthorization.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementEnquiry.aspx.designer.vb">
+      <DependentUpon>reimbursementEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementEnquiry.aspx.vb">
+      <DependentUpon>reimbursementEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementFirstAuthorization.aspx.designer.vb">
+      <DependentUpon>reimbursementFirstAuthorization.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementFirstAuthorization.aspx.vb">
+      <DependentUpon>reimbursementFirstAuthorization.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementGeneratePaymentFile.aspx.designer.vb">
+      <DependentUpon>reimbursementGeneratePaymentFile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementGeneratePaymentFile.aspx.vb">
+      <DependentUpon>reimbursementGeneratePaymentFile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementSecondAuthorization.aspx.designer.vb">
+      <DependentUpon>reimbursementSecondAuthorization.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementSecondAuthorization.aspx.vb">
+      <DependentUpon>reimbursementSecondAuthorization.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\DPAViewer.aspx.designer.vb">
+      <DependentUpon>DPAViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\DPAViewer.aspx.vb">
+      <DependentUpon>DPAViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementSetCutoffDate.aspx.designer.vb">
+      <DependentUpon>reimbursementSetCutoffDate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Reimbursement\reimbursementSetCutoffDate.aspx.vb">
+      <DependentUpon>reimbursementSetCutoffDate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\Datadownload.aspx.designer.vb">
+      <DependentUpon>Datadownload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\Datadownload.aspx.vb">
+      <DependentUpon>Datadownload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReportAndDownload\DownloadFileWorker.aspx.designer.vb">
+      <DependentUpon>DownloadFileWorker.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\DownloadFileWorker.aspx.vb">
+      <SubType>ASPXCodebehind</SubType>
+      <DependentUpon>DownloadFileWorker.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\IReportCriteriaUC.vb" />
+    <Compile Include="ReportAndDownload\reportSubmission.aspx.designer.vb">
+      <DependentUpon>reportSubmission.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportAndDownload\reportSubmission.aspx.vb">
+      <DependentUpon>reportSubmission.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\MOPracticeLists.ascx.designer.vb">
+      <DependentUpon>MOPracticeLists.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\MOPracticeLists.ascx.vb">
+      <DependentUpon>MOPracticeLists.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spBankAccountVerification.aspx.designer.vb">
+      <DependentUpon>spBankAccountVerification.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spBankAccountVerification.aspx.vb">
+      <DependentUpon>spBankAccountVerification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spAccountChangeConfirmation.aspx.designer.vb">
+      <DependentUpon>spAccountChangeConfirmation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spAccountChangeConfirmation.aspx.vb">
+      <DependentUpon>spAccountChangeConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spDataEntry.aspx.designer.vb">
+      <DependentUpon>spDataEntry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spDataEntry.aspx.vb">
+      <DependentUpon>spDataEntry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnquiry.aspx.designer.vb">
+      <DependentUpon>spEnquiry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnquiry.aspx.vb">
+      <DependentUpon>spEnquiry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnrolmentPrintOutEHCVS.designer.vb">
+      <DependentUpon>spEnrolmentPrintOutEHCVS.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnrolmentPrintOutEHCVS.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnrolmentPrintOutPPIEPR.Designer.vb">
+      <DependentUpon>spEnrolmentPrintOutPPIEPR.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnrolmentPrintOutPPIEPR.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnrolmentPrintOutViewer.aspx.designer.vb">
+      <DependentUpon>spEnrolmentPrintOutViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spEnrolmentPrintOutViewer.aspx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>spEnrolmentPrintOutViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spMaintenance.aspx.designer.vb">
+      <DependentUpon>spMaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spMaintenance.aspx.vb">
+      <DependentUpon>spMaintenance.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spPrintFunction.ascx.designer.vb">
+      <DependentUpon>spPrintFunction.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spPrintFunction.ascx.vb">
+      <DependentUpon>spPrintFunction.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spProfessionVerification.aspx.designer.vb">
+      <DependentUpon>spProfessionVerification.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spProfessionVerification.aspx.vb">
+      <DependentUpon>spProfessionVerification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spProfile.aspx.designer.vb">
+      <DependentUpon>spProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spProfile.aspx.vb">
+      <DependentUpon>spProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spSummaryView.ascx.designer.vb">
+      <DependentUpon>spSummaryView.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spSummaryView.ascx.vb">
+      <DependentUpon>spSummaryView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spTokenManagement.aspx.designer.vb">
+      <DependentUpon>spTokenManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spTokenManagement.aspx.vb">
+      <DependentUpon>spTokenManagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProvider\spVetting.aspx.designer.vb">
+      <DependentUpon>spVetting.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProvider\spVetting.aspx.vb">
+      <DependentUpon>spVetting.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SessionTimeout.aspx.designer.vb">
+      <DependentUpon>SessionTimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SessionTimeout.aspx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>SessionTimeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ChooseCCCode.ascx.designer.vb">
+      <DependentUpon>ChooseCCCode.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ChooseCCCode.ascx.vb">
+      <DependentUpon>ChooseCCCode.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\ClaimVaccineInput.vb" />
+    <Compile Include="UIControl\DocTypeLegend.ascx.designer.vb">
+      <DependentUpon>DocTypeLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeLegend.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>DocTypeLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.designer.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDI.ascx.designer.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDI.ascx.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocTypeBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.designer.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputEC.ascx.designer.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputEC.ascx.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.designer.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKID.ascx.designer.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKID.ascx.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputID235B.ascx.designer.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputID235B.ascx.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.designer.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputVISA.ascx.designer.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputVISA.ascx.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyADOPC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyADOPC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyADOPC.ascx.vb">
+      <DependentUpon>ucReadOnlyADOPC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyREPMT.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyREPMT.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyREPMT.ascx.vb">
+      <DependentUpon>ucReadOnlyREPMT.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ClaimVaccineReadOnly.vb" />
+    <Compile Include="UIControl\EHSClaim\ucInputCIVSS.ascx.designer.vb">
+      <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCIVSS.ascx.vb">
+      <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputEHAPP.ascx.designer.vb">
+      <DependentUpon>ucInputEHAPP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputEHAPP.ascx.vb">
+      <DependentUpon>ucInputEHAPP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputEVSS.ascx.designer.vb">
+      <DependentUpon>ucInputEVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputEVSS.ascx.vb">
+      <DependentUpon>ucInputEVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputHCVS.ascx.designer.vb">
+      <DependentUpon>ucInputHCVS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputHCVS.ascx.vb">
+      <DependentUpon>ucInputHCVS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputHCVSChina.ascx.designer.vb">
+      <DependentUpon>ucInputHCVSChina.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputHCVSChina.ascx.vb">
+      <DependentUpon>ucInputHCVSChina.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputHSIVSS.ascx.designer.vb">
+      <DependentUpon>ucInputHSIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputHSIVSS.ascx.vb">
+      <DependentUpon>ucInputHSIVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputPIDVSS.ascx.designer.vb">
+      <DependentUpon>ucInputPIDVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputPIDVSS.ascx.vb">
+      <DependentUpon>ucInputPIDVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputRVP.ascx.designer.vb">
+      <DependentUpon>ucInputRVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputRVP.ascx.vb">
+      <DependentUpon>ucInputRVP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputENHVSSO.ascx.designer.vb">
+      <DependentUpon>ucInputENHVSSO.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputENHVSSO.ascx.vb">
+      <DependentUpon>ucInputENHVSSO.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputPPP.ascx.designer.vb">
+      <DependentUpon>ucInputPPP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputPPP.ascx.vb">
+      <DependentUpon>ucInputPPP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSS.ascx.designer.vb">
+      <DependentUpon>ucInputVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSS.ascx.vb">
+      <DependentUpon>ucInputVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSDA.ascx.designer.vb">
+      <DependentUpon>ucInputVSSDA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSDA.ascx.vb">
+      <DependentUpon>ucInputVSSDA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.designer.vb">
+      <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.vb">
+      <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyEHAPP.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEHAPP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyEHAPP.ascx.vb">
+      <DependentUpon>ucReadOnlyEHAPP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyEHSClaim.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEHSClaim.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyEHSClaim.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyEHSClaim.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyEVSS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyEVSS.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyEVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHCVS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVS.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyHCVS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHCVSChina.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx.vb">
+      <DependentUpon>ucReadOnlyHCVSChina.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyHSIVSS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHSIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyHSIVSS.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyHSIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyPPP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx.vb">
+      <DependentUpon>ucReadOnlyPPP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyENHVSSO.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyENHVSSO.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyENHVSSO.ascx.vb">
+      <DependentUpon>ucReadOnlyENHVSSO.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx.vb">
+      <DependentUpon>ucReadOnlyVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx.vb">
+      <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyRVP.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyRVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyRVP.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucReadOnlyRVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucEnrolmentCopyPopup.ascx.designer.vb">
+      <DependentUpon>ucEnrolmentCopyPopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucEnrolmentCopyPopup.ascx.vb">
+      <DependentUpon>ucEnrolmentCopyPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucPCDWarningPopup.ascx.designer.vb">
+      <DependentUpon>ucPCDWarningPopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucPCDWarningPopup.ascx.vb">
+      <DependentUpon>ucPCDWarningPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx.designer.vb">
+      <DependentUpon>ucTypeOfPracticeGrid.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx.vb">
+      <DependentUpon>ucTypeOfPracticeGrid.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticePopup.ascx.designer.vb">
+      <DependentUpon>ucTypeOfPracticePopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticePopup.ascx.vb">
+      <DependentUpon>ucTypeOfPracticePopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\ProfessionLegend.ascx.designer.vb">
+      <DependentUpon>ProfessionLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ProfessionLegend.ascx.vb">
+      <DependentUpon>ProfessionLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\SchoolListSearch.ascx.designer.vb">
+      <DependentUpon>SchoolListSearch.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\SchoolListSearch.ascx.vb">
+      <DependentUpon>SchoolListSearch.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\RVPHomeListSearch.ascx.designer.vb">
+      <DependentUpon>RVPHomeListSearch.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\RVPHomeListSearch.ascx.vb">
+      <DependentUpon>RVPHomeListSearch.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\SentOutMessage\CreateMessage.ascx.designer.vb">
+      <DependentUpon>CreateMessage.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\SentOutMessage\CreateMessage.ascx.vb">
+      <DependentUpon>CreateMessage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\SentOutMessage\ucReadOnlyMessageDetails.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyMessageDetails.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\SentOutMessage\ucReadOnlyMessageDetails.ascx.vb">
+      <DependentUpon>ucReadOnlyMessageDetails.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\SentOutMessage\ucReadOnlyMessageHistory.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyMessageHistory.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\SentOutMessage\ucReadOnlyMessageHistory.ascx.vb">
+      <DependentUpon>ucReadOnlyMessageHistory.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\Creator.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\IStatisticsCriteriaUC.vb" />
+    <Compile Include="UIControl\Statistics\StatisticsCriteriaBase.ascx.designer.vb">
+      <DependentUpon>StatisticsCriteriaBase.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsCriteriaBase.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>StatisticsCriteriaBase.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsCriteriaUC.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsResult.ascx.designer.vb">
+      <DependentUpon>StatisticsResult.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsResult.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>StatisticsResult.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsResultBase.ascx.designer.vb">
+      <DependentUpon>StatisticsResultBase.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsResultBase.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>StatisticsResultBase.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsResultWithLegend.ascx.designer.vb">
+      <DependentUpon>StatisticsResultWithLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\StatisticsResultWithLegend.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>StatisticsResultWithLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcAgeRange.ascx.designer.vb">
+      <DependentUpon>udcAgeRange.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcAgeRange.ascx.vb">
+      <DependentUpon>udcAgeRange.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcNumericComparison.ascx.designer.vb">
+      <DependentUpon>udcNumericComparison.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcNumericComparison.ascx.vb">
+      <DependentUpon>udcNumericComparison.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcPercentile.ascx.designer.vb">
+      <DependentUpon>udcPercentile.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcPercentile.ascx.vb">
+      <DependentUpon>udcPercentile.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcCheckBox.ascx.designer.vb">
+      <DependentUpon>udcCheckBox.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcCheckBox.ascx.vb">
+      <DependentUpon>udcCheckBox.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcFindServiceProvider.ascx.designer.vb">
+      <DependentUpon>udcFindServiceProvider.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcFindServiceProvider.ascx.vb">
+      <DependentUpon>udcFindServiceProvider.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx.designer.vb">
+      <DependentUpon>udcDateFormatMonthAndYear.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx.vb">
+      <DependentUpon>udcDateFormatMonthAndYear.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateFormat.ascx.designer.vb">
+      <DependentUpon>udcDateFormat.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateFormat.ascx.vb">
+      <DependentUpon>udcDateFormat.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateType.ascx.designer.vb">
+      <DependentUpon>udcDateType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateType.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcDateType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDescription.ascx.designer.vb">
+      <DependentUpon>udcDescription.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDescription.ascx.vb">
+      <DependentUpon>udcDescription.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcExactDatePeriod.ascx.designer.vb">
+      <DependentUpon>udcExactDatePeriod.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcExactDatePeriod.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcExactDatePeriod.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcMeansOfInput.ascx.designer.vb">
+      <DependentUpon>udcMeansOfInput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcMeansOfInput.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcMeansOfInput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcNumeric.ascx.designer.vb">
+      <DependentUpon>udcNumeric.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcNumeric.ascx.vb">
+      <DependentUpon>udcNumeric.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcPeriodBreakDown.ascx.designer.vb">
+      <DependentUpon>udcPeriodBreakDown.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcPeriodBreakDown.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcPeriodBreakDown.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcReasonForVisitType.ascx.designer.vb">
+      <DependentUpon>udcReasonForVisitType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcReasonForVisitType.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcReasonForVisitType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcScheme.ascx.designer.vb">
+      <DependentUpon>udcScheme.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcScheme.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcScheme.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSchemeMultiple.ascx.designer.vb">
+      <DependentUpon>udcSchemeMultiple.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSchemeMultiple.ascx.vb">
+      <DependentUpon>udcSchemeMultiple.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSchemeProf.ascx.designer.vb">
+      <DependentUpon>udcSchemeProf.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSchemeProf.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcSchemeProf.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSTAT00001Criteria.ascx.designer.vb">
+      <DependentUpon>udcSTAT00001Criteria.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSTAT00001Criteria.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcSTAT00001Criteria.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSTAT00003Criteria.ascx.designer.vb">
+      <DependentUpon>udcSTAT00003Criteria.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSTAT00003Criteria.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcSTAT00003Criteria.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSubmissionMethod.ascx.designer.vb">
+      <DependentUpon>udcSubmissionMethod.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcSubmissionMethod.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>udcSubmissionMethod.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcTransStatusMultiple.ascx.designer.vb">
+      <DependentUpon>udcTransStatusMultiple.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcTransStatusMultiple.ascx.vb">
+      <DependentUpon>udcTransStatusMultiple.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\StudentFile\ucStudentFileDetail.ascx.designer.vb">
+      <DependentUpon>ucStudentFileDetail.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\StudentFile\ucStudentFileDetail.ascx.vb">
+      <DependentUpon>ucStudentFileDetail.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Token\ucInputToken.ascx.designer.vb">
+      <DependentUpon>ucInputToken.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Token\ucInputToken.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucInputToken.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ucCollapsibleSearchCriteriaReview.ascx.designer.vb">
+      <DependentUpon>ucCollapsibleSearchCriteriaReview.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ucCollapsibleSearchCriteriaReview.ascx.vb">
+      <DependentUpon>ucCollapsibleSearchCriteriaReview.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\ucInputEHSClaim.ascx.designer.vb">
+      <DependentUpon>ucInputEHSClaim.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ucInputEHSClaim.ascx.vb">
+      <DependentUpon>ucInputEHSClaim.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\ucInputEHSClaimBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\ucReadOnlyAccountInfo.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyAccountInfo.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\ucReadOnlyAccountInfo.ascx.vb">
+      <DependentUpon>ucReadOnlyAccountInfo.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\VaccinationRecord\ucVaccinationRecord.ascx.designer.vb">
+      <DependentUpon>ucVaccinationRecord.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\VaccinationRecord\ucVaccinationRecord.ascx.vb">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>ucVaccinationRecord.ascx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\DH_eHS001.resx">
+      <DependentUpon>DH_eHS001.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\DH_eHS002.resx">
+      <DependentUpon>DH_eHS002.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\DH_eHS004.resx">
+      <DependentUpon>DH_eHS004.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\EnrolmentScheme.resx">
+      <DependentUpon>EnrolmentScheme.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\EnrolmentScheme_CHI.resx">
+      <DependentUpon>EnrolmentScheme_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\LetterEnding.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LetterEnding.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\LetterEnding_CHI.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LetterEnding_CHI.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\LetterHeader.resx">
+      <DependentUpon>LetterHeader.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\NameOfMO.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NameOfMO.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\NameOfMO_CHI.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NameOfMO_CHI.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\SPIDandTokenNo.resx">
+      <DependentUpon>SPIDandTokenNo.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\SPIDandTokenNo_CHI.resx">
+      <DependentUpon>SPIDandTokenNo_CHI.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\ConfirmationLetter\TokenReplacementLetter.resx">
+      <DependentUpon>TokenReplacementLetter.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintOut\NewActiveReport1.resx">
+      <DependentUpon>NewActiveReport1.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reimbursement\DetailedPaymentAnalysisRmbRpt.resx">
+      <DependentUpon>DetailedPaymentAnalysisRmbRpt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reimbursement\DetailedPaymentAnalysisRpt.resx">
+      <DependentUpon>DetailedPaymentAnalysisRpt.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceProvider\spEnrolmentPrintOutEHCVS.resx">
+      <DependentUpon>spEnrolmentPrintOutEHCVS.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceProvider\spEnrolmentPrintOutPPIEPR.resx">
+      <DependentUpon>spEnrolmentPrintOutPPIEPR.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Administration\parametermaintenance.aspx" />
+    <Content Include="Administration\RVPHomeListMaintenance.aspx" />
+    <Content Include="Administration\SendMessageConfirmation.aspx" />
+    <Content Include="Administration\UserAccountMaint.aspx" />
+    <Content Include="App_Themes\Theme_Global\Skin_Global.skin" />
+    <Content Include="BasePageWithControl.aspx" />
+    <Content Include="ChangePassword\ChangePassword.aspx" />
+    <Content Include="ChangePassword\LoginChangePassword.aspx" />
+    <Content Include="ClaimManagement\claimCreationApproval.aspx" />
+    <Content Include="ClaimManagement\claimTransEnquiry.aspx" />
+    <Content Include="ClaimManagement\claimTransManagement.aspx" />
+    <Content Include="CSS\comboBoxStyle.css" />
+    <Content Include="CSS\CommonStyle.css" />
+    <Content Include="CSS\MenuStyle.css" />
+    <Content Include="CSS\DialogStyle.css" />
+    <Content Include="DataDownload\dummy.txt" />
+    <Content Include="eHSAccount\eHealthAccountDeathRecordMaintenance.aspx" />
+    <Content Include="eHSAccount\eHealthAccountDeathRecordEnquiry.aspx" />
+    <Content Include="eHSAccount\eHealthAccountDeathRecordFileConfirmation.aspx" />
+    <Content Include="eHSAccount\eHealthAccountDeathRecordFileImport.aspx" />
+    <Content Include="General\KeepSessionAlive.aspx" />
+    <Content Include="Images\banner\Administration\banner_MessageDraftApproval.png" />
+    <Content Include="Images\banner\Administration\banner_RCHListMaintenance.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_ClaimCreationApproval.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_ClaimTransactionEnquiry.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_claimTransactionManagement.png" />
+    <Content Include="Images\banner\ReportAndDownload\banner_StatisticEnquiry.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spEnquirePCDStatus.png" />
+    <Content Include="Images\button\btn_Activate.png" />
+    <Content Include="Images\button\btn_Add.png" />
+    <Content Include="Images\button\btn_checkToken.png" />
+    <Content Include="Images\button\btn_checkToken_D.png" />
+    <Content Include="Images\button\btn_clear.png" />
+    <Content Include="Images\button\btn_Clock.png" />
+    <Content Include="Images\button\btn_Deactivate.png" />
+    <Content Include="Images\button\btn_DeathRecord.png" />
+    <Content Include="Images\button\btn_DeathRecord_D.png" />
+    <Content Include="Images\button\btn_enquire.png" />
+    <Content Include="Images\button\btn_joinPCD.png" />
+    <Content Include="Images\button\btn_Management.png" />
+    <Content Include="Images\button\btn_Management_D.png" />
+    <Content Include="Images\button\btn_ManageSelectedAccounts.png" />
+    <Content Include="Images\button\btn_ManageSelectedAccounts_D.png" />
+    <Content Include="Images\button\btn_NewRCHRecord.png" />
+    <Content Include="Images\button\btn_ok.png" />
+    <Content Include="Images\button\btn_ReactivateEnquiryforSelectedAccounts.png" />
+    <Content Include="Images\button\btn_ReactivateSelectedAccount.png" />
+    <Content Include="Images\button\btn_RecheckAndUpdateMatchingInformation.png" />
+    <Content Include="Images\button\btn_repairToken.png" />
+    <Content Include="Images\button\btn_ShareToken.png" />
+    <Content Include="Images\button\btn_ShareToken_Large.png" />
+    <Content Include="Images\button\btn_SuspendEnquiryforSelectedAccounts.png" />
+    <Content Include="Images\button\btn_collapse.jpg" />
+    <Content Include="Images\button\btn_expand.jpg" />
+    <Content Include="Images\button\icon_button\btn_add.png" />
+    <Content Include="Images\button\icon_button\btn_remove.png" />
+    <Content Include="Images\button\small_button\btn_ChangePassword.png" />
+    <Content Include="Images\button\small_button\btn_HideCriteria.png" />
+    <Content Include="Images\button\small_button\btn_HideTemplate.png" />
+    <Content Include="Images\button\small_button\btn_HideVoucherUsage.png" />
+    <Content Include="Images\button\small_button\btn_MarkAsUnread.png" />
+    <Content Include="Images\button\small_button\btn_PreviewTemplate.png" />
+    <Content Include="Images\button\small_button\btn_remark.png" />
+    <Content Include="Images\button\small_button\btn_Remove.png" />
+    <Content Include="Images\button\small_button\btn_Reset.png" />
+    <Content Include="Images\button\small_button\btn_select.png" />
+    <Content Include="Images\button\small_button\btn_select_disabled_D.png" />
+    <Content Include="Images\button\small_button\btn_ShowCriteria.png" />
+    <Content Include="Images\button\small_button\btn_ShowVoucherUsage.png" />
+    <Content Include="Images\others\circle_blue.png" />
+    <Content Include="Images\others\close.png" />
+    <Content Include="Images\others\exclamation.png" />
+    <Content Include="Images\others\Multiple.png" />
+    <Content Include="Images\others\ProcessingFile.png" />
+    <Content Include="Images\others\redirect.png" />
+    <Content Include="Images\others\Tab_left.png" />
+    <Content Include="Images\others\Tab_left_D.png" />
+    <Content Include="Images\others\Tab_middle.png" />
+    <Content Include="Images\others\Tab_middle_D.png" />
+    <Content Include="Images\others\Tab_right.png" />
+    <Content Include="Images\others\Tab_right_D.png" />
+    <Content Include="Images\others\transparent.gif" />
+    <Content Include="JS\Clock.js" />
+    <Content Include="JS\TimeoutReminder.js" />
+    <Content Include="ReportAndDownload\reportCriteriaBase.ascx" />
+    <Content Include="ReportAndDownload\reportCriteriaPeriodFromToDate.ascx" />
+    <Content Include="ReportAndDownload\reportCriteriaPeriodType.ascx" />
+    <Content Include="ReportAndDownload\reportCriteriaScheme.ascx" />
+    <Content Include="ReportAndDownload\reportCriteriaSP.ascx" />
+    <Content Include="ReportAndDownload\reportCriteriaStatUC.ascx" />
+    <Content Include="ReportAndDownload\Statistics.aspx" />
+    <Content Include="ServiceProvider\spEnquirePCDStatus.aspx" />
+    <Content Include="ServiceProvider\spTokenReplacementPrintOutViewer.aspx" />
+    <Content Include="UIControl\Assessories\ucNoticePopUp.ascx" />
+    <Content Include="UIControl\DistrictLegend.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyCommon.ascx" />
+    <Content Include="UIControl\eHealthAccountDeathRecord\eHealthAccountDeathRecordMaint.ascx" />
+    <Content Include="eHSAccount\eHealthAccountDeathRecordMatchingResult.aspx" />
+    <Content Include="eHSAccount\eHSAccountEnquiry.aspx" />
+    <Content Include="eHSAccount\eHSAccountMaint.aspx" />
+    <Content Include="eHSAccount\eHSAccountRectification.aspx" />
+    <Content Include="Error.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Home\home.aspx" />
+    <Content Include="Home\Inbox.aspx" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-active-left.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-active-right.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-active.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-hover-left.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-hover-right.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-hover.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-left.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-line.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab-right.gif" />
+    <Content Include="Images\AjaxControlToolkit\Tabs\tab.gif" />
+    <Content Include="Images\banner\Administration\banner_parameterManagement.png" />
+    <Content Include="Images\banner\ChangePassword\banner_changePassword.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHealthAccountDeathRecordEnquiry.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHealthAccountDeathRecordFileConfirmation.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHealthAccountDeathRecordFileImport.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHealthAccountDeathRecordMaintenance.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHealthAccountDeathRecordMatchingResult.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHSAccountEnquiry.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHSAccountMaintenance.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHSAccountRectification.png" />
+    <Content Include="Images\banner\home\banner_inbox.png" />
+    <Content Include="Images\banner\home\banner_whatsNew.png" />
+    <Content Include="Images\banner\Others\banner_contactUs.png" />
+    <Content Include="Images\banner\Others\banner_disclaimer.png" />
+    <Content Include="Images\banner\Others\banner_faqs.png" />
+    <Content Include="Images\banner\Others\banner_HA_MINGLIU.png" />
+    <Content Include="Images\banner\Others\banner_privacyPolicy.png" />
+    <Content Include="Images\banner\Others\banner_SysMaint.png" />
+    <Content Include="Images\banner\Others\banner_ImportantNotices.png" />
+    <Content Include="Images\banner\Others\VU_banner_ImportantNotices.png" />
+    <Content Include="Images\banner\Reimbursement\banner_cancelReimbursementAuthorization.png" />
+    <Content Include="Images\banner\Reimbursement\banner_reimbursementEnquiry.png" />
+    <Content Include="Images\banner\Reimbursement\banner_reimbursementFirstAuthorization.png" />
+    <Content Include="Images\banner\home\banner_loginInfo.png" />
+    <Content Include="Images\banner\home\banner_taskList.png" />
+    <Content Include="Images\banner\Reimbursement\banner_ReimbursementGeneratePaymentFile.png" />
+    <Content Include="Images\banner\Reimbursement\banner_reimbursementSecondAuthorization.png" />
+    <Content Include="Images\banner\Reimbursement\banner_ReimbursementSetCutoffDate.png" />
+    <Content Include="Images\banner\ReportAndDownload\banner_DownloadReportDatafile.PNG" />
+    <Content Include="Images\banner\ReportAndDownload\banner_reportSubmission.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_AccountChangeConfirmation.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_BankAccountVerification.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spDataEntry.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_SPDataMigration.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spEnquiry.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spMaintenance.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spProfessionalRegVerification.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spTokenSchemeManagement.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_spVetting.png" />
+    <Content Include="Images\banner\ServiceProvider\banner_TokenManagement.png" />
+    <Content Include="Images\banner\UserAccountMaintenance\banner_UserAccountMaint.png" />
+    <Content Include="Images\banner\VoucherAccountMaintenance\banner_VoucherAcct-TemporaryAcctDeletion.png" />
+    <Content Include="Images\banner\VoucherAccountMaintenance\banner_VoucherAcctEnquiry.png" />
+    <Content Include="Images\banner\VoucherAccountMaintenance\banner_VoucherAcctMaint.png" />
+    <Content Include="Images\banner\VoucherAccountMaintenance\banner_voucherrecipientaccrec.png" />
+    <Content Include="Images\button\btn_abort.png" />
+    <Content Include="Images\button\btn_abort_D.png" />
+    <Content Include="Images\button\btn_accept.png" />
+    <Content Include="Images\button\btn_accept_D.png" />
+    <Content Include="Images\button\btn_activateToken.png" />
+    <Content Include="Images\button\btn_amendmentHistory.png" />
+    <Content Include="Images\button\btn_amendRecord.png" />
+    <Content Include="Images\button\btn_Approve.png" />
+    <Content Include="Images\button\btn_back.png" />
+    <Content Include="Images\button\btn_BackNreleaseTran.png" />
+    <Content Include="Images\button\btn_backToAuthorizePage.PNG" />
+    <Content Include="Images\button\btn_backToCancelAuthorizePage.png" />
+    <Content Include="Images\button\btn_cancel.png" />
+    <Content Include="Images\button\btn_cancelamendment.png" />
+    <Content Include="Images\button\btn_CancelAuthorization.png" />
+    <Content Include="Images\button\btn_CancelAuthorization_Disable.png" />
+    <Content Include="Images\button\btn_cancelExport.png" />
+    <Content Include="Images\button\btn_cancelExport_D.png" />
+    <Content Include="Images\button\btn_CancelInvalidation.png" />
+    <Content Include="Images\button\btn_CancelInvalidation_D.png" />
+    <Content Include="Images\button\btn_CancelValidation.png" />
+    <Content Include="Images\button\btn_cancel_D.png" />
+    <Content Include="Images\button\btn_close.png" />
+    <Content Include="Images\button\btn_confirm.png" />
+    <Content Include="Images\button\btn_ConfirmAsValidatedAccount.png" />
+    <Content Include="Images\button\btn_ConfirmFile.png" />
+    <Content Include="Images\button\btn_ConfirmFile_D.png" />
+    <Content Include="Images\button\btn_confirmFirstAuthorization.png" />
+    <Content Include="Images\button\btn_ConfirmInvalid.png" />
+    <Content Include="Images\button\btn_ConfirmInvalid_D.png" />
+    <Content Include="Images\button\btn_ConfirmSchEnrol.png" />
+    <Content Include="Images\button\btn_confirmSecondAuthorization.png" />
+    <Content Include="Images\button\btn_confirmSecondAuthorization_Disable.png" />
+    <Content Include="Images\button\btn_confirmSelected.png" />
+    <Content Include="Images\button\btn_confirm_D.png" />
+    <Content Include="Images\button\btn_Continue.png" />
+    <Content Include="Images\button\btn_Continue_D.png" />
+    <Content Include="Images\button\btn_DataMigration.png" />
+    <Content Include="Images\button\btn_DataMigration_D.png" />
+    <Content Include="Images\button\btn_deactivateToken.png" />
+    <Content Include="Images\button\btn_defer.png" />
+    <Content Include="Images\button\btn_defer_D.png" />
+    <Content Include="Images\button\btn_delete.png" />
+    <Content Include="Images\button\btn_delisting.png" />
+    <Content Include="Images\button\btn_delistingSelected.png" />
+    <Content Include="Images\button\btn_delistingSelected_D.png" />
+    <Content Include="Images\button\btn_delisting_D.png" />
+    <Content Include="Images\button\btn_discardchange.png" />
+    <Content Include="Images\button\btn_download.png" />
+    <Content Include="Images\button\btn_edit.png" />
+    <Content Include="Images\button\btn_editReturnInfo.png" />
+    <Content Include="Images\button\btn_editReturnInfo_D.png" />
+    <Content Include="Images\button\btn_edit_D.png" />
+    <Content Include="Images\button\btn_exit.png" />
+    <Content Include="Images\button\btn_exportFile.png" />
+    <Content Include="Images\button\btn_exportrecords.png" />
+    <Content Include="Images\button\btn_exportrecords_D.png" />
+    <Content Include="Images\button\btn_Filter.png" />
+    <Content Include="Images\button\btn_GeneratePaymentFile.png" />
+    <Content Include="Images\button\btn_GeneratePaymentFile_D.png" />
+    <Content Include="Images\button\btn_go.png" />
+    <Content Include="Images\button\btn_ImgrateFromIVSS.png" />
+    <Content Include="Images\button\btn_importFile.png" />
+    <Content Include="Images\button\btn_importFile_D.png" />
+    <Content Include="Images\button\btn_login.png" />
+    <Content Include="Images\button\btn_login_D.png" />
+    <Content Include="Images\button\btn_MarkAsImmDValidating.png" />
+    <Content Include="Images\button\btn_MarkInvalid.png" />
+    <Content Include="Images\button\btn_MarkInvalid_D.png" />
+    <Content Include="Images\button\btn_Migrate.png" />
+    <Content Include="Images\button\btn_MigrateFromIVSS.png" />
+    <Content Include="Images\button\btn_Migrate_D.png" />
+    <Content Include="Images\button\btn_new.png" />
+    <Content Include="Images\button\btn_newAccount.png" />
+    <Content Include="Images\button\btn_newAccount_D.png" />
+    <Content Include="Images\button\btn_NewClaimTransaction.png" />
+    <Content Include="Images\button\btn_newEnrol.png" />
+    <Content Include="Images\button\btn_new_D.png" />
+    <Content Include="Images\button\btn_next.png" />
+    <Content Include="Images\button\btn_nextRecord.png" />
+    <Content Include="Images\button\btn_next_D.png" />
+    <Content Include="Images\button\btn_no.png" />
+    <Content Include="Images\button\btn_originalRecord.png" />
+    <Content Include="Images\button\btn_OtherFormats.png" />
+    <Content Include="Images\button\btn_pageChecked.png" />
+    <Content Include="Images\button\btn_pageChecked_D.png" />
+    <Content Include="Images\button\btn_preview.png" />
+    <Content Include="Images\button\btn_previousRecord.png" />
+    <Content Include="Images\button\btn_Print.png" />
+    <Content Include="Images\button\btn_printReport.png" />
+    <Content Include="Images\button\btn_Print_D.png" />
+    <Content Include="Images\button\btn_proceed.png" />
+    <Content Include="Images\button\btn_proceedToVetting.png" />
+    <Content Include="Images\button\btn_proceedToVetting_D.png" />
+    <Content Include="Images\button\btn_reactivate.png" />
+    <Content Include="Images\button\btn_reactivateAccount.png" />
+    <Content Include="Images\button\btn_reactivateEnquiry.png" />
+    <Content Include="Images\button\btn_reactivateSelected.png" />
+    <Content Include="Images\button\btn_reactivateSelectedRecords.png" />
+    <Content Include="Images\button\btn_reactivateSelectedRecords_D.png" />
+    <Content Include="Images\button\btn_reactivateSelected_D.png" />
+    <Content Include="Images\button\btn_reactivate_D.png" />
+    <Content Include="Images\button\btn_ready.png" />
+    <Content Include="Images\button\btn_ready_D.png" />
+    <Content Include="Images\button\btn_reject.png" />
+    <Content Include="Images\button\btn_rejectSelected.png" />
+    <Content Include="Images\button\btn_reject_D.png" />
+    <Content Include="Images\button\btn_release.png" />
+    <Content Include="Images\button\btn_ReleaseForRectification.png" />
+    <Content Include="Images\button\btn_releaseIVSSClaim.png" />
+    <Content Include="Images\button\btn_releaseIVSSClaim_D.png" />
+    <Content Include="Images\button\btn_RemainAsSpecialAccount.png" />
+    <Content Include="Images\button\btn_remove.png" />
+    <Content Include="Images\button\btn_RemoveFile.png" />
+    <Content Include="Images\button\btn_RemoveFile_D.png" />
+    <Content Include="Images\button\btn_replaceToken.png" />
+    <Content Include="Images\button\btn_reprint.png" />
+    <Content Include="Images\button\btn_reprintLetter.png" />
+    <Content Include="Images\button\btn_reprintLetter_D.png" />
+    <Content Include="Images\button\btn_reprintReport.png" />
+    <Content Include="Images\button\btn_reprintReport_D.png" />
+    <Content Include="Images\button\btn_ReprintScheEnrlLetter.png" />
+    <Content Include="Images\button\btn_ReprintScheEnrlLetter_D.png" />
+    <Content Include="Images\button\btn_resendConfirmEmail.png" />
+    <Content Include="Images\button\btn_resendConfirmEmail_D.png" />
+    <Content Include="Images\button\btn_resendDelistEmail.png" />
+    <Content Include="Images\button\btn_resendDelistEmail_D.png" />
+    <Content Include="Images\button\btn_resendEmail.png" />
+    <Content Include="Images\button\btn_resendEmail_D.png" />
+    <Content Include="Images\button\btn_reset.png" />
+    <Content Include="Images\button\btn_resetPassword.png" />
+    <Content Include="Images\button\btn_resetPassword_D.png" />
+    <Content Include="Images\button\btn_reset_D.png" />
+    <Content Include="Images\button\btn_return.png" />
+    <Content Include="Images\button\btn_returnAmend.png" />
+    <Content Include="Images\button\btn_returnForAmendment_D.png" />
+    <Content Include="Images\button\btn_ReturnToeHealthAccountSearchPage.png" />
+    <Content Include="Images\button\btn_ReturnToSPSearchPage.png" />
+    <Content Include="Images\button\btn_save.png" />
+    <Content Include="Images\button\btn_save_D.png" />
+    <Content Include="Images\button\btn_SchemeInformation.png" />
+    <Content Include="Images\button\btn_SchemeInformation_D.png" />
+    <Content Include="Images\button\btn_search.png" />
+    <Content Include="Images\button\btn_searchAccount.png" />
+    <Content Include="Images\button\btn_SearchNholdTran.png" />
+    <Content Include="Images\button\btn_SearchNholdTran_D.png" />
+    <Content Include="Images\button\btn_searchVoucherAccount.png" />
+    <Content Include="Images\button\btn_select.png" />
+    <Content Include="Images\button\btn_select_D.png" />
+    <Content Include="Images\button\btn_Send.png" />
+    <Content Include="Images\button\btn_send_D.png" />
+    <Content Include="Images\button\btn_Set.png" />
+    <Content Include="Images\button\btn_Set_D.png" />
+    <Content Include="Images\button\btn_ShowPendingAmend.png" />
+    <Content Include="Images\button\btn_skip.png" />
+    <Content Include="Images\button\btn_SpecificFormat.png" />
+    <Content Include="Images\button\btn_submit.png" />
+    <Content Include="Images\button\btn_suspend.png" />
+    <Content Include="Images\button\btn_suspendAccount.png" />
+    <Content Include="Images\button\btn_suspendEnquiry.png" />
+    <Content Include="Images\button\btn_suspendHistory.png" />
+    <Content Include="Images\button\btn_suspendHistory_D.png" />
+    <Content Include="Images\button\btn_suspendSelected.png" />
+    <Content Include="Images\button\btn_SuspendSelectedAccounts.png" />
+    <Content Include="Images\button\btn_suspendSelectedRecords.png" />
+    <Content Include="Images\button\btn_suspendSelectedRecords_D.png" />
+    <Content Include="Images\button\btn_suspendSelected_D.png" />
+    <Content Include="Images\button\btn_suspend_D.png" />
+    <Content Include="Images\button\btn_terminateAccount.png" />
+    <Content Include="Images\button\btn_TerminateSelectedAccounts.png" />
+    <Content Include="Images\button\btn_unlock.png" />
+    <Content Include="Images\button\btn_unlock_D.png" />
+    <Content Include="Images\button\btn_VaccinationRecord.png" />
+    <Content Include="Images\button\btn_VaccinationRecord_D.png" />
+    <Content Include="Images\button\btn_ViewDetails.png" />
+    <Content Include="Images\button\btn_ViewDetails_D.png" />
+    <Content Include="Images\button\btn_viewResult.png" />
+    <Content Include="Images\button\btn_viewResult_D.png" />
+    <Content Include="Images\button\btn_void.png" />
+    <Content Include="Images\button\btn_voidSelectedRecords.png" />
+    <Content Include="Images\button\btn_voidSelectedRecords_D.png" />
+    <Content Include="Images\button\btn_void_D.png" />
+    <Content Include="Images\button\btn_withdrawAmendment.png" />
+    <Content Include="Images\button\btn_yes.png" />
+    <Content Include="Images\button\FAQs\faqs_vr.png" />
+    <Content Include="Images\button\FAQs\faq_eenrolment.png" />
+    <Content Include="Images\button\FAQs\faq_sp.png" />
+    <Content Include="Images\button\FAQs\faq_techproblems.png" />
+    <Content Include="Images\button\icon_button\btn_calender.png" />
+    <Content Include="Images\button\icon_button\btn_clearSearch.png" />
+    <Content Include="Images\button\icon_button\btn_contactUs.jpg" />
+    <Content Include="Images\button\icon_button\btn_faqs.jpg" />
+    <Content Include="Images\button\icon_button\btn_search.png" />
+    <Content Include="Images\button\icon_button\btn_usefulLink.jpg" />
+    <Content Include="Images\button\icon_button\btn_userManual.jpg" />
+    <Content Include="Images\button\icon_button\btn_whatsNews.jpg" />
+    <Content Include="Images\button\small_button\btn_add.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch_D.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch_D_tw.png" />
+    <Content Include="Images\button\small_button\btn_addressSearch_tw.png" />
+    <Content Include="Images\button\small_button\btn_add_D.png" />
+    <Content Include="Images\button\small_button\btn_cancel.png" />
+    <Content Include="Images\button\small_button\btn_cancel_D.png" />
+    <Content Include="Images\button\small_button\btn_chinesename.png" />
+    <Content Include="Images\button\small_button\btn_clear.png" />
+    <Content Include="Images\button\small_button\btn_clearAddressSearch.png" />
+    <Content Include="Images\button\small_button\btn_clearAddressSearch_tw.png" />
+    <Content Include="Images\button\small_button\btn_clear_D.png" />
+    <Content Include="Images\button\small_button\btn_deactivateToken.png" />
+    <Content Include="Images\button\small_button\btn_delete.png" />
+    <Content Include="Images\button\small_button\btn_delete_D.png" />
+    <Content Include="Images\button\small_button\btn_delisting.png" />
+    <Content Include="Images\button\small_button\btn_delisting_D.png" />
+    <Content Include="Images\button\small_button\btn_edit.png" />
+    <Content Include="Images\button\small_button\btn_edit_D.png" />
+    <Content Include="Images\button\small_button\btn_FilePassword.png" />
+    <Content Include="Images\button\small_button\btn_FilePassword_D.png" />
+    <Content Include="Images\button\small_button\btn_home.png" />
+    <Content Include="Images\button\small_button\btn_inbox.png" />
+    <Content Include="Images\button\small_button\btn_inbox_newMsg.gif" />
+    <Content Include="Images\button\small_button\btn_inbox_red.png" />
+    <Content Include="Images\button\small_button\btn_logout.png" />
+    <Content Include="Images\button\small_button\btn_PrintLetter.png" />
+    <Content Include="Images\button\small_button\btn_PrintSmall.png" />
+    <Content Include="Images\button\small_button\btn_reactivate.png" />
+    <Content Include="Images\button\small_button\btn_reactivate_D.png" />
+    <Content Include="Images\button\small_button\btn_save.png" />
+    <Content Include="Images\button\small_button\btn_save_D.png" />
+    <Content Include="Images\button\small_button\btn_search.png" />
+    <Content Include="Images\button\small_button\btn_search_D.png" />
+    <Content Include="Images\button\small_button\btn_SendEmail.png" />
+    <Content Include="Images\button\small_button\btn_suspend.png" />
+    <Content Include="Images\button\small_button\btn_suspend_D.png" />
+    <Content Include="Images\button\small_button\btn_undelete.png" />
+    <Content Include="Images\button\small_button\btn_VaccinationRecord.png" />
+    <Content Include="Images\comboBox\comboItemBg.gif" />
+    <Content Include="Images\comboBox\drop.gif" />
+    <Content Include="Images\comboBox\drop_hover.gif" />
+    <Content Include="Images\dialog\bottom-left.png" />
+    <Content Include="Images\dialog\bottom-mid.png" />
+    <Content Include="Images\dialog\bottom-right.png" />
+    <Content Include="Images\dialog\close-down.png" />
+    <Content Include="Images\dialog\close-hover.png" />
+    <Content Include="Images\dialog\close.png" />
+    <Content Include="Images\dialog\left.png" />
+    <Content Include="Images\dialog\right.png" />
+    <Content Include="Images\dialog\top-left.png" />
+    <Content Include="Images\dialog\top-mid.png" />
+    <Content Include="Images\dialog\top-right.png" />
+    <Content Include="Images\login\login_background.jpg" />
+    <Content Include="Images\master\banner_header.jpg" />
+    <Content Include="Images\master\body_background.jpg" />
+    <Content Include="Images\menu\arrow.gif" />
+    <Content Include="Images\menu\menu-item-middle-hover.png" />
+    <Content Include="Images\menu\menu-item-middle.png" />
+    <Content Include="Images\menu\menu_background.png" />
+    <Content Include="Images\others\addWebsite.png" />
+    <Content Include="Images\others\Always Allow Pop-ups.png" />
+    <Content Include="Images\others\Always Allow Pop-ups_tw.png" />
+    <Content Include="Images\others\arrowblank.png" />
+    <Content Include="Images\others\arrowdown.png" />
+    <Content Include="Images\others\arrowup.png" />
+    <Content Include="Images\others\bg.png" />
+    <Content Include="Images\others\circle_red.png" />
+    <Content Include="Images\others\closeAllowedSite.png" />
+    <Content Include="Images\others\ec.png" />
+    <Content Include="Images\others\floopy.PNG" />
+    <Content Include="Images\others\HA_MINGLIU_Sample.png" />
+    <Content Include="Images\others\icon_caution.gif" />
+    <Content Include="Images\others\ImportFail.png" />
+    <Content Include="Images\others\ImportSuccess.png" />
+    <Content Include="Images\others\info.png" />
+    <Content Include="Images\others\InforMark.png" />
+    <Content Include="Images\others\information.png" />
+    <Content Include="Images\others\info_large.png" />
+    <Content Include="Images\others\Letter_Close.gif" />
+    <Content Include="Images\others\Letter_Open.gif" />
+    <Content Include="Images\others\new.gif" />
+    <Content Include="Images\others\PendingConfirmation.png" />
+    <Content Include="Images\others\pleaseWait.gif" />
+    <Content Include="Images\others\pleaseWait_tw.gif" />
+    <Content Include="Images\others\printer.png" />
+    <Content Include="Images\others\processing.PNG" />
+    <Content Include="Images\others\questionMark.png" />
+    <Content Include="Images\others\reminder_bottomleft.png" />
+    <Content Include="Images\others\reminder_bottommiddle.png" />
+    <Content Include="Images\others\reminder_bottomright.png" />
+    <Content Include="Images\others\reminder_left.png" />
+    <Content Include="Images\others\reminder_right.png" />
+    <Content Include="Images\others\reminder_topleft.png" />
+    <Content Include="Images\others\reminder_topmiddle.png" />
+    <Content Include="Images\others\reminder_topright.png" />
+    <Content Include="Images\others\reprint.jpg" />
+    <Content Include="Images\others\setPopblocker.png" />
+    <Content Include="Images\others\small_edit.png" />
+    <Content Include="Images\others\small_tick.png" />
+    <Content Include="Images\others\sp_login_blocker.png" />
+    <Content Include="Images\others\tick.png" />
+    <Content Include="Images\others\token_2.jpg" />
+    <Content Include="Images\others\token_2.png" />
+    <Content Include="Images\others\top.png" />
+    <Content Include="Images\others\warning.png" />
+    <Content Include="Images\others\warning_large.png" />
+    <Content Include="index.aspx" />
+    <Content Include="JS\Common.js" />
+    <Content Include="JS\ReadXML.js" />
+    <Content Include="login.aspx" />
+    <Content Include="OCX\EVSDataDownload.CAB" />
+    <Content Include="OCX\EVSDataDownload.HTM" />
+    <Content Include="PrintOut\ConfirmationLetter\ConfirmationLetter.aspx" />
+    <Content Include="Reimbursement\ClaimTransDetail.ascx" />
+    <Content Include="Reimbursement\reimbursementCancelAuthorization.aspx" />
+    <Content Include="Reimbursement\reimbursementEnquiry.aspx" />
+    <Content Include="Reimbursement\reimbursementFirstAuthorization.aspx" />
+    <Content Include="Reimbursement\reimbursementGeneratePaymentFile.aspx" />
+    <Content Include="Reimbursement\reimbursementSecondAuthorization.aspx" />
+    <Content Include="Reimbursement\DPAViewer.aspx" />
+    <Content Include="Reimbursement\reimbursementSetCutoffDate.aspx" />
+    <Content Include="ReportAndDownload\Datadownload.aspx" />
+    <Content Include="MasterPage.Master" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="ReportAndDownload\Template\STAT00001_template.xlsx" />
+    <None Include="ReportAndDownload\Template\STAT00002_template.xlsx" />
+    <None Include="ReportAndDownload\Template\STAT00003_template.xlsx" />
+    <None Include="ReportAndDownload\Template\STAT00004_template.xlsx" />
+    <None Include="ReportAndDownload\Template\STAT00005_template.xlsx" />
+    <Content Include="ServiceProvider\MOPracticeLists.ascx" />
+    <Content Include="ServiceProvider\spMaintenance.aspx" />
+    <Content Include="ServiceProvider\spPrintFunction.ascx" />
+    <Content Include="UIControl\ChooseCCCode.ascx" />
+    <Content Include="UIControl\DocTypeLegend.ascx" />
+    <Content Include="UIControl\DocType\ucInputAdoption.ascx" />
+    <Content Include="UIControl\DocType\ucInputDI.ascx" />
+    <Content Include="UIControl\DocType\ucInputDocumentType.ascx" />
+    <Content Include="UIControl\DocType\ucInputEC.ascx" />
+    <Content Include="UIControl\DocType\ucInputHKBC.ascx" />
+    <Content Include="UIControl\DocType\ucInputHKID.ascx" />
+    <Content Include="UIControl\DocType\ucInputID235B.ascx" />
+    <Content Include="UIControl\DocType\ucInputReentryPermit.ascx" />
+    <Content Include="UIControl\DocType\ucInputVISA.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyADOPC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyDI.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyEC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyHKBC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyHKIC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyID235B.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCIVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputEHAPP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputEVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputHSIVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputRVP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyEHAPP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyEHSClaim.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyEVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyHCVS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyHSIVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyRVP.ascx" />
+    <Content Include="UIControl\PCDIntegration\ucEnrolmentCopyPopup.ascx" />
+    <Content Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx" />
+    <Content Include="UIControl\PCDIntegration\ucTypeOfPracticePopup.ascx" />
+    <Content Include="UIControl\ProfessionLegend.ascx" />
+    <Content Include="UIControl\RVPHomeListSearch.ascx" />
+    <Content Include="UIControl\SentOutMessage\CreateMessage.ascx" />
+    <Content Include="UIControl\SentOutMessage\ucReadOnlyMessageDetails.ascx" />
+    <Content Include="UIControl\SentOutMessage\ucReadOnlyMessageHistory.ascx" />
+    <Content Include="UIControl\Statistics\StatisticsCriteriaBase.ascx" />
+    <Content Include="UIControl\Statistics\StatisticsResult.ascx" />
+    <Content Include="UIControl\Statistics\StatisticsResultBase.ascx" />
+    <Content Include="UIControl\Statistics\StatisticsResultWithLegend.ascx" />
+    <Content Include="UIControl\Statistics\udcAgeRange.ascx" />
+    <Content Include="UIControl\Statistics\udcDateType.ascx" />
+    <Content Include="UIControl\Statistics\udcExactDatePeriod.ascx" />
+    <Content Include="UIControl\Statistics\udcMeansOfInput.ascx" />
+    <Content Include="UIControl\Statistics\udcPeriodBreakDown.ascx" />
+    <Content Include="UIControl\Statistics\udcReasonForVisitType.ascx" />
+    <Content Include="UIControl\Statistics\udcScheme.ascx" />
+    <Content Include="UIControl\Statistics\udcSchemeProf.ascx" />
+    <Content Include="UIControl\Statistics\udcSTAT00001Criteria.ascx" />
+    <Content Include="UIControl\Statistics\udcSTAT00003Criteria.ascx" />
+    <Content Include="UIControl\Statistics\udcSubmissionMethod.ascx" />
+    <Content Include="UIControl\Token\ucInputToken.ascx" />
+    <Content Include="UIControl\ucCollapsibleSearchCriteriaReview.ascx" />
+    <Content Include="UIControl\ucInputEHSClaim.ascx" />
+    <Content Include="UIControl\ucReadOnlyAccountInfo.ascx" />
+    <Content Include="UIControl\VaccinationRecord\ucVaccinationRecord.ascx" />
+    <Content Include="UserManual\UserManual.pdf" />
+    <Content Include="ReportAndDownload\DownloadFileWorker.aspx" />
+    <Content Include="ReportAndDownload\reportSubmission.aspx" />
+    <Content Include="ServiceProvider\spBankAccountVerification.aspx" />
+    <Content Include="ServiceProvider\spAccountChangeConfirmation.aspx" />
+    <Content Include="ServiceProvider\spDataEntry.aspx" />
+    <Content Include="ServiceProvider\spEnquiry.aspx" />
+    <Content Include="ServiceProvider\spEnrolmentPrintOutViewer.aspx" />
+    <Content Include="ServiceProvider\spProfessionVerification.aspx" />
+    <Content Include="ServiceProvider\spProfile.aspx" />
+    <Content Include="ServiceProvider\spSummaryView.ascx" />
+    <Content Include="ServiceProvider\spTokenManagement.aspx" />
+    <Content Include="ServiceProvider\spVetting.aspx" />
+    <Content Include="SessionTimeout.aspx" />
+    <Content Include="StyleSheet.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.eHRIntegration\Common.eHRIntegration.vbproj">
+      <Project>{a096aa76-6acf-4117-80e1-b7abaf11ed26}</Project>
+      <Name>Common.eHRIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.OCSSS\Common.OCSSS.vbproj">
+      <Project>{1fcab446-d1e7-4ecb-972b-f7a476a668f2}</Project>
+      <Name>Common.OCSSS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.PCD\Common.PCD.vbproj">
+      <Project>{C77201B9-E809-4CAE-8A03-48CEE3F4BAD1}</Project>
+      <Name>Common.PCD</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405B1BF-72C2-4A3C-BDB5-44956B723670}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomControls\CustomControls.vbproj">
+      <Project>{EBE0EADC-F5A6-4EAF-B395-127B0EDF82F7}</Project>
+      <Name>CustomControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SSODAL\SSODAL.vbproj">
+      <Project>{3ce13d02-372d-49f8-b377-23fe4b538a87}</Project>
+      <Name>SSODAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SSODataType\SSODataType.vbproj">
+      <Project>{e65e8a79-91f8-4ddd-8b33-8f9dfad82736}</Project>
+      <Name>SSODataType</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SSOLib\SSOLib.vbproj">
+      <Project>{cbdd772e-5452-4a30-b683-3f59d4cd6c2c}</Project>
+      <Name>SSOLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SSOUtil\SSOUtil.vbproj">
+      <Project>{da1c6063-9549-4914-9a85-5586406bd7e6}</Project>
+      <Name>SSOUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1817</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/HCVU_DEV</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

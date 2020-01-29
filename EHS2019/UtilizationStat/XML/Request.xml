@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameter>
+	<message_id>M1990010100000001</message_id>
+	<health_check>Y</health_check>
+	<request_system>EHS</request_system>
+</parameter>

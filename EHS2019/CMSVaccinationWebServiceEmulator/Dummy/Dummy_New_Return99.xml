@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<result>
+	<message_id>[message_id]</message_id>
+	<return_code>99</return_code>
+	<patient_list />
+	<source_system>CMS</source_system>
+</result>

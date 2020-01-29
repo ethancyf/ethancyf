@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="https://ppi.ha.org.hk" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="https://ppi.ha.org.hk" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="https://ppi.ha.org.hk">
+      <s:element name="getPPIRSATokenSerialNoByHKIDDummy">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hkid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPPIRSATokenSerialNoByHKIDDummyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getPPIRSATokenSerialNoByHKIDDummyResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPPIRSATokenSerialNoByHKID">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strHKID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassCode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPPIRSATokenSerialNoByHKIDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getPPIRSATokenSerialNoByHKIDResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getTSWPatientList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strPassCode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getTSWPatientListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getTSWPatientListResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="getPPIRSATokenSerialNoByHKIDDummySoapIn">
+    <wsdl:part name="parameters" element="tns:getPPIRSATokenSerialNoByHKIDDummy" />
+  </wsdl:message>
+  <wsdl:message name="getPPIRSATokenSerialNoByHKIDDummySoapOut">
+    <wsdl:part name="parameters" element="tns:getPPIRSATokenSerialNoByHKIDDummyResponse" />
+  </wsdl:message>
+  <wsdl:message name="getPPIRSATokenSerialNoByHKIDSoapIn">
+    <wsdl:part name="parameters" element="tns:getPPIRSATokenSerialNoByHKID" />
+  </wsdl:message>
+  <wsdl:message name="getPPIRSATokenSerialNoByHKIDSoapOut">
+    <wsdl:part name="parameters" element="tns:getPPIRSATokenSerialNoByHKIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="getTSWPatientListSoapIn">
+    <wsdl:part name="parameters" element="tns:getTSWPatientList" />
+  </wsdl:message>
+  <wsdl:message name="getTSWPatientListSoapOut">
+    <wsdl:part name="parameters" element="tns:getTSWPatientListResponse" />
+  </wsdl:message>
+  <wsdl:portType name="PPI_EVS_WSSoap">
+    <wsdl:operation name="getPPIRSATokenSerialNoByHKIDDummy">
+      <wsdl:input message="tns:getPPIRSATokenSerialNoByHKIDDummySoapIn" />
+      <wsdl:output message="tns:getPPIRSATokenSerialNoByHKIDDummySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getPPIRSATokenSerialNoByHKID">
+      <wsdl:input message="tns:getPPIRSATokenSerialNoByHKIDSoapIn" />
+      <wsdl:output message="tns:getPPIRSATokenSerialNoByHKIDSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getTSWPatientList">
+      <wsdl:input message="tns:getTSWPatientListSoapIn" />
+      <wsdl:output message="tns:getTSWPatientListSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PPI_EVS_WSSoap" type="tns:PPI_EVS_WSSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getPPIRSATokenSerialNoByHKIDDummy">
+      <soap:operation soapAction="https://ppi.ha.org.hk/getPPIRSATokenSerialNoByHKIDDummy" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPPIRSATokenSerialNoByHKID">
+      <soap:operation soapAction="https://ppi.ha.org.hk/getPPIRSATokenSerialNoByHKID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTSWPatientList">
+      <soap:operation soapAction="https://ppi.ha.org.hk/getTSWPatientList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PPI_EVS_WS">
+    <documentation xmlns="http://schemas.xmlsoap.org/wsdl/" />
+    <wsdl:port name="PPI_EVS_WSSoap" binding="tns:PPI_EVS_WSSoap">
+      <soap:address location="http://eis-0035:8000/PPI/PPI_WebServices/HAInternal/PPI_EVS_WS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

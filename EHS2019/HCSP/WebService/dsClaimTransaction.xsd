@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsClaimTransaction" targetNamespace="https://hcvs.dh.gov.hksar/dsClaimTransaction.xsd" xmlns:mstns="https://hcvs.dh.gov.hksar/dsClaimTransaction.xsd" xmlns="https://hcvs.dh.gov.hksar/dsClaimTransaction.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsClaimTransaction" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="dsClaimTransaction" msprop:Generator_DataSetName="dsClaimTransaction">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Result" msprop:Generator_UserTableName="Result" msprop:Generator_RowDeletedName="ResultRowDeleted" msprop:Generator_TableClassName="ResultDataTable" msprop:Generator_RowChangedName="ResultRowChanged" msprop:Generator_RowClassName="ResultRow" msprop:Generator_RowChangingName="ResultRowChanging" msprop:Generator_RowEvArgName="ResultRowChangeEvent" msprop:Generator_RowEvHandlerName="ResultRowChangeEventHandler" msprop:Generator_TablePropName="Result" msprop:Generator_TableVarName="tableResult" msprop:Generator_RowDeletingName="ResultRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Return" msprop:Generator_UserColumnName="Return" msprop:Generator_ColumnPropNameInRow="_Return" msprop:Generator_ColumnVarNameInTable="columnReturn" msprop:Generator_ColumnPropNameInTable="ReturnColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Transaction" msprop:Generator_UserTableName="Transaction" msprop:Generator_RowDeletedName="TransactionRowDeleted" msprop:Generator_TableClassName="TransactionDataTable" msprop:Generator_RowChangedName="TransactionRowChanged" msprop:Generator_RowClassName="TransactionRow" msprop:Generator_RowChangingName="TransactionRowChanging" msprop:Generator_RowEvArgName="TransactionRowChangeEvent" msprop:Generator_RowEvHandlerName="TransactionRowChangeEventHandler" msprop:Generator_TablePropName="Transaction" msprop:Generator_TableVarName="tableTransaction" msprop:Generator_RowDeletingName="TransactionRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Number" msprop:Generator_UserColumnName="Number" msprop:Generator_ColumnPropNameInRow="Number" msprop:Generator_ColumnVarNameInTable="columnNumber" msprop:Generator_ColumnPropNameInTable="NumberColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Datetime" msprop:Generator_UserColumnName="Datetime" msprop:Generator_ColumnPropNameInRow="Datetime" msprop:Generator_ColumnVarNameInTable="columnDatetime" msprop:Generator_ColumnPropNameInTable="DatetimeColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Claim_Info" msprop:Generator_UserTableName="Claim_Info" msprop:Generator_RowDeletedName="Claim_InfoRowDeleted" msprop:Generator_TableClassName="Claim_InfoDataTable" msprop:Generator_RowChangedName="Claim_InfoRowChanged" msprop:Generator_RowClassName="Claim_InfoRow" msprop:Generator_RowChangingName="Claim_InfoRowChanging" msprop:Generator_RowEvArgName="Claim_InfoRowChangeEvent" msprop:Generator_RowEvHandlerName="Claim_InfoRowChangeEventHandler" msprop:Generator_TablePropName="Claim_Info" msprop:Generator_TableVarName="tableClaim_Info" msprop:Generator_RowDeletingName="Claim_InfoRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Original_Voucher" msprop:Generator_UserColumnName="Original_Voucher" msprop:Generator_ColumnPropNameInRow="Original_Voucher" msprop:Generator_ColumnVarNameInTable="columnOriginal_Voucher" msprop:Generator_ColumnPropNameInTable="Original_VoucherColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Voucher_Used" msprop:Generator_UserColumnName="Voucher_Used" msprop:Generator_ColumnPropNameInRow="Voucher_Used" msprop:Generator_ColumnVarNameInTable="columnVoucher_Used" msprop:Generator_ColumnPropNameInTable="Voucher_UsedColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Voucher_Left" msprop:Generator_UserColumnName="Voucher_Left" msprop:Generator_ColumnPropNameInRow="Voucher_Left" msprop:Generator_ColumnVarNameInTable="columnVoucher_Left" msprop:Generator_ColumnPropNameInTable="Voucher_LeftColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

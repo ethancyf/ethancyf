@@ -1,0 +1,8 @@
+SET ABORT-ON-ERROR NO
+cd HCVS\IMMED
+lcd {sectionFolder}
+BINARY
+put received\{contentFileName} {contentFileName} overwrite
+put received\{controlFileName} {controlFileName} overwrite
+SET ABORT-ON-ERROR YES
+quit
