@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	11 Nov 2019
+-- CR No.			INT19-0026
+-- Description:		Fix column length of School/RCH name
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	16 Sep 2019
 -- CR No.			CRE19-001
@@ -72,8 +79,8 @@ AS BEGIN
 		Display_Seq		INT IDENTITY(1,1),
 		Col01	varchar(100),	-- Student File ID
 		Col02	varchar(100),	-- School Code
-		Col03	varchar(100),	-- School Name (English)
-		Col04	nvarchar(100),	-- School Name (Chinese)
+		Col03	varchar(255),	-- School Name (English)
+		Col04	nvarchar(255),	-- School Name (Chinese)
 		Col05	varchar(100),	-- SPID
 		Col06	varchar(100),	-- SP Name (English)
 		Col07	nvarchar(100),	-- SP Name (Chinese)

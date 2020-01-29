@@ -8,6 +8,14 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Dec 2019
+-- CR No.:			CRE19-025 (Display of unmatched PV for batch upload under RVP)
+-- Description:		[Class] worksheet
+--					- Display undefined PV with for reference only remarks
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	9 Sep 2019
 -- CR No.:			CRE19-001-04 (VSS 2019/20 RVP Pre-check)
@@ -88,12 +96,12 @@ AS BEGIN
 	CREATE TABLE #Last3VaccineRowTT (
 		Student_Seq INT,
 		Vaccine_Seq INT,
-		Vaccine VARCHAR(200)
+		Vaccine VARCHAR(4000)
 	)
 
 	CREATE TABLE #Last3VaccineTT (
 		Student_Seq INT,
-		Vaccine VARCHAR(200)
+		Vaccine VARCHAR(4000)
 	)
 
 	CREATE TABLE #StudentTT (
@@ -145,7 +153,7 @@ AS BEGIN
 		Entitle_1STDOSE		CHAR(1),
 		Entitle_2NDDOSE		CHAR(1),
 		Entitle_Inject	CHAR(1),
-		Last3Vaccine	VARCHAR(200),
+		Last3Vaccine	VARCHAR(4000),
 		Entitle_Inject_Fail_Reason	VARCHAR(1000),
 
 		Injected	CHAR(1),
@@ -165,11 +173,17 @@ AS BEGIN
 	INSERT INTO #Last3VaccineRowTT (Student_Seq, Vaccine_Seq, Vaccine)
 	SELECT Student_Seq, 
 		ROW_NUMBER() OVER(PARTITION BY Student_Seq ORDER BY Service_Receive_Dtm DESC),
-		FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd') + ' ' + CASE WHEN RTRIM(s.Vaccine_Type) = 'PV' THEN '23vPPV' 
-																   WHEN RTRIM(s.Vaccine_Type) = 'PV13' THEN 'PCV13' 	
-																	ELSE RTRIM(s.Vaccine_Type) END + ' (' + Available_Item_Desc + ')'
-	FROM StudentFileEntryVaccine v INNER JOIN Subsidize s
+		FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd') + ' ' 
+			+ CASE	WHEN RTRIM(s.Vaccine_Type) = 'PV' THEN IIF(v.Is_Unknown_Vaccine = 1 OR v.Record_Type = 'H', RTRIM(v.Subsidize_Desc),'23vPPV') -- Display ori vaccine name for undefined PV
+					WHEN RTRIM(s.Vaccine_Type) = 'PV13' THEN 'PCV13' 	
+					ELSE RTRIM(s.Vaccine_Type) END
+			+ ' (' + Available_Item_Desc + ')'		
+			+ CASE WHEN v.Record_Type = 'H' THEN + ' (' + SD.Status_Description + ')' ELSE '' END 
+	FROM StudentFileEntryVaccine v 
+		INNER JOIN Subsidize s
 			ON v.Subsidize_Code = s.Subsidize_Code
+		INNER JOIN StatusData SD
+			ON v.Record_Type = SD.Status_Value AND SD.Enum_Class = 'VaccinationRecordRecordType'
 	WHERE Student_File_ID = @Input_Student_File_ID AND (
 		(@VaccineType = 'QIV' AND v.Subsidize_Item_Code NOT IN ('PV','PV13','MMR'))
 		OR (@VaccineType IN ('PV','PV13') AND v.Subsidize_Item_Code IN ('PV','PV13'))
@@ -727,11 +741,12 @@ AS BEGIN
 				CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
 				CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
 				ISNULL(Last3Vaccine,''),
-				SUBSTRING(CONCAT(ISNULL(' / ' + Entitle_Inject_Fail_Reason,''), 
-					IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
-					IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
-					IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
-					IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000) AS Entitle_Inject_Fail_Reason
+				SUBSTRING(CONCAT(
+							CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END,
+							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000) AS Entitle_Inject_Fail_Reason
 			FROM #StudentTT T
 			WHERE TableID = @RowCount
 			ORDER BY Class_Name, Student_Seq
@@ -761,8 +776,8 @@ AS BEGIN
 						'-'
 				END AS Available_To_Inject,
 				CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
-					THEN -- Show entitle fail reason (Empty = entitle, not empty = not entitle)
-						ISNULL(Entitle_Inject_Fail_Reason, '') 
+					THEN -- Show entitle fail reason (Empty = entitle, not empty = not entitle)																								
+						CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END
 					ELSE -- SP confirm not to inject
 						'Service provider confirm not to inject' 
 				END AS Reject_Reason
@@ -827,11 +842,12 @@ AS BEGIN
 				CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
 				CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
 				ISNULL(Last3Vaccine,''),
-				SUBSTRING(CONCAT(ISNULL(' / ' + Entitle_Inject_Fail_Reason,''), 
-					IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
-					IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
-					IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
-					IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000) AS Entitle_Inject_Fail_Reason,
+				SUBSTRING(CONCAT(							
+							CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END,
+							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000) AS Entitle_Inject_Fail_Reason,
 				'',
 				-- Section 4 - Vaccination record filled by service provider
 				CASE WHEN ISNULL(Injected, '') = 'N' THEN 'No' ELSE ISNULL(Injected, '') END AS Injected,
@@ -897,6 +913,8 @@ AS BEGIN
 	CLOSE SYMMETRIC KEY sym_Key
 	
 	DROP TABLE #StudentTT
+	DROP TABLE #Last3VaccineTT
+	DROP TABLE #Last3VaccineRowTT
 
 END
 GO

@@ -8,18 +8,19 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
--- =============================================  
+-- Modified by:		Winnie SUEN
+-- Modified date:	04 Nov 2019
+-- CR No.:			CRE19-016 (End of ENHVSSO daily report)
+-- Description:		Stored procedure is no longer used
+-- ============================================= 
 -- =============================================
 -- CR No.:			CRE17-018-05
 -- Author:			Koala CHENG
 -- Create date:		27 Sep 2018
 -- Description:		ENHVSSO daily report - Write Whole Report 
 -- =============================================    
-  
+
+/*
 CREATE PROCEDURE [dbo].[proc_EHS_eHSD0031_ENHVSSO_Stat_Write]   
 	@Cutoff_Dtm datetime = NULL
 AS BEGIN
@@ -58,3 +59,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSD0031_ENHVSSO_Stat_Write] TO HCVU
 GO
+*/

@@ -8,10 +8,10 @@ GO
   
 -- =============================================
 -- Modification History
--- CR No.:			
--- Modified by:	    
--- Modified date:   
--- Description:		
+-- Modified by:		Winnie SUEN
+-- Modified date:	04 Nov 2019
+-- CR No.:			CRE19-016 (End of ENHVSSO daily report)
+-- Description:		Stored procedure is no longer used
 -- =============================================
 -- =============================================    
 -- CR No.:			CRE17-018-05
@@ -20,7 +20,7 @@ GO
 -- Description:		ENHVSSO daily report - eHS(S)D0031-01: Report on eHealth (Subsidies) accounts created (by document type)
 -- =============================================  
 
-
+/*
 CREATE PROCEDURE [proc_EHS_eHSD0031_01_PrepareData] 
 	@Cutoff_Dtm AS DATETIME
 AS
@@ -655,4 +655,4 @@ GO
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSD0031_01_PrepareData] TO HCVU
 GO
 
-
+*/

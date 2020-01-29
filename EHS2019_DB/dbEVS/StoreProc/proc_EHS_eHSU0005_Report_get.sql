@@ -7,6 +7,14 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:		  CRE19-0XX
+-- Modified by:	  Koala CHENG
+-- Modified date: 14 Nov 2019
+-- Description:	  1. Excel Sheet (01): Add "Provide DHC-related Services (Any practices)"
+--				  2. Excel Sheet (03): Add "Provide DHC-related Services"
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:		  CRE17-016
 -- Modified by:	  Koala CHENG
 -- Modified date: 08 Aug 2018
@@ -718,25 +726,26 @@ AS BEGIN
 		Col21	varchar(30),	-- Is Share Token
 		Col22	varchar(30),	-- Token Serial No. (New)
 		Col23	varchar(30),	-- Token Issued By (New)
-		Col24	varchar(30)		-- Is Share Token (New)
+		Col24	varchar(30),	-- Is Share Token (New)
+		Col25	varchar(100)	-- Provide DHC-related Services (Any practices)
 	)
 
 	-- Create Column Header
 	SET @seq = 0
 
-	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24)
+	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25)
 	VALUES (
 		@seq, NULL,
 		'SPID', 'SP Name (In English)', 'SP Name (In Chinese)', 'Profile Effective Date', 'Data Input By',
 		'Correspondence Address', 'District', 'District Board', 'Area', 'Email Address','Pending Email Address',
 		'Daytime Contact Phone No.', 'Fax No.', 'SP Status', 'PCD Status', 'PCD Professional', 'Last check date of PCD Status','Profession', 'Token Serial No.',
-		'Token Issued By', 'Is Share Token', 'Token Serial No. (New)', 'Token Issued By (New)', 'Is Share Token (New)'		
+		'Token Issued By', 'Is Share Token', 'Token Serial No. (New)', 'Token Issued By (New)', 'Is Share Token (New)', 'Provide DHC-related Services (Any practices)'	
 	)
 
 	-- Create Report Result
 	SET @seq = @seq + 1
 
-	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24)
+	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25)
 	SELECT
 		@seq,
 		SP.Data_Input_Effective_Dtm,
@@ -806,9 +815,9 @@ AS BEGIN
 			WHEN T.Is_Share_Token_Replacement = 'Y' THEN 'Yes'
 			WHEN T.Is_Share_Token_Replacement = 'N' THEN 'No'
 			ELSE NULL
-		END
+		END,
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
-		
+		[DHC_Service] = IIF(DHC.SP_ID IS NOT NULL, 'Yes','No')
 	FROM
 		#SP_Filtered SPF
 			INNER JOIN ServiceProvider SP WITH (NOLOCK)
@@ -832,7 +841,13 @@ AS BEGIN
 			LEFT JOIN StaticData SD2
 				ON SD2.Column_Name = 'TOKEN_ISSUE_BY'
 					AND T.Project_Replacement = SD2.Item_No
-
+			-- SP has at least one professional providing DHC-related Services
+			LEFT JOIN (SELECT DISTINCT p.SP_ID FROM DHCSPMapping d WITH (NOLOCK) 
+						INNER JOIN Professional p WITH (NOLOCK)
+						ON d.Service_Category_Code = p.Service_Category_Code
+							AND d.Registration_Code = p.Registration_Code
+							AND p.Record_Status = 'A')  DHC
+				ON SPF.SP_ID = DHC.SP_ID
 
 -- ---------------------------------------------
 -- For Excel Sheet (03): 01-Service Provider (Part 2)
@@ -1047,7 +1062,8 @@ AS BEGIN
 		Col24	varchar(50),	-- Phone No. of Practice
 		Col25	nvarchar(100),	-- Bank Name
 		Col26	nvarchar(100),	-- Branch Name
-		Col27	nvarchar(300)	-- Bank Account Name
+		Col27	nvarchar(300),	-- Bank Account Name
+		Col28	varchar(100)	-- Provide DHC-related Services
 	)
 
 	-- Create Column Header
@@ -1057,7 +1073,7 @@ AS BEGIN
 		Seq, Seq2,
 		Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10,
 		Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20,
-		Col21, Col22, Col23, Col24, Col25, Col26, Col27
+		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28
 	)
 	VALUES (
 		@seq, NULL,
@@ -1065,7 +1081,7 @@ AS BEGIN
 		'Practice No.', 'MO No.', 'MO Name (In English)', 'MO Name (In Chinese)', 'Practice Name (In English)',
 		'Practice Name (In Chinese)', 'Practice Address (In English)', 'Practice Address (In Chinese)', 
 		'District', 'District Board', 'Area', 'Practice Status', 'Profession', 'Professional Registration No.',
-		'Phone No. of Practice', 'Bank Name', 'Branch Name', 'Bank Account Name'
+		'Phone No. of Practice', 'Bank Name', 'Branch Name', 'Bank Account Name', 'Provide DHC-related Services'
 	)
 
 	-- Create Report Result
@@ -1075,7 +1091,7 @@ AS BEGIN
 		Seq, Seq2,
 		Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10,
 		Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20,
-		Col21, Col22, Col23, Col24, Col25, Col26, Col27
+		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28
 	)
 	SELECT
 		@seq,
@@ -1125,7 +1141,8 @@ AS BEGIN
 		P.Phone_Daytime,
 		BA.Bank_Name,
 		BA.Branch_Name,
-		BA.Bank_Acc_Holder
+		BA.Bank_Acc_Holder,
+		DHC_Service = IIF(DHC.Display_Seq IS NOT NULL, 'Yes','No')
 	FROM
 		#SP_Filtered SPF
 			INNER JOIN ServiceProvider SP WITH (NOLOCK)
@@ -1148,6 +1165,17 @@ AS BEGIN
 				ON P.SP_ID = BA.SP_ID COLLATE DATABASE_DEFAULT AND P.Display_Seq = BA.SP_Practice_Display_Seq AND BA.Display_Seq = 1
 			INNER JOIN @ServiceProviderStatus SPS
 				ON SP.Record_Status = SPS.Status_Value COLLATE DATABASE_DEFAULT
+			-- The practice is providing DHC-related Services 
+			LEFT JOIN (SELECT pt.SP_ID, pt.Display_Seq FROM DHCSPMapping d WITH (NOLOCK) 
+						INNER JOIN Professional p WITH (NOLOCK)
+						ON d.Service_Category_Code = p.Service_Category_Code
+							AND d.Registration_Code = p.Registration_Code
+							AND p.Record_Status = 'A'
+						INNER JOIN Practice pt WITH (NOLOCK)
+						ON p.SP_ID = pt.SP_ID
+							AND p.Professional_Seq = pt.Professional_Seq)  DHC
+				ON P.SP_ID = DHC.SP_ID
+					AND P.Display_Seq = DHC.Display_Seq
 -- ---------------------------------------------
 -- For Excel Sheet (05): 03-Practice & BankAcc (Part 2)
 -- ---------------------------------------------
@@ -1433,7 +1461,7 @@ AS BEGIN
 		SELECT
 			P1.Col01, P1.Col02, P1.Col03, P1.Col04, P1.Col05, P1.Col06, P1.Col07, P1.Col08, P1.Col09, P1.Col10,
 			P1.Col11, P1.Col12, P1.Col13, P1.Col14, P1.Col15, P1.Col16, P1.Col17, P1.Col18, P1.Col19, P1.Col20,
-			P1.Col21, P1.Col22, P1.Col23, P1.Col24, ' + @pivot_table_column_name_alias + ',' +  @pivot_table_practice_scheme_column_name_alias + '
+			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col25, ' + @pivot_table_column_name_alias + ',' +  @pivot_table_practice_scheme_column_name_alias + '
 		FROM #WS03_Part1 P1
 			INNER JOIN #PivotTable_WS03 PT
 				ON P1.Col01 = PT.SP_ID COLLATE DATABASE_DEFAULT
@@ -1469,7 +1497,7 @@ AS BEGIN
 		SELECT
 			P1.Col01, P1.Col02, P1.Col03, P1.Col04, P1.Col05, P1.Col06, P1.Col07, P1.Col08, P1.Col09, P1.Col10,
 			P1.Col11, P1.Col12, P1.Col13, P1.Col14, P1.Col15, P1.Col16, P1.Col17, P1.Col18, P1.Col19, P1.Col20,
-			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col25, P1.Col26, P1.Col27, ' + @pivot_table_column_name_alias +','
+			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col25, P1.Col26, P1.Col27, P1.Col28, ' + @pivot_table_column_name_alias +','
 			+ 'ISNULL(NC.Scheme_Code,''N/A''),'
 			+ @pivot_table_subsidize_column_name_alias + '
 		FROM #WS05_Part1 P1

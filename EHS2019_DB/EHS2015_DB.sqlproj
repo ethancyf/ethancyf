@@ -1340,11 +1340,6 @@
     <Build Include="dbEVS\StoreProc\proc_OCSSSCheckResult_add.sql" />
     <Build Include="dbEVS_InterfaceLog\StoreProc\proc_SystemLogInterface_add.sql" />
     <Build Include="dbEVS\StoreProc\proc_OCSSSCheckResult_get_ByIVRSUniqueID.sql" />
-    <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0031_ENHVSSO_Stat_Write.sql" />
-    <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0031_01_PrepareData.sql" />
-    <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0031_02_03_PrepareData.sql" />
-    <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0031_04_PrepareData.sql" />
-    <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0031_ENHVSSO_Stat_Read.sql" />
     <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0032_01_PrepareData.sql" />
     <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0032_02_03_PrepareData.sql" />
     <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0032_04_PrepareData.sql" />
@@ -1392,6 +1387,8 @@
     <Build Include="dbEVS\StoreProc\proc_EHS_eHSD0033_PPPKG_Stat_Write.sql" />
     <Build Include="dbEVS\StoreProc\proc_DHCSPMapping_get_byRegCode.sql" />
     <Build Include="dbEVS\StoreProc\proc_ProfessionDHC_get_all_cache.sql" />
+    <Build Include="dbEVS\StoreProc\proc_EHS_eHSU0010_Report_get.sql" />
+    <Build Include="dbEVS_Enquiry\StoreProc\proc_EHS_eHSU0011_Report_get.sql" />
   </ItemGroup>
   <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(SQLDBExtensionsRefPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(SQLDBExtensionsRefPath)' == ''" />

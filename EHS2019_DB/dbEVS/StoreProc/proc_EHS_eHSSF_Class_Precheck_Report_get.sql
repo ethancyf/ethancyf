@@ -8,6 +8,14 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Dec 2019
+-- CR No.:			CRE19-025 (Display of unmatched PV for batch upload under RVP)
+-- Description:		[Class] worksheet
+--					- Display undefined PV with for reference only remarks
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	10 Aug 2019
 -- CR No.:			CRE19-001 (VSS 2019/20)
@@ -55,22 +63,22 @@ AS BEGIN
 	CREATE TABLE #Last3VaccineRowTT (
 		Student_Seq INT,
 		Vaccine_Seq INT,
-		Vaccine VARCHAR(200)
+		Vaccine VARCHAR(4000)
 	)
 
 	CREATE TABLE #Last3VaccineSIVTT (
 		Student_Seq INT,
-		Vaccine VARCHAR(200)
+		Vaccine VARCHAR(4000)
 	)
 
 	CREATE TABLE #Last3VaccinePVTT (
 		Student_Seq INT,
-		Vaccine VARCHAR(200)
+		Vaccine VARCHAR(4000)
 	)
 
 	CREATE TABLE #Last3VaccineMMRTT (
 		Student_Seq INT,
-		Vaccine VARCHAR(200)
+		Vaccine VARCHAR(4000)
 	)
 
 	CREATE TABLE #StudentTT (
@@ -122,18 +130,18 @@ AS BEGIN
 		SIV_Entitle_ONLYDOSE	VARCHAR(1000),
 		SIV_Entitle_1STDOSE		VARCHAR(1000),
 		SIV_Entitle_2NDDOSE		VARCHAR(1000),
-		SIV_Last3Vaccine		VARCHAR(200),
+		SIV_Last3Vaccine		VARCHAR(4000),
 		SIV_Entitle_Inject_Fail_Reason VARCHAR(1000),
 
 		PV_Entitle_ONLYDOSE		VARCHAR(1000),
 		PV13_Entitle_ONLYDOSE	VARCHAR(1000),
-		PV_Last3Vaccine			VARCHAR(200),
+		PV_Last3Vaccine			VARCHAR(4000),
 		PV_Entitle_Inject_Fail_Reason VARCHAR(1000),
 		PV13_Entitle_Inject_Fail_Reason VARCHAR(1000),
 
 		MMR_Entitle_1STDOSE		VARCHAR(1000),
 		MMR_Entitle_2NDDOSE		VARCHAR(1000),
-		MMR_Last3Vaccine		VARCHAR(200),
+		MMR_Last3Vaccine		VARCHAR(4000),
 		MMR_Entitle_Inject_Fail_Reason VARCHAR(1000),
 
 		Remarks	VARCHAR(1000)			
@@ -172,11 +180,17 @@ AS BEGIN
 		INSERT INTO #Last3VaccineRowTT (Student_Seq, Vaccine_Seq, Vaccine)
 		SELECT Student_Seq, 
 			ROW_NUMBER() OVER(PARTITION BY Student_Seq ORDER BY Service_Receive_Dtm DESC),
-			FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd') + ' ' + CASE WHEN RTRIM(s.Vaccine_Type) = 'PV' THEN '23vPPV' 
-																   WHEN RTRIM(s.Vaccine_Type) = 'PV13' THEN 'PCV13' 	
-																	ELSE RTRIM(s.Vaccine_Type) END + ' (' + Available_Item_Desc + ')'
-		FROM StudentFileEntryVaccine v INNER JOIN Subsidize s
+			FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd') + ' '
+				+ CASE	WHEN RTRIM(s.Vaccine_Type) = 'PV' THEN IIF(v.Is_Unknown_Vaccine = 1 OR v.Record_Type = 'H', RTRIM(v.Subsidize_Desc),'23vPPV') -- Display ori vaccine name for undefined PV
+						WHEN RTRIM(s.Vaccine_Type) = 'PV13' THEN 'PCV13' 	
+						ELSE RTRIM(s.Vaccine_Type) END
+				+ ' (' + Available_Item_Desc + ')'	
+				+ CASE WHEN v.Record_Type = 'H' THEN + ' (' + SD.Status_Description + ')' ELSE '' END 
+		FROM StudentFileEntryVaccine v 
+		INNER JOIN Subsidize s
 			ON v.Subsidize_Code = s.Subsidize_Code
+		INNER JOIN StatusData SD
+			ON v.Record_Type = SD.Status_Value AND SD.Enum_Class = 'VaccinationRecordRecordType'
 		WHERE Student_File_ID = @Input_Student_File_ID AND v.Subsidize_Item_Code IN ('PV','PV13')
 
 		INSERT INTO #Last3VaccinePVTT (Student_Seq, Vaccine)
@@ -736,6 +750,11 @@ AS BEGIN
 	CLOSE SYMMETRIC KEY sym_Key
 	
 	DROP TABLE #StudentTT
+	DROP TABLE #Last3VaccineSIVTT
+	DROP TABLE #Last3VaccinePVTT
+	DROP TABLE #Last3VaccineMMRTT
+	DROP TABLE #Last3VaccineRowTT
+
 
 END
 GO

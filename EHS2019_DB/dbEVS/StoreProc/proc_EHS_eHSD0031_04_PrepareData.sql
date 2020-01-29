@@ -5,7 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-    
+  
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	04 Nov 2019
+-- CR No.:			CRE19-016 (End of ENHVSSO daily report)
+-- Description:		Stored procedure is no longer used
+-- =============================================  
 -- =============================================
 -- Modification History
 -- CR No.:			CRE18-020 (HKIC Symbol Others)
@@ -19,7 +26,7 @@ GO
 -- Create date:		26 Sep 2018
 -- Description:		ENHVSSO daily report - Sub report 04 Raw data
 -- =============================================    
-    
+/*
 CREATE Procedure [proc_EHS_eHSD0031_04_PrepareData]    
 	@Cutoff_Dtm AS DATETIME    
 AS    
@@ -505,3 +512,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSD0031_04_PrepareData] TO HCVU
 GO
+*/

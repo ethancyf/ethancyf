@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
  
+ -- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	13 Jan 2020
+-- CR No.:			INT20-0001
+-- Description:		Fix content worksheet to order by [Display_Seq]
+-- ============================================= 
 -- =============================================
 -- Modification History
 -- Modified by:		Marco CHOI
@@ -151,6 +158,7 @@ INSERT INTO @ContentTable (Value1) SELECT 'Report Generation Time: ' + @strGenDt
 
 SELECT 	ISNULL(Value1, ''),	ISNULL(Value2,'')
 FROM @ContentTable  
+ORDER BY Display_Seq
 -- --------------------------------------------------    
 -- From stored procedure: proc_EHS_eHSD0004_01_PrepareData    
 -- To Excel sheet:   01-eHA (RVP)    

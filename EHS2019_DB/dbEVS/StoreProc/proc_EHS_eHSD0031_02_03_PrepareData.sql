@@ -8,19 +8,18 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
--- =============================================  
-   
+-- Modified by:		Winnie SUEN
+-- Modified date:	04 Nov 2019
+-- CR No.:			CRE19-016 (End of ENHVSSO daily report)
+-- Description:		Stored procedure is no longer used
+-- =============================================
 -- =============================================
 -- CR No.:			CRE17-018-05
 -- Author:			Koala CHENG
 -- Create date:		26 Sep 2018
 -- Description:		ENHVSSO daily report - Sub report 02 & 03
 -- =============================================    
-
+/*
 CREATE Procedure [proc_EHS_eHSD0031_02_03_PrepareData]    
 	@Cutoff_Dtm as DateTime    
 AS    
@@ -1268,3 +1267,4 @@ GO
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSD0031_02_03_PrepareData] TO HCVU
 
 GO
+*/
