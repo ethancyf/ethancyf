@@ -1,0 +1,58 @@
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HoldVoucherTransaction_upd]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_HoldVoucherTransaction_upd]
+GO
+
+--SET ANSI_NULLS ON
+--SET QUOTED_IDENTIFIER ON
+--GO
+--
+---- =============================================
+---- Modification History
+---- CR No.:			INT13-0004
+---- Modified by:		Koala CHENG
+---- Modified date:	07 Feb 2013
+---- Description:		Stored Procedure obsoleted
+---- =============================================
+---- =============================================
+---- Author:			Clark Yip
+---- Create date:		22 Oct 2008
+---- Description:		Update authorised_status in VoucherTransaction table (Hold)
+---- =============================================
+--CREATE PROCEDURE 	[dbo].[proc_HoldVoucherTransaction_upd]
+--							@authorised_status		 char(1)
+--							,@scheme_code	char(10)
+--							,@authorised_cutoff	datetime
+--							,@authorised_by	varchar(20)	
+--							,@reimburse_id	char(15)						
+--as
+--BEGIN
+---- =============================================
+---- Declaration
+---- ============================================= 
+--
+---- =============================================
+---- Validation 
+---- =============================================
+--
+---- =============================================
+---- Initialization
+---- =============================================
+--
+---- =============================================
+---- Return results
+---- =============================================
+--
+--	--Update the authorised status in VoucherTransaction table
+--	UPDATE VoucherTransaction
+--	SET [Authorised_status] = @authorised_status, [Authorised_Cutoff_Dtm]=@authorised_cutoff, [Authorised_Cutoff_By]=@authorised_by, [Reimburse_ID]=@reimburse_id
+--	WHERE 
+--	[Scheme_code]=@scheme_code
+--	and Record_status = 'A' 
+--	and Authorised_status is null
+--	and confirmed_dtm <= @authorised_cutoff
+--
+--END
+--GO
+--
+--GRANT EXECUTE ON [dbo].[proc_HoldVoucherTransaction_upd] TO HCVU
+--GO

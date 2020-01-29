@@ -1,0 +1,55 @@
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_ReleaseVoucherTransaction_upd]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_ReleaseVoucherTransaction_upd]
+GO
+
+--SET ANSI_NULLS ON
+--SET QUOTED_IDENTIFIER ON
+--GO
+--
+---- =============================================
+---- Modification History
+---- CR No.:			INT13-0004
+---- Modified by:		Koala CHENG
+---- Modified date:	07 Feb 2013
+---- Description:		Stored Procedure obsoleted
+---- =============================================
+---- =============================================
+---- Author:			Clark Yip
+---- Create date:		22 Oct 2008
+---- Description:		Update authorised_status in VoucherTransaction table (Release)
+---- =============================================
+--CREATE PROCEDURE 	[dbo].[proc_ReleaseVoucherTransaction_upd]
+--							@scheme_code	char(10)							
+--							,@reimburse_id	char(15)						
+--as
+--BEGIN
+---- =============================================
+---- Declaration
+---- ============================================= 
+--
+---- =============================================
+---- Validation 
+---- =============================================
+--
+---- =============================================
+---- Initialization
+---- =============================================
+--
+---- =============================================
+---- Return results
+---- =============================================
+--
+--	--Update the authorised status in VoucherTransaction table
+--	UPDATE VoucherTransaction
+--	SET [Authorised_status] = null, [Authorised_Cutoff_Dtm]=null, [Authorised_Cutoff_By]=null, [Reimburse_ID]=null
+--	WHERE 
+--	[Scheme_code]=@scheme_code
+--	and Reimburse_ID=@reimburse_id
+--	and Record_status = 'A' 
+--	and authorised_status='P'
+--
+--END
+--GO
+--
+--GRANT EXECUTE ON [dbo].[proc_ReleaseVoucherTransaction_upd] TO HCVU
+--GO

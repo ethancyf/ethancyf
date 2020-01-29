@@ -1,0 +1,1819 @@
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_RVPAgeReport_Stat]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_EHS_RVPAgeReport_Stat]
+GO
+
+-- SET ANSI_NULLS ON
+-- SET QUOTED_IDENTIFIER ON
+-- GO
+
+-- =============================================
+-- Modification History
+-- CR No.			CRE16-026-03 (Add PCV13)
+-- Modified by:		Lawrence TSANG
+-- Modified date:	17 October 2017
+-- Description:		Stored procedure not used anymore
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	30 August 2016
+-- CR No.:			CRE16-002
+-- Description:		Get [Category_Code] from table VoucherTransaction
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Lawrence TSANG
+-- Modified date:	2 November 2015
+-- CR No.:			CRE15-006
+-- Description:		Rename of eHS
+-- =============================================
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE15-010-03 Change of Vaccine Code for RVP 2015_16
+-- Modified by:		Chris YIM
+-- Modified date:	16 Oct 2015
+-- Description:		1.Add new count for SI vaccination with TIV
+--					2.Add total count for each sections
+-- =============================================  
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE15-009-02 To create a new RCH type under RVP for Person with Intellectual Disability (PID) to receive free SI vaccination
+-- Modified by:		Chris YIM
+-- Modified date:	15 Sep 2015
+-- Description:		1.Add new count for SI vaccination under RVP for Person with Intellectual Disability (PID)
+--					2.Add new count for new RCH type with new category
+-- =============================================  
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE15-010 Change of Vaccine Code for RVP 2015_16
+-- Modified by:		Chris YIM
+-- Modified date:	14 Sep 2015
+-- Description:		1.Change RSIV to RQIV
+--					2.Rectify the report of RVP to remove the count of RSIV 2015 SH transaction
+-- =============================================  
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE14-021 Use of IV for Southern Hemisphere Vaccine under RVP
+-- Modified by:		Chris YIM
+-- Modified date:	16 April 2015
+-- Description:		Rectify the report of RVP in counting RSIV 2015 SH transaction
+-- =============================================  
+-- =============================================
+-- Modification History
+-- CR No.:			    CRE12-008-01 Allowing different subsidy level for each scheme at different date period
+-- Modified by:	    Tommy Tse
+-- Modified date:     10 JUL 2012
+-- Description:	    Get Display_Code_For_Claim from table SubsidizeGroupClaim
+-- =============================================  
+-- =============================================  
+-- Modification History  
+-- CR No.: CRP12-006
+-- Modified by:  Koala CHENG
+-- Modified date: 9 May 2012  
+-- Description: Rectify the report of RVP in counting 23vPPV transaction
+-- =============================================
+-- =============================================  
+-- Modification History  
+-- CR No.: CRP11-012
+-- Modified by:  Tommy TSE  
+-- Modified date: 2 November 2011  
+-- Description: Fix : SIV dose count should not include previous season SIV
+-- =============================================    
+-- =============================================  
+-- Modification History  
+-- Modified by:  Eric Tse  
+-- Modified date: 24 October 2010  
+-- Description: Modify the store procedure to fit with new report layout standard
+--				(1) Select current season transaction for counting
+--				(2) Filter invalidated transaction
+--				(3) Select the Scheme Name + Season from StatVaccineMapping table
+-- =============================================  
+-- =============================================            
+-- Modification History          
+-- Modified By:  Derek LEUNG            
+-- Modified date: 15 September 2010            
+-- Description:  Include report id in 1st line - update to meet new report standard        
+-- =============================================            
+-- =============================================      
+-- Modification History      
+-- Modified by:  Derek LEUNG      
+-- Modified date: 16 August 2010      
+-- Description:  Remove HSIV subsidy, Add SIV subsidy      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 1 February 2010      
+-- Description:  Recipients count on [Doc_Code] + [Encrypt_Field1]      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 29 January 2010      
+-- Description:  Add the remarks "Claim on the same day with reason for visit..."      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 8 January 2010      
+-- Description:  Add HSIV subsidy      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 31 December 2009      
+-- Description:  With voucher claim has to be counted on the same SP      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 31 December 2009      
+-- Description:  Change the calculation on age to [Service_Receive_Dtm] - [DOB]      
+-- =============================================      
+-- =============================================      
+-- Author:   Lawrence TSANG      
+-- Create date:  21 October 2009      
+-- Description:  Retrieve transactions with scheme RVP and group by age      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 28 October 2009      
+-- Description:  Change the date format to YYYY/MM/DD (code 111)      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 6 November 2009      
+-- Description:  Add the number of SP involved      
+-- =============================================      
+-- =============================================      
+-- Modification History      
+-- Modified by:  Lawrence TSANG      
+-- Modified date: 6 November 2009      
+-- Description:  Change Truncate Table to Delete From      
+-- =============================================      
+-- CREATE Procedure [dbo].[proc_EHS_RVPAgeReport_Stat]      
+	-- @Cutoff_Dtm datetime      
+-- AS BEGIN      
+      
+-- SET NOCOUNT ON;      
+       
+-- Declare @current_scheme_Seq int  
+-- --SELECT top 1 @current_scheme_Seq = scheme_seq FROM SubsidizeGroupClaim where scheme_code = 'RVP' and Claim_Period_From <= GETDATE() and  GETDATE() < Claim_Period_To  
+
+-- Declare @schemeDate Datetime
+-- set @schemeDate = DATEADD(dd, -1, @Cutoff_Dtm)
+
+-- EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] 'RVP', @schemeDate
+
+-- --set @current_scheme_Seq = 1  
+  
+-- --Declare @Cutoff_Dtm datetime      
+-- --set @Cutoff_Dtm = getdate() -1  
+-- -- =============================================      
+-- -- Temporary table      
+-- -- =============================================      
+-- DECLARE @RVPTransaction table (      
+	-- Transaction_ID   char(20),      
+	-- Voucher_Acc_ID   char(15),      
+	-- Temp_Voucher_Acc_ID  char(15),      
+	-- Special_Acc_ID   char(15),      
+	-- Invalid_Acc_ID   char(15),      
+	-- Doc_Code    char(20),      
+	-- Dose      char(20),      
+	-- Category_Code    varchar(50),      
+	-- Subsidize_Item_Code   varchar(255),      
+	-- Subsidize_Code   varchar(255),      
+	-- Service_Receive_Dtm  datetime,      
+	-- SP_ID     char(8),  
+	-- RCH_Type  char(5)  
+-- )      
+            
+-- DECLARE @RVPAccount table (      
+	-- Transaction_ID   char(20),
+	-- Subsidize_Item_Code   varchar(255),    
+	-- Subsidize_Code   varchar(255),      
+	-- Service_Receive_Dtm  datetime,      
+	-- SP_ID     char(8),      
+	-- Doc_Code    char(20),      
+	-- Encrypt_Field1   varbinary(100),      
+	-- Age      int ,  
+	-- DOB       datetime,      
+	-- DOB_Adjust datetime,      
+	-- Exact_DOB  char(1)     
+-- )      
+  
+-- DECLARE @SubsideCount table (    
+	-- Transaction_ID   char(20),   
+	-- RCH_Type  char(5),   
+	-- Doc_Code  char(20),   
+	-- Encrypt_Field1 varbinary(100),      
+	-- Age   int,    
+	-- Dose   char(20),     
+	-- LessThan9  tinyint,  
+	-- IsHealthCare tinyint,  
+	-- IsResident tinyint,  
+	-- IsIntellectualDisability tinyint,  
+	-- IsPV   tinyint,  
+	-- IsRQIV_RQIVHCW  tinyint,
+	-- IsRTIV_RTIVHCW  tinyint,
+	-- IsRQIVPID  tinyint,
+	-- IsRTIVPID  tinyint
+-- )    
+            
+-- DECLARE @ResultTable table (      
+	-- Result_Seq     smallint,      
+	-- Result_Value1    varchar(110),      
+	-- Result_Value2    varchar(100),      
+	-- Result_Value3    varchar(100),      
+	-- Result_Value4    varchar(100),      
+	-- Result_Value5    varchar(100),      
+	-- Result_Value6    varchar(100),      
+	-- Result_Value7    varchar(100),      
+	-- Result_Value8    varchar(100),      
+	-- Result_Value9    varchar(100),      
+	-- Result_Value10    varchar(100),      
+	-- Result_Value11    varchar(100),      
+	-- Result_Value12    varchar(100),      
+	-- Result_Value13    varchar(100),      
+	-- Result_Value14    varchar(100),      
+	-- Result_Value15    varchar(100),      
+	-- Result_Value16    varchar(100)      
+-- )      
+       
+       
+-- -- =============================================      
+-- -- Retrieve data      
+-- -- =============================================      
+      
+-- -- RQIV transaction under RVP within current season  
+      
+-- INSERT INTO @RVPTransaction (      
+	-- Transaction_ID,      
+	-- Voucher_Acc_ID,      
+	-- Temp_Voucher_Acc_ID,      
+	-- Special_Acc_ID,      
+	-- Invalid_Acc_ID,      
+	-- Doc_Code,      
+	-- Dose,      
+	-- Category_Code,   
+	-- Subsidize_Item_Code,      
+	-- Subsidize_Code,      
+	-- Service_Receive_Dtm,      
+	-- SP_ID   ,  
+	-- RCH_Type  
+-- )      
+-- SELECT      
+	-- VT.Transaction_ID,      
+	-- ISNULL(VT.Voucher_Acc_ID, ''),      
+	-- ISNULL(VT.Temp_Voucher_Acc_ID, ''),      
+	-- ISNULL(VT.Special_Acc_ID, ''),      
+	-- ISNULL(VT.Invalid_Acc_ID, ''),      
+	-- VT.Doc_Code,      
+	-- D.Available_Item_Code AS [Dose],      
+	-- VT.Category_Code,
+	-- D.[Subsidize_Item_Code] AS [Subsidize_Item_Code],      
+	-- D.[Subsidize_Code] AS [Subsidize_Code],     
+	-- VT.Service_Receive_Dtm,      
+	-- VT.SP_ID,  
+	-- HL.Type AS [RCH_Type]  
+-- FROM      
+	-- VoucherTransaction VT 
+		-- INNER JOIN TransactionDetail D 
+			-- ON VT.Transaction_ID = D.Transaction_ID  
+		-- --INNER JOIN TransactionAdditionalField TAF      
+		-- --	ON VT.Transaction_ID = TAF.Transaction_ID      
+  -- --  AND TAF.AdditionalFieldID = 'CategoryCode'    
+		-- INNER JOIN TransactionAdditionalField TAF2        
+			-- ON VT.Transaction_ID = TAF2.Transaction_ID        
+     -- AND TAF2.AdditionalFieldID = 'RHCCode'        
+		-- INNER JOIN RVPHomeList HL        
+			-- ON TAF2.AdditionalFieldValueCode = HL.RCH_Code   
+-- WHERE      
+	-- VT.Scheme_Code = 'RVP'      
+	-- and VT.Transaction_Dtm <= @Cutoff_Dtm      
+	-- AND VT.Record_Status NOT IN  
+		-- (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+	-- AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'   
+	-- AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm)))     
+	-- AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In   
+		-- (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+	-- AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'  
+	-- AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm))))  
+	-- AND D.subsidize_code in 
+		-- (select subsidize_code from SubsidizeGroupClaimItemDetails where   
+			-- scheme_code = VT.Scheme_Code and Scheme_seq = @current_scheme_Seq and subsidize_item_code in ('SIV'))      
+	-- AND D.Scheme_Seq = @current_scheme_Seq  
+
+-- -- 23vPPV transaction under RVP   
+  
+-- INSERT INTO @RVPTransaction (      
+	-- Transaction_ID,      
+	-- Voucher_Acc_ID,      
+	-- Temp_Voucher_Acc_ID,      
+	-- Special_Acc_ID,      
+	-- Invalid_Acc_ID,      
+	-- Doc_Code,      
+	-- Dose,      
+	-- Category_Code, 
+	-- Subsidize_Item_Code,  
+	-- Subsidize_Code,      
+	-- Service_Receive_Dtm,      
+	-- SP_ID   ,  
+	-- RCH_Type  
+-- )      
+-- SELECT      
+	-- VT.Transaction_ID,      
+	-- ISNULL(VT.Voucher_Acc_ID, ''),      
+	-- ISNULL(VT.Temp_Voucher_Acc_ID, ''),      
+	-- ISNULL(VT.Special_Acc_ID, ''),      
+	-- ISNULL(VT.Invalid_Acc_ID, ''),      
+	-- VT.Doc_Code,   
+	-- D.Available_Item_Code AS [Dose],      
+	-- VT.Category_Code,
+	-- D.[Subsidize_Item_Code] AS [Subsidize_Item_Code],      
+	-- D.[Subsidize_Code] AS [Subsidize_Code],      
+	-- VT.Service_Receive_Dtm,      
+	-- VT.SP_ID,  
+	-- HL.Type AS [RCH_Type]  
+-- FROM      
+	-- VoucherTransaction VT INNER JOIN TransactionDetail D ON VT.Transaction_ID = D.Transaction_ID  
+		-- --INNER JOIN TransactionAdditionalField TAF      
+		-- --	ON VT.Transaction_ID = TAF.Transaction_ID      
+  -- --  AND TAF.AdditionalFieldID = 'CategoryCode'    
+		-- INNER JOIN TransactionAdditionalField TAF2        
+			-- ON VT.Transaction_ID = TAF2.Transaction_ID        
+    -- AND TAF2.AdditionalFieldID = 'RHCCode'        
+		-- INNER JOIN RVPHomeList HL        
+			-- ON TAF2.AdditionalFieldValueCode = HL.RCH_Code   
+-- WHERE      
+	-- VT.Scheme_Code = 'RVP'      
+	-- and VT.Transaction_Dtm <= @Cutoff_Dtm      
+	-- AND VT.Record_Status NOT IN  
+		-- (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+	-- AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'   
+	-- AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm)))     
+	-- AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In   
+		-- (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+	-- AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'  
+	-- AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm))))  
+	-- AND D.subsidize_code in 
+		-- (select subsidize_code from SubsidizeGroupClaimItemDetails where   
+			-- scheme_code = VT.Scheme_Code and subsidize_item_code = 'PV')  
+    
+        
+-- -- RVP account      
+      
+-- INSERT INTO @RVPAccount (      
+	-- Transaction_ID,  
+	-- Subsidize_Item_Code,  
+	-- Subsidize_Code,      
+	-- Service_Receive_Dtm,      
+	-- SP_ID,      
+	-- Doc_Code,      
+	-- Encrypt_Field1,      
+	-- Age,  
+	-- DOB,   
+	-- DOB_Adjust,      
+	-- Exact_DOB      
+-- )      
+-- SELECT      
+	-- VT.Transaction_ID,  
+	-- VT.Subsidize_Item_Code,  
+	-- VT.Subsidize_Code,      
+	-- VT.Service_Receive_Dtm,      
+	-- VT.SP_ID,      
+	-- VP.Doc_Code,      
+	-- VP.Encrypt_Field1,      
+	-- 0 AS [Age],  
+	-- VP.DOB,  
+	-- NULL AS [DOB_Adjust],      
+	-- VP.Exact_DOB      
+-- FROM      
+	-- @RVPTransaction VT      
+		-- INNER JOIN PersonalInformation VP      
+			-- ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID      
+	-- AND VT.Doc_Code = VP.Doc_Code      
+-- WHERE      
+	-- VT.Voucher_Acc_ID <> ''      
+      
+-- --      
+      
+-- INSERT INTO @RVPAccount (      
+	-- Transaction_ID,  
+	-- Subsidize_Item_Code,      
+	-- Subsidize_Code,      
+	-- Service_Receive_Dtm,      
+	-- SP_ID,      
+	-- Doc_Code,      
+	-- Encrypt_Field1,      
+	-- Age,  
+	-- DOB,   
+	-- DOB_Adjust,      
+	-- Exact_DOB      
+-- )      
+-- SELECT      
+	-- VT.Transaction_ID,  
+	-- VT.Subsidize_Item_Code,      
+	-- VT.Subsidize_Code,      
+	-- VT.Service_Receive_Dtm,      
+	-- VT.SP_ID,      
+	-- TP.Doc_Code,      
+	-- TP.Encrypt_Field1,      
+	-- 0 AS [Age],  
+	-- TP.DOB,   
+	-- NULL AS [DOB_Adjust],      
+	-- TP.Exact_DOB      
+-- FROM      
+	-- @RVPTransaction VT      
+		-- INNER JOIN TempPersonalInformation TP      
+			-- ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID      
+-- WHERE      
+	-- VT.Voucher_Acc_ID = ''      
+	-- AND VT.Temp_Voucher_Acc_ID <> ''      
+	-- AND VT.Special_Acc_ID = ''      
+      
+-- --      
+      
+-- INSERT INTO @RVPAccount (   
+	-- Transaction_ID,
+	-- Subsidize_Item_Code,      
+	-- Subsidize_Code,      
+	-- Service_Receive_Dtm,      
+	-- SP_ID,      
+	-- Doc_Code,      
+	-- Encrypt_Field1,      
+	-- Age,  
+	-- DOB,    
+	-- DOB_Adjust,      
+	-- Exact_DOB        
+-- )      
+-- SELECT       
+	-- VT.Transaction_ID,
+	-- VT.Subsidize_Item_Code,   
+	-- VT.Subsidize_Code,      
+	-- VT.Service_Receive_Dtm,      
+	-- VT.SP_ID,      
+	-- SP.Doc_Code,      
+	-- SP.Encrypt_Field1,      
+	-- 0 AS [Age],  
+	-- SP.DOB,    
+	-- NULL AS [DOB_Adjust],      
+	-- SP.Exact_DOB     
+-- FROM      
+	-- @RVPTransaction VT      
+		-- INNER JOIN SpecialPersonalInformation SP      
+			-- ON VT.Special_Acc_ID = SP.Special_Acc_ID      
+-- WHERE      
+	-- VT.Voucher_Acc_ID = ''      
+	-- AND VT.Special_Acc_ID <> ''      
+	-- AND VT.Invalid_Acc_ID = ''      
+      
+-- -- ---------------------------------------------      
+-- -- Patch DOB      
+-- -- ---------------------------------------------      
+      
+-- UPDATE      
+	-- @RVPAccount      
+-- SET      
+	-- DOB = CONVERT(varchar, YEAR(DOB)) + '-' + CONVERT(varchar, MONTH(DOB)) + '-' + CONVERT(varchar, DAY(DATEADD(d, -DAY(DATEADD(m, 1, DOB)), DATEADD(m, 1, DOB))))      
+-- WHERE      
+	-- Exact_DOB IN ('M', 'U')      
+      
+-- UPDATE      
+	-- @RVPAccount      
+-- SET      
+	-- DOB_Adjust = DOB      
+      
+-- UPDATE      
+	-- @RVPAccount      
+-- SET      
+	-- DOB_Adjust = DATEADD(yyyy, 1, DOB)      
+-- WHERE      
+	-- MONTH(DOB) > MONTH(Service_Receive_Dtm)      
+	-- OR ( MONTH(DOB) = MONTH(Service_Receive_Dtm) AND DAY(DOB) > DAY(Service_Receive_Dtm) )      
+  
+-- UPDATE      
+	-- @RVPAccount      
+-- SET      
+	-- Age = DATEDIFF(yy, DOB_Adjust, Service_Receive_Dtm)  
+  
+-- -- ---------------------------------------------      
+-- -- Patch Doc_Code      
+-- -- ---------------------------------------------      
+      
+-- UPDATE      
+	-- @RVPAccount      
+-- SET      
+	-- Doc_Code = 'HKIC'      
+-- WHERE      
+	-- Doc_Code = 'HKBC'      
+
+-- -- =============================================      
+-- -- Process data      
+-- -- =============================================          
+-- --  RCH_Type  char(5),   
+-- --  Doc_Code  char(20),   
+-- --  Encrypt_Field1 varbinary(100),      
+-- --  Age   int,    
+-- --  Dose   char(20),     
+-- --  LessThan9  tinyint,  
+-- --  IsHealthCare tinyint,  
+-- --  IsResident tinyint,  
+-- --  IsPV   tinyint,  
+-- --  IsRQIV_RQIVHCW  tinyint,   
+-- --  IsRQIVPID  tinyint   
+  
+-- INSERT INTO @SubsideCount  
+-- SELECT DISTINCT 
+	-- T.Transaction_ID, 
+	-- RCH_TYPE, 
+	-- a.DOC_Code, 
+	-- a.Encrypt_Field1, 
+	-- a.Age, 
+	-- Dose,  
+	-- CASE   
+		-- WHEN Age >= 9 THEN 0   
+		-- WHEN DATEDIFF(dd, A.DOB, A.Service_Receive_Dtm) >= 182 THEN 1   
+	-- END IsLessThan9,   
+	-- CASE [Category_Code]  
+		-- WHEN 'HCW' THEN 1 ELSE 0 END IsHealthCare,  
+	-- CASE [Category_Code]  
+		-- WHEN 'RESIDENT' THEN 1 ELSE 0 END IsResident,  
+	-- CASE [Category_Code]  
+		-- WHEN 'PID' THEN 1 ELSE 0 END IsIntellectualDisability,  
+	-- CASE 
+		-- WHEN t.Subsidize_Item_Code like '%PV%' THEN 1 ELSE 0 END PVCount,
+	-- CASE 
+		-- WHEN t.Subsidize_Code like '%RQIV%' THEN 1 
+		-- WHEN t.Subsidize_Code like '%RWQIV%' THEN 1 
+		-- ELSE 0 
+	-- END RQIV_RQIVHCWCount,
+	-- CASE 
+		-- WHEN t.Subsidize_Code like '%RTIV%' THEN 1 
+		-- WHEN t.Subsidize_Code like '%RWTIV%' THEN 1 
+		-- ELSE 0 
+	-- END RTIV_RTIVHCWCount,
+	-- CASE 
+		-- WHEN t.Subsidize_Code like '%RDQIV%' THEN 1 ELSE 0 END RQIVPIDCount,
+	-- CASE 
+		-- WHEN t.Subsidize_Code like '%RDTIV%' THEN 1 ELSE 0 END RTIVPIDCount
+-- FROM @RVPTransaction T 
+	-- INNER JOIN @RVPAccount A 
+		-- ON t.transaction_id = a.transaction_id  
+      
+-- -- ---------------------------------------------      
+-- -- Build frame      
+-- -- ---------------------------------------------      
+      
+-- -- insert record for the final output format      
+      
+ -- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  
+ -- Values (1, 'eHS(S)D0004-02: Report on RVP transaction')  
+      
+ -- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (2)  
+      
+ -- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  
+ -- VALUES (3, 'Reporting period: as at ' + CONVERT(varchar, DATEADD(dd, -1, @Cutoff_Dtm), 111))  
+  
+ -- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (4)  
+  
+ -- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  
+ -- Values (5, '(i) By vaccination')  
+  
+ -- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (6)   
+  
+-- Declare @displayCodeRQIV_RQIVHCW nvarchar(255)
+-- set @displayCodeRQIV_RQIVHCW = ( select Display_Code_For_Claim + ' + ' from 
+						-- (select Display_Code_For_Claim
+							-- from subsidizegroupclaim sgc
+								-- inner join subsidize s
+									-- on sgc.subsidize_code = s.subsidize_code
+							-- where 
+								-- sgc.scheme_code = 'RVP' 
+								-- and sgc.Scheme_Seq = @current_scheme_Seq 
+								-- and s.subsidize_code in ('RQIV','RWQIV')
+								-- and s.subsidize_Item_Code = 'SIV') tblDisplayCode
+					-- for xml path('') )
+
+-- Declare @displayCodeRTIV_RTIVHCW nvarchar(255)
+-- set @displayCodeRTIV_RTIVHCW = ( select Display_Code_For_Claim + ' + ' from 
+						-- (select Display_Code_For_Claim
+							-- from subsidizegroupclaim sgc
+								-- inner join subsidize s
+									-- on sgc.subsidize_code = s.subsidize_code
+							-- where 
+								-- sgc.scheme_code = 'RVP' 
+								-- and sgc.Scheme_Seq = @current_scheme_Seq 
+								-- and s.subsidize_code in ('RTIV','RWTIV')
+								-- and s.subsidize_Item_Code = 'SIV') tblDisplayCode
+					-- for xml path('') )
+
+-- Declare @displayCodeRQIVPID nvarchar(255)
+-- set @displayCodeRQIVPID = ( select Display_Code_For_Claim + ' + ' from 
+						-- (select Display_Code_For_Claim
+							-- from subsidizegroupclaim sgc
+								-- inner join subsidize s
+									-- on sgc.subsidize_code = s.subsidize_code
+							-- where 
+								-- sgc.scheme_code = 'RVP' 
+								-- and sgc.Scheme_Seq = @current_scheme_Seq 
+								-- and s.subsidize_code = 'RDQIV'
+								-- and s.subsidize_Item_Code = 'SIV') tblDisplayCode
+					-- for xml path('') )
+
+-- Declare @displayCodeRTIVPID nvarchar(255)
+-- set @displayCodeRTIVPID = ( select Display_Code_For_Claim + ' + ' from 
+						-- (select Display_Code_For_Claim
+							-- from subsidizegroupclaim sgc
+								-- inner join subsidize s
+									-- on sgc.subsidize_code = s.subsidize_code
+							-- where 
+								-- sgc.scheme_code = 'RVP' 
+								-- and sgc.Scheme_Seq = @current_scheme_Seq 
+								-- and s.subsidize_code = 'RDTIV'
+								-- and s.subsidize_Item_Code = 'SIV') tblDisplayCode
+					-- for xml path('') )
+
+-- set @displayCodeRQIV_RQIVHCW = SUBSTRING(@displayCodeRQIV_RQIVHCW, 1, LEN(@displayCodeRQIV_RQIVHCW)-2)
+-- set @displayCodeRTIV_RTIVHCW = SUBSTRING(@displayCodeRTIV_RTIVHCW, 1, LEN(@displayCodeRTIV_RTIVHCW)-2)
+-- set @displayCodeRQIVPID = SUBSTRING(@displayCodeRQIVPID, 1, LEN(@displayCodeRQIVPID)-2)
+-- set @displayCodeRTIVPID = SUBSTRING(@displayCodeRTIVPID, 1, LEN(@displayCodeRTIVPID)-2)
+
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1,Result_Value2,Result_Value3,Result_Value4,Result_Value5,Result_Value6,Result_Value7,Result_Value8)  Values
+-- (7, '', '23vPPV*', @displayCodeRQIV_RQIVHCW, @displayCodeRTIV_RTIVHCW, @displayCodeRQIVPID, @displayCodeRTIVPID, '', 'No. of SP involved' ) 
+
+-- --===============================================================================================================   
+-- --(i) By vaccination  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (8, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (9, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (10, 'IPID') 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (11, 'Total') 
+-- --===============================================================================================================  
+-- --Update 23vPPV Value  
+-- Update @ResultTable set Result_Value2 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'D' AND IsPV = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 8  
+-- Update @ResultTable set Result_Value2 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'E' AND IsPV = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 9  
+-- Update @ResultTable set Result_Value2 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'I' AND IsPV = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 10 
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '8' and '10'
+-- ) WHERE Result_Seq = 11 
+
+-- --Update RQIV + RQIV-HCW Value  
+-- Update @ResultTable set Result_Value3 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'D' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 8  
+-- Update @ResultTable set Result_Value3 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'E' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 9  
+-- Update @ResultTable set Result_Value3 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'I' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 10  
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '8' and '10'
+-- ) WHERE Result_Seq = 11 
+
+-- --Update RTIV + RTIV-HCW Value  
+-- Update @ResultTable set Result_Value4 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'D' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 8  
+-- Update @ResultTable set Result_Value4 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'E' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 9  
+-- Update @ResultTable set Result_Value4 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'I' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 10  
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '8' and '10'
+-- ) WHERE Result_Seq = 11 
+
+-- --Update RQIV-PID Value  
+-- Update @ResultTable set Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'D' AND IsRQIVPID = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 8  
+-- Update @ResultTable set Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'E' AND IsRQIVPID = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 9  
+-- Update @ResultTable set Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'I' AND IsRQIVPID = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 10  
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '8' and '10'
+-- ) WHERE Result_Seq = 11 
+
+-- --Update RTIV-PID Value  
+-- Update @ResultTable set Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'D' AND IsRTIVPID = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 8  
+-- Update @ResultTable set Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'E' AND IsRTIVPID = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 9  
+-- Update @ResultTable set Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (  
+-- SELECT count (Distinct Encrypt_Field1) rec FROM @SubsideCount WHERE RCH_Type = 'I' AND IsRTIVPID = 1 GROUP BY DOC_Code  
+-- ) as RCHE) WHERE Result_Seq = 10  
+-- Update @ResultTable set Result_Value6 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '8' and '10'
+-- ) WHERE Result_Seq = 11 
+
+-- UPDATE      
+	-- @ResultTable      
+-- SET      
+	-- Result_Value8 = (SELECT COUNT(DISTINCT SP_ID) FROM @RVPTransaction)      
+-- WHERE      
+	-- Result_Seq = 11
+
+-- --  
+-- --INSERT INTO @ResultTable (Result_Seq, Result_Value1,Result_Value2,Result_Value3)        
+-- -- Values (10, '','SUM(B8:B9)','SUM(C8:C9)')  
+  
+-- --UPDATE @ResultTable set Result_Value2 = (SELECT sum(convert(int,Result_Value2))  
+-- --FROM @ResultTable WHERE Result_Seq in ('8','9')) WHERE Result_Seq = 10  
+-- --  
+-- --UPDATE @ResultTable set Result_Value3 = (SELECT sum(convert(int,Result_Value3))  
+-- --FROM @ResultTable WHERE Result_Seq in ('8','9')) WHERE Result_Seq = 10  
+  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (12)   
+      
+-- --===============================================================================================================  
+  
+-- --===============================================================================================================   
+-- --(ii) (a) By age group (RQIV 2015/16 + RQIV-HCW 2015/16)
+ 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('13', '(ii) (a) By age group (' + @displayCodeRQIV_RQIVHCW + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (14)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6)  
+ -- Values (15, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (16, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (17, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (18, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (19, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (20)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND LessThan9 = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age >= 9 and age  < 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 16  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 16) WHERE Result_Seq = 16  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND LessThan9 = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age >= 9 and age < 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 17  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 17) WHERE Result_Seq = 17  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND LessThan9 = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age >= 9 and age < 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 18 
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 18) WHERE Result_Seq = 18  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '16' and '18'
+-- ) WHERE Result_Seq = 19 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '16' and '18'
+-- ) WHERE Result_Seq = 19 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '16' and '18'
+-- ) WHERE Result_Seq = 19 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '16' and '18'
+-- ) WHERE Result_Seq = 19 
+-- Update @ResultTable set Result_Value6 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '16' and '18'
+-- ) WHERE Result_Seq = 19 
+
+-- --===============================================================================================================  
+  
+-- --===============================================================================================================   
+-- --(ii) (b) By age group (RTIV 2015/16 + RTIV-HCW 2015/16)
+ 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('21', '(ii) (b) By age group (' + @displayCodeRTIV_RTIVHCW + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (22)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6)  
+ -- Values (23, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (24, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (25, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (26, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (27, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (28)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND LessThan9 = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age >= 9 and age  < 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age = 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age > 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 24  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 24) WHERE Result_Seq = 24  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND LessThan9 = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age >= 9 and age < 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age = 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age > 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 25  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 25) WHERE Result_Seq = 25  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND LessThan9 = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age >= 9 and age < 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age = 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age > 65 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 26 
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 26) WHERE Result_Seq = 26  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '24' and '26'
+-- ) WHERE Result_Seq = 27 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '24' and '26'
+-- ) WHERE Result_Seq = 27 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '24' and '26'
+-- ) WHERE Result_Seq = 27 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '24' and '26'
+-- ) WHERE Result_Seq = 27 
+-- Update @ResultTable set Result_Value6 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '24' and '26'
+-- ) WHERE Result_Seq = 27 
+-- --===============================================================================================================  
+  
+-- --===============================================================================================================   
+-- --(ii) (c) By age group (RQIV-PID 2015/16)
+
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('29', '(ii) (c) By age group (' + @displayCodeRQIVPID + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (30)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6)  
+ -- Values (31, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (32, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (33, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (34, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (35, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (36)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND LessThan9 = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age >= 9 and age  < 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 32  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 32) WHERE Result_Seq = 32  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND LessThan9 = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age >= 9 and age < 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 33  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 33) WHERE Result_Seq = 33  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND LessThan9 = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age >= 9 and age < 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 34 
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 34) WHERE Result_Seq = 34  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '32' and '34'
+-- ) WHERE Result_Seq = 35 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '32' and '34'
+-- ) WHERE Result_Seq = 35 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '32' and '34'
+-- ) WHERE Result_Seq = 35 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '32' and '34'
+-- ) WHERE Result_Seq = 35 
+-- Update @ResultTable set Result_Value6 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '32' and '34'
+-- ) WHERE Result_Seq = 35 
+-- --===============================================================================================================  
+  
+-- --===============================================================================================================   
+-- --(ii) (d) By age group (RTIV-PID 2015/16)
+
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('37', '(ii) (d) By age group (' + @displayCodeRTIVPID + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (38)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6)  
+ -- Values (39, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (40, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (41, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (42, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (43, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (44)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND LessThan9 = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age >= 9 and age  < 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age = 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND age > 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 40  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 40) WHERE Result_Seq = 40  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND LessThan9 = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age >= 9 and age < 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age = 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND age > 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 41  
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 41) WHERE Result_Seq = 41  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND LessThan9 = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age >= 9 and age < 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age = 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(count (Distinct Encrypt_Field1),0),0) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND age > 65 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 42 
+  
+-- UPDATE @ResultTable set Result_Value6 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) +  
+-- convert(int,Result_Value4) + convert(int,Result_Value5)  
+-- FROM @ResultTable WHERE Result_Seq = 42) WHERE Result_Seq = 42  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '40' and '42'
+-- ) WHERE Result_Seq = 43 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '40' and '42'
+-- ) WHERE Result_Seq = 43 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '40' and '42'
+-- ) WHERE Result_Seq = 43 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '40' and '42'
+-- ) WHERE Result_Seq = 43 
+-- Update @ResultTable set Result_Value6 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '40' and '42'
+-- ) WHERE Result_Seq = 43 
+-- --===============================================================================================================  
+  
+-- --===============================================================================================================   
+-- --(iii) (a) By dose (RQIV 2015/16 + RQIV-HCW 2015/16) 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('45', '(iii) (a) By dose (' + @displayCodeRQIV_RQIVHCW + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (46)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (47, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (48, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (49, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (50, 'IPID') 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (51, 'Total') 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (52)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value5 = 'SUM(B20:E20)'  
+-- WHERE Result_Seq = 48  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 48) WHERE Result_Seq = 48  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value5 = 'SUM(B21:E21)'  
+-- WHERE Result_Seq = 49  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 49) WHERE Result_Seq = 49  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 50  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 50) WHERE Result_Seq = 50 
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '48' and '50'
+-- ) WHERE Result_Seq = 51 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '48' and '50'
+-- ) WHERE Result_Seq = 51 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '48' and '50'
+-- ) WHERE Result_Seq = 51 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '48' and '50'
+-- ) WHERE Result_Seq = 51 
+-- --===============================================================================================================  
+  
+-- --===============================================================================================================   
+-- --(iii) (b) By dose (RTIV 2015/16 + RTIV-HCW 2015/16) 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('53', '(iii) (b) By dose (' + @displayCodeRTIV_RTIVHCW + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (54)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (55, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (56, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (57, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (58, 'IPID') 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (59, 'Total') 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (60)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value5 = 'SUM(B20:E20)'  
+-- WHERE Result_Seq = 56  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 56) WHERE Result_Seq = 56  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value5 = 'SUM(B21:E21)'  
+-- WHERE Result_Seq = 57  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 57) WHERE Result_Seq = 57  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 58  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 58) WHERE Result_Seq = 58 
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '56' and '58'
+-- ) WHERE Result_Seq = 59 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '56' and '58'
+-- ) WHERE Result_Seq = 59 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '56' and '58'
+-- ) WHERE Result_Seq = 59 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '56' and '58'
+-- ) WHERE Result_Seq = 59 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(iii) (c) By dose (RQIV-PID 2015/16)
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('61', '(iii) (c) By dose (' + @displayCodeRQIVPID + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (62)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (63, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (64, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (65, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (66, 'IPID') 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (67, 'Total') 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (68)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 64  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 64) WHERE Result_Seq = 64  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 65  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 65) WHERE Result_Seq = 65  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 66  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 66) WHERE Result_Seq = 66 
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '64' and '66'
+-- ) WHERE Result_Seq = 67 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '64' and '66'
+-- ) WHERE Result_Seq = 67 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '64' and '66'
+-- ) WHERE Result_Seq = 67 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '64' and '66'
+-- ) WHERE Result_Seq = 67 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(iii) (d) By dose (RTIV-PID 2015/16)
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('69', '(iii) (d) By dose (' + @displayCodeRTIVPID + ')')
+
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (70)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (71, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (72, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (73, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (74, 'IPID') 
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (75, 'Total') 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (76)   
+-- --===============================================================================================================  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 72  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 72) WHERE Result_Seq = 72  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 73  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 73) WHERE Result_Seq = 73  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec  
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 74  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)   
+-- FROM @ResultTable WHERE Result_Seq = 74) WHERE Result_Seq = 74 
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '72' and '74'
+-- ) WHERE Result_Seq = 75 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '72' and '74'
+-- ) WHERE Result_Seq = 75 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '72' and '74'
+-- ) WHERE Result_Seq = 75 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '72' and '74'
+-- ) WHERE Result_Seq = 75 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(iv) (a) By category (RQIV 2015/16 + RQIV-HCW 2015/16)
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('77', '(iv) (a) By category (' + @displayCodeRQIV_RQIVHCW + ')')
+ 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (78)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (79, '', 'Health Care Worker', 'Resident', 'Persons with Intellectual Disability (or related)', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (80, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (81, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (82, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (83, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (84)   
+-- --===============================================================================================================  
+-- --  IsHealthCare tinyint,  
+-- --  IsResident tinyint,  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsHealthCare = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsIntellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD) 
+-- WHERE Result_Seq = 80  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3)  
+-- FROM @ResultTable WHERE Result_Seq = 80) WHERE Result_Seq = 80  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsHealthCare = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsIntellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE) 
+-- WHERE Result_Seq = 81  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3)  
+-- FROM @ResultTable WHERE Result_Seq = 81) WHERE Result_Seq = 81  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsHealthCare = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsIntellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID) 
+-- WHERE Result_Seq = 82  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3)  
+-- FROM @ResultTable WHERE Result_Seq = 82) WHERE Result_Seq = 82  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '80' and '82'
+-- ) WHERE Result_Seq = 83 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '80' and '82'
+-- ) WHERE Result_Seq = 83 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '80' and '82'
+-- ) WHERE Result_Seq = 83 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '80' and '82'
+-- ) WHERE Result_Seq = 83 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(iv) (b) By category (RQIV 2015/16 + RQIV-HCW 2015/16)
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('85', '(iv) (b) By category (' + @displayCodeRTIV_RTIVHCW + ')')
+ 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (86)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (87, '', 'Health Care Worker', 'Resident', 'Persons with Intellectual Disability (or related)', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (88, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (89, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (90, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (91, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (92)   
+-- --===============================================================================================================  
+-- --  IsHealthCare tinyint,  
+-- --  IsResident tinyint,  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsHealthCare = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsResident = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsIntellectualDisability = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHD) 
+-- WHERE Result_Seq = 88  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3)  
+-- FROM @ResultTable WHERE Result_Seq = 88) WHERE Result_Seq = 88  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsHealthCare = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsResident = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsIntellectualDisability = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as RCHE) 
+-- WHERE Result_Seq = 89  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3)  
+-- FROM @ResultTable WHERE Result_Seq = 89) WHERE Result_Seq = 89  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsHealthCare = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsResident = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsIntellectualDisability = 1 AND IsRTIV_RTIVHCW = 1 GROUP BY DOC_Code) as IPID) 
+-- WHERE Result_Seq = 90  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3)  
+-- FROM @ResultTable WHERE Result_Seq = 90) WHERE Result_Seq = 90  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '88' and '90'
+-- ) WHERE Result_Seq = 91 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '88' and '90'
+-- ) WHERE Result_Seq = 91 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '88' and '90'
+-- ) WHERE Result_Seq = 91 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '88' and '90'
+-- ) WHERE Result_Seq = 91 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(iv) (c) By category (RQIV-PID 2015/16)
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('93', '(iv) (c) By category (' + @displayCodeRQIVPID + ')')
+ 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (94)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (95, '', 'Health Care Worker', 'Resident', 'Persons with Intellectual Disability (or related)', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (96, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (97, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (98, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (99, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (100)   
+-- --===============================================================================================================  
+-- --  IsHealthCare tinyint,  
+-- --  IsResident tinyint,  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsHealthCare = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsIntellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD) 
+-- WHERE Result_Seq = 96  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)
+-- FROM @ResultTable WHERE Result_Seq = 96) WHERE Result_Seq = 96  
+  
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsHealthCare = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsIntellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE) 
+-- WHERE Result_Seq = 97  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)
+-- FROM @ResultTable WHERE Result_Seq = 97) WHERE Result_Seq = 97  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsHealthCare = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsIntellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID) 
+-- WHERE Result_Seq = 98  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4) 
+-- FROM @ResultTable WHERE Result_Seq = 98) WHERE Result_Seq = 98  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '96' and '98'
+-- ) WHERE Result_Seq = 99 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '96' and '98'
+-- ) WHERE Result_Seq = 99 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '96' and '98'
+-- ) WHERE Result_Seq = 99 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '96' and '98'
+-- ) WHERE Result_Seq = 99 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(iv) (d) By category (RTIV-PID 2015/16)
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  values ('101', '(iv) (d) By category (' + @displayCodeRTIVPID + ')')
+ 
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (102)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+ -- Values (103, '', 'Health Care Worker', 'Resident', 'Persons with Intellectual Disability (or related)', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (104, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (105, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (106, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (107, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (108)   
+-- --===============================================================================================================  
+-- --  IsHealthCare tinyint,  
+-- --  IsResident tinyint,  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsHealthCare = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsResident = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND IsIntellectualDisability = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHD) 
+-- WHERE Result_Seq = 104  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)
+-- FROM @ResultTable WHERE Result_Seq = 104) WHERE Result_Seq = 104  
+
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsHealthCare = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsResident = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND IsIntellectualDisability = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as RCHE) 
+-- WHERE Result_Seq = 105  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)
+-- FROM @ResultTable WHERE Result_Seq = 105) WHERE Result_Seq = 105  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsHealthCare = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsResident = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1) rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND IsIntellectualDisability = 1 AND IsRTIVPID = 1 GROUP BY DOC_Code) as IPID) 
+-- WHERE Result_Seq = 106  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4) 
+-- FROM @ResultTable WHERE Result_Seq = 106) WHERE Result_Seq = 106  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '104' and '106'
+-- ) WHERE Result_Seq = 107 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '104' and '106'
+-- ) WHERE Result_Seq = 107 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '104' and '106'
+-- ) WHERE Result_Seq = 107 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '104' and '106'
+-- ) WHERE Result_Seq = 107 
+-- --===============================================================================================================      
+  
+-- --===============================================================================================================   
+-- --(v) By age group (23vPPV)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)  
+ -- Values (109, '(v) By age group (23vPPV*)')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (110)  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4,Result_Value5)  
+ -- Values (111, '', '<65 years','at 65 years','>65 years', 'Total')    
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (112, 'RCHD')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (113, 'RCHE')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (114, 'IPID')  
+-- INSERT INTO @ResultTable (Result_Seq, Result_Value1)        
+ -- Values (115, 'Total')  
+-- INSERT INTO @ResultTable (Result_Seq)  
+ -- Values (116)   
+-- --===============================================================================================================  
+-- --  IsHealthCare tinyint,  
+-- --  IsResident tinyint,  
+-- --Update RCHD Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'D' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD)
+-- WHERE Result_Seq = 112  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)  
+-- FROM @ResultTable WHERE Result_Seq = 112) WHERE Result_Seq = 112  
+
+-- --Update RCHE Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'E' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE)
+-- WHERE Result_Seq = 113  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)  
+-- FROM @ResultTable WHERE Result_Seq = 113) WHERE Result_Seq = 113  
+
+-- --Update IPID Values  
+-- Update @ResultTable set   
+-- Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID),  
+-- Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT count (Distinct Encrypt_Field1)rec   
+ -- FROM @SubsideCount WHERE RCH_Type = 'I' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID)
+-- WHERE Result_Seq = 114  
+  
+-- UPDATE @ResultTable set Result_Value5 = (SELECT convert(int,Result_Value2) + convert(int,Result_Value3) + convert(int,Result_Value4)  
+-- FROM @ResultTable WHERE Result_Seq = 114) WHERE Result_Seq = 114  
+
+-- --Update Total Values
+-- Update @ResultTable set Result_Value2 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '112' and '114'
+-- ) WHERE Result_Seq = 115 
+-- Update @ResultTable set Result_Value3 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '112' and '114'
+-- ) WHERE Result_Seq = 115 
+-- Update @ResultTable set Result_Value4 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '112' and '114'
+-- ) WHERE Result_Seq = 115 
+-- Update @ResultTable set Result_Value5 = (  
+-- SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM @ResultTable WHERE Result_Seq Between '112' and '114'
+-- ) WHERE Result_Seq = 115 
+-- --===============================================================================================================      
+
+-- -- =============================================      
+-- -- Return result      
+-- -- =============================================      
+      
+ -- DELETE FROM _EHS_RVPAgeReport_Stat      
+      
+ -- INSERT INTO _EHS_RVPAgeReport_Stat (      
+  -- Display_Seq,      
+  -- Result_Value1,      
+  -- Result_Value2,      
+  -- Result_Value3,      
+  -- Result_Value4,      
+  -- Result_Value5,      
+  -- Result_Value6,      
+  -- Result_Value7,      
+  -- Result_Value8,      
+  -- Result_Value9,      
+  -- Result_Value10,      
+  -- Result_Value11,      
+  -- Result_Value12,      
+  -- Result_Value13,      
+  -- Result_Value14,      
+  -- Result_Value15,      
+  -- Result_Value16      
+ -- )       
+ -- SELECT       
+  -- Result_Seq,       
+  -- Result_Value1,      
+  -- Result_Value2,      
+  -- Result_Value3,      
+  -- Result_Value4,      
+  -- Result_Value5,      
+  -- Result_Value6,      
+  -- Result_Value7,      
+  -- Result_Value8,      
+  -- Result_Value9,      
+  -- Result_Value10,      
+  -- Result_Value11,      
+  -- Result_Value12,      
+  -- Result_Value13,      
+  -- Result_Value14,      
+  -- Result_Value15,      
+  -- Result_Value16      
+ -- FROM      
+  -- @ResultTable      
+          
+-- END         
+-- GO
+
+-- GRANT EXECUTE ON [dbo].[proc_EHS_RVPAgeReport_Stat] TO HCVU
+-- GO
