@@ -98,32 +98,32 @@ Namespace PrintOut.ConfirmationLetter
             'txtEngYourRefEng
             '
             Me.txtEngYourRefEng.Height = 0.21875!
-            Me.txtEngYourRefEng.Left = 1.95!
+            Me.txtEngYourRefEng.Left = 1.82!
             Me.txtEngYourRefEng.Name = "txtEngYourRefEng"
             Me.txtEngYourRefEng.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 0"
             Me.txtEngYourRefEng.Text = Nothing
-            Me.txtEngYourRefEng.Top = 0.3125!
+            Me.txtEngYourRefEng.Top = 0.3125001!
             Me.txtEngYourRefEng.Width = 4.46!
             '
             'txtTelNoEng
             '
             Me.txtTelNoEng.Height = 0.21875!
-            Me.txtTelNoEng.Left = 1.95!
+            Me.txtTelNoEng.Left = 1.82!
             Me.txtTelNoEng.Name = "txtTelNoEng"
             Me.txtTelNoEng.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtTelNoEng.Text = "<TEL>"
             Me.txtTelNoEng.Top = 0.53!
-            Me.txtTelNoEng.Width = 4.46!
+            Me.txtTelNoEng.Width = 5.46!
             '
             'txtFaxNoEng
             '
             Me.txtFaxNoEng.Height = 0.21875!
-            Me.txtFaxNoEng.Left = 1.95!
+            Me.txtFaxNoEng.Left = 1.82!
             Me.txtFaxNoEng.Name = "txtFaxNoEng"
             Me.txtFaxNoEng.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtFaxNoEng.Text = "<FAX>"
-            Me.txtFaxNoEng.Top = 0.75!
-            Me.txtFaxNoEng.Width = 4.46!
+            Me.txtFaxNoEng.Top = 0.7500001!
+            Me.txtFaxNoEng.Width = 5.46!
             '
             'txtRecipientAddressEng
             '
@@ -139,12 +139,12 @@ Namespace PrintOut.ConfirmationLetter
             'txtEngOurRefEng
             '
             Me.txtEngOurRefEng.Height = 0.21875!
-            Me.txtEngOurRefEng.Left = 1.95!
+            Me.txtEngOurRefEng.Left = 1.82!
             Me.txtEngOurRefEng.Name = "txtEngOurRefEng"
             Me.txtEngOurRefEng.Style = "font-family: Arial; font-size: 10pt; text-align: left; vertical-align: top; ddo-c" & _
         "har-set: 1"
             Me.txtEngOurRefEng.Text = "(    )____________"
-            Me.txtEngOurRefEng.Top = 0.09375!
+            Me.txtEngOurRefEng.Top = 0.09375008!
             Me.txtEngOurRefEng.Width = 4.46!
             '
             'txtEngOurRefEngText
@@ -155,7 +155,7 @@ Namespace PrintOut.ConfirmationLetter
             Me.txtEngOurRefEngText.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtEngOurRefEngText.Text = "OUR REF.:"
             Me.txtEngOurRefEngText.Top = 0.09375!
-            Me.txtEngOurRefEngText.Width = 1.0!
+            Me.txtEngOurRefEngText.Width = 0.9200001!
             '
             'txtEngYourRefEngText
             '
@@ -165,7 +165,7 @@ Namespace PrintOut.ConfirmationLetter
             Me.txtEngYourRefEngText.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtEngYourRefEngText.Text = "YOUR REF.:"
             Me.txtEngYourRefEngText.Top = 0.3125!
-            Me.txtEngYourRefEngText.Width = 1.0!
+            Me.txtEngYourRefEngText.Width = 0.9200001!
             '
             'txtEngTelNoEngText
             '
@@ -175,7 +175,7 @@ Namespace PrintOut.ConfirmationLetter
             Me.txtEngTelNoEngText.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtEngTelNoEngText.Text = "TEL.:"
             Me.txtEngTelNoEngText.Top = 0.53125!
-            Me.txtEngTelNoEngText.Width = 1.0!
+            Me.txtEngTelNoEngText.Width = 0.9200001!
             '
             'txtEngFaxNoEngText
             '
@@ -185,7 +185,7 @@ Namespace PrintOut.ConfirmationLetter
             Me.txtEngFaxNoEngText.Style = "font-family: Arial; font-size: 10pt; vertical-align: top; ddo-char-set: 1"
             Me.txtEngFaxNoEngText.Text = "FAX.:"
             Me.txtEngFaxNoEngText.Top = 0.75!
-            Me.txtEngFaxNoEngText.Width = 1.0!
+            Me.txtEngFaxNoEngText.Width = 0.9200001!
             '
             'txtRecipientSPNameEng
             '

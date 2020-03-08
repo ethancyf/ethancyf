@@ -33,16 +33,16 @@ Namespace PrintOut.ConfirmationLetter
                 Case Common.Component.CultureLanguage.English
                     objFont = New System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Regular)
                     ' CRE19-008 (Rename VO) [Start][Koala]
-                    Me.txtTelNoEng.Location = New System.Drawing.PointF(1.95F, 0.5F)
-                    Me.txtFaxNoEng.Location = New System.Drawing.PointF(1.95F, 0.75F)
+                    Me.txtTelNoEng.Location = New System.Drawing.PointF(1.82F, 0.5F)
+                    Me.txtFaxNoEng.Location = New System.Drawing.PointF(1.82F, 0.75F)
                     Me.txtChiFaxNoEngText.Location = New System.Drawing.PointF(0.0F, 0.75F)
                     Me.txtEngFaxNoEngText.Location = New System.Drawing.PointF(0.9F, 0.75F)
                     ' CRE19-008 (Rename VO) [End][Koala]
 
                 Case Common.Component.CultureLanguage.TradChinese
                     objFont = New System.Drawing.Font("HA_MingLiu", 11.25F, System.Drawing.FontStyle.Regular)
-                    Me.txtTelNoEng.Location = New System.Drawing.PointF(1.95F, 0.5F)
-                    Me.txtFaxNoEng.Location = New System.Drawing.PointF(1.95F, 0.72F)
+                    'Me.txtTelNoEng.Location = New System.Drawing.PointF(1.82F, 0.5F)
+                    'Me.txtFaxNoEng.Location = New System.Drawing.PointF(1.82F, 0.72F)
 
                 Case Else
                     objFont = New System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Regular)
