@@ -8,10 +8,10 @@ GO
     
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Mar 2020
+-- CR No.:			INT20-0005
+-- Description:		Fix incorrect display order
 -- =============================================
 -- =============================================
 -- Author:			Marco CHOI
@@ -81,6 +81,8 @@ AS BEGIN
 
 	SELECT 	ISNULL(Value1, ''),	ISNULL(Value2,'')
 	FROM @ContentTable  
+	ORDER BY
+		Display_Seq
 
 -- --------------------------------------------------    
 -- From stored procedure: [proc_EHS_eHSM0007_01_VSSPCV13_Reimbursement_HCSP]    
@@ -130,8 +132,8 @@ AS BEGIN
 	INSERT INTO @RemarkTable (Value1) SELECT '              * invalidation confirmation date between ' + FORMAT(@Report_StartDtm, 'd MMM yyyy') + ' to ' +  + FORMAT(@Report_EndDtm, 'd MMM yyyy') + '; and'
 	INSERT INTO @RemarkTable (Value1) SELECT '              * reimbursement cutoff date before ' + FORMAT(@Report_StartDtm, 'd MMM yyyy')
 
-	SELECT Value1 FROM @RemarkTable
-	
+	SELECT Value1 FROM @RemarkTable 
+	ORDER BY Display_Seq
     
 -- =============================================    
 END    

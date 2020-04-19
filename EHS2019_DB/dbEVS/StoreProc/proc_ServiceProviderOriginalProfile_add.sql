@@ -1,10 +1,18 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_ServiceProviderOriginalProfile_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_ServiceProviderOriginalProfile_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_ServiceProviderOriginalProfile_add]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.			CRE16-022 (SDIR Remark)
+-- Modified by:		CHRIS YIM
+-- Modified date:	17 Feb 2020
+-- Description:		Add columns [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -40,223 +48,255 @@ GO
 -- Create date: 16 Jan 2012
 -- Description:	Copy Service Provider Profile Enrolment to Original
 -- =============================================
+
 CREATE PROCEDURE [dbo].[proc_ServiceProviderOriginalProfile_add]
-	@enrolment_ref_no char(15)
+	@enrolment_ref_no CHAR(15)
 AS
 BEGIN
 	
 	SET NOCOUNT ON;
 
-	INSERT INTO [ServiceProviderOriginal]
-		(Enrolment_Ref_No,
-		Enrolment_Dtm,
-		Room,
-		[Floor],
-		Block,
-		Building,
-		Building_Chi,
-		District,
-		Address_Code,
-		Phone_Daytime,
-		Fax,
-		Email,
-		Already_Joined_EHR,
-		Join_EHR,
-		Join_PCD,
-		Application_Printed,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Batch_ID
+	--Service Provider
+	INSERT INTO [ServiceProviderOriginal](
+		[Enrolment_Ref_No]
+		,[Enrolment_Dtm]
+		,[Room]
+		,[Floor]
+		,[Block]
+		,[Building]
+		,[Building_Chi]
+		,[District]
+		,[Address_Code]
+		,[Phone_Daytime]
+		,[Fax]
+		,[Email]
+		,[Already_Joined_EHR]
+		,[Join_EHR]
+		,[Join_PCD]
+		,[Application_Printed]
+		,[Encrypt_Field1]
+		,[Encrypt_Field2]
+		,[Encrypt_Field3]
+		,[Batch_ID]
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Enrolment_Dtm,
-		Room,
-		[Floor],
-		Block,
-		Building,
-		Building_Chi,
-		District,
-		Address_Code,
-		Phone_Daytime,
-		Fax,
-		Email,
-		Already_Joined_EHR,
-		Join_EHR,
-		Join_PCD,
-		Application_Printed,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Batch_ID
-	FROM ServiceProviderEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Enrolment_Dtm]
+		,[Room]
+		,[Floor]
+		,[Block]
+		,[Building]
+		,[Building_Chi]
+		,[District]
+		,[Address_Code]
+		,[Phone_Daytime]
+		,[Fax]
+		,[Email]
+		,[Already_Joined_EHR]
+		,[Join_EHR]
+		,[Join_PCD]
+		,[Application_Printed]
+		,[Encrypt_Field1]
+		,[Encrypt_Field2]
+		,[Encrypt_Field3]
+		,[Batch_ID]
+	FROM 
+		ServiceProviderEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
-	INSERT INTO [PracticeOriginal]
-		(Enrolment_Ref_No,
-		Display_Seq,
-		Practice_Name,
-		Room,
-		[Floor],
-		Block,
-		Building,
-		Building_Chi,
-		District,
-		Address_Code,
-		Service_Category_Code,
-		Registration_Code,
-		Professional_Seq,
-		MO_Display_Seq,
-		Practice_Name_Chi,
-		Phone_Daytime
+	--Practice
+	INSERT INTO [PracticeOriginal](
+		[Enrolment_Ref_No]
+		,[Display_Seq]			
+		,[Practice_Name]
+		,[Practice_Name_Chi]
+		,[Room]					
+		,[Floor]				
+		,[Block]
+		,[Building]				
+		,[Building_Chi]			
+		,[District]				
+		,[Address_Code]	
+		,[Service_Category_Code]
+		,[Registration_Code]
+		,[Professional_Seq]
+		,[Phone_Daytime]	
+		,[MO_Display_Seq]	
+		--,[Mobile_Clinic]		
+		--,[Remarks_Desc]			
+		--,[Remarks_Desc_Chi]	
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Display_Seq,
-		Practice_Name,
-		Room,
-		[Floor],
-		Block,
-		Building,
-		Building_Chi,
-		District,
-		Address_Code,
-		Service_Category_Code,
-		Registration_Code,
-		Professional_Seq,
-		MO_Display_Seq,
-		Practice_Name_Chi,
-		Phone_Daytime
-	FROM PracticeEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Display_Seq]			
+		,[Practice_Name]
+		,[Practice_Name_Chi]
+		,[Room]					
+		,[Floor]				
+		,[Block]
+		,[Building]				
+		,[Building_Chi]			
+		,[District]				
+		,[Address_Code]	
+		,[Service_Category_Code]
+		,[Registration_Code]
+		,[Professional_Seq]
+		,[Phone_Daytime]	
+		,[MO_Display_Seq]	
+		--,'N'		
+		--,''			
+		--,N''	
+	FROM 
+		[PracticeEnrolment]
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
-	INSERT INTO [BankAccountOriginal]
-		(Enrolment_Ref_No,
-		Display_Seq,
-		SP_Practice_Display_Seq,
-		Bank_Name,
-		Branch_Name,
-		Bank_Account_No,
-		Bank_Acc_Holder
+	--Bank Account
+	INSERT INTO [BankAccountOriginal](
+		[Enrolment_Ref_No]
+		,[Display_Seq]
+		,[SP_Practice_Display_Seq]
+		,[Bank_Name]
+		,[Branch_Name]
+		,[Bank_Account_No]
+		,[Bank_Acc_Holder]
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Display_Seq,
-		SP_Practice_Display_Seq,
-		Bank_Name,
-		Branch_Name,
-		Bank_Account_No,
-		Bank_Acc_Holder
-	FROM BankAccountEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Display_Seq]
+		,[SP_Practice_Display_Seq]
+		,[Bank_Name]
+		,[Branch_Name]
+		,[Bank_Account_No]
+		,[Bank_Acc_Holder]
+	FROM 
+		BankAccountEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
-	INSERT INTO [ProfessionalOriginal]
-		(Enrolment_Ref_No,
-		Professional_Seq,
-		Service_Category_Code,
-		Registration_Code
+	--Professional
+	INSERT INTO [ProfessionalOriginal](
+		[Enrolment_Ref_No]
+		,[Professional_Seq]
+		,[Service_Category_Code]
+		,[Registration_Code]
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Professional_Seq,
-		Service_Category_Code,
-		Registration_Code
-	FROM ProfessionalEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Professional_Seq]
+		,[Service_Category_Code]
+		,[Registration_Code]
+	FROM 
+		ProfessionalEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
  
-	INSERT INTO [SchemeInformationOriginal]
-		(Enrolment_Ref_No,
-		Scheme_Code
+	--Scheme Information
+	INSERT INTO [SchemeInformationOriginal](
+		[Enrolment_Ref_No]
+		,[Scheme_Code]
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Scheme_Code
-	FROM SchemeInformationEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Scheme_Code]
+	FROM 
+		SchemeInformationEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
-	INSERT INTO [MedicalOrganizationOriginal]
-		(Enrolment_Ref_No,
-		Display_Seq,
-		MO_Eng_Name,
-		MO_Chi_Name,
-		Room,
-		[Floor],
-		Block,
-		Building,
-		Building_Chi,
-		District,
-		Address_Code,
-		BR_Code,
-		Phone_Daytime,
-		Email,
-		Fax,
-		Relationship,
-		Relationship_Remark
+	--Medical Organization
+	INSERT INTO [MedicalOrganizationOriginal](
+		[Enrolment_Ref_No]
+		,[Display_Seq]
+		,[MO_Eng_Name]
+		,[MO_Chi_Name]
+		,[Room]
+		,[Floor]
+		,[Block]
+		,[Building]
+		,[Building_Chi]
+		,[District]
+		,[Address_Code]
+		,[BR_Code]
+		,[Phone_Daytime]
+		,[Email]
+		,[Fax]
+		,[Relationship]
+		,[Relationship_Remark]
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Display_Seq,
-		MO_Eng_Name,
-		MO_Chi_Name,
-		Room,
-		[Floor],
-		Block,
-		Building,
-		Building_Chi,
-		District,
-		Address_Code,
-		BR_Code,
-		Phone_Daytime,
-		Email,
-		Fax,
-		Relationship,
-		Relationship_Remark
-	FROM MedicalOrganizationEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Display_Seq]
+		,[MO_Eng_Name]
+		,[MO_Chi_Name]
+		,[Room]
+		,[Floor]
+		,[Block]
+		,[Building]
+		,[Building_Chi]
+		,[District]
+		,[Address_Code]
+		,[BR_Code]
+		,[Phone_Daytime]
+		,[Email]
+		,[Fax]
+		,[Relationship]
+		,[Relationship_Remark]
+	FROM 
+		MedicalOrganizationEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
-	INSERT INTO [PracticeSchemeInfoOriginal]
-		(Enrolment_Ref_No,
-		Subsidize_Code,
-		Practice_Display_Seq,
-		Service_Fee,
-		Scheme_Code,
-		ProvideServiceFee,
-		Provide_Service,
-		Clinic_Type
+	-- Practice Scheme Info
+	INSERT INTO [PracticeSchemeInfoOriginal](
+		[Enrolment_Ref_No]
+		,[Subsidize_Code]
+		,[Practice_Display_Seq]
+		,[Service_Fee]
+		,[Scheme_Code]
+		,[ProvideServiceFee]
+		,[Provide_Service]
+		,[Clinic_Type]
 		)
 	SELECT 
-		Enrolment_Ref_No,
-		Subsidize_Code,
-		Practice_Display_Seq,
-		Service_Fee,
-		Scheme_Code,
-		ProvideServiceFee,
-		Provide_Service,
-		Clinic_Type
-	FROM PracticeSchemeInfoEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Enrolment_Ref_No]
+		,[Subsidize_Code]
+		,[Practice_Display_Seq]
+		,[Service_Fee]
+		,[Scheme_Code]
+		,[ProvideServiceFee]
+		,[Provide_Service]
+		,[Clinic_Type]
+	FROM 
+		PracticeSchemeInfoEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
-	INSERT INTO [ThirdPartyAdditionalFieldOriginal]
-		(Sys_Code,
-		Enrolment_Ref_No,
-		Practice_Display_Seq,
-		AdditionalFieldID,
-		AdditionalFieldValueCode,
-		Create_dtm
+	-- Third Party Additional Field
+	INSERT INTO [ThirdPartyAdditionalFieldOriginal](
+		[Sys_Code]
+		,[Enrolment_Ref_No]
+		,[Practice_Display_Seq]
+		,[AdditionalFieldID]
+		,[AdditionalFieldValueCode]
+		,[Create_dtm]
 		)
 	SELECT 
-		Sys_Code,
-		Enrolment_Ref_No,
-		Practice_Display_Seq,
-		AdditionalFieldID,
-		AdditionalFieldValueCode,
-		Create_dtm
-	FROM ThirdPartyAdditionalFieldEnrolment
-	WHERE Enrolment_Ref_No = @enrolment_ref_no
+		[Sys_Code]
+		,[Enrolment_Ref_No]
+		,[Practice_Display_Seq]
+		,[AdditionalFieldID]
+		,[AdditionalFieldValueCode]
+		,[Create_dtm]
+	FROM 
+		ThirdPartyAdditionalFieldEnrolment
+	WHERE 
+		Enrolment_Ref_No = @enrolment_ref_no
 
 END
 GO
 
 GRANT EXECUTE ON [dbo].[proc_ServiceProviderOriginalProfile_add] TO HCVU
 GO
+

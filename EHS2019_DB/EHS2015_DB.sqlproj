@@ -1389,6 +1389,7 @@
     <Build Include="dbEVS\StoreProc\proc_ProfessionDHC_get_all_cache.sql" />
     <Build Include="dbEVS\StoreProc\proc_EHS_eHSU0010_Report_get.sql" />
     <Build Include="dbEVS_Enquiry\StoreProc\proc_EHS_eHSU0011_Report_get.sql" />
+    <Build Include="dbEVS\StoreProc\proc_VoucherTransactionHistory_get.sql" />
   </ItemGroup>
   <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(SQLDBExtensionsRefPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(SQLDBExtensionsRefPath)' == ''" />

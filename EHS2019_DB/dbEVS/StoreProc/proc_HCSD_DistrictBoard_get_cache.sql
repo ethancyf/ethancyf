@@ -1,6 +1,4 @@
-IF EXISTS (
-SELECT 1 FROM Sys.Objects
-WHERE [name] = 'proc_HCSD_DistrictBoard_get_cache' AND [type] = 'P')
+﻿IF EXISTS (SELECT 1 FROM Sys.Objects WHERE [name] = 'proc_HCSD_DistrictBoard_get_cache' AND [type] = 'P')
 BEGIN
 	DROP PROCEDURE proc_HCSD_DistrictBoard_get_cache
 END
@@ -10,7 +8,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.			CRE19-030 (Revamp of SDIR and VBE)
+-- Modified by:		CHRIS YIM
+-- Modified date:	17 Mar 2020
+-- Description:		Remove shortname in English Desc
+-- =============================================
 -- =============================================
 -- CR No.:		CRE13-019-02
 -- Author:		Winnie SUEN
@@ -35,8 +39,8 @@ BEGIN
 -- Return results
 -- ============================================================
 	
-	SELECT ltrim(rtrim(DB.district_board)) + ' (' + ltrim(rtrim(DB.district_board_shortname_SD)) + ')' as [district_board]
-		  ,DB.district_board_chi
+	SELECT LTRIM(RTRIM(DB.District_Board_SD)) AS [district_board]
+		  ,DB.District_Board_SD_Chi AS district_board_chi
 		  ,DB.district_board_shortname_SD
 		  ,DB.area_name
 		  ,DB.area_name_chi

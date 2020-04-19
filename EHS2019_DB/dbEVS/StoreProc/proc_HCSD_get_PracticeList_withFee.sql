@@ -1,11 +1,24 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HCSD_get_PracticeList_withFee]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HCSD_get_PracticeList_withFee]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_HCSD_get_PracticeList_withFee]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.			CRE19-030 (Revamp of SDIR and VBE)
+-- Modified by:		CHRIS YIM
+-- Modified date:	31 Mar 2020
+-- Description:		Enlarge the length of columns [district_board]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.			CRE19-030 (Revamp of SDIR and VBE)
+-- Modified by:		CHRIS YIM
+-- Modified date:	17 Feb 2020
+-- Description:		Add columns [Moblic_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CE19-001-03
@@ -129,47 +142,51 @@ BEGIN
 	SET @RecordLimit = CONVERT(varchar(10),(SELECT Parm_Value1 FROM SystemParameters WITH (NOLOCK) WHERE Parameter_Name = 'SDIR_returnRecordLimit') + 1)
 
 	CREATE TABLE #SDSPPracticeFee(
-		[sp_id] [char](8) NOT NULL,
-		[practice_display_seq] [smallint] NOT NULL,
-		[sp_name] [varchar](40) NULL,
-		[sp_chi_name] [nvarchar](6) NULL,
-		[practice_name] [nvarchar](150) NULL,
-		[practice_name_chi] [nvarchar](150) NULL,
-		[phone_daytime] [varchar](20) NULL,
-		[service_category_code_SD] [char](5) NULL,
-		[district_code] [char](4) NULL,
-		[district_board_shortname_SD] [char](5) NOT NULL,
-		[area_code] [char](1) NULL,
-		[address_eng] [varchar](150) NULL,
-		[district_name] [char](15) NULL,
-		[district_board] [char](15) NULL,
-		[area_name] [char](50) NULL,
-		[address_chi] [nvarchar](150) NULL,
-		[district_name_chi] [nchar](30) NULL,
-		[district_board_chi] [nchar](30) NULL,
-		[area_name_chi] [nchar](50) NULL,
-		[subsidize_item_01] [char](1) NULL,
-		[subsidize_item_02] [char](1) NULL,
-		[subsidize_item_03] [char](1) NULL,
-		[subsidize_item_04] [char](1) NULL,
-		[subsidize_item_05] [char](1) NULL,
-		[subsidize_item_06] [char](1) NULL,
-		[subsidize_item_07] [char](1) NULL,
-		[subsidize_item_08] [char](1) NULL,
-		[subsidize_item_09] [char](1) NULL,
-		[subsidize_item_10] [char](1) NULL,
-		[subsidize_fee_01] [varchar](15) NULL,
-		[subsidize_fee_02] [varchar](15) NULL,
-		[subsidize_fee_03] [varchar](15) NULL,
-		[subsidize_fee_04] [varchar](15) NULL,
-		[subsidize_fee_05] [varchar](15) NULL,
-		[subsidize_fee_06] [varchar](15) NULL,
-		[subsidize_fee_07] [varchar](15) NULL,
-		[subsidize_fee_08] [varchar](15) NULL,
-		[subsidize_fee_09] [varchar](15) NULL,
-		[subsidize_fee_10] [varchar](15) NULL,
-		[joined_scheme] [varchar](100) NULL,
-		[Subsidy_with_fee] [INT] NULL
+		[sp_id]					CHAR(8) NOT NULL
+		,[practice_display_seq] SMALLINT NOT NULL
+		,[sp_name]				VARCHAR(40) NULL
+		,[sp_chi_name]			NVARCHAR(6) NULL
+		,[practice_name]		NVARCHAR(150) NULL
+		,[practice_name_chi]	NVARCHAR(150) NULL
+		,[phone_daytime]		VARCHAR(20) NULL
+		,[service_category_code_SD] CHAR(5) NULL
+		,[district_code]		CHAR(4) NULL
+		,[district_board_shortname_SD] CHAR(5) NOT NULL
+		,[area_code]			CHAR(1) NULL
+		,[address_eng]			VARCHAR(150) NULL
+		,[district_name]		CHAR(15) NULL
+		,[district_board]		VARCHAR(20) NULL
+		,[area_name]			CHAR(50) NULL
+		,[address_chi]			NVARCHAR(150) NULL
+		,[district_name_chi]	NCHAR(30) NULL
+		,[district_board_chi]	NCHAR(30) NULL
+		,[area_name_chi]		NCHAR(50) NULL
+		,[subsidize_item_01]	CHAR(1) NULL
+		,[subsidize_item_02]	CHAR(1) NULL
+		,[subsidize_item_03]	CHAR(1) NULL
+		,[subsidize_item_04]	CHAR(1) NULL
+		,[subsidize_item_05]	CHAR(1) NULL
+		,[subsidize_item_06]	CHAR(1) NULL
+		,[subsidize_item_07]	CHAR(1) NULL
+		,[subsidize_item_08]	CHAR(1) NULL
+		,[subsidize_item_09]	CHAR(1) NULL
+		,[subsidize_item_10]	CHAR(1) NULL
+		,[subsidize_fee_01]		VARCHAR(15) NULL
+		,[subsidize_fee_02]		VARCHAR(15) NULL
+		,[subsidize_fee_03]		VARCHAR(15) NULL
+		,[subsidize_fee_04]		VARCHAR(15) NULL
+		,[subsidize_fee_05]		VARCHAR(15) NULL
+		,[subsidize_fee_06]		VARCHAR(15) NULL
+		,[subsidize_fee_07]		VARCHAR(15) NULL
+		,[subsidize_fee_08]		VARCHAR(15) NULL
+		,[subsidize_fee_09]		VARCHAR(15) NULL
+		,[subsidize_fee_10]		VARCHAR(15) NULL
+		,[joined_scheme]		VARCHAR(100) NULL
+		,[Subsidy_with_fee]		INT NULL
+		,[MobileClinic]			CHAR(1) NULL
+		,[NonClinic]			CHAR(1) NULL
+		,[RemarkEngDesc]		NVARCHAR(200) NULL
+		,[RemarkChiDesc]		NVARCHAR(200) NULL
 	)
 
 	CREATE CLUSTERED INDEX PK_SDPracticeServiceFee_SP_ID_Practice_Display_Seq
@@ -284,7 +301,12 @@ BEGIN
         ,[subsidize_fee_09]
         ,[subsidize_fee_10]
         ,[joined_scheme]
-		,[Subsidy_with_fee])
+		,[Subsidy_with_fee]
+		,[MobileClinic]	
+		,[NonClinic]	
+		,[RemarkEngDesc]			
+		,[RemarkChiDesc]		
+		)
 	SELECT
 		[sp_id]
 		,[practice_display_seq]
@@ -327,6 +349,10 @@ BEGIN
 		,[subsidize_fee_10]
 		,[joined_scheme]
 		,0
+		,[Mobile_Clinic]	
+		,[Non_Clinic]	
+		,[Remarks_Desc]			
+		,[Remarks_Desc_Chi]		
 		FROM [SDSPPracticeFee] WITH (NOLOCK)
 		WHERE joined_scheme IS NOT NULL
 			AND (@Professional IS NULL OR [service_category_code_SD] = @Professional)
@@ -541,9 +567,9 @@ BEGIN
 			[sp_id]
 			,[practice_display_seq]
 			,[sp_name]
-			,isnull([sp_chi_name], '''') as [sp_chi_name]
+			,[sp_chi_name] = case when ISNULL([sp_chi_name], '''') <> '''' then [sp_chi_name] else [sp_name] end
 			,[practice_name]
-			,isnull([practice_name_chi], '''') as [practice_name_chi]
+			,[practice_name_chi] = case when ISNULL([practice_name_chi], '''') <> '''' then [practice_name_chi] else [practice_name] end
 			,isnull([phone_daytime], '''') as [phone_daytime]
 			,[service_category_code_SD]
 			,[district_code] 
@@ -553,7 +579,7 @@ BEGIN
 			,[district_name]
 			,[district_board]
 			,[area_name]
-			,isnull([address_chi], '''') as [address_chi]
+			,[address_chi] = case when ISNULL([address_chi], '''') <> '''' then [address_chi] else [address_eng] end
 			,[district_name_chi]
 			,[district_board_chi]
 			,[area_name_chi]
@@ -595,7 +621,12 @@ BEGIN
 			,case when [subsidize_fee_08] = @IN_Symbol_For_No_QIV_Service_Fee then ''2'' when [subsidize_fee_08] = @IN_Symbol_For_No_QIV_No_LAIV_Service_Fee then ''3'' when [subsidize_fee_08] = @IN_Symbol_For_No_QIV_No_TIV_Service_Fee then ''4''  when [subsidize_fee_08] = @IN_Symbol_For_To_Be_Provide_Service_Fee then ''5'' when [subsidize_fee_08] = @IN_Symbol_For_NA_Service_Fee then ''6'' when [subsidize_fee_08] IS NULL then ''7'' else ''1'' end as [subsidize_fee_08_sort_type]
 			,case when [subsidize_fee_09] = @IN_Symbol_For_No_QIV_Service_Fee then ''2'' when [subsidize_fee_09] = @IN_Symbol_For_No_QIV_No_LAIV_Service_Fee then ''3'' when [subsidize_fee_09] = @IN_Symbol_For_No_QIV_No_TIV_Service_Fee then ''4''  when [subsidize_fee_09] = @IN_Symbol_For_To_Be_Provide_Service_Fee then ''5'' when [subsidize_fee_09] = @IN_Symbol_For_NA_Service_Fee then ''6'' when [subsidize_fee_09] IS NULL then ''7'' else ''1'' end as [subsidize_fee_09_sort_type]
 			,case when [subsidize_fee_10] = @IN_Symbol_For_No_QIV_Service_Fee then ''2'' when [subsidize_fee_10] = @IN_Symbol_For_No_QIV_No_LAIV_Service_Fee then ''3'' when [subsidize_fee_10] = @IN_Symbol_For_No_QIV_No_TIV_Service_Fee then ''4''  when [subsidize_fee_10] = @IN_Symbol_For_To_Be_Provide_Service_Fee then ''5'' when [subsidize_fee_10] = @IN_Symbol_For_NA_Service_Fee then ''6'' when [subsidize_fee_10] IS NULL then ''7'' else ''1'' end as [subsidize_fee_10_sort_type]
-			,[Subsidy_with_fee]		
+			,[Subsidy_with_fee]
+			,[MobileClinic]
+			,[NonClinic]
+			,[Remark] = case when [RemarkEngDesc] <> '''' OR [RemarkChiDesc] <> '''' then ''Y'' else ''N'' end
+			,[RemarkEngDesc] = case when [RemarkEngDesc] <> '''' then [RemarkEngDesc] else [RemarkChiDesc] end
+			,[RemarkChiDesc] = case when [RemarkChiDesc] <> '''' then [RemarkChiDesc] else [RemarkEngDesc] end
 		FROM [#SDSPPracticeFee]
 		WHERE joined_scheme IS NOT NULL
 			AND (@IN_Professional IS NULL OR [service_category_code_SD] = @IN_Professional)
@@ -680,3 +711,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_HCSD_get_PracticeList_withFee] TO HCPUBLIC
 GO
+

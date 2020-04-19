@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Mar 2020
+-- CR No.:			INT20-0005
+-- Description:		Fix incorrect display order
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Marco CHOI
 -- Modified date:	14 May 2018
 -- CR No.:			CRE17-010
@@ -85,7 +92,8 @@ INSERT INTO @ContentTable (Value1) SELECT 'Report Generation Time: ' + @strGenDt
 
 SELECT 	ISNULL(Value1, ''),	ISNULL(Value2,'')
 FROM @ContentTable  
-
+ORDER BY
+	Display_Seq
 
 -- --------------------------------------------------    
 -- From stored procedure: proc_EHS_eHSD0028_01_PrepareData

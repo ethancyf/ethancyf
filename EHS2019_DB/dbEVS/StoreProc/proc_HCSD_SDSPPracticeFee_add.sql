@@ -7,6 +7,27 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.			CRE16-022 (SDIR Remark)
+-- Modified by:		CHRIS YIM
+-- Modified date:	01 Apr 2020
+-- Description:		Enlarge the length of column [district_board]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.			CRE16-022 (SDIR Remark)
+-- Modified by:		CHRIS YIM
+-- Modified date:	31 Mar 2020
+-- Description:		Add columns [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.			CRE19-030 (Revamp of SDIR and VBE)
+-- Modified by:		CHRIS YIM
+-- Modified date:	17 Mar 2020
+-- Description:		Revised English Desc on District Board
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE19-001-02
 -- Modified by:		Lawrence TSANG
 -- Modified date:	12 Aug 2019
@@ -52,7 +73,7 @@ GO
 -- CR No.:			CRE13-019-05
 -- Modified by:		Winnie SUEN
 -- Modified date:	22 Sep 2015
--- Description:		1. Change [@area_name_chi] to nchar to support simplified chinese 
+-- Description:		1. Change [@area_name_chi] to nCHAR to support simplified chinese 
 -- =============================================
 -- =============================================
 -- Modification History
@@ -123,12 +144,12 @@ SET NOCOUNT ON
 -- =============================================
 
 DECLARE @SDIR_ExcludePracticeForEHAPP BIT = 1
-DECLARE @Symbol_For_No_Service_Fee char(1) = '*'
-DECLARE @Symbol_For_No_Provide_Service char(1) = '*'
-DECLARE @Symbol_ServiceFeeToBeProvided varchar(15) = '{TBP}'
-DECLARE @Symbol_ServiceFeeNA varchar(4) = '{NA}'
+DECLARE @Symbol_For_No_Service_Fee CHAR(1) = '*'
+DECLARE @Symbol_For_No_Provide_Service CHAR(1) = '*'
+DECLARE @Symbol_ServiceFeeToBeProvided VARCHAR(15) = '{TBP}'
+DECLARE @Symbol_ServiceFeeNA VARCHAR(4) = '{NA}'
 
-DECLARE @Symbol_ServiceFeeSecondary table (Score int, Symbol varchar(15))
+DECLARE @Symbol_ServiceFeeSecondary table (Score int, Symbol VARCHAR(15))
 INSERT INTO @Symbol_ServiceFeeSecondary VALUES (1, '*'), (2, '**'), (3, '*/**')
 
 
@@ -136,8 +157,8 @@ INSERT INTO @Symbol_ServiceFeeSecondary VALUES (1, '*'), (2, '**'), (3, '*/**')
 -- Settings retrieved from SystemResource
 -- =============================================
 
-DECLARE @NonClinicEn varchar(100)
-DECLARE @NonClinicCh nvarchar(100)
+DECLARE @NonClinicEn VARCHAR(100)
+DECLARE @NonClinicCh NVARCHAR(100)
 
 SELECT @NonClinicEn = Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'NonClinic'
 SELECT @NonClinicCh = Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'NonClinic'
@@ -152,56 +173,60 @@ SELECT @NonClinicCh = Chinese_Description FROM SystemResource WHERE ObjectType =
 -- ---------------------------------------------
 
 create table #tmpPractice ( 
-	sp_id char(8) NOT NULL
-	,practice_display_seq smallint NOT NULL
-	,sp_name varchar(100)
-	,sp_chi_name nvarchar(100)
-	,practice_name nvarchar(150)
-	,practice_name_chi nvarchar(150)
-	,phone_daytime	varchar(20)
-	,service_category_code_SD char(5)
-	,district_code	char(4)
-	,district_board_shortname_SD	char(5)
-	,area_code char(1)
+	sp_id							CHAR(8) NOT NULL
+	,practice_display_seq			SMALLINT NOT NULL
+	,sp_name						VARCHAR(100)
+	,sp_chi_name					NVARCHAR(100)
+	,practice_name					NVARCHAR(150)
+	,practice_name_chi				NVARCHAR(150)
+	,phone_daytime					VARCHAR(20)
+	,service_category_code_SD		CHAR(5)
+	,district_code					CHAR(4)
+	,district_board_shortname_SD	CHAR(5)
+	,area_code						CHAR(1)
 
-	,address_eng 	varchar(255)
-	,district_name	char(15)
-	,district_board char(15)
-	,area_name	char(50)
-	,address_chi 	nvarchar(255)
-	,district_name_chi	nchar(30)
-	,district_board_chi	nchar(30)
-	,area_name_chi	nvarchar(50)
+	,address_eng 					VARCHAR(255)
+	,district_name					CHAR(15)
+	,district_board					VARCHAR(20)
+	,area_name						CHAR(50)
+	,address_chi 					NVARCHAR(255)
+	,district_name_chi				NCHAR(30)
+	,district_board_chi				NCHAR(30)
+	,area_name_chi					NVARCHAR(50)
 
-	,Room nvarchar(5)
-	,[Floor] nvarchar(3)
-	,Block nvarchar(3)
-	,Building varchar(255)
-	,Building_Chi nvarchar(255)
-	,Address_Code int
+	,Room							NVARCHAR(5)
+	,[Floor]						NVARCHAR(3)
+	,[Block]						NVARCHAR(3)
+	,Building						VARCHAR(255)
+	,Building_Chi					NVARCHAR(255)
+	,Address_Code					INT
 
-	,subsidize_item_01	char(1)
-	,subsidize_item_02	char(1)
-	,subsidize_item_03	char(1)
-	,subsidize_item_04	char(1)
-	,subsidize_item_05	char(1)
-	,subsidize_item_06	char(1)
-	,subsidize_item_07	char(1)
-	,subsidize_item_08	char(1)
-	,subsidize_item_09	char(1)
-	,subsidize_item_10	char(1)	
-	,subsidize_fee_01	varchar(15)
-	,subsidize_fee_02	varchar(15)
-	,subsidize_fee_03	varchar(15)
-	,subsidize_fee_04	varchar(15)
-	,subsidize_fee_05	varchar(15)
-	,subsidize_fee_06	varchar(15)
-	,subsidize_fee_07	varchar(15)
-	,subsidize_fee_08	varchar(15)
-	,subsidize_fee_09	varchar(15)
-	,subsidize_fee_10	varchar(15)
-	,joined_scheme		varchar(100)
-	--, CONSTRAINT PK_tmpPractice PRIMARY KEY (sp_id, practice_display_seq)
+	,subsidize_item_01				CHAR(1)
+	,subsidize_item_02				CHAR(1)
+	,subsidize_item_03				CHAR(1)
+	,subsidize_item_04				CHAR(1)
+	,subsidize_item_05				CHAR(1)
+	,subsidize_item_06				CHAR(1)
+	,subsidize_item_07				CHAR(1)
+	,subsidize_item_08				CHAR(1)
+	,subsidize_item_09				CHAR(1)
+	,subsidize_item_10				CHAR(1)	
+	,subsidize_fee_01				VARCHAR(15)
+	,subsidize_fee_02				VARCHAR(15)
+	,subsidize_fee_03				VARCHAR(15)
+	,subsidize_fee_04				VARCHAR(15)
+	,subsidize_fee_05				VARCHAR(15)
+	,subsidize_fee_06				VARCHAR(15)
+	,subsidize_fee_07				VARCHAR(15)
+	,subsidize_fee_08				VARCHAR(15)
+	,subsidize_fee_09				VARCHAR(15)
+	,subsidize_fee_10				VARCHAR(15)
+	,joined_scheme					VARCHAR(100)
+
+	,[Mobile_Clinic]				CHAR(1)
+	,[Non_Clinic]					CHAR(1)
+	,[Remarks_Desc]					NVARCHAR(200)
+	,[Remarks_Desc_Chi]				NVARCHAR(200)	
 	
 )
 
@@ -227,15 +252,20 @@ insert into #tmpPractice
 
 	,Room
 	,[Floor]
-	,Block 
+	,[Block] 
 	,Building
 	,Building_Chi
 	,Address_Code
+
+	,[Non_Clinic]
+	,[Mobile_Clinic]
+	,[Remarks_Desc]					
+	,[Remarks_Desc_Chi]				
 )
 select sp.sp_id, 
 	p.display_seq
-	,convert(varchar(100), DecryptByKey(sp.encrypt_field2))
-	,convert(nvarchar(100), DecryptByKey(sp.encrypt_field3))
+	,convert(VARCHAR(100), DecryptByKey(sp.encrypt_field2))
+	,convert(NVARCHAR(100), DecryptByKey(sp.encrypt_field3))
 	,p.practice_name, p.practice_name_chi 
 	,p.phone_daytime 
 	,SDPrMap.service_category_code_SD 
@@ -247,6 +277,11 @@ select sp.sp_id,
 	,p.Building
 	,p.Building_Chi
 	,p.Address_Code
+
+	,'N' AS [Non_Clinic]
+	,p.Mobile_Clinic AS [Mobile_Clinic]
+	,ISNULL(p.Remarks_Desc,'') AS [Remarks_Desc]
+	,ISNULL(p.Remarks_Desc_Chi,'') AS [Remarks_Desc_Chi]
 
 	from practice p LEFT JOIN (SELECT DISTINCT SP_ID, Practice_Display_Seq, Scheme_Code, Record_Status FROM PracticeSchemeInfo ) psi  
 		ON  p.sp_id = psi.sp_id AND p.display_seq = psi.Practice_Display_Seq 
@@ -264,30 +299,30 @@ select sp.sp_id,
 CLOSE SYMMETRIC KEY sym_Key
 
 declare	
-	@sp_id char(8)
+	@sp_id CHAR(8)
 	,@practice_display_seq smallint
-	,@district_code char(5)
-	,@Room nvarchar(5)
-	,@Floor nvarchar(3)
-	,@Block nvarchar(3)
-	,@Building varchar(255)
-	,@Building_Chi nvarchar(255)
+	,@district_code CHAR(5)
+	,@Room NVARCHAR(5)
+	,@Floor NVARCHAR(3)
+	,@Block NVARCHAR(3)
+	,@Building VARCHAR(255)
+	,@Building_Chi NVARCHAR(255)
 	,@Address_Code int
-	,@eh_eng varchar(255)
-	,@eh_chi nvarchar(255)
-	,@address_eng varchar(255)
-	,@address_chi nvarchar(255)
---	,district_code_addr char(4)
+	,@eh_eng VARCHAR(255)
+	,@eh_chi NVARCHAR(255)
+	,@address_eng VARCHAR(255)
+	,@address_chi NVARCHAR(255)
+--	,district_code_addr CHAR(4)
 
-	,@district_name	char(15)
-	,@district_board char(15)
-	,@area_name	char(50)
-	,@district_name_chi	nchar(30)
-	,@district_board_chi	nchar(30)
-	,@area_name_chi	nchar(50)
+	,@district_name	CHAR(15)
+	,@district_board VARCHAR(20)
+	,@area_name	CHAR(50)
+	,@district_name_chi	nCHAR(30)
+	,@district_board_chi	nCHAR(30)
+	,@area_name_chi	nCHAR(50)
 
-	,@district_board_shortname_SD  char(5)
-	,@area_code char(1)
+	,@district_board_shortname_SD  CHAR(5)
+	,@area_code CHAR(1)
 
 
 DECLARE practice_cursor cursor 
@@ -368,25 +403,29 @@ BEGIN
 
 	/*  format district + area */
     if @district_code is not null and @district_code <>'' 
-		begin 
-			SELECT  @district_name = d.district_name, @district_name_chi=d.district_chi,
-				@district_board= d.district_board, @district_board_chi= d.district_board_chi,
+		BEGIN 
+			SELECT  
+				@district_name = d.district_name, 
+				@district_name_chi=d.district_chi,
+				@district_board= DB.District_Board_SD, 
+				@district_board_chi= DB.District_Board_SD_Chi,
 				@area_code = d.district_area,
 				@area_name= DA.area_name, @area_name_chi= DA.area_chi,
 				@district_board_shortname_SD= DB.district_board_shortname_SD
-				FROM district D
+			FROM district D
 				JOIN DistrictBoard DB
 					ON DB.District_Board = D.District_Board				
 				JOIN District_Area DA 
 					ON DB.Area_Code = DA.Area_Code
-				WHERE D.district_code = @district_code
+			WHERE 
+				D.district_code = @district_code
 
 			set @address_eng = @address_eng + rtrim(@district_name) +', ' + rtrim(@area_name)
 
 			if @address_chi <>'' 
 				set @address_chi = rtrim(@area_name_chi) + rtrim(@district_name_chi)  + @address_chi
 
-		end 
+		END 
 		
 	update 	#tmpPractice 
 		set 
@@ -424,9 +463,11 @@ DEALLOCATE practice_cursor
 	SET
 		practice_name = practice_name + ' (' + @NonClinicEn + ')',
 		practice_name_chi = CASE WHEN ISNULL(practice_name_chi, '') <> ''
-								THEN practice_name_chi + N'（' + @NonClinicCh + N'）'
+								--THEN practice_name_chi + N'（' + @NonClinicCh + N'）'
+								THEN practice_name_chi + N'(' + @NonClinicCh + N')'
 								ELSE practice_name_chi
-							END
+							END,
+		[Non_Clinic] = 'Y'
 	FROM
 		(SELECT DISTINCT
 			SP_ID,
@@ -451,13 +492,13 @@ DEALLOCATE practice_cursor
 -- ---------------------------------------------
 
 	CREATE TABLE #tmpPracticeSchemeInfo (
-		SP_ID					char(8) not null,
+		SP_ID					CHAR(8) not null,
 		Practice_Display_Seq	smallint not null,
-		Scheme_Code				char(10) not null,
-		Subsidize_Code			char(10) not null,
-		Record_Status			char(1),
-		Provide_Service			char(1),
-		Service_Fee				varchar(15),
+		Scheme_Code				CHAR(10) not null,
+		Subsidize_Code			CHAR(10) not null,
+		Record_Status			CHAR(1),
+		Provide_Service			CHAR(1),
+		Service_Fee				VARCHAR(15),
 		--CONSTRAINT PK_tmpPracticeSchemeInfo PRIMARY KEY (SP_ID, Subsidize_Code, Practice_Display_Seq, Scheme_Code)
 	)
 
@@ -485,7 +526,7 @@ DEALLOCATE practice_cursor
 		CASE ISNULL(PSI.Provide_Service, 'N')
 			WHEN 'Y' THEN
 			      CASE PSI.ProvideServiceFee
-			             WHEN 'Y' THEN RIGHT('0000' + CAST(Service_Fee as varchar(4)), 4)
+			             WHEN 'Y' THEN RIGHT('0000' + CAST(Service_Fee as VARCHAR(4)), 4)
 			             WHEN 'N' THEN @Symbol_For_No_Service_Fee
 			             ELSE NULL
 			      END
@@ -519,10 +560,10 @@ DEALLOCATE practice_cursor
 -- ---------------------------------------------
 
 	DECLARE @PracticeSchemeSecondary table (
-		SP_ID					char(8),
+		SP_ID					CHAR(8),
 		Practice_Display_Seq	smallint,
-		Scheme_Code				char(8),
-		Subsidize_Code			char(10),
+		Scheme_Code				CHAR(8),
+		Subsidize_Code			CHAR(10),
 		Score					int
 	)
 	
@@ -544,10 +585,10 @@ DEALLOCATE practice_cursor
 		WHERE
 			Subsidize_Code_Secondary IS NOT NULL
 
-	DECLARE @CC_Scheme_Code					varchar(10)
-	DECLARE @CC_Subsidize_Code				varchar(10)
-	DECLARE @CC_Subsidize_Code_Secondary	varchar(100)
-	DECLARE @CC_Item						varchar(50)
+	DECLARE @CC_Scheme_Code					VARCHAR(10)
+	DECLARE @CC_Subsidize_Code				VARCHAR(10)
+	DECLARE @CC_Subsidize_Code_Secondary	VARCHAR(100)
+	DECLARE @CC_Item						VARCHAR(50)
 	DECLARE @Power							int
 	
 	--
@@ -643,10 +684,10 @@ DEALLOCATE practice_cursor
 -- 3. Handle Subsidize_Code_Combination: Remove the children (eg. EPV, EQIV) if the parent is not providing service (eg. EPVQIV)
 -- ---------------------------------------------
 
-	DECLARE @CC_Subsidize_Code_Combination varchar(100)
+	DECLARE @CC_Subsidize_Code_Combination VARCHAR(100)
 
 	DECLARE @SubsidizeCodeCombination table (
-		Subsidize_Code varchar(10)
+		Subsidize_Code VARCHAR(10)
 	)	
 
 	DECLARE CombineCursor cursor FOR  
@@ -840,10 +881,10 @@ DEALLOCATE practice_cursor
 -- 6. Process the subsidize_item_x, subsidize_fee_x (pivot the table manually)
 -- ---------------------------------------------
 
-	DECLARE @FC_Scheme_Code varchar(10)
-	DECLARE @FC_Subsidize_Code varchar(10)
-	DECLARE @FC_Subsidize_Item_Column_Name varchar(20)
-	DECLARE @FC_Subsidize_Fee_Column_Name varchar(20)
+	DECLARE @FC_Scheme_Code VARCHAR(10)
+	DECLARE @FC_Subsidize_Code VARCHAR(10)
+	DECLARE @FC_Subsidize_Item_Column_Name VARCHAR(20)
+	DECLARE @FC_Subsidize_Fee_Column_Name VARCHAR(20)
 
 	DECLARE FeeCursor cursor FOR
 		SELECT
@@ -1031,7 +1072,7 @@ DEALLOCATE practice_cursor
 			SP_ID,
 			Practice_Display_Seq,
 			(SELECT
-				CONVERT(varchar, RTRIM(T.Scheme_Code)) + '|'
+				CONVERT(VARCHAR, RTRIM(T.Scheme_Code)) + '|'
 			FROM
 				(SELECT DISTINCT
 					P.SP_ID,
@@ -1111,7 +1152,11 @@ DEALLOCATE practice_cursor
 		,subsidize_fee_09
 		,subsidize_fee_10
 		,joined_scheme
-	
+
+		,[Mobile_Clinic]
+		,[Non_Clinic]
+		,[Remarks_Desc]		
+		,[Remarks_Desc_Chi]	
 	)
 	SELECT
 		sp_id
@@ -1155,6 +1200,11 @@ DEALLOCATE practice_cursor
 		,subsidize_fee_09
 		,subsidize_fee_10
 		,joined_scheme
+
+		,[Mobile_Clinic]
+		,[Non_Clinic]
+		,[Remarks_Desc]		
+		,[Remarks_Desc_Chi]	
 	
 	FROM
 		#tmpPractice 
@@ -1183,3 +1233,4 @@ DEALLOCATE practice_cursor
 
 END
 GO
+

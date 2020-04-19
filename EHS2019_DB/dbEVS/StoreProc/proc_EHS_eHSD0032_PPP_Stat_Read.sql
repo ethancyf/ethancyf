@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Mar 2020
+-- CR No.:			INT20-0005
+-- Description:		Fix incorrect display order
+-- =============================================
 -- ============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -74,7 +81,8 @@ INSERT INTO @ContentTable (Value1) SELECT 'Report Generation Time: ' + @strGenDt
 
 SELECT 	ISNULL(Value1, ''),	ISNULL(Value2,'')
 FROM @ContentTable  
-
+ORDER BY
+	Display_Seq
 
 -- --------------------------------------------------    
 -- From stored procedure: proc_EHS_eHSD0032_01_PrepareData

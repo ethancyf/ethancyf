@@ -5,21 +5,24 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================  
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- CR No.			CRE19-026 (HCVS hotline service) 
+-- Modified date:	03 Feb 2020
+-- Description:		Return [Available_HCVU_SubPlatform] from table RoleType
+-- ============================================= 
 -- =============================================
 -- Author:			Billy Lam
 -- Create date:		08-06-2008
 -- Description:		Get RoleType
 -- =============================================
--- =============================================
--- Modification History
--- Modified by:	
--- Modified date: 
--- Description:	
--- =============================================
+
 CREATE Procedure dbo.proc_RoleType_get
 as
 
-select Role_Type, Role_Description
+select Role_Type, Role_Description, Available_HCVU_SubPlatform
 from RoleType
 where Record_Status = 'A'
 order by Role_Type

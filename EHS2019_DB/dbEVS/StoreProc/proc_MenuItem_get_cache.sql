@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================  
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- CR No.			CRE19-026 (HCVS hotline service) 
+-- Modified date:	03 Feb 2020
+-- Description:		Add Column [Available_HCVU_SubPlatform]
+-- ============================================= 
 -- =============================================
 -- Modification History
 -- Modified by:		Lawrence TSANG
@@ -19,13 +26,6 @@ GO
 -- Author:			Billy Lam
 -- Create date:		05-05-2008
 -- Description:		Get MenuItem for caching
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
 -- =============================================
 
 CREATE procedure [dbo].[proc_MenuItem_get_cache]
@@ -46,7 +46,8 @@ AS BEGIN
 		Description,
 		Chinese_Description,
 		Item_ID,
-		Parent_Item_ID
+		Parent_Item_ID,
+		Available_HCVU_SubPlatform
 	FROM
 		MenuItem
 	WHERE

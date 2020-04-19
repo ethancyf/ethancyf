@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.			CRE16-022 (SDIR Remark)
+-- Modified by:		CHRIS YIM
+-- Modified date:	17 Feb 2020
+-- Description:		Add columns [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:		  CRE19-0XX
@@ -112,7 +120,7 @@ GO
 
 CREATE PROCEDURE [dbo].[proc_EHS_eHSU0005_Report_get]
 	@request_time	datetime = NULL, -- For filtering the back office effective scheme
-	@ProfessionList	varchar(5000) = NULL
+	@ProfessionList	VARCHAR(5000) = NULL
 AS BEGIN
 
 -- =============================================
@@ -120,18 +128,18 @@ AS BEGIN
 -- =============================================
 
 	DECLARE @current_dtm	datetime
-	DECLARE @delimiter		varchar(3)
+	DECLARE @delimiter		VARCHAR(3)
 	DECLARE @seq			int
 
 	DECLARE @ProfessionListTemp TABLE (
-		Service_Category_Code varchar(3)
+		Service_Category_Code VARCHAR(3)
 	)
 
 	DECLARE @SchemeBackOffice TABLE (
 		Scheme_Code		char(10),
 		Display_Code	char(25),
 		Display_Seq		smallint,
-		Scheme_Desc		varchar(100)
+		Scheme_Desc		VARCHAR(100)
 	)
 
 	DECLARE @SubsidizeGroupBackOffice TABLE (
@@ -139,11 +147,11 @@ AS BEGIN
 		Subsidize_Code		char(10),
 		Scheme_Display_Seq	smallint,
 		Display_Seq			smallint,
-		Display_Desc		varchar(50),
+		Display_Desc		VARCHAR(50),
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
 		Service_Fee_Compulsory	char(1),
-		Service_Fee_Compulsory_Wording	varchar(100),	
+		Service_Fee_Compulsory_Wording	VARCHAR(100),	
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 		Record_Status		char(1)--' CRE15-004 TIV & QIV [Winnie]		
 	)
@@ -151,22 +159,22 @@ AS BEGIN
 
 	DECLARE @ServiceProviderStatus TABLE (
 		Status_Value		char(3),
-		Status_Description	varchar(100)
+		Status_Description	VARCHAR(100)
 	)
 
 	DECLARE @MORelationship TABLE (
 		Relationship		char(5),
-		Relationship_Desc	varchar(4000)
+		Relationship_Desc	VARCHAR(4000)
 	)
 
 	DECLARE @MOStatus TABLE (
 		Status_Value		char(3),
-		Status_Description	varchar(100)
+		Status_Description	VARCHAR(100)
 	)
 
 	DECLARE @PracticeStatus TABLE (
 		Status_Value		char(3),
-		Status_Description	varchar(100)
+		Status_Description	VARCHAR(100)
 	)
 
 	CREATE TABLE #SP_Filtered (
@@ -183,7 +191,7 @@ AS BEGIN
 		Scheme_Display_Code		char(25),
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
-		Scheme_Record_Status	varchar(100)
+		Scheme_Record_Status	VARCHAR(100)
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 	)
 	
@@ -191,7 +199,7 @@ AS BEGIN
 	CREATE TABLE #SP_Filtered_With_Practice_Scheme_Info (
 		SP_ID					char(8),
 		Scheme_Display_Code		char(25),
-		Scheme_Record_Status	varchar(100)
+		Scheme_Record_Status	VARCHAR(100)
 	)	
 	--' CRE15-004 TIV & QIV [End][Winnie]
 	
@@ -201,39 +209,39 @@ AS BEGIN
 		Scheme_Display_Code		char(25),
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
-		Scheme_Record_Status	varchar(100)
+		Scheme_Record_Status	VARCHAR(100)
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 	)
 
 	CREATE TABLE #Practice_Filtered_With_Subsidize_Info (
 		SP_ID					char(8),
 		Display_Seq				smallint,
-		Display_Desc			varchar(50),
+		Display_Desc			VARCHAR(50),
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
-		Service_Fee				varchar(100)
+		Service_Fee				VARCHAR(100)
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 	)
 
-	DECLARE @pivot_table_column_header		varchar(MAX)
-	DECLARE @pivot_table_column_list		varchar(MAX)
-	DECLARE @pivot_table_column_name_alias	varchar(MAX)
-	DECLARE @pivot_table_column_name_value	varchar(MAX)
+	DECLARE @pivot_table_column_header		VARCHAR(MAX)
+	DECLARE @pivot_table_column_list		VARCHAR(MAX)
+	DECLARE @pivot_table_column_name_alias	VARCHAR(MAX)
+	DECLARE @pivot_table_column_name_value	VARCHAR(MAX)
 
-	DECLARE @pivot_table_subsidize_column_header		varchar(MAX)
-	DECLARE @pivot_table_subsidize_column_list			varchar(MAX)
-	DECLARE @pivot_table_subsidize_column_name_alias	varchar(MAX)
-	DECLARE @pivot_table_subsidize_column_name_value	varchar(MAX)
+	DECLARE @pivot_table_subsidize_column_header		VARCHAR(MAX)
+	DECLARE @pivot_table_subsidize_column_list			VARCHAR(MAX)
+	DECLARE @pivot_table_subsidize_column_name_alias	VARCHAR(MAX)
+	DECLARE @pivot_table_subsidize_column_name_value	VARCHAR(MAX)
 
 	--' CRE15-004 TIV & QIV [Start][Winnie]
-	DECLARE @pivot_table_practice_scheme_column_header		varchar(MAX)
-	DECLARE @pivot_table_practice_scheme_column_list		varchar(MAX)
-	DECLARE @pivot_table_practice_scheme_column_name_alias	varchar(MAX)
-	DECLARE @pivot_table_practice_scheme_column_name_value	varchar(MAX)	
+	DECLARE @pivot_table_practice_scheme_column_header		VARCHAR(MAX)
+	DECLARE @pivot_table_practice_scheme_column_list		VARCHAR(MAX)
+	DECLARE @pivot_table_practice_scheme_column_name_alias	VARCHAR(MAX)
+	DECLARE @pivot_table_practice_scheme_column_name_value	VARCHAR(MAX)	
 	--' CRE15-004 TIV & QIV [End][Winnie]
 	
-	DECLARE @sql_script						varchar(MAX)
-	DECLARE @sql_script_pivot_table_insert	varchar(MAX)
+	DECLARE @sql_script						VARCHAR(MAX)
+	DECLARE @sql_script_pivot_table_insert	VARCHAR(MAX)
 
 -- =============================================
 -- Validation
@@ -384,7 +392,7 @@ AS BEGIN
 
 	-- For Scheme
 	SELECT
-		@pivot_table_column_header = COALESCE(@pivot_table_column_header + ',', '') + '[' + LTRIM(RTRIM(Display_Code)) + '] varchar(100)',
+		@pivot_table_column_header = COALESCE(@pivot_table_column_header + ',', '') + '[' + LTRIM(RTRIM(Display_Code)) + '] VARCHAR(100)',
 		@pivot_table_column_list = COALESCE(@pivot_table_column_list + ',', '') + '[' + LTRIM(RTRIM(Display_Code)) + ']',
 		@pivot_table_column_name_alias = COALESCE(@pivot_table_column_name_alias + ',', '') + 'PT.[' + LTRIM(RTRIM(Display_Code)) + ']',
 		@pivot_table_column_name_value = COALESCE(@pivot_table_column_name_value + ',', '') + '''' + LTRIM(RTRIM(Display_Code)) + ''''
@@ -393,7 +401,7 @@ AS BEGIN
 
 	-- For Subsidize
 	SELECT
-		@pivot_table_subsidize_column_header = COALESCE(@pivot_table_subsidize_column_header + ',', '') + '[' + LTRIM(RTRIM(Display_Desc)) + '] varchar(50)',
+		@pivot_table_subsidize_column_header = COALESCE(@pivot_table_subsidize_column_header + ',', '') + '[' + LTRIM(RTRIM(Display_Desc)) + '] VARCHAR(50)',
 		@pivot_table_subsidize_column_list = COALESCE(@pivot_table_subsidize_column_list + ',', '') + '[' + LTRIM(RTRIM(Display_Desc)) + ']',
 		@pivot_table_subsidize_column_name_alias = COALESCE(@pivot_table_subsidize_column_name_alias + ',', '') + 'PT2.[' + LTRIM(RTRIM(Display_Desc)) + ']',
 		@pivot_table_subsidize_column_name_value = COALESCE(@pivot_table_subsidize_column_name_value + ',', '') + '''' + LTRIM(RTRIM(Display_Desc)) + ' ($)'''
@@ -403,7 +411,7 @@ AS BEGIN
 	--' CRE15-004 TIV & QIV [Start][Winnie]
 	-- For Scheme in Practice
 	SELECT
-		@pivot_table_practice_scheme_column_header = COALESCE(@pivot_table_practice_scheme_column_header + ',', '') + '[' + LTRIM(RTRIM(Display_Code)) + '] varchar(100)',
+		@pivot_table_practice_scheme_column_header = COALESCE(@pivot_table_practice_scheme_column_header + ',', '') + '[' + LTRIM(RTRIM(Display_Code)) + '] VARCHAR(100)',
 		@pivot_table_practice_scheme_column_list = COALESCE(@pivot_table_practice_scheme_column_list + ',', '') + '[' + LTRIM(RTRIM(Display_Code)) + ']',
 		@pivot_table_practice_scheme_column_name_alias = COALESCE(@pivot_table_practice_scheme_column_name_alias + ',', '') + 'PT2.[' + LTRIM(RTRIM(Display_Code)) + ']',
 		@pivot_table_practice_scheme_column_name_value = COALESCE(@pivot_table_practice_scheme_column_name_value + ',', '') + '''With Active Practice Enrolled in ' + LTRIM(RTRIM(Display_Code)) + ''''
@@ -624,7 +632,7 @@ AS BEGIN
 							CASE WHEN TEMP_1.Service_Fee_Compulsory = 'N' THEN TEMP_1.Service_Fee_Compulsory_Wording
 								 ELSE 'N/A'
 							END
-						 Else CONVERT(varchar(100), PSI.Service_Fee)
+						 Else CONVERT(VARCHAR(100), PSI.Service_Fee)
 					END
 										
 				WHEN 'N' THEN					
@@ -678,7 +686,7 @@ AS BEGIN
 -- For Excel Sheet (02): Criteria
 -- ---------------------------------------------
 
-	DECLARE @criteria01 varchar(5000)
+	DECLARE @criteria01 VARCHAR(5000)
 
 	--IF @ProfessionList = ''
 	--	BEGIN
@@ -703,31 +711,31 @@ AS BEGIN
 	CREATE TABLE #WS03_Part1 (
 		Seq		int,
 		Seq2	datetime,
-		Col01	varchar(10),	-- SPID
-		Col02	varchar(100),	-- SP Name (In English)
-		Col03	nvarchar(100),	-- SP Name (In Chinese)
-		Col04	varchar(30),	-- Profile Effective Date
-		Col05	varchar(20),	-- Data Input By
-		Col06	varchar(300),	-- Correspondence Address
-		Col07	varchar(20),	-- District
-		Col08	varchar(20),	-- District Board
-		Col09	varchar(50),	-- Area
-		Col10	varchar(255),	-- Email Address
-		Col11	varchar(255),	-- Pending Email Address
-		Col12	varchar(30),	-- Daytime Contact Phone No.
-		Col13	varchar(20),	-- Fax No.
-		Col14	varchar(100),	-- SP Status
-		Col15	varchar(100),	-- PCD Status
-		Col16	varchar(100),	-- PCD Professional
-		Col17	varchar(50),	-- Last check date of PCD Status
-		Col18	varchar(5000),	-- Profession
-		Col19	varchar(30),	-- Token Serial No.
-		Col20	varchar(30),	-- Token Issued By
-		Col21	varchar(30),	-- Is Share Token
-		Col22	varchar(30),	-- Token Serial No. (New)
-		Col23	varchar(30),	-- Token Issued By (New)
-		Col24	varchar(30),	-- Is Share Token (New)
-		Col25	varchar(100)	-- Provide DHC-related Services (Any practices)
+		Col01	VARCHAR(10),	-- SPID
+		Col02	VARCHAR(100),	-- SP Name (In English)
+		Col03	NVARCHAR(100),	-- SP Name (In Chinese)
+		Col04	VARCHAR(30),	-- Profile Effective Date
+		Col05	VARCHAR(20),	-- Data Input By
+		Col06	VARCHAR(300),	-- Correspondence Address
+		Col07	VARCHAR(20),	-- District
+		Col08	VARCHAR(20),	-- District Board
+		Col09	VARCHAR(50),	-- Area
+		Col10	VARCHAR(255),	-- Email Address
+		Col11	VARCHAR(255),	-- Pending Email Address
+		Col12	VARCHAR(30),	-- Daytime Contact Phone No.
+		Col13	VARCHAR(20),	-- Fax No.
+		Col14	VARCHAR(100),	-- SP Status
+		Col15	VARCHAR(100),	-- PCD Status
+		Col16	VARCHAR(100),	-- PCD Professional
+		Col17	VARCHAR(50),	-- Last check date of PCD Status
+		Col18	VARCHAR(5000),	-- Profession
+		Col19	VARCHAR(30),	-- Token Serial No.
+		Col20	VARCHAR(30),	-- Token Issued By
+		Col21	VARCHAR(30),	-- Is Share Token
+		Col22	VARCHAR(30),	-- Token Serial No. (New)
+		Col23	VARCHAR(30),	-- Token Issued By (New)
+		Col24	VARCHAR(30),	-- Is Share Token (New)
+		Col25	VARCHAR(100)	-- Provide DHC-related Services (Any practices)
 	)
 
 	-- Create Column Header
@@ -750,11 +758,11 @@ AS BEGIN
 		@seq,
 		SP.Data_Input_Effective_Dtm,
 		SP.SP_ID,
-		CONVERT(varchar(100), DecryptByKey(SP.Encrypt_Field2)),
-		CONVERT(nvarchar(100), DecryptByKey(SP.Encrypt_Field3)),
+		CONVERT(VARCHAR(100), DecryptByKey(SP.Encrypt_Field2)),
+		CONVERT(NVARCHAR(100), DecryptByKey(SP.Encrypt_Field3)),
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
-		CONVERT(varchar(10), SP.Data_Input_Effective_Dtm, 111),
+		CONVERT(VARCHAR(10), SP.Data_Input_Effective_Dtm, 111),
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 		SP.Data_Input_By,
 		[dbo].[func_formatEngAddress](SP.[Room], SP.[Floor], SP.[Block], SP.[Building], SP.[District]),
@@ -785,7 +793,7 @@ AS BEGIN
 		REPLACE(SP.PCD_Professional,',',', ') AS [PCD_Professional],
 		CASE 
 			WHEN SP.PCD_Status_Last_Check_Dtm IS NULL THEN ''
-			ELSE CONVERT(varchar(10), SP.PCD_Status_Last_Check_Dtm, 111)
+			ELSE CONVERT(VARCHAR(10), SP.PCD_Status_Last_Check_Dtm, 111)
 		END AS [PCD_Status_Last_Check_Dtm],
 		STUFF(
 			(SELECT (', ' + LTRIM(RTRIM(PL.Service_Category_Code)))
@@ -937,24 +945,24 @@ AS BEGIN
 	CREATE TABLE #WS04 (
 		Seq		int,
 		Seq2	datetime,
-		Col01	varchar(10),
-		Col02	varchar(100),
-		Col03	nvarchar(100),
-		Col04	varchar(30),
-		Col05	varchar(20),
-		Col06	varchar(10),
-		Col07	nvarchar(100),
-		Col08	nvarchar(100),
-		Col09	varchar(50),
-		Col10	varchar(30),
-		Col11	varchar(20),
-		Col12	varchar(255),
-		Col13	varchar(300),
-		Col14	varchar(20),
-		Col15	varchar(20),
-		Col16	varchar(50),
-		Col17	varchar(4000),
-		Col18	varchar(100)
+		Col01	VARCHAR(10),
+		Col02	VARCHAR(100),
+		Col03	NVARCHAR(100),
+		Col04	VARCHAR(30),
+		Col05	VARCHAR(20),
+		Col06	VARCHAR(10),
+		Col07	NVARCHAR(100),
+		Col08	NVARCHAR(100),
+		Col09	VARCHAR(50),
+		Col10	VARCHAR(30),
+		Col11	VARCHAR(20),
+		Col12	VARCHAR(255),
+		Col13	VARCHAR(300),
+		Col14	VARCHAR(20),
+		Col15	VARCHAR(20),
+		Col16	VARCHAR(50),
+		Col17	VARCHAR(4000),
+		Col18	VARCHAR(100)
 	)
 
 	-- Create Column Header (Entered in Excel Template)
@@ -985,11 +993,11 @@ AS BEGIN
 		@seq,
 		SP.Data_Input_Effective_Dtm,
 		SP.SP_ID,
-		CONVERT(varchar(100), DecryptByKey(SP.Encrypt_Field2)),
-		CONVERT(nvarchar(100), DecryptByKey(SP.Encrypt_Field3)),
+		CONVERT(VARCHAR(100), DecryptByKey(SP.Encrypt_Field2)),
+		CONVERT(NVARCHAR(100), DecryptByKey(SP.Encrypt_Field3)),
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
-		CONVERT(varchar(10), SP.Data_Input_Effective_Dtm, 111),
+		CONVERT(VARCHAR(10), SP.Data_Input_Effective_Dtm, 111),
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 		SP.Data_Input_By,
 		MO.Display_Seq,
@@ -1029,41 +1037,44 @@ AS BEGIN
 
 	-- Create Temp Result Table
 	CREATE TABLE #WS05_Part1 (
-		Seq		int,
-		Seq2	datetime,
-		Col01	varchar(10),	-- SPID
-		Col02	varchar(100),	-- SP Name (In English)
-		Col03	nvarchar(100),	-- SP Name (In Chinese)
-		Col04	varchar(30),	-- Profile Effective Date
-		Col05	varchar(20),	-- Data Input By
+		Seq		INT,
+		Seq2	DATETIME,
+		Col01	VARCHAR(10),	-- SPID
+		Col02	VARCHAR(100),	-- SP Name (In English)
+		Col03	NVARCHAR(100),	-- SP Name (In Chinese)
+		Col04	VARCHAR(30),	-- Profile Effective Date
+		Col05	VARCHAR(20),	-- Data Input By
 		--' CRE15-004 TIV & QIV [Start][Winnie] Add SP Status
-		Col06	varchar(100),	-- SP Status
-		Col07	varchar(100),	-- SP PCD Status
-		Col08	varchar(100),	-- SP PCD Professional
-		Col09	varchar(50),	-- SP Last check date of PCD Status
+		Col06	VARCHAR(100),	-- SP Status
+		Col07	VARCHAR(100),	-- SP PCD Status
+		Col08	VARCHAR(100),	-- SP PCD Professional
+		Col09	VARCHAR(50),	-- SP Last check date of PCD Status
 		--' CRE15-004 TIV & QIV [End][Winnie]
-		Col10	varchar(20),	-- Practice No.
+		Col10	VARCHAR(20),	-- Practice No.
 		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
 		-- -----------------------------------------------------------------------------------------
-		Col11	varchar(10),	-- MO No.
+		Col11	VARCHAR(10),	-- MO No.
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]	
-		Col12	nvarchar(100),	-- MO Name (In English)
-		Col13	nvarchar(100),	-- MO Name (In Chinese)
-		Col14	nvarchar(100),	-- Practice Name (In English)
-		Col15	nvarchar(100),	-- Practice Name (In Chinese)
-		Col16	varchar(300),	-- Practice Address (In English)
-		Col17	nvarchar(300),	-- Practice Address (In Chinese)
-		Col18	varchar(20),	-- District
-		Col19	varchar(20),	-- District Board
-		Col20	varchar(50),	-- Area
-		Col21	varchar(30),	-- Practice Status
-		Col22	varchar(20),	-- Profession
-		Col23	varchar(50),	-- Professional Registration No.
-		Col24	varchar(50),	-- Phone No. of Practice
-		Col25	nvarchar(100),	-- Bank Name
-		Col26	nvarchar(100),	-- Branch Name
-		Col27	nvarchar(300),	-- Bank Account Name
-		Col28	varchar(100)	-- Provide DHC-related Services
+		Col12	NVARCHAR(100),	-- MO Name (In English)
+		Col13	NVARCHAR(100),	-- MO Name (In Chinese)
+		Col14	NVARCHAR(100),	-- Practice Name (In English)
+		Col15	NVARCHAR(100),	-- Practice Name (In Chinese)
+		Col16	VARCHAR(300),	-- Practice Address (In English)
+		Col17	NVARCHAR(300),	-- Practice Address (In Chinese)
+		Col18	VARCHAR(20),	-- District
+		Col19	VARCHAR(20),	-- District Board
+		Col20	VARCHAR(50),	-- Area
+		Col21	VARCHAR(30),	-- Practice Status
+		Col22	VARCHAR(20),	-- Profession
+		Col23	VARCHAR(50),	-- Professional Registration No.
+		Col24	VARCHAR(50),	-- Phone No. of Practice
+		Col25	VARCHAR(100),	-- Mobile_Clinic
+		Col26	NVARCHAR(200),	-- Remarks Description (In English)
+		Col27	NVARCHAR(200),	-- Remarks Description (In Chinese)	
+		Col28	NVARCHAR(100),	-- Bank Name
+		Col29	NVARCHAR(100),	-- Branch Name
+		Col30	NVARCHAR(300),	-- Bank Account Name
+		Col31	VARCHAR(100)	-- Provide DHC-related Services
 	)
 
 	-- Create Column Header
@@ -1073,7 +1084,8 @@ AS BEGIN
 		Seq, Seq2,
 		Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10,
 		Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20,
-		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28
+		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28, Col29, Col30,
+		Col31
 	)
 	VALUES (
 		@seq, NULL,
@@ -1081,7 +1093,8 @@ AS BEGIN
 		'Practice No.', 'MO No.', 'MO Name (In English)', 'MO Name (In Chinese)', 'Practice Name (In English)',
 		'Practice Name (In Chinese)', 'Practice Address (In English)', 'Practice Address (In Chinese)', 
 		'District', 'District Board', 'Area', 'Practice Status', 'Profession', 'Professional Registration No.',
-		'Phone No. of Practice', 'Bank Name', 'Branch Name', 'Bank Account Name', 'Provide DHC-related Services'
+		'Phone No. of Practice', 'Mobile Clinic', 'Remarks (In English)', 'Remarks (In Chinese)',
+		'Bank Name', 'Branch Name', 'Bank Account Name', 'Provide DHC-related Services'
 	)
 
 	-- Create Report Result
@@ -1091,17 +1104,16 @@ AS BEGIN
 		Seq, Seq2,
 		Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10,
 		Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20,
-		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28
+		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28, Col29, Col30,
+		Col31
 	)
 	SELECT
 		@seq,
 		SP.Data_Input_Effective_Dtm,
 		SP.SP_ID,
-		CONVERT(varchar(100), DecryptByKey(SP.Encrypt_Field2)),
-		CONVERT(nvarchar(100), DecryptByKey(SP.Encrypt_Field3)),
-		-- 'CRE13-008 - SP Amendment Report [Start][Chris YIM]
-		-- -----------------------------------------------------------------------------------------
-		CONVERT(varchar(10), SP.Data_Input_Effective_Dtm, 111),
+		CONVERT(VARCHAR(100), DecryptByKey(SP.Encrypt_Field2)),
+		CONVERT(NVARCHAR(100), DecryptByKey(SP.Encrypt_Field3)),
+		CONVERT(VARCHAR(10), SP.Data_Input_Effective_Dtm, 111),
 		SP.Data_Input_By,
 		SPS.Status_Description, -- ' Add Column SP Status [Winnie]
 		CASE
@@ -1121,11 +1133,10 @@ AS BEGIN
 		REPLACE(SP.PCD_Professional,',',', ') AS [PCD_Professional],
 		CASE 
 			WHEN SP.PCD_Status_Last_Check_Dtm IS NULL THEN ''
-			ELSE CONVERT(varchar(10), SP.PCD_Status_Last_Check_Dtm, 111)
+			ELSE CONVERT(VARCHAR(10), SP.PCD_Status_Last_Check_Dtm, 111)
 		END AS [PCD_Status_Last_Check_Dtm],
 		P.Display_Seq,
 		MO.Display_Seq,
-		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]	
 		MO.MO_Eng_Name,
 		MO.MO_Chi_Name,
 		P.Practice_Name,
@@ -1139,6 +1150,9 @@ AS BEGIN
 		PL.Service_Category_Code,
 		PL.Registration_Code,
 		P.Phone_Daytime,
+		[Mobile_Clinic] = IIF(P.[Mobile_Clinic] = 'Y', 'Yes','No'),
+		P.[Remarks_Desc],
+		P.[Remarks_Desc_Chi],
 		BA.Bank_Name,
 		BA.Branch_Name,
 		BA.Bank_Acc_Holder,
@@ -1183,7 +1197,7 @@ AS BEGIN
 	-- Create Pivot Table
 	CREATE TABLE #PivotTable_WS05_P2 (
 		SP_ID			char(8),
-		Display_Seq		varchar(20)
+		Display_Seq		VARCHAR(20)
 	)
 
 	-- Add Column for Pivot Table dynamically
@@ -1223,15 +1237,15 @@ AS BEGIN
 
 	CREATE TABLE #PivotTable_WS05_NonClinicScheme (
 		SP_ID				char(8),
-		Display_Seq			varchar(20),
+		Display_Seq			VARCHAR(20),
 		Scheme_Code			char(10),
 		Scheme_Display_Seq	smallint
 	)
 	
 	CREATE TABLE #PivotTable_WS05_NonClinicSchemeSummary (
 		SP_ID			char(8),
-		Display_Seq		varchar(20),
-		Scheme_Code		varchar(8000)
+		Display_Seq		VARCHAR(20),
+		Scheme_Code		VARCHAR(8000)
 	)
 	
 	--
@@ -1277,7 +1291,7 @@ AS BEGIN
 			SP_ID,
 			Display_Seq,
 			(SELECT
-				', ' + CONVERT(varchar, RTRIM(Scheme_Code)) 
+				', ' + CONVERT(VARCHAR, RTRIM(Scheme_Code)) 
 			FROM
 				#PivotTable_WS05_NonClinicScheme
 			WHERE
@@ -1315,7 +1329,7 @@ AS BEGIN
 	-- Create Pivot Table
 	CREATE TABLE #PivotTable_WS05_P3 (
 		SP_ID			char(8),
-		Display_Seq		varchar(20)
+		Display_Seq		VARCHAR(20)
 	)
 
 	-- Add Column for Pivot Table dynamically
@@ -1356,8 +1370,8 @@ AS BEGIN
 	CREATE TABLE #WS07 (
 		Seq		int,
 		Seq2	int,
-		Col01	varchar(1000),
-		Col02	varchar(1000)
+		Col01	VARCHAR(1000),
+		Col02	VARCHAR(1000)
 	)
 
 	SET @seq = 0
@@ -1445,7 +1459,7 @@ AS BEGIN
 -- To Excel Sheet (01): Content
 -- ---------------------------------------------
 
-	SELECT 'Report Generation Time: ' + CONVERT(varchar(10), @current_dtm, 111) + ' ' + CONVERT(varchar(5), @current_dtm, 114)
+	SELECT 'Report Generation Time: ' + CONVERT(VARCHAR(10), @current_dtm, 111) + ' ' + CONVERT(VARCHAR(5), @current_dtm, 114)
 
 -- ---------------------------------------------
 -- To Excel Sheet (02): Criteria
@@ -1497,9 +1511,9 @@ AS BEGIN
 		SELECT
 			P1.Col01, P1.Col02, P1.Col03, P1.Col04, P1.Col05, P1.Col06, P1.Col07, P1.Col08, P1.Col09, P1.Col10,
 			P1.Col11, P1.Col12, P1.Col13, P1.Col14, P1.Col15, P1.Col16, P1.Col17, P1.Col18, P1.Col19, P1.Col20,
-			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col25, P1.Col26, P1.Col27, P1.Col28, ' + @pivot_table_column_name_alias +','
+			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col28, P1.Col29, P1.Col30, P1.Col31, ' + @pivot_table_column_name_alias +','
 			+ 'ISNULL(NC.Scheme_Code,''N/A''),'
-			+ @pivot_table_subsidize_column_name_alias + '
+			+ @pivot_table_subsidize_column_name_alias + ', P1.Col25, P1.Col26, P1.Col27
 		FROM #WS05_Part1 P1
 			INNER JOIN #PivotTable_WS05_P2 PT
 				ON	P1.Col01 = PT.SP_ID COLLATE DATABASE_DEFAULT

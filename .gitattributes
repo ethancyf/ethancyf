@@ -9127,6 +9127,7 @@ EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionConfirm_get.sql -text
 EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionConfirm_get_cnt.sql -text
 EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionConfirm_upd.sql -text
 EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionConfirm_upd_ConfirmedTransactionStatus.sql -text
+EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionHistory_get.sql -text
 EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionIncomplete_get_cnt.sql -text
 EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionManualReimbursementRowCount_byStatus.sql -text
 EHS2019_DB/dbEVS/StoreProc/proc_VoucherTransactionVoid_get_ByHKIDAgeDOR.sql -text

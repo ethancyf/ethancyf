@@ -8,6 +8,14 @@ GO
 
 -- =============================================  
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- CR No.			CRE19-026 (HCVS hotline service) 
+-- Modified date:	03 Feb 2020
+-- Description:		1. Add [Gender] as Search Criteria
+--					2. Support multiple doc code
+-- ============================================= 
+-- =============================================  
+-- Modification History
 -- Modified by:		Koala CHENG
 -- CR No.			CRE17-018 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19
 -- Modified date:	15 Aug 2018 
@@ -29,18 +37,19 @@ GO
 
 CREATE PROCEDURE [dbo].[proc_VoucherAccountListForMaint_byParticular_get]
 	-- Add the parameters for the stored procedure here
-	@Doc_Code char(20),
+	@Doc_Code varchar(5000),
 	@IdentityNum varchar(20),
 	@Adoption_Prefix_Num char(7),
 	@Eng_Name varchar(40),
 	@Chi_Name nvarchar(6),
-	@DOB datetime,	
+	@DOB datetime,
 	@Voucher_Acc_ID char(15),
 	@ReferenceNo char(15),
+	@Gender CHAR(1),
 	@AccountType char(1),
 	@AccountStatus char(1),
 	@CreationDateFrom datetime,
-	@CreationDateTo datetime,
+	@CreationDateTo datetime,	
 	@result_limit_1st_enable BIT, 
 	@result_limit_override_enable BIT,
 	@override_result_limit BIT
@@ -60,21 +69,47 @@ SET @errCode_lower = '00009'
 SET @errCode_upper = '00017'
 	
 declare @IdentityNum2 varchar(20)
-	
+DECLARE @delimiter		varchar(3)
+
+--
+DECLARE @DocTypeList TABLE (
+	Doc_Code	CHAR(20)
+)
+
+DECLARE @SortingTable TABLE(	
+	Source	char(1),
+	Sorting INT 	
+)
+
 -- =============================================
 -- Initialization
 -- =============================================
 
-set @IdentityNum2 = ' ' + @IdentityNum
-	
+SET @IdentityNum2 = ' ' + @IdentityNum
+SET @delimiter = ','
 
-DECLARE @SortingTable TABLE(	
-	Source char(1),
-	Sorting INT 	
-)
+-- ---------------------------------------------
+-- @DocTypeList
+-- ---------------------------------------------
+
+IF @Doc_Code = ''
+	BEGIN
+		INSERT INTO @DocTypeList (Doc_Code)
+		SELECT Doc_Code FROM DocType WITH (NOLOCK)
+	END
+ELSE
+	BEGIN
+		INSERT INTO @DocTypeList (
+			Doc_Code
+		)
+		SELECT Item FROM func_split_string(@Doc_Code, @delimiter)
+	END
+
+
 INSERT INTO @SortingTable (Source, Sorting) SELECT 'V', 1
 INSERT INTO @SortingTable (Source, Sorting) SELECT 'T', 2
 INSERT INTO @SortingTable (Source, Sorting) SELECT 'S', 3
+
 
 OPEN SYMMETRIC KEY sym_Key 
 DECRYPTION BY ASYMMETRIC KEY asym_Key
@@ -195,8 +230,8 @@ BEGIN
 		TP.Other_Info,
 		C.Create_By_BO,
 		TVA.Deceased
-	from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C--, DocType dt
-	where 
+	FROM TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
+	WHERE
 		TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 		and C.Voucher_Acc_Type = 'T'
 		and 
@@ -213,11 +248,12 @@ BEGIN
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
+		and (@Gender = '' or TP.Sex = @Gender)
 		and (@Voucher_Acc_ID = '')
 		--and ((@ReferenceNo = '' and TVA.Record_Status <> 'V') or TVA.Voucher_Acc_ID=@ReferenceNo)
 		and (@ReferenceNo = '' or TVA.Voucher_Acc_ID = @ReferenceNo)
-		and (TVA.Voucher_Acc_ID = C.Voucher_Acc_ID)
-		and (@Doc_Code = '' or TP.Doc_Code = @Doc_Code)		
+		and (TVA.Voucher_Acc_ID = C.Voucher_Acc_ID)		
+		AND TP.Doc_Code = DTL.Doc_Code
 		and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 		and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 
@@ -323,7 +359,7 @@ BEGIN
 			TP.Other_Info,
 			C.Create_By_BO,
 			TVA.Deceased
-		from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C--, DocType dt
+		from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
 		where 
 			TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 			and C.Voucher_Acc_Type = 'T'
@@ -341,11 +377,12 @@ BEGIN
 			and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 			and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 			and (@DOB is NULL or TP.DOB = @DOB)
+			and (@Gender = '' or TP.Sex = @Gender)
 			and (@Voucher_Acc_ID = '')
 			--and ((@ReferenceNo = '' AND TVA.Record_Status <> 'V') or TVA.Voucher_Acc_ID=@ReferenceNo)
 			and (@ReferenceNo = '' or TVA.Voucher_Acc_ID = @ReferenceNo)
-			and (TVA.Voucher_Acc_ID = C.Voucher_Acc_ID)
-			and (@Doc_Code = '' or TP.Doc_Code = @Doc_Code)		
+			and (TVA.Voucher_Acc_ID = C.Voucher_Acc_ID)			
+			AND TP.Doc_Code = DTL.Doc_Code
 			and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 			and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 			and TVA.Record_Status in ('P','I','C','D','V','R')
@@ -432,14 +469,13 @@ BEGIN
 				TP.Other_Info,
 				C.Create_By_BO,
 				TVA.Deceased
-			from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, TempVoucherAccPendingVerify PV, DocType DT
+			from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, TempVoucherAccPendingVerify PV, @DocTypeList DTL
 			where 
 				TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 				and TP.Voucher_Acc_ID = C.Voucher_Acc_ID 
 				and TVA.Voucher_Acc_ID = C.Voucher_Acc_ID
 				and TVA.Voucher_Acc_ID = PV.Voucher_Acc_ID	
 				and TVA.Record_Status='I' and (TVA.Account_Purpose='C' or TVA.Account_Purpose='V')
-				and TP.Doc_Code = DT.Doc_Code
 				and DATEDIFF(Day, PV.First_Validate_Dtm, getdate()) > @day_level
 				and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
 					or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
@@ -447,9 +483,10 @@ BEGIN
 				and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 				and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 				and (@DOB is NULL or TP.DOB = @DOB)
+				and (@Gender = '' or TP.Sex = @Gender)
 				and (@Voucher_Acc_ID = '')
-				and (@ReferenceNo = '' or TVA.Voucher_Acc_ID=@ReferenceNo)
-				and (@Doc_Code = '' or TP.Doc_Code = @Doc_Code)		
+				and (@ReferenceNo = '' or TVA.Voucher_Acc_ID=@ReferenceNo)				
+				AND TP.Doc_Code = DTL.Doc_Code
 				and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 				and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 		END	
@@ -564,7 +601,8 @@ BEGIN
 			on P.Voucher_Acc_id = VA.voucher_acc_id	
 		inner join VoucherAccountCreationLOG C
 			on VA.Voucher_Acc_ID = C.Voucher_Acc_ID and C.Voucher_Acc_Type = 'V'
-
+		INNER JOIN @DocTypeList DTL
+			ON P.Doc_Code = DTL.Doc_Code
 	where 
 	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
 		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
@@ -572,9 +610,9 @@ BEGIN
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
+	and (@Gender = '' or P.Sex = @Gender)
 	and (@Voucher_Acc_ID = '' or VA.Voucher_Acc_ID=@Voucher_Acc_ID)
 	and (@ReferenceNo = '')
-	and (@Doc_Code = '' or P.Doc_Code = @Doc_Code)
 	and (VA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 	and (VA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 	and (VA.Record_Status = @AccountType or ISNULL(@AccountType,'') = '')
@@ -682,7 +720,7 @@ BEGIN
 		TP.Other_Info,
 		C.Create_By_BO,
 		TVA.Deceased
-	from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C--, DocType dt
+	from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
 	where 
 		TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 		and C.Voucher_Acc_Type = 'T'
@@ -700,10 +738,11 @@ BEGIN
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
+		and (@Gender = '' or TP.Sex = @Gender)
 		and (@Voucher_Acc_ID = '')
 		and (@ReferenceNo = '' or TVA.Voucher_Acc_ID=@ReferenceNo)
 		and (TVA.Voucher_Acc_ID = C.Voucher_Acc_ID)
-		and (@Doc_Code = '' or TP.Doc_Code = @Doc_Code)		
+		AND TP.Doc_Code = DTL.Doc_Code
 		and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 		and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 		and TVA.Record_Status = 'I'
@@ -818,6 +857,8 @@ BEGIN
 			on P.Voucher_Acc_id = VA.voucher_acc_id	
 		inner join VoucherAccountCreationLOG C
 			on VA.Voucher_Acc_ID = C.Voucher_Acc_ID and C.Voucher_Acc_Type = 'V'
+		INNER JOIN @DocTypeList DTL
+			ON P.Doc_Code = DTL.Doc_Code
 	where 
 	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
 		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
@@ -825,9 +866,9 @@ BEGIN
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
+	and (@Gender = '' or P.Sex = @Gender)
 	and (@Voucher_Acc_ID = '' or VA.Voucher_Acc_ID=@Voucher_Acc_ID)
 	and (@ReferenceNo = '')
-	and (@Doc_Code = '' or P.Doc_Code = @Doc_Code)
 	and (VA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 	and (VA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 	AND EXISTS (
@@ -945,7 +986,7 @@ BEGIN
 		TP.Other_Info,
 		C.Create_By_BO,
 		TVA.Deceased
-	from SpecialAccount TVA, SpecialPersonalInformation TP, VoucherAccountCreationLOG C
+	from SpecialAccount TVA, SpecialPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
 	where 
 		TVA.Special_Acc_ID = TP.Special_Acc_ID
 		and C.Voucher_Acc_Type = 'S'
@@ -955,11 +996,12 @@ BEGIN
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
+		and (@Gender = '' or TP.Sex = @Gender)
 		and (@Voucher_Acc_ID = '')
 		--and ((@ReferenceNo = '' and tva.Record_Status <> 'V') or TVA.Special_Acc_ID = @ReferenceNo)
 		and (@ReferenceNo = '' or TVA.Special_Acc_ID = @ReferenceNo)
-		and (TVA.Special_Acc_ID = C.Voucher_Acc_ID)
-		and (@Doc_Code = '' or TP.Doc_Code = @Doc_Code)
+		and (TVA.Special_Acc_ID = C.Voucher_Acc_ID)		
+		AND TP.Doc_Code = DTL.Doc_Code
 		and (TVA.Create_Dtm >= @CreationDateFrom or @CreationDateFrom is null)
 		and (TVA.Create_Dtm < DateAdd(Day,1,@CreationDateTo) or @CreationDateTo is null)
 
