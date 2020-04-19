@@ -788,6 +788,7 @@ Partial Public Class eHSAccountEnquiry
                 Dim strAccountStatus As String = String.Empty
                 Dim dtmCreationDateFrom As Nullable(Of DateTime) = Nothing
                 Dim dtmCreationDateTo As Nullable(Of DateTime) = Nothing
+                Dim strGender As String = String.Empty
 
                 'Doc Type
                 Me.lblAcctListDocTypeR2.Text = Me.ddlSearchDocTypeR2.SelectedItem.Text.Trim
@@ -927,15 +928,12 @@ Partial Public Class eHSAccountEnquiry
                                                     udtformatter.convertDate(Me.txtSearchCreationDateToR2.Text.Trim, String.Empty))
                 End If
 
-                'bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListInRouteTwoMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchENameR2.Text.Trim, dtDOB, _
-                '                                                            arreHSAccountID, strRefNo, True)
-
-                ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
                 bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListByParticularMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchENameR2.Text.Trim, Me.txtSearchCNameR2.Text.Trim, dtDOB, _
-                                                                arreHSAccountID, strRefNo, _
+                                                                arreHSAccountID, strRefNo, strGender, _
                                                                 strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
                                                                 blnOverrideResultLimit)
-                ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             Case 1  'Manual Validaion Route
                 Dim strServiceProviderID As String = String.Empty
@@ -2823,9 +2821,11 @@ Partial Public Class eHSAccountEnquiry
                     blnEligible = (New ClaimRules.ClaimRulesBLL).CheckEligibleForClaimVoucherPerSeason(udtCloneSchemeClaim.SchemeCode, udtEHSPersonalInfo, dtmEndDate, True, Nothing)
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
-                    ' CRE13-021-02 Add-on Voucher (2014 Jan) [Start][Tommy L]
+                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
                     ' -----------------------------------------------------------------------------------------
-                    dvTransaction.RowFilter = "Scheme_Code='" + udtCloneSchemeClaim.SchemeCode.Trim + "'"
+                    dvTransaction.RowFilter = "Scheme_Code='" + udtCloneSchemeClaim.DisplayCode.Trim + "'"
+                    'dvTransaction.RowFilter = "Scheme_Code='" + udtCloneSchemeClaim.SchemeCode.Trim + "'"
+                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                     'If blnEligible Then
                     If blnEligible OrElse dvTransaction.Count > 0 Then
@@ -3151,7 +3151,11 @@ Partial Public Class eHSAccountEnquiry
                     If dtTransaction.Rows.Count > 0 Then
                         Dim dv As New DataView(dtTransaction)
 
-                        dv.RowFilter = "Scheme_Code='" + udtSchemeClaim.SchemeCode.Trim + "'"
+                        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                        ' -----------------------------------------------------------------------------------------
+                        'dv.RowFilter = "Scheme_Code='" + udtSchemeClaim.SchemeCode.Trim + "'"
+                        dv.RowFilter = "Scheme_Code='" + udtSchemeClaim.DisplayCode.Trim + "'"
+                        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                         If dv.Count > 0 Then
                             ' CRE13-021-02 Add-on Voucher (2014 Jan) [Start][Tommy L]
@@ -3321,7 +3325,9 @@ Partial Public Class eHSAccountEnquiry
         Dim udtRedirectParameterBLL As New RedirectParameterBLL
         udtRedirectParameterBLL.SaveToSession(udtRedirectParameter)
 
-        Response.Redirect("~/eHSAccount/eHSAccountMaint.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010301))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Sub
 

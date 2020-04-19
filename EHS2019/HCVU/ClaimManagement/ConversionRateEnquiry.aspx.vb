@@ -788,6 +788,38 @@ Partial Public Class ConversionRateEnquiry
 
         End Select
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        ' Hide unnecessary info for Call Centre
+        Select Case Me.SubPlatform
+            Case EnumHCVUSubPlatform.CC
+                trCurrentConversionRateID.Visible = False
+                trCurrentConversionRateCreateBy.Visible = False
+                trCurrentConversionRateApprovedBy.Visible = False
+
+                trNextConversionRateID.Visible = False
+                trNextConversionRateCreateBy.Visible = False
+                trNextConversionRateApprovedBy.Visible = False
+
+                trConversionRateRecordID.Visible = False
+                trConversionRateRecordCreateBy.Visible = False
+                trConversionRateRecordApprovedBy.Visible = False
+            Case Else
+                trCurrentConversionRateID.Visible = True
+                trCurrentConversionRateCreateBy.Visible = True
+                trCurrentConversionRateApprovedBy.Visible = True
+
+                trNextConversionRateID.Visible = True
+                trNextConversionRateCreateBy.Visible = True
+                trNextConversionRateApprovedBy.Visible = True
+
+                trConversionRateRecordID.Visible = True
+                trConversionRateRecordCreateBy.Visible = True
+                trConversionRateRecordApprovedBy.Visible = True
+
+        End Select
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
     End Sub
 
     Private Function formatConversionRate(ByVal strConversionRate As String) As String

@@ -218,7 +218,7 @@ Partial Public Class ucReadOnlyEC
     Private Sub BuildRedirectButton(ByVal btn As CustomControls.CustomImageButton, ByVal udtEHSPersonalInformation As EHSPersonalInformationModel)
         btn.SourceFunctionCode = CType(Me.Page, BasePage).FunctionCode
         btn.TargetFunctionCode = FunctCode.FUNT010308
-        btn.TargetUrl = GetURLByFunctionCode(FunctCode.FUNT010308)
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
 
         btn.Build()
 
@@ -248,6 +248,7 @@ Partial Public Class ucReadOnlyEC
     ''' <remarks></remarks>
     Private Sub ibtnHDOD_Click(ByVal sender As ImageButton, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnHDOD.Click
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
         btn.Redirect()
     End Sub
 
@@ -259,6 +260,7 @@ Partial Public Class ucReadOnlyEC
     ''' <remarks></remarks>
     Private Sub ibtnVDOD_Click(ByVal sender As ImageButton, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnVDOD.Click
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
         btn.Redirect()
     End Sub
 End Class

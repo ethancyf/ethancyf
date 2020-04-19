@@ -18,6 +18,19 @@ Partial Public Class MasterPage
     Dim udcGeneralF As New Common.ComFunction.GeneralFunction
     Dim ToleranceInMins As Integer
 
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Private strRedirectorlink As String
+    Private _FunctCodeCommon As String = Common.Component.FunctCode.FUNT029901
+
+    Public Class PageURL
+        Public Const Login As String = "~/login.aspx"
+        Public Const Inbox As String = "~/Home/Inbox.aspx"
+        Public Const Home As String = "~/Home/home.aspx"
+        Public Const ImproperAccess As String = "~/ImproperAccess.aspx"
+    End Class
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
     ' CRE12-014 Relax 500 row limit in back office platform [Start][Twinsen]
     Public ReadOnly Property ContentTemplate() As ContentPlaceHolder
         Get
@@ -40,12 +53,36 @@ Partial Public Class MasterPage
 
         Me.basetag.Attributes("href") = udcGeneralF.getPageBasePath()
 
+        '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
+
+        'Ctrl N in Claim Account Creation
+        'Problem: Call redirect before pagekey checking in content page load event
+        'Solution: Put in master page init event (before content page load event)
+
+        Me.CheckConcurrentAccessForHttpGet()
+        'Me.CheckConcurrentAccessForHttpPost()
+
+        '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
+
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
+        '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
-        tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "Banner") + ")"
+        'Me.CheckConcurrentAccessForHttpGet()
+        Me.CheckConcurrentAccessForHttpPost()
+
+        '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Select Case DirectCast(Me.Page, BasePage).SubPlatform
+            Case EnumHCVUSubPlatform.CC
+                tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "BannerCallCentre").ToString + ")"
+            Case Else
+                tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "Banner") + ")"
+        End Select
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         Dim strvalue As String = String.Empty
         udcGeneralF.getSystemParameter("InboxRefreshMinute", strvalue, String.Empty)
@@ -88,7 +125,9 @@ Partial Public Class MasterPage
         'Diable viewstate of the menu
         'caMenu.EnableViewState = False
 
-        udtMenuController.BuildMenu(Me.ulMenu)
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        udtMenuController.BuildMenu(Me.ulMenu, DirectCast(Me.Page, BasePage).SubPlatform)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         ' Logic To Check New Message In Inbox:
         ' Check New Message Between Last Retrive Time & Current Time
@@ -135,6 +174,15 @@ Partial Public Class MasterPage
             Me.ibtnInbox.ImageUrl = HttpContext.GetGlobalResourceObject("ImageUrl", "InboxBtn")
             Me.ibtnInbox.AlternateText = HttpContext.GetGlobalResourceObject("AlternateText", "InboxBtn")
         End If
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Select Case DirectCast(Me.Page, BasePage).SubPlatform
+            Case EnumHCVUSubPlatform.CC
+                Me.ibtnInbox.Visible = False
+            Case Else
+                Me.ibtnInbox.Visible = True
+        End Select
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         ' Wait Cursor Panel Script
         ScriptManager.RegisterStartupScript(Page, Me.GetType, "ModalUpdProg", Me.GetWaitCursorPanelScript(), True)
@@ -211,12 +259,14 @@ Partial Public Class MasterPage
         'I-CRE16-006 (Capture detail client browser and OS information) [End][Chris YIM]
 
         Response.Redirect("~/login.aspx")
-        'Response.Redirect("login.aspx")
-
     End Sub
 
     Private Sub ibtnHome_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnHome.Click
-        Response.Redirect("~/Home/home.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect("~/Home/home.aspx")
+        RedirectHandler.ToURL(PageURL.Home)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     Protected Sub ibtnInbox_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnInbox.Click
@@ -224,7 +274,12 @@ Partial Public Class MasterPage
         'Reset the session variables when inbox page is clicked
         Session(Me.strLastTimeCheck) = Now  'udcGeneralF.GetSystemDateTime
         Session(Me.strLastCheckCount) = 0
-        Response.Redirect("~/Home/Inbox.aspx")
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect("~/Home/Inbox.aspx")
+        RedirectHandler.ToURL(PageURL.Inbox)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     Private Function GetWaitCursorPanelScript() As String
@@ -302,7 +357,80 @@ Partial Public Class MasterPage
     ' -------------------------------------------------------------
     Protected Sub ibtnChangePW_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim udtMenuBLL As New MenuBLL
-        Response.Redirect(udtMenuBLL.GetURLByFunctionCode(FunctCode.FUNT010801))
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect(udtMenuBLL.GetURLByFunctionCode(FunctCode.FUNT010801))
+        RedirectHandler.ToURL(udtMenuBLL.GetURLByFunctionCode(FunctCode.FUNT010801))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
     ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Koala]
+
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Protected Sub lbtnMenuItem_Click(ByVal sender As Object, ByVal e As CommandEventArgs)
+        RedirectHandler.ToURL(e.CommandArgument)
+    End Sub
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+#Region "Concurrent Access Checking"
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Private Sub CheckConcurrentAccessForHttpGet()
+        If RedirectHandler.IsTurnOnConcurrentBrowserHandling Then
+            If Not Me.Page.IsPostBack Then
+                If Not Request.QueryString("PageKey") Is Nothing Then
+                    CheckPageKey(Request.QueryString("PageKey").ToString)
+                Else
+                    RedirectToInvalidAccessErrorPage()
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Sub CheckConcurrentAccessForHttpPost()
+        If RedirectHandler.IsTurnOnConcurrentBrowserHandling Then
+            If Me.Page.IsPostBack Then
+                If Not Me.PageKey Is Nothing Then
+                    CheckPageKey(Me.PageKey.Text)
+                Else
+                    RedirectToInvalidAccessErrorPage()
+                End If
+            End If
+        End If
+    End Sub
+
+    Public Sub CheckPageKey(ByVal strCurrentPageKey As String)
+        If Not Session(BasePage.SESS_PageKey) Is Nothing Then
+            If Not strCurrentPageKey = String.Empty AndAlso strCurrentPageKey.ToString = Session(BasePage.SESS_PageKey).ToString() Then
+                RenewPageKey()
+            Else
+                RedirectToInvalidAccessErrorPage()
+            End If
+        End If
+    End Sub
+
+    Public Sub RenewPageKey()
+        KeyGenerator.RenewSessionPageKey()
+        Me.PageKey.Text = Session(BasePage.SESS_PageKey).ToString()
+    End Sub
+
+    Public Sub RedirectToInvalidAccessErrorPage()
+
+        Dim udtAuditLogEntry As AuditLogEntry = Nothing
+        If TypeOf Me.Parent.Page Is Common.ComInterface.IWorkingData Then
+            udtAuditLogEntry = New AuditLogEntry(_FunctCodeCommon, Me.Parent.Page)
+        Else
+            udtAuditLogEntry = New AuditLogEntry(_FunctCodeCommon)
+        End If
+
+        udtAuditLogEntry.AddDescripton("PageKey", Me.PageKey.Text)
+        udtAuditLogEntry.WriteLog(LogID.LOG00001, "Redirect to invalid access error page")
+
+        Response.Redirect(PageURL.ImproperAccess)
+    End Sub
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+#End Region
+
 End Class

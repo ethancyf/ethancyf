@@ -12,6 +12,7 @@ Public MustInherit Class ucInputDocTypeBase
         ModifyReadOnly
     End Enum
 
+#Region "Private Members"
     Private _mode As ucInputDocTypeBase.BuildMode
     Private _updateValue As Boolean
     Private _udtEHSAccountPersonalInfoOriginal As EHSPersonalInformationModel
@@ -20,6 +21,8 @@ Public MustInherit Class ucInputDocTypeBase
     Private _activeViewChanged As Boolean
     Private _udtFormatter As Formatter
     Private _udtAuditLogEntry As AuditLogEntry
+    Private _blnShowCreationMethod As Boolean = True ' CRE19-026 (HCVS hotline service)
+#End Region
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Dim strErrorImageURL As String = Me.GetGlobalResourceObject("ImageUrl", "ErrorBtn")
@@ -107,6 +110,18 @@ Public MustInherit Class ucInputDocTypeBase
             Me._udtAuditLogEntry = value
         End Set
     End Property
+
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public Property ShowCreationMethod() As Boolean
+        Get
+            Return Me._blnShowCreationMethod
+        End Get
+        Set(value As Boolean)
+            _blnShowCreationMethod = value
+        End Set
+    End Property
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
 #End Region
 

@@ -221,15 +221,15 @@ Namespace ComObject
                     Dim strFilteredPlatform As String = String.Empty
                     Dim strAuditLogPlatform As String = String.Empty
 
-                    If strPlatform = EVSPlatform.PublicPlatform Then
-                        strAuditLogPlatform = ConfigurationManager.AppSettings("LogPlatform")
-                    End If
+                    'If strPlatform = EVSPlatform.PublicPlatform Then
+                    '    strAuditLogPlatform = ConfigurationManager.AppSettings("LogPlatform")
+                    'End If
 
-                    If Not strAuditLogPlatform = String.Empty Then
-                        strFilteredPlatform = strAuditLogPlatform
-                    Else
-                        strFilteredPlatform = strPlatform
-                    End If
+                    'If Not strAuditLogPlatform = String.Empty Then
+                    '    strFilteredPlatform = strAuditLogPlatform
+                    'Else
+                    strFilteredPlatform = strPlatform
+                    'End If
 
                     If Not strFilteredPlatform = String.Empty AndAlso lstPlatformForCapture.Contains(strFilteredPlatform) Then
                         blnCapture = True

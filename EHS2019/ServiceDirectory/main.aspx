@@ -9,6 +9,9 @@
 <head id="Head1" runat="server">
     <title id="PageTitle" runat="server"></title>
     <script type="text/javascript" src="JS/Common.js"></script>
+    <script language="javascript" type="text/javascript">
+        window.location.replace("https://apps.hcv.gov.hk/public/tc/SPS/Search");
+    </script>
     <base id="basetag" runat="server" />
     <script type="text/javascript">
 

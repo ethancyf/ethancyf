@@ -64,6 +64,12 @@ Namespace Component.Practice
 
         Private _blnIsduplicated As Boolean
 
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        Private _strMobileClinic As String
+        Private _strRemarksDesc As String
+        Private _strRemarksDescChi As String
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
         Public Const DisplaySeqDataType As SqlDbType = SqlDbType.SmallInt
         Public Const DisplaySeqDataSize As Integer = 2
 
@@ -99,6 +105,18 @@ Namespace Component.Practice
 
         Public Const PhoneDaytimeDataType As SqlDbType = SqlDbType.VarChar
         Public Const PhoneDaytimeDataSize As Integer = 20
+
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        Public Const MobileClinicDataType As SqlDbType = SqlDbType.Char
+        Public Const MobileClinicDataSize As Integer = 1
+
+        Public Const RemarksDescDataType As SqlDbType = SqlDbType.NVarChar
+        Public Const RemarksDescDataSize As Integer = 200
+
+        Public Const RemarksDescChiDataType As SqlDbType = SqlDbType.NVarChar
+        Public Const RemarksDescChiDataSize As Integer = 200
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
         Public Property SPID() As String
             Get
@@ -298,6 +316,36 @@ Namespace Component.Practice
             End Set
         End Property
 
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        Public Property MobileClinic() As String
+            Get
+                Return _strMobileClinic
+            End Get
+            Set(ByVal value As String)
+                _strMobileClinic = value
+            End Set
+        End Property
+
+        Public Property RemarksDesc() As String
+            Get
+                Return _strRemarksDesc
+            End Get
+            Set(ByVal value As String)
+                _strRemarksDesc = value
+            End Set
+        End Property
+
+        Public Property RemarksDescChi() As String
+            Get
+                Return _strRemarksDescChi
+            End Get
+            Set(ByVal value As String)
+                _strRemarksDescChi = value
+            End Set
+        End Property
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
         Public Sub New()
 
         End Sub
@@ -326,15 +374,24 @@ Namespace Component.Practice
             _udtBankAcctModel = udtPracticeModel.BankAcct
             _udtPracticeSchemeInfoList = udtPracticeModel.PracticeSchemeInfoList
 
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            _strMobileClinic = udtPracticeModel.MobileClinic
+            _strRemarksDesc = udtPracticeModel.RemarksDesc
+            _strRemarksDescChi = udtPracticeModel.RemarksDescChi
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
         End Sub
 
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
         Public Sub New(ByVal strSPID As String, ByVal strEnrolRefNo As String, ByVal intDisplaySeq As Integer, _
                         ByVal intMODisplaySeq As Integer, ByVal strPracticeName As String, ByVal strPracticeNameChi As String, ByVal udtAddress As AddressModel, _
                         ByVal intProfessionalSeq As Integer, ByVal strRecordStatus As String, _
                         ByVal strSubmitMethod As String, ByVal strRemark As String, ByVal strPhoneDaytime As String, ByVal dtmCreateDtm As Nullable(Of DateTime), _
                         ByVal strCreateBy As String, ByVal dtmUpdateDtm As Nullable(Of DateTime), ByVal strUpdateBy As String, _
-                        ByVal byteTSMP As Byte(), ByVal udtBankAcctModel As BankAcctModel, _
+                        ByVal byteTSMP As Byte(), ByVal strMobileClinic As String, ByVal strRemarksDesc As String, ByVal strRemarksDescChi As String, _
+                        ByVal udtBankAcctModel As BankAcctModel, _
                         ByVal udtProfessionalModel As ProfessionalModel, ByVal udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection)
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             _strSPID = strSPID
             _strEnrolRefNo = strEnrolRefNo
@@ -353,6 +410,12 @@ Namespace Component.Practice
             _dtmUpdateDtm = dtmUpdateDtm
             _strUpdateBy = strUpdateBy
             _byteTSMP = byteTSMP
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            _strMobileClinic = strMobileClinic
+            _strRemarksDesc = strRemarksDesc
+            _strRemarksDescChi = strRemarksDescChi
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
             _udtBankAcctModel = udtBankAcctModel
             _udtProfessionalModel = udtProfessionalModel
 

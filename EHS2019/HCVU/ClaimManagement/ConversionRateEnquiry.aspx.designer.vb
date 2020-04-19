@@ -158,6 +158,15 @@ Partial Public Class ConversionRateEnquiry
     Protected WithEvents tblCurrentConversionRateDetail As Global.System.Web.UI.WebControls.Table
 
     '''<summary>
+    '''trCurrentConversionRateID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trCurrentConversionRateID As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
     '''lblCurrentConversionRateIDText control.
     '''</summary>
     '''<remarks>
@@ -212,6 +221,15 @@ Partial Public Class ConversionRateEnquiry
     Protected WithEvents lblCurrentConversionRate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trCurrentConversionRateCreateBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trCurrentConversionRateCreateBy As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
     '''lblCurrentConversionRateCreateByText control.
     '''</summary>
     '''<remarks>
@@ -237,6 +255,15 @@ Partial Public Class ConversionRateEnquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCurrentConversionRateCreateDtm As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trCurrentConversionRateApprovedBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trCurrentConversionRateApprovedBy As Global.System.Web.UI.WebControls.TableRow
 
     '''<summary>
     '''lblCurrentConversionRateApprovedByText control.
@@ -356,6 +383,15 @@ Partial Public Class ConversionRateEnquiry
     Protected WithEvents tblNextConversionRateDetail As Global.System.Web.UI.WebControls.Table
 
     '''<summary>
+    '''trNextConversionRateID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trNextConversionRateID As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
     '''lblNextConversionRateIDText control.
     '''</summary>
     '''<remarks>
@@ -410,6 +446,15 @@ Partial Public Class ConversionRateEnquiry
     Protected WithEvents lblNextConversionRate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trNextConversionRateCreateBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trNextConversionRateCreateBy As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
     '''lblNextConversionRateCreateByText control.
     '''</summary>
     '''<remarks>
@@ -435,6 +480,15 @@ Partial Public Class ConversionRateEnquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNextConversionRateCreateDtm As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trNextConversionRateApprovedBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trNextConversionRateApprovedBy As Global.System.Web.UI.WebControls.TableRow
 
     '''<summary>
     '''lblNextConversionRateApprovedByText control.
@@ -662,6 +716,15 @@ Partial Public Class ConversionRateEnquiry
     Protected WithEvents tblConversionRateRecordDetail As Global.System.Web.UI.WebControls.Table
 
     '''<summary>
+    '''trConversionRateRecordID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConversionRateRecordID As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
     '''lblConversionRateRecordIDText control.
     '''</summary>
     '''<remarks>
@@ -716,6 +779,15 @@ Partial Public Class ConversionRateEnquiry
     Protected WithEvents lblConversionRateRecordRate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trConversionRateRecordCreateBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConversionRateRecordCreateBy As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
     '''lblConversionRateRecordCreateByText control.
     '''</summary>
     '''<remarks>
@@ -741,6 +813,15 @@ Partial Public Class ConversionRateEnquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblConversionRateRecordCreateDtm As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trConversionRateRecordApprovedBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConversionRateRecordApprovedBy As Global.System.Web.UI.WebControls.TableRow
 
     '''<summary>
     '''lblConversionRateRecordApprovedByText control.

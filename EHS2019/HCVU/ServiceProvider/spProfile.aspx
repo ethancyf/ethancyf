@@ -92,7 +92,8 @@
         function selectScheme() {
             $(document).ready(function () {
 
-                $("[id$='chkEditSelect']").click(function () {
+                //$("[id$='chkEditSelect']").click(function () {
+                $("[id$='chkSelect']").click(function () {
                     var scheme = $(this).attr("scheme");
                     var chkScheme = $(this).is(':checked');
 
@@ -1713,13 +1714,20 @@
                                         <asp:TemplateField>
                                             <ItemStyle VerticalAlign="Top" Width="15px" />
                                             <ItemTemplate>
-                                                <asp:Label ID="lblPracticeDispalySeq" runat="server" Text='<%# Eval("DisplaySeq") %>'></asp:Label>
-                                                <asp:HiddenField ID="hfPracticeBankDisplaySeq" runat="server" Value='<%#  Eval("BankAcct.DisplaySeq") %>' />
-                                                <asp:HiddenField ID="hfPracticeStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />
+                                                <asp:Label ID="lblPracticeDispalySeq" runat="server" 
+                                                    Text='<%# Eval("DisplaySeq") %>'
+                                                    DisplaySeq='<%# Eval("BankAcct.DisplaySeq")%>'
+                                                    Status='<%# Eval("RecordStatus")%>'
+                                                    />
+                                                <%--<asp:HiddenField ID="hfPracticeBankDisplaySeq" runat="server" Value='<%#  Eval("BankAcct.DisplaySeq") %>' />--%>
+                                                <%--<asp:HiddenField ID="hfPracticeStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />--%>
                                             </ItemTemplate>
                                             <EditItemTemplate>
-                                                <asp:Label ID="lblEditPracticeDispalySeq" runat="server" Text='<%# Eval("DisplaySeq") %>'></asp:Label>
-                                                <asp:HiddenField ID="hfEditPracticeStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />
+                                                <asp:Label ID="lblPracticeDispalySeq" runat="server" 
+                                                    Text='<%# Eval("DisplaySeq") %>' 
+                                                    Status='<%# Eval("RecordStatus")%>'
+                                                    />
+                                                <%--<asp:HiddenField ID="hfEditPracticeStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />--%>
                                             </EditItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="<%$ Resources:Text, PracticeInfo %>">
@@ -1844,6 +1852,42 @@
                                                         <td>
                                                             <asp:Label ID="lblRegCode" runat="server" Text='<%# Eval("Professional.RegistrationCode") %>'
                                                                 CssClass="tableText"></asp:Label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="background-color: #f7f7de" valign="top">
+                                                            <asp:Label ID="lblPracticeMobileClinicText" runat="server" Text="<%$ Resources:Text, SPSResultMobileClinic %>"></asp:Label>
+                                                            <asp:Label ID="lblPracticeMobileClinicInd" runat="server" Text="*" ForeColor="Red" Visible="False"></asp:Label></td>
+                                                        <td>
+                                                            <asp:Label ID="lblPracticeMobileClinic" runat="server" CssClass="tableText" Text='<%# Eval("MobileClinic") %>'></asp:Label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="background-color: #f7f7de" valign="top">
+                                                            <asp:Label ID="lblPracticeRemarksText" runat="server" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                                                            <asp:Label ID="lblPracticeRemarksInd" runat="server" Text="*" ForeColor="Red" Visible="False"></asp:Label></td>
+                                                        <td>
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tr>
+                                                                    <td valign="top">
+                                                                        <table style="width: 100%" border="0">
+                                                                            <tr>
+                                                                                <td style="width: 85px" valign="top">(<asp:Label ID="lblPracticeRemarksEngText" runat="server" Text="<%$ Resources:Text, InEnglish %>"></asp:Label>)</td>
+                                                                                <td>
+                                                                                    <asp:Label ID="lblPracticeRemarks" runat="server" Text='<%# Eval("RemarksDesc")%>'
+                                                                                        CssClass="tableText"></asp:Label>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="width: 85px" valign="top">(<asp:Label ID="lblPracticeRemarksChiText" runat="server" Text="<%$ Resources:Text, InChinese %>"></asp:Label>)</td>
+                                                                                <td>
+                                                                                    <asp:Label ID="lblPracticeRemarksChi" runat="server" Text='<%# Eval("RemarksDescChi")%>'
+                                                                                        CssClass="TextChi"></asp:Label>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -2048,6 +2092,43 @@
                                                                 </tr>
                                                             </table>
                                                         </td>
+                                                    </tr>                                                    
+                                                    <tr>
+                                                        <td style="width: 200px; background-color: #f7f7de;" valign="top" colspan="2">
+                                                            <asp:Label ID="lblEditPracticeMobileClinicText" runat="server" Text="<%$ Resources:Text, SPSResultMobileClinic%>"></asp:Label>
+                                                            <asp:Label ID="lblPracticeMobileClinicInd" runat="server" Text="*" ForeColor="Red" Visible="False"></asp:Label>
+                                                        </td>
+                                                        <td>
+                                                            <asp:CheckBox ID="chkEditPracticeMobileClinic" runat="server"
+                                                                Checked='<%# IIF(Eval("MobileClinic") = "Y", True, False) %>' />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 200px; background-color: #f7f7de;" valign="top" colspan="2">
+                                                            <asp:Label ID="lblEditPracticeRemarksText" runat="server" Text="<%$ Resources: Text, Remarks %>"></asp:Label>
+                                                            <asp:Label ID="lblPracticeRemarksInd" runat="server" Text="*" ForeColor="Red" Visible="False"></asp:Label>
+                                                        </td>
+                                                        <td>
+                                                            <table border="0" cellpadding="1" cellspacing="1">
+
+                                                                <tr>
+                                                                    <td style="width: 85px">(<asp:Label ID="lblEditPracticeRemarksEngText" runat="server" Text="<%$ Resources:Text, InEnglish %>"></asp:Label>)</td>
+                                                                    <td>
+                                                                        <asp:TextBox ID="txtEditPracticeRemarks" runat="server" Width="500px" Text='<%# Eval("RemarksDesc") %>'
+                                                                            MaxLength="200"></asp:TextBox>
+                                                                        <asp:Image ID="imgEditPracticeRemarksAlert" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
+                                                                            Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 85px">(<asp:Label ID="lblEditPracticeRemarksChiText" runat="server" Text="<%$ Resources:Text, InChinese %>"></asp:Label>)</td>
+                                                                    <td>
+                                                                        <asp:TextBox ID="txtEditPracticeRemarksChi" runat="server" Width="500px" Text='<%# Eval("RemarksDescChi") %>' CssClass="TextBoxChi"
+                                                                            MaxLength="200"></asp:TextBox>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
                                                     </tr>
                                                 </table>
                                                 <cc1:FilteredTextBoxExtender ID="FilteredEditPracticeRoom" runat="server" TargetControlID="txtEditPracticeRoom"
@@ -2069,6 +2150,9 @@
                                                 </cc1:FilteredTextBoxExtender>
                                                 <cc1:FilteredTextBoxExtender ID="FilteredEditRegCode" runat="server" TargetControlID="txtEditRegCode"
                                                     FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars=" ~!@#$%^&*()_+`-=[]\{}|;':<>?,./&quot;">
+                                                </cc1:FilteredTextBoxExtender>
+                                                <cc1:FilteredTextBoxExtender ID="FilteredEditPracticeRemarks" runat="server" TargetControlID="txtEditPracticeRemarks"
+                                                    FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars="'.-(),&/ ">
                                                 </cc1:FilteredTextBoxExtender>
                                             </EditItemTemplate>
                                             <ItemStyle VerticalAlign="Top" />
@@ -2217,6 +2301,41 @@
                                                                 Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" />
                                                         </td>
                                                     </tr>
+                                                    <tr>
+                                                        <td style="width: 200px; background-color: #f7f7de;" valign="top" colspan="2">
+                                                            <asp:Label ID="lblAddPracticeMobileClinicText" runat="server" Text="<%$ Resources:Text, SPSResultMobileClinic%>"></asp:Label>
+                                                        </td>
+                                                        <td>
+                                                            <asp:CheckBox ID="chkAddPracticeMobileClinic" runat="server"
+                                                                Checked='<%# IIF(Eval("MobileClinic") = "Y", True, False) %>' />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 200px; background-color: #f7f7de;" valign="top" colspan="2">
+                                                            <asp:Label ID="lblAddPracticeRemarksText" runat="server" Text="<%$ Resources: Text, Remarks %>"></asp:Label>
+                                                        </td>
+                                                        <td>
+                                                            <table border="0" cellpadding="1" cellspacing="1">
+
+                                                                <tr>
+                                                                    <td style="width: 85px">(<asp:Label ID="lblAddPracticeRemarksEngText" runat="server" Text="<%$ Resources:Text, InEnglish %>"></asp:Label>)</td>
+                                                                    <td>
+                                                                        <asp:TextBox ID="txtAddPracticeRemarks" runat="server" Width="500px" Text='<%# Eval("RemarksDesc") %>'
+                                                                            MaxLength="200"></asp:TextBox>
+                                                                        <asp:Image ID="imgAddPracticeRemarksAlert" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
+                                                                            Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="width: 85px">(<asp:Label ID="lblAddPracticeRemarksChiText" runat="server" Text="<%$ Resources:Text, InChinese %>"></asp:Label>)</td>
+                                                                    <td>
+                                                                        <asp:TextBox ID="txtAddPracticeRemarksChi" runat="server" Width="500px" Text='<%# Eval("RemarksDescChi") %>' CssClass="TextBoxChi"
+                                                                            MaxLength="200"></asp:TextBox>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                                 <cc1:FilteredTextBoxExtender ID="FilteredAddPracticeRoom" runat="server" TargetControlID="txtAddPracticeRoom"
                                                     FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars=" ~!@#$%^&*()_+`-=[]\{}|;':<>?,./&quot;">
@@ -2237,6 +2356,10 @@
                                                 </cc1:FilteredTextBoxExtender>
                                                 <cc1:FilteredTextBoxExtender ID="FilteredAddRegCode" runat="server" TargetControlID="txtAddRegCode"
                                                     FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars=" ~!@#$%^&*()_+`-=[]\{}|;':<>?,./&quot;">
+                                                </cc1:FilteredTextBoxExtender>
+
+                                                <cc1:FilteredTextBoxExtender ID="FilteredAddPracticeRemarks" runat="server" TargetControlID="txtAddPracticeRemarks"
+                                                    FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars="'.-(),&/ ">
                                                 </cc1:FilteredTextBoxExtender>
                                             </FooterTemplate>
                                         </asp:TemplateField>
@@ -2369,13 +2492,20 @@
                                         <asp:TemplateField>
                                             <ItemStyle VerticalAlign="Top" Width="15px" />
                                             <ItemTemplate>
-                                                <asp:Label ID="lblPracticeBankDispalySeq" runat="server" Text='<%# Eval("DisplaySeq") %>'></asp:Label>
-                                                <asp:HiddenField ID="hfBankAcctStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />
+                                                <asp:Label ID="lblPracticeBankDispalySeq" runat="server" 
+                                                    Text='<%# Eval("DisplaySeq") %>'
+                                                    Status='<%# Eval("RecordStatus") %>'
+                                                    />
+                                                <%--<asp:HiddenField ID="hfBankAcctStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />--%>
                                             </ItemTemplate>
                                             <EditItemTemplate>
-                                                <asp:Label ID="lblEditPracticeBankDispalySeq" runat="server" Text='<%# Eval("DisplaySeq") %>'></asp:Label>
-                                                <asp:HiddenField ID="hfEditBankDisplaySeq" runat="server" Value='<%# Eval("BankAcct.DisplaySeq") %>' />
-                                                <asp:HiddenField ID="hfEditBankAcctStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />
+                                                <asp:Label ID="lblPracticeBankDispalySeq" runat="server" 
+                                                    Text='<%# Eval("DisplaySeq") %>' 
+                                                    DisplaySeq='<%# Eval("BankAcct.DisplaySeq")%>' 
+                                                    Status='<%# Eval("RecordStatus")%>' 
+                                                    />
+                                                <%--<asp:HiddenField ID="hfEditBankDisplaySeq" runat="server" Value='<%# Eval("BankAcct.DisplaySeq") %>' />--%>
+                                                <%--<asp:HiddenField ID="hfEditBankAcctStatus" runat="server" Value='<%# Eval("RecordStatus") %>' />--%>
                                             </EditItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="<%$ Resources:Text, BankInfo %>">
@@ -2643,10 +2773,14 @@
                                                         <asp:TemplateField>
                                                             <ItemStyle VerticalAlign="Top" Width="25px" />
                                                             <ItemTemplate>
-                                                                <asp:CheckBox ID="chkSelect" runat="server" Enabled="false" />
-                                                                <asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />
-                                                                <asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />
-                                                                <asp:HiddenField ID="hfGAllNotProvideService" runat="server" />
+                                                                <asp:CheckBox ID="chkSelect" runat="server" Enabled="false"
+                                                                    IsCategoryHeader='<%# Eval("IsCategoryHeader") %>'
+                                                                    CategoryName='<%# Eval("CategoryName")%>'
+                                                                    AllNotProvideService=""
+                                                                    />
+                                                                <%--<asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />--%>
+                                                                <%--<asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />--%>
+                                                                <%--<asp:HiddenField ID="hfGAllNotProvideService" runat="server" />--%>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
@@ -2661,18 +2795,15 @@
                                                         <asp:TemplateField>
                                                             <ItemStyle HorizontalAlign="left" VerticalAlign="Top" Width="195px" />
                                                             <ItemTemplate>
-                                                                <asp:Label ID="lblPracticeSchemeServiceFee" runat="server" CssClass="tableText">
-                                                                </asp:Label>
+                                                                <asp:Label ID="lblPracticeSchemeServiceFee" runat="server" CssClass="tableText" />
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="<%$ Resources:Text, Status %>">
                                                             <ItemStyle VerticalAlign="Top" />
                                                             <ItemTemplate>
-                                                                <asp:Label ID="lblPracticeSchemeStatus" runat="server" CssClass="tableText">
-                                                                </asp:Label>
-                                                                <asp:Label ID="lblPracticeSchemeRemark" runat="server" CssClass="tableText">
-                                                                </asp:Label>
-                                                                <asp:HiddenField ID="hfPracticeSchemeStatus" runat="server" />
+                                                                <asp:Label ID="lblPracticeSchemeStatus" runat="server" CssClass="tableText" Status="" />
+                                                                <asp:Label ID="lblPracticeSchemeRemark" runat="server" CssClass="tableText" />
+                                                                <%--<asp:HiddenField ID="hfPracticeSchemeStatus" runat="server" />--%>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="<%$ Resources:Text, EffectiveTime %>">
@@ -2752,11 +2883,14 @@
                                                                     runat="server" ImageUrl="~/Images/others/icon_caution.gif" Visible="False" />
                                                             </HeaderTemplate>
                                                             <ItemTemplate>
-                                                                <asp:CheckBox ID="chkEditSelect" runat="server" OnCheckedChanged="chkEditSelect_CheckedChanged"
-                                                                    AutoPostBack="false" />
-                                                                <asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />
-                                                                <asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />
-                                                                <asp:HiddenField ID="hfGAllNotProvideService" runat="server" />
+                                                                <asp:CheckBox ID="chkSelect" runat="server" OnCheckedChanged="chkEditSelect_CheckedChanged" AutoPostBack="false" 
+                                                                    IsCategoryHeader='<%# Eval("IsCategoryHeader") %>'
+                                                                    CategoryName='<%# Eval("CategoryName")%>'
+                                                                    AllNotProvideService=""
+                                                                    />
+                                                                <%--<asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />--%>
+                                                                <%--<asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />--%>
+                                                                <%--<asp:HiddenField ID="hfGAllNotProvideService" runat="server" />--%>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
@@ -2829,11 +2963,9 @@
                                                         <asp:TemplateField HeaderText="<%$ Resources:Text, Status %>">
                                                             <ItemStyle VerticalAlign="Top" />
                                                             <ItemTemplate>
-                                                                <asp:Label ID="lblEditPracticeSchemeStatus" runat="server" CssClass="tableText">
-                                                                </asp:Label>
-                                                                <asp:Label ID="lblEditPracticeSchemeRemark" runat="server" CssClass="tableText">
-                                                                </asp:Label>
-                                                                <asp:HiddenField ID="hfEditPracticeSchemeStatus" runat="server" />
+                                                                <asp:Label ID="lblEditPracticeSchemeStatus" runat="server" CssClass="tableText" Status="" />
+                                                                <asp:Label ID="lblEditPracticeSchemeRemark" runat="server" CssClass="tableText" />
+                                                                <%--<asp:HiddenField ID="hfEditPracticeSchemeStatus" runat="server" />--%>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="<%$ Resources:Text, EffectiveTime %>">

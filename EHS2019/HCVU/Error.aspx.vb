@@ -1,4 +1,5 @@
 Imports Common.ComFunction
+Imports Common.Component
 
 Partial Public Class _Error
     Inherits System.Web.UI.Page
@@ -18,6 +19,17 @@ Partial Public Class _Error
 
         If lblAppEnvironment.Text.ToLower = "production" Then lblAppEnvironment.Text = String.Empty
         ' CRE15-006 Rename of eHS [End][Lawrence]
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Dim strSubPlatform As String = ConfigurationManager.AppSettings("SubPlatform")
+        
+        Select Case strSubPlatform
+            Case EnumHCVUSubPlatform.CC.ToString
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBannerCallCentre").ToString + ")"
+            Case Else
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBanner").ToString + ")"
+        End Select
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         Try
             If Not Session Is Nothing Then

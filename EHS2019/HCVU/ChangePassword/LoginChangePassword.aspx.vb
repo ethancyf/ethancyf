@@ -97,6 +97,15 @@ Partial Public Class LoginChangePassword
         If lblAppEnvironment.Text.ToLower = "production" Then lblAppEnvironment.Text = String.Empty
         ' CRE15-006 Rename of eHS [End][Lawrence]
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Select Case Me.SubPlatform
+            Case EnumHCVUSubPlatform.CC
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "BannerCallCentre").ToString + ")"
+            Case Else
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "Banner").ToString + ")"
+        End Select
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
         If Me.pnlAgreement.Visible Then
             If chkAccept.Checked Then
                 ibtnConfirm.Attributes.CssStyle.Item("cursor") = "hand"
@@ -306,7 +315,20 @@ Partial Public Class LoginChangePassword
                     Else
                         udtAuditLogEntry.WriteEndLog(strSuccessLogID, "First logon change password successful")
                     End If
-                    Response.Redirect("~/Home/home.aspx")
+
+                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                    Dim udtMenuBLL As New Component.Menu.MenuBLL
+                    Dim strEnquiryCallCentre_FuncCode As String = FunctCode.FUNT010309
+
+                    ' eHealth Account Enquiry (Call Centre) as default page
+                    If Me.SubPlatform = EnumHCVUSubPlatform.CC AndAlso
+                        udtHCVUUser.AccessRightCollection.Item(strEnquiryCallCentre_FuncCode).Allow() Then
+                        RedirectHandler.ToURL(udtMenuBLL.GetURLByFunctionCode(strEnquiryCallCentre_FuncCode))
+                    Else
+                        RedirectHandler.ToURL("~/Home/home.aspx")
+                    End If
+                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
                 End If
             End If
         End If

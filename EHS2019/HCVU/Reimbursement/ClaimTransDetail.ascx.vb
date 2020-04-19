@@ -34,6 +34,22 @@ Partial Public Class ClaimTransDetail
     Private _blnShowOCSSSCheckingResult As Boolean = True
     ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Private _blnEnableToShowAccountIDAsBtn As Boolean = True ' Default Show Btn
+    Private _blnEnableToShowDateOfDeathBtn As Boolean = True ' Default Show Btn
+
+    Private _blnEnableToShowBankAccountNo As Boolean = True
+    Private _blnEnableToShowReimbursePayment As Boolean = True ' First Authorization / Second Authorization / Payment File Submission Time / Bank Payment Day
+    Private _blnEnableToShowSuspendBy As Boolean = True
+    Private _blnEnableToShowCreateBy As Boolean = True
+    Private _blnEnableToShowCreationReason As Boolean = True
+    Private _blnEnableToShowPaymentMethod As Boolean = True
+    Private _blnEnableToShowApprovalBy As Boolean = True
+    Private _blnEnableToShowRejectBy As Boolean = True
+    Private _blnEnableToShowVoidTransactionNo As Boolean = True
+    Private _blnEnableToShowWarning As Boolean = True
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 #End Region
 
 #Region "Properties"
@@ -67,6 +83,21 @@ Partial Public Class ClaimTransDetail
         End Set
     End Property
 
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public WriteOnly Property ShowAccountIDAsBtn() As Boolean
+        Set(ByVal value As Boolean)
+            _blnEnableToShowAccountIDAsBtn = value
+        End Set
+    End Property
+
+    Public WriteOnly Property ShowDateOfDeathBtn() As Boolean
+        Set(ByVal value As Boolean)
+            _blnEnableToShowDateOfDeathBtn = value
+        End Set
+
+    End Property
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 #End Region
 
 #Region "Function"
@@ -86,7 +117,9 @@ Partial Public Class ClaimTransDetail
         lblTSchemeStatus.Text = String.Empty
         'CRE15-004 (TIV and QIV) [End][Chris YIM]
 
+        ' =====================================================
         ' --- eHealth Account Information ---
+        ' =====================================================
 
         Dim udtEHSAccount As EHSAccountModel = udtEHSTransaction.EHSAcct
         udcReadOnlyDocumentType.Clear()
@@ -189,30 +222,31 @@ Partial Public Class ClaimTransDetail
         ' ----------------------------------------------------------
         udcReadOnlyDocumentType.ShowHKICSymbol = _blnEnableToShowHKICSymbol
         ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        udcReadOnlyDocumentType.ShowAccountIDAsBtn = _blnEnableToShowAccountIDAsBtn
+        udcReadOnlyDocumentType.ShowDateOfDeathBtn = _blnEnableToShowDateOfDeathBtn
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
         udcReadOnlyDocumentType.Build()
 
+        ' =====================================================
         ' --- Transaction Information ---
+        ' =====================================================
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]        
         'Override Reason Warning
-        If IsNothing(udtEHSTransaction.WarningMessage) Then
+        If _blnEnableToShowWarning = False OrElse IsNothing(udtEHSTransaction.WarningMessage) Then
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
             Me.pnlWarning.Visible = False
         Else
             If udtEHSTransaction.WarningMessage.RuleResults.Count = 0 Then
                 Me.pnlWarning.Visible = False
             Else
-                'For Each udtSM As Common.ComObject.SystemMessage In udtEHSTransaction.WarningMessage
-                '    Me.udcWarningMsgBox.AddMessage(udtSM)
-                'Next
                 Me.pnlWarning.Visible = True
 
                 Me.lblOverrideReason.Text = udtEHSTransaction.OverrideReason
-
-                'Dim unorderedListStart As New Literal
-                'Dim unorderedListEnd As New Literal
-                'unorderedListStart.Text = "<ul>"
-                'unorderedListEnd.Text = "</ul>"
-
-                'Me.pnlWarningMessageList.Controls.Add(unorderedListStart)
 
                 'CRE14-016 (To introduce "Deceased" status into eHS) [Start][Chris YIM]
                 '-----------------------------------------------------------------------------------------
@@ -223,7 +257,6 @@ Partial Public Class ClaimTransDetail
                 'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
                 For Each udtWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtEHSTransaction.WarningMessage.RuleResults
-                    'Me.udcWarningMsgBox.AddMessage(udtWarning.ErrorMessage)
                     Dim listStart As New Literal
                     Dim listEnd As New Literal
                     listStart.Text = "<ul style='margin-top:5px; margin-bottom:5px;'><li>"
@@ -232,14 +265,11 @@ Partial Public Class ClaimTransDetail
                     Dim strMessage As New Literal
 
                     pnlWarningMessageList.Controls.Add(listStart)
-                    'strMessage.Text = Replace(udtWarning) + " [" + udtWarning.ErrorMessage.FunctionCode + "-" + udtWarning.ErrorMessage.SeverityCode + "-" + udtWarning.ErrorMessage.MessageCode + "]"
                     strMessage.Text = udtWarning.MessageDescription + " [" + udtWarning.ErrorMessage.FunctionCode + "-" + udtWarning.ErrorMessage.SeverityCode + "-" + udtWarning.ErrorMessage.MessageCode + "]"
                     pnlWarningMessageList.Controls.Add(strMessage)
                     pnlWarningMessageList.Controls.Add(listEnd)
                 Next
 
-                'Me.pnlWarningMessageList.Controls.Add(unorderedListEnd)
-                'Me.udcWarningMsgBox.BuildMessageBox("Warning")
             End If
 
         End If
@@ -415,8 +445,16 @@ Partial Public Class ClaimTransDetail
             End If
         End If
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
         ' Bank Account No.
-        lblTBankAccountNo.Text = udtFormatter.maskBankAccount(udtEHSTransaction.BankAccountNo)
+        If _blnEnableToShowBankAccountNo Then
+            lblTBankAccountNo.Text = udtFormatter.maskBankAccount(udtEHSTransaction.BankAccountNo)
+            DisplayBankAccountNo(True)
+        Else
+            DisplayBankAccountNo(False)
+        End If
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         ' Service Type
         lblTServiceType.Text = udtEHSTransaction.ServiceTypeDesc
@@ -639,87 +677,97 @@ Partial Public Class ClaimTransDetail
         DisplayTBankPaymentDay(False)
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
 
-        If Not udtEHSTransaction.ManualReimburse Then
-            Select Case udtEHSTransaction.AuthorisedStatus
-                Case String.Empty, ReimbursementStatus.HoldForFirstAuthorisation
-                    ' Nothing here
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        If _blnEnableToShowReimbursePayment Then
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
-                Case ReimbursementStatus.FirstAuthorised
-                    lblTFirstAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.FirstAuthorisedDate, String.Empty))
-                    lblTFirstAuthorizationBy.Text = udtEHSTransaction.FirstAuthorisedBy
+            If Not udtEHSTransaction.ManualReimburse Then
+                Select Case udtEHSTransaction.AuthorisedStatus
+                    Case String.Empty, ReimbursementStatus.HoldForFirstAuthorisation
+                        ' Nothing here
 
-                    lblTFirstAuthorizationText.Visible = True
-                    lblTFirstAuthorizationTime.Visible = True
-                    lblTFirstAuthorizationBy.Visible = True
+                    Case ReimbursementStatus.FirstAuthorised
+                        lblTFirstAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.FirstAuthorisedDate, String.Empty))
+                        lblTFirstAuthorizationBy.Text = udtEHSTransaction.FirstAuthorisedBy
 
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Tony]
-                    DisplayTFirstAuthorization(True)
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
+                        lblTFirstAuthorizationText.Visible = True
+                        lblTFirstAuthorizationTime.Visible = True
+                        lblTFirstAuthorizationBy.Visible = True
 
-                Case ReimbursementStatus.SecondAuthorised
-                    lblTFirstAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.FirstAuthorisedDate, String.Empty))
-                    lblTFirstAuthorizationBy.Text = udtEHSTransaction.FirstAuthorisedBy
-                    lblTSecondAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.SecondAuthorisedDate, String.Empty))
-                    lblTSecondAuthorizationBy.Text = udtEHSTransaction.SecondAuthorisedBy
+                        ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Tony]
+                        DisplayTFirstAuthorization(True)
+                        ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
 
-                    lblTFirstAuthorizationText.Visible = True
-                    lblTFirstAuthorizationTime.Visible = True
-                    lblTFirstAuthorizationBy.Visible = True
+                    Case ReimbursementStatus.SecondAuthorised
+                        lblTFirstAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.FirstAuthorisedDate, String.Empty))
+                        lblTFirstAuthorizationBy.Text = udtEHSTransaction.FirstAuthorisedBy
+                        lblTSecondAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.SecondAuthorisedDate, String.Empty))
+                        lblTSecondAuthorizationBy.Text = udtEHSTransaction.SecondAuthorisedBy
 
-                    lblTSecondAuthorizationText.Visible = True
-                    lblTSecondAuthorizationTime.Visible = True
-                    lblTSecondAuthorizationBy.Visible = True
+                        lblTFirstAuthorizationText.Visible = True
+                        lblTFirstAuthorizationTime.Visible = True
+                        lblTFirstAuthorizationBy.Visible = True
 
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Tony]
-                    DisplayTFirstAuthorization(True)
-                    DisplayTSecondAuthorization(True)
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
+                        lblTSecondAuthorizationText.Visible = True
+                        lblTSecondAuthorizationTime.Visible = True
+                        lblTSecondAuthorizationBy.Visible = True
 
-                Case ReimbursementStatus.Reimbursed
-                    lblTFirstAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.FirstAuthorisedDate, String.Empty))
-                    lblTFirstAuthorizationBy.Text = udtEHSTransaction.FirstAuthorisedBy
-                    lblTSecondAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.SecondAuthorisedDate, String.Empty))
-                    lblTSecondAuthorizationBy.Text = udtEHSTransaction.SecondAuthorisedBy
+                        ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Tony]
+                        DisplayTFirstAuthorization(True)
+                        DisplayTSecondAuthorization(True)
+                        ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
 
-                    Dim dt As DataTable = udtReimbursementBLL.GetReimbursementDetailByTransactionID(udtEHSTransaction.TransactionID)
-                    If dt.Rows.Count = 1 Then
-                        Dim dr As DataRow = dt.Rows(0)
-                        lblTPaymentFileSubmitTime.Text = String.Format("{0} ({1})", CStr(dr("PaymentFileSubmitBy")).Trim, udtFormatter.formatDateTime(dr("PaymentFileSubmitDtm"), String.Empty))
-                        'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-                        '-----------------------------------------------------------------------------------------
-                        'lblTBankPaymentDay.Text = udtFormatter.formatDate(dr("BankPaymentDtm"), String.Empty)
-                        lblTBankPaymentDay.Text = udtFormatter.formatDisplayDate(dr("BankPaymentDtm"))
-                        'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
-                    Else
-                        lblTPaymentFileSubmitTime.Text = String.Empty
-                        lblTBankPaymentDay.Text = String.Empty
-                    End If
+                    Case ReimbursementStatus.Reimbursed
+                        lblTFirstAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.FirstAuthorisedDate, String.Empty))
+                        lblTFirstAuthorizationBy.Text = udtEHSTransaction.FirstAuthorisedBy
+                        lblTSecondAuthorizationTime.Text = String.Format("({0})", udtFormatter.formatDateTime(udtEHSTransaction.SecondAuthorisedDate, String.Empty))
+                        lblTSecondAuthorizationBy.Text = udtEHSTransaction.SecondAuthorisedBy
 
-                    lblTFirstAuthorizationText.Visible = True
-                    lblTFirstAuthorizationTime.Visible = True
-                    lblTFirstAuthorizationBy.Visible = True
+                        Dim dt As DataTable = udtReimbursementBLL.GetReimbursementDetailByTransactionID(udtEHSTransaction.TransactionID)
+                        If dt.Rows.Count = 1 Then
+                            Dim dr As DataRow = dt.Rows(0)
+                            lblTPaymentFileSubmitTime.Text = String.Format("{0} ({1})", CStr(dr("PaymentFileSubmitBy")).Trim, udtFormatter.formatDateTime(dr("PaymentFileSubmitDtm"), String.Empty))
+                            'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
+                            '-----------------------------------------------------------------------------------------
+                            'lblTBankPaymentDay.Text = udtFormatter.formatDate(dr("BankPaymentDtm"), String.Empty)
+                            lblTBankPaymentDay.Text = udtFormatter.formatDisplayDate(dr("BankPaymentDtm"))
+                            'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+                        Else
+                            lblTPaymentFileSubmitTime.Text = String.Empty
+                            lblTBankPaymentDay.Text = String.Empty
+                        End If
 
-                    lblTSecondAuthorizationText.Visible = True
-                    lblTSecondAuthorizationTime.Visible = True
-                    lblTSecondAuthorizationBy.Visible = True
+                        lblTFirstAuthorizationText.Visible = True
+                        lblTFirstAuthorizationTime.Visible = True
+                        lblTFirstAuthorizationBy.Visible = True
 
-                    lblTPaymentFileSubmitTimeText.Visible = True
-                    lblTPaymentFileSubmitTime.Visible = True
-                    lblTBankPaymentDayText.Visible = True
-                    lblTBankPaymentDay.Visible = True
+                        lblTSecondAuthorizationText.Visible = True
+                        lblTSecondAuthorizationTime.Visible = True
+                        lblTSecondAuthorizationBy.Visible = True
 
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Tony]
-                    DisplayTFirstAuthorization(True)
-                    DisplayTSecondAuthorization(True)
-                    DisplayTPaymentFileSubmitTime(True)
-                    DisplayTBankPaymentDay(True)
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
+                        lblTPaymentFileSubmitTimeText.Visible = True
+                        lblTPaymentFileSubmitTime.Visible = True
+                        lblTBankPaymentDayText.Visible = True
+                        lblTBankPaymentDay.Visible = True
 
-            End Select
+                        ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start][Tony]
+                        DisplayTFirstAuthorization(True)
+                        DisplayTSecondAuthorization(True)
+                        DisplayTPaymentFileSubmitTime(True)
+                        DisplayTBankPaymentDay(True)
+                        ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
+
+                End Select
+            End If
         End If
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
         ' Suspend Reason / Suspend By
-        If udtEHSTransaction.RecordStatus = ClaimTransStatus.Suspended Then
+        If _blnEnableToShowSuspendBy AndAlso udtEHSTransaction.RecordStatus = ClaimTransStatus.Suspended Then
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
             lblTSuspendReasonText.Visible = True
             lblTSuspendReason.Visible = True
             lblTSuspendByText.Visible = True
@@ -750,34 +798,58 @@ Partial Public Class ClaimTransDetail
         'Creation Reason / Payment Method / Override Reason
         If udtEHSTransaction.ManualReimburse Then
 
-            lblCreationReasonText.Visible = True
-            lblCreationReason.Visible = True
-
-            lblPaymentMethodText.Visible = True
-            lblPaymentMethod.Visible = True
-
             Dim udtStaticDataBLL As New StaticDataBLL
 
-            Dim strRemarks As String = String.Empty
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            ' Creation Reason
+            If _blnEnableToShowCreationReason Then
+                lblCreationReasonText.Visible = True
+                lblCreationReason.Visible = True
 
-            strRemarks = udtEHSTransaction.CreationRemarks.Trim
+                Dim strRemarks As String = String.Empty
 
-            If Not strRemarks.Equals(String.Empty) Then
-                strRemarks = "(" + strRemarks + ")"
+                strRemarks = udtEHSTransaction.CreationRemarks.Trim
+
+                If Not strRemarks.Equals(String.Empty) Then
+                    strRemarks = "(" + strRemarks + ")"
+                End If
+
+                lblCreationReason.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("ClaimCreationReason", udtEHSTransaction.CreationReason).DataValue + " " + strRemarks
+                DisplayCreationReason(True)
+            Else
+                DisplayCreationReason(False)
             End If
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
-            lblCreationReason.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("ClaimCreationReason", udtEHSTransaction.CreationReason).DataValue + " " + strRemarks
 
-            Dim strPaymentRemarks As String = String.Empty
-            strPaymentRemarks = udtEHSTransaction.PaymentRemarks.Trim
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            ' Payment Method
+            If _blnEnableToShowPaymentMethod Then
+                lblPaymentMethodText.Visible = True
+                lblPaymentMethod.Visible = True
 
-            If Not strPaymentRemarks.Equals(String.Empty) Then
-                strPaymentRemarks = "(" + strPaymentRemarks + ")"
+                Dim strPaymentRemarks As String = String.Empty
+                strPaymentRemarks = udtEHSTransaction.PaymentRemarks.Trim
+
+                If Not strPaymentRemarks.Equals(String.Empty) Then
+                    strPaymentRemarks = "(" + strPaymentRemarks + ")"
+                End If
+
+                lblPaymentMethod.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("ReimbursementPaymentMethod", udtEHSTransaction.PaymentMethod).DataValue + " " + strPaymentRemarks
+                DisplayPaymentMethod(True)
+
+            Else
+                DisplayPaymentMethod(False)
             End If
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
-            lblPaymentMethod.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("ReimbursementPaymentMethod", udtEHSTransaction.PaymentMethod).DataValue + " " + strPaymentRemarks
-
-            If IsNothing(udtEHSTransaction.TransactionID) OrElse udtEHSTransaction.TransactionID.Trim.Equals(String.Empty) Then
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            ' Create By
+            If _blnEnableToShowCreateBy = False OrElse IsNothing(udtEHSTransaction.TransactionID) OrElse udtEHSTransaction.TransactionID.Trim.Equals(String.Empty) Then
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
                 lblCreateByText.Visible = False
                 lblCreateBy.Visible = False
                 lblCreateDtm.Visible = False
@@ -816,8 +888,10 @@ Partial Public Class ClaimTransDetail
 
         End If
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]        
         ' Approval By / Approval Dtm
-        If udtEHSTransaction.ApprovalBy.Trim.Equals(String.Empty) Then
+        If _blnEnableToShowApprovalBy = False OrElse udtEHSTransaction.ApprovalBy.Trim.Equals(String.Empty) Then
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
             Me.lblApprovalBy.Visible = False
             Me.lblApprovalByText.Visible = False
 
@@ -841,8 +915,10 @@ Partial Public Class ClaimTransDetail
         End If
 
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie] 
         ' Reject By / Reject Dtm
-        If udtEHSTransaction.RejectBy.Trim.Equals(String.Empty) Then
+        If _blnEnableToShowRejectBy = False OrElse udtEHSTransaction.RejectBy.Trim.Equals(String.Empty) Then
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]   
             Me.lblRejectBy.Visible = False
             Me.lblRejectByText.Visible = False
 
@@ -866,8 +942,10 @@ Partial Public Class ClaimTransDetail
         End If
 
 
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
         ' Void Transaction No. / Void Reason / Void By
-        If udtEHSTransaction.RecordStatus = ClaimTransStatus.Inactive Then
+        If _blnEnableToShowVoidTransactionNo AndAlso udtEHSTransaction.RecordStatus = ClaimTransStatus.Inactive Then
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
             lblTVoidTransactionNoText.Visible = True
             lblTVoidTransactionNo.Visible = True
             lblTVoidTransactionTime.Visible = True
@@ -1010,7 +1088,9 @@ Partial Public Class ClaimTransDetail
         Me.Session(eHSAccountEnquiry.SESSION_REDIRECT_PARAMETER) = Me.lnkTServiceProviderID.Text
         Me.Session(eHSAccountEnquiry.SESSION_REDIRECT_SOURCE) = spEnquiry.REDIRECT_NAME
 
-        Me.Response.Redirect(lnkTServiceProviderID.CommandArgument)
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        RedirectHandler.ToURL(lnkTServiceProviderID.CommandArgument)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     Private Const FUNCTION_CODE_SERVICE_PROVIDER_ENQUIRY As String = Common.Component.FunctCode.FUNT010204
@@ -1117,6 +1197,13 @@ Partial Public Class ClaimTransDetail
         Me.trVoidBy.Style.Item("display") = IIf(blnDisplay, "", "none")
     End Sub
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
+
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Private Sub DisplayBankAccountNo(ByVal blnDisplay As Boolean)
+        Me.trBankAccountNo.Style.Item("display") = IIf(blnDisplay, "", "none")
+    End Sub
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
 #End Region
 

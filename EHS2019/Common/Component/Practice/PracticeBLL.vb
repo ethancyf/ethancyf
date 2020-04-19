@@ -136,19 +136,8 @@ Namespace Component.Practice
                         intMODisplaySeq = CInt(drPracticeList.Item("MO_Display_Seq"))
                     End If
 
-                    'If drPracticeList.Item("Bank_TSMP") Is DBNull.Value Then
-                    '    btyBankTsmp = Nothing
-                    'Else
-                    '    btyBankTsmp = CType(drPracticeList.Item("Bank_TSMP"), Byte())
-                    'End If
-
-
-                    'If drPracticeList.Item("Practice_TSMP") Is DBNull.Value Then
-                    '    btyPracticeTsmp = Nothing
-                    'Else
-                    '    btyPracticeTsmp = CType(drPracticeList.Item("Practice_TSMP"), Byte())
-                    'End If
-
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                     udtPracticeModel = New PracticeModel(String.Empty, _
                                                             CType(drPracticeList.Item("Enrolment_Ref_No"), String).Trim, _
                                                             intPracticeDisplaySeq, _
@@ -172,6 +161,9 @@ Namespace Component.Practice
                                                             Nothing, _
                                                             String.Empty, _
                                                             Nothing, _
+                                                            YesNo.No, _
+                                                            String.Empty, _
+                                                            String.Empty, _
                                                             New BankAcctModel(String.Empty, _
                                                                 CStr(IIf((drPracticeList.Item("Enrolment_Ref_No") Is DBNull.Value), String.Empty, drPracticeList.Item("Enrolment_Ref_No"))), _
                                                                 intBankDisplaySeq, _
@@ -198,6 +190,7 @@ Namespace Component.Practice
                                                                 Nothing, _
                                                                 Nothing), _
                                                                 Nothing)
+                    ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                     ' Get Practice Scheme Information
                     Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
@@ -275,19 +268,8 @@ Namespace Component.Practice
                         intMODisplaySeq = CInt(drPracticeList.Item("MO_Display_Seq"))
                     End If
 
-                    'If drPracticeList.Item("Bank_TSMP") Is DBNull.Value Then
-                    '    btyBankTsmp = Nothing
-                    'Else
-                    '    btyBankTsmp = CType(drPracticeList.Item("Bank_TSMP"), Byte())
-                    'End If
-
-
-                    'If drPracticeList.Item("Practice_TSMP") Is DBNull.Value Then
-                    '    btyPracticeTsmp = Nothing
-                    'Else
-                    '    btyPracticeTsmp = CType(drPracticeList.Item("Practice_TSMP"), Byte())
-                    'End If
-
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                     udtPracticeModel = New PracticeModel(String.Empty, _
                                                             CType(drPracticeList.Item("Enrolment_Ref_No"), String).Trim, _
                                                             intPracticeDisplaySeq, _
@@ -311,6 +293,9 @@ Namespace Component.Practice
                                                             Nothing, _
                                                             String.Empty, _
                                                              Nothing, _
+                                                            YesNo.No, _
+                                                            String.Empty, _
+                                                            String.Empty, _
                                                             New BankAcctModel(String.Empty, _
                                                                 CStr(IIf((drPracticeList.Item("Enrolment_Ref_No") Is DBNull.Value), String.Empty, drPracticeList.Item("Enrolment_Ref_No"))), _
                                                                 intBankDisplaySeq, _
@@ -414,6 +399,8 @@ Namespace Component.Practice
                         btyPracticeTsmp = CType(drRaw.Item("Practice_TSMP"), Byte())
                     End If
 
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                     udtPracticeModel = New PracticeModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
                                                             String.Empty, _
                                                             intPracticeDisplaySeq, _
@@ -437,6 +424,9 @@ Namespace Component.Practice
                                                             CType(drRaw.Item("Practice_Update_Dtm"), DateTime), _
                                                             CStr(IIf((drRaw.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Update_By"))).Trim, _
                                                             btyPracticeTsmp, _
+                                                            CStr(drRaw.Item("Mobile_Clinic")).Trim, _
+                                                            CStr(IIf((drRaw.Item("Remarks_Desc") Is DBNull.Value), String.Empty, drRaw.Item("Remarks_Desc"))).Trim, _
+                                                            CStr(IIf((drRaw.Item("Remarks_Desc_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Remarks_Desc_Chi"))).Trim, _
                                                             New BankAcctModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
                                                                 String.Empty, _
                                                                 intBankDisplaySeq, _
@@ -463,6 +453,7 @@ Namespace Component.Practice
                                                                 CType(drRaw.Item("Professional_Create_Dtm"), DateTime), _
                                                                 CStr(IIf((drRaw.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Create_By"))).Trim), _
                                                                 Nothing)
+                    ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                     ' Get Practice Scheme Information
                     Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
@@ -489,125 +480,6 @@ Namespace Component.Practice
             End Try
 
         End Function
-
-
-        'Public Function GetPracticeBankAcctListFromPermanentBySPID_(ByVal strSPID As String, ByVal udtDB As Database) As PracticeModelCollection
-        '    Dim drPracticeList As SqlDataReader = Nothing
-        '    Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection()
-        '    Dim udtPracticeModel As PracticeModel
-
-        '    Dim intAddressCode As Nullable(Of Integer)
-        '    Dim intBankDisplaySeq As Nullable(Of Integer)
-        '    Dim intPracticeDisplaySeq As Nullable(Of Integer)
-        '    Dim intMODisplaySeq As Nullable(Of Integer)
-
-        '    Dim btyBankTsmp As Byte()
-        '    Dim btyPracticeTsmp As Byte()
-
-        '    Try
-        '        Dim prams() As SqlParameter = { _
-        '        udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID)}
-        '        udtDB.RunProc("proc_PracticeBankAccount_get_bySPID", prams, drPracticeList)
-
-        '        While drPracticeList.Read()
-        '            If IsDBNull(drPracticeList.Item("Address_Code")) Then
-        '                intAddressCode = Nothing
-        '            Else
-        '                intAddressCode = CInt((drPracticeList.Item("Address_Code")))
-        '            End If
-
-        '            If IsDBNull(drPracticeList.Item("Bank_Display_Seq")) Then
-        '                intBankDisplaySeq = Nothing
-        '            Else
-        '                intBankDisplaySeq = CInt(drPracticeList.Item("Bank_Display_Seq"))
-        '            End If
-
-        '            If IsDBNull(drPracticeList.Item("Display_Seq")) Then
-        '                intPracticeDisplaySeq = Nothing
-        '            Else
-        '                intPracticeDisplaySeq = CInt(drPracticeList.Item("Display_Seq"))
-        '            End If
-
-        '            If IsDBNull(drPracticeList.Item("MO_Display_Seq")) Then
-        '                intMODisplaySeq = Nothing
-        '            Else
-        '                intMODisplaySeq = CInt(drPracticeList.Item("MO_Display_Seq"))
-        '            End If
-
-        '            If drPracticeList.Item("Bank_TSMP") Is DBNull.Value Then
-
-        '                btyBankTsmp = Nothing
-        '            Else
-        '                btyBankTsmp = CType(drPracticeList.Item("Bank_TSMP"), Byte())
-        '            End If
-
-        '            If drPracticeList.Item("Practice_TSMP") Is DBNull.Value Then
-        '                btyPracticeTsmp = Nothing
-        '            Else
-        '                btyPracticeTsmp = CType(drPracticeList.Item("Practice_TSMP"), Byte())
-        '            End If
-
-        '            udtPracticeModel = New PracticeModel(CStr(IIf((drPracticeList.Item("SP_ID") Is DBNull.Value), String.Empty, drPracticeList.Item("SP_ID"))).Trim, _
-        '                                               String.Empty, _
-        '                                               intPracticeDisplaySeq, _
-        '                                               intMODisplaySeq, _
-        '                                               CType(drPracticeList.Item("Practice_Name"), String).Trim, _
-        '                                               CStr(IIf((drPracticeList.Item("Practice_Name_Chi") Is DBNull.Value), String.Empty, drPracticeList.Item("Practice_Name_Chi"))), _
-        '                                                 New AddressModel(CStr(IIf((drPracticeList.Item("Room") Is DBNull.Value), String.Empty, drPracticeList.Item("Room"))), _
-        '                                                                                    CStr(IIf((drPracticeList.Item("Floor") Is DBNull.Value), String.Empty, drPracticeList.Item("Floor"))).Trim, _
-        '                                                                                    CStr(IIf((drPracticeList.Item("Block") Is DBNull.Value), String.Empty, drPracticeList.Item("Block"))).Trim, _
-        '                                                                                    CStr(IIf((drPracticeList.Item("Building") Is DBNull.Value), String.Empty, drPracticeList.Item("Building"))).Trim, _
-        '                                                                                    CStr(IIf((drPracticeList.Item("Building_Chi") Is DBNull.Value), String.Empty, drPracticeList.Item("Building_Chi"))).Trim, _
-        '                                                                                    CStr(IIf((drPracticeList.Item("District") Is DBNull.Value), String.Empty, drPracticeList.Item("District"))).Trim, _
-        '                                                                                    intAddressCode), _
-        '                                               CInt(drPracticeList.Item("Professional_Seq")), _
-        '                                               CStr(IIf((drPracticeList.Item("Practice_Record_Status") Is DBNull.Value), String.Empty, drPracticeList.Item("Practice_Record_Status"))).Trim, _
-        '                                               CStr(IIf((drPracticeList.Item("Practice_Submission_Method") Is DBNull.Value), String.Empty, drPracticeList.Item("Practice_Submission_Method"))).Trim, _
-        '                                               CStr(IIf((drPracticeList.Item("Practice_Remark") Is DBNull.Value), String.Empty, drPracticeList.Item("Practice_Remark"))).Trim, _
-        '                                               CStr(drPracticeList.Item("Phone_Daytime")), _
-        '                                               CType(drPracticeList.Item("Practice_Create_Dtm"), DateTime), _
-        '                                               CStr(IIf((drPracticeList.Item("Practice_Create_By") Is DBNull.Value), String.Empty, drPracticeList.Item("Practice_Create_By"))).Trim, _
-        '                                               CType(drPracticeList.Item("Practice_Update_Dtm"), DateTime), _
-        '                                               CStr(IIf((drPracticeList.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drPracticeList.Item("Practice_Update_By"))).Trim, _
-        '                                               btyPracticeTsmp, _
-        '                                               New BankAcctModel(CStr(IIf((drPracticeList.Item("SP_ID") Is DBNull.Value), String.Empty, drPracticeList.Item("SP_ID"))).Trim, _
-        '                                                   String.Empty, _
-        '                                                   intBankDisplaySeq, _
-        '                                                   intPracticeDisplaySeq, _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Name") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Name"))).Trim, _
-        '                                                   CStr(IIf((drPracticeList.Item("Branch_Name") Is DBNull.Value), String.Empty, drPracticeList.Item("Branch_Name"))).Trim, _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Acc_Holder") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Acc_Holder"))).Trim, _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Account_No") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Account_No"))).Trim, _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Record_Status") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Record_Status"))).Trim, _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Submission_Method") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Submission_Method"))).Trim, _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Remark") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Remark"))).Trim, _
-        '                                                   Convert.ToDateTime(IIf(drPracticeList.Item("Bank_Create_Dtm") Is DBNull.Value, Nothing, drPracticeList.Item("Bank_Create_Dtm"))), _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Create_By") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Create_By"))).Trim, _
-        '                                                   Convert.ToDateTime(IIf(drPracticeList.Item("Bank_Update_Dtm") Is DBNull.Value, Nothing, drPracticeList.Item("Bank_Update_Dtm"))), _
-        '                                                   CStr(IIf((drPracticeList.Item("Bank_Update_By") Is DBNull.Value), String.Empty, drPracticeList.Item("Bank_Update_By"))).Trim, _
-        '                                                   btyBankTsmp), _
-        '                                                New ProfessionalModel(CStr(IIf((drPracticeList.Item("SP_ID") Is DBNull.Value), String.Empty, drPracticeList.Item("SP_ID"))).Trim, _
-        '                                                    String.Empty, _
-        '                                                    CInt(drPracticeList.Item("Professional_Seq")), _
-        '                                                    CType(drPracticeList.Item("Service_Category_Code"), String).Trim, _
-        '                                                    CType(drPracticeList.Item("Registration_Code"), String).Trim, _
-        '                                                    CStr(IIf((drPracticeList.Item("Professional_Record_Status") Is DBNull.Value), String.Empty, drPracticeList.Item("Professional_Record_Status"))).Trim, _
-        '                                                    CType(drPracticeList.Item("Professional_Create_Dtm"), DateTime), _
-        '                                                   CStr(IIf((drPracticeList.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drPracticeList.Item("Professional_Create_By"))).Trim), _
-        '                                                   Nothing)
-
-        '            udtPracticeModelCollection.Add(udtPracticeModel)
-        '        End While
-        '        drPracticeList.Close()
-        '        Return udtPracticeModelCollection
-        '    Catch ex As Exception
-        '        Throw ex
-        '    Finally
-        '        If Not drPracticeList Is Nothing Then
-        '            drPracticeList.Close()
-        '        End If
-        '    End Try
-        'End Function
 
         Public Function GetPracticeBankAcctListFromPermanentMaintenanceBySPID(ByVal strSPID As String, ByVal udtDB As Database) As PracticeModelCollection
             ' Dim drPracticeList As SqlDataReader = Nothing
@@ -667,6 +539,8 @@ Namespace Component.Practice
                         btyPracticeTsmp = CType(r("Practice_TSMP"), Byte())
                     End If
 
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                     udtPracticeModel = New PracticeModel(CStr(IIf((r("SP_ID") Is DBNull.Value), String.Empty, r("SP_ID"))).Trim, _
                                                             String.Empty, _
                                                             intPracticeDisplaySeq, _
@@ -690,6 +564,9 @@ Namespace Component.Practice
                                                             CType(r("Practice_Update_Dtm"), DateTime), _
                                                             CStr(IIf((r("Practice_Update_By") Is DBNull.Value), String.Empty, r("Practice_Update_By"))).Trim, _
                                                             btyPracticeTsmp, _
+                                                            CStr(r.Item("Mobile_Clinic")).Trim, _
+                                                            CStr(IIf((r.Item("Remarks_Desc") Is DBNull.Value), String.Empty, r.Item("Remarks_Desc"))).Trim, _
+                                                            CStr(IIf((r.Item("Remarks_Desc_Chi") Is DBNull.Value), String.Empty, r.Item("Remarks_Desc_Chi"))).Trim, _
                                                             New BankAcctModel(CStr(IIf((r("SP_ID") Is DBNull.Value), String.Empty, r("SP_ID"))).Trim, _
                                                                 String.Empty, _
                                                                 intBankDisplaySeq, _
@@ -716,6 +593,7 @@ Namespace Component.Practice
                                                                 CType(r("Professional_Create_Dtm"), DateTime), _
                                                                 CStr(IIf((r("Professional_Create_By") Is DBNull.Value), String.Empty, r("Professional_Create_By"))).Trim), _
                                                                 Nothing)
+                    ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                     ' Get Practice Scheme Information
                     Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
@@ -794,6 +672,8 @@ Namespace Component.Practice
                         btyPracticeTsmp = CType(drRaw.Item("Practice_TSMP"), Byte())
                     End If
 
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                     udtPracticeModel = New PracticeModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
                                                             CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
                                                             intPracticeDisplaySeq, _
@@ -817,6 +697,9 @@ Namespace Component.Practice
                                                             CType(drRaw.Item("Practice_Update_Dtm"), DateTime), _
                                                             CStr(IIf((drRaw.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Update_By"))).Trim, _
                                                             btyPracticeTsmp, _
+                                                            CStr(drRaw.Item("Mobile_Clinic")).Trim, _
+                                                            CStr(IIf((drRaw.Item("Remarks_Desc") Is DBNull.Value), String.Empty, drRaw.Item("Remarks_Desc"))).Trim, _
+                                                            CStr(IIf((drRaw.Item("Remarks_Desc_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Remarks_Desc_Chi"))).Trim, _
                                                             New BankAcctModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
                                                                 CStr(IIf((drRaw.Item("Enrolment_Ref_No") Is DBNull.Value), String.Empty, drRaw.Item("Enrolment_Ref_No"))).Trim, _
                                                                 intBankDisplaySeq, _
@@ -843,6 +726,7 @@ Namespace Component.Practice
                                                                 CType(drRaw.Item("Professional_Create_Dtm"), DateTime), _
                                                                 CStr(IIf((drRaw.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Create_By"))).Trim), _
                                                                 Nothing)
+                    ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                     ' Get Practice Scheme Information
                     Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
@@ -865,129 +749,133 @@ Namespace Component.Practice
 
         End Function
 
-        Public Function GetPracticeBankAcctListFromStagingByERN_FromIVSS(ByVal strERN As String, ByVal udtDB As Database, ByVal strUserID As String) As PracticeModelCollection
-            Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection()
-            Dim udtPracticeModel As PracticeModel
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        ' Function Obsoleted
+        'Public Function GetPracticeBankAcctListFromStagingByERN_FromIVSS(ByVal strERN As String, ByVal udtDB As Database, ByVal strUserID As String) As PracticeModelCollection
+        '    Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection()
+        '    Dim udtPracticeModel As PracticeModel
 
-            Dim intAddressCode As Nullable(Of Integer)
-            Dim intBankDisplaySeq As Nullable(Of Integer)
-            Dim intPracticeDisplaySeq As Nullable(Of Integer)
-            Dim intMODisplaySeq As Nullable(Of Integer)
+        '    Dim intAddressCode As Nullable(Of Integer)
+        '    Dim intBankDisplaySeq As Nullable(Of Integer)
+        '    Dim intPracticeDisplaySeq As Nullable(Of Integer)
+        '    Dim intMODisplaySeq As Nullable(Of Integer)
 
-            Dim btyBankTsmp As Byte()
-            Dim btyPracticeTsmp As Byte()
+        '    Dim btyBankTsmp As Byte()
+        '    Dim btyPracticeTsmp As Byte()
 
-            Dim dtRaw As New DataTable()
-            Try
-                Dim prams() As SqlParameter = {udtDB.MakeInParam("@enrolment_ref_no", ServiceProviderModel.EnrolRefNoDataType, ServiceProviderModel.EnrolRefNoDataSize, strERN), _
-                udtDB.MakeInParam("@user_id", ServiceProviderModel.UpdateByDataType, ServiceProviderModel.UpdateByDataSize, strUserID)}
-                udtDB.RunProc("proc_PracticeBankAccountStaging_get_byERN_FromIVSS", prams, dtRaw)
+        '    Dim dtRaw As New DataTable()
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@enrolment_ref_no", ServiceProviderModel.EnrolRefNoDataType, ServiceProviderModel.EnrolRefNoDataSize, strERN), _
+        '        udtDB.MakeInParam("@user_id", ServiceProviderModel.UpdateByDataType, ServiceProviderModel.UpdateByDataSize, strUserID)}
+        '        udtDB.RunProc("proc_PracticeBankAccountStaging_get_byERN_FromIVSS", prams, dtRaw)
 
-                For i As Integer = 0 To dtRaw.Rows.Count - 1
-                    Dim drRaw As DataRow = dtRaw.Rows(i)
+        '        For i As Integer = 0 To dtRaw.Rows.Count - 1
+        '            Dim drRaw As DataRow = dtRaw.Rows(i)
 
-                    If IsDBNull(drRaw.Item("Address_Code")) Then
-                        intAddressCode = Nothing
-                    Else
-                        intAddressCode = CInt((drRaw.Item("Address_Code")))
-                    End If
+        '            If IsDBNull(drRaw.Item("Address_Code")) Then
+        '                intAddressCode = Nothing
+        '            Else
+        '                intAddressCode = CInt((drRaw.Item("Address_Code")))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Bank_Display_Seq")) Then
-                        intBankDisplaySeq = Nothing
-                    Else
-                        intBankDisplaySeq = CInt(drRaw.Item("Bank_Display_Seq"))
-                    End If
+        '            If IsDBNull(drRaw.Item("Bank_Display_Seq")) Then
+        '                intBankDisplaySeq = Nothing
+        '            Else
+        '                intBankDisplaySeq = CInt(drRaw.Item("Bank_Display_Seq"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Display_Seq")) Then
-                        intPracticeDisplaySeq = Nothing
-                    Else
-                        intPracticeDisplaySeq = CInt(drRaw.Item("Display_Seq"))
-                    End If
+        '            If IsDBNull(drRaw.Item("Display_Seq")) Then
+        '                intPracticeDisplaySeq = Nothing
+        '            Else
+        '                intPracticeDisplaySeq = CInt(drRaw.Item("Display_Seq"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("MO_Display_Seq")) Then
-                        intMODisplaySeq = Nothing
-                    Else
-                        intMODisplaySeq = CInt(drRaw.Item("MO_Display_Seq"))
-                    End If
+        '            If IsDBNull(drRaw.Item("MO_Display_Seq")) Then
+        '                intMODisplaySeq = Nothing
+        '            Else
+        '                intMODisplaySeq = CInt(drRaw.Item("MO_Display_Seq"))
+        '            End If
 
-                    If drRaw.IsNull("Bank_TSMP") Then
-                        btyBankTsmp = Nothing
-                    Else
-                        btyBankTsmp = CType(drRaw.Item("Bank_TSMP"), Byte())
-                    End If
+        '            If drRaw.IsNull("Bank_TSMP") Then
+        '                btyBankTsmp = Nothing
+        '            Else
+        '                btyBankTsmp = CType(drRaw.Item("Bank_TSMP"), Byte())
+        '            End If
 
-                    If drRaw.IsNull("Practice_TSMP") Then
-                        btyPracticeTsmp = Nothing
-                    Else
-                        btyPracticeTsmp = CType(drRaw.Item("Practice_TSMP"), Byte())
-                    End If
+        '            If drRaw.IsNull("Practice_TSMP") Then
+        '                btyPracticeTsmp = Nothing
+        '            Else
+        '                btyPracticeTsmp = CType(drRaw.Item("Practice_TSMP"), Byte())
+        '            End If
 
-                    udtPracticeModel = New PracticeModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
-                                                            CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
-                                                            intPracticeDisplaySeq, _
-                                                            intMODisplaySeq, _
-                                                            CType(drRaw.Item("Practice_Name"), String).Trim, _
-                                                            CStr(IIf((drRaw.Item("Practice_Name_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Name_Chi"))), _
-                                                            New AddressModel(CStr(IIf((drRaw.Item("Room") Is DBNull.Value), String.Empty, drRaw.Item("Room"))), _
-                                                                CStr(IIf((drRaw.Item("Floor") Is DBNull.Value), String.Empty, drRaw.Item("Floor"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Block") Is DBNull.Value), String.Empty, drRaw.Item("Block"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Building") Is DBNull.Value), String.Empty, drRaw.Item("Building"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Building_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Building_Chi"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("District") Is DBNull.Value), String.Empty, drRaw.Item("District"))).Trim, _
-                                                                intAddressCode), _
-                                                            CInt(drRaw.Item("Professional_Seq")), _
-                                                            CStr(IIf((drRaw.Item("Practice_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Record_Status"))).Trim, _
-                                                            CStr(IIf((drRaw.Item("Practice_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Submission_Method"))).Trim, _
-                                                            CStr(IIf((drRaw.Item("Practice_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Remark"))).Trim, _
-                                                            CStr(drRaw.Item("Phone_Daytime")), _
-                                                            CType(drRaw.Item("Practice_Create_Dtm"), DateTime), _
-                                                            CStr(IIf((drRaw.Item("Practice_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Create_By"))).Trim, _
-                                                            CType(drRaw.Item("Practice_Update_Dtm"), DateTime), _
-                                                            CStr(IIf((drRaw.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Update_By"))).Trim, _
-                                                            btyPracticeTsmp, _
-                                                            New BankAcctModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Enrolment_Ref_No") Is DBNull.Value), String.Empty, drRaw.Item("Enrolment_Ref_No"))).Trim, _
-                                                                intBankDisplaySeq, _
-                                                                intPracticeDisplaySeq, _
-                                                                CStr(IIf((drRaw.Item("Bank_Name") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Name"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Branch_Name") Is DBNull.Value), String.Empty, drRaw.Item("Branch_Name"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Acc_Holder") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Acc_Holder"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Account_No") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Account_No"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Record_Status"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Submission_Method"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Remark"))).Trim, _
-                                                                Convert.ToDateTime(IIf(drRaw.Item("Bank_Create_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Create_Dtm"))), _
-                                                                CStr(IIf((drRaw.Item("Bank_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Create_By"))).Trim, _
-                                                                Convert.ToDateTime(IIf(drRaw.Item("Bank_Update_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Update_Dtm"))), _
-                                                                CStr(IIf((drRaw.Item("Bank_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Update_By"))).Trim, _
-                                                                btyBankTsmp, _
-                                                                CStr(IIf((drRaw.Item("Bank_IsFreeTextFormat") Is DBNull.Value), String.Empty, drRaw.Item("Bank_IsFreeTextFormat"))).Trim), _
-                                                            New ProfessionalModel(String.Empty, _
-                                                                CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
-                                                                CInt(drRaw.Item("Professional_Seq")), _
-                                                                CType(drRaw.Item("Service_Category_Code"), String).Trim, _
-                                                                CType(drRaw.Item("Registration_Code"), String).Trim, _
-                                                                CStr(IIf((drRaw.Item("Professional_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Record_Status"))).Trim, _
-                                                                CType(drRaw.Item("Professional_Create_Dtm"), DateTime), _
-                                                                CStr(IIf((drRaw.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Create_By"))).Trim), _
-                                                                Nothing)
+        '            udtPracticeModel = New PracticeModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
+        '                                                    CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
+        '                                                    intPracticeDisplaySeq, _
+        '                                                    intMODisplaySeq, _
+        '                                                    CType(drRaw.Item("Practice_Name"), String).Trim, _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Name_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Name_Chi"))), _
+        '                                                    New AddressModel(CStr(IIf((drRaw.Item("Room") Is DBNull.Value), String.Empty, drRaw.Item("Room"))), _
+        '                                                        CStr(IIf((drRaw.Item("Floor") Is DBNull.Value), String.Empty, drRaw.Item("Floor"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Block") Is DBNull.Value), String.Empty, drRaw.Item("Block"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Building") Is DBNull.Value), String.Empty, drRaw.Item("Building"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Building_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Building_Chi"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("District") Is DBNull.Value), String.Empty, drRaw.Item("District"))).Trim, _
+        '                                                        intAddressCode), _
+        '                                                    CInt(drRaw.Item("Professional_Seq")), _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Record_Status"))).Trim, _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Submission_Method"))).Trim, _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Remark"))).Trim, _
+        '                                                    CStr(drRaw.Item("Phone_Daytime")), _
+        '                                                    CType(drRaw.Item("Practice_Create_Dtm"), DateTime), _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Create_By"))).Trim, _
+        '                                                    CType(drRaw.Item("Practice_Update_Dtm"), DateTime), _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Update_By"))).Trim, _
+        '                                                    btyPracticeTsmp, _
+        '                                                    New BankAcctModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Enrolment_Ref_No") Is DBNull.Value), String.Empty, drRaw.Item("Enrolment_Ref_No"))).Trim, _
+        '                                                        intBankDisplaySeq, _
+        '                                                        intPracticeDisplaySeq, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Name") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Name"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Branch_Name") Is DBNull.Value), String.Empty, drRaw.Item("Branch_Name"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Acc_Holder") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Acc_Holder"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Account_No") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Account_No"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Record_Status"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Submission_Method"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Remark"))).Trim, _
+        '                                                        Convert.ToDateTime(IIf(drRaw.Item("Bank_Create_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Create_Dtm"))), _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Create_By"))).Trim, _
+        '                                                        Convert.ToDateTime(IIf(drRaw.Item("Bank_Update_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Update_Dtm"))), _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Update_By"))).Trim, _
+        '                                                        btyBankTsmp, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_IsFreeTextFormat") Is DBNull.Value), String.Empty, drRaw.Item("Bank_IsFreeTextFormat"))).Trim), _
+        '                                                    New ProfessionalModel(String.Empty, _
+        '                                                        CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
+        '                                                        CInt(drRaw.Item("Professional_Seq")), _
+        '                                                        CType(drRaw.Item("Service_Category_Code"), String).Trim, _
+        '                                                        CType(drRaw.Item("Registration_Code"), String).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Professional_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Record_Status"))).Trim, _
+        '                                                        CType(drRaw.Item("Professional_Create_Dtm"), DateTime), _
+        '                                                        CStr(IIf((drRaw.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Create_By"))).Trim), _
+        '                                                        Nothing)
 
-                    ' Get Practice Scheme Information
-                    Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
-                    udtPracticeModel.PracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListStagingByErnPracticeDisplaySeq_FromIVSS(udtPracticeModel.EnrolRefNo, udtPracticeModel.DisplaySeq, udtDB, strUserID)
+        '            ' Get Practice Scheme Information
+        '            Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
+        '            udtPracticeModel.PracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListStagingByErnPracticeDisplaySeq_FromIVSS(udtPracticeModel.EnrolRefNo, udtPracticeModel.DisplaySeq, udtDB, strUserID)
 
-                    udtPracticeModelCollection.Add(udtPracticeModel)
+        '            udtPracticeModelCollection.Add(udtPracticeModel)
 
-                Next
+        '        Next
 
-                Return udtPracticeModelCollection
+        '        Return udtPracticeModelCollection
 
-            Catch ex As Exception
-                Throw ex
+        '    Catch ex As Exception
+        '        Throw ex
 
-            End Try
+        '    End Try
 
-        End Function
+        'End Function
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
         Public Function GetPracticeBankAcctListFromStagingByERNBankStagingStatus(ByVal strERN As String, ByVal udtDB As Database) As PracticeModelCollection
             'Dim drPracticeList As SqlDataReader = Nothing
@@ -1046,6 +934,8 @@ Namespace Component.Practice
                         btyPracticeTsmp = CType(drPractice.Item("Practice_TSMP"), Byte())
                     End If
 
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                     udtPracticeModel = New PracticeModel(CStr(IIf((drPractice.Item("SP_ID") Is DBNull.Value), String.Empty, drPractice.Item("SP_ID"))).Trim, _
                                                             CType(drPractice.Item("Enrolment_Ref_No"), String).Trim, _
                                                             intPracticeDisplaySeq, _
@@ -1069,6 +959,9 @@ Namespace Component.Practice
                                                             CType(drPractice.Item("Practice_Update_Dtm"), DateTime), _
                                                             CStr(IIf((drPractice.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drPractice.Item("Practice_Update_By"))).Trim, _
                                                             btyPracticeTsmp, _
+                                                            CStr(drPractice.Item("Mobile_Clinic")).Trim, _
+                                                            CStr(IIf((drPractice.Item("Remarks_Desc") Is DBNull.Value), String.Empty, drPractice.Item("Remarks_Desc"))).Trim, _
+                                                            CStr(IIf((drPractice.Item("Remarks_Desc_Chi") Is DBNull.Value), String.Empty, drPractice.Item("Remarks_Desc_Chi"))).Trim, _
                                                             New BankAcctModel(CStr(IIf((drPractice.Item("SP_ID") Is DBNull.Value), String.Empty, drPractice.Item("SP_ID"))).Trim, _
                                                                 CStr(IIf((drPractice.Item("Enrolment_Ref_No") Is DBNull.Value), String.Empty, drPractice.Item("Enrolment_Ref_No"))).Trim, _
                                                                 intBankDisplaySeq, _
@@ -1095,6 +988,7 @@ Namespace Component.Practice
                                                                 CType(drPractice.Item("Professional_Create_Dtm"), DateTime), _
                                                                 CStr(IIf((drPractice.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drPractice.Item("Professional_Create_By"))).Trim), _
                                                                 Nothing)
+                    ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                     ' Get Practice Scheme Information
                     Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
@@ -1358,6 +1252,8 @@ Namespace Component.Practice
             'Dim i As Integer
 
             Try
+                ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                 Dim prams() As SqlParameter = { _
                                udtDB.MakeInParam("@enrolment_ref_no", ServiceProviderModel.EnrolRefNoDataType, ServiceProviderModel.EnrolRefNoDataSize, udtPracticeModel.EnrolRefNo), _
                                udtDB.MakeInParam("@display_seq", PracticeModel.DisplaySeqDataType, PracticeModel.DisplaySeqDataSize, udtPracticeModel.DisplaySeq), _
@@ -1378,7 +1274,11 @@ Namespace Component.Practice
                                udtDB.MakeInParam("@mo_display_seq", PracticeModel.DisplaySeqDataType, PracticeModel.DisplaySeqDataSize, udtPracticeModel.MODisplaySeq), _
                                udtDB.MakeInParam("@submission_method", PracticeModel.SubmissionMethodDataType, PracticeModel.SubmissionMethodDataSize, udtPracticeModel.SubmitMethod), _
                                udtDB.MakeInParam("@create_by", PracticeModel.CreateByDataType, PracticeModel.CreateByDataSize, udtPracticeModel.CreateBy), _
-                               udtDB.MakeInParam("@update_by", PracticeModel.UpdateByDataType, PracticeModel.UpdateByDataSize, udtPracticeModel.UpdateBy)}
+                               udtDB.MakeInParam("@update_by", PracticeModel.UpdateByDataType, PracticeModel.UpdateByDataSize, udtPracticeModel.UpdateBy), _
+                               udtDB.MakeInParam("@Mobile_clinic", PracticeModel.MobileClinicDataType, PracticeModel.MobileClinicDataSize, udtPracticeModel.MobileClinic), _
+                               udtDB.MakeInParam("@remarks_desc", PracticeModel.RemarksDescDataType, PracticeModel.RemarksDescDataSize, IIf(udtPracticeModel.RemarksDesc.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDesc)), _
+                               udtDB.MakeInParam("@remarks_desc_chi", PracticeModel.RemarksDescChiDataType, PracticeModel.RemarksDescChiDataSize, IIf(udtPracticeModel.RemarksDescChi.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDescChi))}
+                ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                 udtDB.RunProc("proc_PracticeStaging_add", prams)
 
@@ -1416,6 +1316,8 @@ Namespace Component.Practice
 
         Public Function UpdatePracticeStaging(ByVal udtPracticeModel As PracticeModel, ByVal udtdb As Database) As Boolean
             Try
+                ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                 Dim prams() As SqlParameter = { _
                                udtdb.MakeInParam("@enrolment_ref_no", ServiceProviderModel.EnrolRefNoDataType, ServiceProviderModel.EnrolRefNoDataSize, udtPracticeModel.EnrolRefNo), _
                                udtdb.MakeInParam("@display_seq", PracticeModel.DisplaySeqDataType, PracticeModel.DisplaySeqDataSize, udtPracticeModel.DisplaySeq), _
@@ -1434,7 +1336,11 @@ Namespace Component.Practice
                                udtdb.MakeInParam("@remark", PracticeModel.RemarkDataType, PracticeModel.RemarkDataSize, IIf(udtPracticeModel.Remark.Equals(String.Empty), DBNull.Value, udtPracticeModel.Remark)), _
                                udtdb.MakeInParam("@update_by", PracticeModel.UpdateByDataType, PracticeModel.UpdateByDataSize, udtPracticeModel.UpdateBy), _
                                udtdb.MakeInParam("@phone_daytime", PracticeModel.PhoneDaytimeDataType, PracticeModel.PhoneDaytimeDataSize, udtPracticeModel.PhoneDaytime), _
-                               udtdb.MakeInParam("@tsmp", PracticeModel.TSMPDataType, PracticeModel.TSMPDataSize, udtPracticeModel.TSMP)}
+                               udtdb.MakeInParam("@tsmp", PracticeModel.TSMPDataType, PracticeModel.TSMPDataSize, udtPracticeModel.TSMP), _
+                               udtdb.MakeInParam("@Mobile_clinic", PracticeModel.MobileClinicDataType, PracticeModel.MobileClinicDataSize, udtPracticeModel.MobileClinic), _
+                               udtdb.MakeInParam("@remarks_desc", PracticeModel.RemarksDescDataType, PracticeModel.RemarksDescDataSize, IIf(udtPracticeModel.RemarksDesc.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDesc)), _
+                               udtdb.MakeInParam("@remarks_desc_chi", PracticeModel.RemarksDescChiDataType, PracticeModel.RemarksDescChiDataSize, IIf(udtPracticeModel.RemarksDescChi.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDescChi))}
+                ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                 udtdb.RunProc("proc_PracticeStaging_upd", prams)
                 Return True
@@ -1470,6 +1376,8 @@ Namespace Component.Practice
         Public Function UpdatePracticePermanentAddress(ByVal udtPracticeModel As PracticeModel, ByVal udtDB As Database) As Boolean
             Dim blnRes As Boolean = False
             Try
+                ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                 Dim prams() As SqlParameter = { _
                                udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, udtPracticeModel.SPID), _
                                udtDB.MakeInParam("@display_seq", PracticeModel.DisplaySeqDataType, PracticeModel.DisplaySeqDataSize, udtPracticeModel.DisplaySeq), _
@@ -1482,10 +1390,13 @@ Namespace Component.Practice
                                udtDB.MakeInParam("@address_code", AddressModel.AddressCodeDataType, AddressModel.AddressCodeDataSize, IIf(udtPracticeModel.PracticeAddress.Address_Code.HasValue, udtPracticeModel.PracticeAddress.Address_Code, DBNull.Value)), _
                                udtDB.MakeInParam("@update_by", PracticeModel.UpdateByDataType, PracticeModel.UpdateByDataSize, udtPracticeModel.UpdateBy), _
                                udtDB.MakeInParam("@tsmp", PracticeModel.TSMPDataType, PracticeModel.TSMPDataSize, udtPracticeModel.TSMP), _
-                                udtDB.MakeInParam("@phone_daytime", PracticeModel.PhoneDaytimeDataType, PracticeModel.PhoneDaytimeDataSize, IIf(udtPracticeModel.PhoneDaytime.Equals(String.Empty), DBNull.Value, udtPracticeModel.PhoneDaytime)), _
-                                udtDB.MakeInParam("@mo_display_seq", MedicalOrganizationModel.DisplaySeqDataType, MedicalOrganizationModel.DisplaySeqDataSize, udtPracticeModel.MODisplaySeq), _
-                                udtDB.MakeInParam("@practice_name_chi", PracticeModel.PracticeNameChiDataType, PracticeModel.PracticeNameChiDataSize, IIf(udtPracticeModel.PracticeNameChi.Equals(String.Empty), DBNull.Value, udtPracticeModel.PracticeNameChi))}
-
+                               udtDB.MakeInParam("@phone_daytime", PracticeModel.PhoneDaytimeDataType, PracticeModel.PhoneDaytimeDataSize, IIf(udtPracticeModel.PhoneDaytime.Equals(String.Empty), DBNull.Value, udtPracticeModel.PhoneDaytime)), _
+                               udtDB.MakeInParam("@mo_display_seq", MedicalOrganizationModel.DisplaySeqDataType, MedicalOrganizationModel.DisplaySeqDataSize, udtPracticeModel.MODisplaySeq), _
+                               udtDB.MakeInParam("@practice_name_chi", PracticeModel.PracticeNameChiDataType, PracticeModel.PracticeNameChiDataSize, IIf(udtPracticeModel.PracticeNameChi.Equals(String.Empty), DBNull.Value, udtPracticeModel.PracticeNameChi)), _
+                               udtDB.MakeInParam("@Mobile_clinic", PracticeModel.MobileClinicDataType, PracticeModel.MobileClinicDataSize, udtPracticeModel.MobileClinic), _
+                               udtDB.MakeInParam("@remarks_desc", PracticeModel.RemarksDescDataType, PracticeModel.RemarksDescDataSize, IIf(udtPracticeModel.RemarksDesc.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDesc)), _
+                               udtDB.MakeInParam("@remarks_desc_chi", PracticeModel.RemarksDescChiDataType, PracticeModel.RemarksDescChiDataSize, IIf(udtPracticeModel.RemarksDescChi.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDescChi))}
+                ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                 udtDB.RunProc("proc_Practice_upd_Address", prams)
                 blnRes = True
@@ -1584,6 +1495,8 @@ Namespace Component.Practice
             'Dim i As Integer
 
             Try
+                ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                 Dim prams() As SqlParameter = { _
                                udtDB.MakeInParam("@display_seq", PracticeModel.DisplaySeqDataType, PracticeModel.DisplaySeqDataSize, udtPracticeModel.DisplaySeq), _
                                udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, IIf(udtPracticeModel.SPID.Equals(String.Empty), DBNull.Value, udtPracticeModel.SPID)), _
@@ -1603,7 +1516,11 @@ Namespace Component.Practice
                                udtDB.MakeInParam("@mo_display_seq", PracticeModel.DisplaySeqDataType, PracticeModel.DisplaySeqDataSize, udtPracticeModel.MODisplaySeq), _
                                udtDB.MakeInParam("@submission_method", PracticeModel.SubmissionMethodDataType, PracticeModel.SubmissionMethodDataSize, udtPracticeModel.SubmitMethod), _
                                udtDB.MakeInParam("@create_by", PracticeModel.CreateByDataType, PracticeModel.CreateByDataSize, udtPracticeModel.CreateBy), _
-                               udtDB.MakeInParam("@update_by", PracticeModel.UpdateByDataType, PracticeModel.UpdateByDataSize, udtPracticeModel.UpdateBy)}
+                               udtDB.MakeInParam("@update_by", PracticeModel.UpdateByDataType, PracticeModel.UpdateByDataSize, udtPracticeModel.UpdateBy), _
+                               udtDB.MakeInParam("@Mobile_clinic", PracticeModel.MobileClinicDataType, PracticeModel.MobileClinicDataSize, udtPracticeModel.MobileClinic), _
+                               udtDB.MakeInParam("@remarks_desc", PracticeModel.RemarksDescDataType, PracticeModel.RemarksDescDataSize, IIf(udtPracticeModel.RemarksDesc.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDesc)), _
+                               udtDB.MakeInParam("@remarks_desc_chi", PracticeModel.RemarksDescChiDataType, PracticeModel.RemarksDescChiDataSize, IIf(udtPracticeModel.RemarksDescChi.Equals(String.Empty), DBNull.Value, udtPracticeModel.RemarksDescChi))}
+                ' CRE16-022 (Add optional field "Remarks") [End][Winnie]                               
 
                 udtDB.RunProc("proc_PracticePermanent_add", prams)
 
@@ -1759,143 +1676,144 @@ Namespace Component.Practice
 
         End Function
 
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        ' ''' <summary>
+        ' ''' Load Practice (For MyProfile Only)
+        ' ''' Retrieve the Practice Type Also in Practice(s)
+        ' ''' To Be Remove After Data migration Complete
+        ' ''' </summary>
+        ' ''' <param name="strSPID"></param>
+        ' ''' <param name="udtDB"></param>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        'Public Function GetPracticeBankAcctListFromPermanentBySPID_ForMyProfileV1(ByVal strSPID As String, ByVal udtDB As Database) As PracticeModelCollection
+        '    Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection()
+        '    Dim udtPracticeModel As PracticeModel
 
-        ''' <summary>
-        ''' Load Practice (For MyProfile Only)
-        ''' Retrieve the Practice Type Also in Practice(s)
-        ''' To Be Remove After Data migration Complete
-        ''' </summary>
-        ''' <param name="strSPID"></param>
-        ''' <param name="udtDB"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function GetPracticeBankAcctListFromPermanentBySPID_ForMyProfileV1(ByVal strSPID As String, ByVal udtDB As Database) As PracticeModelCollection
-            Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection()
-            Dim udtPracticeModel As PracticeModel
+        '    Dim intAddressCode As Nullable(Of Integer)
+        '    Dim intBankDisplaySeq As Nullable(Of Integer)
+        '    Dim intPracticeDisplaySeq As Nullable(Of Integer)
+        '    Dim intMODisplaySeq As Nullable(Of Integer)
 
-            Dim intAddressCode As Nullable(Of Integer)
-            Dim intBankDisplaySeq As Nullable(Of Integer)
-            Dim intPracticeDisplaySeq As Nullable(Of Integer)
-            Dim intMODisplaySeq As Nullable(Of Integer)
+        '    Dim btyBankTsmp As Byte()
+        '    Dim btyPracticeTsmp As Byte()
 
-            Dim btyBankTsmp As Byte()
-            Dim btyPracticeTsmp As Byte()
+        '    Dim dtRaw As New DataTable
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID)}
+        '        udtDB.RunProc("proc_PracticeBankAccount_get_bySPID_ForMyProfileV1", prams, dtRaw)
 
-            Dim dtRaw As New DataTable
-            Try
-                Dim prams() As SqlParameter = {udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID)}
-                udtDB.RunProc("proc_PracticeBankAccount_get_bySPID_ForMyProfileV1", prams, dtRaw)
+        '        For i As Integer = 0 To dtRaw.Rows.Count - 1
+        '            Dim drRaw As DataRow = dtRaw.Rows(i)
 
-                For i As Integer = 0 To dtRaw.Rows.Count - 1
-                    Dim drRaw As DataRow = dtRaw.Rows(i)
+        '            If IsDBNull(drRaw.Item("Address_Code")) Then
+        '                intAddressCode = Nothing
+        '            Else
+        '                intAddressCode = CInt((drRaw.Item("Address_Code")))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Address_Code")) Then
-                        intAddressCode = Nothing
-                    Else
-                        intAddressCode = CInt((drRaw.Item("Address_Code")))
-                    End If
+        '            If IsDBNull(drRaw.Item("Bank_Display_Seq")) Then
+        '                intBankDisplaySeq = Nothing
+        '            Else
+        '                intBankDisplaySeq = CInt(drRaw.Item("Bank_Display_Seq"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Bank_Display_Seq")) Then
-                        intBankDisplaySeq = Nothing
-                    Else
-                        intBankDisplaySeq = CInt(drRaw.Item("Bank_Display_Seq"))
-                    End If
+        '            If IsDBNull(drRaw.Item("Display_Seq")) Then
+        '                intPracticeDisplaySeq = Nothing
+        '            Else
+        '                intPracticeDisplaySeq = CInt(drRaw.Item("Display_Seq"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Display_Seq")) Then
-                        intPracticeDisplaySeq = Nothing
-                    Else
-                        intPracticeDisplaySeq = CInt(drRaw.Item("Display_Seq"))
-                    End If
+        '            If IsDBNull(drRaw.Item("MO_Display_Seq")) Then
+        '                intMODisplaySeq = Nothing
+        '            Else
+        '                intMODisplaySeq = CInt(drRaw.Item("MO_Display_Seq"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("MO_Display_Seq")) Then
-                        intMODisplaySeq = Nothing
-                    Else
-                        intMODisplaySeq = CInt(drRaw.Item("MO_Display_Seq"))
-                    End If
+        '            If drRaw.IsNull("Bank_TSMP") Then
+        '                btyBankTsmp = Nothing
+        '            Else
+        '                btyBankTsmp = CType(drRaw.Item("Bank_TSMP"), Byte())
+        '            End If
 
-                    If drRaw.IsNull("Bank_TSMP") Then
-                        btyBankTsmp = Nothing
-                    Else
-                        btyBankTsmp = CType(drRaw.Item("Bank_TSMP"), Byte())
-                    End If
+        '            If drRaw.IsNull("Practice_TSMP") Then
+        '                btyPracticeTsmp = Nothing
+        '            Else
+        '                btyPracticeTsmp = CType(drRaw.Item("Practice_TSMP"), Byte())
+        '            End If
 
-                    If drRaw.IsNull("Practice_TSMP") Then
-                        btyPracticeTsmp = Nothing
-                    Else
-                        btyPracticeTsmp = CType(drRaw.Item("Practice_TSMP"), Byte())
-                    End If
+        '            udtPracticeModel = New PracticeModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
+        '                                                    String.Empty, _
+        '                                                    intPracticeDisplaySeq, _
+        '                                                    intMODisplaySeq, _
+        '                                                    CType(drRaw.Item("Practice_Name"), String).Trim, _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Name_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Name_Chi"))), _
+        '                                                    New AddressModel(CStr(IIf((drRaw.Item("Room") Is DBNull.Value), String.Empty, drRaw.Item("Room"))), _
+        '                                                        CStr(IIf((drRaw.Item("Floor") Is DBNull.Value), String.Empty, drRaw.Item("Floor"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Block") Is DBNull.Value), String.Empty, drRaw.Item("Block"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Building") Is DBNull.Value), String.Empty, drRaw.Item("Building"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Building_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Building_Chi"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("District") Is DBNull.Value), String.Empty, drRaw.Item("District"))).Trim, _
+        '                                                        intAddressCode), _
+        '                                                    CInt(drRaw.Item("Professional_Seq")), _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Record_Status"))).Trim, _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Submission_Method"))).Trim, _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Remark"))).Trim, _
+        '                                                    CStr(drRaw.Item("Phone_Daytime")), _
+        '                                                    CType(drRaw.Item("Practice_Create_Dtm"), DateTime), _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Create_By"))).Trim, _
+        '                                                    CType(drRaw.Item("Practice_Update_Dtm"), DateTime), _
+        '                                                    CStr(IIf((drRaw.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Update_By"))).Trim, _
+        '                                                    btyPracticeTsmp, _
+        '                                                    New BankAcctModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
+        '                                                        String.Empty, _
+        '                                                        intBankDisplaySeq, _
+        '                                                        intPracticeDisplaySeq, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Name") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Name"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Branch_Name") Is DBNull.Value), String.Empty, drRaw.Item("Branch_Name"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Acc_Holder") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Acc_Holder"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Account_No") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Account_No"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Record_Status"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Submission_Method"))).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Remark"))).Trim, _
+        '                                                        Convert.ToDateTime(IIf(drRaw.Item("Bank_Create_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Create_Dtm"))), _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Create_By"))).Trim, _
+        '                                                        Convert.ToDateTime(IIf(drRaw.Item("Bank_Update_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Update_Dtm"))), _
+        '                                                        CStr(IIf((drRaw.Item("Bank_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Update_By"))).Trim, _
+        '                                                        btyBankTsmp, _
+        '                                                        CStr(IIf((drRaw.Item("Bank_IsFreeTextFormat") Is DBNull.Value), String.Empty, drRaw.Item("Bank_IsFreeTextFormat"))).Trim), _
+        '                                                    New ProfessionalModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
+        '                                                        String.Empty, _
+        '                                                        CInt(drRaw.Item("Professional_Seq")), _
+        '                                                        CType(drRaw.Item("Service_Category_Code"), String).Trim, _
+        '                                                        CType(drRaw.Item("Registration_Code"), String).Trim, _
+        '                                                        CStr(IIf((drRaw.Item("Professional_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Record_Status"))).Trim, _
+        '                                                        CType(drRaw.Item("Professional_Create_Dtm"), DateTime), _
+        '                                                        CStr(IIf((drRaw.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Create_By"))).Trim), _
+        '                                                        Nothing)
 
-                    udtPracticeModel = New PracticeModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
-                                                            String.Empty, _
-                                                            intPracticeDisplaySeq, _
-                                                            intMODisplaySeq, _
-                                                            CType(drRaw.Item("Practice_Name"), String).Trim, _
-                                                            CStr(IIf((drRaw.Item("Practice_Name_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Name_Chi"))), _
-                                                            New AddressModel(CStr(IIf((drRaw.Item("Room") Is DBNull.Value), String.Empty, drRaw.Item("Room"))), _
-                                                                CStr(IIf((drRaw.Item("Floor") Is DBNull.Value), String.Empty, drRaw.Item("Floor"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Block") Is DBNull.Value), String.Empty, drRaw.Item("Block"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Building") Is DBNull.Value), String.Empty, drRaw.Item("Building"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Building_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Building_Chi"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("District") Is DBNull.Value), String.Empty, drRaw.Item("District"))).Trim, _
-                                                                intAddressCode), _
-                                                            CInt(drRaw.Item("Professional_Seq")), _
-                                                            CStr(IIf((drRaw.Item("Practice_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Record_Status"))).Trim, _
-                                                            CStr(IIf((drRaw.Item("Practice_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Submission_Method"))).Trim, _
-                                                            CStr(IIf((drRaw.Item("Practice_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Remark"))).Trim, _
-                                                            CStr(drRaw.Item("Phone_Daytime")), _
-                                                            CType(drRaw.Item("Practice_Create_Dtm"), DateTime), _
-                                                            CStr(IIf((drRaw.Item("Practice_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Create_By"))).Trim, _
-                                                            CType(drRaw.Item("Practice_Update_Dtm"), DateTime), _
-                                                            CStr(IIf((drRaw.Item("Practice_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Update_By"))).Trim, _
-                                                            btyPracticeTsmp, _
-                                                            New BankAcctModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
-                                                                String.Empty, _
-                                                                intBankDisplaySeq, _
-                                                                intPracticeDisplaySeq, _
-                                                                CStr(IIf((drRaw.Item("Bank_Name") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Name"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Branch_Name") Is DBNull.Value), String.Empty, drRaw.Item("Branch_Name"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Acc_Holder") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Acc_Holder"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Account_No") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Account_No"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Record_Status"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Submission_Method") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Submission_Method"))).Trim, _
-                                                                CStr(IIf((drRaw.Item("Bank_Remark") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Remark"))).Trim, _
-                                                                Convert.ToDateTime(IIf(drRaw.Item("Bank_Create_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Create_Dtm"))), _
-                                                                CStr(IIf((drRaw.Item("Bank_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Create_By"))).Trim, _
-                                                                Convert.ToDateTime(IIf(drRaw.Item("Bank_Update_Dtm") Is DBNull.Value, Nothing, drRaw.Item("Bank_Update_Dtm"))), _
-                                                                CStr(IIf((drRaw.Item("Bank_Update_By") Is DBNull.Value), String.Empty, drRaw.Item("Bank_Update_By"))).Trim, _
-                                                                btyBankTsmp, _
-                                                                CStr(IIf((drRaw.Item("Bank_IsFreeTextFormat") Is DBNull.Value), String.Empty, drRaw.Item("Bank_IsFreeTextFormat"))).Trim), _
-                                                            New ProfessionalModel(CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))).Trim, _
-                                                                String.Empty, _
-                                                                CInt(drRaw.Item("Professional_Seq")), _
-                                                                CType(drRaw.Item("Service_Category_Code"), String).Trim, _
-                                                                CType(drRaw.Item("Registration_Code"), String).Trim, _
-                                                                CStr(IIf((drRaw.Item("Professional_Record_Status") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Record_Status"))).Trim, _
-                                                                CType(drRaw.Item("Professional_Create_Dtm"), DateTime), _
-                                                                CStr(IIf((drRaw.Item("Professional_Create_By") Is DBNull.Value), String.Empty, drRaw.Item("Professional_Create_By"))).Trim), _
-                                                                Nothing)
+        '            udtPracticeModel.PracticeType = CStr(IIf((drRaw.Item("Practice_Type") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Type"))).Trim()
+        '            udtPracticeModel.BankAcct.BrCode = CStr(IIf((drRaw.Item("BR_Code") Is DBNull.Value), String.Empty, drRaw.Item("BR_Code"))).Trim()
 
 
-                    udtPracticeModel.PracticeType = CStr(IIf((drRaw.Item("Practice_Type") Is DBNull.Value), String.Empty, drRaw.Item("Practice_Type"))).Trim()
-                    udtPracticeModel.BankAcct.BrCode = CStr(IIf((drRaw.Item("BR_Code") Is DBNull.Value), String.Empty, drRaw.Item("BR_Code"))).Trim()
+        '            ' Get Practice Scheme Information
+        '            Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
+        '            udtPracticeModel.PracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListPermanentBySPIDPracticeDisplaySeq(udtPracticeModel.SPID, udtPracticeModel.DisplaySeq, udtDB)
 
+        '            udtPracticeModelCollection.Add(udtPracticeModel)
 
-                    ' Get Practice Scheme Information
-                    Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
-                    udtPracticeModel.PracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListPermanentBySPIDPracticeDisplaySeq(udtPracticeModel.SPID, udtPracticeModel.DisplaySeq, udtDB)
+        '        Next
 
-                    udtPracticeModelCollection.Add(udtPracticeModel)
+        '        Return udtPracticeModelCollection
 
-                Next
+        '    Catch ex As Exception
+        '        Throw ex
 
-                Return udtPracticeModelCollection
+        '    End Try
 
-            Catch ex As Exception
-                Throw ex
-
-            End Try
-
-        End Function
+        'End Function
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
         Public Function getRawAllPracticeBankAcct(ByVal strSPID As String, Optional ByVal udtDB As Database = Nothing) As DataTable
 

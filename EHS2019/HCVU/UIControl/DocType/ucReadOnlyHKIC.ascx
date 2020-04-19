@@ -91,7 +91,7 @@
                 <td valign="top">
                     <asp:Label ID="lblVHKIDIssueDate" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
-            <tr>
+            <tr id="trVCreationMethod" runat="server">
                 <td valign="top">
                     <asp:Label ID="lblVCreationMethodText" runat="server" Text="<%$ Resources:Text, CreationMethod %>"></asp:Label></td>
                 <td valign="top">

@@ -315,59 +315,71 @@ Public Class WSXmlGenerator
                     End If
                     CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_TYPE_OF_PRACTICE_ID, strTypeOfPracticeID)
 
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
                     ' practice_name_en
-                    CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_PRACTICE_NAME_EN, udtPrac.PracticeName)
+                    Dim strPracNameEng As String = udtPrac.PracticeName
+                    CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_PRACTICE_NAME_EN, strPracNameEng)
 
                     ' practice_name_tc
                     If udtPrac.PracticeNameChi <> "" Then
-                        CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_PRACTICE_NAME_TC, udtPrac.PracticeNameChi)
+                        Dim strPracNameChi As String = udtPrac.PracticeNameChi
+                        CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_PRACTICE_NAME_TC, strPracNameChi)
                     End If
 
-                    ' corr_addr_en
+                    ' corr_addr_en & corr_addr_tc
+                    Dim strEngAddr As String = String.Empty
+                    Dim strChiAddr As String = String.Empty
+                    Dim strPracAddrRemarksEng As String = String.Empty
+                    Dim strPracAddrRemarksChi As String = String.Empty
 
-                    ' CRE16-021 Transfer VSS category to PCD [Start][Winnie] ' Show Clinic Type in scheme level
-                    ' Check whether non-clinic
-                    'Dim blnNonClinic As Boolean = False
-
-                    'For Each udtPSI As PracticeSchemeInfoModel In udtPrac.PracticeSchemeInfoList.Values
-                    '    If udtPSI.PracticeDisplaySeq = udtPrac.DisplaySeq AndAlso udtPSI.ClinicType = PracticeSchemeInfoModel.ClinicTypeEnum.NonClinic Then
-                    '        blnNonClinic = True
-                    '        Exit For
-                    '    End If
-                    'Next
-
-                    Dim strAddr As String = String.Empty
+                    Dim intPracticeRemarksMaxLength As Integer = 150
 
                     If Not udtPrac.PracticeAddress Is Nothing Then
-                        strAddr = udtFormatter.FormatAddressWithoutDistrict(udtPrac.PracticeAddress)
+                        strEngAddr = udtFormatter.FormatAddressWithoutDistrict(udtPrac.PracticeAddress)
+                        strChiAddr = udtFormatter.FormatAddressChiWithoutDistrict(udtPrac.PracticeAddress)
                     End If
 
-                    'If blnNonClinic Then
-                    '    strAddr = String.Format("({0}) {1}", HttpContext.GetGlobalResourceObject("Text", "NonClinic", New CultureInfo(CultureLanguage.English)), strAddr)
-                    'End If
+                    '1. corr_addr_en
+                    If udtPrac.RemarksDesc <> String.Empty Then
+                        strPracAddrRemarksEng = String.Format("({0}) {1}", udtPrac.RemarksDesc, strEngAddr).Trim
 
-                    CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_CORR_ADDR_EN, strAddr)
-
-                    ' corr_addr_tc
-                    strAddr = ""
-                    If Not udtPrac.PracticeAddress Is Nothing Then
-                        strAddr = udtFormatter.FormatAddressChiWithoutDistrict(udtPrac.PracticeAddress)
+                        If strPracAddrRemarksEng.Length > intPracticeRemarksMaxLength Then
+                            strEngAddr = String.Format("({0}) {1}", udtPrac.RemarksDesc.Substring(0, intPracticeRemarksMaxLength - strEngAddr.Length - 3), strEngAddr)
+                        Else
+                            strEngAddr = strPracAddrRemarksEng
+                        End If
                     End If
-                    If strAddr <> "" Then
 
-                        'If blnNonClinic Then
-                        '    strAddr += String.Format(" ({0})", HttpContext.GetGlobalResourceObject("Text", "NonClinic", New CultureInfo(CultureLanguage.TradChinese)))
-                        'End If
+                    CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_CORR_ADDR_EN, strEngAddr)
 
-                        CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_CORR_ADDR_TC, strAddr)
+                    '2 corr_addr_tc
+                    If strChiAddr <> "" Or udtPrac.RemarksDescChi <> String.Empty Then
+
+                        If udtPrac.RemarksDescChi <> String.Empty Then
+                            strPracAddrRemarksChi = String.Format("{0} ({1})", strChiAddr, udtPrac.RemarksDescChi).Trim
+
+                            If strPracAddrRemarksChi.Length > intPracticeRemarksMaxLength Then
+                                If strChiAddr = String.Empty Then
+                                    strChiAddr = String.Format("{0} ({1})", strChiAddr, udtPrac.RemarksDescChi.Substring(0, intPracticeRemarksMaxLength - 2)).Trim
+                                Else
+                                    strChiAddr = String.Format("{0} ({1})", strChiAddr, udtPrac.RemarksDescChi.Substring(0, intPracticeRemarksMaxLength - strChiAddr.Length - 3)).Trim
+                                End If
+                            Else
+                                strChiAddr = strPracAddrRemarksChi
+                            End If
+                        End If
+
+                        CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_CORR_ADDR_TC, strChiAddr)
                     End If
-                    ' CRE16-021 Transfer VSS category to PCD [End][Winnie]
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
                     ' district_id
                     CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_DISTRICT_ID, udtPrac.PracticeAddress.District)
 
                     ' phone_no
                     CreateNode(xml, nodePracticeRecord, TAG_PRACTICE_RECORD_PHONE_NO, udtPrac.PhoneDaytime)
+
 
                     ' CRE16-021 Transfer VSS category to PCD [Start][Winnie]
                     Dim intSchemeCount As Integer = 0

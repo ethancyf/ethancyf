@@ -437,7 +437,8 @@ function tabChanges(sender, e) {
                                                             <asp:Label ID="lblConfirmMOAddressText" runat="server" Text="<%$ Resources:Text, MOAddress %>"></asp:Label></td>
                                                         <td>
                                                             <asp:Label ID="lblConfirmMOEAddress" runat="server" Text='<%# formatAddress(Eval("MOAddress.Room"), Eval("MOAddress.Floor"), Eval("MOAddress.Block"), Eval("MOAddress.Building"), Eval("MOAddress.District"), Eval("MOAddress.AreaCode"))%>'
-                                                                CssClass="tableText"></asp:Label></br>
+                                                                CssClass="tableText"></asp:Label>
+                                                            <br />
                                                             <asp:Label ID="lblConfirmMOCAddress" runat="server" Text='<%#  formatAddressChi(Eval("MOAddress.Room"), Eval("MOAddress.Floor"), Eval("MOAddress.Block"), Eval("MOAddress.ChiBuilding"), Eval("MOAddress.District"), Eval("MOAddress.AreaCode")) %>'
                                                                 CssClass="tableTextChi"></asp:Label>
                                                         </td>
@@ -547,6 +548,20 @@ function tabChanges(sender, e) {
                                                         <td>
                                                             <asp:Label ID="lblPhoneNo" runat="server" Text='<%# Eval("PhoneDaytime") %>'
                                                                 CssClass="tableText"></asp:Label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 200px; background-color: #fffafa;" valign="top">
+                                                            <asp:Label ID="lblPracticeMobileClinicText" runat="server" Text="<%$ Resources:Text, SPSResultMobileClinic %>"></asp:Label>
+                                                        <td>
+                                                            <asp:Label ID="lblPracticeMobileClinic" runat="server" CssClass="tableText" Text='<%# Eval("MobileClinic") %>'></asp:Label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 200px; background-color: #fffafa;" valign="top">
+                                                            <asp:Label ID="lblPracticeRemarksText" runat="server" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                                                        <td>
+                                                            <asp:Label ID="lblPracticeRemarks" runat="server" Text="" CssClass="tableText"></asp:Label><br />
+                                                            <asp:Label ID="lblPracticeRemarksChi" runat="server" Text="" CssClass="tableTextChi"></asp:Label>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1660,13 +1675,20 @@ function tabChanges(sender, e) {
                                                 </td>
                                                 <td rowspan="2" width="370" valign="top" runat="server" id="tdDEChgPwdCell03">
                                                     <asp:Panel ID="PanelDEChangeWebPasswordTips" runat="server" Width="370px">
-                                                        <asp:Label ID="lblDEWebPWDTips" runat="server" Text="<%$ Resources:Text, WebPasswordTips %>"></asp:Label></br>
-                                                        <asp:Label ID="lblDEWebPWDTips1" runat="server" Text="<%$ Resources:Text, WebPasswordTips1-3Rule %>"></asp:Label></br>
-                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1a" runat="server" Text="<%$ Resources:Text, WebPasswordTips1a %>"></asp:Label></br>
-                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1b" runat="server" Text="<%$ Resources:Text, WebPasswordTips1b %>"></asp:Label></br>
-                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1c" runat="server" Text="<%$ Resources:Text, WebPasswordTips1c %>"></asp:Label></br>
-                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1d" runat="server" Text="<%$ Resources:Text, WebPasswordTips1d %>"></asp:Label></br>
-                                                        <asp:Label ID="lblDEWebPWDTips2" runat="server" Text="<%$ Resources:Text, WebPasswordTips2 %>"></asp:Label></br>
+                                                        <asp:Label ID="lblDEWebPWDTips" runat="server" Text="<%$ Resources:Text, WebPasswordTips %>"></asp:Label>
+                                                        <br />
+                                                        <asp:Label ID="lblDEWebPWDTips1" runat="server" Text="<%$ Resources:Text, WebPasswordTips1-3Rule %>"></asp:Label>
+                                                        <br />
+                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1a" runat="server" Text="<%$ Resources:Text, WebPasswordTips1a %>"></asp:Label>
+                                                        <br />
+                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1b" runat="server" Text="<%$ Resources:Text, WebPasswordTips1b %>"></asp:Label>
+                                                        <br />
+                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1c" runat="server" Text="<%$ Resources:Text, WebPasswordTips1c %>"></asp:Label>
+                                                        <br />
+                                                        &nbsp; &nbsp;&nbsp;<asp:Label ID="lblDEWebPWDTips1d" runat="server" Text="<%$ Resources:Text, WebPasswordTips1d %>"></asp:Label>
+                                                        <br />
+                                                        <asp:Label ID="lblDEWebPWDTips2" runat="server" Text="<%$ Resources:Text, WebPasswordTips2 %>"></asp:Label>
+                                                        <br />
                                                         <asp:Label ID="lblDEWebPWDTips3" runat="server" Text="<%$ Resources:Text, WebPasswordTips3 %>"></asp:Label>
                                                     </asp:Panel>
                                                 </td>
@@ -1777,8 +1799,6 @@ function tabChanges(sender, e) {
                                     <asp:ImageButton ID="btnDESave" runat="server" ImageUrl="<%$ Resources:ImageURL, SaveBtn %>"
                                         AlternateText="<%$ Resources:AlternateText, SaveBtn %>" OnClick="btnSaveDE_Click" /></td>
                                 <td rowspan="1" style="height: 20px"></td>
-                            </tr>
-                            <tr>
                             </tr>
                         </table>
 
@@ -1935,7 +1955,6 @@ function tabChanges(sender, e) {
                                         <asp:CheckBox ID="chkGetUsernameFromEHRSS" runat="server" Text="<%$ Resources: Text, GetUsernameFromEHRSSConsent %>"
                                             Width="380px" class="ChkEHRSSConsent" onclick="changeEHRSSConsent(this);"></asp:CheckBox></td>
                                 </tr>
-                                <tr style="height: 10px"></tr>
                                 <tr>
                                     <td align="center" colspan="2">
                                         <asp:ImageButton ID="ibtnConsentCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn %>"
@@ -1947,7 +1966,6 @@ function tabChanges(sender, e) {
                                             Enabled="false" />
                                     </td>
                                 </tr>
-                                <tr style="height: 5px"></tr>
                             </table>
                         </td>
                         <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>

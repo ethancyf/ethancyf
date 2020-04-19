@@ -330,8 +330,11 @@ Partial Public Class spMaintenance
                 If dicSchemeToReturnDate.ContainsKey(dicSchemeRow(i)) Then CType(gvInputDtm.Rows(i).FindControl("txtInputLogoReturn"), TextBox).Text = dicSchemeToReturnDate(dicSchemeRow(i)).ToString("dd-MM-yyyy")
 
                 ' Handle schemes having no logos
-                If Not udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(CType(gvInputDtm.Rows(i).FindControl("hfSchemeCodeReal"), HiddenField).Value.Trim).ReturnLogoEnabled Then gvInputDtm.Rows(i).Visible = False
-
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'If Not udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(CType(gvInputDtm.Rows(i).FindControl("hfSchemeCodeReal"), HiddenField).Value.Trim).ReturnLogoEnabled Then gvInputDtm.Rows(i).Visible = False
+                If Not udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(CType(gvInputDtm.Rows(i).FindControl("lblSchemeCode"), Label).Attributes("SchemeCodeLogoReturn").Trim).ReturnLogoEnabled Then gvInputDtm.Rows(i).Visible = False
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
             End If
         Next
 
@@ -370,7 +373,12 @@ Partial Public Class spMaintenance
                 msgBox.AddMessage(SM)
             End If
 
-            Dim strSchemeCodeReal As String = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value.Trim
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim strSchemeCodeReal As String = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value.Trim
+            Dim strSchemeCodeReal As String = CType(r.FindControl("lblSchemeCode"), Label).Attributes("SchemeCodeLogoReturn").Trim
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
             Dim intDisplaySeq As Integer = udtSchemeBOList.Filter(strSchemeCodeReal).DisplaySeq
 
             If Not udtSchemeList(strSchemeCodeReal, intDisplaySeq).LogoReturnDtm.HasValue _
@@ -416,13 +424,18 @@ Partial Public Class spMaintenance
 
             If aryLogoReturnChanged.Count <> 0 Then
                 For Each r As GridViewRow In gvInputDtm.Rows
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
                     If r.Visible Then
                         Dim lblSchemeCode As Label = CType(r.FindControl("lblSchemeCode"), Label)
                         Dim txtInputLogoReturn As TextBox = CType(r.FindControl("txtInputLogoReturn"), TextBox)
-                        Dim hfSchemeCodeReal As HiddenField = CType(r.FindControl("hfSchemeCodeReal"), HiddenField)
+
+                        'Dim hfSchemeCodeReal As HiddenField = CType(r.FindControl("hfSchemeCodeReal"), HiddenField)
+                        Dim strSchemeCodeReal As String = CType(r.FindControl("lblSchemeCode"), Label).Attributes("SchemeCodeLogoReturn")
 
                         ' Filter out the unchanged Logo Return Date
-                        If Not aryLogoReturnChanged.Contains(hfSchemeCodeReal.Value.Trim) Then Continue For
+                        'If Not aryLogoReturnChanged.Contains(hfSchemeCodeReal.Value.Trim) Then Continue For
+                        If Not aryLogoReturnChanged.Contains(strSchemeCodeReal.Trim) Then Continue For
 
                         drReturn = dsReturn.Tables.Item("TempTable").NewRow()
                         drReturn.Item(intSchemeCodeColumn) = lblSchemeCode.Text
@@ -433,9 +446,11 @@ Partial Public Class spMaintenance
                             drReturn.Item(intLogoReturnDateColumn) = udtFormatter.convertDate(txtInputLogoReturn.Text.Trim, String.Empty)
                         End If
 
-                        drReturn.Item(intSchemeCodeRealColumn) = hfSchemeCodeReal.Value.Trim
+                        'drReturn.Item(intSchemeCodeRealColumn) = hfSchemeCodeReal.Value.Trim
+                        drReturn.Item(intSchemeCodeRealColumn) = strSchemeCodeReal.Trim
                         dsReturn.Tables.Item("TempTable").Rows.Add(drReturn)
                     End If
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                 Next
 
                 gvActionInputLogoReturn.DataSource = dsReturn
@@ -725,17 +740,21 @@ Partial Public Class spMaintenance
             lblActionReactivateScheme.Text = String.Empty
             hfActionReactivateScheme.Value = String.Empty
 
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             For Each r As GridViewRow In gvReactivateScheme.Rows
                 Dim cboSchemeCode As CheckBox = CType(r.FindControl("cboSchemeCode"), CheckBox)
-                Dim hfSchemeCodeReal As HiddenField = CType(r.FindControl("hfSchemeCodeReal"), HiddenField)
+                'Dim hfSchemeCodeReal As HiddenField = CType(r.FindControl("hfSchemeCodeReal"), HiddenField)
+                Dim strSchemeCodeReal As String = cboSchemeCode.Attributes("SchemeCodeReactive")
 
                 If cboSchemeCode.Checked Then
                     lblActionReactivateScheme.Text += ", " + cboSchemeCode.Text
-                    ' I-CRE16-003 Fix XSS [Start][Lawrence]
-                    hfActionReactivateScheme.Value += ", " + AntiXssEncoder.HtmlEncode(hfSchemeCodeReal.Value, True)
-                    ' I-CRE16-003 Fix XSS [End][Lawrence]
+                    'hfActionReactivateScheme.Value += ", " + AntiXssEncoder.HtmlEncode(hfSchemeCodeReal.Value, True)
+                    hfActionReactivateScheme.Value += ", " + AntiXssEncoder.HtmlEncode(strSchemeCodeReal, True)
                 End If
             Next
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
 
             If lblActionReactivateScheme.Text.Length > 2 Then
                 lblActionReactivateScheme.Text = lblActionReactivateScheme.Text.Substring(2)
@@ -927,11 +946,16 @@ Partial Public Class spMaintenance
                 intRowNoVisible = i
 
                 ' Specially handle for schemes having no Logo
-                If Not udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(CType(gvDelistScheme.Rows(i).FindControl("hfSchemeCodeReal"), HiddenField).Value.Trim).ReturnLogoEnabled Then
+
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'If Not udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(CType(gvDelistScheme.Rows(i).FindControl("hfSchemeCodeReal"), HiddenField).Value.Trim).ReturnLogoEnabled Then
+                If Not udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(CType(gvDelistScheme.Rows(i).FindControl("cboSchemeCode"), CheckBox).Attributes("SchemeCodeDelist").Trim).ReturnLogoEnabled Then
                     Dim r As GridViewRow = gvDelistScheme.Rows(i)
                     CType(r.FindControl("txtLogoReturn"), TextBox).Visible = False
                     CType(r.FindControl("ibtnLogoReturn"), ImageButton).Visible = False
                 End If
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             Else
                 gvDelistScheme.Rows(i).Visible = False
@@ -1065,7 +1089,12 @@ Partial Public Class spMaintenance
                         drDelist.Item(intLogoReturnColumn) = udtFormatter.convertDate(strLogoReturn, String.Empty)
                     End If
 
-                    drDelist.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    'drDelist.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                    drDelist.Item(intSchemeCodeRealColumn) = CType(r.FindControl("cboSchemeCode"), CheckBox).Attributes("SchemeCodeDelist")
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
                     drDelist.Item(intDelistTypeRealColumn) = rbDelistType.SelectedValue
 
                     dsDelist.Tables.Item("TempTable").Rows.Add(drDelist)
@@ -1435,7 +1464,12 @@ Partial Public Class spMaintenance
                     drSuspend = dsSuspend.Tables.Item("TempTable").NewRow()
                     drSuspend.Item(intSchemeCodeColumn) = cboSchemeCode.Text
                     drSuspend.Item(intRemarkColumn) = CType(r.FindControl("txtRemark"), TextBox).Text
-                    drSuspend.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    'drSuspend.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                    drSuspend.Item(intSchemeCodeRealColumn) = CType(r.FindControl("cboSchemeCode"), CheckBox).Attributes("SchemeCodeSuspend")
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
                     dsSuspend.Tables.Item("TempTable").Rows.Add(drSuspend)
                 End If
             Next
@@ -2452,8 +2486,14 @@ Partial Public Class spMaintenance
         Dim gvPracticeSchemeInfo As GridView = CType(r.FindControl("gvPracticeSchemeInfo"), GridView)
 
         For Each row As GridViewRow In gvPracticeSchemeInfo.Rows
-            Dim strSchemeCodeReal As String = CType(row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value.Trim
-            Dim strStatusReal As String = CType(row.FindControl("hfPracticeSchemeStatusReal"), HiddenField).Value.Trim
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim strSchemeCodeReal As String = CType(row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value.Trim
+            'Dim strStatusReal As String = CType(row.FindControl("hfPracticeSchemeStatusReal"), HiddenField).Value.Trim
+            Dim strSchemeCodeReal As String = CType(row.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal").Trim
+            Dim strStatusReal As String = CType(row.FindControl("lblPracticeSchemeStatus"), Label).Attributes("StatusReal").Trim
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
 
             ' If the Scheme is Pending Delist, does not allow any control on the Practice Scheme
             If dicSPSchemeToStatus.ContainsKey(strSchemeCodeReal) _
@@ -2596,7 +2636,11 @@ Partial Public Class spMaintenance
                         drDelist.Item(intDelistTypeColumn) = rbDelistType.SelectedItem.Text
 
                         drDelist.Item(intRemarkColumn) = CType(r.FindControl("txtRemark"), TextBox).Text
-                        drDelist.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                        ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        'drDelist.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                        drDelist.Item(intSchemeCodeRealColumn) = CType(r.FindControl("cboSchemeCode"), CheckBox).Attributes("SchemeCodePracticeDelist")
+                        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                         drDelist.Item(intDelistTypeRealColumn) = rbDelistType.SelectedValue
 
                         dsDelist.Tables.Item("TempTable").Rows.Add(drDelist)
@@ -2786,8 +2830,13 @@ Partial Public Class spMaintenance
         Dim gvPracticeSchemeInfo As GridView = CType(r.FindControl("gvPracticeSchemeInfo"), GridView)
 
         For Each row As GridViewRow In gvPracticeSchemeInfo.Rows
-            Dim strSchemeCodeReal As String = CType(row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value.Trim
-            Dim strStatusReal As String = CType(row.FindControl("hfPracticeSchemeStatusReal"), HiddenField).Value.Trim
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim strSchemeCodeReal As String = CType(row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value.Trim
+            'Dim strStatusReal As String = CType(row.FindControl("hfPracticeSchemeStatusReal"), HiddenField).Value.Trim
+            Dim strSchemeCodeReal As String = CType(row.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal").Trim
+            Dim strStatusReal As String = CType(row.FindControl("lblPracticeSchemeStatus"), Label).Attributes("StatusReal").Trim
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             ' If the Scheme is Pending Delist, does not allow any control on the Practice Scheme
             If dicSPSchemeToStatus.ContainsKey(strSchemeCodeReal) _
@@ -2908,7 +2957,11 @@ Partial Public Class spMaintenance
                         drSuspend = dsSuspend.Tables.Item("TempTable").NewRow()
                         drSuspend.Item(intSchemeCodeColumn) = cboSchemeCode.Text
                         drSuspend.Item(intRemarkColumn) = CType(r.FindControl("txtRemark"), TextBox).Text
-                        drSuspend.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                        ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        'drSuspend.Item(intSchemeCodeRealColumn) = CType(r.FindControl("hfSchemeCodeReal"), HiddenField).Value
+                        drSuspend.Item(intSchemeCodeRealColumn) = CType(r.FindControl("cboSchemeCode"), CheckBox).Attributes("SchemeCodePracticeSuspend")
+                        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                         dsSuspend.Tables.Item("TempTable").Rows.Add(drSuspend)
                     End If
                 Next
@@ -3087,8 +3140,13 @@ Partial Public Class spMaintenance
         Dim gvPracticeSchemeInfo As GridView = CType(r.FindControl("gvPracticeSchemeInfo"), GridView)
 
         For Each row As GridViewRow In gvPracticeSchemeInfo.Rows
-            Dim strSchemeCodeReal As String = CType(row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value.Trim
-            Dim strStatusReal As String = CType(row.FindControl("hfPracticeSchemeStatusReal"), HiddenField).Value.Trim
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim strSchemeCodeReal As String = CType(row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value.Trim
+            'Dim strStatusReal As String = CType(row.FindControl("hfPracticeSchemeStatusReal"), HiddenField).Value.Trim
+            Dim strSchemeCodeReal As String = CType(row.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal").Trim
+            Dim strStatusReal As String = CType(row.FindControl("lblPracticeSchemeStatus"), Label).Attributes("StatusReal").Trim
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             ' If the Scheme is Pending Delist, does not allow any control on the Practice Scheme
             If dicSPSchemeToStatus.ContainsKey(strSchemeCodeReal) _
@@ -3173,17 +3231,23 @@ Partial Public Class spMaintenance
             lblActionPReactivateScheme.Text = String.Empty
             hfActionPReactivateScheme.Value = String.Empty
 
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             For Each r As GridViewRow In gvReactivatePracticeScheme.Rows
                 Dim cboSchemeCode As CheckBox = CType(r.FindControl("cboSchemeCode"), CheckBox)
-                Dim hfSchemeCodeReal As HiddenField = CType(r.FindControl("hfSchemeCodeReal"), HiddenField)
+
+                'Dim hfSchemeCodeReal As HiddenField = CType(r.FindControl("hfSchemeCodeReal"), HiddenField)
+                Dim strSchemeCodeReal As String = CType(r.FindControl("cboSchemeCode"), CheckBox).Attributes("SchemeCodePracticeReactivate")
 
                 If cboSchemeCode.Checked Then
                     lblActionPReactivateScheme.Text += ", " + cboSchemeCode.Text
-                    ' I-CRE16-003 Fix XSS [Start][Lawrence]
-                    hfActionPReactivateScheme.Value += ", " + AntiXssEncoder.HtmlEncode(hfSchemeCodeReal.Value, True)
-                    ' I-CRE16-003 Fix XSS [End][Lawrence]
+
+                    'hfActionPReactivateScheme.Value += ", " + AntiXssEncoder.HtmlEncode(hfSchemeCodeReal.Value, True)
+                    hfActionPReactivateScheme.Value += ", " + AntiXssEncoder.HtmlEncode(strSchemeCodeReal, True)
+
                 End If
             Next
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             lblActionPReactivateScheme.Text = lblActionPReactivateScheme.Text.Substring(2)
             ' I-CRE16-003 Fix XSS [Start][Lawrence]
@@ -4397,6 +4461,9 @@ Partial Public Class spMaintenance
 
     Protected Sub gvPracticeBank_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvPracticeBank.RowDataBound
         If e.Row.RowType = DataControlRowType.DataRow Then
+
+            Dim udtPractice As PracticeModel = DirectCast(e.Row.DataItem, PracticeModel)
+
             ' Convert Medical Organization No. to Medical Organization Name
             Dim lblPracticeMO As Label = CType(e.Row.FindControl("lblPracticeMO"), Label)
             Dim intMODisplaySeq As Integer = CInt(lblPracticeMO.Text.Trim)
@@ -4415,12 +4482,39 @@ Partial Public Class spMaintenance
             Dim lblPracticePhone As Label = e.Row.FindControl("lblPracticePhone")
             If lblPracticePhone.Text = String.Empty Then lblPracticePhone.Text = Me.GetGlobalResourceObject("Text", "N/A")
 
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            ' Mobile Clinic
+            Dim lblPracticeMobileClinic As Label = CType(e.Row.FindControl("lblPracticeMobileClinic"), Label)
+            If lblPracticeMobileClinic.Text = YesNo.Yes Then
+                lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "Yes")
+            Else
+                lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "No")
+            End If
+
+            ' Practice Remarks
+            Dim lblPracticeRemarks As Label = e.Row.FindControl("lblPracticeRemarks")
+            Dim lblPracticeRemarksChi As Label = e.Row.FindControl("lblPracticeRemarksChi")
+            Dim strRemarksDescEng As String = udtPractice.RemarksDesc
+            Dim strRemarksDescChi As String = udtPractice.RemarksDescChi
+
+            If strRemarksDescEng = String.Empty AndAlso strRemarksDescChi = String.Empty Then
+                lblPracticeRemarks.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+            ElseIf strRemarksDescEng <> String.Empty Then
+                lblPracticeRemarks.Text = strRemarksDescEng
+                lblPracticeRemarksChi.Text = formatChineseString(strRemarksDescChi)
+
+            Else
+                lblPracticeRemarks.Text = strRemarksDescChi
+            End If
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
             ' Status of Practice
             Dim lblPracticeStatus As Label = CType(e.Row.FindControl("lblPracticeStatus"), Label)
             Status.GetDescriptionFromDBCode(PracticeStatus.ClassCode, lblPracticeStatus.Text.Trim, lblPracticeStatus.Text, String.Empty)
 
             ' Practice Scheme Info
-            Dim udtPractice As PracticeModel = e.Row.DataItem
             Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = udtPractice.PracticeSchemeInfoList
             Dim gvPracticeSchemeInfo As GridView = e.Row.FindControl("gvPracticeSchemeInfo")
 
@@ -4465,23 +4559,25 @@ Partial Public Class spMaintenance
                     Return
                 End If
 
-                Dim strSchemeCode As String = DirectCast(e.Row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value
-                Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("hfPracticeSubsidizeCodeReal"), HiddenField).Value
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'Dim strSchemeCode As String = DirectCast(e.Row.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value
+                'Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("hfPracticeSubsidizeCodeReal"), HiddenField).Value
+                Dim strSchemeCode As String = DirectCast(e.Row.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal")
+                Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("lblPracticeSubsidizeCode"), Label).Attributes("SubsidizeCodeReal")
 
                 Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Session(SESS_SPMaintenancePracticeSchemeInfoList)
                 Dim udtPracticeSchemeInfo As PracticeSchemeInfoModel = udtPracticeSchemeInfoList.Filter(strSchemeCode, strSubsidizeCode)
 
                 e.Row.Visible = False
 
-                'INT17-0014 (Fix sp profile display when no service provided) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 If udtPracticeSchemeInfo Is Nothing Then
                     Return
                 End If
-                'INT17-0014 (Fix sp profile display when no service provided) [End][Chris YIM]
 
                 ' Hide the row if not enrolled or not providing service
-                If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+                'If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+                If DirectCast(e.Row.FindControl("lblPracticeSchemeCode"), Label).Attributes("IsCategoryHeaderReal") = "Y" Then
                     For Each udtPSINode As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
                         If udtPSINode.SchemeCode = strSchemeCode Then
                             udtPracticeSchemeInfo = udtPSINode
@@ -4509,7 +4605,8 @@ Partial Public Class spMaintenance
                     Next
 
                     If blnAllNotProvideService Then
-                        DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        'DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        DirectCast(e.Row.FindControl("lblPracticeSchemeCode"), Label).Attributes.Add("AllNotProvideServiceReal", "Y")
 
                     Else
                         If IsNothing(udtPracticeSchemeInfo) OrElse udtPracticeSchemeInfo.ProvideService = False Then
@@ -4554,10 +4651,11 @@ Partial Public Class spMaintenance
 
                 ' Status [Remark]
                 Dim lblPracticeSchemeStatus As Label = CType(e.Row.FindControl("lblPracticeSchemeStatus"), Label)
-                Dim hfPracticeSchemeStatusReal As HiddenField = e.Row.FindControl("hfPracticeSchemeStatusReal")
+                'Dim hfPracticeSchemeStatusReal As HiddenField = e.Row.FindControl("hfPracticeSchemeStatusReal")
 
                 ' Keep the real status for later use
-                hfPracticeSchemeStatusReal.Value = udtPracticeSchemeInfo.RecordStatus
+                'hfPracticeSchemeStatusReal.Value = udtPracticeSchemeInfo.RecordStatus
+                lblPracticeSchemeStatus.Attributes.Add("StatusReal", udtPracticeSchemeInfo.RecordStatus)
 
                 Dim intTargetPracticeSeq As Integer = udtPracticeSchemeInfo.PracticeDisplaySeq
                 Dim udtTargetPractice As PracticeModel = Nothing
@@ -4625,6 +4723,7 @@ Partial Public Class spMaintenance
                             ' Nothing here
                     End Select
                 End If
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             Case DataControlRowType.Header
                 e.Row.Cells(1).ColumnSpan = 2
@@ -4637,21 +4736,30 @@ Partial Public Class spMaintenance
 
     End Sub
 
+    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Protected Sub gvPracticeSchemeInfo_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
         Dim gvPracticeSchemeInfo As GridView = sender
 
         ' Handle Category
         For Each gvr As GridViewRow In gvPracticeSchemeInfo.Rows
-            If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            'If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            If DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("IsCategoryHeaderReal") = "Y" Then
                 ' Check whether this category is visible
-                Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value
-                Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                'Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value
+                'Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                Dim strSchemeCode As String = DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal")
+                Dim strCategoryName As String = DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("CategoryNameReal")
                 Dim blnVisible As Boolean = False
 
                 For Each r As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
-                            AndAlso DirectCast(r.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode _
-                            AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                    'If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
+                    '        AndAlso DirectCast(r.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode _
+                    '        AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                    '        AndAlso r.Visible Then
+                    If DirectCast(r.FindControl("lblPracticeSchemeCode"), Label).Attributes("IsCategoryHeaderReal") = "N" _
+                            AndAlso DirectCast(r.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal") = strSchemeCode _
+                            AndAlso DirectCast(r.FindControl("lblPracticeSchemeCode"), Label).Attributes("CategoryNameReal") = strCategoryName _
                             AndAlso r.Visible Then
                         blnVisible = True
                         Exit For
@@ -4660,9 +4768,8 @@ Partial Public Class spMaintenance
                 Next
 
                 If blnVisible Then
-                    ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [Start][Lawrence]
-                    gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
-                    ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [End][Lawrence]
+                    'gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
+                    gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("CategoryNameReal"), True)
                     gvr.Cells(1).ColumnSpan = 2
                     gvr.Cells(1).CssClass = "SubsidizeCategoryHeader"
                     gvr.Cells(2).Visible = False
@@ -4686,7 +4793,8 @@ Partial Public Class spMaintenance
                 Continue For
             End If
 
-            Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value
+            'Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value
+            Dim strSchemeCode As String = DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal")
 
             If Not udtSchemeBackOfficeList.Filter(strSchemeCode).DisplaySubsidizeDesc Then
                 gvr.Cells(1).ColumnSpan = 2
@@ -4702,7 +4810,8 @@ Partial Public Class spMaintenance
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
                     If gvrow.Visible Then
-                        If DirectCast(gvrow.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode Then
+                        'If DirectCast(gvrow.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode Then
+                        If DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal") = strSchemeCode Then
                             RowCount += 1
                         End If
                     End If
@@ -4716,7 +4825,11 @@ Partial Public Class spMaintenance
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(gvrow.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    'If DirectCast(gvrow.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode AndAlso _
+                    '    DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal") = strSchemeCode AndAlso _
+                        DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("AllNotProvideServiceReal") = "Y" Then
+
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -4740,7 +4853,11 @@ Partial Public Class spMaintenance
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(gvrow.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    'If DirectCast(gvrow.FindControl("hfPracticeSchemeCodeReal"), HiddenField).Value = strSchemeCode AndAlso _
+                    '    DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCodeReal") = strSchemeCode AndAlso _
+                        DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("AllNotProvideServiceReal") = "Y" Then
+
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -4757,6 +4874,7 @@ Partial Public Class spMaintenance
             strPreviousScheme = strSchemeCode
 
         Next
+        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
     End Sub
 
@@ -4764,6 +4882,9 @@ Partial Public Class spMaintenance
 
     Protected Sub gvActionPracticeBank_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvActionPracticeBank.RowDataBound
         If e.Row.RowType = DataControlRowType.DataRow Then
+
+            Dim udtPractice As PracticeModel = DirectCast(e.Row.DataItem, PracticeModel)
+
             ' Convert Medical Organization No. to No. + Name
             Dim lblPracticeMO As Label = CType(e.Row.FindControl("lblActionPracticeMO"), Label)
             Dim intMODisplaySeq As Integer = CInt(lblPracticeMO.Text.Trim)
@@ -4782,14 +4903,41 @@ Partial Public Class spMaintenance
             Dim lblPracticePhone As Label = e.Row.FindControl("lblPracticePhone")
             If lblPracticePhone.Text = String.Empty Then lblPracticePhone.Text = Me.GetGlobalResourceObject("Text", "N/A")
 
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            ' Mobile Clinic
+            Dim lblPracticeMobileClinic As Label = CType(e.Row.FindControl("lblActionPracticeMobileClinic"), Label)
+            If lblPracticeMobileClinic.Text = YesNo.Yes Then
+                lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "Yes")
+            Else
+                lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "No")
+            End If
+
+            ' Practice Remarks
+            Dim lblPracticeRemarks As Label = e.Row.FindControl("lblActionPracticeRemarks")
+            Dim lblPracticeRemarksChi As Label = e.Row.FindControl("lblActionPracticeRemarksChi")
+            Dim strRemarksDescEng As String = udtPractice.RemarksDesc
+            Dim strRemarksDescChi As String = udtPractice.RemarksDescChi
+
+            If strRemarksDescEng = String.Empty AndAlso strRemarksDescChi = String.Empty Then
+                lblPracticeRemarks.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+            ElseIf strRemarksDescEng <> String.Empty Then
+                lblPracticeRemarks.Text = strRemarksDescEng
+                lblPracticeRemarksChi.Text = formatChineseString(strRemarksDescChi)
+
+            Else
+                lblPracticeRemarks.Text = strRemarksDescChi
+            End If
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
             ' Status of Practice
             Dim lblPracticeStatus As Label = CType(e.Row.FindControl("lblPracticeStatus"), Label)
             Status.GetDescriptionFromDBCode(PracticeStatus.ClassCode, lblPracticeStatus.Text.Trim, lblPracticeStatus.Text, String.Empty)
 
             CType(Session(SESS_SPMaintenanceHandledScheme), ArrayList).Clear()
 
-            ' Practice Scheme Info
-            Dim udtPractice As PracticeModel = e.Row.DataItem
+            ' Practice Scheme Info            
             Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = udtPractice.PracticeSchemeInfoList
             Dim gvActionPracticeSchemeInfo As GridView = e.Row.FindControl("gvActionPracticeSchemeInfo")
 
@@ -4804,23 +4952,25 @@ Partial Public Class spMaintenance
     Protected Sub gvActionPracticeSchemeInfo_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         Select Case e.Row.RowType
             Case DataControlRowType.DataRow
-                Dim strSchemeCode As String = DirectCast(e.Row.FindControl("hfPracticeSchemeCode"), HiddenField).Value
-                Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("hfPracticeSubsidizeCode"), HiddenField).Value
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'Dim strSchemeCode As String = DirectCast(e.Row.FindControl("hfPracticeSchemeCode"), HiddenField).Value
+                'Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("hfPracticeSubsidizeCode"), HiddenField).Value
+                Dim strSchemeCode As String = DirectCast(e.Row.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode")
+                Dim strSubsidizeCode As String = DirectCast(e.Row.FindControl("lblPracticeSubsidizeCode"), Label).Attributes("SubsidizeCode")
 
                 Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Session(SESS_SPMaintenancePracticeSchemeInfoList)
                 Dim udtPracticeSchemeInfo As PracticeSchemeInfoModel = udtPracticeSchemeInfoList.Filter(strSchemeCode, strSubsidizeCode)
 
                 e.Row.Visible = False
 
-                'INT17-0014 (Fix sp profile display when no service provided) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 If udtPracticeSchemeInfo Is Nothing Then
                     Return
                 End If
-                'INT17-0014 (Fix sp profile display when no service provided) [End][Chris YIM]
 
                 ' Hide the row if not enrolled or not providing service
-                If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+                'If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+                If DirectCast(e.Row.FindControl("lblPracticeSchemeCode"), Label).Attributes("IsCategoryHeader") = "Y" Then
                     For Each udtPSINode As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
                         If udtPSINode.SchemeCode = strSchemeCode Then
                             udtPracticeSchemeInfo = udtPSINode
@@ -4848,7 +4998,8 @@ Partial Public Class spMaintenance
                     Next
 
                     If blnAllNotProvideService Then
-                        DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        'DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        DirectCast(e.Row.FindControl("lblPracticeSchemeCode"), Label).Attributes.Add("AllNotProvideService", "Y")
 
                     Else
                         If IsNothing(udtPracticeSchemeInfo) OrElse udtPracticeSchemeInfo.ProvideService = False Then
@@ -4893,10 +5044,11 @@ Partial Public Class spMaintenance
 
                 ' Status [Remark]
                 Dim lblPracticeSchemeStatus As Label = CType(e.Row.FindControl("lblPracticeSchemeStatus"), Label)
-                Dim hfPracticeSchemeStatusReal As HiddenField = e.Row.FindControl("hfPracticeSchemeStatusReal")
+                'Dim hfPracticeSchemeStatusReal As HiddenField = e.Row.FindControl("hfPracticeSchemeStatusReal")
 
                 ' Keep the real status for later use
-                hfPracticeSchemeStatusReal.Value = udtPracticeSchemeInfo.RecordStatus
+                'hfPracticeSchemeStatusReal.Value = udtPracticeSchemeInfo.RecordStatus
+                lblPracticeSchemeStatus.Attributes.Add("Status", udtPracticeSchemeInfo.RecordStatus)
 
                 Dim intTargetPracticeSeq As Integer = udtPracticeSchemeInfo.PracticeDisplaySeq
                 Dim udtTargetPractice As PracticeModel = Nothing
@@ -4930,6 +5082,7 @@ Partial Public Class spMaintenance
                 If lblPracticeSchemeDelistDtm.Text.Equals(String.Empty) Then
                     lblPracticeSchemeDelistDtm.Text = Me.GetGlobalResourceObject("Text", "N/A")
                 End If
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             Case DataControlRowType.Header
                 e.Row.Cells(1).ColumnSpan = 2
@@ -4942,22 +5095,35 @@ Partial Public Class spMaintenance
 
     End Sub
 
+
     Protected Sub gvActionPracticeSchemeInfo_PreRender(ByVal sender As Object, ByVal e As System.EventArgs)
         Dim gvPracticeSchemeInfo As GridView = sender
 
         ' Handle Category
+
+        ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         For Each gvr As GridViewRow In gvPracticeSchemeInfo.Rows
-            If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            'If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            If DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("IsCategoryHeader") = "Y" Then
                 ' Check whether this category is visible
-                Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCode"), HiddenField).Value
-                Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                'Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCode"), HiddenField).Value
+                'Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                Dim strSchemeCode As String = DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode")
+                Dim strCategoryName As String = DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("CategoryName")
                 Dim blnVisible As Boolean = False
 
                 For Each r As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
-                            AndAlso DirectCast(r.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode _
-                            AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                    'If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
+                    '        AndAlso DirectCast(r.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode _
+                    '        AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                    '        AndAlso r.Visible Then
+
+                    If DirectCast(r.FindControl("lblPracticeSchemeCode"), Label).Attributes("IsCategoryHeader") = "N" _
+                            AndAlso DirectCast(r.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode") = strSchemeCode _
+                            AndAlso DirectCast(r.FindControl("lblPracticeSchemeCode"), Label).Attributes("CategoryName") = strCategoryName _
                             AndAlso r.Visible Then
+
                         blnVisible = True
                         Exit For
                     End If
@@ -4965,9 +5131,8 @@ Partial Public Class spMaintenance
                 Next
 
                 If blnVisible Then
-                    ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [Start][Lawrence]
-                    gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
-                    ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [End][Lawrence]
+                    'gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
+                    gvr.Cells(1).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("CategoryName"), True)
                     gvr.Cells(1).ColumnSpan = 2
                     gvr.Cells(1).CssClass = "SubsidizeCategoryHeader"
                     gvr.Cells(2).Visible = False
@@ -4991,7 +5156,8 @@ Partial Public Class spMaintenance
                 Continue For
             End If
 
-            Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCode"), HiddenField).Value
+            'Dim strSchemeCode As String = DirectCast(gvr.FindControl("hfPracticeSchemeCode"), HiddenField).Value
+            Dim strSchemeCode As String = DirectCast(gvr.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode")
 
             If Not udtSchemeBackOfficeList.Filter(strSchemeCode).DisplaySubsidizeDesc Then
                 gvr.Cells(1).ColumnSpan = 2
@@ -5007,7 +5173,8 @@ Partial Public Class spMaintenance
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
                     If gvrow.Visible Then
-                        If DirectCast(gvrow.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode Then
+                        'If DirectCast(gvrow.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode Then
+                        If DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode") = strSchemeCode Then
                             RowCount += 1
                         End If
                     End If
@@ -5021,7 +5188,11 @@ Partial Public Class spMaintenance
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(gvrow.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    'If DirectCast(gvrow.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode AndAlso _
+                    '    DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode") = strSchemeCode AndAlso _
+                        DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("AllNotProvideService") = "Y" Then
+
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -5045,7 +5216,11 @@ Partial Public Class spMaintenance
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvPracticeSchemeInfo.Rows
-                    If DirectCast(gvrow.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    'If DirectCast(gvrow.FindControl("hfPracticeSchemeCode"), HiddenField).Value = strSchemeCode AndAlso _
+                    '    DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("SchemeCode") = strSchemeCode AndAlso _
+                        DirectCast(gvrow.FindControl("lblPracticeSchemeCode"), Label).Attributes("AllNotProvideService") = "Y" Then
+
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -5062,8 +5237,9 @@ Partial Public Class spMaintenance
             strPreviousScheme = strSchemeCode
 
         Next
-
+        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
     End Sub
+
 
     ' Used in .aspx
 

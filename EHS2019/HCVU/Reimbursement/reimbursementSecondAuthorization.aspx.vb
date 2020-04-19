@@ -897,7 +897,11 @@ Partial Public Class reimbursementSecondAuthorization
     '
 
     Protected Sub ibtnCompleteReturn_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        Response.Redirect("reimbursementSecondAuthorization.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect("reimbursementSecondAuthorization.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010402))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     '

@@ -320,6 +320,15 @@ Partial Public Class ucReadOnlyHKIC
     Protected WithEvents lblVHKIDIssueDate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trVCreationMethod control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trVCreationMethod As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblVCreationMethodText control.
     '''</summary>
     '''<remarks>

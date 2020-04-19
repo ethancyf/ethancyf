@@ -155,6 +155,7 @@
     <Compile Include="ComObject\MasterPage.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="ComObject\RestrictAccessHandler.vb" />
     <Compile Include="ComObject\ScheduleJobLogEntry.vb" />
     <Compile Include="ComObject\SearchCriteria.vb" />
     <Compile Include="ComObject\ObsoletedOSHandler.vb" />

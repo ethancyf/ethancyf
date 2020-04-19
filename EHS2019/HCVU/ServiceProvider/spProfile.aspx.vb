@@ -71,6 +71,11 @@ Partial Public Class spProfile
         Public Const MedicalOrganization As String = "MedicalOrganization"
         Public Const NameOfPractice As String = "NameOfPractice"
 
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        Public Const MobileClinic As String = "MobileClinic"
+        Public Const Remarks As String = "Remarks"
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
         Public Const strNew As String = "New"
         Public Const strUnderAmendment As String = "Under Amendment"
 
@@ -181,10 +186,15 @@ Partial Public Class spProfile
 
             Dim dicPracticeChanged As New Dictionary(Of String, Boolean)
 
-            dicPracticeChanged.Add(MedicalOrganization, IIf(udtPracticeNew.MODisplaySeq = udtPracticeOrig.MODisplaySeq, False, True))
-            dicPracticeChanged.Add(NameOfPractice, IIf(udtPracticeNew.PracticeNameChi = udtPracticeOrig.PracticeNameChi, False, True))
-            dicPracticeChanged.Add(Address, IIf(udtPracticeNew.PracticeAddress.Equals(udtPracticeOrig.PracticeAddress), False, True))
-            dicPracticeChanged.Add(Phone, IIf(udtPracticeNew.PhoneDaytime = udtPracticeOrig.PhoneDaytime, False, True))
+            dicPracticeChanged.Add(ServiceProviderComparator.MedicalOrganization, IIf(udtPracticeNew.MODisplaySeq = udtPracticeOrig.MODisplaySeq, False, True))
+            dicPracticeChanged.Add(ServiceProviderComparator.NameOfPractice, IIf(udtPracticeNew.PracticeNameChi = udtPracticeOrig.PracticeNameChi, False, True))
+            dicPracticeChanged.Add(ServiceProviderComparator.Address, IIf(udtPracticeNew.PracticeAddress.Equals(udtPracticeOrig.PracticeAddress), False, True))
+            dicPracticeChanged.Add(ServiceProviderComparator.Phone, IIf(udtPracticeNew.PhoneDaytime = udtPracticeOrig.PhoneDaytime, False, True))
+
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            dicPracticeChanged.Add(ServiceProviderComparator.MobileClinic, IIf(udtPracticeNew.MobileClinic = udtPracticeOrig.MobileClinic, False, True))
+            dicPracticeChanged.Add(ServiceProviderComparator.Remarks, IIf(udtPracticeNew.RemarksDesc = udtPracticeOrig.RemarksDesc AndAlso udtPracticeNew.RemarksDescChi = udtPracticeOrig.RemarksDescChi, False, True))
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             Return dicPracticeChanged
 
@@ -288,7 +298,12 @@ Partial Public Class spProfile
 
         Dim udtComparator As New ServiceProviderComparator(ServiceProviderPermanent)
 
-        Dim intSeq As Integer = CInt(CType(r.FindControl(IIf(blnEditMode, "lblEditPracticeDispalySeq", "lblPracticeDispalySeq")), Label).Text)
+        ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'Dim intSeq As Integer = CInt(CType(r.FindControl(IIf(blnEditMode, "lblEditPracticeDispalySeq", "lblPracticeDispalySeq")), Label).Text)
+        Dim intSeq As Integer = CInt(CType(r.FindControl("lblPracticeDispalySeq"), Label).Text)
+        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
 
         Dim dicPracticeChanged As Dictionary(Of String, Boolean) = udtComparator.GetPracticeChangedField(intSeq, udtServiceProviderBLL.GetSP())
 
@@ -298,7 +313,10 @@ Partial Public Class spProfile
         If dicPracticeChanged(ServiceProviderComparator.NameOfPractice) Then CType(r.FindControl("lblPracticeNameTextInd"), Label).Visible = True
         If dicPracticeChanged(ServiceProviderComparator.Address) Then CType(r.FindControl("lblPracticeAddressInd"), Label).Visible = True
         If dicPracticeChanged(ServiceProviderComparator.Phone) Then CType(r.FindControl("lblRegPhoneInd"), Label).Visible = True
-
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        If dicPracticeChanged(ServiceProviderComparator.MobileClinic) Then CType(r.FindControl("lblPracticeMobileClinicInd"), Label).Visible = True
+        If dicPracticeChanged(ServiceProviderComparator.Remarks) Then CType(r.FindControl("lblPracticeRemarksInd"), Label).Visible = True
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
     End Sub
 
     Private Sub ApplyPersonalChangeIndicator()
@@ -453,12 +471,18 @@ Partial Public Class spProfile
         For Each gvRow As GridViewRow In Me.gvBankInfo.Rows
             Dim control As Control = Nothing
 
-            If Me.gvBankInfo.EditIndex = gvRow.RowIndex Then
-                'If gvRow.RowState = DataControlRowState.Edit Then
-                control = gvRow.FindControl("lblEditPracticeBankDispalySeq")
-            Else
-                control = gvRow.FindControl("lblPracticeBankDispalySeq")
-            End If
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'If Me.gvBankInfo.EditIndex = gvRow.RowIndex Then
+            '    'If gvRow.RowState = DataControlRowState.Edit Then
+            '    control = gvRow.FindControl("lblEditPracticeBankDispalySeq")
+            'Else
+            '    control = gvRow.FindControl("lblPracticeBankDispalySeq")
+            'End If
+
+            control = gvRow.FindControl("lblPracticeBankDispalySeq")
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
 
             If Not control Is Nothing Then
                 Dim lblFind As Label = CType(control, Label)
@@ -510,6 +534,9 @@ Partial Public Class spProfile
 
         If Not IsPostBack Then
             udtSPProfileBLL.ClearSession()
+
+            Dim blnBackToDataEntryPage As Boolean = False
+
             If Not IsNothing(Session(SESS_Action)) Then
                 Dim strAction As String = Session(SESS_Action)
                 Select Case strAction
@@ -577,15 +604,23 @@ Partial Public Class spProfile
 
 
                         Else
-                            Response.Redirect("~/serviceprovider/spDataEntry.aspx")
+                            blnBackToDataEntryPage = True
                         End If
 
                     Case Else
-                        Response.Redirect("~/serviceprovider/spDataEntry.aspx")
+                        blnBackToDataEntryPage = True
                 End Select
             Else
-                Response.Redirect("~/serviceprovider/spDataEntry.aspx")
+                blnBackToDataEntryPage = True
             End If
+
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            If blnBackToDataEntryPage Then
+                RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010101))
+            End If
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
             Session.Remove(SESS_Action)
 
             ' Handle double post-back
@@ -955,7 +990,7 @@ Partial Public Class spProfile
                     Dim txtEditPracticeSchemeServiceFee As TextBox = DirectCast(gvrN.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
                     Dim chkEditNotProvideServiceFee As CheckBox = DirectCast(gvrN.FindControl("chkEditNotProvideServiceFee"), CheckBox)
                     Dim imgEditServiceFeeAlert As Image
-                    chkEditSelect = CType(gvrN.FindControl("chkEditSelect"), CheckBox)
+                    chkEditSelect = CType(gvrN.FindControl("chkSelect"), CheckBox)
 
                     Dim strSchemeCode As String = gvrN.Cells(0).Text.Trim
                     Dim strSubsidizeCode As String = gvrN.Cells(1).Text.Trim
@@ -4352,7 +4387,10 @@ Partial Public Class spProfile
                 Dim lblEditRegCode As Label = CType(e.Row.FindControl("lblEditRegCode"), Label)
                 Dim txtEditRegCode As TextBox = CType(e.Row.FindControl("txtEditRegCode"), TextBox)
 
-                Dim hfEditPracticeStatus As HiddenField = CType(e.Row.FindControl("hfEditPracticeStatus"), HiddenField)
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'Dim hfEditPracticeStatus As HiddenField = CType(e.Row.FindControl("hfEditPracticeStatus"), HiddenField)
+                Dim strEditPracticeStatus As String = CType(e.Row.FindControl("lblPracticeDispalySeq"), Label).Attributes("Status")
 
                 Dim txtEditPracticeBlock As TextBox = CType(e.Row.FindControl("txtEditPracticeBlock"), TextBox)
 
@@ -4360,17 +4398,16 @@ Partial Public Class spProfile
                 Dim ddlEditPracticeMOName As DropDownList = CType(e.Row.FindControl("ddlEditPracticeMOName"), DropDownList)
                 Dim hfEditPracticeMOName As HiddenField = CType(e.Row.FindControl("hfEditPracticeMOName"), HiddenField)
 
-                'INT14-0022 - Fix issue of updating permanent table from staging for suspended practice [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 'If Me.hfTableLocation.Value.Trim.Equals(TableLocation.Permanent) Or _
-                'hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Existing) Or _
-                'hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Update) Then
-
+                '    hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Existing) Or _
+                '    hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Update) Or _
+                '    hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Suspended) Then
                 If Me.hfTableLocation.Value.Trim.Equals(TableLocation.Permanent) Or _
-                    hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Existing) Or _
-                    hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Update) Or _
-                    hfEditPracticeStatus.Value.Trim.Equals(PracticeStagingStatus.Suspended) Then
-                    'INT14-0022 - Fix issue of updating permanent table from staging for suspended practice [End][Chris YIM]
+                    strEditPracticeStatus.Trim.Equals(PracticeStagingStatus.Existing) Or _
+                    strEditPracticeStatus.Trim.Equals(PracticeStagingStatus.Update) Or _
+                    strEditPracticeStatus.Trim.Equals(PracticeStagingStatus.Suspended) Then
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
                     lblEditPracticeName.Visible = True
                     txtEditPracticeName.Visible = False
 
@@ -4552,11 +4589,24 @@ Partial Public Class spProfile
 
                     End If
 
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                    ' ------------------------------------------------------------------------
+                    Dim lblPracticeMobileClinic As Label = CType(e.Row.FindControl("lblPracticeMobileClinic"), Label)
+                    If lblPracticeMobileClinic.Text = YesNo.Yes Then
+                        lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "Yes")
+                    Else
+                        lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "No")
+                    End If
+                    ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
                     Dim ibtnPracticeEdit As ImageButton = CType(e.Row.FindControl("ibtnPracticeEdit"), ImageButton)
                     Dim ibtnPracticeDelete As ImageButton = CType(e.Row.FindControl("ibtnPracticeDelete"), ImageButton)
                     Dim lblPracticeStatus As Label = CType(e.Row.FindControl("lblPracticeStatus"), Label)
 
-                    Dim hfPracticeStatus As HiddenField = CType(e.Row.FindControl("hfPracticeStatus"), HiddenField)
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    'Dim hfPracticeStatus As HiddenField = CType(e.Row.FindControl("hfPracticeStatus"), HiddenField)
+                    Dim strPracticeStatus As String = CType(e.Row.FindControl("lblPracticeDispalySeq"), Label).Attributes("Status")
 
                     Select Case hfTableLocation.Value.Trim
                         Case TableLocation.Permanent
@@ -4597,7 +4647,8 @@ Partial Public Class spProfile
                                 Else
                                     Select Case hfTableLocation.Value.Trim
                                         Case TableLocation.Permanent
-                                            Select Case hfPracticeStatus.Value.Trim
+                                            'Select Case hfPracticeStatus.Value.Trim
+                                            Select Case strPracticeStatus.Trim
                                                 'Case SPMaintenanceDisplayStatus.DelistedInvoluntary
                                                 '    ibtnPracticeEdit.Enabled = False
                                                 '    ibtnPracticeEdit.ImageUrl = GetGlobalResourceObject("ImageUrl", "EditSDisableBtn")
@@ -4612,7 +4663,8 @@ Partial Public Class spProfile
                                             ibtnPracticeDelete.ImageUrl = GetGlobalResourceObject("ImageUrl", "DeleteSDisableBtn")
 
                                         Case TableLocation.Staging
-                                            Select Case hfPracticeStatus.Value.Trim
+                                            'Select Case hfPracticeStatus.Value.Trim
+                                            Select Case strPracticeStatus.Trim
                                                 Case PracticeStagingStatus.Delisted
                                                     ibtnPracticeDelete.Enabled = False
                                                     ibtnPracticeDelete.ImageUrl = GetGlobalResourceObject("ImageUrl", "DeleteSDisableBtn")
@@ -4669,6 +4721,7 @@ Partial Public Class spProfile
                         End If
 
                     End If
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
                 End If
 
@@ -4792,6 +4845,11 @@ Partial Public Class spProfile
             Dim txtAddPracticePhone As TextBox = footerRow.FindControl("txtAddPracticePhone")
             Dim ddlAddHealthProf As DropDownList = footerRow.FindControl("ddlAddHealthProf")
             Dim txtAddRegCode As TextBox = footerRow.FindControl("txtAddRegCode")
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            Dim chkAddPracticeMobileClinic As CheckBox = footerRow.FindControl("chkAddPracticeMobileClinic")
+            Dim txtAddPracticeRemarks As TextBox = footerRow.FindControl("txtAddPracticeRemarks")
+            Dim txtAddPracticeRemarksChi As TextBox = footerRow.FindControl("txtAddPracticeRemarksChi")
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             Dim imgAddPracticeMONameAlert As Image = footerRow.FindControl("imgAddPracticeMONameAlert")
             Dim imgAddPracticeNameAlert As Image = footerRow.FindControl("imgAddPracticeNameAlert")
@@ -4801,6 +4859,9 @@ Partial Public Class spProfile
             Dim imgAddPracticePhoneAlert As Image = footerRow.FindControl("imgAddPracticePhoneAlert")
             Dim imgAddHealthProfAlert As Image = footerRow.FindControl("imgAddHealthProfAlert")
             Dim imgAddRegCodeAlert As Image = footerRow.FindControl("imgAddRegCodeAlert")
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            Dim imgAddPracticeRemarksAlert As Image = footerRow.FindControl("imgAddPracticeRemarksAlert")
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             imgAddPracticeMONameAlert.Visible = False
             imgAddPracticeNameAlert.Visible = False
@@ -4810,6 +4871,9 @@ Partial Public Class spProfile
             imgAddPracticePhoneAlert.Visible = False
             imgAddHealthProfAlert.Visible = False
             imgAddRegCodeAlert.Visible = False
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            imgAddPracticeRemarksAlert.Visible = False
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             'Check the MO selection
             SM = Validator.chkPracticeMOName(ddlAddPracticeMOName.SelectedValue.Trim)
@@ -4919,6 +4983,13 @@ Partial Public Class spProfile
                         End If
 
                         .PhoneDaytime = txtAddPracticePhone.Text.Trim
+
+                        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                        ' ------------------------------------------------------------------------
+                        .MobileClinic = IIf(chkAddPracticeMobileClinic.Checked, YesNo.Yes, YesNo.No)
+                        .RemarksDesc = txtAddPracticeRemarks.Text.Trim
+                        .RemarksDescChi = txtAddPracticeRemarksChi.Text.Trim
+                        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
                     End With
 
                     If udtSPProfileBLL.AddPracticeProfessionalToStaging(udtPractice, ddlAddHealthProf.SelectedValue.Trim, txtAddRegCode.Text.Trim, hfTableLocation.Value.Trim) Then
@@ -5034,7 +5105,11 @@ Partial Public Class spProfile
         If Not row Is Nothing Then
             Dim udtAuditLogEntry As New AuditLogEntry(strFuncCode, Me) ''Begin Writing Audit Log
 
-            Dim lblEditPracticeDispalySeq As Label = row.FindControl("lblEditPracticeDispalySeq")
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim lblEditPracticeDispalySeq As Label = row.FindControl("lblEditPracticeDispalySeq")
+            Dim lblEditPracticeDispalySeq As Label = row.FindControl("lblPracticeDispalySeq")
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             Dim ddlEditPracticeMOName As DropDownList = row.FindControl("ddlEditPracticeMOName")
             Dim txtEditPracticeName As TextBox = row.FindControl("txtEditPracticeName")
@@ -5050,6 +5125,11 @@ Partial Public Class spProfile
             Dim txtEditPhone As TextBox = row.FindControl("txtEditPhone")
             Dim ddlEditHealthProf As DropDownList = row.FindControl("ddlEditHealthProf")
             Dim txtEditRegCode As TextBox = row.FindControl("txtEditRegCode")
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            Dim chkEditPracticeMobileClinic As CheckBox = row.FindControl("chkEditPracticeMobileClinic")
+            Dim txtEditPracticeRemarks As TextBox = row.FindControl("txtEditPracticeRemarks")
+            Dim txtEditPracticeRemarksChi As TextBox = row.FindControl("txtEditPracticeRemarksChi")
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             Dim imgEditPracticeMONameAlert As Image = row.FindControl("imgEditPracticeMONameAlert")
             Dim imgEditPracticeNameAlert As Image = row.FindControl("imgEditPracticeNameAlert")
@@ -5059,6 +5139,9 @@ Partial Public Class spProfile
             Dim imgEditPhoneAlert As Image = row.FindControl("imgEditPhoneAlert")
             Dim imgEditHealthProfAlert As Image = row.FindControl("imgEditHealthProfAlert")
             Dim imgEditRegCodeAlert As Image = row.FindControl("imgEditRegCodeAlert")
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            Dim imgEditPracticeRemarksAlert As Image = row.FindControl("imgEditPracticeRemarksAlert")
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             imgEditPracticeMONameAlert.Visible = False
             imgEditPracticeNameAlert.Visible = False
@@ -5068,6 +5151,9 @@ Partial Public Class spProfile
             imgEditPhoneAlert.Visible = False
             imgEditHealthProfAlert.Visible = False
             imgEditRegCodeAlert.Visible = False
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            imgEditPracticeRemarksAlert.Visible = False
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
             udtAuditLogEntry.AddDescripton("ERN", Me.hfERN.Value.Trim)
 
@@ -5101,15 +5187,9 @@ Partial Public Class spProfile
                     imgEditPracticeBuildingAlert.Visible = True
                 End If
 
-                'CRE13-019-02 Extend HCVS to China [Start][Winnie]
-                'If Validator.IsEmpty(ddlEditPracticeDistrict.SelectedValue.Trim) OrElse _
-                '   ddlEditPracticeDistrict.SelectedValue.Trim.Equals(".H") OrElse _
-                '   ddlEditPracticeDistrict.SelectedValue.Trim.Equals(".K") OrElse _
-                '   ddlEditPracticeDistrict.SelectedValue.Trim.Equals(".N") Then
+
                 If Validator.IsEmpty(ddlEditPracticeDistrict.SelectedValue.Trim) OrElse _
                    ddlEditPracticeDistrict.SelectedValue.Trim.StartsWith(".") Then
-                    'CRE13-019-02 Extend HCVS to China [End][Winnie]
-
                     imgEditPRacticeDistrcitAlert.Visible = True
                 End If
 
@@ -5187,6 +5267,13 @@ Partial Public Class spProfile
                         End If
 
                         .PhoneDaytime = txtEditPhone.Text.Trim
+
+                        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                        ' ------------------------------------------------------------------------
+                        .MobileClinic = IIf(chkEditPracticeMobileClinic.Checked, YesNo.Yes, YesNo.No)
+                        .RemarksDesc = txtEditPracticeRemarks.Text.Trim
+                        .RemarksDescChi = txtEditPracticeRemarksChi.Text.Trim
+                        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
                     End With
 
 
@@ -5255,7 +5342,12 @@ Partial Public Class spProfile
         End If
 
         If gvPracticeInfo.EditIndex > -1 Then
-            lblDisplaySeq = CType(gvPracticeInfo.Rows(gvPracticeInfo.EditIndex).FindControl("lblEditPracticeDispalySeq"), Label)
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'lblDisplaySeq = CType(gvPracticeInfo.Rows(gvPracticeInfo.EditIndex).FindControl("lblEditPracticeDispalySeq"), Label)
+            lblDisplaySeq = CType(gvPracticeInfo.Rows(gvPracticeInfo.EditIndex).FindControl("lblPracticeDispalySeq"), Label)
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
             intDisplaySeq = CInt(lblDisplaySeq.Text.Trim)
         End If
 
@@ -5408,12 +5500,17 @@ Partial Public Class spProfile
 
         If Not row Is Nothing Then
             Dim lblPracticeDispalySeq As Label
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'If IsNothing(CType(row.FindControl("lblPracticeDispalySeq"), Label)) Then
+            '    lblPracticeDispalySeq = CType(row.FindControl("lblEditPracticeDispalySeq"), Label)
+            'Else
+            '    lblPracticeDispalySeq = CType(row.FindControl("lblPracticeDispalySeq"), Label)
+            'End If
 
-            If IsNothing(CType(row.FindControl("lblPracticeDispalySeq"), Label)) Then
-                lblPracticeDispalySeq = CType(row.FindControl("lblEditPracticeDispalySeq"), Label)
-            Else
-                lblPracticeDispalySeq = CType(row.FindControl("lblPracticeDispalySeq"), Label)
-            End If
+            lblPracticeDispalySeq = CType(row.FindControl("lblPracticeDispalySeq"), Label)
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
 
             MOPracticeLists1.buildPracticeObject(udtServiceProviderBLL.GetSP.PracticeList, CInt(lblPracticeDispalySeq.Text.Trim), Me.hfTableLocation.Value.Trim)
 
@@ -5879,11 +5976,15 @@ Partial Public Class spProfile
                         lblEditBankPracticeStatus.Text = "Unprocessed"
                 End Select
             Else
-                Dim hfBankAcctStatus As HiddenField = e.Row.FindControl("hfBankAcctStatus")
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'Dim hfBankAcctStatus As HiddenField = e.Row.FindControl("hfBankAcctStatus")
+                Dim lblBankAcctStatus As Label = CType(e.Row.FindControl("lblPracticeBankDispalySeq"), Label)
                 Dim ibtnBankEdit As ImageButton = e.Row.FindControl("ibtnBankEdit")
                 Dim lblBankPracticeStatus As Label = e.Row.FindControl("lblBankPracticeStatus")
 
-                If Not IsNothing(hfBankAcctStatus) AndAlso Not IsNothing(ibtnBankEdit) Then
+                'If Not IsNothing(hfBankAcctStatus) AndAlso Not IsNothing(ibtnBankEdit) Then
+                If Not IsNothing(lblBankAcctStatus) AndAlso Not IsNothing(ibtnBankEdit) Then
                     Select Case hfTableLocation.Value.Trim
                         Case TableLocation.Permanent
                             ibtnBankEdit.Enabled = False
@@ -5894,7 +5995,8 @@ Partial Public Class spProfile
 
                         Case TableLocation.Staging
                             If strProgress.Equals(String.Empty) Then
-                                If hfBankAcctStatus.Value.Trim.Equals(PracticeStagingStatus.Active) Then
+                                'If hfBankAcctStatus.Value.Trim.Equals(PracticeStagingStatus.Active) Then
+                                If lblBankAcctStatus.Attributes("Status").Trim.Equals(PracticeStagingStatus.Active) Then
                                     If gvBankInfo.EditIndex = -1 Then
                                         ibtnBankEdit.Enabled = True
                                         ibtnBankEdit.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "EditSBtn")
@@ -5926,7 +6028,7 @@ Partial Public Class spProfile
                             lblBankPracticeStatus.Text = "Unprocessed"
                     End Select
                 End If
-
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
             End If
         End If
 
@@ -5950,8 +6052,12 @@ Partial Public Class spProfile
         If Not IsNothing(row) Then
             Dim udtAuditLogEntry As New AuditLogEntry(strFuncCode, Me) ''Begin Writing Audit Log
 
-            Dim lblEditPracticeBankDispalySeq As Label = row.FindControl("lblEditPracticeBankDispalySeq")
-            Dim hfEditBankDisplaySeq As HiddenField = row.FindControl("hfEditBankDisplaySeq")
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim lblEditPracticeBankDispalySeq As Label = row.FindControl("lblEditPracticeBankDispalySeq")
+            Dim lblEditPracticeBankDispalySeq As Label = row.FindControl("lblPracticeBankDispalySeq")
+            'Dim hfEditBankDisplaySeq As HiddenField = row.FindControl("hfEditBankDisplaySeq")
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             Dim txtEditBankName As TextBox = row.FindControl("txtEditBankName")
             Dim txtEditBranchName As TextBox = row.FindControl("txtEditBranchName")
@@ -6002,11 +6108,23 @@ Partial Public Class spProfile
 
             Dim intBankDisplaySeq As Integer
 
-            If hfEditBankDisplaySeq.Value.Trim.Equals(String.Empty) Then
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'If hfEditBankDisplaySeq.Value.Trim.Equals(String.Empty) Then
+            '    intBankDisplaySeq = 1
+            'Else
+            '    intBankDisplaySeq = CInt(hfEditBankDisplaySeq.Value.Trim)
+            'End If
+
+            If lblEditPracticeBankDispalySeq.Attributes("DispalySeq") Is Nothing Then
+                'If lblEditPracticeBankDispalySeq.Attributes("DispalySeq").Trim.Equals(String.Empty) Then
                 intBankDisplaySeq = 1
             Else
-                intBankDisplaySeq = CInt(hfEditBankDisplaySeq.Value.Trim)
+                intBankDisplaySeq = CInt(lblEditPracticeBankDispalySeq.Attributes("DispalySeq").Trim)
+                'End If
             End If
+
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
             udtAuditLogEntry.AddDescripton("ERN", Me.hfERN.Value.Trim)
             If udtServiceProviderBLL.Exist Then
@@ -6173,7 +6291,7 @@ Partial Public Class spProfile
                     End If
 
                 Catch ex As Exception
-                    Throw ex
+                    Throw
                 End Try
 
             Else
@@ -6436,7 +6554,7 @@ Partial Public Class spProfile
 
         ' --- Validation ---
 
-        Dim udtSystemMessage As SystemMessage = Validator.chkGridSelectedNothing(gvEditPracticeSchemeInfo, "chkEditSelect", 1)
+        Dim udtSystemMessage As SystemMessage = Validator.chkGridSelectedNothing(gvEditPracticeSchemeInfo, "chkSelect", 1)
 
         If Not IsNothing(udtSystemMessage) Then
             msgBox.AddMessage(strFuncCode, SeverityCode.SEVE, MsgCode.MSG00005, "%s", lblSchemeEditDispalySeq.Text.Trim)
@@ -6473,9 +6591,14 @@ Partial Public Class spProfile
 
         For Each gvr As GridViewRow In gvEditPracticeSchemeInfo.Rows
             ' Skip the Category Header
-            If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then Continue For
+            ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then Continue For
+            If DirectCast(gvr.FindControl("chkSelect"), CheckBox).Attributes("IsCategoryHeader") = "Y" Then Continue For
+            ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
-            Dim chkEditSelect As CheckBox = gvr.FindControl("chkEditSelect")
+
+            Dim chkEditSelect As CheckBox = gvr.FindControl("chkSelect")
             Dim txtEditPracticeSchemeServiceFee As TextBox = Nothing
             Dim chkEditNotProvideServiceFee As CheckBox = Nothing
 
@@ -7067,10 +7190,16 @@ Partial Public Class spProfile
                 End Select
 
                 If Not blnEditMode Then
-                    Dim hfStatus As HiddenField = gr.FindControl("hfPracticeSchemeStatus")
-                    If hfStatus.Value.Trim = "U" OrElse hfStatus.Value.Trim = "A" Then
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    'Dim hfStatus As HiddenField = gr.FindControl("hfPracticeSchemeStatus")
+                    Dim strStatus As String = CType(gr.FindControl("lblPracticeSchemeStatus"), Label).Attributes("Status")
+
+                    'If hfStatus.Value.Trim = "U" OrElse hfStatus.Value.Trim = "A" Then
+                    If strStatus.Trim = "U" OrElse strStatus.Trim = "A" Then
                         CType(gr.FindControl("lblPracticeSchemeServiceFee"), Label).ForeColor = Drawing.Color.Red
                     End If
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
                     Dim udtComparator As New ServiceProviderComparator(ServiceProviderPermanent)
 
@@ -7147,7 +7276,10 @@ Partial Public Class spProfile
                 Dim lblPracticeSchemeServiceFee As Label = CType(e.Row.FindControl("lblPracticeSchemeServiceFee"), Label)
                 Dim lblPracticeSchemeStatus As Label = CType(e.Row.FindControl("lblPracticeSchemeStatus"), Label)
                 Dim lblPracticeSchemeRemark As Label = CType(e.Row.FindControl("lblPracticeSchemeRemark"), Label)
-                Dim hfPracticeSchemeStatus As HiddenField = e.Row.FindControl("hfPracticeSchemeStatus")
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'Dim hfPracticeSchemeStatus As HiddenField = e.Row.FindControl("hfPracticeSchemeStatus")
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                 Dim lblPracticeSchemeEffectiveDtm As Label = CType(e.Row.FindControl("lblPracticeSchemeEffectiveDtm"), Label)
                 Dim lblPracticeSchemeDelistDtm As Label = CType(e.Row.FindControl("lblPracticeSchemeDelistDtm"), Label)
 
@@ -7174,7 +7306,11 @@ Partial Public Class spProfile
                 udtPracticeSchemeInfo = udtPracticeSchemeInfoList.Item(intPracticeDisplaySeq, strSubsidizeCode, udtSchemeBackOffice.DisplaySeq, udtSubsidizeGroupBackOffice.DisplaySeq, udtSubsidizeGroupBackOffice.SchemeCode)
 
                 ' Hide the row if not enrolled or not providing service
-                If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+                If DirectCast(e.Row.FindControl("chkSelect"), CheckBox).Attributes("IsCategoryHeader") = "Y" Then
                     For Each udtPSINode As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
                         If udtPSINode.SchemeCode = strSchemeCode Then
                             udtPracticeSchemeInfo = udtPSINode
@@ -7202,7 +7338,8 @@ Partial Public Class spProfile
                     Next
 
                     If blnAllNotProvideService Then
-                        DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        'DirectCast(e.Row.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y"
+                        DirectCast(e.Row.FindControl("chkSelect"), CheckBox).Attributes.Add("AllNotProvideService", "Y")
 
                     Else
                         If IsNothing(udtPracticeSchemeInfo) OrElse udtPracticeSchemeInfo.ProvideService = False Then
@@ -7213,6 +7350,8 @@ Partial Public Class spProfile
                     End If
 
                 End If
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
 
                 e.Row.Visible = True
 
@@ -7257,7 +7396,11 @@ Partial Public Class spProfile
                 End If
 
                 If Not IsNothing(udtPracticeSchemeInfo) Then
-                    hfPracticeSchemeStatus.Value = udtPracticeSchemeInfo.RecordStatus.Trim
+                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    'hfPracticeSchemeStatus.Value = udtPracticeSchemeInfo.RecordStatus.Trim
+                    lblPracticeSchemeStatus.Attributes.Add("Status", udtPracticeSchemeInfo.RecordStatus.Trim)
+                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                     lblPracticeSchemeStatus.Text = udtSPProfileBLL.GetPracticeSchemeInfoStatus(udtServiceProviderBLL.GetSP.PracticeList.Item(intPracticeDisplaySeq), strSchemeCode, Me.hfTableLocation.Value.Trim)
 
                     'CRE15-004 TIV & QIV [Start][Winnie]
@@ -7313,7 +7456,7 @@ Partial Public Class spProfile
             ElseIf gvServiceFee.ID.Trim.Equals("gvEditPracticeSchemeInfo") Then
                 ' --- Edit Mode ---
 
-                Dim chkEditSelect As CheckBox = CType(e.Row.FindControl("chkEditSelect"), CheckBox)
+                Dim chkEditSelect As CheckBox = CType(e.Row.FindControl("chkSelect"), CheckBox)
                 'CRE15-004 TIV & QIV [Start][Winnie]
                 Dim chkEditSelectSubsidize As CheckBox = CType(e.Row.FindControl("chkEditSelectSubsidize"), CheckBox)
                 Dim pnlEditPracticeSchemeSubsidize As Panel = CType(e.Row.FindControl("pnlEditPracticeSchemeSubsidize"), Panel)
@@ -7331,7 +7474,10 @@ Partial Public Class spProfile
 
                 Dim lblEditPracticeSchemeStatus As Label = CType(e.Row.FindControl("lblEditPracticeSchemeStatus"), Label)
                 Dim lblEditPracticeSchemeRemark As Label = CType(e.Row.FindControl("lblEditPracticeSchemeRemark"), Label)
-                Dim hfEditPracticeSchemeStatus As HiddenField = e.Row.FindControl("hfEditPracticeSchemeStatus")
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'Dim hfEditPracticeSchemeStatus As HiddenField = e.Row.FindControl("hfEditPracticeSchemeStatus")
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                 Dim lblEditPracticeSchemeEffectiveDtm As Label = CType(e.Row.FindControl("lblEditPracticeSchemeEffectiveDtm"), Label)
                 Dim lblEditPracticeSchemeDelistDtm As Label = CType(e.Row.FindControl("lblEditPracticeSchemeDelistDtm"), Label)
 
@@ -7663,7 +7809,12 @@ Partial Public Class spProfile
                     ' CRE15-004 TIV & QIV [End][Winnie]
 
                     If Not IsNothing(udtPracticeSchemeInfo) Then
-                        hfEditPracticeSchemeStatus.Value = udtPracticeSchemeInfo.RecordStatus.Trim
+                        ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        'hfEditPracticeSchemeStatus.Value = udtPracticeSchemeInfo.RecordStatus.Trim
+                        lblEditPracticeSchemeStatus.Attributes.Add("Status", udtPracticeSchemeInfo.RecordStatus.Trim)
+                        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
                     End If
 
                     Select Case hfTableLocation.Value.Trim
@@ -7725,17 +7876,26 @@ Partial Public Class spProfile
         gvServiceFee.HeaderRow.Cells.Remove(gvServiceFee.HeaderRow.Cells(5))
 
         ' Handle Category
+
+        ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         For Each gvr As GridViewRow In gvServiceFee.Rows
-            If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            'If DirectCast(gvr.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
+            If DirectCast(gvr.FindControl("chkSelect"), CheckBox).Attributes("IsCategoryHeader") = "Y" Then
                 ' Check whether this category is visible
                 Dim strSchemeCode As String = gvr.Cells(0).Text
-                Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                'Dim strCategoryName As String = DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value
+                Dim strCategoryName As String = DirectCast(gvr.FindControl("chkSelect"), CheckBox).Attributes("CategoryName")
                 Dim blnVisible As Boolean = False
 
                 For Each r As GridViewRow In gvServiceFee.Rows
-                    If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
+                    'If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
+                    '        AndAlso r.Cells(0).Text = strSchemeCode _
+                    '        AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                    '        AndAlso r.Visible Then
+                    If DirectCast(r.FindControl("chkSelect"), CheckBox).Attributes("IsCategoryHeader") = "N" _
                             AndAlso r.Cells(0).Text = strSchemeCode _
-                            AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                            AndAlso DirectCast(r.FindControl("chkSelect"), CheckBox).Attributes("CategoryName") = strCategoryName _
                             AndAlso r.Visible Then
                         blnVisible = True
                         Exit For
@@ -7744,9 +7904,8 @@ Partial Public Class spProfile
                 Next
 
                 If blnVisible Then
-                    ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [Start][Lawrence]
-                    gvr.Cells(4).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
-                    ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [End][Lawrence]
+                    'gvr.Cells(4).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("hfGCategoryName"), HiddenField).Value, True)
+                    gvr.Cells(4).Text = AntiXssEncoder.HtmlEncode(DirectCast(gvr.FindControl("chkSelect"), CheckBox).Attributes("CategoryName"), True)
                     gvr.Cells(4).ColumnSpan = 2
                     gvr.Cells(4).CssClass = "SubsidizeCategoryHeader"
                     gvr.Cells(5).Visible = False
@@ -7805,7 +7964,8 @@ Partial Public Class spProfile
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvServiceFee.Rows
-                    If gvrow.Cells(0).Text.Trim = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    'If gvrow.Cells(0).Text.Trim = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If gvrow.Cells(0).Text.Trim = strSchemeCode AndAlso DirectCast(gvrow.FindControl("chkSelect"), CheckBox).Attributes("AllNotProvideService") = "Y" Then
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -7830,7 +7990,8 @@ Partial Public Class spProfile
                 Dim blnAllNotProvideService As Boolean = False
 
                 For Each gvrow As GridViewRow In gvServiceFee.Rows
-                    If gvrow.Cells(0).Text.Trim = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    'If gvrow.Cells(0).Text.Trim = strSchemeCode AndAlso DirectCast(gvrow.FindControl("hfGAllNotProvideService"), HiddenField).Value = "Y" Then
+                    If gvrow.Cells(0).Text.Trim = strSchemeCode AndAlso DirectCast(gvrow.FindControl("chkSelect"), CheckBox).Attributes("AllNotProvideService") = "Y" Then
                         blnAllNotProvideService = True
                         Exit For
                     End If
@@ -7847,6 +8008,7 @@ Partial Public Class spProfile
             strPreviousScheme = strSchemeCode
 
         Next
+        ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
     End Sub
 
@@ -7924,7 +8086,7 @@ Partial Public Class spProfile
         Dim strPreviousSchemeCode As String = String.Empty
 
 
-        SM = Validator.chkGridSelectedNothing(gv, "chkEditSelect", 1)
+        SM = Validator.chkGridSelectedNothing(gv, "chkSelect", 1)
         If Not SM Is Nothing Then
             gv.HeaderRow.FindControl("imgEditSelectAlert").Visible = True
         Else
@@ -7942,7 +8104,7 @@ Partial Public Class spProfile
                 Dim imgEditSelectSubsidizeAlert As Image
                 'CRE15-004 TIV & QIV [End][Winnie]
 
-                chkEditSelect = CType(row.FindControl("chkEditSelect"), CheckBox)
+                chkEditSelect = CType(row.FindControl("chkSelect"), CheckBox)
 
                 Dim strSchemeCode As String = row.Cells(0).Text.Trim
                 Dim strSubsidizeCode As String = row.Cells(1).Text.Trim
@@ -8334,7 +8496,10 @@ Partial Public Class spProfile
         udtSPProfileBLL.ClearSession()
         Session("BackToDataEntryPage") = True
 
-        Response.Redirect("~/ServiceProvider/spDataEntry.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        'Response.Redirect("~/ServiceProvider/spDataEntry.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010101))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     Protected Sub ibtnProceedToVetting_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)

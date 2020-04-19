@@ -94,7 +94,7 @@
                                     <asp:Label ID="lblTPractice" runat="server" CssClass="tableText"></asp:Label>
                                     <asp:Label ID="lblTPracticeStatus" runat="server" CssClass="tableText" ForeColor="red"></asp:Label></td>
                             </tr>
-                            <tr>
+                            <tr id="trBankAccountNo" runat="Server">
                                 <td style="vertical-align: top">
                                     <asp:Label ID="lblTBankAccountNoText" runat="server" Text="<%$ Resources:Text, BankAccountNo %>"></asp:Label></td>
                                 <td style="vertical-align: top">

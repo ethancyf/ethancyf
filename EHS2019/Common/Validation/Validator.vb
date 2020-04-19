@@ -640,8 +640,6 @@ Namespace Validation
             Return sm
         End Function
 
-        ' CRE12-001 eHS and PCD integration [Start][Tommy]
-
         Public Function HasLowerCharacter(ByVal strText As String) As Boolean
             Dim blnFound As Boolean = False
 

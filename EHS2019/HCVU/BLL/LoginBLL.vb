@@ -45,7 +45,7 @@ Namespace BLL
             End Try
         End Sub
 
-        Public Function LoginUserAC(ByVal strUserID As String, ByRef dtHCVUUser As DataTable) As HCVUUserModel
+        Public Function LoginUserAC(ByVal strUserID As String, ByRef dtHCVUUser As DataTable, ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform) As HCVUUserModel
             Dim udtHCVUUser As HCVUUserModel = Nothing
             Try
                 ' Create HCVUUser object
@@ -94,7 +94,22 @@ Namespace BLL
                 Dim dr As DataRow
                 Dim udtUserRole As UserRoleModel
 
+                Dim udtRoleTypeBLL As New RoleTypeBLL
+                Dim dtRoleType As DataTable
+                Dim drRoleType As DataRow()
+
                 For Each udtUserRole In udtHCVUUser.UserRoleCollection.Values
+
+                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                    ' ------------------------------------------------------------------------
+                    ' Check User Role Type which is available in SubPlatform
+                    dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
+
+                    drRoleType = dtRoleType.Select("(Available_HCVU_SubPlatform = 'ALL' OR Available_HCVU_SubPlatform = '" + EnumHCVUSubPlatform.ToString + "')" _
+                                                                     + "AND Role_Type = '" & udtUserRole.RoleType & "'")
+                    If drRoleType.Length = 0 Then Continue For
+                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
                     drList = dtRoleSecurity.Select("Role_Type = '" & udtUserRole.RoleType & "'")
                     For Each dr In drList
                         udtAccessRightCollection.Item(dr.Item("Function_Code")).Allow = True

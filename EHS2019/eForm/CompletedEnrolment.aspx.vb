@@ -200,6 +200,7 @@ Partial Public Class CompletedEnrolment
 
                     Dim udtTSP As New ServiceProviderModel
                     udtTSP = udtSPBLL.GetServiceProviderEnrolmentProfileByERN(strERN, udtEFormBLL.DB)
+
                     Session(ReportFunction.SessionName.udtServiceProvider) = udtSPBLL.GetServiceProviderEnrolmentProfileByERN(strERN, udtEFormBLL.DB)
 
                     Select Case strReportLanguage
@@ -233,7 +234,9 @@ Partial Public Class CompletedEnrolment
                                     If IsNothing(udtTSP.ChineseName) OrElse udtTSP.ChineseName.Equals(String.Empty) Then
                                         Session(ReportFunction.SessionName.strApplicatName) = udtTSP.EnglishName
                                     Else
-                                        Session(ReportFunction.SessionName.strApplicatName) = udtTSP.ChineseName
+                                        ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
+                                        Session(ReportFunction.SessionName.strApplicatName) = GeneralFunction.ReplaceString_HAMingLiu(udtTSP.ChineseName)
+                                        ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
                                     End If
                                     ScriptManager.RegisterStartupScript(Me, Page.GetType, "EnrolmentFormScript", "javascript:openNewWin('PrintOut/TokenSharingConsent_CHI/TokenSharingConsent_CHI_RV.aspx');", True)
                             End Select

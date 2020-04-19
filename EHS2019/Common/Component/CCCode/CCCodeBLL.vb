@@ -28,7 +28,7 @@ Namespace Component.CCCode
                 For Each dataRow As DataRow In dtRes.Rows
 
                     unicode = CStr(IIf(dataRow("UniCode_Int") Is DBNull.Value, "", dataRow("UniCode_Int")))
-                    dataRow("big5") = Me.ConvertCCValue2Big5(unicode)                    
+                    dataRow("big5") = Me.ConvertUnicode2Big5(unicode)
 
                     ccc_tail = CStr(IIf(dataRow("ccc_tail") Is DBNull.Value, "", dataRow("ccc_tail")))
                     big5 = CStr(IIf(dataRow("big5") Is DBNull.Value, "", dataRow("big5")))
@@ -62,7 +62,7 @@ Namespace Component.CCCode
             dtRes.Columns.Add("big5", GetType(String))
 
             For Each dataRow As DataRow In dtRes.Rows
-                dataRow("big5") = Me.ConvertCCValue2Big5(dataRow("UniCode_Int"))
+                dataRow("big5") = Me.ConvertUnicode2Big5(dataRow("UniCode_Int"))
             Next
             ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
 
@@ -90,7 +90,7 @@ Namespace Component.CCCode
         End Function
 
         ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
-        Public Function ConvertCCValue2Big5(ByVal intUniCode As Integer) As String
+        Public Function ConvertUnicode2Big5(ByVal intUniCode As Integer) As String
 
             Dim strBig5 As String = String.Empty
 

@@ -3789,8 +3789,10 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Session("FileGenerateID") = hfEGenerationID.Value
 
-        Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
-
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]        
+        'Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010702))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     Protected Sub ibtnERDownloadLater_Click(sender As Object, e As ImageClickEventArgs)

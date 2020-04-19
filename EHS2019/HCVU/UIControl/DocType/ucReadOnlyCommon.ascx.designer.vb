@@ -239,6 +239,15 @@ Partial Public Class ucReadOnlyCommon
     Protected WithEvents ibtnHDOD As Global.CustomControls.CustomImageButton
 
     '''<summary>
+    '''imgHDOD control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgHDOD As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''ViewVertical control.
     '''</summary>
     '''<remarks>
@@ -489,4 +498,13 @@ Partial Public Class ucReadOnlyCommon
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnVDOD As Global.CustomControls.CustomImageButton
+
+    '''<summary>
+    '''imgVDOD control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgVDOD As Global.System.Web.UI.WebControls.Image
 End Class

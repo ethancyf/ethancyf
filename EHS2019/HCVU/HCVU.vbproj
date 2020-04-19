@@ -57,13 +57,27 @@
     <Reference Include="AjaxControlToolkit">
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -129,11 +143,12 @@
     <Content Include="ClaimManagement\VaccinationFileConfirmation.aspx" />
     <Content Include="ClaimManagement\VaccinationFileRectification.aspx" />
     <Content Include="ClaimManagement\VaccinationFileUpload.aspx" />
+    <Content Include="CSS\ReportSubmission\CommonControlStyle.css" />
     <Content Include="CSS\CustomMenuStyle.css" />
     <Content Include="CSS\PPC\PPC0001Style.css" />
     <Content Include="CSS\PPC\PPC0002Style.css" />
     <Content Include="CSS\PPC\PPC0003Style.css" />
-    <Content Include="CSS\ReportSubmission\CommonControlStyle.css" />
+    <Content Include="eHSAccount\eHSAccountEnquiryCallCentre.aspx" />
     <Content Include="Images\banner\ClaimManagement\banner_ClaimCreation.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateEnquiry.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateManagement.png" />
@@ -148,8 +163,12 @@
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileEnquiry.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileRectification.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileUpload.png" />
+    <Content Include="Images\banner\eHSAccount\banner_eHealthSubsidiesAccountEnquiryCallCentre.png" />
     <Content Include="Images\banner\ReportAndDownload\banner_PostPaymentCheck.png" />
     <Content Include="Images\button\btn_ConfirmAndAcceptWarning.png" />
+    <Content Include="Images\button\btn_ConversionRateHistory.png" />
+    <Content Include="Images\button\btn_ConversionRateHistory_D.png" />
+    <Content Include="Images\button\btn_CreateConversionRate.png" />
     <Content Include="Images\button\btn_DownloadLater.png" />
     <Content Include="Images\button\btn_DownloadNow.png" />
     <Content Include="Images\button\btn_DownloadRectificationReport.png" />
@@ -212,12 +231,16 @@
     <Content Include="Images\button\small_button\btn_RemoveX.png" />
     <Content Include="Images\button\small_button\btn_RemoveX_red.png" />
     <Content Include="Images\button\small_button\btn_View.png" />
+    <Content Include="Images\master\banner_header_callcentre.jpg" />
     <Content Include="Images\others\ProgressCompletePoint.png" />
     <Content Include="Images\others\ProgressEmptyPoint.png" />
     <Content Include="Images\others\ProgressLine.png" />
+    <Content Include="RestrictAccess.aspx" />
+    <Content Include="ImproperAccess.aspx" />
     <Content Include="JS\hoverIntent.js" />
     <Content Include="JS\jquery-1.10.2.js" />
     <Content Include="JS\ReportSubmission\CommonControl.js" />
+    <Content Include="OCX\EVSDataDownload.CAB" />
     <Content Include="ReportAndDownload\PostPaymentCheck.aspx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
@@ -239,10 +262,10 @@
     <Content Include="UIControl\PCDIntegration\ucPCDWarningPopup.ascx" />
     <Content Include="UIControl\SchoolListSearch.ascx" />
     <Content Include="UIControl\Statistics\udcNumericComparison.ascx" />
+    <Content Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx" />
+    <Content Include="UIControl\Statistics\udcFindServiceProvider.ascx" />
     <Content Include="UIControl\Statistics\udcPercentile.ascx" />
     <Content Include="UIControl\Statistics\udcCheckBox.ascx" />
-    <Content Include="UIControl\Statistics\udcFindServiceProvider.ascx" />
-    <Content Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx" />
     <Content Include="UIControl\Statistics\udcDateFormat.ascx" />
     <Content Include="UIControl\Statistics\udcDescription.ascx" />
     <Content Include="UIControl\Statistics\udcNumeric.ascx" />
@@ -308,6 +331,7 @@
     <Compile Include="BLL\eHSAccountMaint\eHSAccountMaintBLL.vb">
     </Compile>
     <Compile Include="BLL\EHSClaimBLL.vb" />
+    <Compile Include="BLL\KeyGenerator.vb" />
     <Compile Include="BLL\LoginBLL.vb" />
     <Compile Include="BLL\MenuControlBLL.vb" />
     <Compile Include="BLL\ParameteMaintenance\ParameteMaintenanceBLL.vb">
@@ -326,6 +350,7 @@
     <Compile Include="BLL\ProfessionalVerification\ProfessionalVerificationBLL.vb" />
     <Compile Include="BLL\ProfessionalVerification\ProfessionalVerificationModel.vb" />
     <Compile Include="BLL\ProfessionalVerification\ProfessionalVerificationModelCollection.vb" />
+    <Compile Include="BLL\RedirectHandler.vb" />
     <Compile Include="BLL\ReimbursementBLL.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -489,11 +514,32 @@
       <DependentUpon>eHealthAccountDeathRecordFileImport.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="eHSAccount\eHSAccountEnquiryCallCentre.aspx.designer.vb">
+      <DependentUpon>eHSAccountEnquiryCallCentre.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="eHSAccount\eHSAccountEnquiryCallCentre.aspx.vb">
+      <DependentUpon>eHSAccountEnquiryCallCentre.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="General\KeepSessionAlive.aspx.designer.vb">
       <DependentUpon>KeepSessionAlive.aspx</DependentUpon>
     </Compile>
     <Compile Include="General\KeepSessionAlive.aspx.vb">
       <DependentUpon>KeepSessionAlive.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RestrictAccess.aspx.designer.vb">
+      <DependentUpon>RestrictAccess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RestrictAccess.aspx.vb">
+      <DependentUpon>RestrictAccess.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ImproperAccess.aspx.designer.vb">
+      <DependentUpon>ImproperAccess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ImproperAccess.aspx.vb">
+      <DependentUpon>ImproperAccess.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="PrintOut\ConfirmationLetter\TokenReplacementLetter.designer.vb">
@@ -1441,6 +1487,20 @@
       <DependentUpon>udcNumericComparison.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx.designer.vb">
+      <DependentUpon>udcDateFormatMonthAndYear.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx.vb">
+      <DependentUpon>udcDateFormatMonthAndYear.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcFindServiceProvider.ascx.designer.vb">
+      <DependentUpon>udcFindServiceProvider.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\Statistics\udcFindServiceProvider.ascx.vb">
+      <DependentUpon>udcFindServiceProvider.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\Statistics\udcPercentile.ascx.designer.vb">
       <DependentUpon>udcPercentile.ascx</DependentUpon>
     </Compile>
@@ -1453,20 +1513,6 @@
     </Compile>
     <Compile Include="UIControl\Statistics\udcCheckBox.ascx.vb">
       <DependentUpon>udcCheckBox.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\Statistics\udcFindServiceProvider.ascx.designer.vb">
-      <DependentUpon>udcFindServiceProvider.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\Statistics\udcFindServiceProvider.ascx.vb">
-      <DependentUpon>udcFindServiceProvider.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx.designer.vb">
-      <DependentUpon>udcDateFormatMonthAndYear.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx.vb">
-      <DependentUpon>udcDateFormatMonthAndYear.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\Statistics\udcDateFormat.ascx.designer.vb">
@@ -2169,7 +2215,6 @@
     <Content Include="JS\Common.js" />
     <Content Include="JS\ReadXML.js" />
     <Content Include="login.aspx" />
-    <Content Include="OCX\EVSDataDownload.CAB" />
     <Content Include="OCX\EVSDataDownload.HTM" />
     <Content Include="PrintOut\ConfirmationLetter\ConfirmationLetter.aspx" />
     <Content Include="Reimbursement\ClaimTransDetail.ascx" />
@@ -2186,6 +2231,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
+    <None Include="My Project\PublishProfiles\HCVU_Hotline.pubxml" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>
@@ -2335,7 +2381,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1817</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/HCVU_DEV</IISUrl>
+          <IISUrl>http://localhost/HCVU_Dev</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

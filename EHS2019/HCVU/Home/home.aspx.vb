@@ -102,7 +102,7 @@ Partial Public Class home
             End If
             udtAuditLogEntry.AddDescripton("Function name", e.CommandName)
             udtAuditLogEntry.WriteLog(LogID.LOG00004, "Task list selected")
-            Response.Redirect(strURL)
+            RedirectHandler.ToURL(strURL)
         End If
     End Sub
 
@@ -211,10 +211,21 @@ Partial Public Class home
         End If
     End Sub
 
-    ' CRE15-017 (Reminder to update conversion rate) [Start][Winnie]
     Private Sub LoadTaskList()
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' Hide task list in Call Centre platform
+        If Me.SubPlatform = EnumHCVUSubPlatform.CC Then
+            pnlTaskList.Visible = False
+        Else
+            pnlTaskList.Visible = True
+        End If
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
         Dim udtTaskListController As New TaskListControlBLL
-        Me.dlTaskList.DataSource = udtTaskListController.GetTaskList()
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Me.dlTaskList.DataSource = udtTaskListController.GetTaskList(Me.SubPlatform)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
         Me.dlTaskList.DataBind()
 
         ' Display task list if not empty
@@ -226,7 +237,6 @@ Partial Public Class home
             lblNoTask.Visible = False
         End If
     End Sub
-    ' CRE15-017 (Reminder to update conversion rate) [End][Winnie]
 
     Private Sub LoadNews()
 

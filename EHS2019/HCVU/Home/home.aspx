@@ -48,7 +48,7 @@
     </asp:ScriptManager>
     <table border="0">
         <tr>
-            <td colspan="2" rowspan="1">
+              <td colspan="2" rowspan="1">
                 <asp:Image ID="imgLoginInfoBanner" runat="server" ImageUrl="<%$ Resources:ImageUrl, LoginInfoBanner %>" AlternateText="<%$ Resources:AlternateText, LoginInfoBanner %>" /></td>
         </tr>
         <asp:Panel ID="pnlWithLastLogin" runat="server" Visible="true">
@@ -110,42 +110,44 @@
         </tr>
     </table>
     </asp:Panel>
-    <hr style="width: 99%; color: #ff8080; border-top-style: none; border-right-style: none; border-left-style: none; height: 1px; " />
-    <table>
-        <tr>
-            <td colspan="2" rowspan="1" valign="top">
-                <asp:Image ID="imgTaskListBanner" runat="server" ImageUrl="<%$ Resources:ImageUrl, TaskListBanner %>" AlternateText="<%$ Resources:AlternateText, TaskListBanner %>" /></td>
-        </tr>
-        <asp:PlaceHolder ID="plhTaskLisk" runat="server" EnableViewState="true" Visible="false"></asp:PlaceHolder>
-    </table>
-    <asp:DataList ID="dlTaskList" runat="server" RepeatColumns="1" ShowFooter="False" ShowHeader="False" >
-            <ItemTemplate>
-                <asp:Table ID="tblTask" BorderWidth="0px" Width="630px" runat="server">
-                    <asp:TableRow>
-                        <asp:TableCell RowSpan="1" ColumnSpan="2" VerticalAlign="Top">
-                            <div class = "headingText">
-                            <asp:Label ID="lblTaskListTitle" runat="server" Text='<%# Bind("Title") %>'></asp:Label>
-                            </div>
-                        </asp:TableCell>
-                    </asp:TableRow>
-                    <asp:TableRow>
-                        <asp:TableCell RowSpan="1" VerticalAlign="top">
-                            <asp:Label ID="lblTaskList" runat="server" Text='<%# Bind("TaskDescription") %>'></asp:Label>
-                        </asp:TableCell>
-                        <asp:TableCell HorizontalAlign="right" RowSpan="1" VerticalAlign="top">
-                            <asp:ImageButton ID="ibtnTaskList" runat="server" ImageUrl="<%$ Resources:ImageUrl, GoBtn %>" AlternateText="<%$ Resources:AlternateText, GoBtn %>" CommandArgument='<%# Bind("URL") %>' CommandName='<%# Bind("TaskListID") %>'/>
-                        </asp:TableCell>
-                    </asp:TableRow>
-                </asp:Table>
-            </ItemTemplate>
-        </asp:DataList>
-    <table>
-        <tr>
-            <td>
-                <asp:Label ID="lblNoTask" runat="server" Visible="false" Text="You have no outstanding task!"></asp:Label>
-            </td>
-        </tr>
-    </table>
+    <asp:Panel ID="pnlTaskList" runat="server">
+        <hr style="width: 99%; color: #ff8080; border-top-style: none; border-right-style: none; border-left-style: none; height: 1px; " />
+        <table>
+            <tr>
+                <td colspan="2" rowspan="1" valign="top">
+                    <asp:Image ID="imgTaskListBanner" runat="server" ImageUrl="<%$ Resources:ImageUrl, TaskListBanner %>" AlternateText="<%$ Resources:AlternateText, TaskListBanner %>" /></td>
+            </tr>
+            <asp:PlaceHolder ID="plhTaskLisk" runat="server" EnableViewState="true" Visible="false"></asp:PlaceHolder>
+        </table>
+        <asp:DataList ID="dlTaskList" runat="server" RepeatColumns="1" ShowFooter="False" ShowHeader="False" >
+                <ItemTemplate>
+                    <asp:Table ID="tblTask" BorderWidth="0px" Width="630px" runat="server">
+                        <asp:TableRow>
+                            <asp:TableCell RowSpan="1" ColumnSpan="2" VerticalAlign="Top">
+                                <div class = "headingText">
+                                <asp:Label ID="lblTaskListTitle" runat="server" Text='<%# Bind("Title") %>'></asp:Label>
+                                </div>
+                            </asp:TableCell>
+                        </asp:TableRow>
+                        <asp:TableRow>
+                            <asp:TableCell RowSpan="1" VerticalAlign="top">
+                                <asp:Label ID="lblTaskList" runat="server" Text='<%# Bind("TaskDescription") %>'></asp:Label>
+                            </asp:TableCell>
+                            <asp:TableCell HorizontalAlign="right" RowSpan="1" VerticalAlign="top">
+                                <asp:ImageButton ID="ibtnTaskList" runat="server" ImageUrl="<%$ Resources:ImageUrl, GoBtn %>" AlternateText="<%$ Resources:AlternateText, GoBtn %>" CommandArgument='<%# Bind("URL") %>' CommandName='<%# Bind("TaskListID") %>'/>
+                            </asp:TableCell>
+                        </asp:TableRow>
+                    </asp:Table>
+                </ItemTemplate>
+            </asp:DataList>
+        <table>
+            <tr>
+                <td>
+                    <asp:Label ID="lblNoTask" runat="server" Visible="false" Text="You have no outstanding task!"></asp:Label>
+                </td>
+            </tr>
+        </table>
+    </asp:Panel>
 
     <%--' CRE15-017 (Reminder to update conversion rate) [Start][Winnie]--%>
     <asp:Button ID="btnHiddenShowDialog" runat="server" Style="display: none" /><br />

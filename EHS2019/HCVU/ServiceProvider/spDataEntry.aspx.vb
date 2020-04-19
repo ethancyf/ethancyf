@@ -763,7 +763,11 @@ Partial Public Class spDataEntry
         Session(SESS_ERN) = strERN
         Session(SESS_TableLocation) = strTableLocation
 
-        Response.Redirect(strLinkToSPProfile)
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect(strLinkToSPProfile)
+        RedirectHandler.ToURL(strLinkToSPProfile)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     '
@@ -904,7 +908,11 @@ Partial Public Class spDataEntry
         Session.Remove(SESS_ERN)
         Session.Remove(SESS_TableLocation)
 
-        Response.Redirect(strLinkToSPProfile)
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect(strLinkToSPProfile)
+        RedirectHandler.ToURL(strLinkToSPProfile)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Sub
 

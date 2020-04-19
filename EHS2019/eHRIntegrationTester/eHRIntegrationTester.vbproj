@@ -99,7 +99,6 @@
     <Content Include="Default.aspx" />
     <Content Include="CallEHS.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="LoadTest.aspx" />
     <Content Include="Sample\CallEHR\GetEhrWebS\3-replaceeHRSSToken.xml" />
     <Content Include="Sample\CallEHR\GetEhrWebS\4-notifyeHRSSTokenDeactivated.xml" />
     <Content Include="Sample\CallEHR\GetEhrWebS\6-healthCheckeHRSS.xml" />
@@ -147,13 +146,6 @@
     </Compile>
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="LoadTest.aspx.designer.vb">
-      <DependentUpon>LoadTest.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="LoadTest.aspx.vb">
-      <DependentUpon>LoadTest.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

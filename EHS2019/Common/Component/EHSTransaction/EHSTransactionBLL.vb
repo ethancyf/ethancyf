@@ -3265,8 +3265,9 @@ Namespace Component.EHSTransaction
 
         Public Function getTransactionDetailLatestRecord(ByVal strDocCode As String, ByVal strIdentityNum As String, _
                                                          ByVal strSchemeCode As String, ByVal strSubsidizeCode As String, _
-                                                         ByVal strAccType As String, Optional ByVal udtDB As Database = Nothing) As DataTable
-
+                                                         ByVal strAccType As String, _
+                                                         Optional ByVal udtDB As Database = Nothing) As DataTable
+            
             Dim udtTransactionDetailList As New TransactionDetailModelCollection()
             Dim udtTranDetailModel As TransactionDetailModel = Nothing
 
@@ -3279,9 +3280,9 @@ Namespace Component.EHSTransaction
                     udtDB.MakeInParam("@identity", EHSAccount.EHSAccountModel.IdentityNum_DataType, EHSAccount.EHSAccountModel.IdentityNum_DataSize, strIdentityNum), _
                     udtDB.MakeInParam("@Scheme_Code", SchemeClaimModel.Scheme_Code_DataType, SchemeClaimModel.Scheme_Code_DataSize, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode)), _
                     udtDB.MakeInParam("@Subsidize_Code", SubsidizeGroupClaimModel.Subsidize_Code_DataType, SubsidizeGroupClaimModel.Subsidize_Code_DataSize, IIf(strSubsidizeCode = String.Empty, DBNull.Value, strSubsidizeCode)), _
-                    udtDB.MakeInParam("@Acc_Type", SqlDbType.Char, 1, IIf(strAccType = String.Empty, DBNull.Value, strAccType))
+                    udtDB.MakeInParam("@Acc_Type", SqlDbType.Char, 1, IIf(strAccType = String.Empty, DBNull.Value, strAccType)) _
                 }
-
+                
                 udtDB.RunProc("proc_TransactionDetail_get_latest_byDocCodeDocIDSchemeSubsidizeAll", prams, dt)
 
             Catch eSQL As SqlException
@@ -3293,6 +3294,46 @@ Namespace Component.EHSTransaction
             Return dt
 
         End Function
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        Public Function getVoucherTransactionHistory(ByVal strDocCode As String, ByVal strIdentityNum As String, _
+                                                                 ByVal strSchemeCode As String, ByVal strSubsidizeCode As String, _
+                                                                 ByVal strAccType As String, _
+                                                                 ByVal dtmPeriodFrom As DateTime?, ByVal dtmPeriodTo As DateTime?, _
+                                                                 Optional ByVal udtDB As Database = Nothing) As DataTable
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+            Dim udtTransactionDetailList As New TransactionDetailModelCollection()
+            Dim udtTranDetailModel As TransactionDetailModel = Nothing
+
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim dt As New DataTable()
+
+            Try
+
+                Dim prams() As SqlParameter = { _
+                    udtDB.MakeInParam("@Doc_Code", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocCode), _
+                    udtDB.MakeInParam("@identity", EHSAccount.EHSAccountModel.IdentityNum_DataType, EHSAccount.EHSAccountModel.IdentityNum_DataSize, strIdentityNum), _
+                    udtDB.MakeInParam("@Scheme_Code", SchemeClaimModel.Scheme_Code_DataType, SchemeClaimModel.Scheme_Code_DataSize, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode)), _
+                    udtDB.MakeInParam("@Subsidize_Code", SubsidizeGroupClaimModel.Subsidize_Code_DataType, SubsidizeGroupClaimModel.Subsidize_Code_DataSize, IIf(strSubsidizeCode = String.Empty, DBNull.Value, strSubsidizeCode)), _
+                    udtDB.MakeInParam("@Acc_Type", SqlDbType.Char, 1, IIf(strAccType = String.Empty, DBNull.Value, strAccType)), _
+                    udtDB.MakeInParam("@Period_From", SqlDbType.DateTime, 8, IIf(dtmPeriodFrom.HasValue, dtmPeriodFrom, DBNull.Value)), _
+                    udtDB.MakeInParam("@Period_To", SqlDbType.DateTime, 8, IIf(dtmPeriodTo.HasValue, dtmPeriodTo, DBNull.Value)) _
+                }
+
+                udtDB.RunProc("proc_VoucherTransactionHistory_get", prams, dt)
+
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+
+        End Function
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         ' INT13-0012 - Fix EHAPP concurrent claim checking [Start][Tommy L]
         ' -------------------------------------------------------------------------------------

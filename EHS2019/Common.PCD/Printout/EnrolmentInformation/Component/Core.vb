@@ -6,6 +6,7 @@ Imports Common.Component.District
 Imports Common.Component.Area
 Imports System.Web
 Imports Common.Component.Practice
+Imports Common.ComFunction
 
 Namespace Printout.EnrolmentInformation.Component
 
@@ -62,7 +63,9 @@ Namespace Printout.EnrolmentInformation.Component
             ' Name (in Chinese)
             udtPrintoutHelper.RenderResource(txtNameCHText, "NameInChinese", blnColon:=True)
 
-            udtPrintoutHelper.RenderValue(txtNameCH, udtProvider.ChineseName, blnMultiLingual:=True)
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
+            udtPrintoutHelper.RenderValue(txtNameCH, GeneralFunction.ReplaceString_HAMingLiu(udtProvider.ChineseName), blnMultiLingual:=True)
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
 
             ' Email
             udtPrintoutHelper.RenderResource(txtEmailText, "PCDEmail", blnAddNotDiscloseNotation:=True, blnColon:=True)

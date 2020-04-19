@@ -341,6 +341,10 @@ Partial Public Class ucInputHKID
 
             Me.lblCreationMethodOriginal.Text = _strCreationMethod
 
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            Me.trCreationMethodOriginal.Visible = MyBase.ShowCreationMethod
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
             '----------------------------------- For Amending Record ----------------------------------------------------
             Me.pnlModify.Visible = True
             Me._strHKIDAmend = MyBase.Formatter.formatHKID(MyBase.EHSPersonalInfoAmend.IdentityNum, False)

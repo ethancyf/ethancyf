@@ -5,6 +5,7 @@ Imports Common.ComObject
 Imports Common.Component.HCVUUser
 Imports Common.DataAccess
 Imports HCVU.Component.FunctionInformation
+Imports Common.Component
 
 Public Class Global_asax
     Inherits System.Web.HttpApplication
@@ -25,6 +26,14 @@ Public Class Global_asax
 
     Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
         ' Fires at the beginning of each request
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        ' Check whether IP can access
+        If Not RestrictAccessHandler.CheckValidIPAddress() Then
+            Server.Transfer("~/RestrictAccess.aspx")
+        End If
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     Sub Application_AuthenticateRequest(ByVal sender As Object, ByVal e As EventArgs)

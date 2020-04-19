@@ -15,7 +15,7 @@
 
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" defaultbutton="ibtnLogin">
         <div>
             <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
             <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
@@ -35,14 +35,68 @@
             <cc2:ModalPopupExtender ID="ModalPopupExtender1" runat="server" PopupControlID="pnlPleaseWait"
                 TargetControlID="btnHiddenPleaseWait" BackgroundCssClass="modalBackgroundTransparent" />
 
-            <table style="width: 994px" border="0" cellpadding="0" cellspacing="0">
+            <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
+            <asp:Button runat="server" ID="btnHiddenLoginConfirmMsg" Style="display: none" />
+            <asp:Panel ID="panLoginConfirmMsg" runat="server" Style="display: none;">
+                <asp:Panel ID="panLoginConfirmMsgHeading" runat="server" Style="cursor: move;">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 480px">
+                        <tr>
+                            <td style="background-image: url(Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
+                                <asp:Label ID="lblLoginConfirmMsgTitle" runat="server" Text="<%$ Resources:Text, ConfirmBoxTitle %>"></asp:Label></td>
+                            <td style="background-image: url(Images/dialog/top-right.png); width: 7px; height: 35px"></td>
+                        </tr>
+                    </table>
+                </asp:Panel>
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 480px">
+                    <tr>
+                        <td style="background-image: url(Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                        <td style="background-color: #ffffff">
+                            <table style="width: 100%">
+                                <tr>
+                                    <td align="left" style="width: 60px; height: 42px" valign="middle">
+                                        <asp:Image ID="imgLoginConfirmMsg" runat="server" ImageUrl="~/Images/others/questionMark.png" /></td>
+                                    <td align="center" style="height: 42px">
+                                        <asp:Label ID="labelDescribeConcurrentAccess" runat="server" Font-Bold="True" Text="<%$ Resources:Text, DescribeConcurrentAccess_NoFAQ %>" />
+                                        <asp:LinkButton ID="LinkButtonExplainConcurrentAccess" runat="server" Font-Bold="True"></asp:LinkButton>
+                                        <asp:Label ID="labelConfirmConcurrentAccess" runat="server" Font-Bold="True" Text="<%$ Resources:Text, ConfirmConcurrentAccess %>" />
+                                    </td>
+                                    <td align="left" style="width: 40px; height: 42px"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3" style="height: 42px">
+                                        <asp:ImageButton ID="ibtnLoginCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn %>"
+                                            ImageUrl="<%$ Resources:ImageUrl, CancelBtn %>" OnClick="ibtnLoginCancel_Click" />
+                                        <asp:ImageButton ID="ibtnLoginProceed" runat="server" AlternateText="<%$ Resources:AlternateText, ConfirmBtn %>"
+                                            ImageUrl="<%$ Resources:ImageUrl, ConfirmBtn %>" OnClick="ibtnLoginProceed_Click" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="background-image: url(Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-image: url(Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <cc2:ModalPopupExtender ID="ModalPopupExtenderConfirm" runat="server" TargetControlID="btnHiddenLoginConfirmMsg"
+            PopupControlID="panLoginConfirmMsg" BehaviorID="mdlPopupConcurrentBrowser" BackgroundCssClass="modalBackgroundTransparent"
+            DropShadow="False" RepositionMode="None" PopupDragHandleControlID="panLoginConfirmMsgHeading" />
+        <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
+
+            <table border="0" cellpadding="0" cellspacing="0" style="background-image: url(Images/master/banner_header.jpg); width: 994px; background-repeat: no-repeat; height: 100px" id="tblBanner" runat="server">
                 <tr>
-                    <td class="AppEnvironment" style="background-position: top center; background-image: url(Images/master/banner_header.jpg); background-repeat: no-repeat; height: 100px; vertical-align: top">
+                    <td class="AppEnvironment" style="vertical-align: top">
                         <asp:Label ID="lblAppEnvironment" runat="server" Text="[CodeBehind]"></asp:Label>
                         <asp:ScriptManager ID="ScriptManager2" runat="server">
                         </asp:ScriptManager>
                     </td>
                 </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0" style="width:994px;">
                 <tr>
                     <td align="center">
                         <asp:UpdatePanel ID="UpdatePanel" runat="server">
@@ -95,7 +149,7 @@
                                         <td class="loginLableText" align="left">
                                             <asp:Label ID="lblUsername" runat="server" Text="<%$ Resources:Text, LoginID %>" CssClass="loginLableText"></asp:Label></td>
                                         <td align="left">
-                                            <asp:TextBox ID="txtUsername" runat="server" CssClass="loginLableText" Width="200px" onblur="convertToUpper(this)" MaxLength="20"></asp:TextBox>
+                                            <asp:TextBox ID="txtUsername" runat="server" CssClass="loginLableText" Width="200px" onblur="convertToUpper(this)" MaxLength="20" TabIndex="1"></asp:TextBox>
                                             <asp:Image ID="imgUserNameAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif" Style="position: absolute" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" />
                                         </td>
                                         <td rowspan="4">
@@ -124,7 +178,7 @@
                                         <td class="loginLableText" align="left">
                                             <asp:Label ID="lblPassword" runat="server" Text="<%$Resources:Text, Password%>" CssClass="loginLableText"></asp:Label></td>
                                         <td align="left">
-                                            <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="loginLableText" Width="200px" MaxLength="20"></asp:TextBox>
+                                            <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="loginLableText" Width="200px" MaxLength="20" TabIndex="2"></asp:TextBox>
                                             <asp:Image ID="imgPasswordAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif" Style="position: absolute" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" />
                                         </td>
                                     </tr>
@@ -132,14 +186,14 @@
                                         <td class="loginLableText" align="left">
                                             <asp:Label ID="lblPinCode" runat="server" Text="<%$Resources:Text, PinNo%>" CssClass="loginLableText"></asp:Label></td>
                                         <td align="left">
-                                            <asp:TextBox ID="txtPinCode" runat="server" TextMode="Password" CssClass="loginLableText" Width="200px" MaxLength="6"></asp:TextBox>
+                                            <asp:TextBox ID="txtPinCode" runat="server" TextMode="Password" CssClass="loginLableText" Width="200px" MaxLength="6" TabIndex="3"></asp:TextBox>
                                             <asp:Image ID="imgPinCodeAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif" Style="position: absolute" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="height: 30px"></td>
                                         <td style="height: 30px" align="left">
-                                            <asp:ImageButton ID="ibtnLogin" runat="server" ImageUrl="~/Images/button/btn_login.png" AlternateText="Login" />
+                                            <asp:ImageButton ID="ibtnLogin" runat="server" ImageUrl="~/Images/button/btn_login.png" AlternateText="Login" TabIndex="4" />
                                             <asp:ImageButton ID="btnExit" runat="server" ImageUrl="~/Images/button/btn_exit.png" AlternateText="Exit" OnClientClick="javascript:window.opener='X';window.open('','_parent','');window.close(); return false;" /></td>
                                     </tr>
                                 </table>
@@ -196,6 +250,32 @@
     </form>
     <script type="text/javascript">
 
+        function fnTrapKD(e) {
+            var btn = document.getElementById('ibtnLogin')
+
+            if (document.all) {
+                if (event.keyCode == 13) {
+                    event.returnValue = false;
+                    event.cancel = true;
+                    try {
+                        btn.focus();
+                        btn.click();
+                    } catch (err) {
+                        // Do Nothing
+                    }
+                }
+            }
+            else {
+                //if (e.which == 13)
+                //{ 
+                //    e.returnValue=false;
+                //    e.cancel = true;
+                //    btn.focus();
+                //    btn.click();
+                //}
+            }
+        }
+    
         function ResizeScreen() {
             var w = screen.availWidth || screen.width;
             var h = screen.availHeight || screen.height;

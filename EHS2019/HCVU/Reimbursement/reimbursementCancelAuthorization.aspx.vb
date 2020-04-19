@@ -1074,7 +1074,11 @@ Partial Public Class reimbursement_void
     '
 
     Protected Sub ibtnReturn_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        Response.Redirect("reimbursementCancelAuthorization.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect("reimbursementCancelAuthorization.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010406))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     ''' <summary>

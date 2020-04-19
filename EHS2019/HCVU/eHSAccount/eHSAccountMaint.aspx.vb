@@ -956,6 +956,7 @@ Partial Public Class eHSAccountMaint
                 Dim strAccountStatus As String = String.Empty
                 Dim dtmCreationDateFrom As Nullable(Of DateTime) = Nothing
                 Dim dtmCreationDateTo As Nullable(Of DateTime) = Nothing
+                Dim strGender As String = String.Empty
 
                 'Doc Type
                 Me.lblAcctListDocTypeR2.Text = Me.ddlSearchDocTypeR2.SelectedItem.Text.Trim
@@ -1088,14 +1089,12 @@ Partial Public Class eHSAccountMaint
                                                     udtformatter.convertDate(Me.txtSearchCreationDateToR2.Text.Trim, String.Empty))
                 End If
 
-                'bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListInRouteTwoMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchENameR2.Text.Trim, dtDOB, _
-                '                                                arreHSAccountID, strRefNo, True)
-                ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
                 bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListByParticularMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchENameR2.Text.Trim, Me.txtSearchCNameR2.Text.Trim, dtDOB, _
-                                                                arreHSAccountID, strRefNo, _
+                                                                arreHSAccountID, strRefNo, strGender, _
                                                                 strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
                                                                 blnOverrideResultLimit)
-                ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             Case 1  'Manual Validaion Route
                 Dim strServiceProviderID As String = String.Empty

@@ -96,30 +96,6 @@ function TypeOfPracticeRadioSetup(id) {
             <HeaderStyle Wrap="false" />
             <ItemStyle VerticalAlign="Top" Width="100%" />
             <ItemTemplate>
-                <%--<table id="tblPractice" style="width: 100%" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td>
-                            <asp:Label ID="lblPracticeName" runat="server" Text='<%# Eval("PracticeName") + " <br/>(" + Eval("PracticeNameChi") + ")" %>'
-                                CssClass="tableText" />
-                            <br />
-                            <br />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Label ID="lblPracticeAddress" runat="server" Text='<%# "Address: " + formatAddress(Eval("PracticeAddress.Room"), Eval("PracticeAddress.Floor"), Eval("PracticeAddress.Block"), Eval("PracticeAddress.Building"), Eval("PracticeAddress.District")) %>'
-                                CssClass="tableText" />
-                            <br />
-                            <br />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <asp:Label ID="lblPhoneNo" runat="server" Text='<%# "Phone No.: " + Eval("PhoneDaytime") %>'
-                                CssClass="tableText" />
-                        </td>
-                    </tr>
-                </table>--%>
                 <table id="tblPractice" style="width: 100%">
                     <tr>
                         <td>
@@ -133,20 +109,31 @@ function TypeOfPracticeRadioSetup(id) {
                         <td style="padding-top: 10px;">
                             <asp:Label ID="lblRegBankPracticeAddress" runat="server" Text='<%# formatAddress(Eval("PracticeAddress.Room"), Eval("PracticeAddress.Floor"), Eval("PracticeAddress.Block"), Eval("PracticeAddress.Building"), Eval("PracticeAddress.District")) %>'
                                 CssClass="tableText"></asp:Label><br />
-                            <asp:Label ID="lblRegBankPracticeAddressChi" runat="server" Text='<%# formatChineseString(formatChiAddress(Eval("PracticeAddress.Room"), Eval("PracticeAddress.Floor"), Eval("PracticeAddress.Block"), Eval("PracticeAddress.ChiBuilding"), Eval("PracticeAddress.District"))) %>'
+                            <asp:Label ID="lblRegBankPracticeAddressChi" runat="server" Text='<%# formatChiAddress(Eval("PracticeAddress.Room"), Eval("PracticeAddress.Floor"), Eval("PracticeAddress.Block"), Eval("PracticeAddress.ChiBuilding"), Eval("PracticeAddress.District"))%>'
                                 CssClass="TextChi"></asp:Label>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-top: 10px;">
-                            <asp:Label ID="lblRegBankMOName" runat="server" CssClass="tableText" Text='<%# Bind("PhoneDaytime") %>'></asp:Label>
+                            <asp:Label ID="lblRegBankPracticePhone" runat="server" CssClass="tableText" Text='<%# Bind("PhoneDaytime") %>'></asp:Label>
                         </td>
                     </tr>
-                    <tr id="trRegBankPracticeNonClinic" runat="server">
+                    <tr id="trRegBankPracticeNotes" runat="server">
                         <td style="padding-top: 10px;">
-                            <asp:Label ID="lblRegBankPracticeNonClinic" runat="server" CssClass="tableText" ></asp:Label>
+                            <table>
+                                <tr id="trRegBankPracticeNonClinic" runat="server">
+                                    <td>
+                                        <asp:Label ID="lblRegBankPracticeNonClinic" runat="server" CssClass="tableText" ></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr id="trRegBankPracticeRemarksTrim" runat="server">
+                                    <td>
+                                        <asp:Label ID="lblRegBankPracticeRemarksTrim" runat="server" CssClass="tableText" ></asp:Label>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
-                    </tr>                                        
+                    </tr>                                     
                 </table>
             </ItemTemplate>
         </asp:TemplateField>

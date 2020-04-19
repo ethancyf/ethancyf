@@ -26,7 +26,7 @@ Partial Public Class ucReadOnlyHKIC
 
 #End Region
 
-    Public Sub Build(ByVal udtEHSPersonalInformation As EHSPersonalInformationModel, ByVal blnMaskHKICNo As Boolean, ByVal blnVertical As Boolean, ByVal intWidth As Integer, ByVal intWidth2 As Integer, ByVal blnShowDateOfDeath As Boolean, ByVal blnShowDateOfDeathBtn As Boolean, Optional ByVal blnAlternateRow As Boolean = False)
+    Public Sub Build(ByVal udtEHSPersonalInformation As EHSPersonalInformationModel, ByVal blnMaskHKICNo As Boolean, ByVal blnVertical As Boolean, ByVal intWidth As Integer, ByVal intWidth2 As Integer, ByVal blnShowDateOfDeath As Boolean, ByVal blnShowDateOfDeathBtn As Boolean, ByVal blnShowCreationMethod As Boolean, Optional ByVal blnAlternateRow As Boolean = False)
 
         If blnVertical Then
             MultiViewHKIC.ActiveViewIndex = ViewIndex.Vertical
@@ -97,6 +97,9 @@ Partial Public Class ucReadOnlyHKIC
             Else
                 lblVCreationMethod.Text = Me.GetGlobalResourceObject("Text", "ManualInput")
             End If
+
+            trVCreationMethod.Visible = blnShowCreationMethod
+
 
             ' Control the width of the first column
             tblVHKIC.Rows(0).Cells(0).Width = intWidth
@@ -186,7 +189,7 @@ Partial Public Class ucReadOnlyHKIC
     Private Sub BuildRedirectButton(ByVal btn As CustomControls.CustomImageButton, ByVal udtEHSPersonalInformation As EHSPersonalInformationModel)
         btn.SourceFunctionCode = CType(Me.Page, BasePage).FunctionCode
         btn.TargetFunctionCode = FunctCode.FUNT010308
-        btn.TargetUrl = GetURLByFunctionCode(FunctCode.FUNT010308)
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
 
         btn.Build()
 
@@ -216,6 +219,7 @@ Partial Public Class ucReadOnlyHKIC
     ''' <remarks></remarks>
     Private Sub ibtnHDOD_Click(ByVal sender As ImageButton, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnHDOD.Click
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
         btn.Redirect()
     End Sub
 
@@ -227,6 +231,7 @@ Partial Public Class ucReadOnlyHKIC
     ''' <remarks></remarks>
     Private Sub ibtnVDOD_Click(ByVal sender As ImageButton, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnVDOD.Click
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
         btn.Redirect()
     End Sub
 End Class

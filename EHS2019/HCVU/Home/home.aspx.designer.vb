@@ -131,6 +131,15 @@ Partial Public Class home
     Protected WithEvents dlNewsMessage As Global.System.Web.UI.WebControls.DataList
 
     '''<summary>
+    '''pnlTaskList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlTaskList As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''imgTaskListBanner control.
     '''</summary>
     '''<remarks>

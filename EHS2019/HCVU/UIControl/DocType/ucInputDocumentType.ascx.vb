@@ -28,6 +28,8 @@ Partial Public Class ucInputDocumentType
 
     Public Event SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event SelectChineseName_HKIC_mode(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+
+#Region "Private Members"
     Private _docType As String
     Private _mode As ucInputDocTypeBase.BuildMode
     Private _fillValue As Boolean
@@ -36,6 +38,8 @@ Partial Public Class ucInputDocumentType
     Private _useDefaultAmendingHeader As Boolean = False
     Private _activeViewChanged As Boolean
     Private _udtAuditLogEntry As AuditLogEntry
+    Private _blnShowCreationMethod As Boolean = True ' CRE19-026 (HCVS hotline service)
+#End Region
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
@@ -69,6 +73,10 @@ Partial Public Class ucInputDocumentType
                 udcInputHKID.Mode = Me._mode
                 udcInputHKID.ActiveViewChanged = Me.ActiveViewChanged
                 udcInputHKID.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                udcInputHKID.ShowCreationMethod = _blnShowCreationMethod
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
                 AddHandler udcInputHKID.SelectChineseName, AddressOf udcInputHKID_SelectChineseName
                 AddHandler udcInputHKID.SelectChineseName_CreateMode, AddressOf udcInputHKID_SelectChineseName_mode
                 Me.Built(udcInputHKID)
@@ -532,6 +540,14 @@ Partial Public Class ucInputDocumentType
         End Set
     End Property
 
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public WriteOnly Property ShowCreationMethod() As Boolean
+        Set(value As Boolean)
+            _blnShowCreationMethod = value
+        End Set
+    End Property
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 #End Region
 
 End Class

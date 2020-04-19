@@ -277,27 +277,30 @@ Namespace BLL
             Return blnRes
         End Function
 
-        ''' <summary>
-        ''' Load SP Profile (For MyProfile Only)
-        ''' Retrieve the Practice Type Also in Practice(s)
-        ''' To Be Remove After Data migration Complete
-        ''' </summary>
-        ''' <param name="strSPID"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function loadSP_ForMyProfileV1(ByVal strSPID As String) As ServiceProviderModel
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' Function Obsoleted
+        ' ''' <summary>
+        ' ''' Load SP Profile (For MyProfile Only)
+        ' ''' Retrieve the Practice Type Also in Practice(s)
+        ' ''' To Be Remove After Data migration Complete
+        ' ''' </summary>
+        ' ''' <param name="strSPID"></param>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        'Public Function loadSP_ForMyProfileV1(ByVal strSPID As String) As ServiceProviderModel
 
-            Dim udtSP As ServiceProviderModel = Nothing
-            Dim udtserviceproviderbll As New ServiceProviderBLL()
-            Dim udtDB As Database = New Database()
+        '    Dim udtSP As ServiceProviderModel = Nothing
+        '    Dim udtserviceproviderbll As New ServiceProviderBLL()
+        '    Dim udtDB As Database = New Database()
 
-            udtSP = udtSPBLL.GetServiceProviderBySPID_ForMyProfileV1(udtDB, strSPID)
+        '    udtSP = udtSPBLL.GetServiceProviderBySPID_ForMyProfileV1(udtDB, strSPID)
 
-            Dim udtMOBLL As New MedicalOrganization.MedicalOrganizationBLL
-            udtMOBLL.SaveToSession(udtSP.MOList)
+        '    Dim udtMOBLL As New MedicalOrganization.MedicalOrganizationBLL
+        '    udtMOBLL.SaveToSession(udtSP.MOList)
 
-            Return udtSP
-        End Function
+        '    Return udtSP
+        'End Function
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
         '==================================================================== Code for SmartID ============================================================================
         Public Function GetPilotRunSmartIDListBySPID(ByVal strSPID As String) As DataTable

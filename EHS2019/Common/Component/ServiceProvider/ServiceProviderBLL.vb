@@ -1355,7 +1355,7 @@ Namespace Component.ServiceProvider
                                                 udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, IIf(strSPID.Trim.Equals(String.Empty), DBNull.Value, strSPID.Trim)), _
                                                 udtDB.MakeInParam("@sp_hkid", ServiceProviderModel.HKIDDataType, ServiceProviderModel.HKIDDataSize, IIf(strHKID.Trim.Equals(String.Empty), DBNull.Value, strHKID.Trim)), _
                                                 udtDB.MakeInParam("@sp_eng_name", ServiceProviderModel.ENameDataType, ServiceProviderModel.ENameDataSize, IIf(strEname.Trim.Equals(String.Empty), DBNull.Value, strEname.Trim)), _
-                                                udtDB.MakeInParam("@sp_chi_name", ServiceProviderModel.ENameDataType, ServiceProviderModel.CNameDataSize, IIf(strCname.Trim.Equals(String.Empty), DBNull.Value, strCname.Trim)), _
+                                                udtDB.MakeInParam("@sp_chi_name", ServiceProviderModel.CNameDataType, ServiceProviderModel.CNameDataSize, IIf(strCname.Trim.Equals(String.Empty), DBNull.Value, strCname.Trim)), _
                                                 udtDB.MakeInParam("@phone_daytime", ServiceProviderModel.PhoneDataType, ServiceProviderModel.PhoneDataSize, IIf(strPhone.Trim.Equals(String.Empty), DBNull.Value, strPhone.Trim)), _
                                                 udtDB.MakeInParam("@service_category_code", ProfessionalModel.ServiceCategoryCodeDataType, ProfessionalModel.ServiceCategoryCodeDataSize, IIf(strServiceCategoryCode.Trim.Equals(String.Empty), DBNull.Value, strServiceCategoryCode.Trim)), _
                                                 udtDB.MakeInParam("@scheme_code", SchemeInformationModel.SchemeCodeDataType, SchemeInformationModel.SchemeCodemDataSize, IIf(strSchemeCode.Trim.Equals(String.Empty), DBNull.Value, strSchemeCode.Trim))}
@@ -2316,135 +2316,138 @@ Namespace Component.ServiceProvider
             End Try
         End Function
 
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        ' Function Obsoleted
+        ' ''' <summary>
+        ' ''' Load Service Provider Model (For MyProfile Only)
+        ' ''' Retrieve the Practice Type Also in Practice(s)
+        ' ''' To Be Remove After Data migration Complete
+        ' ''' </summary>
+        ' ''' <param name="udtDB"></param>
+        ' ''' <param name="strSPID"></param>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        'Public Function GetServiceProviderBySPID_ForMyProfileV1(ByRef udtDB As Database, ByVal strSPID As String) As ServiceProviderModel
+        '    Dim procName As String = "proc_ServiceProvider_get_bySPID"
 
-        ''' <summary>
-        ''' Load Service Provider Model (For MyProfile Only)
-        ''' Retrieve the Practice Type Also in Practice(s)
-        ''' To Be Remove After Data migration Complete
-        ''' </summary>
-        ''' <param name="udtDB"></param>
-        ''' <param name="strSPID"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function GetServiceProviderBySPID_ForMyProfileV1(ByRef udtDB As Database, ByVal strSPID As String) As ServiceProviderModel
-            Dim procName As String = "proc_ServiceProvider_get_bySPID"
+        '    Dim udtSP As ServiceProviderModel = Nothing
 
-            Dim udtSP As ServiceProviderModel = Nothing
+        '    Dim intAddressCode As Nullable(Of Integer)
+        '    Dim dtmEffectiveDtm As Nullable(Of DateTime)
+        '    Dim dtmTokenReturnDtm As Nullable(Of DateTime)
+        '    Dim strConsentPrintOption As String = String.Empty
+        '    Dim udtGeneralFunction As New ComFunction.GeneralFunction
 
-            Dim intAddressCode As Nullable(Of Integer)
-            Dim dtmEffectiveDtm As Nullable(Of DateTime)
-            Dim dtmTokenReturnDtm As Nullable(Of DateTime)
-            Dim strConsentPrintOption As String = String.Empty
-            Dim udtGeneralFunction As New ComFunction.GeneralFunction
+        '    Dim dtRaw As New DataTable()
 
-            Dim dtRaw As New DataTable()
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@SP_ID", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID)}
+        '        udtDB.RunProc(procName, prams, dtRaw)
 
-            Try
-                Dim prams() As SqlParameter = {udtDB.MakeInParam("@SP_ID", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID)}
-                udtDB.RunProc(procName, prams, dtRaw)
+        '        If dtRaw.Rows.Count > 0 Then
+        '            Dim drRaw As DataRow = dtRaw.Rows(0)
 
-                If dtRaw.Rows.Count > 0 Then
-                    Dim drRaw As DataRow = dtRaw.Rows(0)
+        '            If IsDBNull(drRaw.Item("Address_Code")) Then
+        '                intAddressCode = Nothing
+        '            Else
+        '                intAddressCode = CInt((drRaw.Item("Address_Code")))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Address_Code")) Then
-                        intAddressCode = Nothing
-                    Else
-                        intAddressCode = CInt((drRaw.Item("Address_Code")))
-                    End If
+        '            If IsDBNull(drRaw.Item("Effective_Dtm")) Then
+        '                dtmEffectiveDtm = Nothing
+        '            Else
+        '                dtmEffectiveDtm = Convert.ToDateTime(drRaw.Item("Effective_Dtm"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Effective_Dtm")) Then
-                        dtmEffectiveDtm = Nothing
-                    Else
-                        dtmEffectiveDtm = Convert.ToDateTime(drRaw.Item("Effective_Dtm"))
-                    End If
+        '            If IsDBNull(drRaw.Item("Token_Return_Dtm")) Then
+        '                dtmTokenReturnDtm = Nothing
+        '            Else
+        '                dtmTokenReturnDtm = Convert.ToDateTime(drRaw.Item("Token_Return_Dtm"))
+        '            End If
 
-                    If IsDBNull(drRaw.Item("Token_Return_Dtm")) Then
-                        dtmTokenReturnDtm = Nothing
-                    Else
-                        dtmTokenReturnDtm = Convert.ToDateTime(drRaw.Item("Token_Return_Dtm"))
-                    End If
+        '            ' CRE17-016 Checking of PCD status during VSS enrolment [Start][Koala]
+        '            ' --------------------------------------------------------------------------------------------------------------------------------
+        '            ' Add dummy [Join_PCD]
+        '            udtSP = New ServiceProviderModel(CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
+        '                                                                    Nothing, _
+        '                                                                    CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))), _
+        '                                                                    CStr(IIf((drRaw.Item("Alias_Account") Is DBNull.Value), String.Empty, drRaw.Item("Alias_Account"))), _
+        '                                                                    CType(drRaw.Item("SP_HKID"), String).Trim, _
+        '                                                                    CType(drRaw.Item("SP_Eng_Name"), String).Trim, _
+        '                                                                    CStr(IIf((drRaw.Item("SP_Chi_Name") Is DBNull.Value), String.Empty, drRaw.Item("SP_Chi_Name"))), _
+        '                                                                    New AddressModel(CStr(IIf((drRaw.Item("Room") Is DBNull.Value), String.Empty, drRaw.Item("Room"))), _
+        '                                                                                    CStr(IIf((drRaw.Item("Floor") Is DBNull.Value), String.Empty, drRaw.Item("Floor"))), _
+        '                                                                                    CStr(IIf((drRaw.Item("Block") Is DBNull.Value), String.Empty, drRaw.Item("Block"))), _
+        '                                                                                    CStr(IIf((drRaw.Item("Building") Is DBNull.Value), String.Empty, drRaw.Item("Building"))), _
+        '                                                                                    CStr(IIf((drRaw.Item("Building_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Building_Chi"))), _
+        '                                                                                    CStr(IIf((drRaw.Item("District") Is DBNull.Value), String.Empty, drRaw.Item("District"))), _
+        '                                                                                    intAddressCode), _
+        '                                                                    CType(drRaw.Item("Phone_Daytime"), String).Trim, _
+        '                                                                    CStr(IIf((drRaw.Item("Fax") Is DBNull.Value), String.Empty, drRaw.Item("Fax"))), _
+        '                                                                    CType(drRaw.Item("Email"), String).Trim, _
+        '                                                                    CStr(IIf((drRaw.Item("Tentative_Email") Is DBNull.Value), String.Empty, drRaw.Item("Tentative_Email"))), _
+        '                                                                    String.Empty, _
+        '                                                                    CType(drRaw.Item("Record_Status"), String).Trim, _
+        '                                                                    CStr(IIf((drRaw.Item("Remark") Is DBNull.Value), String.Empty, drRaw.Item("Remark"))), _
+        '                                                                    CType(drRaw.Item("Submission_Method"), String).Trim, _
+        '                                                                    CType(drRaw.Item("Already_Joined_EHR"), String), _
+        '                                                                    String.Empty,
+        '                                                                    CStr(IIf((drRaw.Item("UnderModification") Is DBNull.Value), String.Empty, drRaw.Item("UnderModification"))), _
+        '                                                                    CStr(IIf((drRaw.Item("Application_Printed") Is DBNull.Value), String.Empty, drRaw.Item("Application_Printed"))), _
+        '                                                                    CType(drRaw.Item("Create_Dtm"), DateTime), _
+        '                                                                    CType(drRaw.Item("Create_By"), String), _
+        '                                                                    CType(drRaw.Item("Update_Dtm"), DateTime), _
+        '                                                                    CType(drRaw.Item("Update_By"), String), _
+        '                                                                    dtmEffectiveDtm, _
+        '                                                                    dtmTokenReturnDtm, _
+        '                                                                    IIf(drRaw.Item("TSMP") Is DBNull.Value, Nothing, CType(drRaw.Item("TSMP"), Byte())), _
+        '                                                                    Nothing, _
+        '                                                                    Nothing, _
+        '                                                                    Nothing, _
+        '                                                                    CStr(drRaw.Item("Data_Input_By")).Trim(), _
+        '                                                                    CDate(drRaw.Item("Data_Input_Effective_Dtm")), _
+        '                                                                    String.Empty,
+        '                                                                    String.Empty,
+        '                                                                    String.Empty,
+        '                                                                    Nothing)
+        '            ' CRE17-016 Remove PPIePR Enrolment [End][Koala]
 
-                    ' CRE17-016 Checking of PCD status during VSS enrolment [Start][Koala]
-                    ' --------------------------------------------------------------------------------------------------------------------------------
-                    ' Add dummy [Join_PCD]
-                    udtSP = New ServiceProviderModel(CType(drRaw.Item("Enrolment_Ref_No"), String).Trim, _
-                                                                            Nothing, _
-                                                                            CStr(IIf((drRaw.Item("SP_ID") Is DBNull.Value), String.Empty, drRaw.Item("SP_ID"))), _
-                                                                            CStr(IIf((drRaw.Item("Alias_Account") Is DBNull.Value), String.Empty, drRaw.Item("Alias_Account"))), _
-                                                                            CType(drRaw.Item("SP_HKID"), String).Trim, _
-                                                                            CType(drRaw.Item("SP_Eng_Name"), String).Trim, _
-                                                                            CStr(IIf((drRaw.Item("SP_Chi_Name") Is DBNull.Value), String.Empty, drRaw.Item("SP_Chi_Name"))), _
-                                                                            New AddressModel(CStr(IIf((drRaw.Item("Room") Is DBNull.Value), String.Empty, drRaw.Item("Room"))), _
-                                                                                            CStr(IIf((drRaw.Item("Floor") Is DBNull.Value), String.Empty, drRaw.Item("Floor"))), _
-                                                                                            CStr(IIf((drRaw.Item("Block") Is DBNull.Value), String.Empty, drRaw.Item("Block"))), _
-                                                                                            CStr(IIf((drRaw.Item("Building") Is DBNull.Value), String.Empty, drRaw.Item("Building"))), _
-                                                                                            CStr(IIf((drRaw.Item("Building_Chi") Is DBNull.Value), String.Empty, drRaw.Item("Building_Chi"))), _
-                                                                                            CStr(IIf((drRaw.Item("District") Is DBNull.Value), String.Empty, drRaw.Item("District"))), _
-                                                                                            intAddressCode), _
-                                                                            CType(drRaw.Item("Phone_Daytime"), String).Trim, _
-                                                                            CStr(IIf((drRaw.Item("Fax") Is DBNull.Value), String.Empty, drRaw.Item("Fax"))), _
-                                                                            CType(drRaw.Item("Email"), String).Trim, _
-                                                                            CStr(IIf((drRaw.Item("Tentative_Email") Is DBNull.Value), String.Empty, drRaw.Item("Tentative_Email"))), _
-                                                                            String.Empty, _
-                                                                            CType(drRaw.Item("Record_Status"), String).Trim, _
-                                                                            CStr(IIf((drRaw.Item("Remark") Is DBNull.Value), String.Empty, drRaw.Item("Remark"))), _
-                                                                            CType(drRaw.Item("Submission_Method"), String).Trim, _
-                                                                            CType(drRaw.Item("Already_Joined_EHR"), String), _
-                                                                            String.Empty,
-                                                                            CStr(IIf((drRaw.Item("UnderModification") Is DBNull.Value), String.Empty, drRaw.Item("UnderModification"))), _
-                                                                            CStr(IIf((drRaw.Item("Application_Printed") Is DBNull.Value), String.Empty, drRaw.Item("Application_Printed"))), _
-                                                                            CType(drRaw.Item("Create_Dtm"), DateTime), _
-                                                                            CType(drRaw.Item("Create_By"), String), _
-                                                                            CType(drRaw.Item("Update_Dtm"), DateTime), _
-                                                                            CType(drRaw.Item("Update_By"), String), _
-                                                                            dtmEffectiveDtm, _
-                                                                            dtmTokenReturnDtm, _
-                                                                            IIf(drRaw.Item("TSMP") Is DBNull.Value, Nothing, CType(drRaw.Item("TSMP"), Byte())), _
-                                                                            Nothing, _
-                                                                            Nothing, _
-                                                                            Nothing, _
-                                                                            CStr(drRaw.Item("Data_Input_By")).Trim(), _
-                                                                            CDate(drRaw.Item("Data_Input_Effective_Dtm")), _
-                                                                            String.Empty,
-                                                                            String.Empty,
-                                                                            String.Empty,
-                                                                            Nothing)
-                    ' CRE17-016 Remove PPIePR Enrolment [End][Koala]
+        '            If drRaw.Item("ConsentPrintOption") Is DBNull.Value Then
+        '                udtGeneralFunction.getSystemParameter("DefaultConsentPrintOption", strConsentPrintOption, String.Empty)
+        '                udtSP.PrintOption = strConsentPrintOption
+        '            Else
+        '                udtSP.PrintOption = drRaw.Item("ConsentPrintOption")
+        '            End If
+        '        End If
 
-                    If drRaw.Item("ConsentPrintOption") Is DBNull.Value Then
-                        udtGeneralFunction.getSystemParameter("DefaultConsentPrintOption", strConsentPrintOption, String.Empty)
-                        udtSP.PrintOption = strConsentPrintOption
-                    Else
-                        udtSP.PrintOption = drRaw.Item("ConsentPrintOption")
-                    End If
-                End If
+        '        ' Get Scheme Information
+        '        Dim udtSchemeInfoBLL As New SchemeInformationBLL
+        '        udtSP.SchemeInfoList = udtSchemeInfoBLL.GetSchemeInfoListPermanent(udtSP.SPID, udtDB)
 
-                ' Get Scheme Information
-                Dim udtSchemeInfoBLL As New SchemeInformationBLL
-                udtSP.SchemeInfoList = udtSchemeInfoBLL.GetSchemeInfoListPermanent(udtSP.SPID, udtDB)
-
-                ' Get Medical Organization
-                Dim udtMOBLL As New MedicalOrganizationBLL
-                udtSP.MOList = udtMOBLL.GetMOListFromPermanentBySPID(udtSP.SPID, udtDB)
+        '        ' Get Medical Organization
+        '        Dim udtMOBLL As New MedicalOrganizationBLL
+        '        udtSP.MOList = udtMOBLL.GetMOListFromPermanentBySPID(udtSP.SPID, udtDB)
 
 
-                ' !!!Retrieve the Practice Type Also in Practice(s)
-                ' Get Practice, Bank, Practice Bank Information
-                Dim udtPracticeBLL As New PracticeBLL
-                udtSP.PracticeList = udtPracticeBLL.GetPracticeBankAcctListFromPermanentBySPID_ForMyProfileV1(udtSP.SPID, udtDB)
+        '        ' !!!Retrieve the Practice Type Also in Practice(s)
+        '        ' Get Practice, Bank, Practice Bank Information
+        '        Dim udtPracticeBLL As New PracticeBLL
+        '        udtSP.PracticeList = udtPracticeBLL.GetPracticeBankAcctListFromPermanentBySPID_ForMyProfileV1(udtSP.SPID, udtDB)
 
-                'Get ERN Processed 
-                Dim udtERNProcessedBLL As New ERNProcessedBLL
-                udtSP.ERNProcessedList = udtERNProcessedBLL.GetERNProcessedListPermanentBySPID(udtSP.SPID, udtDB)
+        '        'Get ERN Processed 
+        '        Dim udtERNProcessedBLL As New ERNProcessedBLL
+        '        udtSP.ERNProcessedList = udtERNProcessedBLL.GetERNProcessedListPermanentBySPID(udtSP.SPID, udtDB)
 
-                Return udtSP
+        '        Return udtSP
 
-            Catch ex As Exception
-                Throw
+        '    Catch ex As Exception
+        '        Throw
 
-            End Try
+        '    End Try
 
-        End Function
+        'End Function
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
         ' CRE12-001 eHS and PCD integration [Start][Koala]
         ' -----------------------------------------------------------------------------------------

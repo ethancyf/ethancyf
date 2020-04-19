@@ -161,7 +161,9 @@ Public MustInherit Class BasePrintoutForm
                 ConsentFormInformationModel.LanguageClassInternal.SimpChinese
                 'CRE13-019-02 Extend HCVS to China [End][Winnie]
                 If udtSP.ChineseName.Trim <> String.Empty Then
-                    obj.SPName = udtSP.ChineseName
+                    ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
+                    obj.SPName = Common.ComFunction.GeneralFunction.ReplaceString_HAMingLiu(udtSP.ChineseName)
+                    ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
                 Else
                     obj.SPName = udtSP.EnglishName
                 End If

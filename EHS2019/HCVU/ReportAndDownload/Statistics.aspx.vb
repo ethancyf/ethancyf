@@ -1322,7 +1322,12 @@ Partial Public Class Statistics
                 _udtAuditLogEntry.WriteLog(AuditLogDesc.StatResult_Download_Yes_Clicked_ID, AuditLogDesc.StatResult_Download_Yes_Clicked)
 
                 Me.popupNoticeExportRedirect.Hide()
-                Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                ' ------------------------------------------------------------------------
+                'Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+                RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010702))
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]        
 
             Case ucNoticePopUp.enumButtonClick.Cancel
                 '_udtAuditLogEntry.AddDescripton("Stat ID", lblEnquiryReportID.Text)

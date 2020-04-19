@@ -2000,10 +2000,9 @@ Partial Public Class claimTransEnquiry
         Dim udtRedirectParameterBLL As New RedirectParameterBLL
         udtRedirectParameterBLL.SaveToSession(udtRedirectParameter)
 
-        ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Koala]
-        ' -------------------------------------------------------------------------
-        Response.Redirect((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010404))
-        ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Koala]
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010404))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Sub
 

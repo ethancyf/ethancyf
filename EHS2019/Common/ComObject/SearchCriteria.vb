@@ -45,6 +45,7 @@ Namespace SearchCriteria
         Private _s_DocIdentityNo1 As String
         Private _s_DocIdentityNo2 As String
         Private _s_voucherAccID As String
+        Private _s_ReferenceNo As String
 
         'Scheme
         Private _s_scheme As String
@@ -104,6 +105,7 @@ Namespace SearchCriteria
             _s_DocIdentityNo1 = Nothing
             _s_DocIdentityNo2 = Nothing
             _s_voucherAccID = Nothing
+            _s_ReferenceNo = Nothing
 
             'Scheme
             _s_scheme = Nothing
@@ -426,6 +428,15 @@ Namespace SearchCriteria
             End Get
             Set(ByVal value As String)
                 _s_voucherAccID = value
+            End Set
+        End Property
+
+        Public Property ReferenceNo() As String
+            Get
+                Return _s_ReferenceNo
+            End Get
+            Set(ByVal value As String)
+                _s_ReferenceNo = value
             End Set
         End Property
 

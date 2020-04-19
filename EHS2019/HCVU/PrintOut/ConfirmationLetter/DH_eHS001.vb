@@ -81,8 +81,12 @@ Namespace PrintOut.ConfirmationLetter
             Me.sreNameOfMOChi.Report = New PrintOut.ConfirmationLetter.NameOfMO_CHI(Me._udtSP, _btnSPPermenant, Me._strSchemeCodeArrayList)
 
             If Not Me._udtSP.ChineseName Is Nothing AndAlso Not Me._udtSP.ChineseName.Equals(String.Empty) Then
-                Me.sreLetterHeaderChi.Report = New PrintOut.ConfirmationLetter.LetterHeader(strTelNo, strFaxNo, strRecipientAddress, Me._udtSP.ChineseName, True)
-                Me.txtNameOfServiceProviderChi.Text = "(" + Me._udtSP.ChineseName.Trim() + ")"
+                ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
+                Dim strSPChineseName = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
+                Me.sreLetterHeaderChi.Report = New PrintOut.ConfirmationLetter.LetterHeader(strTelNo, strFaxNo, strRecipientAddress, strSPChineseName, True)
+                Me.txtNameOfServiceProviderChi.Text = "(" + strSPChineseName + ")"
+                ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+
             Else
                 Me.sreLetterHeaderChi.Report = New PrintOut.ConfirmationLetter.LetterHeader(strTelNo, strFaxNo, strRecipientAddress, Me._udtSP.EnglishName, False)
                 Me.txtNameOfServiceProviderChi.Text = "(" + Me._udtSP.EnglishName.Trim() + ")"

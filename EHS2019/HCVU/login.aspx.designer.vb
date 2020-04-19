@@ -95,6 +95,114 @@ Partial Public Class login
     Protected WithEvents ModalPopupExtender1 As Global.AjaxControlToolkit.ModalPopupExtender
 
     '''<summary>
+    '''btnHiddenLoginConfirmMsg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenLoginConfirmMsg As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''panLoginConfirmMsg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panLoginConfirmMsg As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panLoginConfirmMsgHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panLoginConfirmMsgHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblLoginConfirmMsgTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblLoginConfirmMsgTitle As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgLoginConfirmMsg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgLoginConfirmMsg As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''labelDescribeConcurrentAccess control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents labelDescribeConcurrentAccess As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''LinkButtonExplainConcurrentAccess control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents LinkButtonExplainConcurrentAccess As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''labelConfirmConcurrentAccess control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents labelConfirmConcurrentAccess As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnLoginCancel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnLoginCancel As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ibtnLoginProceed control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnLoginProceed As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ModalPopupExtenderConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderConfirm As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''tblBanner control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblBanner As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
     '''lblAppEnvironment control.
     '''</summary>
     '''<remarks>

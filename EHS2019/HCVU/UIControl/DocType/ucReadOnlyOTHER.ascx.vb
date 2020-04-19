@@ -123,7 +123,7 @@ Partial Public Class ucReadOnlyOTHER
     Private Sub BuildRedirectButton(ByVal btn As CustomControls.CustomImageButton, ByVal udtEHSPersonalInformation As EHSPersonalInformationModel)
         btn.SourceFunctionCode = CType(Me.Page, BasePage).FunctionCode
         btn.TargetFunctionCode = FunctCode.FUNT010308
-        btn.TargetUrl = GetURLByFunctionCode(FunctCode.FUNT010308)
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
 
         btn.Build()
 

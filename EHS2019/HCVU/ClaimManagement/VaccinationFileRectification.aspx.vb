@@ -4331,7 +4331,10 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         Session("FileGenerateID") = hfEGenerationID.Value
 
-        Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]        
+        'Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010702))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Sub
 

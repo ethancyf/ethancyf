@@ -38,6 +38,7 @@ Partial Public Class ucReadOnlyDocumnetType
     Private _blnShowDateOfDeathBtn As Boolean = True ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Dickson]
     Private _blnShowAccountTypeAndStatus As Boolean = False
     Private _blnEnableToShowHKICSymbol As Boolean = False
+    Private _blnShowCreationMethod As Boolean = True ' CRE19-026 (HCVS hotline service)
 
 #End Region
 
@@ -122,9 +123,9 @@ Partial Public Class ucReadOnlyDocumnetType
                     Case DocTypeCode.HKIC
                         ' Hong Kong Identity Card
                         Dim udcReadOnlyHKIC As ucReadOnlyHKIC = LoadControl(UserControlPath.HKIC)
-                        ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Dickson]
-                        udcReadOnlyHKIC.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, ShowDateOfDeath, _blnShowDateOfDeathBtn, blnAlternateRow)
-                        ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Dickson]
+                        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                        udcReadOnlyHKIC.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, ShowDateOfDeath, _blnShowDateOfDeathBtn, _blnShowCreationMethod, blnAlternateRow)
+                        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                         If _blnIsInvalidAccount Then
                             If blnAddToOriginalAccPlaceHolder Then
@@ -261,11 +262,13 @@ Partial Public Class ucReadOnlyDocumnetType
                 End Select
             Case EnumDisplayFormat.EnquiryFormat
                 Dim udcReadOnlyCommon As ucReadOnlyCommon = LoadControl(UserControlPath.Common)
-                ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-                ' ----------------------------------------------------------
+
                 udcReadOnlyCommon.ShowHKICSymbol = _blnEnableToShowHKICSymbol
-                ' CRE17-010 (OCSSS integration) [End][Chris YIM]
-                udcReadOnlyCommon.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, ShowDateOfDeath, blnAlternateRow)
+
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                udcReadOnlyCommon.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, ShowDateOfDeath, _blnShowDateOfDeathBtn, _blnShowCreationMethod, blnAlternateRow)
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
                 If _blnIsInvalidAccount Then
                     If blnAddToOriginalAccPlaceHolder Then
                         SetOriginal(udcReadOnlyCommon)
@@ -439,7 +442,9 @@ Partial Public Class ucReadOnlyDocumnetType
                     If _blnShowAccIDAsBtn Then
                         udcAccountID.Text = udtformatter.formatValidatedEHSAccountNumber(udtEHSAccount.VoucherAccID)
                         udcAccountID.TargetFunctionCode = FunctCode.FUNT010302
-                        udcAccountID.TargetUrl = GetURL(FUNCTION_CODE_EHEALTH_ACCOUNT_ENQUIRY)
+                        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                        udcAccountID.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURL(FUNCTION_CODE_EHEALTH_ACCOUNT_ENQUIRY))
+                        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                         If udcAccountID.Build() Then
                             udcAccountID.ConstructNewRedirectParameter()
@@ -464,7 +469,9 @@ Partial Public Class ucReadOnlyDocumnetType
                     If _blnShowAccIDAsBtn Then
                         udcAccountID.Text = udtformatter.formatSystemNumber(udtEHSAccount.VoucherAccID)
                         udcAccountID.TargetFunctionCode = FunctCode.FUNT010302
-                        udcAccountID.TargetUrl = GetURL(FUNCTION_CODE_EHEALTH_ACCOUNT_ENQUIRY)
+                        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                        udcAccountID.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURL(FUNCTION_CODE_EHEALTH_ACCOUNT_ENQUIRY))
+                        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                         If udcAccountID.Build() Then
                             udcAccountID.ConstructNewRedirectParameter()
@@ -611,6 +618,14 @@ Partial Public Class ucReadOnlyDocumnetType
     End Property
     ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public WriteOnly Property ShowCreationMethod() As Boolean
+        Set(value As Boolean)
+            _blnShowCreationMethod = value
+        End Set
+    End Property
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 #End Region
 
 #Region "Events"
@@ -706,6 +721,7 @@ Partial Public Class ucReadOnlyDocumnetType
         udtAuditLog.AddDescripton("Account Reference No.", clbtn.RedirectParameter.EHealthAccountReferenceNo)
         udtAuditLog.WriteLog(LogID.LOG01131, "eHealth Account ID Hyperlink click")
 
+        clbtn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURL(FUNCTION_CODE_EHEALTH_ACCOUNT_ENQUIRY))
         clbtn.Redirect()
 
     End Sub

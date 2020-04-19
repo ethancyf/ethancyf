@@ -16,6 +16,9 @@
     <link href="CSS/CommonStyle.css" rel="stylesheet" type="text/css" />
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
     <script language="javascript" src="JS/Common.js" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript">
+        window.location.replace("https://apps.hcv.gov.hk/public/tc/VBE/Search");
+    </script>
 
     <script language="javascript" type="text/javascript">
 

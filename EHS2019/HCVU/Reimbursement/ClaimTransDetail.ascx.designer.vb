@@ -284,6 +284,15 @@ Partial Public Class ClaimTransDetail
     Protected WithEvents lblTPracticeStatus As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trBankAccountNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trBankAccountNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblTBankAccountNoText control.
     '''</summary>
     '''<remarks>

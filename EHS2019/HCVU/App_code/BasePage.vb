@@ -23,12 +23,50 @@ Public MustInherit Class BasePage
     Public Sub BasePage()
     End Sub
 
-    Protected WithEvents _ScriptManager As ScriptManager
 
+#Region "Private Members"
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public _PostBackPageKey As String = String.Empty
+    Public _FunctCodeCommon As String = FunctCode.FUNT029901
+    Public Const SESS_PageKey As String = "HCVU_PageKey"
+
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+    Protected WithEvents _ScriptManager As ScriptManager
     ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
     ' -------------------------------------------------------------------------
     Protected Const BASE_PAGE_FUNCT_CODE As String = FunctCode.FUNT990002
     ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
+
+#End Region
+
+#Region "Audit Log Description"
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public Class AuditLogDescription
+        Public Const Redirect_InvalidAccessPage_ID As String = LogID.LOG00012
+        Public Const Redirect_InvalidAccessPage As String = "Redirect to invalid access error page"
+    End Class
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+#End Region
+
+#Region "Properties"
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public ReadOnly Property SubPlatform() As EnumHCVUSubPlatform
+        Get
+            Dim strSubPlatform As String = ConfigurationManager.AppSettings("SubPlatform")
+
+            If Not IsNothing(strSubPlatform) Then
+                Return [Enum].Parse(GetType(EnumHCVUSubPlatform), strSubPlatform)
+            End If
+
+            Return EnumHCVUSubPlatform.BO
+        End Get
+    End Property
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+#End Region
 
     Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
         _ScriptManager = ScriptManager.GetCurrent(Page)
@@ -61,6 +99,8 @@ Public MustInherit Class BasePage
         Dim objPageRedirectorSource As Object = Nothing
         Dim objIsCheckedForNotice As Object = Nothing
         Dim udtRedirectParameter As RedirectParameterModel = Nothing
+
+        Dim objPageKey As Object = Nothing
 
         If Not IsPostBack() Then
             If HCVUUserBLL.Exist() Then
@@ -101,8 +141,9 @@ Public MustInherit Class BasePage
 
             Dim strFileGenerationID As String = Session("FileGenerateID")
 
-
-
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            objPageKey = Session(SESS_PageKey)
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             Session.RemoveAll()
 
@@ -152,6 +193,10 @@ Public MustInherit Class BasePage
 
             ' CRE12-014 - Relax 500 rows limit in back office platform [End][Nick]
 
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            Session(SESS_PageKey) = objPageKey
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
         End If
     End Sub
 
@@ -208,7 +253,7 @@ Public MustInherit Class BasePage
             End Select
 
         End If
-        
+
     End Sub
 
     Public Function CheckActionAccessibility() As Boolean
@@ -277,5 +322,68 @@ Public MustInherit Class BasePage
         Thread.CurrentThread.CurrentUICulture = New CultureInfo(strLanguage)
 
     End Sub
+
+
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Protected Overrides Sub OnPreLoad(ByVal e As System.EventArgs)
+        If Me.IsTurnOnConcurrentBrowserHandling Then
+            MyBase.OnPreLoad(e)
+            If Me.IsPostBack Then
+                If Not Me.Master Is Nothing AndAlso Not Me.Master.FindControl(SESS_PageKey) Is Nothing Then
+                    Me._PostBackPageKey = CType(Me.Master.FindControl(SESS_PageKey), TextBox).Text
+                    PreCheckConcurrentAccessForHttpPost()
+                End If
+            End If
+        End If
+    End Sub
+
+    Public Sub PreCheckConcurrentAccessForHttpPost()
+        If Me.IsTurnOnConcurrentBrowserHandling Then
+            If Me.IsPostBack Then
+                If Me._PostBackPageKey = String.Empty Then
+                    RedirectToInvalidAccessErrorPage()
+                Else
+                    If Not Me._PostBackPageKey = String.Empty AndAlso Session(SESS_PageKey) Is Nothing Then
+                        ' Session Timout
+                        Throw New Exception("Session Expired!")
+                    Else
+                        If Not Me._PostBackPageKey = String.Empty AndAlso Session(SESS_PageKey) IsNot Nothing AndAlso Me._PostBackPageKey = Session(SESS_PageKey).ToString() Then
+                            ' Don't RenewPageKey
+                        Else
+                            RedirectToInvalidAccessErrorPage()
+                        End If
+                    End If
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Function IsTurnOnConcurrentBrowserHandling() As Boolean
+
+        Dim isTurnOn As Boolean = False
+
+        Dim strConcurrentBrowserHandling As String = String.Empty
+
+        strConcurrentBrowserHandling = ConfigurationManager.AppSettings("ConcurrentBrowserHandling")
+
+        If strConcurrentBrowserHandling.Trim.Equals("Y") Then
+            isTurnOn = True
+        End If
+
+        Return isTurnOn
+
+    End Function
+
+    Private Sub RedirectToInvalidAccessErrorPage()
+
+        Dim udtAuditLogEntry As New AuditLogEntry(_FunctCodeCommon, Me)
+
+        udtAuditLogEntry.AddDescripton(SESS_PageKey, Me._PostBackPageKey)
+        udtAuditLogEntry.WriteLog(AuditLogDescription.Redirect_InvalidAccessPage_ID, AuditLogDescription.Redirect_InvalidAccessPage)
+
+        Response.Redirect("~/ImproperAccess.aspx")
+    End Sub
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
 End Class

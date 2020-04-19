@@ -641,18 +641,18 @@ Namespace ComObject
                                     strAccType, strAccID, strDocCode, strDocNo)
 
                 Case EVSPlatform.PublicPlatform
-                    Dim strAuditLogPlatform As String = ConfigurationManager.AppSettings("LogPlatform")
+                    'Dim strAuditLogPlatform As String = ConfigurationManager.AppSettings("LogPlatform")
 
                     ' Collect extra columns info before insert
                     CollectInfoAuditLogHCVU(strFunctionCode, strLogID, strAccType, strAccID, strDocCode, strDocNo, strSPID, strSPDocNo)
 
-                    If strAuditLogPlatform = "03a" Then
-                        AddAuditLogHCVR(_dtmActionTime, _dtmEndTime, strClientIP, strLogID, strFunctionCode, strDescription, strSessionID, strBrowser, strOS, _
-                                        strAccType, strAccID, strDocCode, strDocNo)
-                    Else
-                        AddAuditLogPublic(_dtmActionTime, _dtmEndTime, strClientIP, strLogID, strFunctionCode, strDescription, strSessionID, strBrowser, strOS, _
-                                        strDocCode, strDocNo, strSPDocNo)
-                    End If
+                    'If strAuditLogPlatform = "03a" Then
+                    '    AddAuditLogHCVR(_dtmActionTime, _dtmEndTime, strClientIP, strLogID, strFunctionCode, strDescription, strSessionID, strBrowser, strOS, _
+                    '                    strAccType, strAccID, strDocCode, strDocNo)
+                    'Else
+                    AddAuditLogPublic(_dtmActionTime, _dtmEndTime, strClientIP, strLogID, strFunctionCode, strDescription, strSessionID, strBrowser, strOS, _
+                                    strDocCode, strDocNo, strSPDocNo)
+                    'End If
 
                 Case EVSPlatform.SDIR
                     ' Collect extra columns info before insert

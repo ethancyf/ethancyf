@@ -176,6 +176,24 @@ Partial Public Class MasterPage
     Protected WithEvents ulMenu As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
+    '''UpdatePanelMaster control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UpdatePanelMaster As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
+    '''PageKey control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents PageKey As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''ContentPlaceHolder1 control.
     '''</summary>
     '''<remarks>

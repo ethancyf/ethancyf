@@ -351,7 +351,7 @@ Partial Public Class eHealthAccountDeathRecordMaint
     Private Sub BuildRedirectButton(ByVal btn As CustomControls.CustomImageButton, ByVal objDeathRecordEntry As DeathRecordEntryModel)
         btn.SourceFunctionCode = CType(Me.Page, BasePage).FunctionCode
         btn.TargetFunctionCode = FunctCode.FUNT010307
-        btn.TargetUrl = GetURLByFunctionCode(FunctCode.FUNT010307)
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010307))
 
         btn.Build()
 
@@ -383,6 +383,7 @@ Partial Public Class eHealthAccountDeathRecordMaint
         _udtAuditLogEntry.WriteLog(AuditLogDesc.ManagementClick_ID, AuditLogDesc.ManagementClick)
 
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010307))
         btn.Redirect()
     End Sub
 

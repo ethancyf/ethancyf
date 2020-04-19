@@ -667,6 +667,7 @@ Namespace Component
         Public Const FUNT010306 As String = "010306" ' Back Office - eHealth Account Death Record Matching
         Public Const FUNT010307 As String = "010307" ' Back Office - eHealth Account Death Record Maintenance
         Public Const FUNT010308 As String = "010308" ' Back Office - eHealth Account Death Record Enquiry
+        Public Const FUNT010309 As String = "010309" ' Back Office - eHealth Account Enquiry (Hotline)
         Public Const FUNT010401 As String = "010401"
         Public Const FUNT010402 As String = "010402"
         Public Const FUNT010403 As String = "010403"
@@ -694,6 +695,7 @@ Namespace Component
         Public Const FUNT010801 As String = "010801"
         Public Const FUNT010901 As String = "010901" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
         Public Const FUNT011001 As String = "011001" ' [CRE11-013] RVP Home List Maintenance
+        Public Const FUNT011101 As String = "011101" ' Inspection Record Management
         Public Const FUNT019916 As String = "019916" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
         Public Const FUNT020001 As String = "020001"
         Public Const FUNT020002 As String = "020002"
@@ -3039,15 +3041,12 @@ Namespace Component
     End Class
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
-    'CRE13-012 (RCH Code sorting) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
     Public Enum Aspect
         Transaction
         ServiceProvider
         eHSAccount
         AdvancedSearch
     End Enum
-    'CRE13-012 (RCH Code sorting) [End][Chris YIM]
 
     'CRE14-016 (To introduce "Deceased" status into eHS) [Start][Chris YIM]
     '-----------------------------------------------------------------------------------------
@@ -3069,4 +3068,13 @@ Namespace Component
         Public Const IDEAS2_WithGender As String = "25"
     End Class
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public Enum EnumHCVUSubPlatform
+        NA
+        BO  'Back Office
+        CC  'Call Centre
+    End Enum
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 End Namespace

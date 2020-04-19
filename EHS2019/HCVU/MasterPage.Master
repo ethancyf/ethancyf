@@ -160,6 +160,7 @@
             }
 
         });
+
     </script>
 
 
@@ -235,14 +236,21 @@
                         <img src="../Images/others/transparent.gif" alt="" width="5px" />
                     </td>
                     <td style="height: 515px" valign="top">
-                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-                        </asp:ContentPlaceHolder>
-                        <%-- CRE12-014 Relax 500 row limit in back office platform [Start][Twinsen] --%>
-                        <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
-                            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                            </asp:UpdatePanel>
-                        </asp:ContentPlaceHolder>
-                        <%-- CRE12-014 Relax 500 row limit in back office platform [End][Twinsen] --%>
+                        <asp:UpdatePanel ID="UpdatePanelMaster" runat="server">
+                            <ContentTemplate>
+                                <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
+                                <asp:TextBox ID="PageKey" runat="server" Style="display: none" />
+                                <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                </asp:ContentPlaceHolder>
+                                <%-- CRE12-014 Relax 500 row limit in back office platform [Start][Twinsen] --%>
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                                    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                    </asp:UpdatePanel>
+                                </asp:ContentPlaceHolder>
+                                <%-- CRE12-014 Relax 500 row limit in back office platform [End][Twinsen] --%>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
                     </td>
                 </tr>
                 <tr>

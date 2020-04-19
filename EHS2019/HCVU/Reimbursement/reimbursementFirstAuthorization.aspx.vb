@@ -1202,9 +1202,11 @@ Partial Public Class reimbursement_new
         udtAuditLogEntry.WriteLog(LogID.LOG00040, "Return Click")
         ' CRE11-021 log the missed essential information [End]
 
-        'Me.panel_searchCriteria.Visible = False
-        'Me.MultiView1.ActiveViewIndex = 0
-        Response.Redirect("reimbursementFirstAuthorization.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect("reimbursementFirstAuthorization.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010401))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
     '

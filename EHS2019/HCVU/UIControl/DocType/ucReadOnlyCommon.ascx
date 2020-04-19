@@ -57,6 +57,8 @@
                             <td style="padding-left: 5px">
                                 <cc1:CustomImageButton ID="ibtnHDOD" runat="server" ImageUrl="<%$ Resources:ImageUrl, DeathRecordBtn %>"
                                     ImageUrlDisable="<%$ Resources:ImageUrl, DeathRecordDisableBtn %>" AlternateText="<%$ Resources:AlternateText, DeathRecord %>" />
+                                 <asp:Image ID="imgHDOD" runat="server" ImageUrl="<%$ Resources:ImageUrl, DeathRecordBtn %>"
+                                     AlternateText="<%$ Resources:AlternateText, DeathRecord %>" />
                             </td>
                         </tr>
                     </table>
@@ -138,6 +140,8 @@
                             <td style="padding-left: 5px">
                                 <cc1:CustomImageButton ID="ibtnVDOD" runat="server" ImageUrl="<%$ Resources:ImageUrl, DeathRecordBtn %>"
                                     ImageUrlDisable="<%$ Resources:ImageUrl, DeathRecordDisableBtn %>" AlternateText="<%$ Resources:AlternateText, DeathRecord %>" />
+                                 <asp:Image ID="imgVDOD" runat="server" ImageUrl="<%$ Resources:ImageUrl, DeathRecordBtn %>"
+                                     AlternateText="<%$ Resources:AlternateText, DeathRecord %>" />
                             </td>
                         </tr>
                     </table>

@@ -1,0 +1,26 @@
+﻿@media print { 
+    .header { 
+        display: none !important;
+    } 
+    .footer { 
+        display: none !important;
+    } 
+    a[href]:after {
+        content: none !important;
+    }
+    body {
+        margin: 0;
+    }
+    .tab_content {
+        width: 800px;
+    }
+    .container {
+        width: 1200px;
+    }
+} 
+
+@page {
+    margin: 1.25cm;
+    size: landscape;
+    zoom: 100%;
+}

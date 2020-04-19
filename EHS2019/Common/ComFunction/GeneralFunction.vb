@@ -1,4 +1,4 @@
-Imports Common.DataAccess
+﻿Imports Common.DataAccess
 Imports System.Data.SqlClient
 Imports Common.ComObject
 Imports Common.Validation
@@ -2365,6 +2365,77 @@ Namespace ComFunction
             udtDB.RunProc("dbo.proc_SystemVariable_upd", prams)
 
         End Sub
+
+#End Region
+
+#Region "Handle chinese characters with UTF32"
+
+        ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]    
+        ' ------------------------------------------------------------------------
+
+        ''' <summary>
+        ''' This function can return "true" word count as each character in UTF32 is fixed to 4 bytes
+        ''' Can replace .net function "Length" which return will "2" for a UTF32 character
+        ''' </summary>
+        ''' <param name="strInput"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function UTF32_Length(ByVal strInput As String)
+            Return Encoding.UTF32.GetByteCount(strInput) / 4
+        End Function
+
+        ''' <summary>
+        ''' This function can retrieve substring
+        ''' Can replace .net function "SubString" which cannot handle UTF32 character
+        ''' </summary>
+        ''' <param name="strInput"></param>
+        ''' <param name="intStartIndex"></param>
+        ''' <param name="intLength"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function UTF32_SubString(ByVal strInput As String, ByVal intStartIndex As Integer, ByVal intLength As Integer)
+            Dim byte32Array As Byte() = Encoding.UTF32.GetBytes(strInput)
+            ' In UTF32, 1 char = 4 bytes
+            intStartIndex *= 4
+            intLength *= 4
+
+            If (intStartIndex >= byte32Array.Length) Then
+                Return ""
+            End If
+
+            If (intStartIndex + intLength) > byte32Array.Length Then
+                intLength = byte32Array.Length - intStartIndex
+            End If
+
+            Return Encoding.UTF32.GetString(byte32Array, intStartIndex, intLength)
+        End Function
+
+        ''' <summary>
+        ''' Replace the character to another character which supported by HA_MingLiu
+        ''' </summary>
+        ''' <param name="strInput"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Shared Function ReplaceString_HAMingLiu(ByVal strInput As String) As String
+            Dim udtCodeBLL As New Component.CCCode.CCCodeBLL
+            Dim udtGeneralFunction As New GeneralFunction
+            Dim strOutput As String = String.Empty
+
+            ' Replace character that can display by HA_MingLiu font
+            Dim dicReplace As New Dictionary(Of String, String)
+            dicReplace.Add(149932, 58864) ' "𤦬"(149932) to "" (58864)
+
+            strOutput = strInput
+
+            If Not strInput Is Nothing AndAlso Not strInput.Equals(String.Empty) Then
+                For Each kvp As KeyValuePair(Of String, String) In dicReplace
+                    strOutput = strOutput.Replace(udtCodeBLL.ConvertUnicode2Big5(kvp.Key), udtCodeBLL.ConvertUnicode2Big5(kvp.Value))
+                Next
+            End If
+
+            Return strOutput
+        End Function
+        ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
 
 #End Region
 

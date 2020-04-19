@@ -961,7 +961,10 @@ Partial Public Class eHealthAccountDeathRecordMatchingResult
         udtRedirectParameter.ActionList.Add(RedirectParameterModel.EnumRedirectAction.Search)
         udtRedirectParameter.ActionList.Add(RedirectParameterModel.EnumRedirectAction.ViewDetail)
         udtRedirectParameterBLL.SaveToSession(udtRedirectParameter)
-        Response.Redirect(GetURLByFunctionCode(FunctCode.FUNT010301))
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        RedirectHandler.ToURL(GetURLByFunctionCode(FunctCode.FUNT010301))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Sub
 
@@ -977,7 +980,9 @@ Partial Public Class eHealthAccountDeathRecordMatchingResult
             clbtnGTransactionNo.Text = udtFormatter.formatSystemNumber(dr("Transaction_ID").ToString.Trim)
             clbtnGTransactionNo.SourceFunctionCode = FunctionCode
             clbtnGTransactionNo.TargetFunctionCode = FunctCode.FUNT010403
-            clbtnGTransactionNo.TargetUrl = GetURLByFunctionCode(FunctCode.FUNT010403)
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            clbtnGTransactionNo.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010403))
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
             clbtnGTransactionNo.SchemeCode = dr("Scheme_Code").ToString.Trim
 
             If clbtnGTransactionNo.Build() Then

@@ -26,6 +26,8 @@ Partial Public Class Inbox
     Const InboxCount As String = "InboxCount"
     Const OutboxCount As String = "OutboxCount"
 
+    Dim strDownloadPageUrl As String = "../ReportAndDownload/Datadownload.aspx"
+
 #Region "Constants"
 
     ' Note: Please be reminded in side bar menu "Draft" = Outbox (in code)
@@ -1298,7 +1300,20 @@ Partial Public Class Inbox
             Dim strEngDesc As String = String.Empty
             Status.GetDescriptionFromDBCode(StatusData_Class, dr.Item("Status"), strEngDesc, String.Empty)
             Me.lblStatus.Text = strEngDesc
-            Me.lblContent.Text = drMessage.Item("Message")
+
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------            
+            Dim strMessage As String = drMessage.Item("Message")
+
+            ' Replace Report Download URL with page key
+            If RedirectHandler.IsTurnOnConcurrentBrowserHandling Then
+                If strMessage.Contains(strDownloadPageUrl) AndAlso Not strMessage.Contains("PageKey") Then
+                    strMessage = strMessage.Replace(strDownloadPageUrl, RedirectHandler.AppendPageKeyToURL(strDownloadPageUrl))
+                End If
+            End If
+
+            Me.lblContent.Text = strMessage
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             lblSubject.Text = dr.Item("Subject")
 

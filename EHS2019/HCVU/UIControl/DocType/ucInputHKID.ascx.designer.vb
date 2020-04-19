@@ -347,6 +347,15 @@ Partial Public Class ucInputHKID
     Protected WithEvents imgDOIError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''trCreationMethodOriginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trCreationMethodOriginal As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblCreationMethodOriginalText control.
     '''</summary>
     '''<remarks>

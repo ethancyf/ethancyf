@@ -77,6 +77,15 @@ Partial Public Class ucReadOnlyAccountInfo
     Protected WithEvents lblAcctStatusRemark As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trDeceased control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trDeceased As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblDeceasedText control.
     '''</summary>
     '''<remarks>

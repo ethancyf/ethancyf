@@ -290,12 +290,12 @@ Namespace ComObject
                     AddSystemHCSPLog(strFunctionCode, strSeverityCode, strMessageCode, strPageLink, strClientIP, Nothing, Nothing, strSessionID, strBrowser, strOS, strUserDefinedMessage)
                 End If
             ElseIf strPlatform = EVSPlatform.PublicPlatform Then
-                Dim strSystemLogPlatform As String = ConfigurationManager.AppSettings("LogPlatform")
-                If strSystemLogPlatform = "03a" Then
-                    AddSystemHCVRLog(strFunctionCode, strSeverityCode, strMessageCode, strPageLink, strClientIP, strSessionID, strBrowser, strOS, strUserDefinedMessage)
-                Else
-                    AddSystemPublicLog(strFunctionCode, strSeverityCode, strMessageCode, strPageLink, strClientIP, strSessionID, strBrowser, strOS, strUserDefinedMessage)
-                End If
+                'Dim strSystemLogPlatform As String = ConfigurationManager.AppSettings("LogPlatform")
+                'If strSystemLogPlatform = "03a" Then
+                '    AddSystemHCVRLog(strFunctionCode, strSeverityCode, strMessageCode, strPageLink, strClientIP, strSessionID, strBrowser, strOS, strUserDefinedMessage)
+                'Else
+                AddSystemPublicLog(strFunctionCode, strSeverityCode, strMessageCode, strPageLink, strClientIP, strSessionID, strBrowser, strOS, strUserDefinedMessage)
+                'End If
             ElseIf strPlatform = EVSPlatform.SDIR Then
                 AddSystemHCVRLog(strFunctionCode, strSeverityCode, strMessageCode, strPageLink, strClientIP, strSessionID, strBrowser, strOS, strUserDefinedMessage)
             ElseIf strPlatform = EVSPlatform.InterfaceInternal Then

@@ -2,7 +2,7 @@ Imports GrapeCity.ActiveReports.SectionReportModel
 Imports GrapeCity.ActiveReports.Document 
 
 Imports Common.Component.ServiceProvider
-
+Imports Common.ComFunction
 
 Namespace PrintOut.EVSSConsentForm_CHI
     Public Class EVSSDeclarationCondensedSmartIDSPName6_CHI
@@ -38,8 +38,9 @@ Namespace PrintOut.EVSSConsentForm_CHI
 
         Private Sub FillSPName()
 
-            txtDocumentExplainedBy.Text = _udtSP.ChineseName
-
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
+            txtDocumentExplainedBy.Text = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
         End Sub
 
 

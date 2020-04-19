@@ -6622,9 +6622,13 @@ Public Class SPProfileBLL
 
     Public Function EmptyPracticeCollection() As PracticeModelCollection
         Dim udtPracticeModel As PracticeModel
+        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
         udtPracticeModel = New PracticeModel(String.Empty, String.Empty, 0, 0, String.Empty, String.Empty, Nothing, 0, String.Empty, String.Empty, _
-                                            String.Empty, String.Empty, Nothing, String.Empty, Nothing, String.Empty, Nothing, Nothing, _
-                                            Nothing, Nothing)
+                                            String.Empty, String.Empty, Nothing, String.Empty, Nothing, String.Empty, Nothing, _
+                                            YesNo.No, String.Empty, String.Empty, _
+                                            Nothing, Nothing, Nothing)
+        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
         Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection
         udtPracticeModelCollection.Add(udtPracticeModel)
 

@@ -622,6 +622,38 @@ Partial Public Class MyProfileV2
         udtSP = udtServiceProviderBLL.GetSP
         Dim objListItem As DataControlRowState = e.Row.RowState
         If e.Row.RowType = DataControlRowType.DataRow Then
+
+            ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            Dim udtPractice As PracticeModel = DirectCast(e.Row.DataItem, PracticeModel)
+
+            ' Mobile Clinic
+            Dim lblPracticeMobileClinic As Label = CType(e.Row.FindControl("lblPracticeMobileClinic"), Label)
+            If lblPracticeMobileClinic.Text = YesNo.Yes Then
+                lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "Yes")
+            Else
+                lblPracticeMobileClinic.Text = Me.GetGlobalResourceObject("Text", "No")
+            End If
+
+            ' Practice Remarks
+            Dim lblPracticeRemarks As Label = e.Row.FindControl("lblPracticeRemarks")
+            Dim lblPracticeRemarksChi As Label = e.Row.FindControl("lblPracticeRemarksChi")
+            Dim strRemarksDescEng As String = udtPractice.RemarksDesc
+            Dim strRemarksDescChi As String = udtPractice.RemarksDescChi
+
+            If strRemarksDescEng = String.Empty AndAlso strRemarksDescChi = String.Empty Then
+                lblPracticeRemarks.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+            ElseIf strRemarksDescEng <> String.Empty Then
+                lblPracticeRemarks.Text = strRemarksDescEng
+                lblPracticeRemarksChi.Text = formatChineseString(strRemarksDescChi)
+
+            Else
+                lblPracticeRemarks.Text = strRemarksDescChi
+            End If
+            ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
+
+            ' Scheme Information
             Dim lblPracticeDisplaySeq As Label = CType(e.Row.FindControl("lblPracticeDisplaySeq"), Label)
             Dim gvPracticeSchemeInfo As GridView = CType(e.Row.FindControl("gvPracticeSchemeInfo"), GridView)
             Dim hrRowSpan As HiddenField = CType(gvPracticeSchemeInfo.FindControl("hrRowSpan"), HiddenField)

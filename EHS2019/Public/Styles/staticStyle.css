@@ -1,0 +1,305 @@
+﻿@charset "utf-8";
+/* CSS Document */
+    #divContacts .contact_titlebox {
+        color: #195287;
+    }
+
+    #divContacts .contact_title {
+        font-size: 38px;
+        font-weight: 600;
+    }
+
+    #divContacts .contact_cntbox {
+        margin-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    #divContacts .contact_2box {
+        margin-top: 0px;
+    }
+
+
+    #divContacts .contact_section_1_topbox {
+        background: #F0F9FF;
+        padding: 10px 0px 10px 0px;
+        border-bottom: 1px dashed #a5a5a5;
+        border-radius: 5px 5px 0px 0px;
+    }
+
+    #divContacts .contact_topbox {
+        background-color: #F0F9FF;
+    }
+    
+    #divContacts .contact_section_1_toptitle {
+        color: #225482;
+    }
+
+    #divContacts contact_labeltext {
+        color: #585858;
+    }
+
+
+    #divContacts .contact_titletext {
+        font-size: 20px;
+        color: #225482;
+    }
+
+.contact_section {
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 158.33px 120px;
+    background-position: 105%;
+    border-radius: 0px 0px 5px 5px;
+}
+
+#divContacts .section_1_cntbox {
+    background-image: url('../Image/SPS/icon_HCVS.png');
+}
+
+#divContacts .section_2_cntbox {
+    background-image: url('../Image/SPS/icon_VSS.png');
+}
+
+#divContacts .contact_section_1_addressbox {
+    padding: 20px 0px 20px 0px;
+}
+
+#divContacts .contact_section_1_commombox {
+    padding: 5px 0px 5px 0px;
+}
+
+#divContacts .contact_section_1_bottombox {
+    padding: 5px 0px 5px 0px;
+}
+
+#divContacts .contact_section_1_text {
+    font-size: 14px;
+    color: #585858;
+}
+
+#divContacts .addresstext {
+    font-size: 15px;
+}
+
+
+#divContacts .contact_limgbox {
+    overflow: hidden;
+    height: 100%;
+}
+
+#divContacts .contact_limg {
+    position: absolute;
+    right: -22px;
+    top: 50%;
+    margin-top: -60px;
+    height: 120px;
+}
+
+#divContacts .media {
+    display: flex;
+    justify-content: space-around;
+}
+
+#divContacts .contact_titleimg {
+    width: 50px;
+}
+
+.contact_line {
+    margin: 0px;
+}
+
+#divContacts .contact_btbox {
+    padding-bottom: 10px;
+}
+
+.transLayer {
+    background: rgba(255, 255, 255,0.9);
+    border-radius: 0px 0px 5px 5px;
+}
+
+/*Privacy Policy*/
+.policy_bigbox {
+    margin-top: 50px;
+    padding-bottom: 30px;
+    border-radius: 5px;
+}
+
+.policy_titlebox {
+    background: #F0F9FF;
+    padding: 20px 0px 20px 0px;
+    border-bottom: 1px dashed #a5a5a5;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.policy_titletext {
+    font-size: 38px;
+    color: #195287;
+}
+
+.policy_cntbox {
+    background-color: white;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    color: #585858;
+    table-layout: fixed;
+    word-wrap: break-word;
+    text-justify: inter-ideograph;
+    border-radius: 0px 0px 5px 5px;
+}
+
+#divPrivacyPolicy p {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+#divPrivacyPolicy .policy_cntbox a {
+    text-decoration: underline;
+    color: #0171BA;
+}
+
+
+/*important notice*/
+.notice_topTitleBox {
+    color: #225482;
+}
+
+.notice_topTitleText {
+    font-size: 38px;
+}
+
+
+#divNotice .notice_boxTitleText {
+    font-size: 20px;
+}
+
+#divNotice p {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+#divNotice .notice_titlebox {
+    background: #F0F9FF;
+    padding: 20px 0px 20px 0px;
+    border-bottom: 1px dashed #a5a5a5;
+    border-radius: 5px 5px 0px 0px;
+    margin-top: 20px;
+    color: #195287;
+}
+
+.center-vertical {
+    position: relative;
+    top: 50%;
+    vertical-align: middle;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+}
+
+
+/*System Maintenance*/
+#divSysMaintenance .maintenance_titlebox {
+    background: #F0F9FF;
+    padding: 15px 0px;
+    margin-top: 20px;
+    color: #195287;
+}
+
+#divSysMaintenance .scr_maintenance_titlebox {
+    border-radius: 5px 5px 5px 5px;
+}
+
+#divSysMaintenance .maintenance_boxTitleText {
+    font-size: 20px;
+}
+
+
+#divSysMaintenance .maintenance_topTitleText {
+    font-size: 38px;
+}
+
+#divSysMaintenance .maintenance_cntbox {
+    background-color: white;
+    color: #585858;
+    border-radius: 5px 5px 5px 5px;
+    margin-top: 10px;
+}
+
+#divSysMaintenance .scr_maintenance_cntbox {
+    border-radius: 5px 5px 5px 5px;
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+#divSysMaintenance .scr_maintenance_dateRow {
+    padding: 10px 0px;
+}
+
+#divSysMaintenance .scr_maintenance_dateTitleAlign {
+    text-align: center;
+}
+
+#divSysMaintenance .scr_maintenance_timeTitleAlign {
+    text-align: center;
+}
+
+
+/*error page style*/
+.errorPageDiv {
+    border: 10px solid #00A8F3;
+    text-align: center;
+    background-color: white;
+    border-radius: 20px
+}
+
+.scr_errorPageDiv {
+    margin: 180px 100px 50px 100px;
+}
+
+.errorText {
+    font-size: 20px;
+    color: #6b6b6b;
+    margin-top: 160px
+}
+
+
+#divErrorPage a {
+    color: #6b6b6b;
+    font-size: 20px;
+    border: 1px solid #6b6b6b;
+    margin-bottom: 40px;
+    margin-top: 40px;
+    width: 120px;
+    background-color: white;
+    font-weight: 100
+}
+
+.errorimg {
+    position: absolute;
+    top: -140px;
+    left: 50%;
+    margin-left: -232px;
+}
+
+
+#textSizeBox p {
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+.underline {
+    text-decoration: underline
+}
+
+.textsize_cntbox {
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 18px;
+    color: #585858;
+    table-layout: fixed;
+    word-wrap: break-word;
+    text-justify: inter-ideograph;
+    border-radius: 0px 0px 5px 5px;
+}
+
+.textoblique {
+    font-style: oblique
+}

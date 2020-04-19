@@ -245,28 +245,34 @@ Public Class eHSAccountMaintBLL
 
 
     ''' <summary>
-    ''' 
     ''' </summary>
+    ''' <param name="strFunctionCode"></param>
     ''' <param name="strDocType"></param>
     ''' <param name="strIdentityNum"></param>
     ''' <param name="strAdoptionPrefixNum"></param>
     ''' <param name="strEname"></param>
+    ''' <param name="strCname"></param>
     ''' <param name="dtDOB"></param>
     ''' <param name="arrAccountID">Voucher Account ID array (Removed check digit)</param>
     ''' <param name="strRefNo"></param>
+    ''' <param name="strGender"></param>
     ''' <param name="strAccountType"></param>
+    ''' <param name="strAccountStatus"></param>
     ''' <param name="dtmCreationDateFrom"></param>
     ''' <param name="dtmCreationDateTo"></param>
+    ''' <param name="blnOverrideResultLimit"></param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    ''' 
-
-    ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
     Public Function GeteHSAcctListByParticularMultiple(ByVal strFunctionCode As String, ByVal strDocType As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, _
                                             ByVal strEname As String, ByVal strCname As String, ByVal dtDOB As Nullable(Of DateTime), ByVal arrAccountID() As String, _
-                                            ByVal strRefNo As String, _
+                                            ByVal strRefNo As String, ByVal strGender As String, _
                                             ByVal strAccountType As String, ByVal strAccountStatus As String, ByVal dtmCreationDateFrom As Nullable(Of DateTime), ByVal dtmCreationDateTo As Nullable(Of DateTime), _
                                             Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' Add Gender
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
         Dim dtRes As DataTable = New DataTable
         Dim db As New Database
 
@@ -278,13 +284,13 @@ Public Class eHSAccountMaintBLL
             If arrAccountID Is Nothing Then
                 udtBLLSearchResult = GeteHSAcctListByParticular(strFunctionCode, strDocType, strIdentityNum, strAdoptionPrefixNum, _
                                              strEname, strCname, dtDOB, String.Empty, _
-                                             strRefNo, _
+                                             strRefNo, strGender, _
                                              strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
                                              blnOverrideResultLimit)
             ElseIf arrAccountID.Length = 1 Then
                 udtBLLSearchResult = GeteHSAcctListByParticular(strFunctionCode, strDocType, strIdentityNum, strAdoptionPrefixNum, _
                                             strEname, strCname, dtDOB, arrAccountID(0), _
-                                            strRefNo, _
+                                            strRefNo, strGender, _
                                              strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
                                              blnOverrideResultLimit)
             Else
@@ -294,10 +300,10 @@ Public Class eHSAccountMaintBLL
                 For Each strSingleAccountID As String In arrDistinctAccountID
 
                     udtBLLSearchResult = GeteHSAcctListByParticular(strFunctionCode, strDocType, strIdentityNum, strAdoptionPrefixNum, _
-                                                                 strEname, strCname, dtDOB, strSingleAccountID, _
-                                                                 strRefNo, _
-                                             strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                             blnOverrideResultLimit)
+                                                                    strEname, strCname, dtDOB, strSingleAccountID, _
+                                                                    strRefNo, strGender, _
+                                                                    strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
+                                                                    blnOverrideResultLimit)
 
 
                     If udtBLLSearchResult.SqlErrorMessage = BaseBLL.EnumSqlErrorMessage.Normal Then
@@ -332,93 +338,16 @@ Public Class eHSAccountMaintBLL
 
         Return udtBLLSearchResult
     End Function
-    ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
+    
 
-    '' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]
-    '' -------------------------------------------------------------------------
-    ''Protected Function GeteHSAcctListInRouteTwo(ByVal strDocType As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, _
-    'Protected Function GeteHSAcctListInRouteTwo(ByVal strFunctionCode As String, ByVal strDocType As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, _
-    '                                        ByVal strEname As String, ByVal dtDOB As Nullable(Of DateTime), ByVal strAccountID As String, _
-    '                                        ByVal strRefNo As String, Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
-    '    ' CRE12-014 - Relax 500 rows limit in back office platform [End][Nick]
-
-    '    Dim dtRes As DataTable = New DataTable
-    '    Dim db As New Database
-
-    '    ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]
-    '    ' -------------------------------------------------------------------------
-    '    Dim udtBLLSearchResult As BaseBLL.BLLSearchResult
-    '    ' CRE12-014 - Relax 500 rows limit in back office platform [End][Nick]
-
-    '    Try
-    '        strIdentityNum = udtFormatter.formatDocumentIdentityNumber(strDocType, strIdentityNum)
-
-    '        Dim parms() As SqlParameter = { _
-    '                        db.MakeInParam("@Doc_Code", SqlDbType.Char, 20, strDocType), _
-    '                        db.MakeInParam("@IdentityNum", SqlDbType.VarChar, 20, strIdentityNum), _
-    '                        db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, strAdoptionPrefixNum), _
-    '                        db.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, strEname), _
-    '                        db.MakeInParam("@DOB", SqlDbType.DateTime, 8, IIf(Not dtDOB.HasValue, DBNull.Value, dtDOB)), _
-    '                        db.MakeInParam("@Voucher_Acc_ID", SqlDbType.VarChar, 500, strAccountID), _
-    '                        db.MakeInParam("@ReferenceNo", SqlDbType.Char, 15, strRefNo) _
-    '                    }
-
-    '        ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]
-    '        ' -------------------------------------------------------------------------
-    '        'db.RunProc("proc_VoucherAccountListForMaintR2_get", parms, dtRes)
-
-    '        udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherAccountListForMaintR2_get", parms, blnOverrideResultLimit, db)
-
-    '        If udtBLLSearchResult.SqlErrorMessage = BaseBLL.EnumSqlErrorMessage.Normal Then
-    '            dtRes = CType(udtBLLSearchResult.Data, DataTable)
-
-    '            ' [CRE15-006] Rename of eHS - Massage data for sorting [Start][Lawrence]
-    '            dtRes.Columns.Add("AccountTypeDesc", GetType(String))
-
-    '            For Each dr As DataRow In dtRes.Rows
-    '                Dim strAccountSource As String = dr("Source").ToString.Trim
-    '                Dim strAccountPurpose As String = String.Empty
-    '                Dim strAccountTypeDesc As String = String.Empty
-
-    '                If Not IsDBNull(dr("Account_Purpose")) Then strAccountPurpose = dr("Account_Purpose").ToString.Trim
-
-    '                Status.GetDescriptionFromDBCode(EHSAccountModel.SysAccountSourceClass.ClassCode, strAccountSource, strAccountTypeDesc, String.Empty)
-
-    '                If strAccountSource.Trim.Equals(EHSAccountModel.SysAccountSourceClass.TemporaryAccount) _
-    '                        AndAlso strAccountPurpose.Equals(EHSAccountModel.AccountPurposeClass.ForAmendmentOld) Then
-    '                    strAccountTypeDesc = eHealthAccountStatus.Erased_Desc
-    '                End If
-
-    '                dr("AccountTypeDesc") = strAccountTypeDesc
-
-    '            Next
-
-    '            ' [CRE15-006] Rename of eHS - Massage data for sorting [End][Lawrence]
-
-    '            udtBLLSearchResult.Data = dtRes
-    '        Else
-    '            udtBLLSearchResult.Data = Nothing
-    '        End If
-    '        ' CRE12-014 - Relax 500 rows limit in back office platform [End][Nick]
-
-    '    Catch ex As Exception
-    '        dtRes = Nothing
-    '        Throw ex
-    '    End Try
-
-    '    ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]
-    '    ' -------------------------------------------------------------------------
-    '    'Return dtRes
-    '    Return udtBLLSearchResult
-    '    ' CRE12-014 - Relax 500 rows limit in back office platform [End][Nick]
-    'End Function
-
-    ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
     Protected Function GeteHSAcctListByParticular(ByVal strFunctionCode As String, ByVal strDocType As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, _
                                             ByVal strEname As String, ByVal strCname As String, ByVal dtDOB As Nullable(Of DateTime), ByVal strAccountID As String, _
-                                            ByVal strRefNo As String, _
+                                            ByVal strRefNo As String, ByVal strGender As String, _
                                             ByVal strAccountType As String, ByVal strAccountStatus As String, ByVal dtmCreationDateFrom As Nullable(Of DateTime), ByVal dtmCreationDateTo As Nullable(Of DateTime), _
                                             Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
+        ' Add [Gender]
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         Dim dtRes As DataTable = New DataTable
         Dim db As New Database
@@ -429,7 +358,7 @@ Public Class eHSAccountMaintBLL
             strIdentityNum = udtFormatter.formatDocumentIdentityNumber(strDocType, strIdentityNum)
 
             Dim parms() As SqlParameter = { _
-                            db.MakeInParam("@Doc_Code", SqlDbType.Char, 20, strDocType), _
+                            db.MakeInParam("@Doc_Code", SqlDbType.VarChar, 5000, strDocType), _
                             db.MakeInParam("@IdentityNum", SqlDbType.VarChar, 20, strIdentityNum), _
                             db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, strAdoptionPrefixNum), _
                             db.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, strEname), _
@@ -440,7 +369,8 @@ Public Class eHSAccountMaintBLL
                             db.MakeInParam("@AccountType", SqlDbType.Char, 1, strAccountType), _
                             db.MakeInParam("@AccountStatus", SqlDbType.Char, 1, strAccountStatus), _
                             db.MakeInParam("@CreationDateFrom", SqlDbType.DateTime, 8, IIf(Not dtmCreationDateFrom.HasValue, DBNull.Value, dtmCreationDateFrom)), _
-                            db.MakeInParam("@CreationDateTo", SqlDbType.DateTime, 8, IIf(Not dtmCreationDateTo.HasValue, DBNull.Value, dtmCreationDateTo)) _
+                            db.MakeInParam("@CreationDateTo", SqlDbType.DateTime, 8, IIf(Not dtmCreationDateTo.HasValue, DBNull.Value, dtmCreationDateTo)), _
+                            db.MakeInParam("@Gender", SqlDbType.Char, 1, strGender) _
                         }
 
             udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherAccountListForMaint_byParticular_get", parms, blnOverrideResultLimit, db)
@@ -480,7 +410,7 @@ Public Class eHSAccountMaintBLL
 
         Return udtBLLSearchResult
     End Function
-    ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
+
 
     Private Function DistinctArray(ByVal strArry() As String) As String()
         Dim sb As New StringBuilder

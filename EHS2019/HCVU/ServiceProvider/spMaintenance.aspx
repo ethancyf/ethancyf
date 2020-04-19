@@ -484,7 +484,7 @@
                                                     <ItemStyle VerticalAlign="Top" Width="100px" />
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblESchemeName" runat="server" Text='<%# Eval("SchemeCode") %>' CssClass="tableText" />
-                                                        <asp:HiddenField ID="hfESchemeName" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                        <%--<asp:HiddenField ID="hfESchemeName" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Status [Remarks] (To be controlled code-behind)">
@@ -538,11 +538,13 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>'
+                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>'
+                                                                SchemeCodeSuspend='<%# Eval("SchemeCode")%>'
                                                                 OnCheckedChanged="cboSchemeCode_SuspendScheme_CheckedChanged" AutoPostBack="True" />
                                                             <asp:Image ID="imgAlertSchemeCode" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
                                                                 AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Visible="False" />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Remarks %>">
@@ -580,10 +582,12 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>' />
+                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>' 
+                                                                SchemeCodeReactive='<%# Eval("SchemeCode")%>' />
                                                             <asp:Image ID="imgAlertSchemeCode" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
                                                                 AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Visible="False" />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
@@ -612,11 +616,13 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>'
+                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>'
+                                                                SchemeCodeDelist='<%# Eval("SchemeCode")%>'
                                                                 OnCheckedChanged="cboSchemeCode_DelistScheme_CheckedChanged" AutoPostBack="True" />
                                                             <asp:Image ID="imgAlertSchemeCode" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
                                                                 AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Visible="False" />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, DelistingType %>">
@@ -706,8 +712,10 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:Label ID="lblSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>' />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <asp:Label ID="lblSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>'
+                                                                SchemeCodeLogoReturn='<%# Eval("SchemeCode")%>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, LogoReturnDate %>">
@@ -1004,6 +1012,20 @@
                                                                     <asp:Label ID="lblPracticePhone" runat="server" CssClass="tableText" Text='<%# Eval("PhoneDayTime") %>'></asp:Label></td>
                                                             </tr>
                                                             <tr>
+                                                                <td style="background-color: #f7f7de" valign="top">
+                                                                    <asp:Label ID="lblPracticeMobileClinicText" runat="server" Text="<%$ Resources:Text, SPSResultMobileClinic %>"></asp:Label>
+                                                                <td>
+                                                                    <asp:Label ID="lblPracticeMobileClinic" runat="server" CssClass="tableText" Text='<%# Eval("MobileClinic") %>'></asp:Label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="background-color: #f7f7de" valign="top">
+                                                                    <asp:Label ID="lblPracticeRemarksText" runat="server" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                                                                <td>
+                                                                    <asp:Label ID="lblPracticeRemarks" runat="server" Text="" CssClass="tableText"></asp:Label><br />
+                                                                    <asp:Label ID="lblPracticeRemarksChi" runat="server" Text="" CssClass="TextChi"></asp:Label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
                                                                 <td style="background-color: #f7f7de;" valign="top">
                                                                     <asp:Label ID="lblPracticeStatusText" runat="server" Text="<%$ Resources:Text, PracticeStatus %>"></asp:Label>
                                                                 </td>
@@ -1025,20 +1047,27 @@
                                                                             <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                                                 <ItemStyle VerticalAlign="Top" Width="13%" />
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lblPracticeSchemeCode" runat="server" Text='<%# Eval("SchemeDisplayCode") %>'
-                                                                                        CssClass="tableText"></asp:Label>
-                                                                                    <asp:HiddenField ID="hfPracticeSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
-                                                                                    <asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />
-                                                                                    <asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />
-                                                                                    <asp:HiddenField ID="hfGAllNotProvideService" runat="server" />
+                                                                                    <asp:Label ID="lblPracticeSchemeCode" runat="server" CssClass="tableText"
+                                                                                        Text='<%# Eval("SchemeDisplayCode") %>'
+                                                                                        SchemeCodeReal='<%# Eval("SchemeCode")%>'
+                                                                                        IsCategoryHeaderReal='<%# Eval("IsCategoryHeader")%>'
+                                                                                        CategoryNameReal='<%# Eval("CategoryName")%>'
+                                                                                        AllNotProvideServiceReal=""
+                                                                                        />
+                                                                                    <%--<asp:HiddenField ID="hfPracticeSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
+                                                                                    <%--<asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />--%>
+                                                                                    <%--<asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />--%>
+                                                                                    <%--<asp:HiddenField ID="hfGAllNotProvideService" runat="server" />--%>
                                                                                 </ItemTemplate>
                                                                             </asp:TemplateField>
                                                                             <asp:TemplateField HeaderText="<%$ Resources:Text, SubsidyAndServiceFee %>">
                                                                                 <ItemStyle VerticalAlign="Top" Width="10%" />
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lblPracticeSubsidizeCode" runat="server" Text='<%# Eval("SubsidizeDisplayCode") %>'
-                                                                                        CssClass="tableText"></asp:Label>
-                                                                                    <asp:HiddenField ID="hfPracticeSubsidizeCodeReal" runat="server" Value='<%# Eval("SubsidizeCode") %>' />
+                                                                                    <asp:Label ID="lblPracticeSubsidizeCode" runat="server" CssClass="tableText"
+                                                                                        Text='<%# Eval("SubsidizeDisplayCode") %>'
+                                                                                        SubsidizeCodeReal='<%# Eval("SubsidizeCode") %>'
+                                                                                        />
+                                                                                    <%--<asp:HiddenField ID="hfPracticeSubsidizeCodeReal" runat="server" Value='<%# Eval("SubsidizeCode") %>' />--%>
                                                                                 </ItemTemplate>
                                                                             </asp:TemplateField>
                                                                             <asp:TemplateField>
@@ -1051,9 +1080,10 @@
                                                                             <asp:TemplateField HeaderText="Resources: Text, Status (Controlled in CodeBehind)">
                                                                                 <ItemStyle VerticalAlign="Top" Width="28%" />
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lblPracticeSchemeStatus" runat="server" CssClass="tableText">
-                                                                                    </asp:Label>
-                                                                                    <asp:HiddenField ID="hfPracticeSchemeStatusReal" runat="server" />
+                                                                                    <asp:Label ID="lblPracticeSchemeStatus" runat="server" CssClass="tableText"
+                                                                                        StatusReal=""
+                                                                                        />
+                                                                                    <%--<asp:HiddenField ID="hfPracticeSchemeStatusReal" runat="server" />--%>
                                                                                 </ItemTemplate>
                                                                             </asp:TemplateField>
                                                                             <asp:TemplateField HeaderText="<%$ Resources:Text, EffectiveTime %>">
@@ -1337,7 +1367,7 @@
                                         <td style="width: 200px" valign="top">
                                             <asp:Label ID="lblActionReactivateSchemeText" runat="server" Text="<%$ Resources:Text, ReactivateScheme %>"></asp:Label></td>
                                         <td>
-                                            <asp:Label ID="lblActionReactivateScheme" runat="server" CssClass="tableText"></asp:Label>
+                                            <asp:Label ID="lblActionReactivateScheme" runat="server" CssClass="tableText" />
                                             <asp:HiddenField ID="hfActionReactivateScheme" runat="server" />
                                         </td>
                                     </tr>
@@ -1453,6 +1483,20 @@
                                                                     <asp:Label ID="lblPracticePhone" runat="server" CssClass="tableText" Text='<%# Eval("PhoneDayTime") %>'></asp:Label></td>
                                                             </tr>
                                                             <tr>
+                                                                <td style="background-color: #f7f7de" valign="top">
+                                                                    <asp:Label ID="lblActionPracticeMobileClinicText" runat="server" Text="<%$ Resources:Text, SPSResultMobileClinic %>"></asp:Label>
+                                                                <td>
+                                                                    <asp:Label ID="lblActionPracticeMobileClinic" runat="server" CssClass="tableText" Text='<%# Eval("MobileClinic") %>'></asp:Label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="background-color: #f7f7de" valign="top">
+                                                                    <asp:Label ID="lblActionPracticeRemarksText" runat="server" Text="<%$ Resources:Text, Remarks %>"></asp:Label>
+                                                                <td>
+                                                                    <asp:Label ID="lblActionPracticeRemarks" runat="server" Text="" CssClass="tableText"></asp:Label><br />
+                                                                    <asp:Label ID="lblActionPracticeRemarksChi" runat="server" Text="" CssClass="TextChi"></asp:Label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
                                                                 <td style="background-color: #f7f7de;" valign="top">
                                                                     <asp:Label ID="lblPracticeStatusText" runat="server" Text="<%$ Resources:Text, PracticeStatus %>"></asp:Label>
                                                                 </td>
@@ -1474,20 +1518,27 @@
                                                                             <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                                                 <ItemStyle VerticalAlign="Top" Width="80px" />
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lblPracticeSchemeCode" runat="server" Text='<%# Eval("SchemeDisplayCode") %>'
-                                                                                        CssClass="tableText"></asp:Label>
-                                                                                    <asp:HiddenField ID="hfPracticeSchemeCode" runat="server" Value='<%# Eval("SchemeCode") %>' />
-                                                                                    <asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />
-                                                                                    <asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />
-                                                                                    <asp:HiddenField ID="hfGAllNotProvideService" runat="server" />
+                                                                                    <asp:Label ID="lblPracticeSchemeCode" runat="server" CssClass="tableText"
+                                                                                        Text='<%# Eval("SchemeDisplayCode") %>'
+                                                                                        SchemeCode='<%# Eval("SchemeCode")%>'
+                                                                                        IsCategoryHeader='<%# Eval("IsCategoryHeader")%>'
+                                                                                        CategoryName='<%# Eval("CategoryName")%>'
+                                                                                        AllNotProvideService=""
+                                                                                        />
+                                                                                    <%--<asp:HiddenField ID="hfPracticeSchemeCode" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
+                                                                                    <%--<asp:HiddenField ID="hfGIsCategoryHeader" runat="server" Value='<%# Eval("IsCategoryHeader") %>' />--%>
+                                                                                    <%--<asp:HiddenField ID="hfGCategoryName" runat="server" Value='<%# Eval("CategoryName") %>' />--%>
+                                                                                    <%--<asp:HiddenField ID="hfGAllNotProvideService" runat="server" />--%>
                                                                                 </ItemTemplate>
                                                                             </asp:TemplateField>
                                                                             <asp:TemplateField HeaderText="<%$ Resources:Text, SubsidyAndServiceFee %>">
                                                                                 <ItemStyle VerticalAlign="Top" Width="80px" />
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lblPracticeSubsidizeCode" runat="server" Text='<%# Eval("SubsidizeDisplayCode") %>'
-                                                                                        CssClass="tableText"></asp:Label>
-                                                                                    <asp:HiddenField ID="hfPracticeSubsidizeCode" runat="server" Value='<%# Eval("SubsidizeCode") %>' />
+                                                                                    <asp:Label ID="lblPracticeSubsidizeCode" runat="server" CssClass="tableText"
+                                                                                        Text='<%# Eval("SubsidizeDisplayCode") %>'
+                                                                                        SubsidizeCode='<%# Eval("SubsidizeCode")%>'
+                                                                                        />
+                                                                                    <%--<asp:HiddenField ID="hfPracticeSubsidizeCode" runat="server" Value='<%# Eval("SubsidizeCode") %>' />--%>
                                                                                 </ItemTemplate>
                                                                             </asp:TemplateField>
                                                                             <asp:TemplateField>
@@ -1500,9 +1551,9 @@
                                                                             <asp:TemplateField HeaderText="Resources:Text, Status (To be controlled CodeBehind)">
                                                                                 <ItemStyle VerticalAlign="Top" />
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lblPracticeSchemeStatus" runat="server" CssClass="tableText">
-                                                                                    </asp:Label>
-                                                                                    <asp:HiddenField ID="hfPracticeSchemeStatusReal" runat="server" />
+                                                                                    <asp:Label ID="lblPracticeSchemeStatus" runat="server" CssClass="tableText"
+                                                                                        Status=""/>                                                                                
+                                                                                    <%--<asp:HiddenField ID="hfPracticeSchemeStatusReal" runat="server" />--%>
                                                                                 </ItemTemplate>
                                                                             </asp:TemplateField>
                                                                             <asp:TemplateField HeaderText="<%$ Resources:Text, EffectiveTime %>">
@@ -1588,10 +1639,12 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>' />
+                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>'
+                                                                SchemeCodePracticeReactivate='<%# Eval("SchemeCode")%>' />
                                                             <asp:Image ID="imgAlertSchemeCode" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
                                                                 AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Visible="False" />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
@@ -1627,11 +1680,13 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>'
+                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>'
+                                                                SchemeCodePracticeSuspend='<%# Eval("SchemeCode")%>'
                                                                 OnCheckedChanged="cboSchemeCode_SuspendScheme_CheckedChanged" AutoPostBack="True" />
                                                             <asp:Image ID="imgAlertSchemeCode" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
                                                                 AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Visible="False" />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Remarks %>">
@@ -1674,11 +1729,13 @@
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Scheme %>">
                                                         <ItemStyle VerticalAlign="Top" Width="100px" />
                                                         <ItemTemplate>
-                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" Text='<%# Eval("DisplayCode") %>'
+                                                            <asp:CheckBox ID="cboSchemeCode" runat="server" 
+                                                                Text='<%# Eval("DisplayCode") %>'
+                                                                SchemeCodePracticeDelist='<%# Eval("SchemeCode")%>'
                                                                 OnCheckedChanged="cboSchemeCode_DelistScheme_CheckedChanged" AutoPostBack="True" />
                                                             <asp:Image ID="imgAlertSchemeCode" runat="server" ImageUrl="~/Images/others/icon_caution.gif"
                                                                 AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Visible="False" />
-                                                            <asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCodeReal" runat="server" Value='<%# Eval("SchemeCode") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, DelistingType %>">

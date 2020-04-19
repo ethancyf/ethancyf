@@ -74,18 +74,6 @@ Partial Public Class ucTypeOfPracticeGrid
 
         If Not IsNothing(udtThirdPartyEnrolmentCollection) Then
 
-            'For Each udtThirdPartyEnrolmentModel As ThirdParty.ThirdPartyAdditionalFieldEnrolmentModel In udtThirdPartyEnrolmentCollection.Values
-            '    For Each r As GridViewRow In Me.gvPracticeInfo.Rows
-            '        Dim rdoTypeOfPractice As RadioButtonList = CType(r.FindControl("rdlTypeOfPractice"), RadioButtonList)
-            '        Dim chkSelect As CheckBox = CType(r.FindControl("chkSelect"), CheckBox)
-            '        Dim lblTypeOfPractice As Label = CType(r.FindControl("lblTypeOfPractice"), Label)
-            '        rdoTypeOfPractice.Enabled = False
-            '        rdoTypeOfPractice.SelectedIndex = -1
-            '        lblTypeOfPractice.Text = String.Empty
-            '        chkSelect.Checked = False
-            '    Next
-            'Next
-
             For Each r As GridViewRow In Me.gvPracticeInfo.Rows
                 If Me.Mode = EnumMode.View Then
                     r.Visible = False
@@ -396,6 +384,7 @@ Partial Public Class ucTypeOfPracticeGrid
     Private Sub gvPracticeInfo_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvPracticeInfo.RowDataBound
         Dim udtSchemeBackOfficeBLL As New SchemeBackOfficeBLL
         Dim udtSchemeBOList As SchemeBackOfficeModelCollection = Nothing
+        Dim udtFormatter As New Common.Format.Formatter
 
         Select Case e.Row.RowType
             Case DataControlRowType.DataRow
@@ -413,29 +402,81 @@ Partial Public Class ucTypeOfPracticeGrid
                     End If
                 Next
 
-                ' CRE16-021 Transfer VSS category to PCD [Start][Winnie]
-                'Dim lblRegBankPracticeEName As Label = e.Row.FindControl("lblRegBankPracticeEName")
+                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Dim lblRegBankPracticeEName As Label = e.Row.FindControl("lblRegBankPracticeEName")
                 Dim lblRegBankPracticeCName As Label = e.Row.FindControl("lblRegBankPracticeCName")
 
-                'If blnNonClinic Then
-                '    lblRegBankPracticeEName.Text += String.Format(" ({0})", HttpContext.GetGlobalResourceObject("Text", "NonClinic", New CultureInfo(CultureLanguage.English)))
+                Dim lblRegBankPracticeAddress As Label = e.Row.FindControl("lblRegBankPracticeAddress")
+                Dim lblRegBankPracticeAddressChi As Label = e.Row.FindControl("lblRegBankPracticeAddressChi")
 
-                '    If lblRegBankPracticeCName.Text <> String.Empty Then
-                '        lblRegBankPracticeCName.Text += String.Format(" ({0})", HttpContext.GetGlobalResourceObject("Text", "NonClinic", New CultureInfo(CultureLanguage.TradChinese)))
-                '    End If
+                Dim strEngAddrWithoutDistrict As String = String.Empty
+                Dim strChiAddrWithoutDistrict As String = String.Empty
+                Dim strPracAddrRemarksEng As String = String.Empty
+                Dim strPracAddrRemarksChi As String = String.Empty
 
-                'End If
+                Dim blnPracticeRemarksTrim As Boolean = False
+                Dim intPracticeRemarksMaxLength As Integer = 150
 
-                ' Practice Chinese Name
+                If Not objPractice.PracticeAddress Is Nothing Then
+                    strEngAddrWithoutDistrict = udtFormatter.FormatAddressWithoutDistrict(objPractice.PracticeAddress)
+                    strChiAddrWithoutDistrict = udtFormatter.FormatAddressChiWithoutDistrict(objPractice.PracticeAddress)
+                End If
+
+                'Practice Eng Address:
+                ' Display:  ({Remarks}) {Practice Address with District}
+                ' To PCD:   ({Remarks}) {Practice Address w/o District}, Remarks will be trimmed if too long
+                If objPractice.RemarksDesc <> String.Empty Then
+                    strPracAddrRemarksEng = String.Format("({0}) {1}", objPractice.RemarksDesc, strEngAddrWithoutDistrict).Trim
+
+                    If strPracAddrRemarksEng.Length > intPracticeRemarksMaxLength Then
+                        lblRegBankPracticeAddress.Text = String.Format("({0}#) {1}", objPractice.RemarksDesc, lblRegBankPracticeAddress.Text)
+                        blnPracticeRemarksTrim = True
+                    Else
+                        lblRegBankPracticeAddress.Text = String.Format("({0}) {1}", objPractice.RemarksDesc, lblRegBankPracticeAddress.Text).Trim
+                    End If
+                End If
+
+                'Practice Chi Address: 
+                ' Display:  {Practice Address with District} ({Remarks})
+                ' To PCD:   {Practice Address w/o District} ({Remarks}), Remarks will be trimmed if too long
+                If objPractice.RemarksDescChi <> String.Empty Then
+                    strPracAddrRemarksChi = String.Format("{0} ({1})", strChiAddrWithoutDistrict, objPractice.RemarksDescChi).Trim
+
+                    If strPracAddrRemarksChi.Length > intPracticeRemarksMaxLength Then
+                        lblRegBankPracticeAddressChi.Text = String.Format("{0} ({1}#)", lblRegBankPracticeAddressChi.Text, objPractice.RemarksDescChi).Trim
+                        blnPracticeRemarksTrim = True
+                    Else
+                        lblRegBankPracticeAddressChi.Text = String.Format("{0} ({1})", lblRegBankPracticeAddressChi.Text, objPractice.RemarksDescChi).Trim
+                    End If
+                End If
+
+                'Format Practice Chinese Name
                 lblRegBankPracticeCName.Text = formatChineseString(lblRegBankPracticeCName.Text)
+
+                'Format Practice Chinese Address
+                lblRegBankPracticeAddressChi.Text = formatChineseString(lblRegBankPracticeAddressChi.Text)
+
+                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
 
                 ' Non Clinic
                 Dim lblRegBankPracticeNonClinic As Label = DirectCast(e.Row.FindControl("lblRegBankPracticeNonClinic"), Label)
                 Dim trRegBankPracticeNonClinic As HtmlTableRow = DirectCast(e.Row.FindControl("trRegBankPracticeNonClinic"), HtmlTableRow)
 
                 trRegBankPracticeNonClinic.Visible = blnNonClinic
-                lblRegBankPracticeNonClinic.Text = String.Format(" *{0}", HttpContext.GetGlobalResourceObject("Text", "ProvideServiceAtNonClinicSetting"))
-                ' CRE16-021 Transfer VSS category to PCD [End][Winnie]
+                lblRegBankPracticeNonClinic.Text = String.Format(" * {0}", HttpContext.GetGlobalResourceObject("Text", "ProvideServiceAtNonClinicSetting"))
+
+                ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                ' Remarks Trim
+                Dim lblRegBankPracticeRemarksTrim As Label = DirectCast(e.Row.FindControl("lblRegBankPracticeRemarksTrim"), Label)
+                Dim trRegBankPracticeRemarksTrim As HtmlTableRow = DirectCast(e.Row.FindControl("trRegBankPracticeRemarksTrim"), HtmlTableRow)
+
+                trRegBankPracticeRemarksTrim.Visible = blnPracticeRemarksTrim
+                lblRegBankPracticeRemarksTrim.Text = String.Format("# {0}", HttpContext.GetGlobalResourceObject("Text", "PracticeRemarksTrim"))
+
+                Dim trRegBankPracticeNotes As HtmlTableRow = DirectCast(e.Row.FindControl("trRegBankPracticeNotes"), HtmlTableRow)
+                trRegBankPracticeNotes.Visible = blnNonClinic OrElse blnPracticeRemarksTrim
+                ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                 Dim rdl As RadioButtonList = DirectCast(e.Row.FindControl("rdlTypeOfPractice"), RadioButtonList)
                 Dim objProfession As ProfessionModel = ProfessionBLL.GetProfessionListByServiceCategoryCode(objPractice.Professional.ServiceCategoryCode)

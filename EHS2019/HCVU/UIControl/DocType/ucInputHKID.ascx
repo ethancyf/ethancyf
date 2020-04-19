@@ -135,7 +135,7 @@
                         <td>
                         </td>
                     </tr>
-                    <tr>
+                    <tr id="trCreationMethodOriginal" runat="server">
                         <td valign="top">
                             <asp:Label ID="lblCreationMethodOriginalText" runat="server"></asp:Label></td>
                         <td>

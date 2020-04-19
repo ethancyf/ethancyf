@@ -201,10 +201,13 @@ Public Class eFormBLL
                             End If
                         End If
 
+                        ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
                         udtPracticeModel = New PracticeModel(String.Empty, strERN, intPIndex, 1, row.Item("PracticeName"), row.Item("PracticeNameChi"), _
                                                             New AddressModel(row.Item("Room"), row.Item("Floor"), row.Item("Block"), row.Item("Building"), row.Item("ChiBuilding"), row.Item("District"), Nothing), _
                                                             intProfIndex, String.Empty, SubmitChannel.Electronic, String.Empty, _
-                                                            row.Item("PhoneDaytime"), Nothing, String.Empty, Nothing, String.Empty, Nothing, Nothing, Nothing, Nothing)
+                                                            row.Item("PhoneDaytime"), Nothing, String.Empty, Nothing, String.Empty, Nothing, YesNo.No, String.Empty, String.Empty, _
+                                                            Nothing, Nothing, Nothing)
+                        ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
                         udtPracticeList.Add(udtPracticeModel)
 
@@ -613,11 +616,13 @@ Public Class eFormBLL
                     Next
                 End If
 
-
+                ' CRE16-022 (Add optional field "Remarks") [Start][Winnie]
+                ' Add [Mobile_Clinic],[Remarks_Desc] & [Remarks_Desc_Chi]
                 udtPracticeModel = New PracticeModel(String.Empty, String.Empty, intPIndex, 1, row.Item("PracticeName"), row.Item("PracticeNameChi"), _
                                                     New AddressModel(row.Item("Room"), row.Item("Floor"), row.Item("Block"), row.Item("Building"), row.Item("ChiBuilding"), row.Item("District"), Nothing), _
                                                     intProfIndex, "A", SubmitChannel.Electronic, String.Empty, _
-                                                    row.Item("PhoneDaytime"), Nothing, String.Empty, Nothing, String.Empty, Nothing, Nothing, udtProfessionalModel, udtPracticeSchemeInfoModelCollection)
+                                                    row.Item("PhoneDaytime"), Nothing, String.Empty, Nothing, String.Empty, Nothing, YesNo.No, String.Empty, String.Empty,
+                                                    Nothing, udtProfessionalModel, udtPracticeSchemeInfoModelCollection)
 
                 udtPracticeModelCollection.Add(udtPracticeModel)
                 intPIndex = intPIndex + 1

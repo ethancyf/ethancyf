@@ -6,7 +6,7 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Component.SchemeDetails
 Imports Common.Component
-
+Imports Common.ComFunction
 Imports Common.Format
 
 Namespace PrintOut.VSSConsentForm_CHI
@@ -43,8 +43,10 @@ Namespace PrintOut.VSSConsentForm_CHI
 
         Private Sub LoadReport()
 
-            ' Fill in SPName
-            txtSPName.Text = _udtSP.ChineseName
+            ' Fill in SPName            
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
+            txtSPName.Text = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
 
             'Fill in Date of Vaccination
             'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]

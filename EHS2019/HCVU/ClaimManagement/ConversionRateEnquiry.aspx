@@ -202,7 +202,7 @@
 
                                     <%-- 1. Effected Conversion Rate Record  --%>
                                     <asp:View ID="vCurrentConversionRate" runat="server">
-                                        <asp:Table ID="tblCurrentConversionRate" BorderWidth="0px" CellPadding="0" runat="server">
+                                        <asp:Table ID="tblCurrentConversionRate" BorderWidth="0px" CellPadding="0" runat="server" style="min-width:400px;">
                                             <asp:TableRow>
                                                 <asp:TableCell VerticalAlign="top" Width="6px" style="white-space:nowrap">
                                                     <span style="width:6px">&nbsp;</span>
@@ -212,7 +212,7 @@
                                                         <asp:TableRow>
                                                             <asp:TableCell VerticalAlign="middle" Width="100%" Height="10px" ColumnSpan="3"/>
                                                         </asp:TableRow>
-                                                        <asp:TableRow>
+                                                        <asp:TableRow ID="trCurrentConversionRateID" runat="server">
                                                             <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                 <span>&nbsp;&nbsp;&nbsp;</span>
                                                                 <asp:Label ID="lblCurrentConversionRateIDText" runat="server" Text="<%$ Resources: Text, ConversionRateID %>"></asp:Label>
@@ -245,7 +245,7 @@
                                                                     style="font-size: 16px;color: #4D4D4D;	font-family: Arial;	font-weight: bold;"></asp:Label>
                                                             </asp:TableCell>
                                                         </asp:TableRow>
-                                                        <asp:TableRow>
+                                                        <asp:TableRow ID="trCurrentConversionRateCreateBy" runat="server">
                                                             <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                 <span>&nbsp;&nbsp;&nbsp;</span>
                                                                 <asp:Label ID="lblCurrentConversionRateCreateByText" runat="server" Text="<%$ Resources: Text, CreateBy %>"></asp:Label>
@@ -262,7 +262,7 @@
                                                                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                             </asp:TableCell>
                                                         </asp:TableRow>
-                                                        <asp:TableRow>
+                                                        <asp:TableRow ID="trCurrentConversionRateApprovedBy" runat="server">
                                                             <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                 <span>&nbsp;&nbsp;&nbsp;</span>
                                                                 <asp:Label ID="lblCurrentConversionRateApprovedByText" runat="server" Text="<%$ Resources: Text, ApprovedBy %>"></asp:Label>
@@ -333,7 +333,7 @@
 
                                     <%-- 1. Approved Conversion Rate Record  --%>
                                     <asp:View ID="vNextConversionRate" runat="server">
-                                        <asp:Table ID="tblNextConversionRate" BorderWidth="0px" CellPadding="0" runat="server">
+                                        <asp:Table ID="tblNextConversionRate" BorderWidth="0px" CellPadding="0" runat="server" style="min-width:400px;">
                                             <asp:TableRow>
                                                 <asp:TableCell VerticalAlign="top" Width="6px">
                                                     <span style="width:6px">&nbsp;</span>
@@ -343,7 +343,7 @@
                                                         <asp:TableRow>
                                                             <asp:TableCell VerticalAlign="middle" Width="100%" Height="10px" ColumnSpan="3"/>
                                                         </asp:TableRow>
-                                                        <asp:TableRow>
+                                                        <asp:TableRow ID="trNextConversionRateID" runat="server">
                                                             <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                 <span>&nbsp;&nbsp;&nbsp;</span>
                                                                 <asp:Label ID="lblNextConversionRateIDText" runat="server" Text="<%$ Resources: Text, ConversionRateID %>"></asp:Label>
@@ -376,7 +376,7 @@
                                                                     style="font-size: 16px;color: #4D4D4D;	font-family: Arial;	font-weight: bold;"></asp:Label>
                                                             </asp:TableCell>
                                                         </asp:TableRow>
-                                                        <asp:TableRow>
+                                                        <asp:TableRow ID="trNextConversionRateCreateBy" runat="server">
                                                             <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                 <span>&nbsp;&nbsp;&nbsp;</span>
                                                                 <asp:Label ID="lblNextConversionRateCreateByText" runat="server" Text="<%$ Resources: Text, CreateBy %>"></asp:Label>
@@ -393,7 +393,7 @@
                                                                 <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                             </asp:TableCell>
                                                         </asp:TableRow>
-                                                        <asp:TableRow>
+                                                        <asp:TableRow ID="trNextConversionRateApprovedBy" runat="server">
                                                             <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                 <span>&nbsp;&nbsp;&nbsp;</span>
                                                                 <asp:Label ID="lblNextConversionRateApprovedByText" runat="server" Text="<%$ Resources: Text, ApprovedBy %>"></asp:Label>
@@ -530,7 +530,7 @@
                                                     Text="<%$ Resources: Text, ConversionRateRecord %>"></asp:Label>
                                             </div>
 
-                                            <asp:Table ID="tblConversionRateRecord" BorderWidth="0px" CellPadding="0" runat="server">
+                                            <asp:Table ID="tblConversionRateRecord" BorderWidth="0px" CellPadding="0" runat="server" style="min-width:400px;">
                                                 <asp:TableRow>
                                                     <asp:TableCell VerticalAlign="top" Width="6px">
                                                         <span style="width:6px">&nbsp;</span>
@@ -540,7 +540,7 @@
                                                             <asp:TableRow>
                                                                 <asp:TableCell VerticalAlign="middle" Width="100%" Height="10px" ColumnSpan="3"/>
                                                             </asp:TableRow>
-                                                            <asp:TableRow>
+                                                            <asp:TableRow ID="trConversionRateRecordID" runat="server">
                                                                 <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                     <span>&nbsp;&nbsp;&nbsp;</span>
                                                                     <asp:Label ID="lblConversionRateRecordIDText" runat="server" Text="<%$ Resources: Text, ConversionRateID %>"></asp:Label>
@@ -573,7 +573,7 @@
                                                                         style="font-size: 16px;color: #4D4D4D;	font-family: Arial;	font-weight: bold;"></asp:Label>
                                                                 </asp:TableCell>
                                                             </asp:TableRow>
-                                                            <asp:TableRow>
+                                                            <asp:TableRow ID="trConversionRateRecordCreateBy" runat="server">
                                                                 <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                     <span>&nbsp;&nbsp;&nbsp;</span>
                                                                     <asp:Label ID="lblConversionRateRecordCreateByText" runat="server" Text="<%$ Resources: Text, CreateBy %>"></asp:Label>
@@ -590,7 +590,7 @@
                                                                     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                                 </asp:TableCell>
                                                             </asp:TableRow>
-                                                            <asp:TableRow>
+                                                            <asp:TableRow ID="trConversionRateRecordApprovedBy" runat="server">
                                                                 <asp:TableCell VerticalAlign="middle" Width="30%" Height="22px" style="white-space:nowrap">
                                                                     <span>&nbsp;&nbsp;&nbsp;</span>
                                                                     <asp:Label ID="lblConversionRateRecordApprovedByText" runat="server" Text="<%$ Resources: Text, ApprovedBy %>"></asp:Label>

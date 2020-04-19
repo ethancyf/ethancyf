@@ -199,7 +199,18 @@ Partial Public Class ChangePassword
         udtAuditLogEntry.WriteLog(LogID.LOG00004, "Back Click")
         ' CRE11-021 log the missed essential information [End]
 
-        Response.Redirect("~/Home/home.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Dim udtMenuBLL As New Component.Menu.MenuBLL
+        Dim strEnquiryCallCentre_FuncCode As String = FunctCode.FUNT010309
+
+        ' eHealth Account Enquiry (Call Centre) as default page
+        If Me.SubPlatform = EnumHCVUSubPlatform.CC AndAlso
+            udtHCVUUser.AccessRightCollection.Item(strEnquiryCallCentre_FuncCode).Allow() Then
+            RedirectHandler.ToURL(udtMenuBLL.GetURLByFunctionCode(strEnquiryCallCentre_FuncCode))
+        Else
+            RedirectHandler.ToURL("~/Home/home.aspx")
+        End If
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
     End Sub
 
 #Region "Implement IWorkingData (CRE11-004)"

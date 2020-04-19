@@ -10,11 +10,13 @@ Namespace Component.Mapping
         Public Enum EnumSourceSystem
             EHS
             PCD
+            EHRSS
         End Enum
 
         Public Enum EnumTargetSystem
             EHS
             PCD
+            EHRSS
         End Enum
 
         Public Enum EnumCodeType

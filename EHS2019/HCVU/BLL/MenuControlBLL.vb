@@ -2,6 +2,7 @@ Imports Common.Component.AccessRight
 Imports Common.Component.HCVUUser
 Imports HCVU.Component.Menu
 Imports System.Threading
+Imports Common.Component
 
 Namespace BLL
 
@@ -30,15 +31,17 @@ Namespace BLL
                 Return dr(0)("Description").ToString.Trim
             End If
 
-        End Function        
+        End Function
 
-        Public Sub BuildMenu(ByVal ulMenu As HtmlGenericControl)
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        Public Sub BuildMenu(ByVal ulMenu As HtmlGenericControl, ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform)
             Dim udtAccessRightCollection As AccessRightModelCollection = (New HCVUUserBLL).GetHCVUUser().AccessRightCollection
 
             Dim udtMenuBLL As New MenuBLL
 
-            Dim dtMenuGroup As DataTable = udtMenuBLL.GetMenuGroupTable
-            Dim dtMenuItem As DataTable = udtMenuBLL.GetMenuItemTable
+            Dim dtMenuGroup As DataTable = udtMenuBLL.GetMenuGroupTable()
+            Dim dtMenuItem As DataTable = udtMenuBLL.GetMenuItemTableBySubPlatform(enumHCVUSubPlatform)
 
             For Each dr As DataRow In dtMenuGroup.Rows
                 Dim objEffectiveDate As Object = dr("Effective_Date")
@@ -46,20 +49,22 @@ Namespace BLL
                 If IsDBNull(objEffectiveDate) OrElse DateTime.Now > CType(objEffectiveDate, DateTime) Then
                     Dim strGroupName As String = dr("Group_Name").ToString.Trim
 
-                    ' Get the parent
+                    ' Get the parent (Level 1)
                     Dim liParent As HtmlGenericControl = CreateParent(GetMenuGroupDesc(strGroupName, dtMenuGroup))
 
-                    ' Retrieve the child of the parent
+                    ' Retrieve the child of the parent (Level 2 & 3)
                     PopulateSubItem(dtMenuItem, strGroupName, liParent, udtAccessRightCollection)
 
                     ' Add the parent to the menu
-                    ulMenu.Controls.Add(liParent)
+                    If liParent.Controls.Count > 1 Then
+                        ulMenu.Controls.Add(liParent)
+                    End If
 
                 End If
 
             Next
-
         End Sub
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         '
 
@@ -81,7 +86,6 @@ Namespace BLL
                             Dim liChild As HtmlGenericControl = CreateChild(dr("Function_Code").ToString.Trim, _
                                                         GetMenuItemDesc(dr("Item_Name").ToString.Trim, dtMenuItem), _
                                                         dr("URL").ToString.Trim, udtAccessRightCollection, "level2")
-
 
                             ulChild.Controls.Add(liChild)
 
@@ -113,15 +117,26 @@ Namespace BLL
                                 ulTarget.Controls.Add(liChild)
                                 liTarget.Controls.Add(ulTarget)
 
+                                ' Replace LinkButton by HtmlGenericControl
+                                Dim anchor As LinkButton = CType(liTarget.Controls.Item(0), LinkButton)
+                                Dim anchor2 As New HtmlGenericControl("a")
+
+                                anchor2.Attributes("class") = anchor.Attributes("class")
+                                anchor2.InnerText = anchor.Text
+                                liTarget.Controls.Remove(anchor)
+
                                 ' Add an arrow icon the target parent
-                                Dim anchor As HtmlGenericControl = CType(liTarget.Controls.Item(0), HtmlGenericControl)
                                 Dim img As New HtmlGenericControl("img")
                                 img.Attributes.Add("src", "../Images/menu/arrow.gif")
                                 img.Style.Add("padding-right", "2px")
                                 img.Style.Add("padding-top", "4px")
                                 img.Style.Add("float", "right")
-                                anchor.Style.Add("padding-right", "0")
-                                anchor.Controls.Add(img)
+
+                                anchor2.Style.Add("padding-right", "0")
+                                anchor2.Controls.Add(img)
+
+                                liTarget.Controls.AddAt(0, anchor2)
+
                             Else
                                 Dim ulTarget As HtmlGenericControl = CType(liTarget.Controls.Item(1), HtmlGenericControl)
                                 ulTarget.Controls.Add(liChild)
@@ -135,24 +150,49 @@ Namespace BLL
                     End If
 
                 Else
-                    ' Display_Seq is 0, the parent item is the only item, set the URL for it
+                    ' Display_Seq is 0, the parent item is the only item, set the URL for it without arrow
                     Dim anchor As HtmlGenericControl = CType(miParent.Controls.Item(0), HtmlGenericControl)
+                    Dim anchor2 As New LinkButton
+
+                    anchor2.Attributes("class") = anchor.Attributes("class")
+                    anchor2.Text = anchor.Attributes("text")
 
                     If udtAccessRightCollection.Item(dr.Item("Function_Code")).Allow Then
                         miParent.Attributes.Add("class", "TopMenuItem")
 
                         Dim link As String = System.Web.VirtualPathUtility.ToAbsolute(dr("URL").ToString.Trim)
-                        anchor.Attributes.Add("onclick", "location.href='" & link & "';closeMenu();return false;")
+
+                        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                        ' ------------------------------------------------------------------------
+                        'anchor.Attributes.Add("onclick", "location.href='" & link & "';closeMenu();return false;")
+                        anchor2.CommandArgument = link
+
+                        AddHandler anchor2.Click, AddressOf lbtnMenuItem_Click
+                        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                     Else
                         miParent.Attributes.Add("class", "DisabledTopMenuItem")
+                        anchor2.Attributes.Add("onclick", "return false;")
                     End If
 
-                    'remove arrow from parent
-                    anchor.Style.Add("padding-right", "5px")
-                    anchor.Controls.RemoveAt(1)
+                    anchor2.Style.Add("padding-right", "5px")
+
+                    miParent.Controls.Remove(anchor)
+                    miParent.Controls.AddAt(0, anchor2)
                 End If
             Next
+
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            ' ------------------------------------------------------------------------
+            ' Remove menu item that cannot be access 
+            If IsTurnOnShowDisallowMenuItem() = False Then
+                For Each liTarget As HtmlGenericControl In dicMenuItem.Values
+                    If liTarget.Attributes("class") <> "DefaultMenuItem" Then
+                        liTarget.Parent.Controls.Remove(liTarget)
+                    End If
+                Next
+            End If
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             'Add list to parent
             If ulChild.HasControls Then
@@ -163,18 +203,26 @@ Namespace BLL
 
         Private Function CreateChild(ByVal strFunctionCode As String, ByVal strDescription As String, ByVal Url As String, ByVal udtAccessRightCollection As AccessRightModelCollection, ByVal strLevel As String) As HtmlGenericControl
             Dim menuItem As New HtmlGenericControl("li")
-            Dim anchor As New HtmlGenericControl("a")
+            Dim anchor As New LinkButton
             anchor.Attributes.Add("class", strLevel)
 
-            anchor.InnerText = strDescription
+            anchor.Text = strDescription
 
             If udtAccessRightCollection.Item(strFunctionCode).Allow Then
                 menuItem.Attributes.Add("class", "DefaultMenuItem")
 
                 Dim link As String = System.Web.VirtualPathUtility.ToAbsolute(Url)
-                anchor.Attributes.Add("onclick", "location.href='" & link & "';closeMenu();return false;")
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                ' ------------------------------------------------------------------------
+                'anchor.Attributes.Add("onclick", "location.href='" & link & "';closeMenu();return false;")
+                anchor.CommandArgument = link
+
+                AddHandler anchor.Click, AddressOf lbtnMenuItem_Click
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
             Else
                 menuItem.Attributes.Add("class", "DisabledMenuItem")
+                anchor.Attributes.Add("onclick", "return false;")
             End If
 
             menuItem.Controls.Add(anchor)
@@ -188,15 +236,40 @@ Namespace BLL
             Dim anchor As New HtmlGenericControl("a")
 
             anchor.Attributes.Add("class", "level1")
+            anchor.Attributes.Add("text", strDescription)
             anchor.InnerText = strDescription
             Dim img As New HtmlGenericControl("img")
             img.Attributes.Add("src", "../Images/menu/arrow.gif")
             img.Style.Add("padding-left", "5px")
             anchor.Controls.Add(img)
-            menuItem.Controls.Add(anchor)            
+            menuItem.Controls.Add(anchor)
             menuItem.Attributes.Add("class", "TopMenuItem")
             Return menuItem
         End Function
+
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        Protected Sub lbtnMenuItem_Click(sender As Object, e As EventArgs)
+            ' Add page key to URL after menu click
+            RedirectHandler.ToURL(DirectCast(sender, LinkButton).CommandArgument)
+        End Sub
+
+        Private Function IsTurnOnShowDisallowMenuItem() As Boolean
+
+            Dim isTurnOn As Boolean = True
+
+            'Dim strShowDisallowMenuItem As String = String.Empty
+
+            'strShowDisallowMenuItem = ConfigurationManager.AppSettings("ShowDisallowMenuItem")
+
+            'If strShowDisallowMenuItem.Trim.Equals("Y") Then
+            '    isTurnOn = True
+            'End If
+
+            Return isTurnOn
+
+        End Function
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Class
 

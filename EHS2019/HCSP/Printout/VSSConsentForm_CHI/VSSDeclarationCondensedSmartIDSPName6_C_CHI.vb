@@ -2,6 +2,7 @@ Imports GrapeCity.ActiveReports.SectionReportModel
 Imports GrapeCity.ActiveReports.Document 
 
 Imports Common.Component.ServiceProvider
+Imports Common.ComFunction
 
 Namespace PrintOut.VSSConsentForm_CHI
     Public Class VSSDeclarationCondensedSmartIDSPName6_C_CHI
@@ -30,9 +31,10 @@ Namespace PrintOut.VSSConsentForm_CHI
 
         Private Sub LoadReport()
 
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [Start][Winnie]
             ' Fill SP Name
-            txtDocumentExplainedBy.Text = _udtSP.ChineseName
-
+            txtDocumentExplainedBy.Text = GeneralFunction.ReplaceString_HAMingLiu(_udtSP.ChineseName)
+            ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
         End Sub
 
 

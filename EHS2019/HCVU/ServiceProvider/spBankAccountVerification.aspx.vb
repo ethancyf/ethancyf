@@ -1109,7 +1109,11 @@ Partial Public Class spBankAccountVerification
 
     Protected Sub btn_nextSearch_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Me.udcErrorMessage.Visible = False
-        Response.Redirect("spBankAccountVerification.aspx")
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' ------------------------------------------------------------------------
+        'Response.Redirect("spBankAccountVerification.aspx")
+        RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010106))
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]   
     End Sub
 
     Protected Sub btn_back1_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)

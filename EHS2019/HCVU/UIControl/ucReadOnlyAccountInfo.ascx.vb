@@ -5,9 +5,13 @@ Imports Common.Component.DocType.DocTypeModel
 Partial Public Class ucReadOnlyAccountInfo
     Inherits System.Web.UI.UserControl
 
+#Region "Private Members"
     Private _udtEHSAccount As EHSAccountModel
     Private _intWidth As Integer = 270
     Private _blnShowPublicEnquiry As Boolean = True
+    Private _blnShowAccStatusRemarkWhenDeceased As Boolean = True ' CRE19-026 (HCVS hotline service)
+    Private _blnShowDeceased As Boolean = True ' CRE19-026 (HCVS hotline service)
+#End Region
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Me.SetupTableTitle(Me._intWidth)
@@ -53,16 +57,14 @@ Partial Public Class ucReadOnlyAccountInfo
             Me.lblAcctStatus.Text = strAcctStatus.Trim
 
             'Deceased 
-            ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Dickson]
-            If .Deceased() Then
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            If .Deceased() AndAlso _blnShowDeceased Then
+                trDeceased.Visible = True
                 Me.lblDeceased.Text = Me.GetGlobalResourceObject("Text", "Yes")
-                Me.lblDeceased.Visible = True
-                Me.lblDeceasedText.Visible = True
             Else
-                Me.lblDeceasedText.Visible = False
-                Me.lblDeceased.Visible = False
+                trDeceased.Visible = False
             End If
-            ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Dickson]
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             'Enquiry status
             strEnquiryStatus = Me._udtEHSAccount.PublicEnquiryStatus
@@ -126,6 +128,10 @@ Partial Public Class ucReadOnlyAccountInfo
             Else
                 Me.lblAcctStatusRemark.Text = String.Empty
             End If
+
+            ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+            Me.lblAcctStatusRemark.Visible = _blnShowAccStatusRemarkWhenDeceased
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             'Public Enquiry
             If _blnShowPublicEnquiry Then
@@ -214,6 +220,21 @@ Partial Public Class ucReadOnlyAccountInfo
             _blnShowPublicEnquiry = value
         End Set
     End Property
+
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public WriteOnly Property ShowAccountStatusRemarkWhenDeceased() As Boolean
+        Set(value As Boolean)
+            _blnShowAccStatusRemarkWhenDeceased = value
+        End Set
+    End Property
+
+    Public WriteOnly Property ShowDeceased() As Boolean
+        Set(value As Boolean)
+            _blnShowDeceased = value
+        End Set
+    End Property
+    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 #End Region
 
 #Region "suppporting functions"

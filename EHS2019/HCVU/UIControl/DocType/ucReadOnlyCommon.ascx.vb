@@ -42,7 +42,10 @@ Partial Public Class ucReadOnlyCommon
     ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 #End Region
 
-    Public Sub Build(ByVal udtEHSPersonalInformation As EHSPersonalInformationModel, ByVal blnMaskIdentityNo As Boolean, ByVal blnVertical As Boolean, ByVal intWidth As Integer, ByVal intWidth2 As Integer, ByVal blnShowDateOfDeath As Boolean, Optional ByVal blnAlternateRow As Boolean = False)
+    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+    ' ------------------------------------------------------------------------
+    Public Sub Build(ByVal udtEHSPersonalInformation As EHSPersonalInformationModel, ByVal blnMaskIdentityNo As Boolean, ByVal blnVertical As Boolean, ByVal intWidth As Integer, ByVal intWidth2 As Integer, ByVal blnShowDateOfDeath As Boolean, ByVal blnShowDateOfDeathBtn As Boolean, ByVal blnShowCreationMethod As Boolean, Optional ByVal blnAlternateRow As Boolean = False)
+        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
         If blnVertical Then
             MultiViewEC.ActiveViewIndex = ViewIndex.Vertical
@@ -86,27 +89,16 @@ Partial Public Class ucReadOnlyCommon
             ' -----------------------------------------------------------------------------------------
             lblVDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInformation.DocCode, udtEHSPersonalInformation.DOB, udtEHSPersonalInformation.ExactDOB, String.Empty, _
                                                           udtEHSPersonalInformation.ECAge, udtEHSPersonalInformation.ECDateOfRegistration, udtEHSPersonalInformation.OtherInfo)
-
-            'Select Case udtEHSPersonalInformation.DocCode
-            '    Case DocTypeCode.HKBC
-            '        Select Case udtEHSPersonalInformation.ExactDOB
-            '            Case "T", "U", "V"
-            '                Dim udtStaticDataModel As StaticDataModel = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("DOBInWordType", udtEHSPersonalInformation.OtherInfo)
-            '                lblVDOB.Text = CStr(udtStaticDataModel.DataValue).Trim + " "
-            '        End Select
-
-            '        lblVDOB.Text += udtFormatter.formatDOB(udtEHSPersonalInformation.DOB, udtEHSPersonalInformation.ExactDOB, String.Empty, Nothing, Nothing)
-            '    Case Else
-            '        lblVDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInformation.DOB, udtEHSPersonalInformation.ExactDOB, String.Empty, _
-            '                                              udtEHSPersonalInformation.ECAge, udtEHSPersonalInformation.ECDateOfRegistration)
-            'End Select
             ' INT12-0006 Fix HCVU eHA adopc DOB display format [End][Koala]
 
             ' Creation Method
             Me.trVCustom3.Visible = False
             Select Case udtEHSPersonalInformation.DocCode
                 Case DocTypeCode.HKIC
-                    Me.trVCustom3.Visible = True
+                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                    Me.trVCustom3.Visible = blnShowCreationMethod
+                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
                     If udtEHSPersonalInformation.CreateBySmartID Then
                         lblVCreationMethod.Text = Me.GetGlobalResourceObject("Text", "SmartIC")
                     Else
@@ -124,14 +116,25 @@ Partial Public Class ucReadOnlyCommon
                 lblVDOD.Text = udtEHSPersonalInformation.FormattedDOD
                 ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
-                ibtnVDOD.Visible = blnShowDateOfDeath
-                If blnShowDateOfDeath Then
-                    BuildRedirectButton(Me.ibtnVDOD, udtEHSPersonalInformation)
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                ' ------------------------------------------------------------------------
+                If blnShowDateOfDeathBtn Then
+                    imgVDOD.Visible = False
+                    ibtnVDOD.Visible = blnShowDateOfDeath
+                    If blnShowDateOfDeath Then
+                        BuildRedirectButton(Me.ibtnVDOD, udtEHSPersonalInformation)
+                    End If
+                Else
+                    ibtnVDOD.Visible = False
+                    imgVDOD.Visible = blnShowDateOfDeath
                 End If
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
             Else
                 rowDOD.Style.Add("display", "none")
                 lblVDODText.Visible = False
                 lblVDOD.Visible = False
+                imgVDOD.Visible = False
                 ibtnVDOD.Visible = False
             End If
 
@@ -214,14 +217,24 @@ Partial Public Class ucReadOnlyCommon
                 lblHDOD.Text = udtEHSPersonalInformation.FormattedDOD
                 ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
-                ibtnHDOD.Visible = blnShowDateOfDeath
-                If blnShowDateOfDeath Then
-                    BuildRedirectButton(Me.ibtnHDOD, udtEHSPersonalInformation)
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                ' ------------------------------------------------------------------------
+                If blnShowDateOfDeathBtn Then
+                    imgHDOD.Visible = False
+                    ibtnHDOD.Visible = blnShowDateOfDeath
+                    If blnShowDateOfDeath Then
+                        BuildRedirectButton(Me.ibtnHDOD, udtEHSPersonalInformation)
+                    End If
+                Else
+                    ibtnHDOD.Visible = False
+                    imgHDOD.Visible = blnShowDateOfDeath
                 End If
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
             Else
                 lblHDODText.Visible = False
                 lblHDOD.Visible = False
                 ibtnHDOD.Visible = False
+                imgHDOD.Visible = False
             End If
 
             ' Control the width of the columns
@@ -425,7 +438,7 @@ Partial Public Class ucReadOnlyCommon
     Private Sub BuildRedirectButton(ByVal btn As CustomControls.CustomImageButton, ByVal udtEHSPersonalInformation As EHSPersonalInformationModel)
         btn.SourceFunctionCode = CType(Me.Page, BasePage).FunctionCode
         btn.TargetFunctionCode = FunctCode.FUNT010308
-        btn.TargetUrl = GetURLByFunctionCode(FunctCode.FUNT010308)
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
 
         btn.Build()
 
@@ -455,6 +468,7 @@ Partial Public Class ucReadOnlyCommon
     ''' <remarks></remarks>
     Private Sub ibtnHDOD_Click(ByVal sender As ImageButton, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnHDOD.Click
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
         btn.Redirect()
     End Sub
 
@@ -466,6 +480,7 @@ Partial Public Class ucReadOnlyCommon
     ''' <remarks></remarks>
     Private Sub ibtnVDOD_Click(ByVal sender As ImageButton, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnVDOD.Click
         Dim btn As CustomControls.CustomImageButton = sender.Parent
+        btn.TargetUrl = RedirectHandler.AppendPageKeyToURL(GetURLByFunctionCode(FunctCode.FUNT010308))
         btn.Redirect()
     End Sub
 End Class

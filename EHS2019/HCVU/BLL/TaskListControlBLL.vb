@@ -4,12 +4,16 @@ Imports HCVU.Component.TaskList
 Imports Common.Component.HCVUUser
 Imports Common.Component.UserAC
 Imports Common.Component.UserRole
+Imports HCVU.Component.RoleType
+Imports Common.Component
 
 
 Namespace BLL
     Public Class TaskListControlBLL
 
-        Public Function GetTaskList() As TaskListModelCollection
+        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        Public Function GetTaskList(ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform) As TaskListModelCollection
+            ' CRE19-026 (HCVS hotline service) [End][Winnie]
             Dim dtRoleTypeTaskList As DataTable
             Dim dtTaskList As DataTable
 
@@ -29,7 +33,23 @@ Namespace BLL
             Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser()
             Dim udtUserRole As UserRoleModel
 
+            Dim udtRoleTypeBLL As New RoleTypeBLL
+            Dim dtRoleType As DataTable
+            Dim drRoleType As DataRow()
+
             For Each udtUserRole In udtHCVUUser.UserRoleCollection.Values
+
+                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                ' ------------------------------------------------------------------------
+                ' Check User Role Type which is available in SubPlatform
+                dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
+
+                drRoleType = dtRoleType.Select("(Available_HCVU_SubPlatform = 'ALL' OR Available_HCVU_SubPlatform = '" + enumHCVUSubPlatform.ToString + "')" _
+                                                                 + "AND Role_Type = '" & udtUserRole.RoleType & "'")
+
+                If drRoleType.Length = 0 Then Continue For
+                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
                 drRoleTypeTaskList = dtRoleTypeTaskList.Select("Role_Type = '" & udtUserRole.RoleType & "'")
                 For Each dr In drRoleTypeTaskList
                     strTaskList_ID = dr.Item("TaskList_ID")

@@ -28,7 +28,7 @@
         <td valign="top" style="width: 457px">
         </td>
     </tr>
-    <tr>
+    <tr id="trDeceased" runat="server">
         <td style="width: 220px" valign="top">
             <asp:Label ID="lblDeceasedText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Deceased %>"
                 ></asp:Label></td>

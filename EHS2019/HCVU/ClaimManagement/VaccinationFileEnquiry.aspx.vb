@@ -1459,7 +1459,10 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                     End Try
 
                     Session("FileGenerateID") = udtFileQueue.GenerationID
-                    Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]        
+                    'Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+                    RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010702))
+                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                 Case Else
                     'Nothing to do
@@ -2380,7 +2383,10 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                     End Try
 
                     Session("FileGenerateID") = udtFileQueue.GenerationID
-                    Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]        
+                    'Response.Redirect("~/ReportAndDownload/Datadownload.aspx")
+                    RedirectHandler.ToURL((New Component.Menu.MenuBLL).GetURLByFunctionCode(FunctCode.FUNT010702))
+                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                 Case Else
                     'Nothing to do
