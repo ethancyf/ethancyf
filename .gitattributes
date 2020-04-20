@@ -235,6 +235,7 @@ EHS2019/Common/ComObject/FunctionActionListModel.vb -text
 EHS2019/Common/ComObject/IVRSConnectionMapping.vb -text
 EHS2019/Common/ComObject/MasterPage.vb -text
 EHS2019/Common/ComObject/ObsoletedOSHandler.vb -text
+EHS2019/Common/ComObject/RestrictAccessHandler.vb -text
 EHS2019/Common/ComObject/ScheduleJobLogEntry.vb -text
 EHS2019/Common/ComObject/SearchCriteria.vb -text
 EHS2019/Common/ComObject/SessionHandler.vb -text
