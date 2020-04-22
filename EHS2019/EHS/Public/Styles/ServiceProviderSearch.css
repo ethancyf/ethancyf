@@ -101,6 +101,7 @@
     background-repeat: no-repeat;
     background-size: contain;
     padding-top: 3px;
+    margin: 0px;
 }
 
 
@@ -253,36 +254,52 @@ ul.nav.nav-pills::after {
     border-radius: 4px;
     margin-top: 20px;
     color: #585858;
-}
-
-.noteTab {
     padding: 10px;
 }
 
-    .noteTab li {
-        padding: 5px;
+.noteTabText {
+    padding: 10px 5px;
+}
+
+.sec_shortcut {
+    margin-bottom: 0px
+}
+
+.noteTab li {
+    padding: 5px;
+}
+
+    .noteTab li:not(:first-child) {
+        text-align: justify
     }
 
-	    .noteTab li:not(:first-child) {
-	        text-align: justify
-	    }
+.noteTab a {
+    display: inline-flex;
+    justify-content: space-between;
+}
 
-    .noteTab a {
-        display: inline-flex;
-        justify-content: space-between;
+.noteTab img {
+    width: 50px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.noteTab p {
+    line-height: 1.42857143;
+    text-align: justify;
+    color: #585858;
+}
+
+    .noteTab p a {
+        color: #337ab7
     }
 
-    .noteTab img {
-        width: 50px;
-        height: 40px;
-        margin-right: 10px;
-    }
 
-.scrollContent > div {
+.scrollContent > p {
     display: none;
 }
 
-    .scrollContent > div.is-active {
+    .scrollContent > p.is-active {
         display: block;
     }
 
@@ -652,6 +669,7 @@ ul.nav.nav-pills::after {
 .pagesize-ddl:active {
     background-color: #337ab7
 }
+
 .pagesize-ddl:focus {
     background-color: #286090
 }
@@ -723,7 +741,9 @@ ul.nav.nav-pills::after {
     font-weight: 600;
     padding-right: 10px;    
     width:12%;*/
-    text-align:left;font-weight:600;padding-left:5px;
+    text-align:left;
+    font-weight:600;
+    padding-left:5px;
 }
 
 .alertStyle {

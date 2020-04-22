@@ -58,7 +58,7 @@ Partial Public Class main
             FunctionCode = FunctCode.FUNT030101
 
             Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
-            udtAuditLogEntry.WriteLog(LogID.LOG00000, "Voucher Balance Enquiry load")
+            udtAuditLogEntry.WriteLog(LogID.LOG00010, "Voucher Balance Enquiry load (Obsoleted)")
 
             ResetAlertImage()
 

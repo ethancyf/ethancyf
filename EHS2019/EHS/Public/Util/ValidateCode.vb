@@ -4,6 +4,9 @@ Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Drawing.Text
+Imports NAudio.Wave
+Imports NAudio.Lame
+Imports System.Speech.Synthesis
 
 Public Class ValidateCode
     Private _myGraphics As Graphics
@@ -14,7 +17,7 @@ Public Class ValidateCode
     Private _myRandom As Random
     Public LINE_THICKNESS As Single = 4.0F
     Public OVAL_THICKNESS As Single = 2.0F
-    Public FONT_FAMILY_NAME As String = "Times New Roman"
+    Public FONT_FAMILY_NAME As String = "Arial"
     Public FONT_SIZE As Single = 38.0F
     Public FONT_STYLE As FontStyle = FontStyle.Bold
     Public DEBUG_MODE As Boolean = False
@@ -55,7 +58,7 @@ Public Class ValidateCode
         Dim result As String = ""
         Dim n As Integer = Pattern.Length
 
-        Dim guid As Guid = guid.NewGuid()
+        Dim guid As Guid = Guid.NewGuid()
         Dim hashCode As Integer = guid.GetHashCode()
         'Dim random As System.Random = New Random(CInt(DateTime.Now.Ticks / 1024 / 1024 / 1024))
         Dim random As System.Random = New Random(hashCode)
@@ -238,7 +241,7 @@ Public Class ValidateCode
 
     Private Function GetRotatedLetter(ByVal image As Image, ByVal angle As Integer) As Image
         Dim rotatedImage As Image = New Bitmap(image.Width, image.Height)
-        Dim graphics As Graphics = graphics.FromImage(rotatedImage)
+        Dim graphics As Graphics = Graphics.FromImage(rotatedImage)
         graphics.TranslateTransform(CSng(image.Width) / 2, CSng(image.Height) / 2)
         graphics.RotateTransform(angle)
         graphics.TranslateTransform(-CSng(image.Width) / 2, -CSng(image.Height) / 2)
@@ -248,9 +251,88 @@ Public Class ValidateCode
 
     Private Function GetDebugLetter(ByVal image As Image) As Image
         Dim debugImage As Image = New Bitmap(image)
-        Dim graphics As Graphics = graphics.FromImage(debugImage)
+        Dim graphics As Graphics = Graphics.FromImage(debugImage)
         graphics.DrawRectangle(New Pen(Color.Red, 1), New Rectangle(0, 0, image.Width - 1, image.Height - 1))
         graphics.DrawRectangle(New Pen(Color.Red), CSng(image.Width) / 2, CSng(image.Height) / 2, 1, 1)
         Return debugImage
     End Function
+
+    Public Shared Sub GenerateSpeech(speech As String, captcha As String)
+        Dim folder As String = ConfigurationManager.AppSettings("CaptchaAudioFolder").ToString()
+        Dim cantonVoiceName As String = ConfigurationManager.AppSettings("CantonVoiceName").ToString()
+        Dim englishVoiceName As String = ConfigurationManager.AppSettings("EnglishVoiceName").ToString()
+        Dim VoiceName As String = String.Empty
+        Dim FileName As String = String.Empty
+        Try
+            Dim synth As SpeechSynthesizer = New SpeechSynthesizer()
+            Select Case Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower()
+                Case Common.Component.CultureLanguage.TradChinese
+                    VoiceName = cantonVoiceName
+                    FileName = folder + speech + Common.Component.CultureLanguage.TradChinese.Replace("-", "") + ".mp3"
+                Case Common.Component.CultureLanguage.English
+                    VoiceName = englishVoiceName
+                    FileName = folder + speech + Common.Component.CultureLanguage.English.Replace("-", "") + ".mp3"
+            End Select
+            If VoiceName <> String.Empty And FileName <> String.Empty Then
+                synth.SelectVoice(VoiceName)
+                synth.Rate = -5
+                Dim ms = New MemoryStream()
+                synth.SetOutputToWaveStream(ms)
+                synth.Speak(FormatCaptcha(captcha))
+                ConvertWavStreamToMp3File(ms, FileName)
+                synth.SetOutputToNull()
+            End If
+            synth.Dispose()
+        Catch ex As Exception
+            'LogHelper.WriteLineToday(ex.Message + "Source:" + ex.Source + "StackTrace:" + ex.StackTrace)
+            'LogHelper.WriteLineToday(Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower() + englishVoiceName + cantonVoiceName)
+            Throw
+        End Try
+    End Sub
+    Private Shared Function FormatCaptcha(ByVal captcha As String) As String
+        Dim newCaptcha As String = ""
+
+        For i As Integer = 0 To captcha.Length - 1
+            Dim charAt = captcha.Substring(i, 1)
+            If Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower() = Common.Component.CultureLanguage.TradChinese Then
+                Select Case charAt
+                    Case "1"
+                        charAt = "一"
+                    Case "2"
+                        charAt = "二"
+                    Case "3"
+                        charAt = "三"
+                    Case "4"
+                        charAt = "四"
+                    Case "5"
+                        charAt = "五"
+                    Case "6"
+                        charAt = "六"
+                    Case "7"
+                        charAt = "七"
+                    Case "8"
+                        charAt = "八"
+                    Case "9"
+                        charAt = "九"
+                End Select
+            End If
+            newCaptcha = newCaptcha & charAt & " "
+        Next
+
+        Return newCaptcha
+    End Function
+
+    Public Shared Sub ConvertWavStreamToMp3File(ByRef ms As MemoryStream, ByVal savetofilename As String)
+        ms.Seek(0, SeekOrigin.Begin)
+
+        Using retMs = New MemoryStream()
+
+            Using rdr = New WaveFileReader(ms)
+
+                Using wtr = New LameMP3FileWriter(savetofilename, rdr.WaveFormat, LAMEPreset.VBR_90)
+                    rdr.CopyTo(wtr)
+                End Using
+            End Using
+        End Using
+    End Sub
 End Class

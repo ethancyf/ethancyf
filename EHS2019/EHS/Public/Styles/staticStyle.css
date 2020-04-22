@@ -1,48 +1,49 @@
 ﻿@charset "utf-8";
 /* CSS Document */
-    #divContacts .contact_titlebox {
-        color: #195287;
-    }
+#divContacts .contact_titlebox {
+    color: #195287;
+}
 
-    #divContacts .contact_title {
-        font-size: 38px;
-        font-weight: 600;
-    }
+#divContacts .contact_title {
+    font-size: 38px;
+    font-weight: 600;
+    margin: 0px;
+}
 
-    #divContacts .contact_cntbox {
-        margin-top: 20px;
-        padding-bottom: 20px;
-    }
+#divContacts .contact_cntbox {
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
 
-    #divContacts .contact_2box {
-        margin-top: 0px;
-    }
-
-
-    #divContacts .contact_section_1_topbox {
-        background: #F0F9FF;
-        padding: 10px 0px 10px 0px;
-        border-bottom: 1px dashed #a5a5a5;
-        border-radius: 5px 5px 0px 0px;
-    }
-
-    #divContacts .contact_topbox {
-        background-color: #F0F9FF;
-    }
-    
-    #divContacts .contact_section_1_toptitle {
-        color: #225482;
-    }
-
-    #divContacts contact_labeltext {
-        color: #585858;
-    }
+#divContacts .contact_2box {
+    margin-top: 0px;
+}
 
 
-    #divContacts .contact_titletext {
-        font-size: 20px;
-        color: #225482;
-    }
+#divContacts .contact_section_1_topbox {
+    background: #F0F9FF;
+    padding: 10px 0px 10px 0px;
+    border-bottom: 1px dashed #a5a5a5;
+    border-radius: 5px 5px 0px 0px;
+}
+
+#divContacts .contact_topbox {
+    background-color: #F0F9FF;
+}
+
+#divContacts .contact_section_1_toptitle {
+    color: #225482;
+}
+
+#divContacts contact_labeltext {
+    color: #585858;
+}
+
+
+#divContacts .contact_titletext {
+    font-size: 20px;
+    color: #225482;
+}
 
 .contact_section {
     background-repeat: no-repeat;
@@ -165,6 +166,7 @@
 
 .notice_topTitleText {
     font-size: 38px;
+    margin: 0px;
 }
 
 
@@ -214,6 +216,10 @@
 
 #divSysMaintenance .maintenance_topTitleText {
     font-size: 38px;
+}
+
+.maintenance_topTitleText > h1 {
+    margin: 0px;
 }
 
 #divSysMaintenance .maintenance_cntbox {

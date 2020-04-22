@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Apr 2020
+-- CR No.:			INT20-0008
+-- Description:		Fix incorrect sorting order
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE18-001: Performance tuning on internal statistic reports generation in eHS(S)
 -- Modified by:		Koala CHENG
 -- Modified date:	15 May 2018
@@ -59,12 +66,7 @@ GO
 -- Modified date:	15 Oct 2009
 -- Description:		Update using new Audit Log entry
 -- =============================================
--- =============================================
--- Modification History
--- Modified by:		
--- Modified date:	
--- Description:		
--- =============================================
+
 
 create PROCEDURE [dbo].[proc_EHS_eHSD0011_Claim_By_Other_Mean_Stat_Read]
 @Report_Dtm		datetime = NULL
@@ -189,14 +191,16 @@ BEGIN
 	-- Summary information , added CRE11-022
 	create table #Summary
 	(
-		appsource	varchar(20),
-		dummyspace	varchar(20) default ' ' ,		
-		tol_no_trans varchar(20) default ' ',
-		tol_no_SP  varchar(20) default ' '
+		Display_Seq			INT IDENTITY(1,1),
+		appsource			varchar(20),
+		dummyspace			varchar(20) default ' ' ,		
+		tol_no_trans		varchar(20) default ' ',
+		tol_no_SP			varchar(20) default ' '
 	)
 	-- # of SP by Profession
 	create table #SP
 	(
+		Display_Seq			INT IDENTITY(1,1),
 		report_type char(1),	 --'E' means external, 'P' means PCS
 		report_dtm varchar(20),
 		ENU_1 int DEFAULT 0 ,
@@ -228,6 +232,7 @@ BEGIN
 	-- # of Transaction by Profession
 	create table #T
 	(
+		Display_Seq			INT IDENTITY(1,1),
 		report_type char(1),	
 		report_dtm varchar(20),
 		ENU_1 int DEFAULT 0 ,
@@ -259,7 +264,7 @@ BEGIN
 	-- # of Voucher Claimed by Profession
 	create table #C
 	(
-	
+		
 		report_type char(1),	
 		report_dtm varchar(20),
 		ENU_1 int DEFAULT 0 ,
@@ -291,6 +296,7 @@ BEGIN
 -- # of transation by Scheme added CRE11-022
 	create table #TranScheme
 	(
+		Display_Seq			INT IDENTITY(1,1),
 		report_type char(1),
 		report_dtm varchar(20),
 		HCVS_1   int DEFAULT 0,
@@ -309,11 +315,12 @@ BEGIN
 	)
 	create table #result
 	(
-		report_dtm varchar(11),
-		claim_max char(8) default '0',
-		claim_min char(8) default '0',
-		claim_avg char(8) default '0',
-		claim_T int default 0
+		Display_Seq		INT IDENTITY(1,1),
+		report_dtm		varchar(11),
+		claim_max		char(8) default '0',
+		claim_min		char(8) default '0',
+		claim_avg		char(8) default '0',
+		claim_T			int default 0
 	)
 	
 	--Get total Summary 
@@ -979,68 +986,71 @@ BEGIN
 -- ---------------------------------------------
 -- To Excel sheet: Summary 
 -- ---------------------------------------------
-select * from #Summary
+	SELECT
+		appsource,
+		dummyspace,		
+		tol_no_trans,
+		tol_no_SP
+	FROM
+		#Summary 
+	ORDER BY 
+		Display_Seq
 
 -- ---------------------------------------------
 -- To Excel sheet: eHSD0011-01: No. of SP involved by Profession
 -- ---------------------------------------------
 
-	select report_dtm,	ENU_1 ,		RCM_1,
-				RCP_1,	RDT_1 ,		RMP_1,
-				RMT_1,	RNU_1 ,		ROP_1,
-				ROT_1,	RPT_1 ,		RRD_1,
-				Total_1,
-				ENU_2 ,	RCM_2,
-				RCP_2,	RDT_2 ,		RMP_2,
-				RMT_2,	RNU_2 ,		ROP_2,
-				ROT_2,	RPT_2 ,		RRD_2,
-				Total_2 from #SP where report_type='E'
-	
-	
+	SELECT report_dtm,
+		ENU_1,RCM_1,RCP_1,RDT_1,RMP_1,RMT_1,RNU_1,ROP_1,ROT_1,RPT_1,RRD_1,Total_1,
+		ENU_2,RCM_2,RCP_2,RDT_2,RMP_2,RMT_2,RNU_2,ROP_2,ROT_2,RPT_2,RRD_2,Total_2 
+	FROM 
+		#SP 
+	WHERE 
+		report_type='E'
+	ORDER BY
+		Display_Seq
+		
 -- ---------------------------------------------
 -- To Excel sheet: eHSD0011-02_PCS: No. of SP involved in PCS involved by Profession
 -- ---------------------------------------------	
 
-	select report_dtm,	ENU_1 ,		RCM_1,
-				RCP_1,	RDT_1 ,		RMP_1,
-				RMT_1,	RNU_1 ,		ROP_1,
-				ROT_1,	RPT_1 ,		RRD_1,
-				Total_1,
-				ENU_2 ,	RCM_2,
-				RCP_2,	RDT_2 ,		RMP_2,
-				RMT_2,	RNU_2 ,		ROP_2,
-				ROT_2,	RPT_2 ,		RRD_2,
-				Total_2 from #SP where report_type='P'
+	SELECT report_dtm,
+		ENU_1,RCM_1,RCP_1,RDT_1,RMP_1,RMT_1,RNU_1,ROP_1,ROT_1,RPT_1,RRD_1,Total_1,
+		ENU_2,RCM_2,RCP_2,RDT_2,RMP_2,RMT_2,RNU_2,ROP_2,ROT_2,RPT_2,RRD_2,Total_2 
+	FROM 
+		#SP 
+	WHERE 
+		report_type='P'
+	ORDER BY
+		Display_Seq
 
 -- ---------------------------------------------
 -- To Excel sheet: eHSD0011-03: No. of Transaction by Profession
 -- ---------------------------------------------
 	
-	select report_dtm,	ENU_1 ,		RCM_1,
-				RCP_1,	RDT_1 ,		RMP_1,
-				RMT_1,	RNU_1 ,		ROP_1,
-				ROT_1,	RPT_1 ,		RRD_1,
-				Total_1,
-				ENU_2 ,	RCM_2,
-				RCP_2,	RDT_2 ,		RMP_2,
-				RMT_2,	RNU_2 ,		ROP_2,
-				ROT_2,	RPT_2 ,		RRD_2,
-				Total_2 from #T where report_type='E'
+	SELECT report_dtm,	
+		ENU_1,RCM_1,RCP_1,RDT_1,RMP_1,RMT_1,RNU_1,ROP_1,ROT_1,RPT_1,RRD_1,Total_1,
+		ENU_2,RCM_2,RCP_2,RDT_2,RMP_2,RMT_2,RNU_2,ROP_2,ROT_2,RPT_2,RRD_2,Total_2 
+	FROM
+		#T 
+	WHERE
+		report_type='E'
+	ORDER BY
+		Display_Seq
+
 -- ---------------------------------------------
 -- To Excel sheet: eHSD0011-04:  No. of Transaction involved in PCS by Profession
 -- ---------------------------------------------
 	
-	select report_dtm,	ENU_1 ,		RCM_1,
-				RCP_1,	RDT_1 ,		RMP_1,
-				RMT_1,	RNU_1 ,		ROP_1,
-				ROT_1,	RPT_1 ,		RRD_1,
-				Total_1,
-				ENU_2 ,	RCM_2,
-				RCP_2,	RDT_2 ,		RMP_2,
-				RMT_2,	RNU_2 ,		ROP_2,
-				ROT_2,	RPT_2 ,		RRD_2,
-				Total_2 from #T where report_type='P'
-
+	SELECT report_dtm,	
+		ENU_1,RCM_1,RCP_1,RDT_1,RMP_1,RMT_1,RNU_1,ROP_1,ROT_1,RPT_1,RRD_1,Total_1,
+		ENU_2,RCM_2,RCP_2,RDT_2,RMP_2,RMT_2,RNU_2,ROP_2,ROT_2,RPT_2,RRD_2,Total_2 
+	FROM
+		#T 
+	WHERE
+		report_type='P'
+	ORDER BY
+		Display_Seq
 ---- ---------------------------------------------
 ---- To Excel sheet: eHSD0011-03:No. of Voucher Claimed by Profession
 ---- ---------------------------------------------
@@ -1075,7 +1085,8 @@ select * from #Summary
 -- To Excel sheet: eHSD0011-05: No. of Transaction by Scheme
 -- ---------------------------------------------
 
-	select report_dtm ,
+	SELECT 
+		report_dtm ,
 		HCVS_1 ,  
 		CIVSS_1,  
 		EVSS_1,   
@@ -1087,13 +1098,20 @@ select * from #Summary
 		EVSS_2,   
 		RVP_2,    
 		HSIVSS_2, 
-		Total_2   from #TranScheme where report_type='E'
+		Total_2   
+	FROM	
+		#TranScheme 
+	WHERE 
+		report_type='E'
+	ORDER BY
+		Display_Seq
 
 -- ---------------------------------------------
 -- To Excel sheet: eHSD0011-06:  No. of Transaction involved by PCS by Scheme
 -- ---------------------------------------------
 
-	select  report_dtm ,
+	SELECT
+		report_dtm ,
 		HCVS_1 ,  
 		CIVSS_1,  
 		EVSS_1,   
@@ -1105,14 +1123,28 @@ select * from #Summary
 		EVSS_2,   
 		RVP_2,    
 		HSIVSS_2, 
-		Total_2    from #TranScheme where report_type='P'
-
-
+		Total_2
+	FROM
+		#TranScheme 
+	WHERE 
+		report_type='P'
+	ORDER BY
+		Display_Seq
+		
 -- ---------------------------------------------
 -- To Excel sheet: eHSD0011-07: Claim Duration (in second)
 -- ---------------------------------------------
 
-	select * from #result
+	SELECT 
+		report_dtm,
+		claim_max,
+		claim_min,
+		claim_avg,
+		claim_T
+	FROM 
+		#result 
+	ORDER BY 
+		Display_Seq
 
 
 -- =============================================

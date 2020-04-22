@@ -2,6 +2,8 @@
 Imports System.Data.SqlClient
 Imports Common.ComObject
 Imports Common.Validation
+Imports Common.Component.Mapping
+Imports Common.Component
 
 Namespace ComFunction
 
@@ -2409,7 +2411,9 @@ Namespace ComFunction
 
             Return Encoding.UTF32.GetString(byte32Array, intStartIndex, intLength)
         End Function
+        ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
 
+        ' I-CRE20-001 (Mid term solution to handle special characters in HA_MingLiu) [Start][Winnie]
         ''' <summary>
         ''' Replace the character to another character which supported by HA_MingLiu
         ''' </summary>
@@ -2421,21 +2425,29 @@ Namespace ComFunction
             Dim udtGeneralFunction As New GeneralFunction
             Dim strOutput As String = String.Empty
 
-            ' Replace character that can display by HA_MingLiu font
-            Dim dicReplace As New Dictionary(Of String, String)
-            dicReplace.Add(149932, 58864) ' "𤦬"(149932) to "" (58864)
+            Dim udtCodeMapList As CodeMappingCollection
+            Dim listSystem As List(Of CodeMappingModel) = Nothing
 
             strOutput = strInput
 
             If Not strInput Is Nothing AndAlso Not strInput.Equals(String.Empty) Then
-                For Each kvp As KeyValuePair(Of String, String) In dicReplace
-                    strOutput = strOutput.Replace(udtCodeBLL.ConvertUnicode2Big5(kvp.Key), udtCodeBLL.ConvertUnicode2Big5(kvp.Value))
-                Next
+
+                ' Retrieve Unicode mapping table
+                udtCodeMapList = CodeMappingBLL.GetAllCodeMapping
+                listSystem = udtCodeMapList.GetListByCodeType(CodeMappingModel.EnumSourceSystem.EHS, CodeMappingModel.EnumTargetSystem.EHS, EnumMappingCodeType.FONT_Unicode_Mingliu_to_HAMingliu.ToString())
+
+                If listSystem IsNot Nothing Then
+                    ' Replace character that can display by HA_MingLiu font
+                    For Each udtCodeMap As CodeMappingModel In listSystem
+                        strOutput = strOutput.Replace(udtCodeBLL.ConvertUnicode2Big5(udtCodeMap.CodeSource), udtCodeBLL.ConvertUnicode2Big5(udtCodeMap.CodeTarget))
+                    Next
+
+                End If
             End If
 
             Return strOutput
         End Function
-        ' I-CRE19-002 (To handle special characters in HA_MingLiu) [End][Winnie]
+        ' I-CRE20-001 (Mid term solution to handle special characters in HA_MingLiu) [End][Winnie]
 
 #End Region
 

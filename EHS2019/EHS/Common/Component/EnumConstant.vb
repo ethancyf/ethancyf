@@ -646,6 +646,10 @@ Namespace Component
 
     Public Class FunctCode
 
+        ''' <summary>
+        ''' Landing Page
+        ''' </summary>
+        ''' <remarks></remarks>
         Public Const FUNT010001 As String = "010001"
         Public Const FUNT010002 As String = "010002"
         Public Const FUNT010003 As String = "010003" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
@@ -726,6 +730,7 @@ Namespace Component
         ''' </summary>
         ''' <remarks></remarks>
         Public Const FUNT029901 As String = "029901" ' HCSP Common Log, e.g. System error, current browser handling
+        Public Const FUNT030001 As String = "030001"
         Public Const FUNT030101 As String = "030101"
         Public Const FUNT030102 As String = "030102"
         Public Const FUNT030103 As String = "030103"
@@ -3077,4 +3082,28 @@ Namespace Component
         CC  'Call Centre
     End Enum
     ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+    ' I-CRE20-001 (Mid term solution to handle special characters in HA_MingLiu) [Start][Winnie]
+    Public Enum EnumMappingCodeType
+        ' PCD
+        ' mapping for corresponding web service return code
+        WS_PCD_CheckAccountStatus_Return_Code
+        WS_PCD_CheckIsActiveSP_Return_Code
+        WS_PCD_CreatePCDSPAcct_Return_Code
+        WS_PCD_HealthCheck_Return_Code
+        WS_PCD_TransferPracticeInfo_Return_Code
+        WS_PCD_UploadEnrolInfo_Return_Code
+        WS_PCD_CheckForVerifiedEnrolment_Return_Code
+        WS_PCD_UploadVerifiedEnrolment_Return_Code
+
+        ' mapping for platform code
+        WS_PCD_Platform_Code
+        PCDEnrolmentFormProfessional_TC
+        PCDEnrolmentFormProfessional_EN
+
+        ' Font
+        FONT_Unicode_Mingliu_to_HAMingliu
+    End Enum
+    ' I-CRE20-001 (Mid term solution to handle special characters in HA_MingLiu) [End][Winnie]
+
 End Namespace

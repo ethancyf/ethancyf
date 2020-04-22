@@ -195,20 +195,20 @@ h1, h2, h3, h4, h5, h6 {
     float: left;
 }
 
-    /*.logo img {
+/*.logo img {
         width: 75%;
         height: auto;
     }*/
 
-    .logo_img1 {
-        width:70px;
-        height:50px;
-    }
+.logo_img1 {
+    width: 70px;
+    height: 50px;
+}
 
-    .logo_img2 {
-        width:250px;
-        height:80px;
-    }
+.logo_img2 {
+    width: 250px;
+    height: 80px;
+}
 
 .main_nav {
     width: 68%;
@@ -243,14 +243,14 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-.en_menu > li > a {
-    font-size: 24px;
-    color: #707070;
-    -webkit-transition: all 200ms ease;
-    -moz-transition: all 200ms ease;
-    -o-transition: all 200ms ease;
-    transition: all 200ms ease;
-}
+    .en_menu > li > a {
+        font-size: 24px;
+        color: #707070;
+        -webkit-transition: all 200ms ease;
+        -moz-transition: all 200ms ease;
+        -o-transition: all 200ms ease;
+        transition: all 200ms ease;
+    }
 
 
 .ch_menu > li > a {
@@ -381,9 +381,14 @@ h1, h2, h3, h4, h5, h6 {
 /*********************************
 8. Menu
 *********************************/
-#logoID:focus {
-
+#logoID {
+    cursor: pointer;
+    outline:none;
 }
+
+    #logoID:focus {
+        outline:none;
+    }
 
 .langmenu,
 .menu {

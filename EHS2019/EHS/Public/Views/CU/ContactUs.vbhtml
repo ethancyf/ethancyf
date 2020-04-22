@@ -7,7 +7,7 @@ End Code
     <!--Title 'Contact Us'-->
     <div class="row contact_titlebox">
         <div class="col-xs-12 col-sm-12">
-            <span class="contact_title">@Resource.Text("ContactUs")</span>
+            <h1 class="contact_title" id="skiptarget">@Resource.Text("ContactUs")</h1>
         </div>
     </div>
     <div class="row contact_cntbox">

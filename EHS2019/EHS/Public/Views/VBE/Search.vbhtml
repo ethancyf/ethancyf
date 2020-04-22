@@ -94,9 +94,9 @@ End Code
                                 <div class="col-xs-1 col-sm-1">
                                 </div>
                                 <div class="col-xs-8 col-sm-9">
-                                    <div id="skiptarget" class="text-1">
+                                    <h1 id="skiptarget" class="text-1">
                                         @Resource.Text("VoucherBalanceEnquiry")
-                                    </div>
+                                    </h1>
                                 </div>
                                 <div class="visible-xs col-xs-3 helpBar-Open">
                                     @code
@@ -140,7 +140,7 @@ End Code
                                         </div>
                                         <div id="btnTypCE" class="col-xs-6 col-sm-6 inactiveTitle">
                                             <a href="javascript:void(0);" class="inactiveType">
-                                                <div id="inActiveCEButton" class="inActiveButton">@Resource.Text("VBECertificateOfExemption")</div>                                                
+                                                <div id="inActiveCEButton" class="inActiveButton">@Resource.Text("VBECertificateOfExemption")</div>
                                             </a>
                                         </div>
                                     </div>
@@ -156,7 +156,7 @@ End Code
                                                 <div class="inActiveButton">@Resource.Text("VBEHKID")</div>
                                             </a>
                                             <a href="javascript:void(0);" class="visible-xs visible-sm inactiveType">
-                                                <div class="inActiveButton-shorthkid inActiveButton-ce-ts">@Resource.Text("VBEShortHKID")</div> 
+                                                <div class="inActiveButton-shorthkid inActiveButton-ce-ts">@Resource.Text("VBEShortHKID")</div>
                                             </a>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 mobile-gap activeTitle">
@@ -174,7 +174,7 @@ End Code
                                 <div class="col-xs-7 col-sm-10 ">
                                     <div class="text-6 line-gap">
                                         @Resource.Text("VBEInputHKICNo")
-                                        <span id="alertHKICMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true"></span>
+                                        <span id="alertHKICMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true" style="display:none;"></span>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@ End Code
                                     </div>
                                 </div>
                                 <div class="col-xs-1 col-sm-1 alert_symbol">
-                                    <span id="alertHKIC" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+                                    <span id="alertHKIC" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true" style="display:none;"></span>
                                 </div>
                             </div>
                             <div class="row" id="Dob_label" style="display:block;">
@@ -196,7 +196,7 @@ End Code
                                 <div class="col-xs-7 col-sm-10">
                                     <div class="text-6 line-gap">
                                         @Resource.Text("VBEInputDOB")
-                                        <span id="alertDobMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true"></span>
+                                        <span id="alertDobMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true" style="display:none;"></span>
                                     </div>
                                 </div>
                             </div>
@@ -211,14 +211,14 @@ End Code
                                         </div>
                                     </div>
                                     <div class="col-xs-1 col-sm-1 alert_symbol">
-                                        <span id="alertDob" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+                                        <span id="alertDob" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true" style="display:none;"></span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row" style="margin-top:10px;">
                                     <div class="col-xs-1 col-sm-1">
                                     </div>
-                                    <div class="col-xs-10 col-sm-11">
+                                    <div class="col-xs-10 col-sm-10">
                                         <span class="text-9-2">@Resource.Text("VBEDateTips")</span>
                                         <span class="text-10-2" style="color:#015990">@Resource.Text("VBEDateFormatTips")</span>
                                     </div>
@@ -231,7 +231,7 @@ End Code
                                 <div class="col-xs-10 col-sm-10">
                                     <div class="text-6 line-gap">
                                         @Resource.Text("VBEInputDOB") / @Resource.Text("VBEInputYOBR")
-                                        <span id="alertYobMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true"></span>
+                                        <span id="alertYobMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true" style="display:none;"></span>
                                     </div>
                                 </div>
                             </div>
@@ -286,7 +286,7 @@ End Code
                                                     </div>
                                                     <div class="col-xs-3 col-sm-3" style="padding-right:0px;">
                                                         <select id="selMonth" name="selMonth" class="form-control input-2" title="@Resource.Text("AriaVBESearchListMonth")" aria-label="@Resource.Text("AriaVBESearchListMonth")">
-                                                            
+
                                                             <option value="" disabled selected hidden>@Resource.Text("Month")</option>
                                                             <option value="1" title="@Resource.Text("January")">@Resource.Text("January") </option>
                                                             <option value="2" title="@Resource.Text("February")">@Resource.Text("February")</option>
@@ -303,13 +303,13 @@ End Code
                                                         </select>
                                                     </div>
                                                     <div class="col-xs-3 col-sm-3" style="padding-right: 0px;">
-                                                        <input id="txtYear" name="txtYear" type="number" class="form-control input-2" placeholder="@Resource.Text("Year")" maxlength="4" autocomplete="off" aria-label="@Resource.Text("Year")" />
+                                                        <input id="txtYear" name="txtYear" type="number" class="form-control input-2" placeholder="@Resource.Text("AriaYear")" maxlength="4" autocomplete="off" aria-label="@Resource.Text("AriaYear")" />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xs-1 col-sm-1 alert_symbol">
-                                            <span id="alertYob" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+                                            <span id="alertYob" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true" style="display:none;"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -321,51 +321,54 @@ End Code
                                 <div class="col-xs-7 col-sm-10">
                                     <div class="text-6 line-gap">
                                         @Resource.Text("VBEInputCAPTCHA")
-                                        <span id="alertCaptChaMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true"></span>
+                                        <span id="alertCaptChaMobile" class="visible-xs-inline glyphicon glyphicon-warning-sign alert_symbol_mobile" aria-hidden="true" style="display:none;"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-1 col-sm-1">
                                 </div>
-                                <div class="col-xs-5 col-sm-5 col-md-4 col-lg-4">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" style="padding-right:0px;">
                                     <div class="text-6 line-gap">
                                         <input id="txtCaptcha" type="text" class="form-control input-1" placeholder="@Resource.Text("VBEPlaceHolderCAPTCHA")" autocomplete="off" aria-label="@Resource.Text("AriaVBESearchInputCaptcha")" />
                                     </div>
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-3">
                                     <div class="line-gap">
-                                        <img src="~/VBE/GetValidateCode" class="img-responsive valiCodeImg" style="height:45px" title="@Resource.Text("AriaVBESearchCaptchaPic")" alt="Verification Code" />
+                                        <img src="~/Image/vbe/web/btn-select-chosen.png" class="img-responsive valiCodeImg" style="height:45px" title="@Resource.Text("AriaVBESearchCaptchaPic")" alt="Verification Code" />
                                     </div>
                                 </div>
-                                <div class="col-xs-1 col-sm-1 refresh-captcha" style="padding-left:0px">
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 refresh-captcha" style="padding-left:0px;padding-right:0px;">
                                     <div>
-                                        <span id="refreshCaptcha" class="glyphicon glyphicon-refresh" style="margin-top:19px; cursor:pointer; color:#7141BE" aria-hidden="true" title="Click me to refresh captcha"></span>
+                                        <a id="CaptchaVoice" href="javascript:void(0)" tabindex="0" class="glyphicon glyphicon-volume-up" style="margin-top:19px; cursor:pointer; color: #7141be;" aria-label="@Resource.Text("VBEPlayCaptcha")"></a>
+                                        <a id="refreshCaptcha" href="javascript:void(0)" tabindex="0" class="glyphicon glyphicon-refresh" style="margin-top:19px; cursor:pointer; color:#7141BE" aria-label="@Resource.Text("VBERefreshCaptcha")"></a>
                                     </div>
                                 </div>
                                 <div class="col-xs-1 col-sm-1 alert_symbol">
-                                    <span id="alertCaptCha" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+                                    <span id="alertCaptCha" class="hidden-xs glyphicon glyphicon-warning-sign" aria-hidden="true" style="display:none;"></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-1 col-sm-1">
                                 </div>
-                                <div class="col-xs-10 col-sm-5 col-md-4">
-                                    <div class="line-gap-20">
-                                        <button type="submit" class="btn btn-success submitButton" id="btnSubmit">@Resource.Text("VBEBtnCheckBalance") <span class="sr-only">@Resource.Text("AriaVBESearchCheckBalance")</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 hidden-xs line-gap-20 text-HowTo">
+                                <div class="col-xs-10 col-sm-10">
+                                    <div class="row line-gap-20" style="">
+                                        <div class="col-sm-6 col-xs-12 col-md-5">
+                                            <button type="submit" class="btn btn-success submitButton" id="btnSubmit">@Resource.Text("VBEBtnCheckBalance") <span class="sr-only">@Resource.Text("AriaVBESearchCheckBalance")</span></button>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 text-HowTo">
                                     <a target="_blank" href="@Resource.Text("VBECreateAccountLinkURL")" style="color:#015990">@Resource.Text("VBECreateAccountLink")</a>
                                 </div>
+                            </div>                           
                             </div>
-                            <div class="row visible-xs">
+                            </div>
+                            @*<div class="row visible-xs">
                                 <div class="col-xs-1 col-sm-1">
                                 </div>
                                 <div class="col-xs-10 text-9-2" style="margin-top:5px;">
                                     <a target="_blank" href="@Resource.Text("VBECreateAccountLinkURL")">@Resource.Text("VBECreateAccountLink")</a>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="col-sm-5 hidden-xs rightSection">
                             <!--FAQ & Guide Button-->
@@ -391,6 +394,7 @@ End Code
                 </div>
             </div>
             <input type="hidden" id="inputType" name="inputType" value="" title="Hidden field">
+            <audio id="voice"></audio>
         </div>
     </text>
 End Using
@@ -408,10 +412,44 @@ End Using
     callJs(jObject);
 
     timeOut = @ViewBag.PageTimeout * 60 * 1000; //set time
+    var captchaAudioFolder = '@ViewBag.CaptchaAudioFolder'
+    var played = false;
+
+
     $(document).ready(function () {
         $("#txtHKIC").val("");
         $("#txtDob").val("");
         $("#txtCaptcha").val("");
         $("#txtDob_CE").val("");
+        getErrorMsg(rootLang);
     });
+
+    function getErrorMsg(Lang) {
+        if (sessionStorage.getItem("errMsg")) {
+            errMsgList = JSON.parse(sessionStorage.getItem("errMsg"))
+        }
+        else {
+            if (!sessionStorage.getItem("lang")) {
+                sessionStorage.setItem("lang", Lang);
+            }
+            $.ajax({
+                async: false,
+                url: applicationPath+"/"+sessionStorage.getItem("lang") + "/value/systemmsg",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        errMsgList = data;
+                        sessionStorage.setItem("errMsg", JSON.stringify(data))
+                    }
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+                    if (errorUrl) {
+                        var u = rootPath + rootLang + errorUrl;
+                        location.href = u;
+                    }
+                }
+            });
+        }
+    }
 </script>

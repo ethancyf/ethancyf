@@ -6,7 +6,7 @@ End Code
 <div class="container policy_bigbox" id="divNotice">
     <div class="row notice_topTitleBox">
         <div class="col-xs-12 col-sm-12">
-            <span class="notice_topTitleText"><strong>@Resource.Text("ImportantNotices")</strong></span>
+            <h1 id="skiptarget" class="notice_topTitleText"><strong>@Resource.Text("ImportantNotices")</strong></h1>
         </div>
     </div>
     <div class="row">

@@ -35,7 +35,7 @@ End Code
                     </div>
                     <div class="row">
                         <div class="col-sm-12 SPSearch_title" style="color:#195287;">
-                            <h1 id="skiptarget">@Resource.Text("SPSH1")</h1>
+                            <h1 id="skiptarget" tabindex="0">@Resource.Text("SPSH1")</h1>
                         </div>
                         <button class="btn btn-default icon_btn visible-lg" type="button" onclick="OnClickFAQ()" style="position:absolute;top:20px;right:25px;">
                             <div class="icon_container_blue">
@@ -48,7 +48,7 @@ End Code
                         <div class="col-sm-2 col-xs-offset-0">
                         </div>
                         <div class="col-sm-8 col-xs-12 SPSearch_title">
-                            <h2>@Html.Raw(Resource.Text("SPSH2"))</h2>
+                            <h2 tabindex="0">@Html.Raw(Resource.Text("SPSH2"))</h2>
                         </div>
                         <div class="col-sm-2 col-xs-offset-0">
                         </div>
@@ -99,7 +99,7 @@ End Code
                                 <li id="professionTab" role="presentation" class="active">
                                     <a href="#Profession" data-toggle="tab">
                                         <div>
-                                            <i class="tabIcon professionIcon active" aria-hidden="true"></i> @Resource.Text("SPSTabProfession")
+                                            <em class="tabIcon professionIcon active" aria-hidden="true"></em> @Resource.Text("SPSTabProfession")
                                             <span class="badge professionBadge active"></span>
                                         </div>
                                         <div class="upDownArrow">
@@ -111,7 +111,7 @@ End Code
                                 <li id="schemeTab" role="presentation">
                                     <a href="#Scheme" data-toggle="tab">
                                         <div>
-                                            <i class="tabIcon schemeIcon" aria-hidden="true"></i> @Resource.Text("SPSTabScheme")
+                                            <em class="tabIcon schemeIcon" aria-hidden="true"></em> @Resource.Text("SPSTabScheme")
                                             <span class="badge schemeBadge"></span>
                                         </div>
                                         <div class="upDownArrow">
@@ -123,7 +123,7 @@ End Code
                                 <li id="districtTab" role="presentation" style="margin-left: 0px;">
                                     <a href="#District" data-toggle="tab">
                                         <div>
-                                            <i class="tabIcon districtIcon" aria-hidden="true"></i> @Resource.Text("SPSTabDistrict")
+                                            <em class="tabIcon districtIcon" aria-hidden="true"></em> @Resource.Text("SPSTabDistrict")
                                             <span class="badge districtBadge"></span>
                                         </div>
                                         <div class="upDownArrow">
@@ -140,7 +140,7 @@ End Code
                                             Dim cnt = 0
                                             While cnt < Model.ProfessionList.Count
                                                 @<div class="col-sm-6">
-                                                    <ul>
+                                                    <ul role = "radiogroup">
                                                         @For i As Integer = 1 To 5
                                                             If (cnt >= Model.ProfessionList.Count) Then
                                                                 Exit For
@@ -149,7 +149,7 @@ End Code
                                                             @<li>
                                                                 <div class="chk_container radioLabel">
                                                                     <span>@item.Text</span>
-                                                                    @Html.RadioButtonFor(Function(model) model.selectedProfession, item.Value, New With {.class = "chk chkProfession", .id = item.Value, .aria_label = item.Value, .eligible_scheme = item.EligibleScheme})
+                                                                    @Html.RadioButtonFor(Function(model) model.selectedProfession, item.Value, New With {.class = "chk chkProfession", .id = item.Value, .aria_label = item.Text, .eligible_scheme = item.EligibleScheme})
                                                                 </div>
                                                             </li>
                                                             cnt += 1
@@ -162,7 +162,7 @@ End Code
                                     </div>
                                     <div class="row" style="margin-top:10px;">
                                         <div class="col-xs-12">
-                                            <button id="btnClearProfession" aria-label="Clear Profession" class="btn-primary btn-clear" type="button">
+                                            <button id="btnClearProfession" aria-label="@Resource.Text("SPSTabProfession") @Resource.Text("SPSBtnClear")" class="btn-primary btn-clear" type="button">
                                                 @Resource.Text("SPSBtnClear")
                                             </button>
                                         </div>
@@ -176,8 +176,8 @@ End Code
                                                 @<div class="col-sm-6 VSS_container searcVSSbox" style="border-left-color: rgba(221, 221, 221, 1); border-left-width: 1px; border-left-style: solid;">
                                                     <ul>
                                                         <li class="schemeImgContainer">
-                                                            <a href=@item.SchemeUrl target="_blank" ref="noopener noreferrer" style="min-width:50px">
-                                                                <img src="~/Image/SPS/icon_VSS.png" alt="" />&nbsp;
+                                                            <a href="@item.SchemeUrl" target="_blank" ref="noopener noreferrer" style="min-width:50px">
+                                                                <img src="~/Image/SPS/icon_VSS.png" alt="@item.SchemeDesc" />&nbsp;
                                                             </a>
                                                             <div class="VSSCheckbox" style="cursor:default;color: #337ab7">
                                                                 <span>@item.SchemeDesc</span>
@@ -199,8 +199,8 @@ End Code
                                                     <ul>
                                                         <li class="schemeImgContainer">
                                                             <div class="HCVSCheckbox" style="width:100%">
-                                                                <a href=@item.SchemeUrl target="_blank" ref="noopener noreferrer" style="min-width:50px">
-                                                                    <img src="~/Image/SPS/icon_HCVS.png" alt="" />&nbsp;
+                                                                <a href="@item.SchemeUrl" target="_blank" ref="noopener noreferrer" style="min-width:50px">
+                                                                    <img src="~/Image/SPS/icon_HCVS.png" alt="@item.SchemeDesc" />&nbsp;
                                                                 </a>
 
                                                                 <span class="HCVSSchemeDesc">@item.SchemeDesc</span>
@@ -227,7 +227,7 @@ End Code
                                     </div>
                                     <div class="row" style="margin-top:10px;">
                                         <div class="col-xs-12">
-                                            <button id="btnClearScheme" aria-label="Clear Scheme" class="btn-primary btn-clear" type="button">
+                                            <button id="btnClearScheme" aria-label="@Resource.Text("SPSTabScheme") @Resource.Text("SPSBtnClear")" class="btn-primary btn-clear" type="button">
                                                 @Resource.Text("SPSBtnClear")
                                             </button>
                                         </div>
@@ -277,7 +277,7 @@ End Code
                                     </div>
                                     <div class="row" style="margin-top:10px;">
                                         <div class="col-xs-12">
-                                            <button id="btnClearDistrict" aria-label="Clear District" class="btn-primary btn-clear" type="button">
+                                            <button id="btnClearDistrict" aria-label="@Resource.Text("SPSTabDistrict") @Resource.Text("SPSBtnClear")" class="btn-primary btn-clear" type="button">
                                                 @Resource.Text("SPSBtnClear")
                                             </button>
                                         </div>
@@ -317,28 +317,29 @@ End Code
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <ul class="noteTab scr_search_lbox">
-                                <li>
-                                    <a href=@Resource.Text("hcvURL") target="_blank" ref="noopener noreferrer">
+                            <div class="noteTab scr_search_lbox">
+                                <div style="display: flex;justify-content: space-between;padding:5px">
+                                    <a href="@Resource.Text("hcvURL")" target="_blank" ref="noopener noreferrer">
                                         <img src="~/Image/SPS/icon_HCVS.png" alt="@Resource.Text("HCVSShortName")" />
                                         <span>@Resource.Text("HCVSFullName")</span>
                                     </a>
-                                </li>
+                                </div>
+                                <div class="noteTabText">
                                 @code
                                     For Each item As PointToNoteList In Model.PointToNoteList
                                         If item.SchemeCode = "HCVS" Then
-                                            @<li>
+                                            @<p>
                                                 @(New HtmlString(item.NoteDesc))
-                                            </li>
+                                            </p>
                                         End If
                                     Next
                                 End Code
-                                <li></li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xs-12 col-sm-6">
-                            <ul class="noteTab VSSNoteTab scr_search_rbox">
-                                <li style="display: flex;justify-content: space-between;">
+                            <div class="noteTab VSSNoteTab scr_search_rbox">
+                                <div style="display: flex;justify-content: space-between;padding:5px">
                                     <div style="display:inline-flex;">
                                         <a href=@Resource.Text("VSSURL") target="_blank" ref="noopener noreferrer">
                                             <img src="~/Image/SPS/icon_VSS.png" alt="@Resource.Text("VSSShortName")" />
@@ -353,37 +354,37 @@ End Code
                                             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                         </button>
                                     </div>
-                                </li>
-                                <li class="scrollContent">
+                                </div>
+                                <div class="scrollContent noteTabText">
                                     @code
                                         Dim VSSList As List(Of PointToNoteList) = Model.PointToNoteList.Where(Function(x) x.SchemeCode = "VSS").ToList()
                                         For Each item As PointToNoteList In VSSList
                                             @If item.Equals(VSSList.First()) Then
-                                                @<div class="is-active" id="@(item.SeqNo)vss">
+                                                @<p class="is-active" id="@(item.SeqNo)vss">
                                                     @(New HtmlString(item.NoteDesc))
-                                                </div>
+                                                </p>
                                             Else
-                                                @<div id="@(item.SeqNo)vss">
+                                                @<p id="@(item.SeqNo)vss">
                                                     @(New HtmlString(item.NoteDesc))
-                                                </div>
+                                                </p>
                                             End If
                                         Next
                                     End Code
-                                </li>
-                                <li id="liIconButton" style="text-align: right;position: absolute;bottom: 0;right: 20px;">
+                                </div>
+                                <div id="liIconButton" style="text-align: right;position: absolute;bottom: 0;right: 20px;">
                                     <ol class="sec_shortcut">
                                         <li class="sec_shortcut_item">
-                                            <a tarid="3vss" class="sec_shortcut_link is-active"><span class="access"></span></a>
+                                            <a tarid="3vss" class="sec_shortcut_link is-active" aria-hidden="true"><span class="access"></span></a>
                                         </li>
                                         <li class="sec_shortcut_item">
-                                            <a tarid="4vss" class="sec_shortcut_link"><span class="access"></span></a>
+                                            <a tarid="4vss" class="sec_shortcut_link" aria-hidden="true"><span class="access"></span></a>
                                         </li>
                                         <li class="sec_shortcut_item">
-                                            <a tarid="5vss" class="sec_shortcut_link"><span class="access"></span></a>
+                                            <a tarid="5vss" class="sec_shortcut_link" aria-hidden="true"><span class="access"></span></a>
                                         </li>
                                     </ol>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -460,13 +461,13 @@ End Code
                             </div>
                             <div id="legendPart2" class="legend-part2">
                                 <div class="legend-section">
-                                    <a href="@Resource.Text("VSSURL")" target="_blank" ref="noopener noreferrer">
+                                    <a href="@Resource.Text("VSSURL")" target="_blank" ref="noopener noreferrer" aria-label="@Resource.Text("VSSShortName")">
                                         <span><img src="~/Image/SPS/icon_VSS.png" alt="" /></span>
                                         <span class="legend-section-text">@Resource.Text("VSSShortName")</span>
                                     </a>
                                 </div>
                                 <div class="legend-section">
-                                    <a href="@Resource.Text("hcvURL")" target="_blank" ref="noopener noreferrer">
+                                    <a href="@Resource.Text("hcvURL")" target="_blank" ref="noopener noreferrer" aria-label="@Resource.Text("HCVSShortName")">
                                         <span><img src="~/Image/SPS/icon_HCVS.png" alt="" /></span>
                                         <span class="legend-section-text">@Resource.Text("HCVSShortName")</span>
                                     </a>
@@ -653,7 +654,7 @@ End Code
             <!--Legend-->
                 <div id="mobileLegend" class="legend" style="padding-left: 10px;padding-right: 10px;margin-left: 15px;margin-right: 15px;margin-top: 15px;float:none;display:none;" aria-hidden="true">
                     @*<div class="row">*@
-                    <div id="legendPart1" class="legend-part1">
+                    <div id="legendPart3" class="legend-part1">
                         <div class="clegend-title">@Resource.Text("SPResultLegend")</div>
                         <div class="legend-section legend-section-768">
                             <div class="legend-section-1-1">
@@ -693,7 +694,7 @@ End Code
                             <span class="legend-section-text">@Resource.Text("Remarks")</span>
                         </div>
                     </div>
-                    <div id="legendPart2" class="legend-part2">
+                    <div id="legendPart4" class="legend-part2">
                         <div class="legend-section">
                             <a href="@Resource.Text("VSSURL")" target="_blank" ref="noopener noreferrer">
                                 <span><img src="~/Image/SPS/icon_VSS.png" alt="" /></span>
@@ -721,7 +722,7 @@ End Code
                 </div>
             </div>
             <!-- Modal -->
-            <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="0" role="dialog" aria-label="myModalLabel">
                 <div class="modal-dialog" role="document">
                 </div>
             </div>
@@ -767,7 +768,7 @@ End Using
         initPagesizemenu();
         initPageNumberClick();
         initClearButton();
-        getErrorMsg();
+        getErrorMsg(rootLang);
         if (actionReason == 'ChangeLanguage') {
             initPostValues();
             $('#querylanguage').val(queryLanguageFromServer);
@@ -783,7 +784,7 @@ End Using
         var initTop = 40;
 
         //AdjustLegendStyleForLanguage
-        if (pageLanguage == cultureLanguageTradChinese) {    
+        if (pageLanguage == cultureLanguageTradChinese) {
             $('#legendPart1').removeClass('legend-part1');
             $('#legendPart1').addClass('legend-part1-zh');
             $('#legendPart2').removeClass('legend-part2');
@@ -922,14 +923,20 @@ End Using
 
     });
 
-    function getErrorMsg() {
+    function getErrorMsg(Lang) {
+        var applicationPath = '@IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath)';
+
         if (sessionStorage.getItem("errMsg")) {
             errMsgList = JSON.parse(sessionStorage.getItem("errMsg"))
         }
         else {
+            if (!sessionStorage.getItem("lang")) {
+                sessionStorage.setItem("lang", Lang);
+            }
             $.ajax({
                 async: false,
-                url: "@Url.Action("systemmsg", "value")",
+                //url: "@Url.Action("systemmsg", "value")",
+                url: applicationPath + "/" + sessionStorage.getItem("lang") + "/value/systemmsg",
                 dataType: "json",
                 success: function (data) {
                     if (data) {
@@ -942,10 +949,10 @@ End Using
                     if (errorUrl) {
                         var u = rootPath + rootLang + errorUrl;
                         location.href = u;
-                    }
                 }
-            });
-        }
+            }
+        });
+    }
     }
     function SearchResult(vQueryLang, isBtnSearch) {
         firstGetResult = false;
@@ -1010,18 +1017,7 @@ End Using
         $('#ulSort').css('display', 'none');
         $('.result_tab').css('display', 'none');
     }
-    function scrollToNoted(elem) {
-        var height = $('.header_content').css('height');
-        if (height == '90px') {
-            height = 90;
-        }
-        else {
-            height = 130;
-        }
-        $('html, body').animate({
-            'scrollTop': elem.offset().top - height
-        }, 1000);
-    }
+
     function GetResult(isBtnSearch) {
         $('#hasResult').val('true');
         if (isBtnSearch) {
@@ -1073,7 +1069,7 @@ End Using
             });
             $('#selectedDistrict').val(districtList.substring(0, districtList.length - 1));
             //console.log(schemeList.substring(0,schemeList.length-1));
-			$('#pageActualSize').val($('#pageSize').val());
+            $('#pageActualSize').val($('#pageSize').val());
         }
         var modelData = $('form').serializeArray();
         //var objModel = { "ProviderName": "", "PracticeName": "", "PracticeAddress": "", "Profession": "", "Scheme": "", "District": "", "pageSize": pageSize, "pageActualSize": $('#pageActualSize').val(), "pageIndex": pageIndex, "sortField": sortField, "sortColName": sortColName, "sortType": sortType, "requestType": requestType, "queryLanguage": "", "hasResult": "", "isSearch": isBtnSearch };
@@ -1099,7 +1095,8 @@ End Using
             }
         }
         if (objModel.ProviderName == '' && objModel.PracticeName == '' && objModel.PracticeAddress == '' && objModel.Profession == '' && objModel.Scheme == '' && objModel.District == '') {
-            showErrorMsg('040101-E-00004');
+            var errMsg = showErrorMsg('040101-E-00004');
+            ErrorLog(errMsg)
             HideResultStyle();
         } else {
             $('.alert').css('display', 'none');
@@ -1120,7 +1117,7 @@ End Using
 
                         if (isValid == "True") {
                             recordTotal = tempContainer.find('#RecordTotal').first().text();
-                            
+
                             var mobileList = $('.result_tab');
                             if (mobileList.length == 0) return false;
                             $('#PointToNote').css('display', 'block');
@@ -1175,7 +1172,7 @@ End Using
 
                             $("#orderQueryBox").show();
 
-                            
+
                             var desktopResult = $('#divResult');
                             if (desktopResult.length == 0) return false;
                             desktopResult.empty();
@@ -1186,7 +1183,7 @@ End Using
                                 $('#sortFieldSIV').show();
                                 hasVSS = true;
                             } else {
-                            	hasVSS = false;
+                                hasVSS = false;
                                 $('.VSSNoteTab').css('display', 'none');
                                 desktopResult.find('.showWithVSS').css('display', 'none');
                                 $('.HCVSItem').css("border-radius", "0px 10px 10px 0px");
@@ -1249,7 +1246,7 @@ End Using
                             }
                         }
                     } else {
-                        showErrorMsg('990000-I-00004');
+                        showErrorMsg('990000-I-00001');
                         HideResultStyle();
                     }
                 },
@@ -1262,7 +1259,7 @@ End Using
                 }
             });
         }
-        
+
         function showErrorMsg(errCode) {
             $('#PointToNote').css('display', 'none');
             $('#btnLoadMore').css('display', 'none');
@@ -1277,6 +1274,7 @@ End Using
             $('#txtErrMsg').html(errMsg);
             $('.alert').css('display', 'block');
             scrollToNoted($('.alert'));
+            return errMsg;
         }
 
         function findMsg(lang, code) {
@@ -1318,7 +1316,7 @@ End Using
         pageIndex = 1;
         pageSize = selectPageSize;
         $('#pageSize').val(selectPageSize);
-        $('#pageActualSize').val(selectPageSize);        
+        $('#pageActualSize').val(selectPageSize);
         sortType = selectOrderType.toLowerCase();
         $("#sortType").val(selectOrderType.toLowerCase());
         sortField = orderCol;
@@ -1338,7 +1336,7 @@ End Using
         $("#spanSortItemTitle").html(loadCount + "/" + recordTotal);
         if (loadCount >= recordTotal) {
             $("#btnLoadMore").hide();
-        }        
+        }
     }
     //"load more" button(next page)
     function loadMore() {
@@ -1368,7 +1366,7 @@ End Using
             $(domEle).find('div').first().width($(domEle).width());
             $(domEle).find('div').first().css('min-height', '85px');
         });
-    }   
+    }
     //dropdown-menu
     function initPagesizemenu() {
         if ($('.dropdown-menu>li>a').length) {
@@ -1385,6 +1383,32 @@ End Using
                 GetResult();
             });
         }
+    }
+
+    function ErrorLog(errMsg) {
+        var rtnValue;
+
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url: "@Url.Action("ErrorLog", "SPS")",
+            dataType: 'json',
+            data: JSON.stringify({
+                errMsg: errMsg
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                rtnValue = data.Rtn;
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+                if (errorUrl) {
+                    var u = rootPath + rootLang + errorUrl;
+                    location.href = u;
+                }
+            }
+        });
+        return rtnValue;
     }
 </script>
 <script src="~/js/serviceProvider.js"></script>

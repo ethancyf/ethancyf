@@ -6,10 +6,10 @@ End Code
 
 <div class="container policy_bigbox" id="divSysMaintenance">
 @code
-    If Model.UrgentLyModelList.Count > 0 Then       
+    If Model.UrgentLyModelList.Count > 0 Then
     @<div class="row notice_topTitleBox">
          <div class="col-xs-12 col-sm-12 maintenance_topTitleText" >
-             <span><strong>@Resource.Text("UrgentSystemMaintenanceSchedule")</strong></span>
+             <h1 id="skiptarget"><strong>@Resource.Text("UrgentSystemMaintenanceSchedule")</strong></h1>
          </div>
     </div>
     @<div class="row sysmngap">
@@ -51,7 +51,7 @@ End If
 End code
     <div class="row notice_topTitleBox">
         <div class="col-xs-12 col-sm-12 maintenance_topTitleText">
-            <span><strong>@Resource.Text("RegularSystemMaintenanceSchedule")</strong></span>
+            <h1><strong>@Resource.Text("RegularSystemMaintenanceSchedule")</strong></h1>
         </div>
     </div>
     <div class="row">

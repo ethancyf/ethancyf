@@ -74,7 +74,7 @@ Namespace Text
             If Not IsPostBack Then
                 FunctionCode = FunctCode.FUNT030102
                 Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
-                udtAuditLogEntry.WriteLog(LogID.LOG00000, "Voucher Balance Enquiry load")
+                udtAuditLogEntry.WriteLog(LogID.LOG00010, "Voucher Balance Enquiry load (Obsoleted)")
 
                 Me.ResetAlertLabel()
 

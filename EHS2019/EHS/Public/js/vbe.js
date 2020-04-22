@@ -12,6 +12,7 @@ var errMsg = "";
 var mode = 1;
 var onFocusField = "";
 var errMsgList = [];
+var speech = "";
 
 function findMsg(lang, code) {
     // iterate over each element in the array
@@ -103,6 +104,7 @@ $(document).ready(function () {
             return true;
         }
         else {
+            ErrorLog(errMsg);
             $('#txtErrMsg').html(errMsg);
             $('.alert').css('display', 'block');
             scrollToElem($('.alert'));
@@ -110,28 +112,123 @@ $(document).ready(function () {
         }
     });
 
+    function ErrorLog(errMsg) {
+        var rtnValue;
+        var HKIC = $('#txtHKIC').val();
+        var DocCode = mode;
+        var DOB = "";
+        var ECAge = "";
+        var DOR_Year = "";
+        var DOR_Month = "";
+        var DOR_Day = "";
 
+        if (mode == 1) {
+            DOB = $('#txtDob').val()
+        }
+        if (mode == 2) {
+            if ($('#selType').val() == 'DOB') {
+                DOB = $('#txtDob_CE').val()
+            }
+            if ($('#selType').val() == 'YOB') {
+                ECAge = $('#txtAge').val();
+                DOR_Year = $('#txtYear').val();
+                DOR_Month = $('#selMonth').val();
+                DOR_Day = $('#txtDay').val();
+            }
+        }
+
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url: applicationPath + "/en/VBE/ErrorLog",
+            dataType: 'json',
+            data: JSON.stringify({
+                HKID: HKIC,
+                DocCode: DocCode,
+                DOB: DOB,
+                ECAge: ECAge,
+                DOR_Year: DOR_Year,
+                DOR_Month: DOR_Month,
+                DOR_Day: DOR_Day,
+                errMsg: errMsg
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                rtnValue = data.Rtn;
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+                if (errorUrl) {
+                    var u = rootPath + rootLang + errorUrl;
+                    location.href = u;
+                }
+            }
+        });
+        return rtnValue;
+    }
+
+    function RefreshCaptchaLog() {
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url: applicationPath + "/en/VBE/RefreshCaptchaLog",
+            dataType: 'json',
+            data: JSON.stringify({
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                rtnValue = data.Rtn;
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+                if (errorUrl) {
+                    var u = rootPath + rootLang + errorUrl;
+                    location.href = u;
+                }
+            }
+        });
+        return rtnValue;
+    }
+
+    function PlayAudioCaptchaLog() {
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url: applicationPath + "/en/VBE/PlayAudioCaptchaLog",
+            dataType: 'json',
+            data: JSON.stringify({
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                rtnValue = data.Rtn;
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+                if (errorUrl) {
+                    var u = rootPath + rootLang + errorUrl;
+                    location.href = u;
+                }
+            }
+        });
+        return rtnValue;
+    }
 
     function test() {
         var s = 's12345';
         alert(s.charCodeAt(1));
     }
     function refreshCaptcha() {
-        $.ajax({
-            async: false,
-            type: 'GET',
-            url: applicationPath + '/en/Error/CheckTimeout',
-            complete: function (XMLHttpRequest, textStatus) {
-                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
-                if (errorUrl) {
-                    var u = rootPath + rootLang + errorUrl;
-                    location.href = u;
-                } else {
-                    $('.valiCodeImg').attr('src', applicationPath + '/en/VBE/GetValidateCode?query=' + Math.random());
-                }
-            }
-        });
-
+        speech = guid2();
+        switch (currentLanguage) {
+            case cultureLanguageEnglish:
+                $('.valiCodeImg').attr('src', applicationPath + '/en/VBE/GetValidateCode?query=' + Math.random() + '&speech=' + speech);
+                break;
+            case cultureLanguageTradChinese:
+                $('.valiCodeImg').attr('src', applicationPath + '/tc/VBE/GetValidateCode?query=' + Math.random() + '&speech=' + speech);
+                break;
+        }
+        played = false;
+        //$('#voice').attr('src', applicationPath + '/Files/Audio/' + speech + currentLanguage.replace('-', '') + '.mp3');
     }
 
     function verifyCaptcha() {
@@ -723,11 +820,8 @@ $(document).ready(function () {
                 else {
                     $('.help-img').attr('src', applicationPath + '/Image/vbe/web/help-1-' + currentLanguage + '.png');
                 }
-                //var rtn = '11-2222';
                 var rtn = formatDateOfBirth($('#txtDob').val());
                 $('#txtDob').val(rtn);
-                //$('#txtDob').text(rtn);
-                //$('#txtDob').val('1111111');
             });
         }
 
@@ -800,6 +894,7 @@ $(document).ready(function () {
 
         $('#refreshCaptcha').on('click', function (event) {
             refreshCaptcha();
+            RefreshCaptchaLog();
         });
 
         initAlertSign();
@@ -818,8 +913,6 @@ $(document).ready(function () {
             $('#inputType').val('IC');
         }
 
-        getErrorMsg();
-        //if (currentLanguage == 'zh-HK') {
         if (currentLanguage.toLowerCase() == cultureLanguageTradChinese) {
             $('#inActiveCEButton').addClass('inActiveButton-ce-ts');
             //$('.help-text').addClass('help-text-ts');
@@ -827,38 +920,78 @@ $(document).ready(function () {
             $('.help-text-yob').addClass('help-text-ts');
         }
         //Handle style for inactive button for CE
+        initCaptcha();
+        //initPlayCaptcha();
+        initPlayCaptchaNew();
+        var isShiftAndTab = false;
+        $(document).keydown(function (e) {
+            isShiftAndTab = e.shiftKey && e.which == 9;
+            if (isShiftAndTab) {
+                var focusEleID = $(':focus').attr("id");
+                if (focusEleID == "btnSubmit")
+                    setTabindex();
+                if (focusEleID == 'txtDob' || focusEleID == 'txtDob_CE')
+                    resetTabindex();
+            }
+        })
+        $('#txtDob,#txtDob_CE,#txtYear,#txtCaptcha,#CaptchaVoice,#refreshCaptcha,#btnSubmit').on('focus', function (event) {
+            setTabindex();
+            if ($(this).attr('id') == 'btnSubmit') {
+                resetTabindex();
+            }
+            isShiftAndTab = false;
+        });
+        $('#txtDob,#txtDob_CE,#txtYear,#txtCaptcha,#CaptchaVoice,#refreshCaptcha,#btnSubmit').on('blur', function (event) {
+            resetTabindex();
+            isShiftAndTab = false;
+        });
+    }
 
+    function setTabindex() {
+        $('#txtDob').attr("tabindex", 10);
+        $('#txtDob_CE').attr("tabindex", 10);
+        $('#txtAge').attr("tabindex", 10);
+        $('#txtDay').attr("tabindex", 10);
+        $('#selMonth').attr("tabindex", 10);
+        $('#txtYear').attr("tabindex", 10);
+        $('#txtCaptcha').attr("tabindex", 40);
+        $('#CaptchaVoice').attr("tabindex", 30);
+        $('#refreshCaptcha').attr("tabindex", 20);
+        $('#btnSubmit').attr("tabindex", 50);
+    }
+
+    function resetTabindex() {
+        $('#txtDob,#txtDob_CE,#txtAge,#txtDay,#selMonth,#txtYear,#txtCaptcha,#CaptchaVoice,#refreshCaptcha,#btnSubmit').attr("tabindex", 0);
     }
     
-    function getErrorMsg() {
-        if (sessionStorage.getItem("errMsg")) {
-            errMsgList = JSON.parse(sessionStorage.getItem("errMsg"))
-        }
-        else {
-            if (!sessionStorage.getItem("lang"))
-            {
-                sessionStorage.setItem("lang","en")
-            }
-            $.ajax({
-                async: false,
-                url: applicationPath+"/"+sessionStorage.getItem("lang") + "/value/systemmsg",
-                dataType: "json",
-                success: function (data) {
-                    if (data) {
-                        errMsgList = data;
-                        sessionStorage.setItem("errMsg", JSON.stringify(data))
-                    }
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
-                    if (errorUrl) {
-                        var u = rootPath + rootLang + errorUrl;
-                        location.href = u;
-                    }
-                }
-            });
-        }
-    }
+    //function getErrorMsg() {
+    //    if (sessionStorage.getItem("errMsg")) {
+    //        errMsgList = JSON.parse(sessionStorage.getItem("errMsg"))
+    //    }
+    //    else {
+    //        if (!sessionStorage.getItem("lang")) {
+    //            sessionStorage.setItem("lang","en")
+    //        }
+    //        $.ajax({
+    //            async: false,
+    //            url: applicationPath+"/"+sessionStorage.getItem("lang") + "/value/systemmsg",
+    //            dataType: "json",
+    //            success: function (data) {
+    //                if (data) {
+    //                    errMsgList = data;
+    //                    sessionStorage.setItem("errMsg", JSON.stringify(data))
+    //                }
+    //            },
+    //            complete: function (XMLHttpRequest, textStatus) {
+    //                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+    //                if (errorUrl) {
+    //                    var u = rootPath + rootLang + errorUrl;
+    //                    location.href = u;
+    //                }
+    //            }
+    //        });
+    //    }
+    //}
 
     function initAlertSign() {
         $('#alertCaptCha').css('display', 'none');
@@ -955,7 +1088,82 @@ $(document).ready(function () {
 
     }
 
+    function initCaptcha() {
+        refreshCaptcha();
+    }
 
+    //function initPlayCaptcha() {
+    //    $('#CaptchaVoice').click(function () {
+    //        //CALL API to generate audio file
+    //        if (!played) {
+    //            $.ajax({
+    //                async: false,
+    //                type: 'POST',
+    //                url: applicationPath + "/en/VBE/GenerateAudioCaptcha",
+    //                dataType: 'json',
+    //                data: JSON.stringify({
+    //                    audioId: speech
+    //                }),
+    //                contentType: 'application/json; charset=utf-8',
+    //                success: function (data) {
+    //                    if (data.Rtn == 0) {
+    //                        var voice = document.getElementById('voice');
+    //                        //$('#voice').attr('src', applicationPath + captchaAudioFolder + speech + currentLanguage.replace('-', '') + '.mp3');
+    //                        $('#voice').attr('src', 'https://localhost/Captcha/default/GetCreateSpeechByStream');
+    //                        voice.load();
+    //                        if (voice.paused) {
+    //                            voice.play();
+    //                        } else {
+    //                            voice.pause();
+    //                        }
+    //                        played = true;
+    //                    }
+    //                }
+    //            });
+    //        }
+    //        else {
+    //            var voice = document.getElementById('voice');
+    //            voice.load();
+    //            if (voice.paused) {
+    //                voice.play();
+    //            } else {
+    //                voice.pause();
+    //            }
+    //        }
+    //    });
+    //}
+
+    function initPlayCaptchaNew() {
+
+        $('#CaptchaVoice').click(function () {
+            PlayAudioCaptchaLog()
+            $("body").css("cursor", "progress");
+
+            var voice = document.getElementById('voice');
+            switch (currentLanguage) {
+                case cultureLanguageEnglish:
+                    $('#voice').attr('src', applicationPath + "/en/VBE/GetCaptchaStream");
+                    break;
+                case cultureLanguageTradChinese:
+                    $('#voice').attr('src', applicationPath + "/tc/VBE/GetCaptchaStream");
+                    break;
+                default:
+                    $('#voice').attr('src', applicationPath + "/en/VBE/GetCaptchaStream");
+                    break;
+            }
+
+            if (voice.paused) {
+                voice.play();
+            } else {
+                voice.pause();
+            }
+
+            setTimeout(function () {
+                $("body").css("cursor", "default");
+                $("#txtCaptcha").focus();
+            }, 3500);
+        });
+    }
 
 });
 
@@ -1063,4 +1271,12 @@ function scrollToElem(elem) {
     $('html, body').animate({
         'scrollTop': elem.offset().top - height
     }, 1000);
+}
+
+function guid2() {
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    //return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    return (S4() + S4() + S4() + S4() + S4() + S4() + S4() + S4());
 }

@@ -2,10 +2,9 @@
     ViewData("Title") = Resource.Text("Home")
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
-
-<div class="container">
-    <div id="Home">
-        <div class="container row">
+<div class="container-fluid">
+    <div id="Home" class="container">
+        <div class="row">
             <div class="col-sm-12">
                 <div class="row">
                     <div id="skiptarget" class="col-sm-12 text-1" style="padding-top: 30px;">

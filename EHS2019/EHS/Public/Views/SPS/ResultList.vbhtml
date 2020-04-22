@@ -215,45 +215,49 @@
 		                Dim rowId, clinicId As String
 		                rowId = "practice_" + i.ToString()
 		                clinicId = "practice_" + i.ToString() + "_clinic"
+		                Dim hasRemark = False
+		                
 		                i = i + 1
 		            @<tr class="tr-content" tabindex="0">
 		                <td class="left-cell" style="
-		                @code
+		            @code
 		                Dim styleCursor As String = "cursor:default !important;"
 		                If item.MobileClinic <> "Y" And item.NonClinic <> "Y" And item.Remark <> "Y" Then
 		            @styleCursor
-		                End If
-		                End code
+	                    Else
+                            hasRemark = True
+                        End If
+		            End code
 		                ">
 		                <div>
 		                <div style="text-align:left;">
 		                <div style="display:inline;">
-		
+											@Html.Raw(If(hasRemark, String.Format("<a href='javascript:void(0)' aria-label='{0}' arialabel='{0}'>", Resource.Text("Remarks")), ""))
 		                @code
 		                If item.MobileClinic = "Y" Then
 		                    @<div style="z-index:12;display:inline;">
-		                    <button class="img-clinic" type="button" style="background:none; border:none; display:inline;outline:none;top:0px;" @*aria-label="@Resource.Text("SPSResultOperationSchedule")"*@>
-                                <img src="~/Image/SPS/Icon-mclinic.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("SPSResultMobileClinic")" />
+		                    <button tabindex="-1" class="img-clinic" type="button" style="background:none; border:none; display:inline;outline:none;top:0px;">
+                                <img aria-hidden="true"  src="~/Image/SPS/Icon-mclinic.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("SPSResultMobileClinic")" />
 		                    </button>
 		                    </div>
 		                End If
 		
 		                If item.NonClinic = "Y" Then
 		                    @<div style="z-index:11;display:inline;">
-		                    <button class="img-clinic" type="button" style="background:none; border:none; display:inline;outline:none;top:0px;
+		                    <button tabindex="-1" class="img-clinic" type="button" style="background:none; border:none; display:inline;outline:none;top:0px;
 		                    @code
 		                    Dim style As String = "margin-left:-11px;"
 		                    If item.MobileClinic = "Y" Then
 		                        @style
 		                    End If
 		                    End code
-		                    " @*aria-label="@Resource.Text("SPSResultOperationSchedule")"*@>
+		                    ">
 		
 		                    @If Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower() = Common.Component.CultureLanguage.English Then
-		                        @<img src="~/Image/SPS/Icon-nonclinic-eng-2x.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("NonClinic")" />
+		                        @<img aria-hidden="true" src="~/Image/SPS/Icon-nonclinic-eng-2x.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("NonClinic")" />
                             End If
 		                    @If Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower() = Common.Component.CultureLanguage.TradChinese Then
-		                        @<img src="~/Image/SPS/Icon-nonclinic-chi-2x.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("NonClinic")" />
+		                        @<img aria-hidden="true" src="~/Image/SPS/Icon-nonclinic-chi-2x.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("NonClinic")" />
                             End If
 		                    </button>
 		                    </div>
@@ -261,7 +265,7 @@
 		
 		                If item.Remark = "Y" Then
 		                    @<div style="z-index:10;display:inline;">
-		                    <button class="img-clinic" type="button" style="background:none; border:none; display:inline;outline:none;top:0px;
+		                    <button tabindex="-1" class="img-clinic" type="button" style="background:none; border:none; display:inline;outline:none;top:0px;
 		                    @code
 		                    Dim style As String = "margin-left:-11px;"
 		                    If item.MobileClinic = "Y" Or item.NonClinic = "Y" Then
@@ -269,12 +273,13 @@
 		                    End If
 		                    End code
 		                    ">
-		                    
+
 		                    <img src="~/Image/SPS/Icon-remark-top-2x.png" style="display: flex;width: 36px;" id="@rowId" alt="@Resource.Text("Remarks")"/>
 		                    </button>
 		                    </div>
 		                End If
 		                End code
+		                @Html.Raw(If(hasRemark, "</a>", ""))
 		                </div>
 		                </div>
 		
@@ -308,12 +313,24 @@
                 </td>
                 <!-- Search Point 3 -->
                 @code
+                    Dim allHeaders = New List(Of String)()
+                    For Each header As SchemeHeader In Model.HeaderList
+                        For j As Integer = 0 To header.ColSpan - 1
+                            allHeaders.Add(header.Header)
+                        Next
+                    Next
+
                 Dim subsiCount = item.SubsidizeList.Count
                 For j As Integer = 0 To subsiCount - 1
+                    Dim isDecimal = False
+                    Decimal.TryParse(item.SubsidizeList(j).Fee, isDecimal)
+                    'Dim pattern = "^\-{0,1}[0-9]{0,}\.{0,1}[0-9]{1,}$"
+                    'Dim isDecimal = System.Text.RegularExpressions.Regex.IsMatch(item.SubsidizeList(j).Fee, pattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase)
+                            Dim unit = If(isDecimal, Resource.Text("AriaHongKongDollar"), "")
                     If j = subsiCount - 1 Then
-                    @<td class="right-cell showWithVSS">@item.SubsidizeList(j).Fee</td>
+                    @<td class="right-cell showWithVSS" aria-label="@allHeaders(j) @Model.SubHeaderList(j).SubsidizeDesc @item.SubsidizeList(j).Fee @unit">@item.SubsidizeList(j).Fee</td>
                     Else
-                    @<td class="showWithVSS">@item.SubsidizeList(j).Fee</td>
+                    @<td class="showWithVSS" aria-label="@allHeaders(j) @Model.SubHeaderList(j).SubsidizeDesc @item.SubsidizeList(j).Fee @unit">@item.SubsidizeList(j).Fee</td>
                     End If
                 Next
                 End code
@@ -322,7 +339,7 @@
                 If item.MobileClinic = "Y" Or item.NonClinic = "Y" Or item.Remark = "Y" Then
                 @<tr class="tr-content mobile-clinic" style="display:none;border-spacing:0px 0px;" id="@clinicId" tabindex="0">
                     @code
-                    Dim cols = item.SubsidizeList.Count + 5
+                    Dim cols = If(Model.HasVSS, item.SubsidizeList.Count + 5, 5)
                     End code
                     <td colspan="@cols" style="text-align:left;">
                         <div class="freezeDiv">

@@ -23,20 +23,12 @@ End Code
     <script src="~/js/common.js"></script>
 
     <script type="text/javascript">
-    var rootPath = "@ViewBag.ApplicationPath" == "/" ? "@ViewBag.ApplicationPath" : "@ViewBag.ApplicationPath" + "/";
+        var rootPath = "@ViewBag.ApplicationPath" == "/" ? "@ViewBag.ApplicationPath" : "@ViewBag.ApplicationPath" + "/";
         var rootLang = "@ViewBag.Lang";
         var currentLanguage = "@Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower";
         var cultureLanguageEnglish = '@Common.Component.CultureLanguage.English';
         var cultureLanguageTradChinese = '@Common.Component.CultureLanguage.TradChinese';
     window.onload = function onloading() {
-        if ($(".mainContent").length) {
-            $(".mainContent").css("background-image", "url('@IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath)/Image/SPS/bg-base.png')");
-        }
-        if ($("#Home").length) {
-            $(".mainContent").css("background-image", "url('@IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath)/Image/common/bg-home.png')")
-                .css("background-attachment","fixed");
-        }
-        //var lang = "@Threading.Thread.CurrentThread.CurrentCulture.Name";
         switch (currentLanguage) {
             case cultureLanguageEnglish:
                 $(".en_menu").css("display", "inline-flex");
@@ -59,6 +51,32 @@ End Code
             $('#useLang').attr('data-uselang', 'tc');
         }
     }
+
+    function WriteChangeLanguageAuditLog(lang) {
+        var rtnValue;
+
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url: "@Url.Action("ChangeLanguageLog", "Home")",
+            dataType: 'json',
+            data: JSON.stringify({
+                lang: lang
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                rtnValue = data.Rtn;
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                var errorUrl = XMLHttpRequest.getResponseHeader("ErrorUrl");
+                if (errorUrl) {
+                    var u = rootPath + rootLang + errorUrl;
+                    location.href = u;
+                }
+            }
+        });
+        return rtnValue;
+    }
     </script>
 
 </head>
@@ -66,7 +84,7 @@ End Code
 
     <div class="super_container">
 
-        <div class="skip_content">
+        <div class="skip_content" role="navigation" aria-label="Main menu">
             <a href="#skiptarget" class="skip_link" title="Skip to main content">@Resource.Text("SkipToMainContent")</a>
         </div>
         <div id="useLang" style="display:none;" data-uselang=""></div>
@@ -76,14 +94,14 @@ End Code
                     <div class="logo">
                         @*<a id="logoID" href="@Url.Action("Home", "Home")"><img src="~/Image/logoicon/artwork-ehs-logo.png" alt="eHealth"></a>
                         <a href="@Url.Action("Home", "Home")"><img src="~/Image/logoicon/artwork-ehealth-subsidy.png" alt="eHealth system"></a>*@
-                        <a id="logoID" href="@Url.Action("Home", "Home")">
-                            <table>
+                        @*<a id="logoID" href="@Url.Action("Home", "Home")">*@
+                            <table id="logoID">
                                 <tr>
                                     <td><img src="~/Image/logoicon/artwork-ehs-logo.png" alt="eHealth" class="logo_img1"></td>
                                     <td style="padding-left:10px"><img src="~/Image/logoicon/artwork-ehealth-subsidy.png" alt="eHealth system" class="logo_img2"></td>
                                 </tr>
                             </table>
-                        </a>
+                        @*</a>*@
                     </div>
                     <nav class="main_nav">
                         <div class="header_menu destopMenu">
@@ -99,12 +117,10 @@ End Code
                                 <li class="menu_3" style="text-align:left !important">@Html.ActionLink(Resource.Text("SearchProvider"), "Search", "SPS")</li>
                                 <li class="menu_5" style="text-align:left !important">@Html.ActionLink(Resource.Text("ContactUs"), "ContactUs", "CU")</li>
                             </ul>
-
-
                         </div>
                         <div class="lang" id="lang_switch">
                             <span style="float:left;" class="destopMenu">
-                                <a id="textSizeLink" href="@Url.Action("TextSize", "Static")" target="_blank" aria-label="Text Size" style="font-weight:normal">@Resource.Text("TextSizeTitle")</a>
+                                <a id="textSizeLink" href="@Url.Action("TextSize", "Static")" target="_blank" style="font-weight:normal">@Resource.Text("TextSizeTitle")</a>
                             </span>
                             <span style="float:left;padding-right:5px;color:#707070;" class="destopMenu">|</span>
                             <span style="float:left;">
@@ -120,10 +136,10 @@ End Code
                         @*<button class="btn btn-default global" title="@Resource.Text("AriaMobileLanguage")" type="button">
                                 <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
                             </button>*@
-                        <button class="btn btn-default hamburger" title="@Resource.Text("AriaMobileMenu")" type="button" alt="@Resource.Text("AriaMobileMenu")">
+                        <button class="btn btn-default hamburger" title="@Resource.Text("AriaMobileMenu")" aria-label="@Resource.Text("AriaMobileMenu")" value="@Resource.Text("AriaMobileMenu")" type="button" alt="@Resource.Text("AriaMobileMenu")">
                             <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
                         </button>
-                        <button class="btn btn-default btnclose" title="@Resource.Text("AriaCloseMobileMenu")" type="button" style="display:none;" alt="@Resource.Text("AriaCloseMobileMenu")">
+                        <button class="btn btn-default btnclose" title="@Resource.Text("AriaCloseMobileMenu")" aria-label="@Resource.Text("AriaCloseMobileMenu")" value="@Resource.Text("AriaCloseMobileMenu")" type="button" style="display:none;" alt="@Resource.Text("AriaCloseMobileMenu")">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -160,7 +176,15 @@ End Code
             </div>
         </nav>
         <!--Content-->
-        <div class="mainContent">
+        @code
+            Dim bgUrl As String = IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) + "/Image/SPS/bg-base.png"
+            If ViewBag.IsHome IsNot Nothing Then
+                If ViewBag.IsHome Then
+                    bgUrl = IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) + "/Image/Common/bg-home.png"
+                End If
+            End If
+        End Code
+       <div class="mainContent" role="main" aria-label="mainContent" style="background-image: url('@bgUrl');">
             <a href="~/Files/FAQs_c.pdf#Public" target="_blank" rel="noopener noreferrer" style="display:none" id="zhFAQ">zhFAQ</a>
             <a href="~/Files/FAQs_e.pdf#Public" target="_blank" rel="noopener noreferrer" style="display:none" id="enFAQ">enFAQ</a>
             <a href="~/Files/EasyGuide_CHI.pps" target="_blank" rel="noopener noreferrer" style="display:none" id="zhGuide">zhGuide</a>
@@ -255,7 +279,7 @@ End Code
                                 <li>@Html.ActionLink(Resource.Text("PrivacyPolicy"), "PrivacyPolicy", "Static")</li>
                                 <li>@Html.ActionLink(Resource.Text("ImportantNotices"), "ImportantNotice", "Static")</li>
                                 <li>@Html.ActionLink(Resource.Text("SystemMaintenance"), "SystemMaintenance", "Static")</li>
-                                <li>
+                                <li aria-hidden="true">
                                     <img src="~/Image/logoicon/wcag2.1AA-v.png" alt="Level Double-A conformance icon, W3C-WAI Web Content Accessibility Guidelines 2.1" width="88" height="28">
 
                                 </li>

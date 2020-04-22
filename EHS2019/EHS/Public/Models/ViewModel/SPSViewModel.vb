@@ -57,6 +57,7 @@ Public Class SchemeItemHeader
     Public Property Header As String
     Public Property SortItem As String
     Public Property SubsidizeFeeColumnName As String
+    Public Property SubsidizeDesc As String
 End Class
 Public Class HeaderList
     Public Property Title As String
@@ -107,6 +108,7 @@ Public Class SubsidizeItemList
     Public Property SearchGroup As String
     Public Property SubsidizeShortForm As String
     Public Property SubsidizeFeeColumnName As String
+    Public Property SubsidizeDesc As String
 End Class
 
 Public Class EligibleSchemeList

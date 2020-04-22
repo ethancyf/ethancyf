@@ -445,6 +445,11 @@
     	padding-right: 4px;
     }
 
+    #vbe_search .text-HowTo {
+        font-size: 14px; 
+        padding: 0px;
+    }
+
     #divResult {
         width: 680px;
     }
@@ -708,6 +713,10 @@
         padding-right: 4px;
     }
 
+    #vbe_search .text-HowTo {
+        font-size: 13px;
+    }
+
     .text-1 {
         font-size: 26px;
     }
@@ -834,9 +843,6 @@
         line-height: 1.5;
     }
 
-    #vbe_search .text-HowTo {
-        font-size: 14px;
-    }
  
     .text-7-2 {
         font-size: 18px;
@@ -960,6 +966,11 @@
             height: 62px;
             padding-left: 10px;
             padding-right: 10px;
+        }
+
+        #vbe_search .text-HowTo {
+            padding-left: 15px;
+            font-weight: bold;
         }
 
     .SPSearch_header {
@@ -1203,8 +1214,6 @@
     .searcVSSbox {
         padding-left: 15px;
     }
-    
-    
 }
 
 /************

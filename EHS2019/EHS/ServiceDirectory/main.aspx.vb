@@ -132,7 +132,7 @@ Partial Public Class main
             FunctionCode = Common.Component.FunctCode.FUNT040101
 
             Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
-            udtAuditLogEntry.WriteLog(LogID.LOG00000, "SDIR Page Load")
+            udtAuditLogEntry.WriteLog(LogID.LOG00024, "SDIR Page Load (Obsoleted)")
 
             InitializeSessionVariable()
 

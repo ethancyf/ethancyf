@@ -1,12 +1,4 @@
-﻿//Sample
-//function initMoveTable() {
-//    if ($('.previous').length) {
-//        var ele = $('.previous');
-//        ele.on('click', function (event) {
-//        });
-//    }
-//}
-;
+﻿;
 var firstGetResult = true;
 
 $(document).ready(function () {
@@ -23,27 +15,41 @@ $(document).ready(function () {
         $("#EHCVS").click();
     })
 });
-$(window).on('resize', function () {
-    var scrollLeft = $('#divResult').scrollLeft();
-    $('#divResult').scrollLeft(scrollLeft - 30);
 
-    var width = $("#divResult").width();
-    var left = $("#divResult").scrollLeft();
-    var trs = $("#divResult>table>tbody>tr").not(".mobile-clinic");
-    trs.each(function (i) {
-        for (var i = 0; i < 2; i++) {
-            $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });
-        }
-    });
+//20200402 Issue-3 fix Begin
+//Issue-3: slide feature is not good on iPad 
+function resizedw(appwidth) {
+    //reset scroll-left when widow width is change
+    if ($(window).width() != appwidth) {
+        $('#divResult').scrollLeft(0);
+        var width = $("#divResult").width();
+        var left = $("#divResult").scrollLeft();
+        var trs = $("#divResult>table>tbody>tr").not(".mobile-clinic");
+        trs.each(function (i) {
+            for (var i = 0; i < 2; i++) {
+                $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });
+            }
+        });
 
-    if (hasVSS) {
-        $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0, "width": width - 100 });
-    } else {
         $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });
+        //if (hasVSS) {
+        //    $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0, "width": width - 100 });
+        //} else {
+        //    $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });
+        //}
+        InitFreezeDivWidth();
+
+        hideResultLRButton();
     }
-    
-    hideResultLRButton();
+    past_width = $(window).width();
+}
+
+var past_width = $(window).width();
+$(window).on('resize', function () {
+    resizedw(past_width);
 });
+
+//20200402 Issue-3 fix End
 
 function initClearButton() {
     if ($('#btnClearProfession').length) {
@@ -85,7 +91,7 @@ function initMoveTable() {
         ele.on('click', function (event) {
             var scrollLeft = $('#divResult').scrollLeft();
             $('#divResult').scrollLeft(scrollLeft - 30);
-            
+
             var left = $("#divResult").scrollLeft();
             var trs = $("#divResult>table>tbody>tr").not(".mobile-clinic");
             trs.each(function (i) {
@@ -143,7 +149,7 @@ function hideResultLRButton() {
 }
 
 function setOffSortButton() {
- $("span[data-column='SPName'],span[data-column='PracticeName'],span[data-column='DistrictName'],span[data-column='Profession'],span[data-column='JoinedScheme']").each(function () {
+    $("span[data-column='SPName'],span[data-column='PracticeName'],span[data-column='DistrictName'],span[data-column='Profession'],span[data-column='JoinedScheme']").each(function () {
         $(this).off('click');
         $(this).css('color', '#bab9b9');
         $(this).parent().off('click');
@@ -190,7 +196,7 @@ function initSortButton() {
             $('#sortField').val(sortField);
             $('#sortColName').val(sortColName);
             $('#sortType').val(sortType);
-            console.log('initSortButton UP:' + sortColName);
+            //console.log('initSortButton UP:' + sortColName);
             GetResult(false);
         });
     }
@@ -218,7 +224,7 @@ function initSortButton() {
             $('#sortField').val(sortField);
             $('#sortColName').val(sortColName);
             $('#sortType').val(sortType);
-            console.log('initSortButton Down:' + sortColName);
+            //console.log('initSortButton Down:' + sortColName);
             GetResult(false);
         });
     }
@@ -257,8 +263,8 @@ function initTableColOrder() {
 //}
 
 function setSortButtonStyle() {
-    console.log('setSortButtonStyle:' + $("#sortColName").val());
-    console.log('setSortButtonStyle:' + $("#sortType").val());
+    //console.log('setSortButtonStyle:' + $("#sortColName").val());
+    //console.log('setSortButtonStyle:' + $("#sortType").val());
     if ($("#sortType").val() == 'asc') {
         $(".sort-up").each(function (index, domEle) {
             if ($("#sortColName").val() == $(this).attr('colname')) {
@@ -358,7 +364,7 @@ function nextPaginator(PageIndex) {
         $('.pagination').empty();
         $('.pagination').append('<li class="paginatorLeft"><a href="javascript:void(0);" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>');
         if (parseInt(curMaxPage) + parseInt(numofbuttons) < parseInt(pageTotal)) {
-            for (i = curMaxPage + 1; i <= parseInt(curMaxPage) + parseInt(numofbuttons) ; i++) {
+            for (i = curMaxPage + 1; i <= parseInt(curMaxPage) + parseInt(numofbuttons); i++) {
                 if (PageIndex == i) {
                     $('.pagination').append('<li class="active"><a href="javascript:void(0);" class="pageNum">' + i + '</a></li>');
                 }
@@ -429,6 +435,8 @@ function initPageNumberClick() {
             $('#pageIndex').val(pageIndex);
             $('#pageActualSize').val($('#pageSize').val());
             GetResult(false);
+            scrollToNoted($('#RecordTotal'));
+            $('.pagesize-ddl').focus();
         });
     }
     if ($('.pagination>li.paginatorRight').length) {
@@ -443,6 +451,19 @@ function initPageNumberClick() {
             previousPaginator(pageIndex);
         });
     }
+}
+
+function scrollToNoted(elem) {
+    var height = $('.header_content').css('height');
+    if (height == '90px') {
+        height = 90;
+    }
+    else {
+        height = 130;
+    }
+    $('html, body').animate({
+        'scrollTop': elem.offset().top - height
+    }, 1000);
 }
 
 function copyToHidden(obj) {
@@ -481,7 +502,12 @@ function freezeCol() {
 
         var endX = touch.pageX - startX;
         var left = $("#divResult").scrollLeft();
-        var scrollWidth = left + $("#divResult").width()
+        var scrollWidth = left + $("#divResult").width();
+        var tableWidth = $(".SPTable").width();
+        var divWidth = $("#divResult").width();
+        var diffWidth = tableWidth - divWidth;
+        //console.log(tableWidth);
+        //console.log(diffWidth);
         if (hasVSS) {
             if (left >= 0) {
                 var trs = $("#divResult>table>tbody>tr").not(".mobile-clinic");
@@ -489,15 +515,14 @@ function freezeCol() {
                     for (var i = 0; i < 2; i++) {
                         if (endX < 0) {
                             // move left
-                            if (scrollWidth > 1030) {
-                                $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });
+                            if (scrollWidth >= tableWidth) {
+                                $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });                                
                             } else {
-                                if (left < Math.abs(endX)) {
-                                    $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? 0 - endX : 0 });
-                                }
-                                else {
+                                if (diffWidth < Math.abs(endX) || left - endX > diffWidth) {
+                                    $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? diffWidth : 0 });
+                                } else {
                                     $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasVSS ? left - endX : 0 });
-                                }
+                                }                                
                             }
                         }
 
@@ -513,11 +538,11 @@ function freezeCol() {
 
                 if (endX < 0) {
                     // move left
-                    if (scrollWidth > 1030) {
+                    if (scrollWidth >= tableWidth) {
                         $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? left : 0 });
                     } else {
-                        if (left < Math.abs(endX)) {
-                            $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? 0 - endX : 0 });
+                        if (diffWidth < Math.abs(endX) || left - endX > diffWidth) {                           
+                            $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? diffWidth : 0 });
                         }
                         else {
                             $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasVSS ? left - endX : 0 });
@@ -550,23 +575,38 @@ function freezeCol() {
     InitFreezeDivWidth();
 }
 
-function initColScroll(hasvss) {
-    var left = $("#divResult").scrollLeft();
-    var trs = $("#divResult>table>tbody>tr").not(".mobile-clinic");
-    trs.each(function (i) {
-        for (var i = 0; i < 2; i++) {
-            $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasvss ? left : 0 });
-        }
-    });
-    $(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasvss ? left : 0 });
-    hideResultLRButton();
-}
+//function initColScroll(hasvss) {
+//    var left = $("#divResult").scrollLeft();
+//    var trs = $("#divResult>table>tbody>tr").not(".mobile-clinic");
+//    trs.each(function (i) {
+//        for (var i = 0; i < 2; i++) {
+//            $(this).children().eq(i).css({ "position": "relative", "z-index": 10, "left": hasvss ? left : 0 });
+//        }
+//    });
+//    //$(".freezeDiv").css({ "position": "relative", "z-index": 10, "left": hasvss ? left : 0 });
+//    InitFreezeDivWidth();
+//    hideResultLRButton();
+//}
 
+//20200402 Issue-3 fix Begin
+//Issue-3: slide feature is not good on iPad 
 function InitFreezeDivWidth() {
     var divInnerWidth = $('#divResult').innerWidth();
-
-    if (hasVSS) {
-        $(".freezeDiv").css({ "width": divInnerWidth - 100});
+    var spTableWidth = $(".SPTable").width();
+    if (divInnerWidth >= spTableWidth) {
+        $(".freezeDiv").css({ "width": "auto" });
     }
-    //$(".freezeDiv").css({ "width": divInnerWidth - 100 });
+    else {
+        $(".freezeDiv").css({ "width": divInnerWidth - 100 });
+    }
+}
+//20200402 Issue-3 fix End
+
+function focusResultTr(e) {
+    $(e).find('a').removeAttr('aria-label');
+}
+
+function blurResultTr(e) {
+    var ae = $(e).find('a');
+    ae.attr('aria-label', ae.attr('arialabel'));
 }

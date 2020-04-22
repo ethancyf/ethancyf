@@ -58,35 +58,35 @@
                             <div class="chk_container radioLabel" style="color: rgb(1, 113, 186);">
                                 <span>@Resource.Text("ResultPageDataFields1")</span>
                                 @Html.RadioButton("Fields", "SPName", True, New With {.class = "chk", .id = "Fields1",
-     .aria_label = Resource.Text("ResultPageDataFields1"), .colname = "SPName"})
+     .aria_label = Resource.Text("ResultPageSort") + " " + Resource.Text("ResultPageDataFields1"), .colname = "SPName"})
                             </div>
                         </li>
                         <li class="district">
                             <div class="chk_container radioLabel">
                                 <span>@Resource.Text("ResultPageDataFields2")</span>
                                 @Html.RadioButton("Fields", "PracticeName", New With {.class = "chk", .id = "Fields2",
-                    .aria_label = Resource.Text("ResultPageDataFields2"), .colname = "PracticeName"})
+                    .aria_label = Resource.Text("ResultPageSort") + " " + Resource.Text("ResultPageDataFields2"), .colname = "PracticeName"})
                             </div>
                         </li>
                         <li class="district">
                             <div class="chk_container radioLabel">
                                 <span>@Resource.Text("ResultPageDataFields3")</span>
                                 @Html.RadioButton("Fields", "DistrictName", New With {.class = "chk", .id = "Fields3",
-                    .aria_label = Resource.Text("ResultPageDataFields3"), .colname = "DistrictName"})
+                    .aria_label = Resource.Text("ResultPageSort") + " " + Resource.Text("ResultPageDataFields3"), .colname = "DistrictName"})
                             </div>
                         </li>
                         <li class="district">
                             <div class="chk_container radioLabel">
                                 <span>@Resource.Text("ResultPageDataFields4")</span>
                                 @Html.RadioButton("Fields", "JoinedScheme", New With {.class = "chk", .id = "Fields4",
-                    .aria_label = Resource.Text("ResultPageDataFields4"), .colname = "JoinedScheme"})
+                    .aria_label = Resource.Text("ResultPageSort") + " " + Resource.Text("ResultPageDataFields4"), .colname = "JoinedScheme"})
                             </div>
                         </li>
                         <li class="district">
                             <div class="chk_container radioLabel">
                                 <span>@Resource.Text("ResultPageDataFields5")</span>
                                 @Html.RadioButton("Fields", "Profession", New With {.class = "chk", .id = "Fields5",
-                    .aria_label = Resource.Text("ResultPageDataFields5"), .colname = "Profession"})
+                    .aria_label = Resource.Text("ResultPageSort") + " " + Resource.Text("ResultPageDataFields5"), .colname = "Profession"})
                             </div>
                         </li>
                     </ul>

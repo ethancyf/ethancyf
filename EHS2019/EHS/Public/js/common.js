@@ -80,6 +80,8 @@ $(document).ready(function () {
 
         $('.lnkML').on('click', function () {
             var lang_c = $(this).attr('data-langC');
+            WriteChangeLanguageAuditLog(lang_c);
+
             //Change Language
             var lang_store = sessionStorage.getItem("lang")
             if (lang_store != lang_c) {
@@ -129,6 +131,10 @@ $(document).ready(function () {
                 }
                 window.location.href = retUrl;
             }
+        })
+
+        $('#logoID').on('click', function () {
+            location.href = rootPath + rootLang;
         })
     }
 
@@ -185,7 +191,7 @@ $(document).ready(function () {
 
     function onClickShortCut(onClickLink) {
         $('.sec_shortcut_link').removeClass('is-active');
-        $('.scrollContent > div').removeClass('is-active');
+        $('.scrollContent > p').removeClass('is-active');
         var thisTarId = $(onClickLink).attr('tarid');
         $(onClickLink).addClass('is-active');
         $('#' + thisTarId).addClass('is-active');
@@ -246,10 +252,12 @@ $(document).ready(function () {
     }
 
     function initRadioBtn() {
+        $('#Profession input:radio').on('change', function (e) {
+            $(this).parent().click();
+        });
         $('#Profession .radioLabel').on('click', function (e) {
             $('#Profession .radioLabel').css('color', '#585858');
             $(this).css('color', '#0171BA');
-            //HK Version commentted, but GZ version is not commentted.
             $(this).find('.chk').prop('checked', true);
 
             if ($(this).find('.chk').attr('eligible-scheme') != 'ALL') {
@@ -281,37 +289,37 @@ $(document).ready(function () {
 
     function initTab() {
         $('.nav-pills > li > a').on('click', function () {
-            if ($(this).parents('li').first().find('i').hasClass('active')) {
-                $(this).find('i').removeClass('active');
+            if ($(this).parents('li').first().find('em').hasClass('active')) {
+                $(this).find('em').removeClass('active');
                 $(this).find('.badge').removeClass('active');
                 $(this).find('.downArrow').addClass('none');
                 $(this).find('.upArrow').removeClass('none');
 
             } else {
-                $(this).find('i').addClass('active');
+                $(this).find('em').addClass('active');
                 $(this).find('.badge').addClass('active');
                 $(this).find('.downArrow').removeClass('none');
                 $(this).find('.upArrow').addClass('none');
-                $(this).parents('li').siblings('li').find('i').removeClass('active');
+                $(this).parents('li').siblings('li').find('em').removeClass('active');
                 $(this).parents('li').siblings('li').find('.badge').removeClass('active');
                 $(this).parents('li').siblings('li').find('.downArrow').addClass('none');
                 $(this).parents('li').siblings('li').find('.upArrow').removeClass('none');
             }
 
             if ($(this).parent().attr('id') == 'professionTab') {
-                if ($(this).find('i').hasClass('active')) {
+                if ($(this).find('em').hasClass('active')) {
                     //selectedTab
                     $('#selectedTab').val('1');
                 }
             }
             if ($(this).parent().attr('id') == 'schemeTab') {
-                if ($(this).find('i').hasClass('active')) {
+                if ($(this).find('em').hasClass('active')) {
                     //selectedTab
                     $('#selectedTab').val('2');
                 }
             }
             if ($(this).parent().attr('id') == 'districtTab') {
-                if ($(this).find('i').hasClass('active')) {
+                if ($(this).find('em').hasClass('active')) {
                     //selectedTab
                     $('#selectedTab').val('3');
                 }

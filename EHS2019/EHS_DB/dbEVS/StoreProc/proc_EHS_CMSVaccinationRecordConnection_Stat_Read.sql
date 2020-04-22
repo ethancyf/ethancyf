@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Apr 2020
+-- CR No.:			INT20-0008
+-- Description:		Fix incorrect sorting order
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	    Chris YIM
 -- Modified date:	02 Nov 2018
 -- CR No.:			CRE18-012 (Revise eHSD0018)
@@ -658,7 +665,7 @@ AS BEGIN
 	ORDER BY
 		 Report_Dtm ASC
 		 
-SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq ASC
+SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq, Result_Value1
 		 
 DELETE FROM @ResultTable		 	
 	
@@ -690,7 +697,7 @@ DELETE FROM @ResultTable
 	ORDER BY
 		 Report_Dtm ASC
 		 
-SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq ASC
+SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq, Result_Value1
 		 
 DELETE FROM @ResultTable			 	
 
@@ -744,7 +751,7 @@ DELETE FROM @ResultTable
 	ORDER BY
 		 Report_Dtm ASC
 	
-SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq ASC
+SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq, Result_Value1
 		 
 DELETE FROM @ResultTable
 
@@ -802,7 +809,7 @@ DELETE FROM @ResultTable
 	ORDER BY
 		 Report_Dtm ASC
 	
-SELECT Result_Value1, Result_Value2, Result_Value3, Result_Value4 FROM @ResultTable order by Display_Seq ASC
+SELECT Result_Value1, Result_Value2, Result_Value3, Result_Value4 FROM @ResultTable order by Display_Seq, Result_Value1
 		 
 DELETE FROM @ResultTable
 
@@ -851,7 +858,7 @@ DELETE FROM @ResultTable
 	ORDER BY
 		 Report_Dtm ASC
 		 
-SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq ASC
+SELECT Result_Value1, Result_Value2, Result_Value3  FROM @ResultTable order by Display_Seq, Result_Value1
 		 
 DELETE FROM @ResultTable	
 	
