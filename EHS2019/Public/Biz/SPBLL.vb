@@ -71,6 +71,45 @@ Public Class SPBLL
 
 #End Region
 
+    Public Sub WritePageLoadAuditLog()
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+        udtAuditLogEntry.WriteLog(LogID.LOG00000, "SDIR Page Load")
+    End Sub
+
+    Public Sub WirteClientValidationFailAuditLog(lstErrorDesc As List(Of String))
+
+        If XMLMain.DBLink Then
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+
+            udtAuditLogEntry.WriteLog(LogID.LOG00001, "Search click [Client]")
+
+            For Each strDesc As String In lstErrorDesc
+                If strDesc.Contains("040101-E-00004") Then
+                    udtAuditLogEntry.AddDescripton("StackTrace", "No Searching Criteria is inputted")
+                End If
+
+                udtAuditLogEntry.AddDescripton("Message Text", strDesc)
+            Next
+
+            udtAuditLogEntry.WriteLog(LogID.LOG00020, "Search fail [Client]")
+
+            udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end [Client]")
+
+        End If
+
+    End Sub
+
+    Public Sub WirtePracticeDetailPopupAuditLog()
+
+        If XMLMain.DBLink Then
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+
+            udtAuditLogEntry.WriteLog(LogID.LOG00023, "Practice Detail click - Popup show")
+
+        End If
+
+    End Sub
+
     Public Function GetSPSResultFromEHS(spRequest As SPRequest, strLang As String, strQueryLang As String) As List(Of SPResultModel)
         Dim spResultList As List(Of SPResultModel) = New List(Of SPResultModel)
         Dim spResult As SPResultModel = New SPResultModel()
@@ -148,7 +187,9 @@ Public Class SPBLL
                    }
                 spResultListItem.SubsidizeList.Add(SubsidizeItem)
             Next
-            spResultListItem.SubsidizeFeeScope = GetFeeScope(spResultListItem)
+            spResultListItem.SubsidizeFeeScope = ""
+            spResultListItem.SubsidizeFeeChiScope = GetFeeScope(spResultListItem, Common.Component.CultureLanguage.TradChinese)
+            spResultListItem.SubsidizeFeeEngScope = GetFeeScope(spResultListItem, Common.Component.CultureLanguage.English)
             spResultList.Add(spResultListItem)
         Next
 
@@ -173,7 +214,9 @@ Public Class SPBLL
         Dim spResultList As List(Of SPResultModel) = New List(Of SPResultModel)
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
-        udtAuditLogEntry.WriteLog(LogID.LOG00001, "Search click")
+        If (XMLMain.DBLink) Then
+            udtAuditLogEntry.WriteLog(LogID.LOG00001, "Search click")
+        End If
 
         If String.IsNullOrEmpty(spRequest.InputServiceProviderName) And String.IsNullOrEmpty(spRequest.InputPracticeName) And String.IsNullOrEmpty(spRequest.InputPracticeAddress) And _
              String.IsNullOrEmpty(spRequest.Profession) And String.IsNullOrEmpty(spRequest.Subsidy) And String.IsNullOrEmpty(spRequest.District) And _
@@ -205,6 +248,9 @@ Public Class SPBLL
         Dim strSubsidy As String = spRequest.Subsidy.Replace(",", ";")
         Dim strArea As String = spRequest.District
 
+        Dim strSortField As String = spRequest.sortColName
+        Dim strSortType As String = spRequest.SortType.ToUpper
+
         ' Validation 
         If validateResult.lstErrCodes.Count > 0 Then
             udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end")
@@ -221,14 +267,19 @@ Public Class SPBLL
                 strRecordLimit = "1200"
             End If
 
-            udtAuditLogEntry.AddDescripton("Service Provider", strProviderName)
-            udtAuditLogEntry.AddDescripton("Practice Name", strPracticeName)
-            udtAuditLogEntry.AddDescripton("Practice Address", strPracticeAddr)
-            udtAuditLogEntry.AddDescripton("Healthcare Professional", strProfessional)
-            udtAuditLogEntry.AddDescripton("Service", strSubsidy)
-            udtAuditLogEntry.AddDescripton("District", strArea)
-            udtAuditLogEntry.AddDescripton("Language", strLang)
-            udtAuditLogEntry.WriteLog(LogID.LOG00005, "Process searching start")
+            If XMLMain.DBLink Then
+                udtAuditLogEntry.AddDescripton("Service Provider", strProviderName)
+                udtAuditLogEntry.AddDescripton("Practice Name", strPracticeName)
+                udtAuditLogEntry.AddDescripton("Practice Address", strPracticeAddr)
+                udtAuditLogEntry.AddDescripton("Healthcare Professional", strProfessional)
+                udtAuditLogEntry.AddDescripton("Service", strSubsidy)
+                udtAuditLogEntry.AddDescripton("District", strArea)
+                udtAuditLogEntry.AddDescripton("Language", strLang)
+                udtAuditLogEntry.AddDescripton("Sort Field", strSortField)
+                udtAuditLogEntry.AddDescripton("Sort Direction", strSortType)
+
+                udtAuditLogEntry.WriteStartLog(LogID.LOG00005, "Process searching start")
+            End If
 
             Dim sessionId = SessionHelper.GenerateKey("professional:" + strProfessional + "|scheme:" + strSubsidy + "|area:" + strArea + "|providerName:" + strProviderName + "|practiceName:" + strPracticeName + "|addr:" + strPracticeAddr)
             If (Not IsNothing(HttpContext.Current.Session(sessionId))) Then
@@ -241,22 +292,29 @@ Public Class SPBLL
                 SessionHelper.HandlerSession(sessionId)
             End If
 
-            udtAuditLogEntry.AddDescripton("Service Provider", strProviderName)
-            udtAuditLogEntry.AddDescripton("Practice Name", strPracticeName)
-            udtAuditLogEntry.AddDescripton("Practice Address", strPracticeAddr)
-            udtAuditLogEntry.AddDescripton("Healthcare Professional", strProfessional)
-            udtAuditLogEntry.AddDescripton("Service", strSubsidy)
-            udtAuditLogEntry.AddDescripton("District", strArea)
-            udtAuditLogEntry.AddDescripton("Language", strLang)
-            udtAuditLogEntry.WriteLog(LogID.LOG00006, "Process searching complete")
+            If XMLMain.DBLink Then
+                udtAuditLogEntry.AddDescripton("Service Provider", strProviderName)
+                udtAuditLogEntry.AddDescripton("Practice Name", strPracticeName)
+                udtAuditLogEntry.AddDescripton("Practice Address", strPracticeAddr)
+                udtAuditLogEntry.AddDescripton("Healthcare Professional", strProfessional)
+                udtAuditLogEntry.AddDescripton("Service", strSubsidy)
+                udtAuditLogEntry.AddDescripton("District", strArea)
+                udtAuditLogEntry.AddDescripton("Language", strLang)
+                udtAuditLogEntry.AddDescripton("Sort Field", strSortField)
+                udtAuditLogEntry.AddDescripton("Sort Direction", strSortType)
+
+                udtAuditLogEntry.WriteEndLog(LogID.LOG00006, "Process searching complete")
+            End If
 
             If IsNothing(spResultList) Or spResultList.Count = 0 Then
                 ' No record found
                 validateResult.lstErrCodes.Add(FunctCode.FUNT990000 + "-" + SeverityCode.SEVI + "-" + MsgCode.MSG00001)
 
-                udtAuditLogEntry.WriteLog(LogID.LOG00009, "Search fail: No records found")
+                If XMLMain.DBLink Then
+                    udtAuditLogEntry.WriteLog(LogID.LOG00009, "Search fail: No records found")
 
-                udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end")
+                    udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end")
+                End If
 
                 validateResult.returnValue = False
 
@@ -269,9 +327,11 @@ Public Class SPBLL
 
                 udtAuditLogEntry.AddDescripton("StackTrace", String.Format("No. of records = {0}, Record limit = {1}", spResultList.Count, strRecordLimit))
 
-                udtAuditLogEntry.WriteLog(LogID.LOG00008, "Search fail: Too many records found")
+                If XMLMain.DBLink Then
+                    udtAuditLogEntry.WriteLog(LogID.LOG00008, "Search fail: Too many records found")
 
-                udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end")
+                    udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end")
+                End If
 
                 validateResult.returnValue = False
                 Return validateResult
@@ -281,7 +341,9 @@ Public Class SPBLL
 
             ' Display the result
             udtAuditLogEntry.AddDescripton("No. of record", spResultList.Count)
-            udtAuditLogEntry.WriteLog(LogID.LOG00007, "Search successful")
+            If XMLMain.DBLink Then
+                udtAuditLogEntry.WriteLog(LogID.LOG00007, "Search successful")
+            End If
 
             ' Get Profession
             Dim listProfession As List(Of ProfessionList) = GetProfessionList(strLang)
@@ -307,9 +369,9 @@ Public Class SPBLL
             spResult.SubHeaderList = lstSubsidizeItems.Select(Function(x) New SchemeItemHeader With {
                                                                   .Header = x.SubsidizeShortForm,
                                                                   .SortItem = lstSubsidizeItems.IndexOf(x),
-                                                                  .SubsidizeFeeColumnName = x.SubsidizeFeeColumnName
-                                                                }).ToList()
-
+                                                                  .SubsidizeFeeColumnName = x.SubsidizeFeeColumnName,
+                                                      .SubsidizeDesc = x.SubsidizeDesc
+                                                    }).ToList()
             ' Get data from database
             Dim query As List(Of SPResultModel) = New List(Of SPResultModel)
             Dim pattern As String = "^[0-9]*$"
@@ -435,7 +497,8 @@ Public Class SPBLL
                          .NonClinic = i.NonClinic,
                          .Remark = i.Remark,
                          .RemarkDesc = IIf(strLang.Equals(CultureLanguage.English, StringComparison.CurrentCultureIgnoreCase), i.RemarkEngDesc, i.RemarkChiDesc),
-                         .SubsidizeFeeScope = i.SubsidizeFeeScope}) _
+                         .SubsidizeFeeScope = IIf(strLang.Equals(CultureLanguage.English, StringComparison.CurrentCultureIgnoreCase), i.SubsidizeFeeEngScope, i.SubsidizeFeeChiScope)
+                     }) _
             .Skip((spRequest.PageIndex - 1) * spRequest.PageSize).Take(spRequest.PageActualSize).ToList()
 
             spResult.HasVSS = spResultList.Exists(Function(x) x.JoinedScheme.Contains("VSS"))
@@ -1004,7 +1067,7 @@ Public Class SPBLL
         Dim dvSDSubsidizeGroup As DataView = dtSDSubsidizeGroup.DefaultView
 
         dvSDSubsidizeGroup.Sort = "Subsidize_Code"
-        Dim dtSubsidizeItem = dvSDSubsidizeGroup.ToTable(True, "Search_Group", "Subsidize_Code", "SD_Category_Name", "SD_Category_Name_Chi", "Subsidize_Item_Column_Name", "Subsidize_Short_Form", "Subsidize_Fee_Column_Name")
+        Dim dtSubsidizeItem = dvSDSubsidizeGroup.ToTable(True, "Search_Group", "Subsidize_Code", "SD_Category_Name", "SD_Category_Name_Chi", "Subsidize_Item_Column_Name", "Subsidize_Short_Form", "Subsidize_Fee_Column_Name", "Subsidize_Desc_Chi", "Subsidize_Desc")
 
         Dim schemeList = selectedScheme.Split(";").ToList()
 
@@ -1043,7 +1106,8 @@ Public Class SPBLL
                        .CategoryDesc = String.Concat(IIf(strLang.Equals(CultureLanguage.English, StringComparison.CurrentCultureIgnoreCase), Item("SD_Category_Name"), Item("SD_Category_Name_Chi"))),
                        .SubsidizeItemCode = CheckNull(Item("Subsidize_Item_Column_Name")),
                        .SubsidizeFeeColumnName = CheckNull(Item("Subsidize_Fee_Column_Name")),
-                       .SubsidizeShortForm = CheckNull(Item("Subsidize_Short_Form"))
+                       .SubsidizeShortForm = CheckNull(Item("Subsidize_Short_Form")),
+                       .SubsidizeDesc = CheckNull(If(strLang.Equals(CultureLanguage.English, StringComparison.CurrentCultureIgnoreCase), Item("Subsidize_Desc"), Item("Subsidize_Desc_Chi")))
                        })
             End If
         Next
@@ -1110,7 +1174,7 @@ Public Class SPBLL
         Return lstPointToNote
     End Function
 
-    Private Function GetFeeScope(SPResult As SPResultModel) As String
+    Private Function GetFeeScope(SPResult As SPResultModel, strLang As String) As String
         Dim arryFee As List(Of String) = New List(Of String)
         Dim bolIsNoValue As Boolean = True
         arryFee = SPResult.SubsidizeList.Select(Function(x) x.Fee).ToList()
@@ -1136,11 +1200,11 @@ Public Class SPBLL
 
         tmpArryFee.Sort()
         If bolIsNoValue Then
-            Return Resource.Text("SPSResultPriceMoreDetails")
+            Return Resource.Text("SPSResultPriceMoreDetails", strLang)
         ElseIf tmpArryFee(0) = tmpArryFee(tmpArryFee.Count - 1) Then
-            Return IIf(tmpArryFee(0) = 0, Resource.Text("SPSResultPriceFree"), tmpArryFee(0))
+            Return IIf(tmpArryFee(0) = 0, Resource.Text("SPSResultPriceFree", strLang), tmpArryFee(0))
         ElseIf tmpArryFee(0) = 0 Then
-            Return Resource.Text("SPSResultPriceFree") + " - " + tmpArryFee(tmpArryFee.Count - 1).ToString()
+            Return Resource.Text("SPSResultPriceFree", strLang) + " - " + tmpArryFee(tmpArryFee.Count - 1).ToString()
         Else
             Return tmpArryFee(0).ToString() + " - " + tmpArryFee(tmpArryFee.Count - 1).ToString()
         End If

@@ -19,6 +19,7 @@ Namespace Controllers
             Dim strLang = Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower
             Dim vm As SPSViewModel = New SPSViewModel()
             Dim codeList = spBLL.GetCodeList(vm, strLang)
+            spBLL.WritePageLoadAuditLog()
             Return View(codeList)
         End Function
 
@@ -44,8 +45,15 @@ Namespace Controllers
             validateResult = spBLL.SPSRequestValidate(spRequest, strLang, strQueryLang, vm)
 
             'Last update date
+            Dim lastDate As DateTime = DateTime.Now
+            If XMLMain.DBLink Then
+                lastDate = spBLL.GetLastUpdate
+            Else
+                lastDate = DateTime.Now
+            End If
+
             vm.LastUpdateDate = String.Format("{0}", Resource.Text("UpdateDate").Replace("%s", ": " & (New Formatter).formatDisplayDate(spBLL.GetLastUpdate, strLang)))
-            
+
             If Not validateResult.returnValue And validateResult.lstErrCodes.Count > 0 Then
                 vm.lstErrorCodes.AddRange(validateResult.lstErrCodes)
                 vm.IsValid = False
@@ -73,6 +81,8 @@ Namespace Controllers
             Dim strLang = Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower
             Dim vm As SPSViewModel = spBLL.PopUpDetail(JsonDetail, strLang)
 
+            spBLL.WirtePracticeDetailPopupAuditLog()
+
             Return PartialView("PracticeDetail", vm)
         End Function
 
@@ -81,6 +91,28 @@ Namespace Controllers
             Dim queryList As List(Of AreaList) = spBLL.OrderQuery(strLang)
             Return PartialView("OrderQuery", queryList)
 
+        End Function
+
+        <HttpPost>
+        Function ErrorLog(errMsg As String) As JsonResult
+            Dim strErrorMsg As String = errMsg
+            Dim obj As Object = New With {.Rtn = 0}
+
+            Dim lstErrMsg As List(Of String) = New List(Of String)
+
+            If errMsg.Length > 0 Then
+                Dim arrErrMsg() As String = Split(Mid(errMsg, 1, Len(errMsg) - Len("<br>")), "<br>")
+
+                For i As Integer = 0 To arrErrMsg.Length - 1
+                    lstErrMsg.Add(arrErrMsg(i))
+                Next
+            End If
+
+            If lstErrMsg.Count > 0 Then
+                spBLL.WirteClientValidationFailAuditLog(lstErrMsg)
+            End If
+
+            ErrorLog = Json(obj, JsonRequestBehavior.AllowGet)
         End Function
     End Class
 End Namespace

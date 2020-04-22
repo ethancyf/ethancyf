@@ -21,6 +21,12 @@ Public Class VBEBLL
 
 
     Private FunctionCode As String = FunctCode.FUNT030101
+    Private udtFormatter As New Formatter
+
+    Public Sub WritePageLoadAuditLog()
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+        udtAuditLogEntry.WriteLog(LogID.LOG00000, "Voucher Balance Enquiry Load")
+    End Sub
 
     Function VBERequestValidate(requestData As VBERequest, captcha As String, validateTime As DateTime, ByRef udtVBEResult As VBEResult) As VBEValidateResult
         Dim result As VBEValidateResult = New VBEValidateResult()
@@ -291,7 +297,7 @@ Public Class VBEBLL
     Function GetVBEResultFromEHS(requestData As VBERequest, ByRef lstSystemMessage As List(Of SystemMessage)) As VBEResult
         Dim udtVBEResult As VBEResult = Nothing
 
-        Dim udtFormatter As New Formatter
+
         Dim udtSchemeClaimBLL As New SchemeClaimBLL
         Dim udtGeneralFunction As New GeneralFunction
         Dim udtEHSAccountBLL As New EHSAccountBLL
@@ -309,7 +315,7 @@ Public Class VBEBLL
 
         Dim HCVS As String = "HCVS"
         Dim EHCVS As String = "EHCVS"
-        Dim FunctionCode As String = FunctCode.FUNT030101
+
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
         udtAuditLogEntry.AddDescripton("Identity No", strHKID)
@@ -324,7 +330,10 @@ Public Class VBEBLL
         Dim objAuditLogInfo As AuditLogInfo = New AuditLogInfo(Nothing, Nothing, Nothing, Nothing, _
          													   strDocCode, _
          													   udtFormatter.formatHKIDInternal(strHKID))
-        udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Search", objAuditLogInfo)
+
+        If XMLMain.DBLink Then
+            udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Search", objAuditLogInfo)
+        End If
 
         If udtValidator.IsEmpty(strHKID) Then
             lstSystemMessage.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00001))
@@ -502,7 +511,7 @@ Public Class VBEBLL
                 ' Check whether the Age and DOR are matched
                 If strAge <> String.Empty AndAlso Not IsNothing(dtmDOR) Then
                     If CInt(udtEHSPersonalInformation.ECAge) = CInt(strAge) AndAlso _
-                    	udtEHSPersonalInformation.ECDateOfRegistration.Equals(dtmDOR) Then
+                        udtEHSPersonalInformation.ECDateOfRegistration.Equals(dtmDOR) Then
                         IsMatchDOB = True
                     End If
                 End If
@@ -592,11 +601,11 @@ Public Class VBEBLL
                 udtVBEResult.PrjPosExceedLimit = udtVoucherInfo.GetNextCappingAmount.ToString
                 udtVBEResult.UpToDate = udtVoucherQuota.PeriodEndDtm.ToString("dd-MM-yyyy")
             Else
-            
-                If requestData.InputType = "IC" Then            
+
+                If requestData.InputType = "IC" Then
                     udtVBEResult.DateOfBirth = udtFormatter.formatDOB(udtEHSPersonalInformation.DocCode, udtEHSPersonalInformation.DOB, _
                                                                 udtEHSPersonalInformation.ExactDOB, String.Empty, udtEHSPersonalInformation.ECAge, _
-                                                                udtEHSPersonalInformation.ECDateOfRegistration, "")         
+                                                                udtEHSPersonalInformation.ECDateOfRegistration, "")
                     udtVBEResult.DateType = requestData.DateType
                 Else
                     udtVBEResult.DateType = requestData.DateType
@@ -627,7 +636,7 @@ Public Class VBEBLL
                 udtVBEResult.PrjPosExceedLimit = 8000
                 udtVBEResult.UpToDate = "31-12-2020"
             End If
-            
+
         Else
             If IsMatchDOB AndAlso udtEHSAccount.RecordStatus = VRAcctStatus.Terminated Then
                 lstSystemMessage.Add((New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)))
@@ -657,7 +666,9 @@ Public Class VBEBLL
             End If
         End If
 
-        udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "Search successful", objAuditLogInfo)
+        If (XMLMain.DBLink) Then
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "Search successful", objAuditLogInfo)
+        End If
 
         Return udtVBEResult
     End Function
@@ -696,4 +707,79 @@ Public Class VBEBLL
         Return blnRes
 
     End Function
+
+    Public Sub WirteClientValidationFailAuditLog(strHKID As String, _
+                                                 strDocCode As String, _
+                                                 strDOB As String, _
+                                                 strECAge As String, _
+                                                 strDOR_Year As String, _
+                                                 strDOR_Month As String, _
+                                                 strDOR_Day As String, _
+                                                 lstErrorDesc As List(Of String))
+
+        If XMLMain.DBLink Then
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+            udtAuditLogEntry.AddDescripton("Identity No", strHKID)
+            udtAuditLogEntry.AddDescripton("Doc Type", strDocCode)
+            udtAuditLogEntry.AddDescripton("Is HKID", strDocCode = "HKIC")
+            udtAuditLogEntry.AddDescripton("DOB", strDOB)
+            udtAuditLogEntry.AddDescripton("Age", strECAge)
+            udtAuditLogEntry.AddDescripton("DOR Year", strDOR_Year)
+            udtAuditLogEntry.AddDescripton("DOR Month", strDOR_Month)
+            udtAuditLogEntry.AddDescripton("DOR Day", strDOR_Day)
+
+            Dim objAuditLogInfo As AuditLogInfo = New AuditLogInfo(Nothing, Nothing, Nothing, Nothing, _
+                                                                   strDocCode, _
+                                                                   udtFormatter.formatHKIDInternal(strHKID))
+
+            udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Search [Client]", objAuditLogInfo)
+
+            For Each strDesc As String In lstErrorDesc
+                udtAuditLogEntry.AddDescripton("Message Text", strDesc)
+            Next
+
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00004, "Search fail [Client]", objAuditLogInfo)
+
+        End If
+
+    End Sub
+
+    Public Sub WirteClientRefreshCaptchaAuditLog(ByVal strCode As String)
+
+        If XMLMain.DBLink Then
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+
+            udtAuditLogEntry.AddDescripton("Verification Code", strCode)
+            udtAuditLogEntry.WriteLog(LogID.LOG00007, "Refresh Captcha")
+
+        End If
+
+    End Sub
+
+    Public Sub WirteClientPlayAudioCaptchaAuditLog(ByVal strCode As String)
+
+        If XMLMain.DBLink Then
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+
+            udtAuditLogEntry.AddDescripton("Verification Code", strCode)
+            udtAuditLogEntry.WriteLog(LogID.LOG00008, "Play Audio Captcha")
+
+        End If
+
+    End Sub
+
+    Public Sub WirteClientVerifyCaptchaAuditLog(ByVal strServerCode As String, ByVal strClientCode As String, ByVal strResultDesc As String)
+
+        If XMLMain.DBLink Then
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode)
+
+            udtAuditLogEntry.AddDescripton("Verification Code", strServerCode)
+            udtAuditLogEntry.AddDescripton("Inputted Verification Code", strClientCode)
+            udtAuditLogEntry.AddDescripton("Result", strResultDesc)
+            udtAuditLogEntry.WriteLog(LogID.LOG00009, "Verify Captcha")
+
+        End If
+
+    End Sub
+
 End Class

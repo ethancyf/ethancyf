@@ -3,11 +3,33 @@ Imports Common.Component
 
 Public Class Resource
     Shared Function Text(resourceKey As String) As String
-        'Dim rm = New Global.System.Resources.ResourceManager("Resources.ResourceLanguage", Global.System.Reflection.[Assembly].Load("App_GlobalResources"))
-        Dim strLang = Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower
-        Dim lang = IIf(strLang.ToLower = Common.Component.CultureLanguage.English, New System.Globalization.CultureInfo(CultureLanguage.English), New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
-        Dim txt = HttpContext.GetGlobalResourceObject("Text", resourceKey, lang)
-        'Dim txt = rm.GetString(resourceKey)
+        Dim txt = Nothing
+        If XMLMain.DBLink Then
+            Dim strLang = Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower
+            Dim lang = IIf(strLang.ToLower = Common.Component.CultureLanguage.English, New System.Globalization.CultureInfo(CultureLanguage.English), New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+            txt = HttpContext.GetGlobalResourceObject("Text", resourceKey, lang)
+        Else
+            Dim rm = New Global.System.Resources.ResourceManager("Resources.ResourceLanguage", Global.System.Reflection.[Assembly].Load("App_GlobalResources"))
+            txt = rm.GetString(resourceKey)
+        End If
+
+        If txt Is Nothing Then
+            txt = "<Value>"
+        End If
+
+        Return txt
+    End Function
+
+    Shared Function Text(resourceKey As String, strLang As String) As String
+        Dim txt = Nothing
+        If XMLMain.DBLink Then
+            Dim lang = IIf(strLang.ToLower = Common.Component.CultureLanguage.English, New System.Globalization.CultureInfo(CultureLanguage.English), New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+            txt = HttpContext.GetGlobalResourceObject("Text", resourceKey, lang)
+        Else
+            Dim rm = New Global.System.Resources.ResourceManager("Resources.ResourceLanguage", Global.System.Reflection.[Assembly].Load("App_GlobalResources"))
+            txt = rm.GetString(resourceKey)
+        End If
+
         If txt Is Nothing Then
             txt = "<Value>"
         End If

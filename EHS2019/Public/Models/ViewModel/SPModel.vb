@@ -73,6 +73,8 @@ Public Class SPResultModel
     Public Property PracticeDetail As String
     Public Property FeeList As List(Of FeeList)
     Public Property SubsidizeFeeScope As String
+    Public Property SubsidizeFeeEngScope As String
+    Public Property SubsidizeFeeChiScope As String
     Public Property PriceTag As String
 
     ' By James
