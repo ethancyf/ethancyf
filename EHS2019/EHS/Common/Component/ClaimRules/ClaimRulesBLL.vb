@@ -832,7 +832,15 @@ Namespace Component.ClaimRules
                     dblResult = dtmCompareDate.Year - dtmPassDOB.Year
 
                     If Not (dtmPassDOB.Month = dtmCompareDate.Month AndAlso dtmPassDOB.Day = dtmCompareDate.Day) Then
-                        Dim d1 As New Date(dtmPassDOB.Year, dtmCompareDate.Month, dtmCompareDate.Day)
+
+                        Dim d1 As Date = Nothing
+                        'Fix Leap Year
+                        Try
+                            d1 = New Date(dtmPassDOB.Year, dtmCompareDate.Month, dtmCompareDate.Day)
+                        Catch ex As Exception
+                            d1 = New Date(dtmPassDOB.Year, dtmCompareDate.Month, dtmCompareDate.Day - 1)
+                        End Try
+                        
                         dblResult += d1.Subtract(dtmPassDOB).Days / 365.25
 
                     End If
