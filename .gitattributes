@@ -9288,6 +9288,7 @@ EHS2019/EHS_DB/dbEVS/Trigger/tri_VoucherAccount_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/Function/func_get_age_range_for_statistics.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/Function/func_get_period.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/Function/func_split_string.sql -text
+EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_EHS_eHSU0011_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_Report_eHSU0002_get.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_SchemeBackOffice_GetEligibleProfessional.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_Statistics_STAT00001_GetData.sql -text
