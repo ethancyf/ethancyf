@@ -19,146 +19,80 @@
             }
         }
 
-        function CheckOCXExists(winwasher) {
-            winwasher = winwasher.replace(/\?/g, "\\\\");
-            setTimeout('CheckOCXExistsContent ("' + winwasher + '")', 1)
-            return false;
-        }
+        //function CheckOCXExists(winwasher) {
+        //    winwasher = winwasher.replace(/\?/g, "\\\\");
+        //    setTimeout('CheckOCXExistsContent ("' + winwasher + '")', 1)
+        //    return false;
+        //}
 
-        function CheckOCXExistsContent(winwasherFolder) {
-            var objDownload = document.getElementById("DataDownload");
-            var objHiddenFieldResult = document.getElementById("ctl00_ContentPlaceHolder1_HiddenField1");
-            objHiddenFieldResult.value = "";
-            try {
-                //alert('Checking OCX');  
-                var bFolderExists = objDownload.getFolderExists(winwasherFolder);
-                if (!bFolderExists) {
-                    //alert('Folder not exists');   
-                    objHiddenFieldResult.value = "00002";
-                    return;
-                }
-            }
-            catch (err) {
-                //alert('CheckOCXExists Exception');
-                objHiddenFieldResult.value = "00001";
-                return;
-            }
-        }
+        //function CheckOCXExistsContent(winwasherFolder) {
+        //    var objDownload = document.getElementById("DataDownload");
+        //    var objHiddenFieldResult = document.getElementById("ctl00_ContentPlaceHolder1_HiddenField1");
+        //    objHiddenFieldResult.value = "";
+        //    try {
+        //        //alert('Checking OCX');  
+        //        var bFolderExists = objDownload.getFolderExists(winwasherFolder);
+        //        if (!bFolderExists) {
+        //            //alert('Folder not exists');   
+        //            objHiddenFieldResult.value = "00002";
+        //            return;
+        //        }
+        //    }
+        //    catch (err) {
+        //        //alert('CheckOCXExists Exception');
+        //        objHiddenFieldResult.value = "00001";
+        //        return;
+        //    }
+        //}
 
         function DownloadFile(url, file, winwasher) {
+            window.open(url, "_blank", "left=4000,top=0,width=0,height=0");
 
-            //alert(url);
-
-            url = url.replace(/\|/g, "\\\\");
-            //url = url.replace(/\|/g, "\\\\\\\\");
-            winwasher = winwasher.replace(/\?/g, "\\\\");
-            setTimeout('FileDownload("' + url + '", "' + file + '","' + winwasher + '")', 1)
+            //url = url.replace(/\|/g, "\\\\");
+            //winwasher = winwasher.replace(/\?/g, "\\\\");
+            //setTimeout('FileDownload("' + url + '", "' + file + '","' + winwasher + '")', 1)
 
             return false;
         }
 
-        function FileDownload(url, file, winwasher) {
-            var objDownload = document.getElementById("DataDownload");
-            var objHiddenFieldResult = document.getElementById("ctl00_ContentPlaceHolder1_HiddenField1");
-            //objHiddenFieldResult.value = "";
+        //function FileDownload(url, file, winwasher) {
+        //    var objDownload = document.getElementById("DataDownload");
+        //    var objHiddenFieldResult = document.getElementById("ctl00_ContentPlaceHolder1_HiddenField1");
+        //    //objHiddenFieldResult.value = "";
 
-            try {
-                var size = objDownload.DownloadtoWindowWasher(url, file, winwasher);
-                if (size < 0) {
-                    //alert('size < 0');
-                    if (size == -1) {
-                        objHiddenFieldResult.value = "00002";
-                    }
-                    else if (size == -4) {
-                        objHiddenFieldResult.value = "00004";
-                    }
-                    else {
-                        objHiddenFieldResult.value = "00003";
-                    }
+        //    try {
+        //        var size = objDownload.DownloadtoWindowWasher(url, file, winwasher);
+        //        if (size < 0) {
+        //            //alert('size < 0');
+        //            if (size == -1) {
+        //                objHiddenFieldResult.value = "00002";
+        //            }
+        //            else if (size == -4) {
+        //                objHiddenFieldResult.value = "00004";
+        //            }
+        //            else {
+        //                objHiddenFieldResult.value = "00003";
+        //            }
 
-                    var objHiddenFieldResultBtn = document.getElementById("ctl00_ContentPlaceHolder1_HiddenSuccessBtn");
-                    objHiddenFieldResultBtn.click();
-                    return;
-                }
-                else {
-                    //alert('normal');   
-                    objHiddenFieldResult.value = "";
-                    var objHiddenFieldResultBtn = document.getElementById("ctl00_ContentPlaceHolder1_HiddenSuccessBtn");
-                    objHiddenFieldResultBtn.click();
-                    return;
-                }
-            }
-            catch (err2) {
-                //alert('exception again');   
-                objHiddenFieldResult.value = "00003";
-                return;
-            }
+        //            var objHiddenFieldResultBtn = document.getElementById("ctl00_ContentPlaceHolder1_HiddenSuccessBtn");
+        //            objHiddenFieldResultBtn.click();
+        //            return;
+        //        }
+        //        else {
+        //            //alert('normal');   
+        //            objHiddenFieldResult.value = "";
+        //            var objHiddenFieldResultBtn = document.getElementById("ctl00_ContentPlaceHolder1_HiddenSuccessBtn");
+        //            objHiddenFieldResultBtn.click();
+        //            return;
+        //        }
+        //    }
+        //    catch (err2) {
+        //        //alert('exception again');   
+        //        objHiddenFieldResult.value = "00003";
+        //        return;
+        //    }
 
-
-            /*		    
-            var filesize;
-            var filepath = d + ":\\" + "CMIS" + "\\" + file
-            
-            var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            
-            alert(xmlhttp);
-                //xmlhttp.open("POST", "searchherbs.aspx?herbs_type=" + herbs_type + "&external_use=" + ExternalUse + "&herbs_name="+ escape(herbs_name), true);
-            xmlhttp.open("POST", "datadownloadsize.aspx", false);
-            
-            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");		
-            xmlhttp.onreadystatechange = function() {
-                if ( xmlhttp.readyState == 4 ){
-                    filesize = xmlhttp.responseText;
-                    alert("filesize" + filesize)
-                }
-                    
-            }
-            xmlhttp.send(null);
-                                            
-            if (size > 0 && filesize > 0){
-                if (filesize == size){
-                    
-                    document.all.SpanMsg.innerHTML = "<span style='position: relative; top: 5;'><FONT size='4' >&nbsp;資料成功下載到:</Font>" + "<br><br><span style='position: relative; top: -10'>&nbsp;&nbsp;<span style='font-size: 12pt; font-weight: bold'>" + filepath + "</span></span></span>"
-                    //document.all.SpanMsg.innerHTML = "<FONT size='4' >&nbsp;資料成功下載到:</Font>" + "<br><br><span style='position: relative; top: -10'>&nbsp;&nbsp;<FONT size='3'><b>" + d + ":\\" + "CMIS" + "\\" + "CMIS0001D_2007-02-05 14_29_34.zip" + "</b></FONT></span>"
-                    if(document.all.btnReturn != null){
-                        document.all.btnReturn.disabled = false;
-                        document.all.btnReturn.src = "../Images/DataDownload/ConfirmS.jpg"
-                    }
-                    //setTimeout('window.close()', 2400);
-                    
-                    alert('Download OK');
-                }
-                else{
-                    
-                    document.all.SpanMsg.innerHTML = "<FONT size='4' style='position: relative; top: 18;'>&nbsp;系統發生錯誤, 下載資料經已損壞</Font>" + "<br><br><span style='position: relative; top: -10'>&nbsp;&nbsp;<FONT size='4' ></FONT></span>"
-                    document.all.SpanMsg.innerHTML += "<span style='font-size:10pt'>- 下載資料不存在</span>"
-                    if(document.all.btnReturn != null){
-                        document.all.btnReturn.disabled = false;
-                        document.all.btnReturn.src = "../Images/DataDownload/ConfirmS.jpg"
-                    }
-                    
-                    alert('Download Fail!!');
-                }					
-            }
-            else{
-                
-                //alert('Error')
-                document.all.SpanMsg.innerHTML = "<FONT size='4' style='position: relative; top: 18;'>&nbsp;系統發生錯誤, 資料下載失敗</Font>" + "<br><br><span style='position: relative; top: -10'>&nbsp;&nbsp;<FONT size='4' ></FONT></span>"
-                if(size == -1){
-                    document.all.SpanMsg.innerHTML += "<span style='font-size:10pt'>- 下載目標磁碟不存在</span>"
-                }
-                else if (size == -2){
-                    document.all.SpanMsg.innerHTML += "<span style='font-size:10pt'>- 檔案下載失敗</span>"
-                }				
-                if(document.all.btnReturn != null){
-                    document.all.btnReturn.disabled = false;
-                    document.all.btnReturn.src = "../Images/DataDownload/ConfirmS.jpg"
-                }
-                
-                alert('Download Fail!!!!!');
-            }
-            */
-        }
+        //}
 
         function btnReturn_Click() {
             //setTimeout('window.close()', 1)
@@ -187,8 +121,8 @@
                             ID="rbRecycleBin" runat="server" AutoPostBack="True" GroupName="msgType" Text="<%$ Resources:Text, RecycleBin %>"
                             OnCheckedChanged="rbRecycleBin_CheckedChanged" /><br />
                     <asp:TextBox ID="HiddenField1" runat="server" Style="display: none"></asp:TextBox>                    
-                    <asp:Button ID="HiddenSuccessBtn" runat="server" CausesValidation="false" Enabled="true"
-                        Style="display: none"></asp:Button>
+                    <%--<asp:Button ID="HiddenSuccessBtn" runat="server" CausesValidation="false" Enabled="true"
+                        Style="display: none"></asp:Button>--%>
                     <asp:TextBox ID="hfSelectedIndex" runat="server" Style="display: none"></asp:TextBox>
                     <asp:Panel runat="server" ID="panel_Folder">
                         <asp:GridView ID="gvDataDownloadFolder" runat="server" AllowPaging="True" AutoGenerateColumns="False"
@@ -220,10 +154,10 @@
                                         <itemstyle width="80px" horizontalalign="Center" />
                                         <asp:ImageButton ID="lbtn_ReadyDownload" runat="server" CausesValidation="false"
                                             CommandName="DataDownload" Enabled="true" AlternateText="<%$ Resources:AlternateText, ReadyDownloadBtn %>"
-                                            ImageUrl="<%$ Resources:ImageUrl, ReadyDownloadBtn %>" Visible="false"></asp:ImageButton>
-                                        <asp:ImageButton ID="lbtn_Processing" runat="server" CausesValidation="false" Enabled="false"
-                                            AlternateText="<%$ Resources:AlternateText, ProcessingBtn %>" ImageUrl="<%$ Resources:ImageUrl, ProcessingBtn %>"
-                                            Visible="false"></asp:ImageButton>
+                                            ImageUrl="<%$ Resources:ImageUrl, ReadyDownloadBtn %>" Visible="false" />
+                                        <asp:ImageButton ID="lbtn_Processing" runat="server" CausesValidation="false" 
+                                            Enabled="false" AlternateText="<%$ Resources:AlternateText, ProcessingBtn %>" 
+                                            ImageUrl="<%$ Resources:ImageUrl, ProcessingBtn %>" Visible="false" style="margin-left:1px"/>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center" VerticalAlign="Top" />
                                     <HeaderStyle VerticalAlign="Top" />

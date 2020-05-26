@@ -3519,28 +3519,73 @@ Partial Public Class MyProfileV2
 
         If blnRes Then
             Dim udtPCDWebService As PCDWebService = New PCDWebService(Me.FunctionCode)
-            Dim udtResult As WebService.Interface.PCDCheckIsActiveSPResult
 
-            udtAuditLogEntry.AddDescripton("WebMethod", "PCDCheckIsActiveSP")
-            udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00023, "Check PCD Account Start")
+            ' CRE19-024 (Not Create PCD Account in SP platform) [Start][Winnie SUEN]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim udtResult As WebService.Interface.PCDCheckIsActiveSPResult
 
-            udtResult = udtPCDWebService.PCDCheckIsActiveSP(udtSP.HKID)
+            'udtAuditLogEntry.AddDescripton("WebMethod", "PCDCheckIsActiveSP")
+            'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00023, "Check PCD Account Start")
 
-            udtAuditLogEntry.AddDescripton("ReturnCode", udtResult.ReturnCode.ToString)
-            udtAuditLogEntry.AddDescripton("MessageID", udtResult.MessageID.ToString)
+            'udtResult = udtPCDWebService.PCDCheckIsActiveSP(udtSP.HKID)
 
-            Select Case udtResult.ReturnCode
-                Case WebService.Interface.PCDCheckIsActiveSPResult.enumReturnCode.IsActive
-                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00024, "Active PCD Account Found")
-                    Me.ModalPopupExtenderPCDEnrolled.Show()
-                Case WebService.Interface.PCDCheckIsActiveSPResult.enumReturnCode.NotActive
-                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00025, "Active PCD Account Not Found")
+            'udtAuditLogEntry.AddDescripton("ReturnCode", udtResult.ReturnCode.ToString)
+            'udtAuditLogEntry.AddDescripton("MessageID", udtResult.MessageID.ToString)
+
+            'Select Case udtResult.ReturnCode
+            '    Case WebService.Interface.PCDCheckIsActiveSPResult.enumReturnCode.IsActive
+            '        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00024, "Active PCD Account Found")
+            '        Me.ModalPopupExtenderPCDEnrolled.Show()
+            '    Case WebService.Interface.PCDCheckIsActiveSPResult.enumReturnCode.NotActive
+            '        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00025, "Active PCD Account Not Found")
+            '        ShowTypeOfPractice(ucTypeOfPracticeGrid.EnumMode.Create)
+            '    Case Else
+            '        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00026, "PCDCheckIsActiveSPResult Failed")
+            '        Me.ucReturnCodeHandlingPopUp.MessageText = udtResult.ReturnCodeDesc
+            '        Me.ModalPopupExtenderReturnCodeHandling.Show()
+            'End Select
+
+            ' Check SP exists in PCD (Save the variable to ServiceProviderBLL)
+            Dim udtSPBLL As New ServiceProviderBLL
+            Dim objPCDWS As New Common.PCD.PCDWebService(CType(Me.Page, BasePage).FunctionCode)
+            Dim objResult As Common.PCD.WebService.Interface.PCDCheckAvailableForVerifiedEnrolmentResult = Nothing
+            
+            udtAuditLogEntry.AddDescripton("WebMethod", "CheckAvailableForVerifiedEnrolment")
+            udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00023, "CheckAvailableForVerifiedEnrolment Start")
+
+            objResult = objPCDWS.PCDCheckAvailableForVerifiedEnrolment(udtSP)
+
+            udtAuditLogEntry.AddDescripton("WebMethod", "CheckAvailableForVerifiedEnrolment")
+            udtAuditLogEntry.AddDescripton("ReturnCode", objResult.ReturnCode)
+            udtAuditLogEntry.AddDescripton("MessageID", objResult.MessageID)
+            
+            Select Case objResult.ReturnCode
+                Case PCDCheckAvailableForVerifiedEnrolmentResult.enumReturnCode.Available
+                    ' Display Type of Practice Popup
+                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00057, "CheckAvailableForVerifiedEnrolment Success")
                     ShowTypeOfPractice(ucTypeOfPracticeGrid.EnumMode.Create)
+
+                Case PCDCheckAvailableForVerifiedEnrolmentResult.enumReturnCode.ServiceProviderAlreadyExisted
+                    ' Display add Practice to PCD
+                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00058, "CheckAvailableForVerifiedEnrolment Success")
+                    Me.ModalPopupExtenderPCDEnrolled.Show()
+
+                Case PCDCheckAvailableForVerifiedEnrolmentResult.enumReturnCode.EnrolmentAlreadyExisted, _
+                        PCDCheckAvailableForVerifiedEnrolmentResult.enumReturnCode.VerifiedEnrolmentAlreadyExisted
+                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00058, "CheckAvailableForVerifiedEnrolment Success")
+
+                    ucNoticePopUp.NoticeMode = ucNoticePopUp.enumNoticeMode.Notification
+                    ucNoticePopUp.MessageText = objResult.ReturnCodeDesc
+                    Me.ModalPopupExtenderTypeOfPractice.Hide()
+                    Me.ShowPCDNoticePopup()
+
                 Case Else
-                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00026, "PCDCheckIsActiveSPResult Failed")
-                    Me.ucReturnCodeHandlingPopUp.MessageText = udtResult.ReturnCodeDesc
+                    udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00059, "CheckAvailableForVerifiedEnrolment Failed")
+                    Me.ucReturnCodeHandlingPopUp.MessageText = objResult.ReturnCodeDesc
                     Me.ModalPopupExtenderReturnCodeHandling.Show()
+
             End Select
+
         End If
     End Sub
 
@@ -3565,44 +3610,74 @@ Partial Public Class MyProfileV2
                 Me.ModalPopupExtenderTypeOfPractice.Hide()
             Case HCSP.ucTypeOfPracticePopup.enumButtonClick.CreatePCDAccount
                 udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00030, "Type Of Practice Popup Create PCD Account Clicked")
-                If Not IsNothing(ucTypeOfPracticePopup.CreatePCDSPAcctResult) Then
+
+                ' CRE19-024 (Not Create PCD Account in SP platform) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                'If Not IsNothing(ucTypeOfPracticePopup.CreatePCDSPAcctResult) Then
+                If Not IsNothing(ucTypeOfPracticePopup.CreatePCDUploadVerifiedEnrolmentResult) Then
                     Me.ucTypeOfPracticePopup.Showing = False
                     Me.ModalPopupExtenderTypeOfPractice.Hide()
-                    Select Case ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCode
-                        Case WebService.Interface.PCDCreatePCDSPAcctResult.enumReturnCode.SuccessWithData
-                            Session("PCDActivationLink") = GetActivationLink()
+                    'Select Case ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCode
+                    '    Case WebService.Interface.PCDCreatePCDSPAcctResult.enumReturnCode.SuccessWithData
+                    '        Session("PCDActivationLink") = GetActivationLink()
 
-                            ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [Start] (Marco) ---
-                            ' Enquire PCD
-                            Dim objWS As New Common.PCD.PCDWebService(Me.FunctionCode)
-                            Dim objResult As WebService.Interface.PCDCheckAccountStatusResult = Nothing
-                            Dim strMessage As String = String.Empty
+                    '        ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [Start] (Marco) ---
+                    '        ' Enquire PCD
+                    '        Dim objWS As New Common.PCD.PCDWebService(Me.FunctionCode)
+                    '        Dim objResult As WebService.Interface.PCDCheckAccountStatusResult = Nothing
+                    '        Dim strMessage As String = String.Empty
 
-                            Dim udtSPModel As ServiceProviderModel = Me.udtServiceProviderBLL.GetSP()
-                            Dim strSPID As String = udtSPModel.SPID
-                            Dim strUpdateBy As String = udtSPModel.SPID
-                            objResult = objWS.PCDCheckAccountStatus(udtSPModel.HKID)
+                    '        Dim udtSPModel As ServiceProviderModel = Me.udtServiceProviderBLL.GetSP()
+                    '        Dim strSPID As String = udtSPModel.SPID
+                    '        Dim strUpdateBy As String = udtSPModel.SPID
+                    '        objResult = objWS.PCDCheckAccountStatus(udtSPModel.HKID)
 
-                            Dim blnUpdateRes As Boolean = objResult.UpdateJoinPCDStatus(strSPID, strUpdateBy, strMessage, udtSPModel)
-                            If Not blnUpdateRes Then
-                                Throw New Exception(strMessage)
-                            End If
-                            ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [End]   (Marco) 
+                    '        Dim blnUpdateRes As Boolean = objResult.UpdateJoinPCDStatus(strSPID, strUpdateBy, strMessage, udtSPModel)
+                    '        If Not blnUpdateRes Then
+                    '            Throw New Exception(strMessage)
+                    '        End If
+                    '        ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [End]   (Marco) 
 
-                            Me.ShowPCDActivationNoticePopup()
-                        Case WebService.Interface.PCDCreatePCDSPAcctResult.enumReturnCode.ServiceProviderAlreadyExisted
-                            Me.ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCodeDesc
-                            Me.ModalPopupExtenderTypeOfPractice.Hide()
-                            Me.ShowPCDNoticePopup()
-                        Case WebService.Interface.PCDCreatePCDSPAcctResult.enumReturnCode.EnrolmentProcessingByPCO
-                            Me.ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCodeDesc
-                            Me.ModalPopupExtenderTypeOfPractice.Hide()
-                            Me.ShowPCDNoticePopup()
+                    '        Me.ShowPCDActivationNoticePopup()
+                    '    Case WebService.Interface.PCDCreatePCDSPAcctResult.enumReturnCode.ServiceProviderAlreadyExisted
+                    '        Me.ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCodeDesc
+                    '        Me.ModalPopupExtenderTypeOfPractice.Hide()
+                    '        Me.ShowPCDNoticePopup()
+                    '    Case WebService.Interface.PCDCreatePCDSPAcctResult.enumReturnCode.EnrolmentProcessingByPCO
+                    '        Me.ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCodeDesc
+                    '        Me.ModalPopupExtenderTypeOfPractice.Hide()
+                    '        Me.ShowPCDNoticePopup()
+                    '    Case Else
+                    '        Me.ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCodeDesc
+                    '        Me.ModalPopupExtenderTypeOfPractice.Hide()
+                    '        Me.ShowPCDNoticePopupExclamation()
+                    'End Select
+
+                    ' Show Notice Popup For JoinPCD
+
+                    Select Case ucTypeOfPracticePopup.CreatePCDUploadVerifiedEnrolmentResult.ReturnCode
+                        Case PCDUploadVerifiedEnrolmentResult.enumReturnCode.UploadedSuccessfully, _
+                                PCDUploadVerifiedEnrolmentResult.enumReturnCode.ServiceProviderAlreadyExisted, _
+                                PCDUploadVerifiedEnrolmentResult.enumReturnCode.EnrolmentAlreadyExisted
+                            ucNoticePopUp.NoticeMode = ucNoticePopUp.enumNoticeMode.Notification
+
                         Case Else
-                            Me.ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDSPAcctResult.ReturnCodeDesc
-                            Me.ModalPopupExtenderTypeOfPractice.Hide()
-                            Me.ShowPCDNoticePopupExclamation()
+                            ucNoticePopUp.NoticeMode = ucNoticePopUp.enumNoticeMode.Custom
+                            ucNoticePopUp.ButtonMode = ucNoticePopUp.enumButtonMode.OK
+                            ucNoticePopUp.IconMode = ucNoticePopUp.enumIconMode.ExclamationIcon
+                            ucNoticePopUp.HeaderText = Me.GetGlobalResourceObject("Text", "Notification")
+
                     End Select
+
+                    ucNoticePopUp.MessageText = ucTypeOfPracticePopup.CreatePCDUploadVerifiedEnrolmentResult.ReturnCodeDesc
+                    'ModalPopupExtenderNotice.PopupDragHandleControlID = ucNoticePopUp.Header.ClientID
+                    'ModalPopupExtenderNotice.Show()
+
+                    ' CRE19-024 (Not Create PCD Account in SP platform) [End][Chris YIM]	
+
+                    Me.ModalPopupExtenderTypeOfPractice.Hide()
+                    Me.ShowPCDNoticePopup()
+
                 End If
             Case HCSP.ucTypeOfPracticePopup.enumButtonClick.TransferToPCD
                 udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00031, "Type Of Practice Popup Transfer To PCD Clicked")

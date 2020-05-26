@@ -57,27 +57,13 @@
     <Reference Include="AjaxControlToolkit">
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -197,6 +183,7 @@
     <Content Include="Images\button\btn_UploadRectifiedFile_D.png" />
     <Content Include="Images\button\btn_UploadVaccinationClaim.png" />
     <Content Include="Images\button\btn_UploadVaccinationClaim_D.png" />
+    <Content Include="Images\button\icon_button\btn_Download.png" />
     <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationClaimCreationReport.png" />
@@ -240,7 +227,6 @@
     <Content Include="JS\hoverIntent.js" />
     <Content Include="JS\jquery-1.10.2.js" />
     <Content Include="JS\ReportSubmission\CommonControl.js" />
-    <Content Include="OCX\EVSDataDownload.CAB" />
     <Content Include="ReportAndDownload\PostPaymentCheck.aspx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
@@ -2174,7 +2160,6 @@
     <Content Include="Images\others\circle_red.png" />
     <Content Include="Images\others\closeAllowedSite.png" />
     <Content Include="Images\others\ec.png" />
-    <Content Include="Images\others\floopy.PNG" />
     <Content Include="Images\others\HA_MINGLIU_Sample.png" />
     <Content Include="Images\others\icon_caution.gif" />
     <Content Include="Images\others\ImportFail.png" />
@@ -2215,7 +2200,6 @@
     <Content Include="JS\Common.js" />
     <Content Include="JS\ReadXML.js" />
     <Content Include="login.aspx" />
-    <Content Include="OCX\EVSDataDownload.HTM" />
     <Content Include="PrintOut\ConfirmationLetter\ConfirmationLetter.aspx" />
     <Content Include="Reimbursement\ClaimTransDetail.ascx" />
     <Content Include="Reimbursement\reimbursementCancelAuthorization.aspx" />
@@ -2231,7 +2215,6 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
-    <None Include="My Project\PublishProfiles\HCVU_Hotline.pubxml" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>

@@ -55,6 +55,16 @@ Namespace Text
             Response.CacheControl = "no-cache"
             Response.AddHeader("Pragma", "no-cache")
 
+            FunctionCode = FunctCode.FUNT030102
+
+            Dim udtAuditLogRedirect As New AuditLogEntry(FunctionCode)
+            udtAuditLogRedirect.WriteLog(LogID.LOG00010, "Voucher Balance Enquiry load (Obsoleted)")
+
+            Dim strRedirectLink As String = ConfigurationManager.AppSettings("RedirectLinkChi")
+            HttpContext.Current.Response.Redirect(strRedirectLink)
+
+            Return
+
             udtFormatter = New Formatter
 
             Dim strlink As String = String.Empty

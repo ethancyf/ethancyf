@@ -1331,8 +1331,6 @@ Partial Public Class MasterPage
     End Function
 
     Private Sub SetupTimeoutReminder()
-
-
         Me.Page.ClientScript.RegisterStartupScript(Me.GetType, "SetupTimeoutReminder", String.Format("javascript: StartTimeoutReminder('{0}','{1}','{2}','{3}','{4}');", _
                                                        New String() {(Session.Timeout * 60).ToString, _
                                                                     Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
@@ -1343,7 +1341,10 @@ Partial Public Class MasterPage
         Me.ucNoticePopUpTimeoutReminder.ButtonOK.Attributes.Add("onclick", "ReminderOK_Click();")
         Me.ModalPopupExtenderTimeoutReminder.OkControlID = Me.ucNoticePopUpTimeoutReminder.ButtonOK.ClientID
         Me.ModalPopupExtenderTimeoutReminder.PopupDragHandleControlID = Me.ucNoticePopUpTimeoutReminder.Header.ClientID
-
+        ' INT20-0012 (Fix double postback on claim) [Start][Koala]
+        ' ----------------------------------------------------------
+        ucNoticePopUpTimeoutReminder.MessageText = HttpContext.GetGlobalResourceObject("Text", "TimeoutReminderMessage")
+        ' INT20-0012 (Fix double postback on claim) [End][Koala]
     End Sub
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]
 

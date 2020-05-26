@@ -9,7 +9,7 @@
     <title id="PageTitle" runat="server"></title>    
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>     
     <script language="javascript" type="text/javascript">
-        window.location.replace("https://apps.hcv.gov.hk/public/tc/VBE/Search");
+        window.location.replace("<%=ConfigurationManager.AppSettings("RedirectLinkChi")%>");
     </script>
     <script type="text/javascript">
         function convertToUpper(textbox) { textbox.value = textbox.value.toUpperCase(); }

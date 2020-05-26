@@ -64,8 +64,11 @@ Public Class ScheduleJob
         Dim dtmScheduleEndTime As Date = DateAdd(DateInterval.Minute, intScheduleDuration, Now())
         Dim blnIsWithinSchedule As Boolean = True
 
+        Dim intMaxFailCount As Integer = CInt(System.Configuration.ConfigurationManager.AppSettings("MaxFailCount").Trim())
+
         Dim intCount As Integer = 0 'for calculation
         Dim intCompletedRecord As Integer = 0   'for DB update of queue
+        Dim intFailCount As Integer = 0   'for record throw exception
 
         Dim udtSubsidizeWriteOffGeneratorQueue_P As SubsidizeWriteOffGeneratorQueue
         Dim udtSubsidizeWriteOffGeneratorQueueItem As SubsidizeWriteOffGeneratorQueueItem
@@ -76,7 +79,9 @@ Public Class ScheduleJob
         Dim intAverDuration As Integer     'ms
 
         ' Input Validation
-        If intPage <= 0 OrElse intTotalPage <= 0 OrElse intScheduleDuration <= 0 Then
+        'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [Start][Winnie]
+        If intPage <= 0 OrElse intTotalPage <= 0 OrElse intScheduleDuration <= 0 OrElse intMaxFailCount <= 0 Then
+            'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [End][Winnie]
             MyBase.AuditLog.AddDescripton("Page", CStr(intPage))
             MyBase.AuditLog.AddDescripton("Message", "Config value must be greater than 0")
             MyBase.AuditLog.WriteLog(AuditLogDesc.ConfigError_ID, AuditLogDesc.ConfigError)
@@ -94,6 +99,7 @@ Public Class ScheduleJob
         MyBase.AuditLog.AddDescripton("Page", CStr(intPage))
         MyBase.AuditLog.AddDescripton("Total Page", CStr(intTotalPage))
         MyBase.AuditLog.AddDescripton("Schedule Duration (min)", intScheduleDuration)
+        MyBase.AuditLog.AddDescripton("Maximum Fail Count", intMaxFailCount)
         MyBase.AuditLog.WriteLog(AuditLogDesc.RetrieveQueueStart_ID, AuditLogDesc.RetrieveQueueStart)
 
         Try
@@ -124,7 +130,10 @@ Public Class ScheduleJob
         MyBase.AuditLog.AddDescripton("Page", CStr(intPage))
         MyBase.AuditLog.WriteLog(AuditLogDesc.CalculationStart_ID, AuditLogDesc.CalculationStart)
 
-        While (udtSubsidizeWriteOffGeneratorQueue_P.Count > 0 AndAlso blnIsWithinSchedule)
+        'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [Start][Winnie]        
+        While (udtSubsidizeWriteOffGeneratorQueue_P.Count > 0 AndAlso blnIsWithinSchedule AndAlso intMaxFailCount > intFailCount)
+            'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [End][Winnie]
+
             udtSubsidizeWriteOffGeneratorQueueItem = udtSubsidizeWriteOffGeneratorQueue_P.Dequeue()
 
             Try
@@ -148,14 +157,20 @@ Public Class ScheduleJob
 
             Catch ex As Exception
 
+                'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [Start][Winnie]
+                '-----------------------------------------------------------------------------------------
+                ' Continue next record
                 MyBase.AuditLog.AddDescripton("Page", CStr(intPage))
                 MyBase.AuditLog.AddDescripton("Message", ex.Message)
                 MyBase.AuditLog.AddDescripton("ExceptionRowID", CStr(udtSubsidizeWriteOffGeneratorQueueItem.RowID))
-                MyBase.AuditLog.AddDescripton("No. of Record Calculated", CStr(intCount))
-                MyBase.AuditLog.AddDescripton("No. of Record Completed", CStr(intCompletedRecord))
                 MyBase.AuditLog.WriteLog(AuditLogDesc.Exception_ID, AuditLogDesc.Exception)
-                Throw
 
+                intFailCount += 1
+
+                'MyBase.AuditLog.AddDescripton("No. of Record Calculated", CStr(intCount))
+                'MyBase.AuditLog.AddDescripton("No. of Record Completed", CStr(intCompletedRecord))
+                'Throw
+                'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [End][Winnie]
             End Try
 
             ' Check Schedule End Time
@@ -176,6 +191,9 @@ Public Class ScheduleJob
         MyBase.AuditLog.AddDescripton("Page", CStr(intPage))
         MyBase.AuditLog.AddDescripton("No. of Record Calculated", CStr(intCount))
         MyBase.AuditLog.AddDescripton("No. of Record Completed", CStr(intCompletedRecord))
+        'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [Start][Winnie]
+        MyBase.AuditLog.AddDescripton("No. of Record Throw Exception", CStr(intFailCount))
+        'INT20-0013 (Fix VBE and HCSP timeout during DeathRecordMatching) [End][Winnie]
         MyBase.AuditLog.AddDescripton("Total Duration (min)", CStr(CInt(lngTotalDuration / 60)))
         MyBase.AuditLog.AddDescripton("Average Duration (ms)", CStr(intAverDuration))
         MyBase.AuditLog.WriteLog(AuditLogDesc.CalculationEnd_ID, AuditLogDesc.CalculationEnd)

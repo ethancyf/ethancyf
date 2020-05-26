@@ -17,7 +17,7 @@
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
     <script language="javascript" src="JS/Common.js" type="text/javascript"></script>
     <script language="javascript" type="text/javascript">
-        window.location.replace("https://apps.hcv.gov.hk/public/tc/VBE/Search");
+        window.location.replace("<%=ConfigurationManager.AppSettings("RedirectLinkChi")%>");
     </script>
 
     <script language="javascript" type="text/javascript">

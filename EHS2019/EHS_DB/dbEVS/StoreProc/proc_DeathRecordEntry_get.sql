@@ -8,6 +8,13 @@ GO
 
 -- =============================================  
 -- Modification History  
+-- CR No.:			INT20-013
+-- Modified by:		Winnie SUEN
+-- Modified date:	08 May 2020
+-- Description:		Add no lock to fix VBE and HCSP timeout during DeathRecordMatching
+-- =============================================  
+-- =============================================  
+-- Modification History  
 -- CR No.:			CRE14-019
 -- Modified by:		Lawrence TSANG
 -- Modified date:	21 January 2015
@@ -62,7 +69,7 @@ AS BEGIN
 		CONVERT(varchar, DecryptByKey(Encrypt_Field2)) AS [Death_English_Name],
 		Record_Status
 	FROM
-		DeathRecordEntry
+		DeathRecordEntry WITH (NOLOCK)
 	WHERE
 		Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_Doc_No)
 		AND Record_Status = 'A' -- A = Active

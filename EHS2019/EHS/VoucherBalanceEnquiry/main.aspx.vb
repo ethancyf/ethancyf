@@ -54,6 +54,16 @@ Partial Public Class main
         Response.CacheControl = "no-cache"
         Response.AddHeader("Pragma", "no-cache")
 
+        FunctionCode = FunctCode.FUNT030101
+
+        Dim udtAuditLogRedirect As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogRedirect.WriteLog(LogID.LOG00010, "Voucher Balance Enquiry load (Obsoleted)")
+
+        Dim strRedirectLink As String = ConfigurationManager.AppSettings("RedirectLinkChi")
+        HttpContext.Current.Response.Redirect(strRedirectLink)
+
+        Return
+
         If Not IsPostBack Then
             FunctionCode = FunctCode.FUNT030101
 

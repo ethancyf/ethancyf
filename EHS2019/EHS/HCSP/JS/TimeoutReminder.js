@@ -27,7 +27,6 @@ function StartTimeoutReminder(_initialTime, _displayTime, _lang, _reminderID, _r
     reminderMessageID = _reminderMessageID;
     displayTime = _displayTime;
 
-    reminderMessage = document.getElementById(reminderMessageID).innerHTML;
     remainTime = initialTime;
     clearTimeout(timer);
 
@@ -69,7 +68,7 @@ function KeepSessionAlive() {
 
 function ShowReminder() {
     var elmMsg = document.getElementById(reminderMessageID);
-    elmMsg.innerHTML = reminderMessage.replace("[TIME_OUT]", displayTime);
+    elmMsg.innerHTML = elmMsg.innerHTML.replace("[TIME_OUT]", displayTime);
     elmMsg.innerHTML = elmMsg.innerHTML.replace("[MESSAGE_ALERT_TIME]", Clock.SystemTime);
     $find(reminderID).show();
 }

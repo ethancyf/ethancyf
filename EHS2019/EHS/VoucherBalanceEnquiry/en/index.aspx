@@ -7,7 +7,7 @@
 
     <script type="text/javascript" src="../JS/Common.js"></script>
     <script language="javascript" type="text/javascript">
-        window.location.replace("https://apps.hcv.gov.hk/public/en/VBE/Search");
+        window.location.replace("<%=ConfigurationManager.AppSettings("RedirectLinkEng")%>");
     </script>
     <base id="basetag" runat="server" />
 

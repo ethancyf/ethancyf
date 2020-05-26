@@ -15,7 +15,10 @@ Partial Public Class Datadownload
     Dim oriStatus As String
     Dim udtcomfunct As New Common.ComFunction.GeneralFunction
     Dim strDownloadList As String = "strDownloadList"
-    Dim strWindowWasherPath As String = "WindowWasherPath"
+    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    'Dim strWindowWasherPath As String = "WindowWasherPath"
+    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
     Dim udcValidator As New Common.Validation.Validator
     Dim udcDataDownloadBll As New DatadownloadBLL
     Dim udtHCVUUser As HCVUUserModel
@@ -67,43 +70,43 @@ Partial Public Class Datadownload
             Me.lbl_RecycleBinNote.Visible = False
             Me.lbl_KeepFilePeriodNote.Visible = Not Me.lbl_RecycleBinNote.Visible
 
-            Dim strOCX_codebase As String
-            Dim strapppath As String
-            Dim strhostname As String
-            Dim strOCX_version As String
-            Dim strhttp As String
+            ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Dim strOCX_codebase As String
+            'Dim strapppath As String
+            'Dim strhostname As String
+            'Dim strOCX_version As String
+            'Dim strhttp As String
 
-            Dim strvalue As String = String.Empty
-            udtcomfunct.getSystemParameter("SiteHttp", strvalue, String.Empty)
-            strhttp = strvalue
+            'Dim strvalue As String = String.Empty
+            'udtcomfunct.getSystemParameter("SiteHttp", strvalue, String.Empty)
+            'strhttp = strvalue
 
-            strvalue = String.Empty
-            udtcomfunct.getSystemParameter("OCXAppPath", strvalue, String.Empty)
-            strapppath = strvalue
+            'strvalue = String.Empty
+            'udtcomfunct.getSystemParameter("OCXAppPath", strvalue, String.Empty)
+            'strapppath = strvalue
 
-            strvalue = String.Empty
-            udtcomfunct.getSystemParameter("OCXDatadownloadVer", strvalue, String.Empty)
-            strOCX_version = strvalue
+            'strvalue = String.Empty
+            'udtcomfunct.getSystemParameter("OCXDatadownloadVer", strvalue, String.Empty)
+            'strOCX_version = strvalue
 
-            'strhostname = "localhost" 'System.Configuration.ConfigurationSettings.AppSettings("HostName")
-            strhostname = Request.Url.Host
-            'strOCX_version = "1,0,0,0" 'System.Configuration.ConfigurationSettings.AppSettings("DataDownloadOCXVer")
+            'strhostname = Request.Url.Host
 
-            strOCX_codebase = "<OBJECT id='DataDownload' style='DISPLAY: none' "
-            strOCX_codebase += "codeBase='" + strhttp + "://" + strhostname + strapppath + "OCX/EVSDataDownload.CAB#Version=" + strOCX_version + "' "
-            strOCX_codebase += "classid=CLSID:21289723-36E9-46CA-AE00-1F979770F910 viewastext> " + vbCrLf
-            strOCX_codebase += "<PARAM NAME='_ExtentX' VALUE='0'>" + vbCrLf
-            strOCX_codebase += "<PARAM NAME='_ExtentY' VALUE='6350'>" + vbCrLf
-            strOCX_codebase += "</OBJECT>" + vbCrLf
+            'strOCX_codebase = "<OBJECT id='DataDownload' style='DISPLAY: none' "
+            'strOCX_codebase += "codeBase='" + strhttp + "://" + strhostname + strapppath + "OCX/EVSDataDownload.CAB#Version=" + strOCX_version + "' "
+            'strOCX_codebase += "classid=CLSID:21289723-36E9-46CA-AE00-1F979770F910 viewastext> " + vbCrLf
+            'strOCX_codebase += "<PARAM NAME='_ExtentX' VALUE='0'>" + vbCrLf
+            'strOCX_codebase += "<PARAM NAME='_ExtentY' VALUE='6350'>" + vbCrLf
+            'strOCX_codebase += "</OBJECT>" + vbCrLf
 
-            Me.RegisterStartupScript("clientScript", strOCX_codebase)
-            'ScriptManager.RegisterStartupScript(Me, GetType(Page), "DataDownloadObject", strOCX_codebase, True)
+            'Me.RegisterStartupScript("clientScript", strOCX_codebase)
 
+            'strvalue = String.Empty
+            'udtcomfunct.getSystemParameter("WindowWasherPath", strvalue, String.Empty)
+            'Session(strWindowWasherPath) = strvalue.Replace("\", "?")
+            'Me.RegisterStartupScript("clientScriptCheckOCX", "<script language='javascript'>CheckOCXExists('" & Session(strWindowWasherPath) & "');</script>")
 
-            strvalue = String.Empty
-            udtcomfunct.getSystemParameter("WindowWasherPath", strvalue, String.Empty)
-            Session(strWindowWasherPath) = strvalue.Replace("\", "?")
-            Me.RegisterStartupScript("clientScriptCheckOCX", "<script language='javascript'>CheckOCXExists('" & Session(strWindowWasherPath) & "');</script>")
+            ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
 
             ' Browser: Firefox
             Dim strBrowser As String = String.Empty
@@ -566,6 +569,10 @@ Partial Public Class Datadownload
                                     'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                     'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                     'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    HideDownloadPanel()
+                                    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                 Else
                                     Me.hfSelectedIndex.Text = String.Empty
                                     Me.gvDataDownloadFolder.SelectedIndex = -1
@@ -602,6 +609,10 @@ Partial Public Class Datadownload
                                     'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                     'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                     'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    HideDownloadPanel()
+                                    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                 Else
                                     Me.hfSelectedIndex.Text = String.Empty
                                     Me.gvDataDownloadFolder.SelectedIndex = -1
@@ -638,6 +649,10 @@ Partial Public Class Datadownload
                                     'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                     'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                     'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    HideDownloadPanel()
+                                    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                 Else
                                     Me.hfSelectedIndex.Text = String.Empty
                                     Me.gvDataDownloadFolder.SelectedIndex = -1
@@ -674,6 +689,10 @@ Partial Public Class Datadownload
                                     'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                     'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                     'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    HideDownloadPanel()
+                                    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                 Else
                                     Me.hfSelectedIndex.Text = String.Empty
                                     Me.gvDataDownloadFolder.SelectedIndex = -1
@@ -712,6 +731,10 @@ Partial Public Class Datadownload
                                             'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                             'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                             'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                            ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                            ' ---------------------------------------------------------------------------------------------------------
+                                            HideDownloadPanel()
+                                            ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                         Else
                                             Me.hfSelectedIndex.Text = String.Empty
                                             Me.panel_searchCriteria.Visible = False
@@ -751,6 +774,10 @@ Partial Public Class Datadownload
                                             'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                             'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                             'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                            ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                            ' ---------------------------------------------------------------------------------------------------------
+                                            HideDownloadPanel()
+                                            ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                         Else
                                             Me.hfSelectedIndex.Text = String.Empty
                                             Me.gvDataDownloadFolder.SelectedIndex = -1
@@ -787,6 +814,10 @@ Partial Public Class Datadownload
                                             'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                             'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                             'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                            ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                            ' ---------------------------------------------------------------------------------------------------------
+                                            HideDownloadPanel()
+                                            ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                         Else
                                             Me.hfSelectedIndex.Text = String.Empty
                                             Me.panel_searchCriteria.Visible = False
@@ -822,6 +853,10 @@ Partial Public Class Datadownload
                                             'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
                                             'Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
                                             'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+                                            ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+                                            ' ---------------------------------------------------------------------------------------------------------
+                                            HideDownloadPanel()
+                                            ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
                                         Else
                                             Me.hfSelectedIndex.Text = String.Empty
                                             Me.panel_searchCriteria.Visible = False
@@ -1358,15 +1393,8 @@ Partial Public Class Datadownload
     End Sub
 
     Private Sub CallOCX(ByVal strSrcFile As String, ByVal strOutputFileName As String)
-        'Dim strvalue As String = String.Empty
-        'udtcomfunct.getSystemParameter("DownloadFileWorkerPath", strvalue, String.Empty)
-
-        'I-CRE16-002 (Fix Path Traversal) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        'strSrcFile = strSrcFile.Replace("\", "|")
-        'I-CRE16-002 (Fix Path Traversal) [End][Chris YIM]
-
         Dim url As String
+
 
         Dim strhttp As String = String.Empty
         Dim strapppath As String = String.Empty
@@ -1378,8 +1406,6 @@ Partial Public Class Datadownload
         udtcomfunct.getSystemParameter("OCXAppPath", strvalue, String.Empty)
         strapppath = strvalue
 
-        'I-CRE16-002 (Fix Path Traversal) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         Dim dictTSPath As Dictionary(Of String, String)
 
         If Session(SESS.DictionaryTimestampPath) Is Nothing Then
@@ -1396,15 +1422,13 @@ Partial Public Class Datadownload
         dictTSPath.Add(strTimeStamp, strSrcFile)
         Session(SESS.DictionaryTimestampPath) = dictTSPath
 
-        ''url = strvalue & "?FileDownloadPath=" & strSrcFile
-        'url = strhttp & "://" & Request.Url.Host & strapppath & "ReportAndDownload/DownloadFileWorker.aspx?FileDownloadPath=" & strSrcFile
         url = strhttp & "://" & Request.Url.Host & strapppath & "ReportAndDownload/DownloadFileWorker.aspx?" & QueryString.TimeStamp & "=" & strTimeStamp
-        'I-CRE16-002 (Fix Path Traversal) [End][Chris YIM]
 
-        'strSrcFile = strSrcFile.Replace("\\", "|")
-        'strSrcFile = Request.Url.ToString        
-
-        ScriptManager.RegisterStartupScript(Me, GetType(Page), "callocxscript", "setTimeout(" + Chr(34) + "DownloadFile('" & url & "', '" & strOutputFileName & "', '" & Session(strWindowWasherPath).ToString & "')" + Chr(34) + ", 1)", True)
+        ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'ScriptManager.RegisterStartupScript(Me, GetType(Page), "callocxscript", "setTimeout(" + Chr(34) + "DownloadFile('" & url & "', '" & strOutputFileName & "', '" & Session(strWindowWasherPath).ToString & "')" + Chr(34) + ", 1)", True)
+        ScriptManager.RegisterStartupScript(Me, GetType(Page), "CallDownloadFIleWorker", "setTimeout(" + Chr(34) + "DownloadFile('" & url & "', '" & strOutputFileName & "', '')" + Chr(34) + ", 1)", True)
+        ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
     End Sub
 
     Private Function SaveDBByteToFile(ByVal strGenerationID As String, ByVal strOutputFilePath As String, ByRef intFileLength As Integer) As Boolean
@@ -1429,12 +1453,23 @@ Partial Public Class Datadownload
     End Function
 
     Protected Sub btn_back_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        HideDownloadPanel()
+        ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
+
+    End Sub
+
+    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub HideDownloadPanel()
         Me.panel_searchCriteria.Visible = False
         Me.btn_delete_disabled.Visible = False
         Me.ibtn_delete.Visible = True
         Me.gvDataDownloadFolder.SelectedIndex = -1
         Me.udcErrorMessage.BuildMessageBox()
     End Sub
+    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
 
     Private Function bDeleteFileOK(ByVal strFilePath As String) As Boolean
         Try
@@ -1453,40 +1488,43 @@ Partial Public Class Datadownload
 
     End Function
 
-    Protected Sub btn_HiddenSuccessBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HiddenSuccessBtn.Click
-        ' CRE11-004    
-        'Dim udtAuditLogEntry As AuditLogEntry = Session("DatadownloadAuditLogObj")
-        Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FUNCTION_CODE, Me)
-        If udcValidator.IsEmpty(Me.HiddenField1.Text) Then
-            UpdateFileDownloadedStatus()
-            'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            Me.hfSelectedIndex.Text = String.Empty
-            'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [End][Chris YIM]
+    ' CRE19-029 (Fadeout OCX) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    'Protected Sub btn_HiddenSuccessBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles HiddenSuccessBtn.Click
+    '    ' CRE11-004    
+    '    'Dim udtAuditLogEntry As AuditLogEntry = Session("DatadownloadAuditLogObj")
+    '    Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FUNCTION_CODE, Me)
+    '    If udcValidator.IsEmpty(Me.HiddenField1.Text) Then
+    '        UpdateFileDownloadedStatus()
+    '        'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [Start][Chris YIM]
+    '        '-----------------------------------------------------------------------------------------
+    '        Me.hfSelectedIndex.Text = String.Empty
+    '        'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [End][Chris YIM]
 
-            Me.gvDataDownloadFolder.SelectedIndex = -1
-            Me.panel_searchCriteria.Visible = False
-            Me.btn_delete_disabled.Visible = False
-            Me.ibtn_delete.Visible = True
-            Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
-            Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
-            udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
-            Me.udcInfoMessageBox.BuildMessageBox()
-        Else
-            'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            Me.hfSelectedIndex.Text = String.Empty
-            'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [End][Chris YIM]
-            Me.gvDataDownloadFolder.SelectedIndex = -1
-            Me.panel_searchCriteria.Visible = False
-            Me.btn_delete_disabled.Visible = False
-            Me.ibtn_delete.Visible = True
-            Me.udcErrorMessage.AddMessage(FUNCTION_CODE, "E", Me.HiddenField1.Text)
-            udtAuditLogEntry.WriteEndLog(LogID.LOG00009, "Download fail")
-            Me.udcErrorMessage.BuildMessageBox("DownloadFail", udtAuditLogEntry, LogID.LOG00009, "Download Fail Code " & Me.HiddenField1.Text.Trim)
-            Me.HiddenField1.Text = ""
-        End If
-    End Sub
+    '        Me.gvDataDownloadFolder.SelectedIndex = -1
+    '        Me.panel_searchCriteria.Visible = False
+    '        Me.btn_delete_disabled.Visible = False
+    '        Me.ibtn_delete.Visible = True
+    '        Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
+    '        Me.udcInfoMessageBox.AddMessage("990000", "I", "00013", "%s", Session(strWindowWasherPath).ToString.Trim.Replace("?", "\"))
+    '        udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Download successful")
+    '        Me.udcInfoMessageBox.BuildMessageBox()
+    '    Else
+    '        'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [Start][Chris YIM]
+    '        '-----------------------------------------------------------------------------------------
+    '        Me.hfSelectedIndex.Text = String.Empty
+    '        'INT16-0012 (Fix problem of concurrent download in HCVU Download Report and Datafile) [End][Chris YIM]
+    '        Me.gvDataDownloadFolder.SelectedIndex = -1
+    '        Me.panel_searchCriteria.Visible = False
+    '        Me.btn_delete_disabled.Visible = False
+    '        Me.ibtn_delete.Visible = True
+    '        Me.udcErrorMessage.AddMessage(FUNCTION_CODE, "E", Me.HiddenField1.Text)
+    '        udtAuditLogEntry.WriteEndLog(LogID.LOG00009, "Download fail")
+    '        Me.udcErrorMessage.BuildMessageBox("DownloadFail", udtAuditLogEntry, LogID.LOG00009, "Download Fail Code " & Me.HiddenField1.Text.Trim)
+    '        Me.HiddenField1.Text = ""
+    '    End If
+    'End Sub
+    ' CRE19-029 (Fadeout OCX) [End][Chris YIM]	
 
 #Region "Implement IWorkingData (CRE11-004)"
 

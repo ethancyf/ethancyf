@@ -335,7 +335,7 @@ End Code
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-3">
                                     <div class="line-gap">
-                                        <img src="~/Image/vbe/web/btn-select-chosen.png" class="img-responsive valiCodeImg" style="height:45px" title="@Resource.Text("AriaVBESearchCaptchaPic")" alt="Verification Code" />
+                                        <img src="" class="img-responsive valiCodeImg" style="height:45px" title="@Resource.Text("AriaVBESearchCaptchaPic")" alt="Verification Code" />
                                     </div>
                                 </div>
                                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 refresh-captcha" style="padding-left:0px;padding-right:0px;">

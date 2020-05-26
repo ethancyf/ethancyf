@@ -17,6 +17,11 @@ Partial Public Class index1
         Response.CacheControl = "no-cache"
         Response.AddHeader("Pragma", "no-cache")
 
+        Dim strRedirectLink As String = ConfigurationManager.AppSettings("RedirectLinkEng")
+        HttpContext.Current.Response.Redirect(strRedirectLink)
+
+        Return
+
         ' CRE15-006 Rename of eHS [Start][Lawrence]
         lblAppEnvironment.Text = (New GeneralFunction).getSystemParameter("AppEnvironment")
 

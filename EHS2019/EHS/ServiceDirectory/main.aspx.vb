@@ -110,6 +110,16 @@ Partial Public Class main
         Response.CacheControl = "no-cache"
         Response.AddHeader("Pragma", "no-cache")
 
+        FunctionCode = Common.Component.FunctCode.FUNT040101
+
+        Dim udtAuditLogRedirect As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogRedirect.WriteLog(LogID.LOG00024, "SDIR Page Load (Obsoleted)")
+
+        Dim strRedirectLink As String = ConfigurationManager.AppSettings("RedirectLinkChi")
+        HttpContext.Current.Response.Redirect(strRedirectLink)
+
+        Return
+
         SetLangage()
 
         ' CRE15-006 Rename of eHS [Start][Lawrence]

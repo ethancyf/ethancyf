@@ -50,6 +50,15 @@ Partial Public Class MasterPage
     Protected WithEvents ScriptManager1 As Global.System.Web.UI.ScriptManager
 
     '''<summary>
+    '''UpdatePanelBanner control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UpdatePanelBanner As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
     '''tblBanner control.
     '''</summary>
     '''<remarks>
@@ -174,6 +183,15 @@ Partial Public Class MasterPage
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ModalPopupExtender1 As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''UpdatePanelHomeRow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UpdatePanelHomeRow As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
     '''ibtnHome control.
@@ -320,6 +338,15 @@ Partial Public Class MasterPage
     Protected WithEvents ContentPlaceHolder1 As Global.System.Web.UI.WebControls.ContentPlaceHolder
 
     '''<summary>
+    '''UpdatePanel1Footer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UpdatePanel1Footer As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
     '''lnkBtnPrivacyPolicy control.
     '''</summary>
     '''<remarks>
@@ -372,6 +399,15 @@ Partial Public Class MasterPage
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFooterCopyright As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''UpdatePanelPopup control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UpdatePanelPopup As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
     '''panSSOConfirmMsg control.

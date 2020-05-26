@@ -174,14 +174,27 @@ Partial Public Class eHSAccountEnquiryCallCentre
                 Dim strRefNo As String = String.Empty
 
                 'Start validation
-                If Me.txtSearchIdentityNum.Text.Trim = String.Empty Then
-                    udtSM = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00269)
+
+                ' CRE20-001 (Call centre search name) [Start][Winnie]    
+                ' ------------------------------------------------------------------------
+                Dim blnTextFieldInputted As Boolean = False
+
+                blnTextFieldInputted = Me.txtSearchIdentityNum.Text.Trim <> String.Empty _
+                                        OrElse Me.txtSearchEName.Text.Trim <> String.Empty _
+                                        OrElse Me.txtSearchCName.Text.Trim <> String.Empty
+
+                If Not blnTextFieldInputted Then
+                    udtSM = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00257)
                     Me.udcMsgBox.AddMessage(udtSM)
                     imgSearchIdentityNumError.Visible = True
+                    imgENameError.Visible = True
+                    imgCNameError.Visible = True
 
-                    udtAuditLogEntry.AddDescripton("Doc No.", Me.txtSearchIdentityNum.Text.Trim)
+                    udtAuditLogEntry.AddDescripton("IdentityNumber", Me.txtSearchIdentityNum.Text)
+                    udtAuditLogEntry.AddDescripton("EngName", Me.txtSearchEName.Text.Trim)
+                    udtAuditLogEntry.AddDescripton("ChiName", Me.txtSearchCName.Text.Trim)                    
                 End If
-
+                ' CRE20-001 (Call centre search name) [End][Winnie]  
 
                 'Doc Type
                 Me.lblAcctListDocType.Text = Me.ddlSearchDocType.SelectedItem.Text.Trim

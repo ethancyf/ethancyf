@@ -93,6 +93,16 @@ Partial Public Class ucTypeOfPracticePopup
         End Get
     End Property
 
+    ' CRE19-024 (Not Create PCD Account in SP platform) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private _objPCDUploadVerifiedEnrolmentResult As Common.PCD.WebService.Interface.PCDUploadVerifiedEnrolmentResult = Nothing
+    Public ReadOnly Property CreatePCDUploadVerifiedEnrolmentResult() As Common.PCD.WebService.Interface.PCDUploadVerifiedEnrolmentResult
+        Get
+            Return _objPCDUploadVerifiedEnrolmentResult
+        End Get
+    End Property
+    ' CRE19-024 (Not Create PCD Account in SP platform) [End][Chris YIM]	
+
     Private _objTransferPCDResult As Common.PCD.WebService.Interface.PCDTransferPracticeInfoResult = Nothing
     Public ReadOnly Property TransferPCDResult() As Common.PCD.WebService.Interface.PCDTransferPracticeInfoResult
         Get
@@ -156,23 +166,44 @@ Partial Public Class ucTypeOfPracticePopup
         udtSP.PracticeList = CType(Session(SESS_PCDPractice), Practice.PracticeModelCollection)
         ' INT18-0035 (Fix join PCD without Practice Scheme) [End][Winnie]
 
-        Me._udtAuditLog.AddDescripton("WebMethod", "PCDCreatePCDSPAcct")
+        ' CRE19-024 (Not Create PCD Account in SP platform) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'Me._udtAuditLog.AddDescripton("WebMethod", "PCDCreatePCDSPAcct")
+        Me._udtAuditLog.AddDescripton("WebMethod", "UploadVerifiedEnrolment")
+
         Me._udtAuditLog.WriteStartLog(AuditLogDesc.InvokePCDStart_ID, AuditLogDesc.InvokePCDStart)
 
-        _objPCDCreatePCDSPAcctResult = objPCDWS.PCDCreatePCDSPAcct(udtSP)
+        '_objPCDCreatePCDSPAcctResult = objPCDWS.PCDCreatePCDSPAcct(udtSP)
 
-        Me._udtAuditLog.AddDescripton("ReturnCode", _objPCDCreatePCDSPAcctResult.ReturnCode)
-        Me._udtAuditLog.AddDescripton("MessageID", _objPCDCreatePCDSPAcctResult.MessageID)
+        'Me._udtAuditLog.AddDescripton("ReturnCode", _objPCDCreatePCDSPAcctResult.ReturnCode)
+        'Me._udtAuditLog.AddDescripton("MessageID", _objPCDCreatePCDSPAcctResult.MessageID)
+
+        'Me._udtAuditLog.WriteEndLog(AuditLogDesc.InvokePCDEnd_ID, AuditLogDesc.InvokePCDEnd)
+
+        'Select Case _objPCDCreatePCDSPAcctResult.ReturnCode
+        '    Case PCDCreatePCDSPAcctResult.enumReturnCode.SuccessWithData, _
+        '          PCDCreatePCDSPAcctResult.enumReturnCode.ServiceProviderAlreadyExisted
+        '        udtSPBLL.DeleteServiceProviderOriginalProfile(udtSP.EnrolRefNo)
+        '    Case Else
+        '        ' Do Nothing
+        'End Select
+
+        _objPCDUploadVerifiedEnrolmentResult = objPCDWS.PCDUploadVerifiedEnrolment(udtSP)
+
+        Me._udtAuditLog.AddDescripton("ReturnCode", _objPCDUploadVerifiedEnrolmentResult.ReturnCode)
+        Me._udtAuditLog.AddDescripton("MessageID", _objPCDUploadVerifiedEnrolmentResult.MessageID)
 
         Me._udtAuditLog.WriteEndLog(AuditLogDesc.InvokePCDEnd_ID, AuditLogDesc.InvokePCDEnd)
 
-        Select Case _objPCDCreatePCDSPAcctResult.ReturnCode
-            Case PCDCreatePCDSPAcctResult.enumReturnCode.SuccessWithData, _
-                  PCDCreatePCDSPAcctResult.enumReturnCode.ServiceProviderAlreadyExisted
+        Select Case _objPCDUploadVerifiedEnrolmentResult.ReturnCode
+            Case PCDUploadVerifiedEnrolmentResult.enumReturnCode.UploadedSuccessfully
                 udtSPBLL.DeleteServiceProviderOriginalProfile(udtSP.EnrolRefNo)
             Case Else
                 ' Do Nothing
         End Select
+
+        ' CRE19-024 (Not Create PCD Account in SP platform) [End][Chris YIM]	
+
     End Sub
 
     Private Sub InvokePCD_TransferPCD()
