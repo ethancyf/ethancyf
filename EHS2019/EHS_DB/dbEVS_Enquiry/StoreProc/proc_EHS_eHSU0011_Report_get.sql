@@ -8,10 +8,11 @@ GO
 
 -- ============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.			
--- Description:		
+-- Modified by:		Winnie SUEN
+-- Modified date:	22 May 2020
+-- CR No.			INT20-0015 (Performance tuning on eHSU0011 report)
+-- Description:		1. Add Indexing   
+--					2. Rewrite Percentile Query
 -- =============================================
 -- ============================================
 -- Author:			Winnie SUEN	
@@ -108,6 +109,38 @@ AS BEGIN
 		Pct_Value		INT
 	)
 
+	CREATE TABLE #ReportRawData(
+		SP_ID				VARCHAR(8),
+		Effective_Dtm		DATETIME,
+		Service_Type		VARCHAR(5),
+		Status_Description	VARCHAR(100),
+		Transaction_ID		CHAR(20),
+		No_Of_Unit			INT,
+		Create_By_SmartID	CHAR(1),
+		SourceApp			VARCHAR(10)
+	)
+	CREATE CLUSTERED INDEX [IX_CLUSTERED_SP_ID_Service_Type] ON [#ReportRawData] ([SP_ID], [Service_Type] ASC)
+	
+	CREATE TABLE #ReportData(
+		SP_ID				VARCHAR(8),
+		Effective_Dtm		DATETIME,
+		Service_Type		VARCHAR(5),
+		Status_Description	VARCHAR(100),
+		No_Of_Transaction	INT,
+		No_Of_Unit			INT,
+		Create_By_SmartID	CHAR(1),
+		SourceApp			VARCHAR(10)
+	)
+	
+	CREATE TABLE #ReportDataTotal(
+		SP_ID				VARCHAR(8),
+		Effective_Dtm		DATETIME,
+		Service_Type		VARCHAR(5),
+		Status_Description	VARCHAR(100),
+		No_Of_Transaction	INT,
+		No_Of_Unit			INT
+	)
+	
 	CREATE TABLE #ReportDataPercetile(
 		SP_ID				VARCHAR(8),
 		Service_Type		VARCHAR(5),
@@ -154,6 +187,7 @@ AS BEGIN
 -- =============================================
 -- Initialization
 -- =============================================
+	
 
 	SET @status_data_enum_class_sp_status = 'ServiceProviderStatus'
 
@@ -166,7 +200,7 @@ AS BEGIN
 	SET @ivrs = 'IVRS'
 	SET @pcs = 'PCS'
 
-
+	
 	--Set Date type full name
 	SET @DateTypeFN =	CASE @In_period_type 
 							WHEN 'T' THEN 'Transaction Date'
@@ -175,7 +209,6 @@ AS BEGIN
 
 	SELECT @DisplayFromDate = FORMAT(@period_from, 'yyyy/MM/dd' , 'en-US')
 	SELECT @DisplayToDate = FORMAT(@period_to, 'yyyy/MM/dd' , 'en-US')
-
 
 	-- Prepare profession list string
 	DECLARE @HealthProfessionList VARCHAR(8000) 
@@ -227,7 +260,7 @@ AS BEGIN
 -- ---------------------------------------------
 	-- Create Header Information
 	INSERT INTO #ReportResult (Seq, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21)
-	VALUES (0, 'eHS(S)U0002-01: Statistics of transactions and units of EHCP from ' + CONVERT(varchar(10), @period_from, 20) + ' to ' + CONVERT(varchar(10), @period_to, 20) + ' broken down by means of input', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')
+	VALUES (0, 'eHS(S)U0011-01: Statistics of transactions and units of EHCP from ' + CONVERT(varchar(10), @period_from, 20) + ' to ' + CONVERT(varchar(10), @period_to, 20) + ' broken down by means of input', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')
 
 	INSERT INTO #ReportResult (Seq, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21)
 	VALUES (1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')
@@ -262,6 +295,7 @@ AS BEGIN
 -- Get Raw Data by Transaction  
 -- ---------------------------------------------
 
+	INSERT INTO #ReportRawData (SP_ID, Effective_Dtm, Service_Type, Status_Description, Transaction_ID, No_Of_Unit, Create_By_SmartID, SourceApp)
 	SELECT
 		VT.SP_ID,
 		SI.Effective_Dtm,
@@ -275,9 +309,6 @@ AS BEGIN
 			WHEN 'ExternalWS' THEN @pcs
 			ELSE @web
 		END AS [SourceApp]
-
-	INTO
-		#ReportRawData
 
 	FROM
 		VoucherTransaction VT WITH (NOLOCK)
@@ -316,7 +347,7 @@ AS BEGIN
 -- ---------------------------------------------
 -- Get Data by Service Provider  
 -- ---------------------------------------------
-
+	INSERT INTO #ReportData (SP_ID, Effective_Dtm, Service_Type, Status_Description, No_Of_Transaction, No_Of_Unit, Create_By_SmartID, SourceApp)
 	SELECT
 		SP_ID,
 		Effective_Dtm,
@@ -326,9 +357,6 @@ AS BEGIN
 		SUM(No_Of_Unit) AS [No_Of_Unit],
 		Create_By_SmartID,
 		SourceApp
-
-	INTO
-		#ReportData
 
 	FROM
 		#ReportRawData
@@ -343,6 +371,7 @@ AS BEGIN
 
 	
 	-- Total
+	INSERT INTO #ReportDataTotal (SP_ID, Effective_Dtm, Service_Type, Status_Description, No_Of_Transaction, No_Of_Unit)
 	SELECT
 		SP_ID,
 		Effective_Dtm,
@@ -350,9 +379,7 @@ AS BEGIN
 		Status_Description,
 		SUM([No_Of_Transaction]) AS [No_Of_Transaction],
 		SUM([No_Of_Unit]) AS [No_Of_Unit]
-	INTO
-		#ReportDataTotal
-
+	
 	FROM
 		#ReportData
 
@@ -385,7 +412,7 @@ AS BEGIN
 				-- Get Min value
 				INSERT INTO #ReportDataPercetile (SP_ID, Service_Type, Pct_Group, Pct_Value, Low_Median_Value, High_Median_Value)
 				SELECT SP_ID, Service_Type, @PGrp, @PValue , MIN([No_Of_Unit]), MIN([No_Of_Unit])
-				FROM dbo.#ReportRawData
+				FROM #ReportRawData
 				GROUP BY 
 					SP_ID, Service_Type
 			END
@@ -396,7 +423,7 @@ AS BEGIN
 				-- Get Max value
 				INSERT INTO #ReportDataPercetile (SP_ID, Service_Type, Pct_Group, Pct_Value, Low_Median_Value, High_Median_Value)
 				SELECT SP_ID, Service_Type, @PGrp, @PValue , MAX([No_Of_Unit]), MAX([No_Of_Unit])
-				FROM dbo.#ReportRawData
+				FROM #ReportRawData
 				GROUP BY 
 					SP_ID, Service_Type
 			END
@@ -412,27 +439,76 @@ AS BEGIN
 				SET @PV_Low = @PValue
 				SET @PV_High = 100 - @PValue
 
-				INSERT INTO #ReportDataPercetile (SP_ID, Service_Type, Pct_Group, Pct_Value, Low_Median_Value, High_Median_Value)
-				SELECT SP_ID, Service_Type, @PGrp, @PValue , MAX(T1.[No_Of_Unit]), MIN(T2.[No_Of_Unit])
-				FROM dbo.#ReportDataTotal RDT
-				-- Low Median
-				CROSS APPLY		
-					(	SELECT TOP (@PV_Low) PERCENT [No_Of_Unit]
-						FROM #ReportRawData RD
-						WHERE RD.SP_ID = RDT.SP_ID AND RD.Service_Type = RDT.Service_Type
-						ORDER BY [No_Of_Unit]
-					) AS T1
-				-- High Median
-				CROSS APPLY		
-					(	SELECT TOP (@PV_High) PERCENT [No_Of_Unit]
-						FROM #ReportRawData RD
-						WHERE RD.SP_ID = RDT.SP_ID AND RD.Service_Type = RDT.Service_Type
-						ORDER BY [No_Of_Unit] DESC
-					) AS T2
+				/****** Original *******/
 
-				GROUP BY 
-					SP_ID, Service_Type
+				--INSERT INTO #ReportDataPercetile (SP_ID, Service_Type, Pct_Group, Pct_Value, Low_Median_Value, High_Median_Value)
+				--SELECT SP_ID, Service_Type, @PGrp, @PValue , MAX(T1.[No_Of_Unit]), MIN(T2.[No_Of_Unit])
+				--FROM #ReportDataTotal RDT
+				---- Low Median
+				--CROSS APPLY		
+				--	(	SELECT TOP (@PV_Low) PERCENT [No_Of_Unit]
+				--		FROM #ReportRawData RD
+				--		WHERE RD.SP_ID = RDT.SP_ID AND RD.Service_Type = RDT.Service_Type
+				--		ORDER BY [No_Of_Unit]
+				--	) AS T1
+				---- High Median
+				--CROSS APPLY		
+				--	(	SELECT TOP (@PV_High) PERCENT [No_Of_Unit]
+				--		FROM #ReportRawData RD
+				--		WHERE RD.SP_ID = RDT.SP_ID AND RD.Service_Type = RDT.Service_Type
+				--		ORDER BY [No_Of_Unit] DESC
+				--	) AS T2
+
+				--GROUP BY 
+				--	SP_ID, Service_Type
+
+
+
+				/****** INT20-0015 (Performance tuning on eHSU0011 report) *******/
+
+				INSERT INTO #ReportDataPercetile (SP_ID, Service_Type, Pct_Group, Pct_Value, Low_Median_Value, High_Median_Value)
+				SELECT 
+					RDTT.SP_ID, RDTT.Service_Type, @PGrp, @PValue, TT1.Max_No_Of_Unit, TT2.Min_No_Of_Unit   		
+				FROM #ReportDataTotal RDTT
+		
+				LEFT JOIN
+				(
+						-- Low Median
+						SELECT SP_ID, Service_Type
+						, MAX(T1.[No_Of_Unit]) [Max_No_Of_Unit]
+						FROM #ReportDataTotal RDT
+						
+						CROSS APPLY		
+							(	SELECT TOP (@PV_Low) PERCENT [No_Of_Unit]
+								FROM #ReportRawData RD
+								WHERE RD.SP_ID = RDT.SP_ID AND RD.Service_Type = RDT.Service_Type
+								ORDER BY [No_Of_Unit]
+							) AS T1
+						GROUP BY 
+							SP_ID, Service_Type
+				) TT1 ON 	RDTT.SP_ID = TT1.SP_ID AND RDTT.Service_Type = TT1.Service_Type
+
+				LEFT JOIN
+				(
+						-- High Median
+						SELECT SP_ID, Service_Type
+						, MIN(T2.[No_Of_Unit]) [Min_No_Of_Unit]
+						FROM #ReportDataTotal RDT
+						CROSS APPLY		
+							(	SELECT TOP (@PV_High) PERCENT [No_Of_Unit]
+								FROM #ReportRawData RD
+								WHERE RD.SP_ID = RDT.SP_ID AND RD.Service_Type = RDT.Service_Type
+								ORDER BY [No_Of_Unit] DESC
+							) AS T2
+
+						GROUP BY 
+							SP_ID, Service_Type
+				)  TT2 ON 	RDTT.SP_ID = TT2.SP_ID AND RDTT.Service_Type = TT2.Service_Type
+
+			/****** INT20-0015 (Performance tuning on eHSU0011 report) *******/
+
 			END
+					
 
 			FETCH NEXT FROM Pct_cursor INTO @PGrp, @PValue
 		END  
@@ -674,6 +750,7 @@ AS BEGIN
 	DROP TABLE #ReportData
 	DROP TABLE #ReportDataTotal
 	DROP TABLE #ReportDataPercetile
+	DROP TABLE #ReportRawData
 
 END
 GO
