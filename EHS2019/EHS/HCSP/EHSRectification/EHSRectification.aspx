@@ -1,18 +1,29 @@
 <%@ Page Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPage.Master"
     Codebehind="EHSRectification.aspx.vb" Inherits="HCSP.EHSRectification" Title="<%$ Resources:Title, eHealthAcctRectification%>" %>
 
-<%@ Register Src="../ClaimTranEnquiry.ascx" TagName="ClaimTranEnquiry" TagPrefix="uc6" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
-<%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc3" %>
-<%@ Register Src="../UIControl/ChooseCCCode.ascx" TagName="ChooseCCCode" TagPrefix="uc3" %>
-<%@ Register Src="../UIControl/ucReadOnlyDocumnetType.ascx" TagName="ucReadOnlyDocumnetType"
-    TagPrefix="uc2" %>
+<%@ Register Assembly="CustomControls" Namespace="CustomControls" 
+    TagPrefix="cc1" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" 
+    TagPrefix="cc2" %>
+<%@ Register Assembly="CustomControls" Namespace="CustomControls" 
+    TagPrefix="cc3" %>
+<%@ Register Assembly="HCSP" Namespace="HCSP" 
+    TagPrefix="cc3" %>
 <%@ Register Src="../UIControl/ucInputDocumentType.ascx" TagName="ucInputDocumentType"
     TagPrefix="uc1" %>
-<%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc1" %>
-<%@ Register Src="../UIControl/SchemeLegend.ascx" TagName="SchemeLegend" TagPrefix="uc4" %>
-<%@ Register Src="../UIControl/DocTypeLegend.ascx" TagName="DocTypeLegend" TagPrefix="uc5" %>
-<%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc3" %>
+<%@ Register Src="../UIControl/ucReadOnlyDocumnetType.ascx" TagName="ucReadOnlyDocumnetType"
+    TagPrefix="uc2" %>
+<%@ Register Src="../UIControl/ChooseCCCode.ascx" TagName="ChooseCCCode" 
+    TagPrefix="uc3" %>
+<%@ Register Src="../UIControl/SchemeLegend.ascx" TagName="SchemeLegend" 
+    TagPrefix="uc4" %>
+<%@ Register Src="../UIControl/DocTypeLegend.ascx" TagName="DocTypeLegend" 
+    TagPrefix="uc5" %>
+<%@ Register Src="../ClaimTranEnquiry.ascx" TagName="ClaimTranEnquiry" 
+    TagPrefix="uc6" %>
+<%@ Register Src="~/UIControl/IDEASCombo/IDEASCombo.ascx" TagName="IDEASCombo" 
+    TagPrefix="uc7" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Image ID="imgHeader" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources: AlternateText, VRRectification %>"
         ImageUrl="<%$ Resources: ImageURL, VRRectification %>" />
@@ -20,6 +31,7 @@
         <ContentTemplate>
             <cc1:InfoMessageBox ID="udcInfoMsgBox" runat="server" Width="98%" />
             <cc1:MessageBox ID="udcMsgBoxErr" runat="server" Width="98%" />
+            <uc7:IDEASCombo ID="ucIDEASCombo" runat="server" />
             <!-- Popup Panel CCCode -->
             <asp:Panel Style="display: none" ID="panChooseCCCode" runat="server">
                 <asp:Panel ID="panChooseCCCodeHeading" runat="server" Style="cursor: move">
@@ -443,8 +455,8 @@
                                 </table>
                                 <table id="tblRectifyReadSmartIC" runat="server" cellpadding="0" cellspacing="0">
                                     <tr>
-                                        <td style="width:260px;">
-                                            <table cellpadding="0" cellspacing="0">
+                                        <td>
+                                            <table id="tblRectifyReadOldSmartIC" runat="server" cellpadding="0" cellspacing="0" style="width:260px;">
                                                 <tr>
                                                     <td style="width: 130px;">
                                                         <asp:Image ID="imgRectifyReadOldSmartIC" runat="server" ImageUrl="<%$ Resources:ImageUrl, OldSmartIDChipFacingUpImg %>"/>
@@ -455,8 +467,8 @@
                                                 </tr>
                                             </table>
                                         </td>
-                                        <td style="width:250px;">
-                                            <table cellpadding="0" cellspacing="0">
+                                        <td>
+                                            <table id="tblRectifyReadNewSmartIC" runat="server" cellpadding="0" cellspacing="0" style="width:250px;">
                                                 <tr>
                                                     <td style="width: 130px;">
                                                         <asp:Image ID="imgRectifyReadNewSmartIC" runat="server" ImageUrl="<%$ Resources:ImageUrl, NewSmartIDChipFacingUpImg %>"/>
@@ -468,24 +480,49 @@
                                             </table>
                                         </td>
                                         <td>
+                                            <table id="tblRectifyReadNewSmartICCombo" runat="server" cellpadding="0" cellspacing="0" style="width:250px;">
+                                                <tr>
+                                                    <td style="width: 130px;">
+                                                        <asp:Image ID="imgRectifyReadNewSmartICCombo" runat="server" ImageUrl="<%$ Resources:ImageUrl, NewSmartIDComboChipFacingUpImg %>"/>
+                                                    </td>
+                                                    <td valign="middle" style="padding-left:8px">
+                                                        <asp:Label ID="lblRectifyNewSmartICComboChipFaceUp" runat="server" Font-Size="13px" style="color:#4d4d4d; font-weight: bold;" Text="<%$ Resources:Text, SmartIDChipFaceUp %>"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
                                             <asp:ImageButton ID="ibtnRectifyReadSmartIDTips"
                                                 runat="server" ImageAlign="AbsMiddle" ImageUrl="<%$ Resources: ImageUrl, ReadSmartIDTipsBtn %>"
                                                 AlternateText="<%$ Resources:AlternateText, ReadSmartIDTipsBtn %>" />
                                         </td>
                                     </tr>
+                                    <tr id="trSmartIDSoftwareNotInstalled">
+                                        <td colspan="3" style="vertical-align:top;padding-bottom: 5px; vertical-align:middle">
+                                            <asp:Label ID="lblSmartIDSoftwareNotInstalled" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled %>"/>
+                                        </td>    
+                                    </tr>
                                     <tr>
                                        <td>
                                            <asp:ImageButton ID="ibtnRectifyReadOldSmartIC" runat="server" AlternateText="<%$ Resources: AlternateText, ReadOldSmartIDCardBtn %>"
                                                 ImageUrl="<%$ Resources: ImageURL, ReadOldSmartIDCardBtn %>"/>
-                                           <div style="width:240px; text-align:center">                                                
+                                           <div ID="divReadOldSmartIDCardNA" runat="server" style="width:240px; text-align:center">                                                
                                                 <asp:Label ID="lblReadOldSmartIDCardNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>" CssClass="tableText"></asp:Label>
                                            </div>
                                         </td>
                                         <td>
                                             <asp:ImageButton ID="ibtnRectifyReadNewSmartIC" runat="server" AlternateText="<%$ Resources: AlternateText, ReadNewSmartIDCardBtn %>"
                                                 ImageUrl="<%$ Resources: ImageURL, ReadNewSmartIDCardBtn %>"/>
-                                            <div style="width:240px; text-align:center">
+                                            <div ID="divReadNewSmartIDCardNA" runat="server" style="width:240px; text-align:center">
                                                 <asp:Label ID="lblReadNewSmartIDCardNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
+                                                CssClass="tableText"></asp:Label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <asp:ImageButton ID="ibtnRectifyReadNewSmartICCombo" runat="server" AlternateText="<%$ Resources: AlternateText, ReadSmartIDBtn %>"
+                                                ImageUrl="<%$ Resources: ImageURL, ReadSmartIDBtn %>"/>
+                                            <div ID="divReadNewSmartIDComboCardNA" runat="server" style="width:240px; text-align:center">
+                                                <asp:Label ID="lblReadNewSmartIDComboCardNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
                                                 CssClass="tableText"></asp:Label>
                                             </div>
                                         </td>

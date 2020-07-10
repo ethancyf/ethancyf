@@ -1168,12 +1168,28 @@ Namespace Component.EHSAccount
                 'only handling voucher right now
                 Select Case udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType
                     Case SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVoucher
-                        Dim udtSubsidizeGroupClaimModel As SubsidizeGroupClaimModel = udtSchemeClaimModel.SubsidizeGroupClaimList.Filter(dtmDOD)(0)
 
-                        Me.HandleWriteOff(HandleWriteOffMode.SpecificSeason, udtSubsidizeGroupClaimModel.SchemeSeq, _
+                        ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [Start][Winnie]
+                        ' -----------------------------------------------------------------------------------------
+                        'Dim udtSubsidizeGroupClaimModel As SubsidizeGroupClaimModel = udtSchemeClaimModel.SubsidizeGroupClaimList.Filter(dtmDOD)(0)
+                        Dim intDeceasedSchemeSeq As Integer = 0
+
+                        If udtSchemeClaimModel.SubsidizeGroupClaimList.Filter(dtmDOD).Count > 0 Then
+                            Dim udtSubsidizeGroupClaimModel As SubsidizeGroupClaimModel = udtSchemeClaimModel.SubsidizeGroupClaimList.Filter(dtmDOD)(0)
+                            intDeceasedSchemeSeq = udtSubsidizeGroupClaimModel.SchemeSeq
+
+                        Else
+                            ' Deceased before 2009 (voucher scheme start), set seq = 0 to re-generate write-off for all scheme seq (Del + Add)
+                            intDeceasedSchemeSeq = 0
+
+                        End If
+
+                        Me.HandleWriteOff(HandleWriteOffMode.SpecificSeason, intDeceasedSchemeSeq, _
                                           udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, _
                                           udtEHSPersonalInfo.DOD, udtEHSPersonalInfo.ExactDOD, _
-                                          udtSchemeClaimModel.SchemeCode, udtSubsidizeGroupClaimModel.SubsidizeCode, strCreateReason, Nothing, False, udtDB)
+                                          udtSchemeClaimModel.SchemeCode, SchemeCode.EHCVS, strCreateReason, Nothing, False, udtDB)
+                        ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [End][Winnie]
+
 
                         Exit For
                 End Select

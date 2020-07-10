@@ -843,6 +843,7 @@ Namespace Component
         Public Const FUNT070106 As String = "070106"
 
         Public Const FUNT070201 As String = "070201" ' eHR-to-eHS: getExternalWebS()
+        Public Const FUNT070202 As String = "070202" ' eHR-to-eHS: getExternalWebS() - PatientPortal
         Public Const FUNT070301 As String = "070301" ' eHS-to-eHR: verifySystem()
         Public Const FUNT070302 As String = "070302" ' eHS-to-eHR: getEhrWebS()
 
@@ -2448,7 +2449,6 @@ Namespace Component
         Public Const PCDStatusUpdater As String = "PCDStatusUpdater" ' CRE17-016 (Checking of PCD status during VSS enrolment) [Chris YIM]
         Public Const StudentFileChecking As String = "StudentFileChecking" ' CRE17-018-03 (New initiatives for VSS and RVP in 2018-19 - Phase 3 - Claim) [Koala]
         Public Const StudentAccountMatching As String = "StudentAccountMatching"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
-        Public Const ServiceDirectoryXMLGenerator As String = "ServiceDirectoryXMLGenerator"
 
     End Class
 
@@ -2470,7 +2470,6 @@ Namespace Component
         Public Const PCDStatusUpdater As String = "019918"  ' CRE17-016 (Checking of PCD status during VSS enrolment) [Chris YIM]
         Public Const StudentFileChecking As String = "019919" ' CRE17-018-03 (New initiatives for VSS and RVP in 2018-19 - Phase 3 - Claim) [Koala]
         Public Const StudentAccountMatching As String = "019920"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
-        Public Const ServiceDirectoryXMLGenerator As String = "019921" ' CRE18-XXX (Provide data to eHR Portal) [Chris YIM]
     End Class
 
     Public Class ScheduleJobLogStatus
@@ -3065,14 +3064,17 @@ Namespace Component
     End Enum
     'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Public Class SmartIDVersion
         Public Const IDEAS1 As String = "10"
         Public Const IDEAS2 As String = "20"
         Public Const IDEAS2_WithGender As String = "25"
+        Public Const IDEAS_Combo_Old As String = "10C"
+        Public Const IDEAS_Combo_New As String = "20C"
+        Public Const IDEAS_Combo_New_WithGender As String = "25C"
     End Class
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     ' CRE19-026 (HCVS hotline service) [Start][Winnie]
     ' ------------------------------------------------------------------------

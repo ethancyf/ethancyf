@@ -174,11 +174,12 @@ Namespace UIControl.DocTypeText
             'End If
 
             '' Show / Hide Diff Personal Detail in Smart CFD
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Me._strGender = udtPersonalInfoSmartID.Gender
 
-            If _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.TwoGender Then
+            If _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.TwoGender Or _
+               _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.ComboGender Then
                 If Not Me.SameGender(udtPersonalInfoSmartID) Then
                     Me.SetGender(True)
                 End If
@@ -193,16 +194,7 @@ Namespace UIControl.DocTypeText
                 End If
             End If
 
-            'If MyBase.UpdateValue Then
-
-            '    If Me.FillValue(udtPersonalInfoSmartID) AndAlso MyBase.ActiveViewChanged Then
-            '        Me._strGender = MyBase.EHSPersonalInfo.Gender
-
-            '        Me.SetValue(BuildMode.Creation)
-            '    End If
-
-            'End If
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
             If MyBase.ActiveViewChanged Then
                 Me.SetGenderSmartIDError(False)

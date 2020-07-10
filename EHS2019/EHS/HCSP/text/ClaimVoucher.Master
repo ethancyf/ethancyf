@@ -6,14 +6,15 @@
     <title>E-Voucher System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
     <link href="../CSS/TextVersionStyle.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="../JS/TextVersionCommon.js"></script>
+    <script type="text/javascript" src="../JS/TextVersionCommon.js?ver=1"></script>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
+            <asp:ScriptManager ID="ScriptManager1" runat="server" EnableScriptGlobalization="true" EnableScriptLocalization="true" EnablePartialRendering="true">
+            </asp:ScriptManager>
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                    <!-- INT11-0041 HCSP Text only version layout fix [Start] -->
                     <td>
                         <asp:Label ID="lblTitle" runat="server" style="white-space:nowrap"></asp:Label>
                     </td>
@@ -32,15 +33,10 @@
                         </tr>
                          </table>      
                     </td>
-                    <!-- INT11-0041 HCSP Text only version layout fix [End] -->
                 </tr>
                 <tr>
-                    <td colspan="2">
-                    <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
-                            
-                    <asp:TextBox ID="PageKey" runat="server" Style="display: none"/>
-                    
-                    <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
+                    <td colspan="2">                            
+                        <asp:TextBox ID="PageKey" runat="server" Style="display: none"/>                  
                     </td>
                 </tr>
                 <tr>

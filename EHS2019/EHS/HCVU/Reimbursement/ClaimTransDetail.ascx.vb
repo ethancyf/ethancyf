@@ -139,11 +139,22 @@ Partial Public Class ClaimTransDetail
 
             'Remind that the original account is retrieved instead of invalid account
             '--> Reason : personal data stored in invalidpersonalinformation may not same as that of personalinformation / specialpersonalinformation
-            If udtEHSAccount.AccountSourceString = EHSAccountModel.SysAccountSourceClass.ValidateAccount Then
-                udcReadOnlyDocumentType.OriginalAccID = udtEHSAccount.VoucherAccID
-            ElseIf udtEHSAccount.AccountSourceString = EHSAccountModel.SysAccountSourceClass.SpecialAccount Then
-                udcReadOnlyDocumentType.OriginalAccID = udtEHSAccount.VoucherAccID
-            End If
+
+            ' INT20-0014 (Fix unable to open invalidated PPP transaction) [Start][Winnie]
+            ' ---------------------------------------------------------------------------
+            Select Case udtEHSAccount.AccountSourceString
+                Case EHSAccountModel.SysAccountSourceClass.ValidateAccount,
+                    EHSAccountModel.SysAccountSourceClass.TemporaryAccount,
+                    EHSAccountModel.SysAccountSourceClass.SpecialAccount
+                    udcReadOnlyDocumentType.OriginalAccID = udtEHSAccount.VoucherAccID
+            End Select
+
+            'If udtEHSAccount.AccountSourceString = EHSAccountModel.SysAccountSourceClass.ValidateAccount Then
+            '    udcReadOnlyDocumentType.OriginalAccID = udtEHSAccount.VoucherAccID
+            'ElseIf udtEHSAccount.AccountSourceString = EHSAccountModel.SysAccountSourceClass.SpecialAccount Then
+            '    udcReadOnlyDocumentType.OriginalAccID = udtEHSAccount.VoucherAccID
+            'End If
+            ' INT20-0014 (Fix unable to open invalidated PPP transaction) [End][Winnie]
 
             'Change titles
             lblInvalidTimeText.Text = Me.GetGlobalResourceObject("Text", "InvalidatedBy")

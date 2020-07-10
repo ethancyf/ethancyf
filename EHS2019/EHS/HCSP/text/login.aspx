@@ -6,10 +6,38 @@
 <head id="Head1" runat="server">    
     <title id="PageTitle" runat="server"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+
+    <script language="Javascript" src="../JS/ideasComboLib4Ra.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
+        function checkIdeasComboClientSuccessEHS(_param) {
+            var obj = document.getElementById("txtIDEASComboResult")
+            obj.value = _param.result
+        }
+
+        function checkIdeasComboClientFailureEHS(_param) {
+            var obj = document.getElementById("txtIDEASComboResult")
+            obj.value = _param.result
+        }
+
+        function eHSSuccessCallbackFunc(IDEASComboVersion) { //Success get IDEAS Version
+            //alert(IDEASComboVersion);
+            var obj = document.getElementById("txtIDEASComboVersion")
+            obj.value = IDEASComboVersion
+        }
+
+        function eHSFailCallbackFunc() { //IDEAS Combo not yet be installed
+            //alert("eHS IDEAS Combo is not available.");
+            var obj = document.getElementById("txtIDEASComboVersion")
+            obj.value = ""
+        }
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
         <asp:TextBox ID="NonLoginPageKey" runat="server" Style="display: none" />
+        <asp:TextBox ID="txtIDEASComboResult" runat="server" Style="display: none;" />
+        <asp:TextBox ID="txtIDEASComboVersion" runat="server" Style="display: none;" />
         <asp:MultiView ID="mvLogin" runat="server">
             <asp:View ID="vLogin" runat="server">
                 <div>
@@ -113,7 +141,6 @@
                     </table>
                 </div>
             </asp:View>
-            <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
             <asp:View ID="vConfirmDeclare" runat="server">
                 <table border="0" cellpadding="0" cellspacing="0" runat="server" >
                     <tr>
@@ -143,7 +170,6 @@
                     </tr>
                 </table>
             </asp:View>
-            <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
             <asp:View ID="vNotification" runat="server">
                 <asp:Table ID="tblNotification" runat="server" border="0" cellpadding="0" cellspacing="0">
                     <asp:TableRow>

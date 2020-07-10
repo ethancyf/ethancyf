@@ -8,6 +8,13 @@ go
 
 -- =============================================
 -- Modification History
+-- CR No.:			INT20-0022 (Fix IMMBValidation on IDEAS Combo)
+-- Modified by:		Koala CHENG
+-- Modified date:	2 Jul 2020
+-- Description:		Fix checking on [SmartID_Ver]
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
 -- Modified by:		Winnie SUEN
 -- Modified date:	5 Dec 2018
@@ -147,7 +154,7 @@ BEGIN
 						@Create_By_SmartID = 'N'
 						OR (
 							@Create_By_SmartID = 'Y' 
-							AND CONVERT(INT, ISNULL(SmartID_Ver, 10)) > CONVERT(INT, ISNULL(@SmartID_Ver, 10))   
+							AND CONVERT(INT, ISNULL(LEFT(SmartID_Ver,2), 10)) > CONVERT(INT, ISNULL(LEFT(@SmartID_Ver,2), 10))   
 						)
 					)
 				

@@ -385,8 +385,17 @@ Namespace Component.eHealthAccountDeathRecord
             Dim udtPersonalInformation As New EHSAccountModel.EHSPersonalInformationModel()
             Dim udtPersonalInformationModelCollection As New EHSAccount.EHSAccountModel.EHSPersonalInformationModelCollection
 
+            Dim intRecordNo As Integer = 0
+            Dim strDocNo As String = String.Empty
+
             Try
                 For Each udtDeathRecord As DeathRecordEntryModel In udtDeathRecordEntryModelCollection
+
+                    ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [Start][Winnie]
+                    intRecordNo += 1
+                    strDocNo = udtDeathRecord.DocNo.Trim
+                    ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [End][Winnie]
+
                     '------------- Update Deceased Status-----------------
                     ' 1. Update Personal Information, Temp Personal Information & Special Personal Information
                     '    => Deceased = 'Y', DOD = XX-XX-XXXX, Exact_DOD = X
@@ -417,7 +426,10 @@ Namespace Component.eHealthAccountDeathRecord
                 Next
 
             Catch ex As Exception
-                Throw
+                ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [Start][Winnie]
+                strDocNo = strDocNo.PadRight(4, "X").Substring(0, 4)
+                Throw New Exception(String.Format("<Error Record No.: {0}><Doc No.:{1}>", intRecordNo, strDocNo), ex)
+                ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [End][Winnie]
             End Try
         End Sub
         'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]

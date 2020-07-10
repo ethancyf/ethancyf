@@ -50,6 +50,24 @@ function showVISAHelp(lang) {
     return false;
 }
 
+function showUpdateNow(lang) {
+    var language;
+
+    switch (lang) {
+        case 'en-us':
+            language = 'EN';
+            break;
+        case 'zh-tw':
+            language = 'ZH';
+            break;
+        default:
+            language = 'EN';
+    }
+
+    newwindow = window.open('../' + language + '/ReadSmartIDTips.htm', 'ReadSmartIDTips', 'toolbar=no, height=300, width=800, menubar=no, resizable=yes, location=no, status=no');
+    newwindow.focus();
+    return false;
+}
 
 /*
 function formatHKID(textbox) {

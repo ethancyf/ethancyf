@@ -23,6 +23,24 @@ Partial Public Class _Default
     Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
 
     '''<summary>
+    '''ScriptManager1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ScriptManager1 As Global.System.Web.UI.ScriptManager
+
+    '''<summary>
+    '''UpdatePanel1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents UpdatePanel1 As Global.System.Web.UI.UpdatePanel
+
+    '''<summary>
     '''pnlResult control.
     '''</summary>
     '''<remarks>
@@ -30,6 +48,15 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlResult As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ddlIDEAS1Url control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlIDEAS1Url As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
     '''lblTokenServerURL1 control.
@@ -41,42 +68,6 @@ Partial Public Class _Default
     Protected WithEvents lblTokenServerURL1 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblTokenServerURL2 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblTokenServerURL2 As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblResult_Status control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblResult_Status As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblResult_DOI control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblResult_DOI As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblResult_Dtm control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblResult_Dtm As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''btnReadSmartIC1 control.
     '''</summary>
     '''<remarks>
@@ -84,6 +75,24 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnReadSmartIC1 As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ddlIDEAS2Url control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlIDEAS2Url As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblTokenServerURL2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTokenServerURL2 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''btnReadSmartIC2 control.
@@ -102,6 +111,96 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnReadSmartIC2_5 As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''lblBrokerServerURL1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblBrokerServerURL1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlIDEASComboUrl control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlIDEASComboUrl As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblBrokerServerURL2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblBrokerServerURL2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnReadSmartICCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnReadSmartICCombo As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''btnReadSmartICComboiframe control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnReadSmartICComboiframe As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''lblResult_Status control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblResult_Status As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblResult_URL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblResult_URL As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblResult_HKICVer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblResult_HKICVer As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblResult_DOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblResult_DOI As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblResult_Dtm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblResult_Dtm As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''pnlResultInternal control.
@@ -201,6 +300,15 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblPersionInfo_HKICver control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPersionInfo_HKICver As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblPersionInfo_HKID control.
@@ -309,4 +417,13 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPersionInfo_DOI As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ucIDEASCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucIDEASCombo As Global.VerifierIDEAS.IDEASCombo
 End Class

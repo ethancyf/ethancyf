@@ -18,6 +18,7 @@ Imports Common.Component.RedirectParameter                                      
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.WebService.Interface
+Imports IdeasRM
 
 Partial Public Class EHSRectification
     'Inherits System.Web.UI.Page
@@ -1008,17 +1009,16 @@ Partial Public Class EHSRectification
         If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
             '==================================================================== Code for SmartID ============================================================================
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Select Case udtSmartIDContent.IdeasVersion
-                Case IdeasBLL.EnumIdeasVersion.One
-                    Me.RedirectToIdeas(True, False)
+                Case IdeasBLL.EnumIdeasVersion.One, IdeasBLL.EnumIdeasVersion.Two, IdeasBLL.EnumIdeasVersion.TwoGender
+                    Me.RedirectToIdeas(True, udtSmartIDContent.IdeasVersion)
 
-                Case IdeasBLL.EnumIdeasVersion.Two, _
-                    IdeasBLL.EnumIdeasVersion.TwoGender
-                    Me.RedirectToIdeas(True, True)
+                Case IdeasBLL.EnumIdeasVersion.Combo, IdeasBLL.EnumIdeasVersion.ComboGender
+                    Me.RedirectToIdeasCombo(True, udtSmartIDContent.IdeasVersion)
             End Select
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
             '==================================================================================================================================================================
         Else
@@ -1145,17 +1145,27 @@ Partial Public Class EHSRectification
     End Sub
 
     '==================================================================== Code for SmartID ============================================================================
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Protected Sub ibtnRectifyReadOldSmartIC_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnRectifyReadOldSmartIC.Click
-        'Me.PreRedirectToIdeas(True)
-        Me.PreRedirectToIdeas(True, False)
+        Me.PreRedirectToIdeas(True, IdeasBLL.EnumIdeasVersion.One)
     End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Protected Sub ibtnRectifyReadNewSmartIC_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnRectifyReadNewSmartIC.Click
-        Me.PreRedirectToIdeas(True, True)
+        Me.PreRedirectToIdeas(True, IdeasBLL.EnumIdeasVersion.Two)
     End Sub
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Protected Sub ibtnRectifyReadNewSmartICCombo_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnRectifyReadNewSmartICCombo.Click
+        Me.PreRedirectToIdeas(True, IdeasBLL.EnumIdeasVersion.Combo)
+    End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
     '==================================================================================================================================================================
 
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
@@ -3504,8 +3514,8 @@ Partial Public Class EHSRectification
 
         lblCreateByOtherSPText.Text = Me.GetGlobalResourceObject("Text", "CreateByOtherSPText")
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         If Me.ibtnRectifyReadOldSmartIC.Enabled Then
             Me.ibtnRectifyReadOldSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadOldSmartIDCardBtn")
         Else
@@ -3518,9 +3528,16 @@ Partial Public Class EHSRectification
             Me.ibtnRectifyReadNewSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadNewSmartIDCardDisabledBtn")
         End If
 
+        If Me.ibtnRectifyReadNewSmartICCombo.Enabled Then
+            Me.ibtnRectifyReadNewSmartICCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadSmartIDBtn")
+        Else
+            Me.ibtnRectifyReadNewSmartICCombo.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadSmartIDDisableBtn")
+        End If
+
         lblReadOldSmartIDCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
         lblReadNewSmartIDCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        lblReadNewSmartIDComboCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	        
 
     End Sub
 
@@ -3856,221 +3873,209 @@ Partial Public Class EHSRectification
     End Sub
 
     '==================================================================== Code for SmartID ============================================================================
-    Private Function ReadSmartIC(ByVal udtSmartICContent As BLL.SmartIDContentModel) As Boolean
+    Private Function ReadSmartIC(ByVal udtSmartIDContent As BLL.SmartIDContentModel) As Boolean
+        If IsNothing(udtSmartIDContent) OrElse udtSmartIDContent.IsReadSmartID = False OrElse udtSmartIDContent.IsEndOfReadSmartID Then Return False
+
         Dim blnIsReadSmartIC As Boolean = False
 
-        If Not IsNothing(udtSmartICContent) AndAlso udtSmartICContent.IsReadSmartID AndAlso Not udtSmartICContent.IsEndOfReadSmartID Then
-            Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
+        Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            Dim ideasBLL As BLL.IdeasBLL = New BLL.IdeasBLL
-            Dim strIdeasVersion As String = ideasBLL.ConvertIdeasVersion(udtSmartICContent.IdeasVersion)
+        Dim ideasBLL As BLL.IdeasBLL = New BLL.IdeasBLL
+        Dim strIdeasVersion As String = ideasBLL.ConvertIdeasVersion(udtSmartIDContent.IdeasVersion)
 
-            'Write Start Audit log
-            'AuditLogRedirectFormIDEAS(udtAuditLogEntry)
-            AuditLogRedirectFormIDEAS(udtAuditLogEntry, strIdeasVersion)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        'Write Start Audit log
+        AuditLogRedirectFormIDEAS(udtAuditLogEntry, strIdeasVersion)
 
-            blnIsReadSmartIC = True
-            udtSmartICContent.IsEndOfReadSmartID = True
-            Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmartICContent)
-            udtSmartICContent = Me.udtSessionHandler.SmartIDContentGetFormSession(FuncCode)
+        blnIsReadSmartIC = True
+        udtSmartIDContent.IsEndOfReadSmartID = True
+        Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmartIDContent)
+        udtSmartIDContent = Me.udtSessionHandler.SmartIDContentGetFormSession(FuncCode)
 
-            '--------------------------------------------------------------------------------------------------------------------------------------------------
-            ' Smart ID Form Ideas
-            '--------------------------------------------------------------------------------------------------------------------------------------------------
-            Dim ideasHelper As IdeasRM.IHelper = IdeasRM.HelpFactory.createHelper()
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        ' Smart ID Form Ideas
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        Dim ideasHelper As IdeasRM.IHelper = IdeasRM.HelpFactory.createHelper()
 
-            '--------------------------------------------------------------------------------------------------------------------------------------------------
-            ' Get CFD
-            '--------------------------------------------------------------------------------------------------------------------------------------------------
-            Dim udtAuditLogEntry_GetCFD As AuditLogEntry = New AuditLogEntry(FuncCode, Me)
-            AuditLogGetCFD(udtAuditLogEntry_GetCFD, ideasBLL.Artifact)
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        ' Get CFD
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        Dim udtAuditLogEntry_GetCFD As AuditLogEntry = New AuditLogEntry(FuncCode, Me)
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            Dim ideasSamlResponse As IdeasRM.IdeasResponse = ideasHelper.getCardFaceData(udtSmartICContent.TokenResponse, ideasBLL.Artifact, strIdeasVersion)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim ideasSamlResponse As IdeasRM.IdeasResponse = Nothing
+        Dim strArtifact As String = String.Empty
 
-            Dim udtPersonalInfoSmartIC As EHSAccountModel.EHSPersonalInformationModel
-            Dim isValid As Boolean = True
+        If udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.Combo Or _
+            udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.ComboGender Then
 
-            Me.udtEHSAccount = Me.udtSessionHandler.EHSAccountGetFromSession(FuncCode)
+            strArtifact = udtSmartIDContent.Artifact
+            ideasSamlResponse = udtSmartIDContent.IdeasSamlResponse
+        Else
+            strArtifact = ideasBLL.Artifact
+            ideasSamlResponse = ideasHelper.getCardFaceData(udtSmartIDContent.TokenResponse, strArtifact, strIdeasVersion)
 
-            If ideasBLL.Artifact() Is Nothing Then
-                '----------------------------- Error Handling -----------------------------------------------
-                ' Error100 - 113
-                If Not Request.QueryString("status") Is Nothing Then
-                    Dim strErrorCode As String = Request.QueryString("status").Trim()
-                    Dim strErrorMsg As String = IdeasRM.ErrorMessageMapper.MapMAStatus(strErrorCode)
-                    If Not strErrorMsg Is Nothing Then
+        End If
 
-                        Me.ReadSamrtIDFail()
-                        Me.udcMsgBoxErr.AddMessageDesc(FuncCode, strErrorCode, strErrorMsg)
+        AuditLogGetCFD(udtAuditLogEntry_GetCFD, strArtifact)
 
-                        'Write End Audit log
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
-                        AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, strErrorCode, strErrorMsg, strIdeasVersion)
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                        Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry, Common.Component.LogID.LOG00058, "Get CFD Fail")
-                        isValid = False
-                    End If
-                End If
-            End If
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
-            If isValid Then
+        Dim udtPersonalInfoSmartIC As EHSAccountModel.EHSPersonalInformationModel
+        Dim isValid As Boolean = True
 
-                If ideasSamlResponse.StatusCode.Equals("samlp:Success") Then
-                    EHSClaimBasePage.AuditLogGetCFDComplete(udtAuditLogEntry_GetCFD, ideasBLL.Artifact)
+        Me.udtEHSAccount = Me.udtSessionHandler.EHSAccountGetFromSession(FuncCode)
 
-                    Dim udtEHSAccountExist As EHSAccountModel = Nothing
-                    Dim blnNotMatchAccountExist As Boolean = False
-                    Dim blnExceedDocTypeLimit As Boolean = False
-                    Dim goToCreation As Boolean = True
-                    Dim udtEligibleResult As ClaimRules.ClaimRulesBLL.EligibleResult = Nothing
-                    Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel
-                    Dim strError As String = String.Empty
+        If strArtifact Is Nothing OrElse strArtifact = String.Empty Then
+            '----------------------------- Error Handling -----------------------------------------------
+            ' Error100 - 113
+            If Not Request.QueryString("status") Is Nothing Then
+                Dim strErrorCode As String = Request.QueryString("status").Trim()
+                Dim strErrorMsg As String = IdeasRM.ErrorMessageMapper.MapMAStatus(strErrorCode)
+                If Not strErrorMsg Is Nothing Then
 
-                    Try
-                        If udtSmartICContent.IsDemonVersion Then
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
-                            udtSmartICContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtEHSAccount.SchemeCode, udtSmartICContent.IdeasVersion)
-                            udtSmartICContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartICContent.EHSAccount.EHSPersonalInformationList(0))
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                        Else
-                            Dim udtCFD As IdeasRM.CardFaceData
-                            udtCFD = ideasSamlResponse.CardFaceDate()
-                            If IsNothing(udtCFD) Then
-                                strError = "ideasSamlResponse.CardFaceDate() is nothing"
-                            End If
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
-                            udtSmartICContent.EHSAccount = ideasBLL.GetCardFaceDataEHSAccount(udtCFD, udtEHSAccount.SchemeCode, FuncCode, udtSmartICContent.IdeasVersion)
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                        End If
-                    Catch ex As Exception
-                        udtSmartICContent.EHSAccount = Nothing
-                        strError = ex.Message
-                    End Try
-
-                    Dim udtAuditlogEntry_Search As AuditLogEntry = New AuditLogEntry(FuncCode, Me)
-
-                    Dim strHKICNo As String = String.Empty
-
-                    If Not udtSmartICContent.EHSAccount Is Nothing Then
-                        strHKICNo = udtSmartICContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
-                    End If
-
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
-                    AuditLogSearchNvaliatedACwithCFD(udtAuditlogEntry_Search, strHKICNo, strError, strIdeasVersion)
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-                    If Not IsNothing(udtSmartICContent.EHSAccount) Then
-                        udtPersonalInfoSmartIC = udtSmartICContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC)
-
-
-                        ' Block Case:   Different HKIC No.
-                        If Not udtEHSAccount.EHSPersonalInformationList(0).IdentityNum.Trim.Equals(udtPersonalInfoSmartIC.IdentityNum.Trim) Then
-                            Me.sm = New SystemMessage(FuncCode, SeverityCode.SEVE, MsgCode.MSG00002)
-                            Me.udcMsgBoxErr.AddMessage(sm)
-                            isValid = False
-                        End If
-
-                        '------------------------------------------------------------------------------------------------------
-                        'Card Face Data Validation
-                        '------------------------------------------------------------------------------------------------------
-                        If isValid Then
-                            Me.sm = EHSClaimBasePage.SmartIDCardFaceDataValidation(udtPersonalInfoSmartIC)
-                            If Not Me.sm Is Nothing Then
-                                isValid = False
-                                Me.udcMsgBoxErr.AddMessage(Me.sm)
-                            End If
-                        End If
-
-                        If isValid Then
-
-                            'udtSmartICContent.SmartIDReadStatus = BLL.SmartIDHandler.CheckSmartIDCardStatus(udtSmartICContent.EHSAccount, udtEHSAccount)
-
-                            'Select Case udtSmartICContent.SmartIDReadStatus
-                            '    Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_NotSameDOB, _
-                            '            BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_CreateBySmartID, _
-                            '            BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_SmallerDOI, _
-                            '            BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB
-                            '        Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00156"))
-                            'End Select
-
-
-                            If IsNothing(sm) Then
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                ' ----------------------------------------------------------------------------------------
-                                'sm = Me.udtEHSClaimBLL.SearchEHSAccountSmartIDRectification(udtPersonalInfoSmartIC.IdentityNum, udtEHSAccount, udtSmartICContent.EHSAccount, udtEligibleResult)
-                                sm = Me.udtEHSClaimBLL.SearchEHSAccountSmartIDRectification(udtPersonalInfoSmartIC.IdentityNum, udtEHSAccount, udtSmartICContent.EHSAccount, udtEligibleResult, udtSmartICContent.SmartIDReadStatus)
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                            End If
-
-                            If Not Me.sm Is Nothing Then
-                                isValid = False
-                                Me.udcMsgBoxErr.AddMessage(Me.sm)
-                            End If
-
-                        End If
-
-                        If isValid Then
-                            Me.txtDocCode.Text = DocType.DocTypeModel.DocTypeCode.HKIC
-                            Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmartICContent)
-
-                            Me.mvRectify.ActiveViewIndex = Me.ReadSmartICActiveView(udtSmartICContent, Me.udtEHSAccount)
-                            udtEHSPersonalInfo = Me.udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
-
-                            'After EHSRectification.intRectifyAccount, DocTypeControl cannot update values, we must assign CCCode Here
-                            Me.BuildCCCode(udtEHSPersonalInfo.CCCode1, udtEHSPersonalInfo.CCCode2, udtEHSPersonalInfo.CCCode3, udtEHSPersonalInfo.CCCode4, udtEHSPersonalInfo.CCCode5, udtEHSPersonalInfo.CCCode6)
-
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
-                            AuditLogSearchNvaliatedACwithCFDComplete(udtAuditlogEntry_Search, udtEHSAccount, udtSmartICContent, strIdeasVersion)
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                        Else
-                            Me.ReadSamrtIDFail()
-                        End If
-
-                    Else
-                        '---------------------------------------------------------------------------------------------------------------
-                        ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
-                        '---------------------------------------------------------------------------------------------------------------
-                        Me.ReadSamrtIDFail()
-                        Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
-                        isValid = False
-                    End If
-
-                    Me.udcMsgBoxErr.BuildMessageBox(EHSRectification.strValidationFail, udtAuditlogEntry_Search, Common.Component.LogID.LOG00053, "Search & validate account with CFD Fail")
-                Else
-                    '---------------------------------------------------------------------------------------------------------------
-                    ' ideasSamlResponse.StatusCode is not "samlp:Success"
-                    '---------------------------------------------------------------------------------------------------------------
                     Me.ReadSamrtIDFail()
-                    Me.udcMsgBoxErr.AddMessageDesc(FuncCode, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
-                    'Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail")
+                    Me.udcMsgBoxErr.AddMessageDesc(FuncCode, strErrorCode, strErrorMsg)
 
                     'Write End Audit log
                     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
                     ' ----------------------------------------------------------------------------------------
-                    'EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
-                    EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail, strIdeasVersion)
+                    AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, strArtifact, strErrorCode, strErrorMsg, strIdeasVersion)
                     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                    Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry_GetCFD, Common.Component.LogID.LOG00058, "Get CFD Fail")
+                    Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry, Common.Component.LogID.LOG00058, "Get CFD Fail")
+                    isValid = False
+                End If
+            End If
+        End If
+
+        If isValid Then
+
+            If ideasSamlResponse.StatusCode.Equals("samlp:Success") Then
+                EHSClaimBasePage.AuditLogGetCFDComplete(udtAuditLogEntry_GetCFD, strArtifact)
+
+                Dim udtEHSAccountExist As EHSAccountModel = Nothing
+                Dim blnNotMatchAccountExist As Boolean = False
+                Dim blnExceedDocTypeLimit As Boolean = False
+                Dim goToCreation As Boolean = True
+                Dim udtEligibleResult As ClaimRules.ClaimRulesBLL.EligibleResult = Nothing
+                Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel
+                Dim strError As String = String.Empty
+
+                Try
+                    If udtSmartIDContent.IsDemonVersion Then
+                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
+                        ' ----------------------------------------------------------------------------------------
+                        udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtEHSAccount.SchemeCode, udtSmartIDContent.IdeasVersion)
+                        udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
+                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                    Else
+                        Dim udtCFD As IdeasRM.CardFaceData
+                        udtCFD = ideasSamlResponse.CardFaceDate()
+                        If IsNothing(udtCFD) Then
+                            strError = "ideasSamlResponse.CardFaceDate() is nothing"
+                        End If
+                        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        udtSmartIDContent.EHSAccount = ideasBLL.GetCardFaceDataEHSAccount(udtCFD, udtEHSAccount.SchemeCode, FuncCode, udtSmartIDContent)
+                        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]
+                    End If
+                Catch ex As Exception
+                    udtSmartIDContent.EHSAccount = Nothing
+                    strError = ex.Message
+                End Try
+
+                Dim udtAuditlogEntry_Search As AuditLogEntry = New AuditLogEntry(FuncCode, Me)
+
+                Dim strHKICNo As String = String.Empty
+
+                If Not udtSmartIDContent.EHSAccount Is Nothing Then
+                    strHKICNo = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
+                End If
+
+                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
+                ' ----------------------------------------------------------------------------------------
+                AuditLogSearchNvaliatedACwithCFD(udtAuditlogEntry_Search, strHKICNo, strError, strIdeasVersion)
+                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                If Not IsNothing(udtSmartIDContent.EHSAccount) Then
+                    udtPersonalInfoSmartIC = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC)
+
+
+                    ' Block Case:   Different HKIC No.
+                    If Not udtEHSAccount.EHSPersonalInformationList(0).IdentityNum.Trim.Equals(udtPersonalInfoSmartIC.IdentityNum.Trim) Then
+                        Me.sm = New SystemMessage(FuncCode, SeverityCode.SEVE, MsgCode.MSG00002)
+                        Me.udcMsgBoxErr.AddMessage(sm)
+                        isValid = False
+                    End If
+
+                    '------------------------------------------------------------------------------------------------------
+                    'Card Face Data Validation
+                    '------------------------------------------------------------------------------------------------------
+                    If isValid Then
+                        Me.sm = EHSClaimBasePage.SmartIDCardFaceDataValidation(udtPersonalInfoSmartIC)
+                        If Not Me.sm Is Nothing Then
+                            isValid = False
+                            Me.udcMsgBoxErr.AddMessage(Me.sm)
+                        End If
+                    End If
+
+                    If isValid Then
+
+                        If IsNothing(sm) Then
+                            sm = Me.udtEHSClaimBLL.SearchEHSAccountSmartIDRectification(udtPersonalInfoSmartIC.IdentityNum, udtEHSAccount, udtSmartIDContent.EHSAccount, udtEligibleResult, udtSmartIDContent.SmartIDReadStatus)
+                        End If
+
+                        If Not Me.sm Is Nothing Then
+                            isValid = False
+                            Me.udcMsgBoxErr.AddMessage(Me.sm)
+                        End If
+
+                    End If
+
+                    If isValid Then
+                        Me.txtDocCode.Text = DocType.DocTypeModel.DocTypeCode.HKIC
+                        Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmartIDContent)
+
+                        Me.mvRectify.ActiveViewIndex = Me.ReadSmartICActiveView(udtSmartIDContent, Me.udtEHSAccount)
+                        udtEHSPersonalInfo = Me.udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
+
+                        'After EHSRectification.intRectifyAccount, DocTypeControl cannot update values, we must assign CCCode Here
+                        Me.BuildCCCode(udtEHSPersonalInfo.CCCode1, udtEHSPersonalInfo.CCCode2, udtEHSPersonalInfo.CCCode3, udtEHSPersonalInfo.CCCode4, udtEHSPersonalInfo.CCCode5, udtEHSPersonalInfo.CCCode6)
+
+                        AuditLogSearchNvaliatedACwithCFDComplete(udtAuditlogEntry_Search, udtEHSAccount, udtSmartIDContent, strIdeasVersion)
+                    Else
+                        Me.ReadSamrtIDFail()
+                    End If
+
+                Else
+                    '---------------------------------------------------------------------------------------------------------------
+                    ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
+                    '---------------------------------------------------------------------------------------------------------------
+                    Me.ReadSamrtIDFail()
+                    Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
                     isValid = False
                 End If
 
+                Me.udcMsgBoxErr.BuildMessageBox(EHSRectification.strValidationFail, udtAuditlogEntry_Search, Common.Component.LogID.LOG00053, "Search & validate account with CFD Fail")
+            Else
+                '---------------------------------------------------------------------------------------------------------------
+                ' ideasSamlResponse.StatusCode is not "samlp:Success"
+                '---------------------------------------------------------------------------------------------------------------
+                Me.ReadSamrtIDFail()
+                Me.udcMsgBoxErr.AddMessageDesc(FuncCode, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
+
+                'Write End Audit log
+                EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, strArtifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail, strIdeasVersion)
+
+                Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry_GetCFD, Common.Component.LogID.LOG00058, "Get CFD Fail")
+                isValid = False
             End If
 
-            ' Rebind Gridview gvAcctList to display the search result
-            If Not IsNothing(Session(SESS_SearchResultList)) Then
-                Me.GridViewDataBind(Me.gvAcctList, Session(SESS_SearchResultList))
-            End If
+        End If
+
+        ' Rebind Gridview gvAcctList to display the search result
+        If Not IsNothing(Session(SESS_SearchResultList)) Then
+            Me.GridViewDataBind(Me.gvAcctList, Session(SESS_SearchResultList))
         End If
 
         Return blnIsReadSmartIC
@@ -4211,31 +4216,29 @@ Partial Public Class EHSRectification
         udcCCCode.BindCCCode()
     End Sub
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
-    'Private Sub PreRedirectToIdeas(ByVal blnShowPopup As Boolean)
-    Private Sub PreRedirectToIdeas(ByVal blnShowPopup As Boolean, ByVal blnIsNewSmartIC As Boolean)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub PreRedirectToIdeas(ByVal blnShowPopup As Boolean, ByVal enumIDEASVersion As IdeasBLL.EnumIdeasVersion)
         Dim udtSmarIDContent As BLL.SmartIDContentModel = New BLL.SmartIDContentModel
         Dim udtPracticeDisplay As PracticeDisplayModel = Me.udtSessionHandler.PracticeDisplayGetFromSession(FuncCode)
 
         'Practice have been selected 
         'case 1) SP pressed Modify before Read SmartID (View in edit mode)
         If Not udtPracticeDisplay Is Nothing Then
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'Me.RedirectToIdeas(blnShowPopup)
-            Me.RedirectToIdeas(blnShowPopup, blnIsNewSmartIC)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            Select Case enumIDEASVersion
+                Case IdeasBLL.EnumIdeasVersion.One, IdeasBLL.EnumIdeasVersion.Two, IdeasBLL.EnumIdeasVersion.TwoGender
+                    Me.RedirectToIdeas(blnShowPopup, enumIDEASVersion)
+                Case IdeasBLL.EnumIdeasVersion.Combo, IdeasBLL.EnumIdeasVersion.ComboGender
+                    Me.RedirectToIdeasCombo(blnShowPopup, enumIDEASVersion)
+                Case Else
+                    'Nothing to do
+            End Select
+
         Else
             udtSmarIDContent.IsReadSmartID = True
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(blnIsNewSmartIC)
-            Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
+            Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(enumIDEASVersion)
             udtSmarIDContent.IdeasVersion = eIdeasVersion
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
             Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmarIDContent)
             Me.udtEHSAccount = Me.udtSessionHandler.EHSAccountGetFromSession(FuncCode)
@@ -4243,128 +4246,193 @@ Partial Public Class EHSRectification
             If IsReusedAcc(Me.udtEHSAccount.OriginalAccID) Then
                 Me.ModalPopupExtenderModify.Show()
             Else
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                'Me.RedirectToIdeas(blnShowPopup)
-                Me.RedirectToIdeas(blnShowPopup, blnIsNewSmartIC)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                Select Case enumIDEASVersion
+                    Case IdeasBLL.EnumIdeasVersion.One, IdeasBLL.EnumIdeasVersion.Two, IdeasBLL.EnumIdeasVersion.TwoGender
+                        Me.RedirectToIdeas(blnShowPopup, enumIDEASVersion)
+                    Case IdeasBLL.EnumIdeasVersion.Combo, IdeasBLL.EnumIdeasVersion.ComboGender
+                        Me.RedirectToIdeasCombo(blnShowPopup, enumIDEASVersion)
+                    Case Else
+                        'Nothing to do
+                End Select
+
             End If
         End If
 
     End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
-    'Private Sub RedirectToIdeas(ByVal blnShowPopup As Boolean)
-    Private Sub RedirectToIdeas(ByVal blnShowPopup As Boolean, ByVal blnIsNewSmartIC As Boolean)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    Private Sub RedirectToIdeas(ByVal blnShowPopup As Boolean, ByVal enumIDEASVersion As IdeasBLL.EnumIdeasVersion)
 
         ' Clear smart id content to avoid loading smart ic content in page load
         Me.udtSessionHandler.SmartIDContentRemoveFormSession(FuncCode)
 
-        Dim ideasHelper As IdeasRM.IHelper = IdeasRM.HelpFactory.createHelper()
-        Dim udtSmarIDContent As BLL.SmartIDContentModel = New BLL.SmartIDContentModel
-        Dim isDemoVersion As String = String.Empty
-        Dim strLang As String = String.Empty
-        Dim ideasTokenResponse As IdeasRM.TokenResponse
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
+        Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(enumIDEASVersion)
+        Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
 
-        ' To Do, Retrieve SystemParameter for Remove Card Alert Setting
-        If Session("language").ToString().Trim.ToUpper = "ZH-TW" Then
+        Me.AuditLogReadSamrtID(udtAuditLogEntry, strIdeasVersion, Nothing)
+
+        ' (1) Language
+        Dim strLang As String = String.Empty
+
+        If LCase(Session("language")) = CultureLanguage.TradChinese Then
             strLang = "zh_HK"
         Else
             strLang = "en_US"
         End If
 
-        ' Remove Card Setting Read From SystemParameters
+        ' (2) Remove Card Setting
         Dim strRemoveCard As String = String.Empty
-        Dim udtCommFunct As New Common.ComFunction.GeneralFunction()
-        udtCommFunct.getSystemParameter("SmartID_RemoveCard", strRemoveCard, String.Empty)
+
+        Dim udtGeneralFunction As New GeneralFunction
+        udtGeneralFunction.getSystemParameter("SmartID_RemoveCard", strRemoveCard, String.Empty)
         If strRemoveCard = String.Empty Then
             strRemoveCard = "Y"
         End If
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(blnIsNewSmartIC)
-        Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
+        ' (3) IDEAS token
+        Dim ideasHelper As IHelper = HelpFactory.createHelper()
+        Dim ideasTokenResponse As TokenResponse = Nothing
 
-        'AuditLogReadSamrtID(udtAuditLogEntry)
-        AuditLogReadSamrtID(udtAuditLogEntry, strIdeasVersion, blnIsNewSmartIC)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-        '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
-
-        ' INT14-0033 - Enforce HCSP accept server cert for connecting IDEAS Testing server [Start][Lawrence]
+        ' Enforce HCSP accept server cert for connecting IDEAS Testing server
         ServicePointManager.ServerCertificateValidationCallback = New Security.RemoteCertificateValidationCallback(AddressOf (New IdeasBLL).ValidateCertificate)
-        ' INT14-0033 - Enforce HCSP accept server cert for connecting IDEAS Testing server [End][Lawrence]
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         ' Get Token From Ideas, input: the return URL from Ideas to eHS
-        udtSmarIDContent.IdeasVersion = eIdeasVersion
-
-        'ideasTokenResponse = ideasHelper.getToken(BLL.IdeasBLL.DeptCode, BLL.IdeasBLL.RaCode, BLL.IdeasBLL.AppRefId, RedirectHandler.AppendPageKeyToURL(Me.Page.Request.Url.GetLeftPart(UriPartial.Path)), "Target", strLang, strRemoveCard)
         ideasTokenResponse = IdeasBLL.GetToken(eIdeasVersion, Me.Page.Request.Url.GetLeftPart(UriPartial.Path), strLang, strRemoveCard)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
-
-        '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
-        isDemoVersion = ConfigurationManager.AppSettings("SmartIDDemoVersion")
+        Dim isDemoVersion As String = ConfigurationManager.AppSettings("SmartIDDemoVersion")
 
         If Not ideasTokenResponse.ErrorCode Is Nothing And Not isDemoVersion.Equals("Y") Then
 
             Me.udcMsgBoxErr.AddMessageDesc(FuncCode, ideasTokenResponse.ErrorCode, ideasTokenResponse.ErrorMessage)
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            If isDemoVersion.Equals("Y") Then
-                AuditLogConnectIdeasFail(udtAuditLogEntry, ideasTokenResponse, "Y", strIdeasVersion)
-            Else
-                AuditLogConnectIdeasFail(udtAuditLogEntry, ideasTokenResponse, "N", strIdeasVersion)
-            End If
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            AuditLogConnectIdeasFail(udtAuditLogEntry, ideasTokenResponse, "N", strIdeasVersion)
 
             Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry, Common.Component.LogID.LOG00050, "Click 'Read Smart ID Card' and Token Request Fail")
 
         Else
-            'isDemoVersion = ConfigurationManager.AppSettings("SmartIDDemoVersion")
+            Dim udtSessionHandler As New SessionHandler
+            Dim udtSmarIDContent As New SmartIDContentModel
             udtSmarIDContent.IsReadSmartID = True
             udtSmarIDContent.TokenResponse = ideasTokenResponse
+            udtSmarIDContent.IdeasVersion = eIdeasVersion
 
             If isDemoVersion.Equals("Y") Then
                 udtSmarIDContent.IsDemonVersion = True
+
                 Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmarIDContent)
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 AuditLogConnectIdeasComplete(udtAuditLogEntry, ideasTokenResponse, "Y", strIdeasVersion)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
                 RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageVRARectification").ToString().Replace("@", "&"))
 
-                '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
-
             Else
                 udtSmarIDContent.IsDemonVersion = False
+
                 Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmarIDContent)
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 AuditLogConnectIdeasComplete(udtAuditLogEntry, ideasTokenResponse, "N", strIdeasVersion)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-                '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
                 ' Redirect to Ideas, no need to add page key
                 Response.Redirect(ideasTokenResponse.IdeasMAURL)
 
-                '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
+            End If
+        End If
+    End Sub
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub RedirectToIdeasCombo(ByVal blnShowPopup As Boolean, ByVal enumIDEASVersion As IdeasBLL.EnumIdeasVersion)
+
+        ' Clear smart id content to avoid loading smart ic content in page load
+        Me.udtSessionHandler.SmartIDContentRemoveFormSession(FuncCode)
+
+        Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
+        Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(enumIDEASVersion)
+        Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
+
+        Me.AuditLogReadSamrtID(udtAuditLogEntry, strIdeasVersion, Nothing)
+
+        ' (1) Language
+        Dim strLang As String = String.Empty
+
+        If LCase(Session("language")) = CultureLanguage.TradChinese Then
+            strLang = "zh_HK"
+        Else
+            strLang = "en_US"
+        End If
+
+        ' (2) Remove Card Setting
+        Dim strRemoveCard As String = String.Empty
+
+        Dim udtGeneralFunction As New GeneralFunction
+        udtGeneralFunction.getSystemParameter("SmartID_RemoveCard", strRemoveCard, String.Empty)
+        If strRemoveCard = String.Empty Then
+            strRemoveCard = "Y"
+        End If
+
+        ' (3) IDEAS token
+        Dim ideasHelper As IHelper = HelpFactory.createHelper()
+        Dim ideasTokenResponse As TokenResponse = Nothing
+
+        ' Enforce HCSP accept server cert for connecting IDEAS Testing server
+        ServicePointManager.ServerCertificateValidationCallback = New Security.RemoteCertificateValidationCallback(AddressOf (New IdeasBLL).ValidateCertificate)
+
+        ' Get Token From Ideas, input: the return URL from Ideas to eHS
+        Select Case eIdeasVersion
+            Case IdeasBLL.EnumIdeasVersion.One, IdeasBLL.EnumIdeasVersion.Two, IdeasBLL.EnumIdeasVersion.TwoGender
+                ideasTokenResponse = IdeasBLL.GetToken(eIdeasVersion, Me.Page.Request.Url.GetLeftPart(UriPartial.Path), strLang, strRemoveCard)
+
+            Case IdeasBLL.EnumIdeasVersion.Combo, IdeasBLL.EnumIdeasVersion.ComboGender
+                Dim strPageName As String = New IO.FileInfo(Me.Request.Url.LocalPath).Name
+                Dim strComboReturnURL As String = Me.Page.Request.Url.GetLeftPart(UriPartial.Path)
+                Dim strFolderName As String = "/EHSRectification"
+
+                strComboReturnURL = strComboReturnURL.Replace(strFolderName + "/" + strPageName, "/IDEASComboReader/IDEASComboReader.aspx")
+                ideasTokenResponse = IdeasBLL.GetToken(eIdeasVersion, strComboReturnURL, strLang, strRemoveCard)
+
+        End Select
+
+        Dim isDemoVersion As String = ConfigurationManager.AppSettings("SmartIDDemoVersion")
+
+        If Not ideasTokenResponse.ErrorCode Is Nothing And Not isDemoVersion.Equals("Y") Then
+            udcMsgBoxErr.AddMessageDesc(FuncCode, ideasTokenResponse.ErrorCode, ideasTokenResponse.ErrorMessage)
+
+            AuditLogConnectIdeasFail(udtAuditLogEntry, ideasTokenResponse, "N", strIdeasVersion)
+
+            Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry, Common.Component.LogID.LOG00050, "Click 'Read Smart ID Card' and Token Request Fail")
+
+        Else
+            Dim udtSessionHandler As New SessionHandler
+            Dim udtSmarIDContent As New SmartIDContentModel
+            udtSmarIDContent.IsReadSmartID = True
+            udtSmarIDContent.TokenResponse = ideasTokenResponse
+            udtSmarIDContent.IdeasVersion = eIdeasVersion
+
+            If isDemoVersion.Equals("Y") Then
+                udtSmarIDContent.IsDemonVersion = True
+
+                Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmarIDContent)
+
+                AuditLogConnectIdeasComplete(udtAuditLogEntry, ideasTokenResponse, "Y", strIdeasVersion)
+
+                RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageVRARectification").ToString().Replace("@", "&"))
+
+            Else
+                udtSmarIDContent.IsDemonVersion = False
+
+                Me.udtSessionHandler.SmartIDContentSaveToSession(FuncCode, udtSmarIDContent)
+
+                AuditLogConnectIdeasComplete(udtAuditLogEntry, ideasTokenResponse, "N", strIdeasVersion)
+
+                ' Prompt the popup include iframe to show IDEAS Combo UI
+                ucIDEASCombo.ReadSmartIC(IdeasBLL.EnumIdeasVersion.Combo, ideasTokenResponse, FuncCode)
 
             End If
         End If
     End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+    '
 
     ''' <summary>
     ''' Determine the visibility and enable of the "Read Smart ID Card"
@@ -4377,66 +4445,122 @@ Partial Public Class EHSRectification
     Private Sub SetupSmartID(ByVal strSPID As String, ByVal strDocCode As String, ByVal blnEnable As Boolean, ByVal strSmartIDVer As String)
         ' Init
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        'imgCardReader.Visible = False
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim strIDEASComboClientInstalled As String = IIf(udtSessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, udtSessionHandler.IDEASComboClientGetFormSession())
+        Dim blnIDEASComboClientInstalled As Boolean = IIf(strIDEASComboClientInstalled = YesNo.Yes, True, False)
+        Dim blnIDEASComboClientForceToUse As Boolean = IIf((New GeneralFunction).getSystemParameter("SmartID_IDEAS_Combo_Force_To_Use") = YesNo.Yes, True, False)
 
         tblRectifyReadSmartIC.Visible = False
 
+        tblRectifyReadOldSmartIC.Style.Add("display", "none")
         ibtnRectifyReadOldSmartIC.Visible = False
         ibtnRectifyReadOldSmartIC.Enabled = False
         ibtnRectifyReadOldSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadOldSmartIDCardDisabledBtn")
 
+        tblRectifyReadNewSmartIC.Style.Add("display", "none")
         ibtnRectifyReadNewSmartIC.Visible = False
         ibtnRectifyReadNewSmartIC.Enabled = False
         ibtnRectifyReadNewSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadNewSmartIDCardDisabledBtn")
 
-        lblReadOldSmartIDCardNA.Visible = False
-        lblReadNewSmartIDCardNA.Visible = False
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        tblRectifyReadNewSmartICCombo.Style.Add("display", "none")
+        ibtnRectifyReadNewSmartICCombo.Visible = False
+        ibtnRectifyReadNewSmartICCombo.Enabled = False
+        ibtnRectifyReadNewSmartICCombo.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadSmartIDDisableBtn")
+
+        divReadOldSmartIDCardNA.Visible = False
+        divReadNewSmartIDCardNA.Visible = False
+        divReadNewSmartIDComboCardNA.Visible = False
+
+        ibtnRectifyReadSmartIDTips.Visible = False
+
+        trSmartIDSoftwareNotInstalled.Visible = False
 
         ' Check visible (visible = is pilot run SP + HKIC)
         Dim udtSmartIDcontent As New SmartIDContentModel
 
-        If SmartIDHandler.EnableSmartID AndAlso strDocCode = DocTypeModel.DocTypeCode.HKIC Then
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'imgCardReader.Visible = True
+        If strDocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
+            If SmartIDHandler.EnableSmartID Then
+                tblRectifyReadSmartIC.Visible = True
 
-            tblRectifyReadSmartIC.Visible = True
+                ' Check Combo Client installation
+                If blnIDEASComboClientForceToUse Then
+                    ' Combo Client Only Period
+                    tblRectifyReadNewSmartICCombo.Style.Remove("display")
+                    ibtnRectifyReadNewSmartICCombo.Visible = True
 
-            ibtnRectifyReadOldSmartIC.Visible = True
-            ibtnRectifyReadNewSmartIC.Visible = True
+                Else
+                    ' Transition Period
+                    If blnIDEASComboClientInstalled Then
+                        tblRectifyReadNewSmartICCombo.Style.Remove("display")
+                        ibtnRectifyReadNewSmartICCombo.Visible = True
 
-            ' Check turn on
-            'If TurnOnSmartID() Then
-            If SmartIDHandler.TurnOnSmartID() Then
-                'imgCardReader.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CardReader")
+                    Else
+                        tblRectifyReadOldSmartIC.Style.Remove("display")
+                        tblRectifyReadNewSmartIC.Style.Remove("display")
 
-                ' Check enable
-                If blnEnable Then
-                    ' Disable read Old Smart ID if acct is created by New Smart ID Card
-                    If SmartIDHandler.CompareVersion(strSmartIDVer, SmartIDVersion.IDEAS1, "<=") Then
-                        ibtnRectifyReadOldSmartIC.Enabled = True
-                        ibtnRectifyReadOldSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadOldSmartIDCardBtn")
+                        ibtnRectifyReadOldSmartIC.Visible = True
+                        ibtnRectifyReadNewSmartIC.Visible = True
+
+                        ibtnRectifyReadSmartIDTips.Visible = True
                     End If
-
-                    ibtnRectifyReadNewSmartIC.Enabled = True
-                    ibtnRectifyReadNewSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadNewSmartIDCardBtn")
                 End If
 
-            Else
-                'imgCardReader.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CardReaderDisable")
-                lblReadOldSmartIDCardNA.Visible = True
-                lblReadOldSmartIDCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+                ' Check turn on
+                If SmartIDHandler.TurnOnSmartID() Then
+                    ' Check enable
+                    If blnEnable Then
+                        If blnIDEASComboClientForceToUse Then
+                            ' Combo Client Only Period
+                            If blnIDEASComboClientInstalled Then
+                                ibtnRectifyReadNewSmartICCombo.Enabled = True
+                                ibtnRectifyReadNewSmartICCombo.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadSmartIDBtn")
 
-                lblReadNewSmartIDCardNA.Visible = True
-                lblReadNewSmartIDCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+                            Else
+                                ' Disable "Read Smart ID" if the client is not installed
+                                ibtnRectifyReadNewSmartICCombo.Enabled = False
+                                ibtnRectifyReadNewSmartICCombo.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadSmartIDDisableBtn")
+                                trSmartIDSoftwareNotInstalled.Visible = True
+                            End If
+
+                        Else
+                            ' Transition Period
+                            If blnIDEASComboClientInstalled Then
+                                ibtnRectifyReadNewSmartICCombo.Enabled = True
+                                ibtnRectifyReadNewSmartICCombo.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadSmartIDBtn")
+
+                            Else
+                                ' Disable read Old Smart ID if acct is created by New Smart ID Card
+                                If SmartIDHandler.CompareVersion(Replace(strSmartIDVer, "C", ""), SmartIDVersion.IDEAS1, "<=") Then
+                                    ibtnRectifyReadOldSmartIC.Enabled = True
+                                    ibtnRectifyReadOldSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadOldSmartIDCardBtn")
+                                End If
+
+                                ibtnRectifyReadNewSmartIC.Enabled = True
+                                ibtnRectifyReadNewSmartIC.ImageUrl = Me.GetGlobalResourceObject("ImageURL", "ReadNewSmartIDCardBtn")
+                            End If
+                        End If
+
+                    End If
+
+                Else
+                    If blnIDEASComboClientInstalled Then
+                        divReadNewSmartIDComboCardNA.Visible = True
+                        lblReadNewSmartIDComboCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+                    Else
+                        divReadOldSmartIDCardNA.Visible = True
+                        lblReadOldSmartIDCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+
+                        divReadNewSmartIDCardNA.Visible = True
+                        lblReadNewSmartIDCardNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+                    End If
+
+                End If
 
             End If
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
         End If
+
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     End Sub
 
@@ -4534,25 +4658,27 @@ Partial Public Class EHSRectification
 
     '==================================================================== Code for SmartID ============================================================================
 #Region "Read Smart ID Card"
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     'Search Account : Read Samrt ID: LOG00048
-    'Private Sub AuditLogReadSamrtID(ByRef udtAuditLogEntry As AuditLogEntry)
-    Private Sub AuditLogReadSamrtID(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strIdeasVersion As String, ByVal blnIsNewSmartIC As Boolean)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    Private Sub AuditLogReadSamrtID(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strIdeasVersion As String, ByVal blnIsNewSmartIC As Nullable(Of Boolean))
+        Dim strNewSmartIC As String = String.Empty
+
+        If Not blnIsNewSmartIC Is Nothing Then
+            strNewSmartIC = IIf(blnIsNewSmartIC, YesNo.Yes, YesNo.No)
+        End If
 
         Me.udtEHSAccount = Me.udtSessionHandler.EHSAccountGetFromSession(FuncCode)
 
         'Audit Log
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
         Me.udtAuditLogEntry.AddDescripton("AccountID", Me.udtEHSAccount.VoucherAccID.Trim)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        udtAuditLogEntry.AddDescripton("New Card", IIf(blnIsNewSmartIC, YesNo.Yes, YesNo.No))
+        udtAuditLogEntry.AddDescripton("New Card", strNewSmartIC)
         udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
         udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00048, "Click 'Read Smart ID Card' and Token Request")
     End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
 
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
     ' ----------------------------------------------------------------------------------------
@@ -4567,7 +4693,7 @@ Partial Public Class EHSRectification
         ' ----------------------------------------------------------------------------------------
         udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00049, "Click 'Read Smart ID Card' and Token Request Complelet")
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00049, "Click 'Read Smart ID Card' and Token Request Complete")
     End Sub
 
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
@@ -4663,7 +4789,7 @@ Partial Public Class EHSRectification
         udtAuditLogEntry.AddDescripton("Artifact", strArtifact)
         udtAuditLogEntry.AddDescripton("Error Code", strErrorCode)
         udtAuditLogEntry.AddDescripton("Error Message", strErrorMsg)
-        udtAuditLogEntry.AddDescripton("IDEAS Version", strIDEASversion)
+        udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
         'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00058, "Get CFD Fail")
     End Sub
@@ -4928,8 +5054,8 @@ Partial Public Class EHSRectification
     End Function
     ' I-CRE17-003 (Enhance eHA rectification on HCSP to check with eHS(S) and CMS vaccination) [End][Winnie]
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Private Function IsReadOnly(ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel) As Boolean
         Dim blnReadOnly As Boolean = False
 
@@ -4939,7 +5065,8 @@ Partial Public Class EHSRectification
         End If
 
         If udtEHSPersonalInfo.CreateBySmartID Then
-            If udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Then
+            If udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Or _
+                udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS_Combo_New_WithGender Then
                 ' All fields read from smart id
                 blnReadOnly = True
             End If
@@ -4947,5 +5074,6 @@ Partial Public Class EHSRectification
 
         Return blnReadOnly
     End Function
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
 End Class

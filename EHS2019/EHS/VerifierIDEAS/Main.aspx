@@ -1,5 +1,9 @@
 <%@ Page Language="vb" AutoEventWireup="false" Codebehind="Main.aspx.vb" Inherits="VerifierIDEAS._Default" %>
 
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
+<%@ Register src="IDEASCombo.ascx" tagname="IDEASCombo" tagprefix="uc1" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -69,9 +73,17 @@
             height: 23px;
         }
     </style>
+
+    <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./JS/ideasComboLib4Ra.js"></script>
+
+   
 </head>
 <body>
     <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" EnablePartialRendering="true" runat="server" ></asp:ScriptManager>
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+            <ContentTemplate>
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <td>
@@ -85,7 +97,7 @@
         </table>
         <br />
         <div style="margin-left: 10px;">
-            <table width="100%">
+            <table style="width=100%; -ms-word-break: break-all;">
                 <tr>
                     <td align="center">
                         <asp:Panel ID="pnlResult" runat="server">
@@ -97,19 +109,62 @@
                                     <td class="auto-style1" style="white-space: nowrap;">
                                         Token Service URL (IDEAS1):</td>
                                     <td class="auto-style2" style="white-space: nowrap;">
-                                        <asp:Label ID="lblTokenServerURL1" runat="server" /></td>
+                                        <asp:DropDownList ID="ddlIDEAS1Url" runat="server" AutoPostBack="True"/>
+                                        <asp:Label ID="lblTokenServerURL1" runat="server"  Visible="false"/></td>
+                                    <td><asp:Button ID="btnReadSmartIC1" runat="server" Text="Read Smart ID Card (IDEAS1)" /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><hr /></td>
                                 </tr>
                                 <tr>
                                     <td class="tableText" style="white-space: nowrap;">Token Service URL (IDEAS2):</td>
                                     <td class="tableTitle" style="white-space: nowrap;">
-                                        <asp:Label ID="lblTokenServerURL2" runat="server" />
+                                        <asp:DropDownList ID="ddlIDEAS2Url" runat="server" AutoPostBack="True"/>
+                                        <asp:Label ID="lblTokenServerURL2" runat="server"  Visible="false"/>
                                     </td>
+                                     <td><asp:Button ID="btnReadSmartIC2" runat="server" Text="Read Smart ID Card (IDEAS2)" />
+                                         <asp:Button ID="btnReadSmartIC2_5" runat="server" Text="Read Smart ID Card (IDEAS2 with Gender)" />
+                                     </td>
+                                </tr>
+                                <tr>
+                                     <td colspan="3"><hr /></td>
+                                </tr>
+                                <tr style="display:none">
+                                    <td class="auto-style1" style="white-space: nowrap;">
+                                        Broker Service URL (IDEAS1):</td>
+                                    <td class="auto-style2" style="white-space: nowrap;">
+                                        
+                                        <asp:Label ID="lblBrokerServerURL1" runat="server" /></td>
+                                     <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="tableText" style="white-space: nowrap;">Broker Service URL (Combo):</td>
+                                    <td class="tableTitle" style="white-space: nowrap;">
+                                        <asp:DropDownList ID="ddlIDEASComboUrl" runat="server" AutoPostBack="True"/>
+                                        <br />
+                                        <asp:Label ID="lblBrokerServerURL2" runat="server" Visible="false" />
+                                    </td>
+                                     <td><asp:Button ID="btnReadSmartICCombo" runat="server" Text="Read Smart ID Card (Combo)" disabled="true" Visible="false"/>
+                                        <asp:Button ID="btnReadSmartICComboiframe" runat="server" Text="Read Smart ID Card (Combo) (iframe)" disabled="true"/></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><hr /></td>
                                 </tr>
                                 <tr>
                                     <td class="tableText">
                                         Result:</td>
+                                    <td  colspan="2" class="tableTitle">
+                                        <asp:Label ID="lblResult_Status" runat="server" Text="" />
+                                        <br />
+                                        <asp:Label ID="lblResult_URL" runat="server" Text="" />
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td class="tableText">
+                                        HKIC Version:</td>
                                     <td class="tableTitle">
-                                        <asp:Label ID="lblResult_Status" runat="server" Text="" /></td>
+                                        <asp:Label ID="lblResult_HKICVer" runat="server" Text="" /></td>
                                 </tr>
                                 <tr>
                                     <td class="tableText">
@@ -120,19 +175,14 @@
                                 <tr>
                                     <td class="tableText">
                                         Last Read Time:</td>
-                                    <td class="tableTitle">
+                                    <td colspan="2"  class="tableTitle">
                                         <asp:Label ID="lblResult_Dtm" runat="server" Text="" /></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" align="center">
-                                        <br />
-                                        <asp:Button ID="btnReadSmartIC1" runat="server" Text="Read Smart ID Card (IDEAS1)" />
-                                        <asp:Button ID="btnReadSmartIC2" runat="server" Text="Read Smart ID Card (IDEAS2)" />
-                                        <asp:Button ID="btnReadSmartIC2_5" runat="server" Text="Read Smart ID Card (IDEAS2 with Gender)" />
-                                    </td>
                                 </tr>
                             </table>
                         </asp:Panel>
+
+                     
+
                         <asp:Panel ID="pnlResultInternal" runat="server" Visible="false" Width="700px">
                             <table style="width:700px; word-break:break-all;">
                                 <colgroup>
@@ -243,6 +293,12 @@
                                 </tr>
                                 <tr>
                                     <td>
+                                        HKIC Version</td>
+                                    <td>
+                                        <asp:Label ID="lblPersionInfo_HKICver" runat="server" Text="" /></td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         HKID</td>
                                     <td>
                                         <asp:Label ID="lblPersionInfo_HKID" runat="server" Text="" /></td>
@@ -290,6 +346,37 @@
                 </tr>
             </table>
         </div>
+
+        <uc1:IDEASCombo ID="ucIDEASCombo" runat="server" />
+
+
+        <script type="text/javascript">
+            //function displayIDEASResult() {
+            //    document.getElementById("btnDisplayResultComboiframe").click();
+            //}
+
+            // TODO _param to be confirmed
+            function checkIdeasComboClientSuccessEHS(_param) {
+                //var param = { result: _param, ideasVer: "", artifactId: "" };
+                //checkIdeasComboClientSuccessCallback(param);
+                //document.getElementById("btnReadSmartICCombo").disabled = false;
+                document.getElementById("btnReadSmartICComboiframe").disabled = false;
+            }
+
+            // TODO _param to be confirmed
+            function checkIdeasComboClientFailureEHS(_param) {
+                //var param = { result: _param, ideasVer: "", artifactId: "" };
+                //checkIdeasComboClientFailureCallback(param);
+                //document.getElementById("btnReadSmartICCombo").disabled = true;
+                document.getElementById("btnReadSmartICComboiframe").disabled = true;
+            }
+
+            //checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);
+         </script>
+                </ContentTemplate>
+        </asp:UpdatePanel>
+
+     
     </form>
 </body>
 </html>

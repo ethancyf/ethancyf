@@ -1725,10 +1725,41 @@ Public Class ReimbursementBLL
         End If
         'CRE13-006 HCVS Ceiling [End][Karl]
 
-        ' Step 4: Remove [SpecialAccount] (if any)
-        If udtEHSTransaction.EHSAcct.AccountSource = EHSAccountModel.SysAccountSource.SpecialAccount Then
-            udtEHSAccountBLL.UpdateSpecialEHSAccountReject(udtDB, udtOldEHSAccount, strUserID, dtmDBNow)
-        End If
+        ' INT20-0014 (Fix unable to open invalidated PPP transaction) [Start][Winnie]
+        ' ---------------------------------------------------------------------------
+        ' Step 4: Remove [TempAccount] & [SpecialAccount] (if any)
+        Select Case udtOldEHSAccount.AccountSource
+            Case EHSAccount.EHSAccountModel.SysAccountSource.TemporaryAccount
+                Dim blnErasedAmendHistroy As Boolean = False
+
+                '==================================================================== Code for SmartID ============================================================================
+                ' Get the temp account with account purpose = 'O'
+                Dim udtTempEHSAccount_Original As EHSAccountModel = Nothing
+                If udtOldEHSAccount.AccountPurpose.Trim = EHSAccountModel.AccountPurposeClass.ForAmendment AndAlso Not udtOldEHSAccount.OriginalAmendAccID.Trim.Equals(String.Empty) Then
+                    udtTempEHSAccount_Original = udtEHSAccountBLL.LoadTempEHSAccountByVRID(udtOldEHSAccount.OriginalAmendAccID.Trim)
+                    blnErasedAmendHistroy = True
+                End If
+
+                ' Also remove the temp account with account purpose = 'O'
+                If Not IsNothing(udtTempEHSAccount_Original) AndAlso udtTempEHSAccount_Original.AccountPurpose.Trim = EHSAccount.EHSAccountModel.AccountPurposeClass.ForAmendmentOld Then
+                    udtEHSAccountBLL.UpdateTempEHSAccountReject(udtDB, udtTempEHSAccount_Original, udtEHSTransaction.ServiceProviderID, dtmDBNow)
+                End If
+
+                If blnErasedAmendHistroy Then
+                    ' Update PersonalInfoAmendHistory RecordStats = 'E' (Erased) and SubmitToVerify = 'N' (Doesn't verify)
+                    If Not IsNothing(udtOldEHSAccount.ValidatedAccID) AndAlso Not udtOldEHSAccount.ValidatedAccID.Equals(String.Empty) Then
+                        udtEHSAccountBLL.UpdatePersonalInfoAmendHistoryWithdrawAmendment(udtDB, udtOldEHSAccount, udtEHSTransaction.ServiceProviderID)
+                    End If
+                End If
+                '==================================================================================================================================================================
+
+                udtEHSAccountBLL.UpdateTempEHSAccountReject(udtDB, udtOldEHSAccount, udtEHSTransaction.ServiceProviderID, dtmDBNow)
+
+            Case EHSAccount.EHSAccountModel.SysAccountSource.SpecialAccount
+                udtEHSAccountBLL.UpdateSpecialEHSAccountReject(udtDB, udtOldEHSAccount, strUserID, dtmDBNow)
+
+        End Select
+        ' INT20-0014 (Fix unable to open invalidated PPP transaction) [End][Winnie]
 
     End Sub
 

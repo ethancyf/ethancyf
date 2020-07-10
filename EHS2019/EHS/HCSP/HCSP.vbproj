@@ -57,33 +57,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Html.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Xml.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Export.Html.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Export.Xml.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
     <Reference Include="IdeasRM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\IdeasRM.dll</HintPath>
@@ -134,6 +116,10 @@
     <Content Include="cn\sessiontimeout.aspx" />
     <Content Include="CSS\CommonStyle_cn.css" />
     <Content Include="CSS\MenuStyle_cn.css" />
+    <Content Include="DownloadArea\DownloadArea.aspx" />
+    <Content Include="en\ReadSmartIDTips.htm" />
+    <Content Include="IDEASComboReader\IDEASComboReaderGuide.aspx" />
+    <Content Include="IDEASComboReader\IDEASComboReader.aspx" />
     <Content Include="en\InvalidOS.aspx" />
     <Content Include="Images\banner\banner_RecoverLogin.png" />
     <Content Include="Images\banner\banner_RecoverLogin_cn.png" />
@@ -174,6 +160,10 @@
     <Content Include="Images\button\btn_ReadOldSmartIDCard_D_cn.png" />
     <Content Include="Images\button\btn_ReadOldSmartIDCard_D_tw.png" />
     <Content Include="Images\button\btn_ReadOldSmartIDCard_tw.png" />
+    <Content Include="Images\button\btn_ReadsmartIDCard.png" />
+    <Content Include="Images\button\btn_ReadSmartIDCard_cn.png" />
+    <Content Include="Images\button\btn_ReadSmartIDCard_D_cn.png" />
+    <Content Include="Images\button\btn_ReadsmartIDCard_tw.png" />
     <Content Include="Images\button\btn_resend.png" />
     <Content Include="Images\button\btn_resend_cn.png" />
     <Content Include="Images\button\btn_resend_tw.png" />
@@ -277,6 +267,24 @@
     <Content Include="Images\button\progress_button\btn_ProgressSuspend.png" />
     <Content Include="Images\button\progress_button\btn_ProgressSuspend_cn.png" />
     <Content Include="Images\button\progress_button\btn_ProgressSuspend_tw.png" />
+    <Content Include="Images\button\small_button\btn_chinesename_cn.png" />
+    <Content Include="Images\button\small_button\btn_Clear.png" />
+    <Content Include="Images\button\small_button\btn_Clear_cn.png" />
+    <Content Include="Images\button\small_button\btn_Clear_D.png" />
+    <Content Include="Images\button\small_button\btn_Clear_D_cn.png" />
+    <Content Include="Images\button\small_button\btn_Clear_D_tw.png" />
+    <Content Include="Images\button\small_button\btn_Clear_tw.png" />
+    <Content Include="Images\button\small_button\btn_Filter.png" />
+    <Content Include="Images\button\small_button\btn_Filter_cn.png" />
+    <Content Include="Images\button\small_button\btn_Filter_D.png" />
+    <Content Include="Images\button\small_button\btn_Filter_D_cn.png" />
+    <Content Include="Images\button\small_button\btn_Filter_D_tw.png" />
+    <Content Include="Images\button\small_button\btn_Filter_tw.png" />
+    <Content Include="Images\button\small_button\btn_help_cn.png" />
+    <Content Include="Images\button\small_button\btn_home_cn.png" />
+    <Content Include="Images\button\small_button\btn_inbox_cn.png" />
+    <Content Include="Images\button\small_button\btn_inbox_newMsg_cn.gif" />
+    <Content Include="Images\button\small_button\btn_logout_cn.png" />
     <Content Include="Images\button\small_button\btn_ReadSmartIDTips.png" />
     <Content Include="Images\button\small_button\btn_ReadSmartIDTips_tw.png" />
     <Content Include="Images\dialog\top-left_No_Title.png" />
@@ -293,6 +301,7 @@
     <Content Include="Images\others\NewSmartIC_cn.png" />
     <Content Include="Images\others\NewSmartIC_tw.png" />
     <Content Include="Images\others\NewSmartIDChipFacingUp.png" />
+    <Content Include="Images\others\NewSmartIDComboChipFacingUp.png" />
     <Content Include="Images\others\New_HKID_Sample.png" />
     <Content Include="Images\others\New_HKID_Sample_cn.png" />
     <Content Include="Images\others\OldSmartIC.png" />
@@ -315,6 +324,12 @@
     <Content Include="Images\others\SearchManualInput_cn.png" />
     <Content Include="Images\others\SearchManualInput_D.png" />
     <Content Include="Images\others\SearchNewSmartIC.png" />
+    <Content Include="Images\others\SearchNewSmartICCombo.png" />
+    <Content Include="Images\others\SearchNewSmartICComboEmpty.png" />
+    <Content Include="Images\others\SearchNewSmartICComboEmpty_D.png" />
+    <Content Include="Images\others\SearchNewSmartICCombo_D.png" />
+    <Content Include="Images\others\SearchNewSmartICCombo_D_tw.png" />
+    <Content Include="Images\others\SearchNewSmartICCombo_tw.png" />
     <Content Include="Images\others\SearchNewSmartIC_D.png" />
     <Content Include="Images\others\SearchNewSmartIC_D_tw.png" />
     <Content Include="Images\others\SearchNewSmartIC_tw.png" />
@@ -322,8 +337,11 @@
     <Content Include="Images\others\SearchOldSmartIC_D.png" />
     <Content Include="Images\others\SearchOldSmartIC_D_tw.png" />
     <Content Include="Images\others\SearchOldSmartIC_tw.png" />
+    <Content Include="Images\others\SmartIDCardReader.png" />
     <Content Include="Images\Scheme\Scheme_Logo_ENHVSSO.jpg" />
     <Content Include="Images\Scheme\Scheme_Logo_VSS.jpg" />
+    <Content Include="JS\ideasComboLib4Ra.js" />
+    <Content Include="JS\ideasComboVersion.js" />
     <Content Include="JS\jquery-3.4.1.min.js" />
     <Content Include="Printout\EHSClaimForm_CN_RV.aspx" />
     <Content Include="ProperPractice\ProperPractice.aspx" />
@@ -355,6 +373,7 @@
     <Content Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\IDEASCombo\IDEASCombo.ascx" />
     <Content Include="UIControl\VaccinationFile\ucPreCheckDetail.ascx" />
     <Content Include="UIControl\VaccinationFile\ucVaccinationFileDetail.ascx" />
     <Content Include="VaccinationFile\DownloadFileWorker.aspx" />
@@ -469,6 +488,13 @@
       <DependentUpon>sessiontimeout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="DownloadArea\DownloadArea.aspx.designer.vb">
+      <DependentUpon>DownloadArea.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DownloadArea\DownloadArea.aspx.vb">
+      <DependentUpon>DownloadArea.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="EHSClaimBasePageV2.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -476,6 +502,20 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="EHSClaimBasePage.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IDEASComboReader\IDEASComboReaderGuide.aspx.designer.vb">
+      <DependentUpon>IDEASComboReaderGuide.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="IDEASComboReader\IDEASComboReaderGuide.aspx.vb">
+      <DependentUpon>IDEASComboReaderGuide.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IDEASComboReader\IDEASComboReader.aspx.designer.vb">
+      <DependentUpon>IDEASComboReader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="IDEASComboReader\IDEASComboReader.aspx.vb">
+      <DependentUpon>IDEASComboReader.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="EHSRectification\EHSRectification.aspx.designer.vb">
@@ -503,8 +543,8 @@
       <DependentUpon>KeepSessionAlive.aspx</DependentUpon>
     </Compile>
     <Compile Include="General\KeepSessionAlive.aspx.vb">
-      <SubType>ASPXCodebehind</SubType>
       <DependentUpon>KeepSessionAlive.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Printout\BasePrintoutForm.vb">
       <SubType>ASPXCodeBehind</SubType>
@@ -2353,8 +2393,8 @@
       <DependentUpon>ChooseCCCode.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\ChooseCCCode.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ChooseCCCode.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ClaimTransactionMaintenance\ClaimTransactionMaintenance.aspx.designer.vb">
       <DependentUpon>ClaimTransactionMaintenance.aspx</DependentUpon>
@@ -2558,12 +2598,19 @@
       <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\IDEASCombo\IDEASCombo.ascx.designer.vb">
+      <DependentUpon>IDEASCombo.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\IDEASCombo\IDEASCombo.ascx.vb">
+      <DependentUpon>IDEASCombo.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\PCDIntegration\ucPCDEnrolledPopup.ascx.designer.vb">
       <DependentUpon>ucPCDEnrolledPopup.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\PCDIntegration\ucPCDEnrolledPopup.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucPCDEnrolledPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticeGrid.ascx.designer.vb">
       <DependentUpon>ucTypeOfPracticeGrid.ascx</DependentUpon>
@@ -2583,8 +2630,8 @@
       <DependentUpon>ucInputTokenPopup.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\Token\ucInputTokenPopup.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucInputTokenPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\ucInputEHSClaimText.ascx.designer.vb">
       <DependentUpon>ucInputEHSClaimText.ascx</DependentUpon>
@@ -2725,8 +2772,8 @@
       <DependentUpon>DocTypeLegend.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\DocTypeLegend.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>DocTypeLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocTypeText\ucClaimSearch.ascx.designer.vb">
       <DependentUpon>ucClaimSearch.ascx</DependentUpon>
@@ -2837,50 +2884,50 @@
       <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucInputHCVS.ascx.designer.vb">
       <DependentUpon>ucInputHCVS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucInputHCVS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucInputHCVS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyCIVSS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyCIVSS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyEVSS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyEVSS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyEVSS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyEVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyHCVS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyHCVS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyHCVS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyHCVS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyHSIVSS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyHSIVSS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyHSIVSS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyHSIVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyRVP.ascx.designer.vb">
       <DependentUpon>ucReadOnlyRVP.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyRVP.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyRVP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCIVSS.ascx.designer.vb">
       <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
@@ -2901,8 +2948,8 @@
       <DependentUpon>ucInputEHSClaim.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\ucInputEHSClaim.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucInputEHSClaim.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\ucInputEHSClaimBase.vb">
       <SubType>ASPXCodeBehind</SubType>
@@ -2939,8 +2986,8 @@
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\ucInputTips.ascx.designer.vb">
       <DependentUpon>ucInputTips.ascx</DependentUpon>
@@ -2953,8 +3000,8 @@
       <DependentUpon>ucReadOnlyEHSClaim.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\ucReadOnlyEHSClaim.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyEHSClaim.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\ucReadOnlyEHSClaimBase.vb">
       <SubType>ASPXCodeBehind</SubType>
@@ -2963,15 +3010,15 @@
       <DependentUpon>ucReadOnlyEVSS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyEVSS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyEVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyHCVS.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVS.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyHCVS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyHSIVSS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyHSIVSS.ascx</DependentUpon>
@@ -2999,8 +3046,8 @@
       <DependentUpon>SchemeLegend.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\SchemeLegend.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>SchemeLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucClaimSearch.ascx.designer.vb">
       <DependentUpon>ucClaimSearch.ascx</DependentUpon>
@@ -3013,8 +3060,8 @@
       <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\ucInputDocumentType.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucInputEC.ascx.designer.vb">
       <DependentUpon>ucInputEC.ascx</DependentUpon>
@@ -3034,8 +3081,8 @@
       <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\ucReadOnlyDocumnetType.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.designer.vb">
       <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
@@ -3048,8 +3095,8 @@
       <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="EHSClaim\EHSAccountCreationV1.aspx.designer.vb">
       <DependentUpon>EHSAccountCreationV1.aspx</DependentUpon>
@@ -3070,14 +3117,14 @@
     </Compile>
     <Compile Include="en\error.aspx.vb">
       <DependentUpon>error.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="en\invalidlink.aspx.designer.vb">
       <DependentUpon>invalidlink.aspx</DependentUpon>
     </Compile>
     <Compile Include="en\invalidlink.aspx.vb">
-      <SubType>ASPXCodebehind</SubType>
       <DependentUpon>invalidlink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="en\sessionexpired.aspx.designer.vb">
       <DependentUpon>sessionexpired.aspx</DependentUpon>
@@ -3111,8 +3158,8 @@
       <DependentUpon>PrintFormOptionSelection.ascx</DependentUpon>
     </Compile>
     <Compile Include="PrintFormOptionSelection.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>PrintFormOptionSelection.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="RecordConfirmation\RecordConfirmation.aspx.designer.vb">
       <DependentUpon>RecordConfirmation.aspx</DependentUpon>
@@ -3125,22 +3172,22 @@
       <DependentUpon>redirectInvalidLink.aspx</DependentUpon>
     </Compile>
     <Compile Include="redirectInvalidLink.aspx.vb">
-      <SubType>ASPXCodebehind</SubType>
       <DependentUpon>redirectInvalidLink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="text\en\error.aspx.designer.vb">
       <DependentUpon>error.aspx</DependentUpon>
     </Compile>
     <Compile Include="text\en\error.aspx.vb">
       <DependentUpon>error.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="text\en\index.aspx.designer.vb">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="text\en\index.aspx.vb">
       <DependentUpon>index.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="text\en\invalidlink.aspx.designer.vb">
       <DependentUpon>invalidlink.aspx</DependentUpon>
@@ -3168,14 +3215,14 @@
     </Compile>
     <Compile Include="text\zh\error.aspx.vb">
       <DependentUpon>error.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="text\zh\index.aspx.designer.vb">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="text\zh\index.aspx.vb">
       <DependentUpon>index.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="text\zh\invalidlink.aspx.designer.vb">
       <DependentUpon>invalidlink.aspx</DependentUpon>
@@ -3229,15 +3276,15 @@
       <DependentUpon>ucVaccinationRecord.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\VaccinationRecord\ucVaccinationRecord.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucVaccinationRecord.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="VaccinationFile\DownloadFileWorker.aspx.designer.vb">
       <DependentUpon>DownloadFileWorker.aspx</DependentUpon>
     </Compile>
     <Compile Include="VaccinationFile\DownloadFileWorker.aspx.vb">
       <DependentUpon>DownloadFileWorker.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="VaccinationFile\VaccinationFileManagement.aspx.designer.vb">
       <DependentUpon>VaccinationFileManagement.aspx</DependentUpon>
@@ -3376,8 +3423,8 @@
       <DependentUpon>invalidlink.aspx</DependentUpon>
     </Compile>
     <Compile Include="zh\invalidlink.aspx.vb">
-      <SubType>ASPXCodebehind</SubType>
       <DependentUpon>invalidlink.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="zh\InvalidOS.aspx.designer.vb">
       <DependentUpon>InvalidOS.aspx</DependentUpon>
@@ -3397,22 +3444,22 @@
       <DependentUpon>ClaimTranEnquiry.ascx</DependentUpon>
     </Compile>
     <Compile Include="ClaimTranEnquiry.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ClaimTranEnquiry.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="en\index.aspx.designer.vb">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="en\index.aspx.vb">
-      <SubType>ASPXCodebehind</SubType>
       <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="en\sessiontimeout.aspx.designer.vb">
       <DependentUpon>sessiontimeout.aspx</DependentUpon>
     </Compile>
     <Compile Include="en\sessiontimeout.aspx.vb">
-      <SubType>ASPXCodebehind</SubType>
       <DependentUpon>sessiontimeout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ForgotPassword\ForgotPassword.aspx.designer.vb">
       <DependentUpon>ForgotPassword.aspx</DependentUpon>
@@ -3478,8 +3525,8 @@
       <DependentUpon>ClaimVoucher.Master</DependentUpon>
     </Compile>
     <Compile Include="text\ClaimVoucher.Master.vb">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ClaimVoucher.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="text\login.aspx.designer.vb">
       <DependentUpon>login.aspx</DependentUpon>
@@ -4640,10 +4687,8 @@
     <Content Include="Images\button\btn_ReadCardAndSearch_D.png" />
     <Content Include="Images\button\btn_ReadCardAndSearch_tw.png" />
     <Content Include="Images\button\btn_ReadCardAndSearch_tw_D.png" />
-    <Content Include="Images\button\btn_readsmartID.png" />
     <Content Include="Images\button\btn_readSmartIDCard_D.png" />
     <Content Include="Images\button\btn_readSmartIDCard_D_tw.png" />
-    <Content Include="Images\button\btn_readsmartID_tw.png" />
     <Content Include="Images\button\btn_SaveAndConfirm.png" />
     <Content Include="Images\button\btn_SaveAndConfirm_tw.png" />
     <Content Include="Images\button\btn_save_D.png" />
@@ -4947,6 +4992,7 @@
     <Content Include="zh\index.aspx" />
     <Content Include="zh\invalidlink.aspx" />
     <Content Include="zh\InvalidOS.aspx" />
+    <Content Include="zh\ReadSmartIDTips.htm" />
     <Content Include="zh\sessiontimeout.aspx" />
     <Content Include="ClaimTranEnquiry.ascx" />
     <Content Include="CSS\ComboBoxStyle.css" />
@@ -5136,6 +5182,7 @@
     <Content Include="MasterPage.Master" />
     <Content Include="Doc\ReadSmartIDTips.pdf" />
     <Content Include="Doc\ReadSmartIDTips_CHI.pdf" />
+    <Content Include="Doc\Smart_ID_Card_with_IDEAS_Combo_User_Guide.pdf" />
     <None Include="Doc\voucheracccreation.pdf" />
     <None Include="Doc\voucherconsent.pdf" />
     <None Include="My Project\Application.myapp">
@@ -5427,7 +5474,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2524</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/HCSP</IISUrl>
+          <IISUrl>http://localhost/HCSP_Dev</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://localhost/HCSP</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

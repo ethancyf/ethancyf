@@ -423,32 +423,23 @@ Partial Public Class loginchangepassword
                         Session.Remove(SESS_ChangePasswordUserAC)
                         udtUserACBLL.SaveToSession(udtDataEntryUser)
                     End If
-                    'If ViewState(VS_FirstChangePassword) = "N" Then
+
                     udtAuditLogEntry.WriteEndLog(strSuccessLogID, strAuditLogDesc & " successful")
-                    'Else
-                    '    udtAuditLogEntry.WriteEndLog(strSuccessLogID, strAuditLogDesc & " successful")
-                    'End If
 
-                    '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
+                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Dim udtIdeasBLL As New IdeasBLL
+                    Dim udtSessionHandler As New SessionHandler
+                    udtIdeasBLL.UpdateIDEASComboInfo(udtUserAC, udtSessionHandler.IDEASComboClientGetFormSession(), udtSessionHandler.IDEASComboVersionGetFormSession())
+                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
-                    ' --- I-CRE16-007-02 (Refine system from CheckMarx findings) [Start] (Marco) ---
-                    'RedirectHandler.ToURL("~/Home/home.aspx")
                     RedirectHandler.ToURL(ClaimVoucherMaster.FullVersionPage.Home)
-                    ' --- I-CRE16-007-02 (Refine system from CheckMarx findings) [End] (Marco) ---
-
-                    '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
 
                 End If
             End If
         End If
 
-        'If ViewState(VS_FirstChangePassword) = "N" Then
-        'Me.udcMessageBox.BuildMessageBox(strMsgBoxDesc, udtAuditLogEntry, strFailLogID, strAuditLogDesc & " fail", ViewState("AuditLogSPID"), ViewState("AuditDataEntryAccount"))
         Me.udcMessageBox.BuildMessageBox(strMsgBoxDesc, udtAuditLogEntry, strAuditLogDesc & " fail", strFailLogID, ViewState("AuditLogSPID"), ViewState("AuditDataEntryAccount"))
-        'Else
-        '    Me.udcMessageBox.BuildMessageBox(strMsgBoxDesc, udtAuditLogEntry, strFailLogID, strAuditLogDesc & " fail", ViewState("AuditLogSPID"), ViewState("AuditDataEntryAccount"))
-        'End If
-
 
     End Sub
 

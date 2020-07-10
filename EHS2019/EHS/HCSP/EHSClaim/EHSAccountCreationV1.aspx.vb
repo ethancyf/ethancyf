@@ -856,12 +856,12 @@ Partial Public Class EHSAccountCreationV1
         '==================================================================== Code for SmartID ============================================================================
         If Not udtSmartIDContent Is Nothing Then
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Select Case udtSmartIDContent.SmartIDReadStatus
                 Case SmartIDHandler.SmartIDResultStatus.TempAccountExist_SameDetail
 
-                    If udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.TwoGender Then
+                    If udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.TwoGender Or udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.ComboGender Then
                         'A temporary eHealth (Subsidies) Account with the same input information is found in the System. Please verify all information against those on the recipient's presented document.
                         Me.lblStep1a2TempAccDisclaimerText.Text = Me.GetGlobalResourceObject("Text", "ConfirmTempAccDisclaim")
 
@@ -873,7 +873,7 @@ Partial Public Class EHSAccountCreationV1
                         udtSmartIDContent.HighLightGender = True
                     End If
             End Select
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
         Else
             Me.lblStep1a2TempAccDisclaimerText.Text = Me.GetGlobalResourceObject("Text", "ConfirmTempAccDisclaim")
         End If
@@ -904,15 +904,15 @@ Partial Public Class EHSAccountCreationV1
             btnStep1a2Modify.Visible = True
         End If
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         ' Read Smart ID with gender, no other information need to confirm -> Hide Modify button
         If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
-            If udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.TwoGender Then
+            If udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.TwoGender Or udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.ComboGender Then
                 btnStep1a2Modify.Visible = False
             End If
         End If
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
     End Sub
 
 #End Region

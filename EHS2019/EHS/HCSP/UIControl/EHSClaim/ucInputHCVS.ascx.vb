@@ -326,17 +326,21 @@ Partial Public Class ucInputHCVS
             dtmServiceDate = MyBase.ServiceDate
         End If
 
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         If udtGeneralFunction.IsCoPaymentFeeEnabled(dtmServiceDate) Then
-            trCoPaymentFee.Style.Item("display") = "block"
-            Me.tdReasonForVisitSecondaryHeader.Style.Item("display") = ""
-            Me.tdReasonForVisitSecondaryContent.Style.Item("display") = ""
+            trCoPaymentFee.Style.Remove("display")
+            Me.tdReasonForVisitSecondaryHeader.Style.Remove("display")
+            Me.tdReasonForVisitSecondaryContent.Style.Remove("display")
 
         Else
-            trCoPaymentFee.Style.Item("display") = "none"
-            Me.tdReasonForVisitSecondaryHeader.Style.Item("display") = "none"
-            Me.tdReasonForVisitSecondaryContent.Style.Item("display") = "none"
+            trCoPaymentFee.Style.Add("display", "none")
+            Me.tdReasonForVisitSecondaryHeader.Style.Add("display", "none")
+            Me.tdReasonForVisitSecondaryContent.Style.Add("display", "none")
 
         End If
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
 
 
         ' CRE19-006 (DHC) [Start][Winnie]

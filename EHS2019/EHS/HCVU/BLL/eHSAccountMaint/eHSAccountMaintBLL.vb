@@ -1061,8 +1061,8 @@ Public Class eHSAccountMaintBLL
                 If udtPersonalInfoNew.Gender Is Nothing Then udtPersonalInfoNew.Gender = String.Empty
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
+                ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 ' Check if any info read from Smart IC is changed
                 If udtFormatter.formatEnglishName(udtPersonalInfoOld.ENameSurName.ToUpper(), udtPersonalInfoOld.ENameFirstName.ToUpper()).Equals( _
                         udtFormatter.formatEnglishName(udtPersonalInfoNew.ENameSurName, udtPersonalInfoNew.ENameFirstName)) AndAlso _
@@ -1075,8 +1075,9 @@ Public Class eHSAccountMaintBLL
                         udtPersonalInfoOld.DOB.Equals(udtPersonalInfoNew.DOB) AndAlso _
                         udtPersonalInfoOld.DateofIssue.Equals(udtPersonalInfoNew.DateofIssue) AndAlso _
                         udtPersonalInfoOld.ExactDOB.Equals(udtPersonalInfoNew.ExactDOB) AndAlso _
-                        (Not udtPersonalInfoOld.SmartIDVer.Equals(SmartIDVersion.IDEAS2_WithGender) OrElse udtPersonalInfoOld.Gender.Equals(udtPersonalInfoNew.Gender)) Then
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                        ((Not udtPersonalInfoOld.SmartIDVer.Equals(SmartIDVersion.IDEAS2_WithGender) And Not udtPersonalInfoOld.SmartIDVer.Equals(SmartIDVersion.IDEAS_Combo_New_WithGender)) OrElse _
+                         udtPersonalInfoOld.Gender.Equals(udtPersonalInfoNew.Gender)) Then
+                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
                     'No change, if no account detail changed
                     Return udtPersonalInfoOld.CreateBySmartID

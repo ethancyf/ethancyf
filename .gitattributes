@@ -971,9 +971,14 @@ EHS2019/EHS/HCSP/Common/Images/others/HA_MINGLIU_Sample.png -text
 EHS2019/EHS/HCSP/Common/Images/others/Thumbs.db -text
 EHS2019/EHS/HCSP/Component/FunctionInformation/FunctionInformationBLL.vb -text
 EHS2019/EHS/HCSP/Component/FunctionInformation/FunctionInformationModel.vb -text
+EHS2019/EHS/HCSP/Doc/User[!!-~]Guide[!!-~]for[!!-~]Smart[!!-~]HKID[!!-~]Card[!!-~]Reading[!!-~]Software.pdf -text svneol=unset#unset
+EHS2019/EHS/HCSP/Doc/User[!!-~]Guide[!!-~]for[!!-~]Smart[!!-~]HKID[!!-~]Card[!!-~]Reading[!!-~]Software_CHI.pdf -text svneol=unset#unset
 EHS2019/EHS/HCSP/Doc/voucheracccreation.pdf -text
 EHS2019/EHS/HCSP/Doc/voucherconsent.pdf -text
 EHS2019/EHS/HCSP/Download/HA_MINGLIU.exe -text
+EHS2019/EHS/HCSP/DownloadArea/DownloadArea.aspx -text
+EHS2019/EHS/HCSP/DownloadArea/DownloadArea.aspx.designer.vb -text
+EHS2019/EHS/HCSP/DownloadArea/DownloadArea.aspx.vb -text
 EHS2019/EHS/HCSP/EHSAccountCreationBase.vb -text
 EHS2019/EHS/HCSP/EHSClaim/EHSAccountCreationV1.aspx -text
 EHS2019/EHS/HCSP/EHSClaim/EHSAccountCreationV1.aspx.designer.vb -text
@@ -1001,6 +1006,12 @@ EHS2019/EHS/HCSP/Home/Inbox.aspx.vb -text
 EHS2019/EHS/HCSP/Home/home.aspx -text
 EHS2019/EHS/HCSP/Home/home.aspx.designer.vb -text
 EHS2019/EHS/HCSP/Home/home.aspx.vb -text
+EHS2019/EHS/HCSP/IDEASComboReader/IDEASComboReader.aspx -text
+EHS2019/EHS/HCSP/IDEASComboReader/IDEASComboReader.aspx.designer.vb -text
+EHS2019/EHS/HCSP/IDEASComboReader/IDEASComboReader.aspx.vb -text
+EHS2019/EHS/HCSP/IDEASComboReader/IDEASComboReaderGuide.aspx -text
+EHS2019/EHS/HCSP/IDEASComboReader/IDEASComboReaderGuide.aspx.designer.vb -text
+EHS2019/EHS/HCSP/IDEASComboReader/IDEASComboReaderGuide.aspx.vb -text
 EHS2019/EHS/HCSP/Images/AjaxControlToolkit/Tabs/tab-active-left.gif -text
 EHS2019/EHS/HCSP/Images/AjaxControlToolkit/Tabs/tab-active-right.gif -text
 EHS2019/EHS/HCSP/Images/AjaxControlToolkit/Tabs/tab-active.gif -text
@@ -1197,6 +1208,9 @@ EHS2019/EHS/HCSP/Images/button/btn_ReadOldSmartIDCard_D_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReadOldSmartIDCard_D_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReadOldSmartIDCard_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReadOldSmartIDCard_tw.png -text
+EHS2019/EHS/HCSP/Images/button/btn_ReadSmartIDCard.png -text
+EHS2019/EHS/HCSP/Images/button/btn_ReadSmartIDCard_cn.png -text
+EHS2019/EHS/HCSP/Images/button/btn_ReadSmartIDCard_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_ReturneHealthAccountRectification_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_SaveAndConfirm.png -text
 EHS2019/EHS/HCSP/Images/button/btn_SaveAndConfirm_cn.png -text
@@ -1661,6 +1675,7 @@ EHS2019/EHS/HCSP/Images/others/NewSmartIC.png -text
 EHS2019/EHS/HCSP/Images/others/NewSmartIC_cn.png -text
 EHS2019/EHS/HCSP/Images/others/NewSmartIC_tw.png -text
 EHS2019/EHS/HCSP/Images/others/NewSmartIDChipFacingUp.png -text
+EHS2019/EHS/HCSP/Images/others/NewSmartIDComboChipFacingUp.png -text
 EHS2019/EHS/HCSP/Images/others/New_HKID_Sample.png -text
 EHS2019/EHS/HCSP/Images/others/New_HKID_Sample_cn.png -text
 EHS2019/EHS/HCSP/Images/others/NoticeNewbg.gif -text
@@ -1695,6 +1710,12 @@ EHS2019/EHS/HCSP/Images/others/SearchManualInput.png -text
 EHS2019/EHS/HCSP/Images/others/SearchManualInput_D.png -text
 EHS2019/EHS/HCSP/Images/others/SearchManualInput_cn.png -text
 EHS2019/EHS/HCSP/Images/others/SearchNewSmartIC.png -text
+EHS2019/EHS/HCSP/Images/others/SearchNewSmartICCombo.png -text
+EHS2019/EHS/HCSP/Images/others/SearchNewSmartICComboEmpty.png -text
+EHS2019/EHS/HCSP/Images/others/SearchNewSmartICComboEmpty_D.png -text
+EHS2019/EHS/HCSP/Images/others/SearchNewSmartICCombo_D.png -text
+EHS2019/EHS/HCSP/Images/others/SearchNewSmartICCombo_D_tw.png -text
+EHS2019/EHS/HCSP/Images/others/SearchNewSmartICCombo_tw.png -text
 EHS2019/EHS/HCSP/Images/others/SearchNewSmartIC_D.png -text
 EHS2019/EHS/HCSP/Images/others/SearchNewSmartIC_D_tw.png -text
 EHS2019/EHS/HCSP/Images/others/SearchNewSmartIC_tw.png -text
@@ -1702,6 +1723,7 @@ EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC.png -text
 EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC_D.png -text
 EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC_D_tw.png -text
 EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC_tw.png -text
+EHS2019/EHS/HCSP/Images/others/SmartIDCardReader.png -text
 EHS2019/EHS/HCSP/Images/others/Tab_left.png -text
 EHS2019/EHS/HCSP/Images/others/Tab_left_D.png -text
 EHS2019/EHS/HCSP/Images/others/Tab_middle.png -text
@@ -1765,6 +1787,8 @@ EHS2019/EHS/HCSP/JS/Common.js -text
 EHS2019/EHS/HCSP/JS/TextVersionCommon.js -text
 EHS2019/EHS/HCSP/JS/TimeoutReminder.js -text
 EHS2019/EHS/HCSP/JS/WebKit.js -text
+EHS2019/EHS/HCSP/JS/ideasComboLib4Ra.js -text
+EHS2019/EHS/HCSP/JS/ideasComboVersion.js -text
 EHS2019/EHS/HCSP/MasterPage.Master -text
 EHS2019/EHS/HCSP/MasterPage.Master.designer.vb -text
 EHS2019/EHS/HCSP/MasterPage.Master.vb -text
@@ -3165,6 +3189,9 @@ EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyVoucherSlim.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReasonForVisit.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReasonForVisit.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReasonForVisit.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/IDEASCombo/IDEASCombo.ascx -text
+EHS2019/EHS/HCSP/UIControl/IDEASCombo/IDEASCombo.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/IDEASCombo/IDEASCombo.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/PCDIntegration/ucPCDEnrolledPopup.ascx -text
 EHS2019/EHS/HCSP/UIControl/PCDIntegration/ucPCDEnrolledPopup.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/PCDIntegration/ucPCDEnrolledPopup.ascx.vb -text
@@ -3343,6 +3370,7 @@ EHS2019/EHS/HCSP/en/ImproperAccess.aspx.vb -text
 EHS2019/EHS/HCSP/en/InvalidOS.aspx -text
 EHS2019/EHS/HCSP/en/InvalidOS.aspx.designer.vb -text
 EHS2019/EHS/HCSP/en/InvalidOS.aspx.vb -text
+EHS2019/EHS/HCSP/en/ReadSmartIDTips.htm -text
 EHS2019/EHS/HCSP/en/error.aspx -text
 EHS2019/EHS/HCSP/en/error.aspx.designer.vb -text
 EHS2019/EHS/HCSP/en/error.aspx.vb -text
@@ -3438,6 +3466,7 @@ EHS2019/EHS/HCSP/zh/ImproperAccess.aspx.vb -text
 EHS2019/EHS/HCSP/zh/InvalidOS.aspx -text
 EHS2019/EHS/HCSP/zh/InvalidOS.aspx.designer.vb -text
 EHS2019/EHS/HCSP/zh/InvalidOS.aspx.vb -text
+EHS2019/EHS/HCSP/zh/ReadSmartIDTips.htm -text
 EHS2019/EHS/HCSP/zh/error.aspx -text
 EHS2019/EHS/HCSP/zh/error.aspx.designer.vb -text
 EHS2019/EHS/HCSP/zh/error.aspx.vb -text
@@ -6025,9 +6054,17 @@ EHS2019/EHS/UtilizationStat/UtitlizationSummary.aspx.designer.vb -text
 EHS2019/EHS/UtilizationStat/UtitlizationSummary.aspx.vb -text
 EHS2019/EHS/UtilizationStat/Web.config -text
 EHS2019/EHS/UtilizationStat/XML/Request.xml -text
+EHS2019/EHS/VerifierIDEAS/CSS/DialogStyle.css -text
 EHS2019/EHS/VerifierIDEAS/Global.asax -text
 EHS2019/EHS/VerifierIDEAS/Global.asax.vb -text
+EHS2019/EHS/VerifierIDEAS/IDEASCombo.ascx -text
+EHS2019/EHS/VerifierIDEAS/IDEASCombo.ascx.designer.vb -text
+EHS2019/EHS/VerifierIDEAS/IDEASCombo.ascx.vb -text
+EHS2019/EHS/VerifierIDEAS/IDEASComboReader.aspx -text
+EHS2019/EHS/VerifierIDEAS/IDEASComboReader.aspx.designer.vb -text
+EHS2019/EHS/VerifierIDEAS/IDEASComboReader.aspx.vb -text
 EHS2019/EHS/VerifierIDEAS/Images/master/banner_header.jpg -text
+EHS2019/EHS/VerifierIDEAS/JS/ideasComboLib4Ra.js -text
 EHS2019/EHS/VerifierIDEAS/Log/Log.txt -text
 EHS2019/EHS/VerifierIDEAS/Logger.vb -text
 EHS2019/EHS/VerifierIDEAS/Main.aspx -text
@@ -8380,6 +8417,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_ICWAuditLog_Add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ICWStaffAccessRight_Get_ByStaffRole.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ICWStaffAccount_Get_ByStaffID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ICWStaffAccount_Update_ByStaffID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_IDEASComboClientLogBook_add_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_IVRSConnectionMapping_check.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_IVRSConnectionMapping_ins.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_IVRSConnectionMapping_upd_ActionDtm.sql -text

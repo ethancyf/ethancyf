@@ -1,24 +1,28 @@
 <%@ Page Language="vb" AutoEventWireup="false" MasterPageFile="~/text/ClaimVoucher.Master"
     Codebehind="EHSClaimV1.aspx.vb" Inherits="HCSP.Text.EHSClaimV1" Title="<%$ Resources:Title, Claim %>" %>
-
-<%@ Register Src="../UIControl/VaccinationRecordText/ucVaccinationRecord.ascx" TagName="ucVaccinationRecord"
-    TagPrefix="uc8" %>
-<%@ Register Src="../UIControl/EHSClaimText/ucReasonForVisit.ascx" TagName="ucReasonForVisit"
-    TagPrefix="uc7" %>
-<%@ Register Src="../UIControl/ucInputTips.ascx" TagName="ucInputTips" TagPrefix="uc6" %>
-<%@ Register Src="../UIControl/ucReadOnlyEHSClaim.ascx" TagName="ucReadOnlyEHSClaim"
-    TagPrefix="uc5" %>
-<%@ Register Src="../UIControl/ucInputEHSClaimText.ascx" TagName="ucInputEHSClaim"
-    TagPrefix="uc4" %>
-<%@ Register Src="../UIControl/ucReadOnlyDocumnetType.ascx" TagName="ucReadOnlyDocumnetType"
-    TagPrefix="uc3" %>
-<%@ Register Src="../UIControl/DocTypeText/ucClaimSearch.ascx" TagName="ucClaimSearch"
-    TagPrefix="uc2" %>
 <%@ Register Src="../PrintFormOptionSelection.ascx" TagName="PrintFormOptionSelection"
     TagPrefix="uc1" %>
-<%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc2" %>
+<%@ Register Src="../UIControl/DocTypeText/ucClaimSearch.ascx" TagName="ucClaimSearch"
+    TagPrefix="uc2" %>
+<%@ Register Src="../UIControl/ucReadOnlyDocumnetType.ascx" TagName="ucReadOnlyDocumnetType"
+    TagPrefix="uc3" %>
+<%@ Register Src="../UIControl/ucInputEHSClaimText.ascx" TagName="ucInputEHSClaim"
+    TagPrefix="uc4" %>
+<%@ Register Src="../UIControl/ucReadOnlyEHSClaim.ascx" TagName="ucReadOnlyEHSClaim"
+    TagPrefix="uc5" %>
+<%@ Register Src="../UIControl/ucInputTips.ascx" TagName="ucInputTips" 
+    TagPrefix="uc6" %>
+<%@ Register Src="../UIControl/EHSClaimText/ucReasonForVisit.ascx" TagName="ucReasonForVisit"
+    TagPrefix="uc7" %>
+<%@ Register Src="../UIControl/VaccinationRecordText/ucVaccinationRecord.ascx" TagName="ucVaccinationRecord"
+    TagPrefix="uc8" %>
+<%@ Register Src="~/UIControl/IDEASCombo/IDEASCombo.ascx" TagName="IDEASCombo" 
+    TagPrefix="uc9" %>
 <%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc1" %>
+<%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc2" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder" runat="server">
+    <uc9:IDEASCombo ID="ucIDEASCombo" runat="server" />
     <table border="0" cellpadding="0" cellspacing="0">
         <tr>
             <td>
@@ -75,7 +79,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblStep1DocType" runat="server" CssClass="tableText"></asp:Label></td>
+                        <asp:Label ID="lblStep1DocType" runat="server" CssClass="tableText"></asp:Label>
+                    </td>
                 </tr>
             </table>
             <asp:Panel runat="server" ID="panStep1Submit" DefaultButton="btnStep1GO">
@@ -88,8 +93,44 @@
                     <tr style="padding: 0px 0px 5px 0px">
                         <td>
                             <asp:Button ID="btnStep1GO" runat="server" Text="<%$ Resources:AlternateText, SearchBtn %>" /><br />
+                        </td>
+                    </tr>
+                    <tr id="trSmartIDSoftwareAvailableDownload" runat="server" style="padding: 0px 0px 5px 0px">
+                        <td>
+                            <div>
+                                <table style="border-style:solid;border-width:1px;border-color:red;background-color:pink;text-align:left;padding:1px 1px 1px 1px;width:auto">
+                                    <tr>
+                                        <td>
+                                            <asp:Label ID="lblSmartIDSoftwareAvailableDownload" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SmartIDSoftwareAvailableDownload %>"/>
+                                            <div id="divUpdateNow" runat="server" style="position:relative;top:0px;border-style:solid;border-width:1px;padding:1px 1px 1px 1px;width:100px;display:inline-block;background-color:rgba(255,255,153,1);text-align:center;cursor:pointer;"
+                                                    onclick="javascript:__doPostBack('ctl00$ContentPlaceHolder$lbtnUpdateNow',''); return false;">
+                                                <asp:Label ID="lblUpdateNow" runat="server" style="font-size:16px;text-decoration:none;color:rgba(0, 102, 204, 1);cursor:pointer" text="<%$ Resources:Text, UpdateNow %>" />
+                                                <asp:LinkButton ID ="lbtnUpdateNow" runat="server" Text ="<%$ Resources:Text, UpdateNow %>" style="font-size:16px;text-decoration:none;color:rgba(0, 102, 204, 1);display:none" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>    
+                    </tr>
+                    <tr id="trSmartID" runat="server" style="padding: 0px 0px 5px 0px">
+                        <td>
                             <asp:Button ID="btnStep1ReadOldSmartID" runat="server" Text="<%$ Resources:AlternateText, ReadOldCardAndSearchBtn %>" /><br />
-                            <asp:Button ID="btnStep1ReadNewSmartID" runat="server" Text="<%$ Resources:AlternateText, ReadNewCardAndSearchBtn %>" />
+                            <asp:Button ID="btnStep1ReadNewSmartID" runat="server" Text="<%$ Resources:AlternateText, ReadNewCardAndSearchBtn %>" /><br />
+                        </td>
+                    </tr>
+                    <tr id="trSmartIDSoftwareNotInstalled" runat="server" style="padding: 0px 0px 5px 0px">
+                        <td>
+                            <asp:Label ID="lblSmartIDSoftwareNotInstalled" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled %>"/>
+                        </td>    
+                    </tr>
+                    <tr id="trSmartIDCombo" runat="server"  style="padding: 0px 0px 5px 0px">
+                        <td>
+                            <asp:Button ID="btnStep1ReadNewSmartIDCombo" runat="server" Text="<%$ Resources:AlternateText, ReadCardAndSearchBtn %>" />
+                        </td>
+                    </tr>
+                    <tr id="trSmartIDNoService" runat="server"  style="padding: 0px 0px 5px 0px">
+                        <td>
                             <asp:Label ID="lblReadCardAndSearchNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchTextOnlyNA %>"></asp:Label>
                         </td>
                     </tr>

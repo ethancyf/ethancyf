@@ -23,6 +23,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents UpdatePanel1 As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
+    '''ucIDEASCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucIDEASCombo As Global.HCSP.IDEASCombo
+
+    '''<summary>
     '''panPopupConfirmCancel control.
     '''</summary>
     '''<remarks>

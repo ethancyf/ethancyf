@@ -68,6 +68,7 @@ Imports System.Web.Security.AntiXss
 #Region "Variables"
     Private udtAuditLogEntry As AuditLogEntry
     Private strFuncCode As String = Common.Component.FunctCode.FUNT020004
+    Private udtSessionHandler As New SessionHandler
 
 #End Region
 
@@ -150,6 +151,14 @@ Imports System.Web.Security.AntiXss
                 End If
             End If
             ' CRE16-004 (Enable SP to unlock account) [End][Winnie]
+
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtSessionHandler.IDEASComboClientRemoveFormSession()
+
+            System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboClient", "checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);", True)
+            System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboVersion", "getIDEASComboVersion();", True)
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
         End If
 
         ' CRE16-004 (Enable SP to unlock account) [Start][Winnie]
@@ -295,6 +304,11 @@ Imports System.Web.Security.AntiXss
 #Region "Events"
     ' Login
     Private Sub btnLogin_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLogin.Click
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        SaveToSessionIdeasComboClientInfo(Me.txtIDEASComboResult.Text, Me.txtIDEASComboVersion.Text)
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
         If Not ValidateLoginInput() Then
             LoginAction(False, False)
             Return
@@ -523,6 +537,12 @@ Imports System.Web.Security.AntiXss
             strLogSPID = Me.txtSPID.Text
             strLogDataEntryAccount = Me.txtUserName.Text
         End If
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.udtAuditLogEntry.AddDescripton("IdeasComboClient", IIf(udtSessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, udtSessionHandler.IDEASComboClientGetFormSession()))
+        Me.udtAuditLogEntry.AddDescripton("IdeasComboVersion", IIf(udtSessionHandler.IDEASComboVersionGetFormSession() Is Nothing, String.Empty, udtSessionHandler.IDEASComboVersionGetFormSession()))
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
         Me.udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00001, AublitLogDescription.ConfirmLogin, strLogSPID, strLogDataEntryAccount)
         Dim blnLoginFail As Boolean = False
         Dim blnPassLogin As Boolean = True
@@ -880,7 +900,7 @@ Imports System.Web.Security.AntiXss
                                         Throw eSQL
                                     End If
                                 Catch ex As Exception
-                                    Throw ex
+                                    Throw
                                 End Try
 
                             End If
@@ -1285,31 +1305,51 @@ Imports System.Web.Security.AntiXss
         Dim Cache1 As String = Nothing
         Dim Cache2 As Boolean = Nothing
         Dim Cache3 As Boolean = Nothing
+        Dim Cache4 As String = Nothing
+        Dim Cache5 As String = Nothing
 
-        '1. language
+        '1a. language
         If Not Session("language") Is Nothing Then
             Cache1 = Session("language")
         End If
 
-        '2. Undefined User Agent
+        '2a. Undefined User Agent
         Cache2 = CommonSessionHandler.AddedUndefinedUserAgent
 
-        '3. Popup for remind obsoleted OS
+        '3a. Popup for remind obsoleted OS
         Cache3 = CommonSessionHandler.ReminderForWindowsVersion
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        '4a. IDEAS Combo Installation Result
+        Cache4 = udtSessionHandler.IDEASComboClientGetFormSession()
+
+        '5a. IDEAS Combo Version
+        Cache5 = udtSessionHandler.IDEASComboVersionGetFormSession()
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         'Clear
         Session.RemoveAll()
 
-        '1. language
+        '1b. language
         If Not Cache1 Is Nothing Then
             Session("language") = Cache1
         End If
 
-        '2. Undefined User Agent
+        '2b. Undefined User Agent
         CommonSessionHandler.AddedUndefinedUserAgent = Cache2
 
-        '3. Popup for remind obsoleted OS
+        '3b. Popup for remind obsoleted OS
         CommonSessionHandler.ReminderForWindowsVersion = Cache3
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        '5b. IDEAS Combo Installation Result
+        udtSessionHandler.IDEASComboClientSaveToSession(Cache4)
+
+        '6b. IDEAS Combo Version
+        udtSessionHandler.IDEASComboVersionSaveToSession(Cache5)
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     End Sub
     ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
@@ -1643,6 +1683,31 @@ Imports System.Web.Security.AntiXss
 
     End Sub
     ' CRE18-005 (OCSSS Popup) [End][Chris YIM]
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub SaveToSessionIdeasComboClientInfo(ByVal strResult As String, ByVal strVersion As String)
+        Dim IC4RA_ERRORCODE_SUCCESS As String = "E0000"
+        Dim IC4RA_ERRORCODE_NOCLIENT As String = "E0009"
+
+        'Save Session - IDEAS Combo Client Installation Result
+        Select Case strResult
+            Case IC4RA_ERRORCODE_SUCCESS
+                udtSessionHandler.IDEASComboClientSaveToSession(YesNo.Yes)
+
+            Case IC4RA_ERRORCODE_NOCLIENT
+                udtSessionHandler.IDEASComboClientSaveToSession(YesNo.No)
+
+            Case Else
+                udtSessionHandler.IDEASComboClientSaveToSession(YesNo.No)
+
+        End Select
+
+        'Save Session - IDEAS Combo Version
+        udtSessionHandler.IDEASComboVersionSaveToSession(strVersion)
+
+    End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
 #End Region
 

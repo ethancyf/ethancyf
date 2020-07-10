@@ -36,8 +36,8 @@ Public Class SmartIDDummyCase
         udtPersInfo.SetDOBTypeSelected(False)
         udtPersInfo.CreateBySmartID = True        
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Select Case eIdeasVersion
             Case BLL.IdeasBLL.EnumIdeasVersion.One
                 udtPersInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS1
@@ -49,8 +49,14 @@ Public Class SmartIDDummyCase
 
             Case BLL.IdeasBLL.EnumIdeasVersion.TwoGender
                 udtPersInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS2_WithGender
+
+            Case BLL.IdeasBLL.EnumIdeasVersion.Combo
+                udtPersInfo.Gender = String.Empty
+
+            Case BLL.IdeasBLL.EnumIdeasVersion.ComboGender
+                'Nothing to do
         End Select
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         Dim udtEHSAccount As New EHSAccountModel()
 

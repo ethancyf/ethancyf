@@ -31,14 +31,11 @@ Partial Public Class login
 
     Private Const SESS_ChangePasswordUserAC As String = "ChangePasswordUserAC"
 
-    ' CRE16-004 (Enable SP to unlock account) [Start][Winnie]
-    ' -----------------------------------------------------------------------------------------
     Private Const SESS_LoginID As String = "LoginID"
     Private Const SESS_LoginRole As String = "LoginRole"
     Private Const SESS_LoginFailCount As String = "LoginFailCount"
 
     Private Const SESS_NonLoginPageKey As String = "NonLoginPageKey"
-    ' CRE16-004 (Enable SP to unlock account) [End][Winnie]
 
     Private udcGeneralF As New Common.ComFunction.GeneralFunction
     Private udcSessionHandler As New SessionHandler
@@ -148,6 +145,14 @@ Partial Public Class login
             ResetAlertImage()
 
             FunctionCode = FunctCode.FUNT020001
+
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udcSessionHandler.IDEASComboClientRemoveFormSession()
+
+            System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboClient", "checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);", True)
+            System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboVersion", "getIDEASComboVersion();", True)
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
         End If
 
         ' CRE16-004 (Enable SP to unlock account) [Start][Winnie]
@@ -218,6 +223,14 @@ Partial Public Class login
         SetDefaultButton(Me.txtPassword, Me.ibtnLogin)
         SetDefaultButton(Me.txtPinNo, Me.ibtnLogin)
         SetDefaultButton(Me.txtSPID, Me.ibtnLogin)
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.txtUserName.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+        Me.txtPassword.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+        Me.txtPinNo.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+        Me.txtSPID.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         commfunc.getSystemParameter("EnableSPTextOnly", strEnableTextOnlyVersion, "")
         If strEnableTextOnlyVersion.Equals("Y") Then
@@ -359,6 +372,11 @@ Partial Public Class login
     '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
     Private Sub ibtnLogin_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnLogin.Click
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        SaveToSessionIdeasComboClientInfo(Me.txtIDEASComboResult.Text, Me.txtIDEASComboVersion.Text)
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
         If Not ValidateLoginInput() Then
             ' Empty input, should be block by logic inside "LoginAction"
             LoginAction(False, False)
@@ -436,7 +454,6 @@ Partial Public Class login
         Dim strFailLogID As String
         Dim strForceResetLogID As String
 
-
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
         If Not RedirectHandler.IsTurnOnConcurrentBrowserHandling Then
@@ -500,6 +517,12 @@ Partial Public Class login
         Dim strSPStatus As String = String.Empty
         ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        udtAuditLogEntry.AddDescripton("IdeasComboClient", IIf(udcSessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, udcSessionHandler.IDEASComboClientGetFormSession()))
+        udtAuditLogEntry.AddDescripton("IdeasComboVersion", IIf(udcSessionHandler.IDEASComboVersionGetFormSession() Is Nothing, String.Empty, udcSessionHandler.IDEASComboVersionGetFormSession()))
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
         If strLoginRole = SPAcctType.ServiceProvider Then
             ' If Service Provider
 
@@ -562,74 +585,6 @@ Partial Public Class login
                         udtAuditLogEntry.AddDescripton("StackTrace", "SP is not activated")
 
                     Else
-                        ' I-CRE16-007-02 Refine system from CheckMarx findings [Start][Dickson Law]
-
-                        ' If Password correct
-                        'If Not dtUserAC.Rows(0).Item("User_Password") Is DBNull.Value AndAlso CStr(dtUserAC.Rows(0).Item("User_Password")) = Encrypt.MD5hash(strPassword.ToString) Then
-                        '    ' CRE13-029 - RSA Server Upgrade [Start][Lawrence]
-                        '    Dim strSPID As String = dtUserAC.Rows(0).Item("SP_ID")
-                        '
-                        '    ' check token if Service Provider is active and Service Provider Account is active or locked
-                        '    If dtUserAC.Rows(0).Item("SP_Record_Status") = "A" AndAlso (dtUserAC.Rows(0).Item("Record_Status") = "A" OrElse dtUserAC.Rows(0).Item("Record_Status") = "S") Then
-                        '        ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-                        '        ' Check active schemes
-                        '        Dim udtSchemeList As SchemeInformationModelCollection = (New SchemeInformationBLL).GetSchemeInfoListPermanent(strSPID, New Database)
-                        '        udtSchemeList = udtSchemeList.FilterByHCSPSubPlatform(Me.SubPlatform)
-                        '
-                        '        For Each udtScheme As SchemeInformationModel In udtSchemeList.Values
-                        '            Select Case udtScheme.RecordStatus
-                        '                Case SchemeInformationMaintenanceDisplayStatus.Active, _
-                        '                     SchemeInformationMaintenanceDisplayStatus.ActivePendingSuspend, _
-                        '                     SchemeInformationMaintenanceDisplayStatus.ActivePendingDelist
-                        '                    strSPStatus = ServiceProviderStatus.Active
-                        '                    Exit For
-                        '
-                        '                Case SchemeInformationMaintenanceDisplayStatus.Suspended, _
-                        '                     SchemeInformationMaintenanceDisplayStatus.SuspendedPendingReactivate, _
-                        '                     SchemeInformationMaintenanceDisplayStatus.SuspendedPendingDelist
-                        '                    If strSPStatus = String.Empty OrElse strSPStatus = ServiceProviderStatus.Delisted Then
-                        '                        strSPStatus = ServiceProviderStatus.Suspended
-                        '                    End If
-                        '
-                        '                Case SchemeInformationMaintenanceDisplayStatus.DelistedVoluntary, _
-                        '                     SchemeInformationMaintenanceDisplayStatus.DelistedInvoluntary
-                        '                    If strSPStatus = String.Empty Then
-                        '                        strSPStatus = ServiceProviderStatus.Delisted
-                        '                    End If
-                        '
-                        '            End Select
-                        '
-                        '        Next
-                        '
-                        '        If strSPStatus <> ServiceProviderStatus.Active Then
-                        '            udtAuditLogEntry.AddDescripton("StackTrace", String.Format("No active scheme after filtering with SubPlatform {0}. Deduced SPStatus={1}", Me.SubPlatform.ToString, strSPStatus))
-                        '
-                        '            If strSPStatus = String.Empty Then
-                        '                blnPassLogin = False
-                        '            End If
-                        '
-                        '        Else
-                        '            If dtUserAC.Rows(0).Item("Token_Cnt") > 0 Then
-                        '                If (New Token.TokenBLL).AuthenTokenHCSP(strSPID, strPassCode.ToString) = False Then
-                        '                    blnPassLogin = False
-                        '                    ' CRE11-004
-                        '                    udtAuditLogEntry.WriteLog(LogID.LOG00026, "Service Provider Login fail: Incorrect Token Passcode[" & strPassCode.ToString.Trim & "]", strLogSPID, strLogDataEntryAccount)
-                        '                    udtAuditLogEntry.AddDescripton("StackTrace", "Incorrect token passcode")
-                        '
-                        '                End If
-                        '            Else
-                        '                blnPassLogin = False
-                        '                udtAuditLogEntry.AddDescripton("StackTrace", "No token found")
-                        '            End If
-                        '            ' CRE13-029 - RSA Server Upgrade [End][Lawrence]
-                        '        End If
-                        '        ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
-                        '    End If
-                        'Else
-                        '    blnPassLogin = False
-                        '    udtAuditLogEntry.WriteLog(LogID.LOG00025, "Service Provider Login fail: Incorrect Password", strLogSPID, strLogDataEntryAccount)
-                        '    udtAuditLogEntry.AddDescripton("StackTrace", "Incorrect password")
-                        'End If
 
                         Dim udtVerifyPassword As VerifyPasswordResultModel = VerifyPassword(EnumPlatformType.SP, dtUserAC, strPassword)
 
@@ -650,7 +605,7 @@ Partial Public Class login
                                 blnPassLogin = False
                                 udtAuditLogEntry.AddDescripton("StackTrace", "No token found")
                             End If
-                            ' I-CRE16-007-02 Refine system from CheckMarx findings [End][Dickson Law]
+
                         Else
                             ' --- I-CRE16-007-02 (Refine system from CheckMarx findings) [Start] (Marco) ---
                             If Not dtUserAC.Rows(0).Item("User_Password") Is DBNull.Value AndAlso udtVerifyPassword.VerifyResult = EnumVerifyPasswordResult.Pass Then
@@ -760,9 +715,8 @@ Partial Public Class login
                     Me.udcMessageBox.AddMessage("990000", "E", "00042")
                     Me.imgUserNameAlert.Visible = True
                 Else
-                    ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
                     dtUserAC = udtUserACBLL.GetUserACForLogin(Me.txtUserName.Text, Me.txtSPID.Text, strLoginRole, Me.SubPlatform)
-                    ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
                 End If
 
                 If Not dtUserAC Is Nothing AndAlso dtUserAC.Rows.Count = 1 Then
@@ -788,45 +742,6 @@ Partial Public Class login
             If udcMessageBox.GetCodeTable.Rows.Count = 0 Then
                 If Not dtUserAC Is Nothing AndAlso dtUserAC.Rows.Count = 1 Then
                     'check password
-                    ' I-CRE16-007-02 Refine system from CheckMarx findings [Start][Dickson Law]
-
-                    'If Not dtUserAC.Rows(0).Item("User_Password") Is DBNull.Value AndAlso CStr(dtUserAC.Rows(0).Item("User_Password")) = Encrypt.MD5hash(strPassword.ToString) Then
-                    '    ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-                    '    ' Check active schemes
-                    '    Dim udtSchemeList As SchemeInformationModelCollection = (New SchemeInformationBLL).GetSchemeInfoListPermanent(strLogSPID, New Database)
-                    '    udtSchemeList = udtSchemeList.FilterByHCSPSubPlatform(Me.SubPlatform)
-                    '
-                    '    For Each udtScheme As SchemeInformationModel In udtSchemeList.Values
-                    '        Select Case udtScheme.RecordStatus
-                    '            Case SchemeInformationMaintenanceDisplayStatus.Active, _
-                    '                 SchemeInformationMaintenanceDisplayStatus.ActivePendingSuspend, _
-                    '                 SchemeInformationMaintenanceDisplayStatus.ActivePendingDelist
-                    '                strSPStatus = ServiceProviderStatus.Active
-                    '                Exit For
-                    '
-                    '            Case SchemeInformationMaintenanceDisplayStatus.Suspended, _
-                    '                 SchemeInformationMaintenanceDisplayStatus.SuspendedPendingReactivate, _
-                    '                 SchemeInformationMaintenanceDisplayStatus.SuspendedPendingDelist
-                    '                If strSPStatus = String.Empty OrElse strSPStatus = ServiceProviderStatus.Delisted Then
-                    '                    strSPStatus = ServiceProviderStatus.Suspended
-                    '                End If
-                    '
-                    '            Case SchemeInformationMaintenanceDisplayStatus.DelistedVoluntary, _
-                    '                 SchemeInformationMaintenanceDisplayStatus.DelistedInvoluntary
-                    '                If strSPStatus = String.Empty Then
-                    '                    strSPStatus = ServiceProviderStatus.Delisted
-                    '                End If
-                    '
-                    '        End Select
-                    '
-                    '    Next
-                    '
-                    'Else
-                    '    blnPassLogin = False
-                    '    udtAuditLogEntry.WriteLog(LogID.LOG00028, "Data Entry Account Login fail: Incorrect Password", strLogSPID, strLogDataEntryAccount)
-                    '    udtAuditLogEntry.AddDescripton("StackTrace", "Incorrect password")
-                    'End If
-
                     Dim udtVerifyPassword As VerifyPasswordResultModel = VerifyPassword(EnumPlatformType.DE, dtUserAC, strPassword)
 
                     If Not dtUserAC.Rows(0).Item("User_Password") Is DBNull.Value AndAlso udtVerifyPassword.VerifyResult = EnumVerifyPasswordResult.RequireUpdate Then
@@ -834,7 +749,6 @@ Partial Public Class login
                         loginMultiView.SetActiveView(DEHashPWExpiredView)
                         udtAuditLogEntry.WriteLog(LogID.LOG00037, strAuditLogDesc & "Hash password expired force reset password message loaded", strLogSPID, strLogDataEntryAccount)
                         Exit Sub
-                        ' I-CRE16-007-02 Refine system from CheckMarx findings [End][Dickson Law]
                     Else
                         ' --- I-CRE16-007-02 (Refine system from CheckMarx findings) [Start] (Marco) ---
                         If Not dtUserAC.Rows(0).Item("User_Password") Is DBNull.Value AndAlso udtVerifyPassword.VerifyResult = EnumVerifyPasswordResult.Pass Then
@@ -1257,6 +1171,11 @@ Partial Public Class login
                                 udtUserACBLL.SaveToSession(udtUserAC)
                                 Try
                                     udtLoginBLL.UpdateSuccessLoginDtm(udtUserAC)
+                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    Dim udtIdeasBLL As New IdeasBLL
+                                    udtIdeasBLL.UpdateIDEASComboInfo(udtUserAC, udcSessionHandler.IDEASComboClientGetFormSession(), udcSessionHandler.IDEASComboVersionGetFormSession())
+                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                                 Catch eSQL As SqlClient.SqlException
                                     If eSQL.Number = 50000 Then
                                         Dim strmsg As String
@@ -1372,6 +1291,11 @@ Partial Public Class login
                             Else
                                 Try
                                     udtLoginBLL.UpdateSuccessLoginDtm(udtUserAC)
+                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    Dim udtIdeasBLL As New IdeasBLL
+                                    udtIdeasBLL.UpdateIDEASComboInfo(udtUserAC, udcSessionHandler.IDEASComboClientGetFormSession(), udcSessionHandler.IDEASComboVersionGetFormSession())
+                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                                 Catch eSQL As SqlClient.SqlException
                                     If eSQL.Number = 50000 Then
                                         Dim strmsg As String
@@ -2111,6 +2035,8 @@ Partial Public Class login
         Dim Cache2 As Boolean = Nothing
         Dim Cache3 As Boolean = Nothing
         Dim Cache4 As Boolean = False
+        Dim Cache5 As String = Nothing
+        Dim Cache6 As String = Nothing
 
         '1a. language
         If Not Session("language") Is Nothing Then
@@ -2125,6 +2051,15 @@ Partial Public Class login
 
         '4a. Popup for enable to allow popup
         Cache4 = udcSessionHandler.PopupBlockerGetFromSession()
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        '5a. IDEAS Combo Installation Result
+        Cache5 = udcSessionHandler.IDEASComboClientGetFormSession()
+
+        '6a. IDEAS Combo Version
+        Cache6 = udcSessionHandler.IDEASComboVersionGetFormSession()
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         'Clear
         Session.RemoveAll()
@@ -2143,6 +2078,41 @@ Partial Public Class login
         '4b. Popup for enable to allow popup
         udcSessionHandler.PopupBlockerSaveToSession(Cache4)
 
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        '5b. IDEAS Combo Installation Result
+        udcSessionHandler.IDEASComboClientSaveToSession(Cache5)
+
+        '6b. IDEAS Combo Version
+        udcSessionHandler.IDEASComboVersionSaveToSession(Cache6)
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
     End Sub
     ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub SaveToSessionIdeasComboClientInfo(ByVal strResult As String, ByVal strVersion As String)
+        Dim IC4RA_ERRORCODE_SUCCESS As String = "E0000"
+        Dim IC4RA_ERRORCODE_NOCLIENT As String = "E0009"
+
+        'Save Session - IDEAS Combo Client Installation Result
+        Select Case strResult
+            Case IC4RA_ERRORCODE_SUCCESS
+                udcSessionHandler.IDEASComboClientSaveToSession(YesNo.Yes)
+
+            Case IC4RA_ERRORCODE_NOCLIENT
+                udcSessionHandler.IDEASComboClientSaveToSession(YesNo.No)
+
+            Case Else
+                udcSessionHandler.IDEASComboClientSaveToSession(YesNo.No)
+
+        End Select
+
+        'Save Session - IDEAS Combo Version
+        udcSessionHandler.IDEASComboVersionSaveToSession(strVersion)
+
+    End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
 End Class

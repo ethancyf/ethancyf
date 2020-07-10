@@ -87,13 +87,28 @@ Partial Public Class ucReadOnlyDocumnetType
             lblInvalidAccount.Text = GetGlobalResourceObject("Text", "NotApplicable")
 
             Dim udtFormatter As Formatter = New Formatter
-            If _strOriginalAccType.Trim = EHSAccount.EHSAccountModel.OriginalAccTypeClass.SpecialAccount Then
-                lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "RefNo")
-                lblOriginalAccID.Text = udtFormatter.formatSystemNumber(_strOriginalAccID)
-            ElseIf _strOriginalAccType.Trim = EHSAccount.EHSAccountModel.OriginalAccTypeClass.ValidateAccount Then
-                lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "AccountID")
-                lblOriginalAccID.Text = udtFormatter.formatValidatedEHSAccountNumber(_strOriginalAccID)
-            End If
+
+            ' INT20-0014 (Fix unable to open invalidated PPP transaction) [Start][Winnie]
+            ' ---------------------------------------------------------------------------
+            Select Case _strOriginalAccType.Trim
+                Case EHSAccount.EHSAccountModel.OriginalAccTypeClass.ValidateAccount
+                    lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "AccountID")
+                    lblOriginalAccID.Text = udtFormatter.formatValidatedEHSAccountNumber(_strOriginalAccID)
+
+                Case EHSAccount.EHSAccountModel.OriginalAccTypeClass.TemporaryAccount,
+                    EHSAccount.EHSAccountModel.OriginalAccTypeClass.SpecialAccount
+                    lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "RefNo")
+                    lblOriginalAccID.Text = udtFormatter.formatSystemNumber(_strOriginalAccID)
+            End Select
+
+            'If _strOriginalAccType.Trim = EHSAccount.EHSAccountModel.OriginalAccTypeClass.SpecialAccount Then
+            '    lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "RefNo")
+            '    lblOriginalAccID.Text = udtFormatter.formatSystemNumber(_strOriginalAccID)
+            'ElseIf _strOriginalAccType.Trim = EHSAccount.EHSAccountModel.OriginalAccTypeClass.ValidateAccount Then
+            '    lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "AccountID")
+            '    lblOriginalAccID.Text = udtFormatter.formatValidatedEHSAccountNumber(_strOriginalAccID)
+            'End If
+            ' INT20-0014 (Fix unable to open invalidated PPP transaction) [End][Winnie]
 
             tblInvalidAcc.Rows(0).Cells(0).Width = _intWidth
             tblInvalidAcc.Rows(0).Cells(1).Width = _intWidth2

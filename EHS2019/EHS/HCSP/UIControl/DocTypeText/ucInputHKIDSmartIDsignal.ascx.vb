@@ -90,24 +90,19 @@ Namespace UIControl.DocTypeText
             Me.SetEName()
             Me.SetCName(udtPersonalInfoSmartID)
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             ' Set Gender
-            If _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.TwoGender Then
+            If _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.TwoGender Or _
+                _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.ComboGender Then
                 Me.SetGender(True)
             Else
                 'Select Gender
                 If MyBase.UpdateValue Then
                     Me.SetGender(False)
-
-                    'If Me.FillValue(udtPersonalInfoSmartID) AndAlso MyBase.ActiveViewChanged Then
-                    '    Me._strGender = MyBase.EHSPersonalInfo.Gender
-
-                    '    Me.SetValue(BuildMode.Creation)
-                    'End If
                 End If
             End If
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
             If MyBase.ActiveViewChanged Then
                 Me.SetGenderSmartIDError(False)

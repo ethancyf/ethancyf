@@ -242,158 +242,223 @@
         <tr>
             <td>
                 <table cellpadding="0" cellspacing="0">
-                    <tr id="trHKICSymbol" runat="server">
-                        <td valign="top" style="padding-bottom: 5px; width: 175px">
-                            <asp:Label ID="lblHKICSymbolText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, HKICSymbolLong %>"></asp:Label>
-                            <asp:ImageButton ID="ImgBtnHKICSymbolHelp" runat="server" EnableViewState="true" AlternateText="<%$ Resources:AlternateText, HelpBtn%>"
-                                ImageUrl="<%$ Resources:ImageUrl, HelpIconBtn %>" Visible="true" Style="top:2px"/>
+                    <tr>
+                        <td style="width:390px">
+                            <table id="tblHKICSymbol" runat="server" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td valign="top" style="padding-bottom: 5px; width: 175px">
+                                        <asp:Label ID="lblHKICSymbolText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, HKICSymbolLong %>"></asp:Label>
+                                        <asp:ImageButton ID="ImgBtnHKICSymbolHelp" runat="server" EnableViewState="true" AlternateText="<%$ Resources:AlternateText, HelpBtn%>"
+                                            ImageUrl="<%$ Resources:ImageUrl, HelpIconBtn %>" Visible="true" Style="top:2px"/>
+                                    </td>
+                                    <td valign="top" style="padding-bottom: 5px;">
+                                        <asp:RadioButtonList ID="rblHKICSymbol" runat="server" AutoPostBack="True" Enabled="true" TabIndex="1"  RepeatDirection="Horizontal" Style="position:relative;left:-5px;top:-3px"/>
+                                        <asp:Image ID="ErrHKICSymbol" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
-                        <td valign="top" style="padding-bottom: 5px;">
-                            <asp:RadioButtonList ID="rblHKICSymbol" runat="server" AutoPostBack="True" Enabled="true" TabIndex="1"  RepeatDirection="Horizontal" Style="position:relative;left:-5px;top:-3px"/>
-                            <asp:Image ID="ErrHKICSymbol" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
-                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
-                        </td>
-                        <td valign="top" rowspan="5" style="position:relative;left:40px; padding-bottom: 5px;">&nbsp;
+                        <td>
+                            <table id="tblDownloadComboClient" runat="server" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="vertical-align:top;padding-bottom: 1px;">
+                                        <div style="position:relative;left:0px;top:-4px;background-color:pink;border-color:red;border-style:solid;border-width:1px;width:554px;height:30px;vertical-align:middle;text-align:center">
+                                            <asp:Label ID="lblSmartIDSoftwareAvailableDownload" runat="server" CssClass="tableTitle" 
+                                                Text="<%$ Resources:Text, SmartIDSoftwareAvailableDownload %>" Style="position:relative;top:4px;color:#4d4d4d !important" />
+                                            <div id="divUpdateNow" runat="server" style="position:relative;top:4px;border-style:solid;border-width:1px;padding:1px 1px 1px 1px;width:100px;display:inline-block;background-color:rgba(255,255,153,1);text-align:center;cursor:pointer;"
+                                                onclick="javascript:__doPostBack('ctl00$ContentPlaceHolder1$udcClaimSearch$lbtnUpdateNow',''); return false;">
+                                                <asp:LinkButton ID ="lbtnUpdateNow" runat="server" Text ="<%$ Resources:Text, UpdateNow %>" style="font-size:16px;text-decoration:none;color:rgba(0, 102, 204, 1)" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
                 <table class="searchOption-container" cellpadding="0" cellspacing="0" runat="server">
                     <tr>
-                    <td style="vertical-align:top;width:305px">                        
-                        <table id="tblManual" runat="server" cellpadding="0" cellspacing="0" class="searchOption">
-                            <tr style="height:25px">
-                                <td align="center" valign="middle">
-                                    <asp:Label ID="lblManualInput" runat="server" Font-Size="16px" style="color:white;"></asp:Label>
-                                </td>
-                            </tr>
-                            <tr style="height:50px">
-                            </tr>
-                            <tr style="height:180px">
-                                <td valign="top">
-                                    <table style="width: 100%;padding-left:30px; padding-top: 5px;" cellpadding="0" cellspacing="0">
+                        <td style="vertical-align:top;width:305px">                        
+                            <table id="tblManual" runat="server" cellpadding="0" cellspacing="0" class="searchOption">
+                                <tr style="height:25px">
+                                    <td align="center" valign="middle">
+                                        <asp:Label ID="lblManualInput" runat="server" Font-Size="16px" style="color:white;"></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr style="height:50px">
+                                </tr>
+                                <tr style="height:180px">
+                                    <td valign="top">
+                                        <table style="width: 100%;padding-left:30px; padding-top: 5px;" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td valign="top" style="padding-bottom: 10px;">
+                                                    <asp:Label ID="lblSearchHKICNoText" runat="server" CssClass="tableTitle" Width="120px"></asp:Label>
+                                                </td>
+                                                <td valign="top" style="padding-bottom: 8px; white-space:nowrap">
+                                                    <asp:TextBox ID="txtSearchHKICNo" runat="server" AutoCompleteType="Cellular" MaxLength="11"
+                                                        Width="85px" TabIndex="2" />
+                                                    <asp:Image ID="ErrSearchHKICNo" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top" style="padding-bottom: 20px;">
+                                                    <asp:Label ID="lblSearchHKICDOBText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, DOBLong %>"></asp:Label>
+                                                </td>
+                                                <td valign="top" style="padding-bottom: 18px;white-space:nowrap">
+                                                    <asp:TextBox ID="txtSearchHKICDOB" runat="server" AutoCompleteType="Disabled" Enabled="true"
+                                                        MaxLength="10" Width="85px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                                                        onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
+                                                        onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"
+                                                        TabIndex="3" />
+                                                    <asp:Image ID="ErrSearchHKICDOB" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>                                  
+                                </tr>
+                                <tr style="vertical-align:central;text-align:center; height:40px;">
+                                    <td ID="tdSearchButtonGroup" runat="server">
+                                        <asp:ImageButton ID="ibtnSearchHKICCancel" runat="server" ImageUrl="<%$ Resources: ImageUrl, CancelBtn %>" 
+                                            AlternateText="<%$ Resources: AlternateText, CancelBtn %>" />
+                                        <asp:ImageButton ID="ibtnSearchHKIC" runat="server" AlternateText="<%$ Resources:AlternateText, SearchBtn %>"
+                                            ImageUrl="<%$ Resources:ImageUrl, SearchBtn %>" TabIndex="4" />
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                            </table>
+                        </td>
+                        <td style="vertical-align:top;width:710px">
+                            <asp:MultiView ID="mvIDEASCombo" runat="server" ActiveViewIndex="0"> 
+                                <asp:View ID="vOldIDEAS" runat="server">
+                                    <table cellpadding="0" cellspacing="0" runat="server">
                                         <tr>
-                                            <td valign="top" style="padding-bottom: 10px;">
-                                                <asp:Label ID="lblSearchHKICNoText" runat="server" CssClass="tableTitle" Width="120px"></asp:Label>
+                                            <td style="vertical-align:top;width:305px">
+                                                <asp:MultiView ID="mvOldHKIC" runat="server" ActiveViewIndex="0"> 
+                                                    <asp:View ID="vOldHKICSample" runat="server">
+                                                        <table runat="server" cellpadding="0" cellspacing="0" style="vertical-align:middle">
+                                                            <tr>
+                                                                <td style="padding: 50px 0px 0px 10px; width: 280px; text-align: center;">
+                                                                    <asp:Label ID="lblOldHKICSample" runat="server" Text="<%$ Resources:Text, OldHKIC %>" CssClass="tableText"/>                 
+                                                                    <asp:Image ID="imgOldHKICSample" runat="server" AlternateText="<%$ Resources:AlternateText, OldSmartICSampleImg %>"
+                                                                        ImageUrl="<%$ Resources:ImageUrl, OldSmartICSampleImg %>" ImageAlign="AbsMiddle"/>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </asp:View>
+                                                    <asp:View ID="vOldHKICSearch" runat="server">
+                                                        <table id="tblOldSmartIC" runat="server" cellpadding="0" cellspacing="0" class="searchOption">
+                                                            <tr style="height:25px">
+                                                                <td align="center" valign="middle">
+                                                                    <asp:Label ID="lblReadOldSmartIC" runat="server" Text="<%$ Resources:Text, ReadOldHKIC %>" Font-Size="16px" style="color:white" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="height:50px">
+                                                                <td valign="middle" style="padding-left:150px;">
+                                                                    <asp:Label ID="lblOldSmartICChipFaceUp" runat="server" Font-Size="14px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDChipFaceUp %>"></asp:Label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="height:180px">
+                                                                <td style="vertical-align:top;padding-bottom: 5px; text-align: center;">
+                                                                </td>                                    
+                                                            </tr>
+                                                            <tr style="vertical-align:central;text-align:center; height:40px;">
+                                                                <td id="tdSearchOldSmartICButton" runat="server">
+                                                                    <asp:ImageButton ID="btnShortIdentityNoOldSmartID" runat="server" ImageUrl="<%$ Resources:ImageUrl, ReadCardAndSearchBtn %>"
+                                                                        AlternateText="<%$ Resources:AlternateText, ReadCardAndSearchBtn %>"/>
+                                                                    <asp:Label ID="lblReadOldCardAndSearchNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
+                                                                        CssClass="tableText" Width="250px"></asp:Label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr></tr>
+                                                        </table>
+                                                    </asp:View>
+                                                </asp:MultiView>
                                             </td>
-                                            <td valign="top" style="padding-bottom: 8px; white-space:nowrap">
-                                                <asp:TextBox ID="txtSearchHKICNo" runat="server" AutoCompleteType="Cellular" MaxLength="11"
-                                                    Width="85px" TabIndex="2" />
-                                                <asp:Image ID="ErrSearchHKICNo" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
-                                                    ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td valign="top" style="padding-bottom: 20px;">
-                                                <asp:Label ID="lblSearchHKICDOBText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, DOBLong %>"></asp:Label>
-                                            </td>
-                                            <td valign="top" style="padding-bottom: 18px;white-space:nowrap">
-                                                <asp:TextBox ID="txtSearchHKICDOB" runat="server" AutoCompleteType="Disabled" Enabled="true"
-                                                    MaxLength="10" Width="85px" onkeydown="filterDateInputKeyDownHandler(this, event);"
-                                                    onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
-                                                    onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"
-                                                    TabIndex="3" />
-                                                <asp:Image ID="ErrSearchHKICDOB" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
-                                                    ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" ImageAlign="AbsMiddle" />
+                                            <td style="vertical-align:top;width:305px;padding-left:20px">
+                                                <asp:MultiView ID="mvNewHKIC" runat="server" ActiveViewIndex="0"> 
+                                                    <asp:View ID="vNewHKICSample" runat="server">
+                                                        <table runat="server" cellpadding="0" cellspacing="0">
+                                                            <tr>
+                                                                <td style="padding: 50px 0px 0px 10px; width: 280px; text-align: center;">
+                                                                    <asp:Label ID="lblNewHKICSample" runat="server" Text="<%$ Resources:Text, NewHKIC %>" CssClass="tableText" />
+                                                                    <asp:Image ID="imgNewHKICSample" runat="server" AlternateText="<%$ Resources:AlternateText, NewSmartICSampleImg %>"
+                                                                        ImageUrl="<%$ Resources:ImageUrl, NewSmartICSampleImg %>" ImageAlign="AbsMiddle" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </asp:View>
+                                                    <asp:View ID="vNewHKICSearch" runat="server">
+                                                        <table runat="server" id="tblNewSmartIC" cellpadding="0" cellspacing="0" class="searchOption">
+                                                            <tr style="height:25px">
+                                                                <td style="text-align:center;vertical-align:middle"> 
+                                                                    <asp:Label ID="lblReadNewSmartIC" runat="server" Text="<%$ Resources:Text, ReadNewHKIC %>" Font-Size="16px" style="color:white"/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="height:50px">
+                                                                <td style="vertical-align:middle;padding-left:150px;">
+                                                                    <asp:Label ID="lblNewSmartICChipFaceUp" runat="server" Font-Size="14px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDChipFaceUp %>"></asp:Label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="height:180px">
+                                                                <td style="vertical-align:top;padding-bottom: 5px; text-align: center;">
+                                                                </td>                                    
+                                                            </tr>
+                                                            <tr style="vertical-align:central;text-align:center; height:40px;">
+                                                                <td id="tdSearchNewSmartICButton" runat="server">
+                                                                    <asp:ImageButton ID="btnShortIdentityNoNewSmartID" runat="server" ImageUrl="<%$ Resources:ImageUrl, ReadCardAndSearchBtn %>"
+                                                                        AlternateText="<%$ Resources:AlternateText, ReadCardAndSearchBtn %>"/>
+                                                                    <asp:Label ID="lblReadNewCardAndSearchNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
+                                                                        CssClass="tableText" Width="250px"></asp:Label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr></tr>
+                                                        </table>
+                                                    </asp:View>
+                                                </asp:MultiView>
                                             </td>
                                         </tr>
                                     </table>
-                                </td>                                  
-                            </tr>
-                            <tr style="vertical-align:central;text-align:center; height:40px;">
-                                <td ID="tdSearchButtonGroup" runat="server">
-                                    <asp:ImageButton ID="ibtnSearchHKICCancel" runat="server" ImageUrl="<%$ Resources: ImageUrl, CancelBtn %>" 
-                                        AlternateText="<%$ Resources: AlternateText, CancelBtn %>" />
-                                    <asp:ImageButton ID="ibtnSearchHKIC" runat="server" AlternateText="<%$ Resources:AlternateText, SearchBtn %>"
-                                        ImageUrl="<%$ Resources:ImageUrl, SearchBtn %>" TabIndex="4" />
-                                </td>
-                            </tr>
-                            <tr></tr>
-                        </table>
-                    </td>
-                    <td style="vertical-align:top;width:305px">
-                        <asp:MultiView ID="mvOldHKIC" runat="server" ActiveViewIndex="0"> 
-                            <asp:View ID="vOldHKICSample" runat="server">
-                                <table runat="server" cellpadding="0" cellspacing="0" style="vertical-align:middle">
-                                    <tr>
-                                        <td style="padding: 50px 0px 0px 10px; width: 280px; text-align: center;">
-                                            <asp:Label ID="lblOldHKICSample" runat="server" Text="<%$ Resources:Text, OldHKIC %>" CssClass="tableText"/>                 
-                                            <asp:Image ID="imgOldHKICSample" runat="server" AlternateText="<%$ Resources:AlternateText, OldSmartICSampleImg %>"
-                                                ImageUrl="<%$ Resources:ImageUrl, OldSmartICSampleImg %>" ImageAlign="AbsMiddle"/>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </asp:View>
-                            <asp:View ID="vOldHKICSearch" runat="server">
-                                <table id="tblOldSmartIC" runat="server" cellpadding="0" cellspacing="0" class="searchOption">
-                                    <tr style="height:25px">
-                                        <td align="center" valign="middle">
-                                            <asp:Label ID="lblReadOldSmartIC" runat="server" Text="<%$ Resources:Text, ReadOldHKIC %>" Font-Size="16px" style="color:white" />
-                                        </td>
-                                    </tr>
-                                    <tr style="height:50px">
-                                        <td valign="middle" style="padding-left:150px;">
-                                            <asp:Label ID="lblOldSmartICChipFaceUp" runat="server" Font-Size="14px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDChipFaceUp %>"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr style="height:180px">
-                                        <td style="vertical-align:top;padding-bottom: 5px; text-align: center;">
-                                        </td>                                    
-                                    </tr>
-                                    <tr style="vertical-align:central;text-align:center; height:40px;">
-                                        <td id="tdSearchOldSmartICButton" runat="server">
-                                            <asp:ImageButton ID="btnShortIdentityNoOldSmartID" runat="server" ImageUrl="<%$ Resources:ImageUrl, ReadCardAndSearchBtn %>"
-                                                AlternateText="<%$ Resources:AlternateText, ReadCardAndSearchBtn %>"/>
-                                            <asp:Label ID="lblReadOldCardAndSearchNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
-                                                CssClass="tableText" Width="250px"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr></tr>
-                                </table>
-                            </asp:View>
-                        </asp:MultiView>
-                    </td>
-                    <td style="vertical-align:top;width:305px">
-                        <asp:MultiView ID="mvNewHKIC" runat="server" ActiveViewIndex="0"> 
-                            <asp:View ID="vNewHKICSample" runat="server">
-                                <table runat="server" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                        <td style="padding: 50px 0px 0px 10px; width: 280px; text-align: center;">
-                                            <asp:Label ID="lblNewHKICSample" runat="server" Text="<%$ Resources:Text, NewHKIC %>" CssClass="tableText" />
-                                            <asp:Image ID="imgNewHKICSample" runat="server" AlternateText="<%$ Resources:AlternateText, NewSmartICSampleImg %>"
-                                                ImageUrl="<%$ Resources:ImageUrl, NewSmartICSampleImg %>" ImageAlign="AbsMiddle" />
-                                        </td>
-                                    </tr>
-                                </table>
-                            </asp:View>
-                            <asp:View ID="vNewHKICSearch" runat="server">
-                                <table runat="server" id="tblNewSmartIC" cellpadding="0" cellspacing="0" class="searchOption">
-                                    <tr style="height:25px">
-                                        <td align="center" valign="middle"> 
-                                            <asp:Label ID="lblReadNewSmartIC" runat="server" Text="<%$ Resources:Text, ReadNewHKIC %>" Font-Size="16px" style="color:white"/>
-                                        </td>
-                                    </tr>
-                                    <tr style="height:50px">
-                                        <td valign="middle" style="padding-left:150px;">
-                                            <asp:Label ID="lblNewSmartICChipFaceUp" runat="server" Font-Size="14px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDChipFaceUp %>"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr style="height:180px">
-                                        <td style="vertical-align:top;padding-bottom: 5px; text-align: center;">
-                                        </td>                                    
-                                    </tr>
-                                    <tr style="vertical-align:central;text-align:center; height:40px;">
-                                        <td id="tdSearchNewSmartICButton" runat="server">
-                                            <asp:ImageButton ID="btnShortIdentityNoNewSmartID" runat="server" ImageUrl="<%$ Resources:ImageUrl, ReadCardAndSearchBtn %>"
-                                                AlternateText="<%$ Resources:AlternateText, ReadCardAndSearchBtn %>"/>
-                                            <asp:Label ID="lblReadNewCardAndSearchNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
-                                                CssClass="tableText" Width="250px"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr></tr>
-                                </table>
-                            </asp:View>
-                        </asp:MultiView>
-                    </td>
+                                </asp:View>
+                                <asp:View ID="vNewIDEAS" runat="server">
+                                    <table cellpadding="0" cellspacing="0" runat="server" style="vertical-align:middle">
+                                        <tr>
+                                            <td style="vertical-align:top;width:624px;">
+                                                <table runat="server" id="tblNewSmartICCombo" cellpadding="0" cellspacing="0" class="searchOption">
+                                                    <tr style="height:25px">
+                                                        <td style="text-align:center;vertical-align:middle"> 
+                                                            <asp:Label ID="lblReadNewSmartICCombo" runat="server" Text="<%$ Resources:Text, ReadSmartID %>" Font-Size="16px" style="color:white"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height:50px">
+                                                        <td style="padding-left:350px;vertical-align:middle">
+                                                            <asp:Label ID="lblNewSmartICComboChipFaceUp" runat="server" Font-Size="14px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDChipFaceUp %>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height:180px">
+                                                        <td style="vertical-align:top;padding-bottom: 5px; text-align: center; vertical-align:middle">
+                                                            <div id="divSmartIDSoftwareNotInstalled" runat="server" style="padding-left:20px;padding-right:20px">
+                                                                <asp:Label ID="lblSmartIDSoftwareNotInstalled" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled %>"/>
+                                                            </div>
+                                                        </td>                                    
+                                                    </tr>
+                                                    <tr style="vertical-align:central;text-align:center; height:52px;">
+                                                        <td id="td1" runat="server">
+                                                            <asp:ImageButton ID="btnShortIdentityNoNewSmartIDCombo" runat="server" ImageUrl="<%$ Resources:ImageUrl, ReadCardAndSearchBtn %>"
+                                                                AlternateText="<%$ Resources:AlternateText, ReadCardAndSearchBtn %>" style="position:relative;top:-6px"/>
+                                                            <asp:Label ID="lblReadNewCardAndSearchComboNA" runat="server" Text="<%$ Resources:Text, ReadCardAndSearchNA %>"
+                                                                CssClass="tableText" Width="250px" Visible="false" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </asp:View>
+                            </asp:MultiView>
+                        </td>
                     </tr>
                 </table>
             </td>    

@@ -50,6 +50,24 @@ Partial Public Class login1
     Protected WithEvents NonLoginPageKey As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''txtIDEASComboResult control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIDEASComboResult As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtIDEASComboVersion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIDEASComboVersion As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''mvLogin control.
     '''</summary>
     '''<remarks>

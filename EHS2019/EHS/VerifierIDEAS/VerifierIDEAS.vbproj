@@ -53,8 +53,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IdeasRM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="IdeasRM">
       <HintPath>..\CommonBin\IdeasRM.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -95,8 +97,12 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CSS\DialogStyle.css" />
     <Content Include="Global.asax" />
+    <Content Include="IDEASCombo.ascx" />
     <Content Include="Images\master\banner_header.jpg" />
+    <Content Include="JS\ideasComboLib4Ra.js" />
+    <Content Include="IDEASComboReader.aspx" />
     <Content Include="Main.aspx" />
     <Content Include="Log\Log.txt" />
     <Content Include="Web.config">
@@ -106,6 +112,20 @@
   <ItemGroup>
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="IDEASCombo.ascx.designer.vb">
+      <DependentUpon>IDEASCombo.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="IDEASCombo.ascx.vb">
+      <DependentUpon>IDEASCombo.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IDEASComboReader.aspx.designer.vb">
+      <DependentUpon>IDEASComboReader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="IDEASComboReader.aspx.vb">
+      <DependentUpon>IDEASComboReader.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Main.aspx.vb">
       <SubType>ASPXCodeBehind</SubType>
@@ -150,6 +170,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

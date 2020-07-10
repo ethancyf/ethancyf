@@ -23,6 +23,7 @@ Imports System.Net
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Component.VoucherInfo
 Imports Common.Component.Profession
+Imports IdeasRM
 
 Namespace Text
 
@@ -42,33 +43,13 @@ Namespace Text
 
 #End Region
 
-        ' Public Member
-        Public Const ValidatedServiceDate As String = "ValidatedServiceDate"
-        Public Const EHSClaimV2 As String = "EHSClaimV2.aspx"
-
+#Region "Private Member"
         ' Private Member
-        Private Const ConfirmationNormalCSSClass = "tableText"
-        Private Const ConfirmationTitleCSSClass = "tableTitle"
-        Private Const ConfirmationBorderedCSSClass = "tableRemark"
-        Private Const ConfirmationBorderedHighlightCSSClass = "tableRemarkHighlight"
-        Private Const ConfirmationUnderlineCSSClass = "tableHeader"
-        Private Const SelectedPerConditionValueAttribute As String = "SelectedPerCondition"
-
-        ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
-        Private Const DuplicateClaimAlertMessage As String = "DuplicateClaimAlertMessage"
-        ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
-
         Private _udtClaimVoucherBLL As BLL.ClaimVoucherBLL = New BLL.ClaimVoucherBLL()
         Private _udtEHSClaimBLL As BLL.EHSClaimBLL = New BLL.EHSClaimBLL()
         Private _udtEHSAccountBll As EHSAccountBLL = New EHSAccountBLL()
         Private _udtEHSTransactionBLL As EHSTransactionBLL = New EHSTransactionBLL()
-
-        ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
-        ' -----------------------------------------------------------------------------------------
-
         Private _udtGeneralFunction As New GeneralFunction
-
-        ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
 
         Private _udtPracticeAcctBLL As BLL.PracticeBankAcctBLL = New BLL.PracticeBankAcctBLL()
         Private _udtPracticeBankAccBLL As New BLL.PracticeBankAcctBLL()
@@ -91,6 +72,22 @@ Namespace Text
 
         Private _udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
 
+#End Region
+
+#Region "Constant"
+        Public Const ValidatedServiceDate As String = "ValidatedServiceDate"
+        Public Const EHSClaimV2 As String = "EHSClaimV2.aspx"
+
+        Private Const ConfirmationNormalCSSClass = "tableText"
+        Private Const ConfirmationTitleCSSClass = "tableTitle"
+        Private Const ConfirmationBorderedCSSClass = "tableRemark"
+        Private Const ConfirmationBorderedHighlightCSSClass = "tableRemarkHighlight"
+        Private Const ConfirmationUnderlineCSSClass = "tableHeader"
+        Private Const SelectedPerConditionValueAttribute As String = "SelectedPerCondition"
+
+        ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
+        Private Const DuplicateClaimAlertMessage As String = "DuplicateClaimAlertMessage"
+        ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
 
         ' Confirmation Display Style
         Protected Enum ConfirmationStyle
@@ -101,6 +98,8 @@ Namespace Text
             BorderedUnderlineHighlight
             Underline
         End Enum
+
+#End Region
 
 #Region "Property"
 
@@ -599,343 +598,345 @@ Namespace Text
 
         '==================================================================== Code for SmartID ============================================================================
         Private Function ReadSmartID(ByVal udtSmartIDContent As BLL.SmartIDContentModel) As Boolean
-            Dim isReadingSmartID As Boolean = False
+            If IsNothing(udtSmartIDContent) OrElse udtSmartIDContent.IsReadSmartID = False OrElse udtSmartIDContent.IsEndOfReadSmartID Then Return False
 
-            If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
+            Dim blnIsReadingSmartID As Boolean = False
+            Dim udtSchemeClaim As SchemeClaimModel = MyBase.SessionHandler.SchemeSelectedGetFromSession(FunctionCode)
 
-                Dim udtSchemeClaim As SchemeClaimModel = MyBase.SessionHandler.SchemeSelectedGetFromSession(FunctionCode)
+            Dim ideasBLL As BLL.IdeasBLL = New BLL.IdeasBLL
+            Dim strIdeasVersion As String = ideasBLL.ConvertIdeasVersion(udtSmartIDContent.IdeasVersion)
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                Dim ideasBLL As BLL.IdeasBLL = New BLL.IdeasBLL
-                Dim strIdeasVersion As String = ideasBLL.ConvertIdeasVersion(udtSmartIDContent.IdeasVersion)
+            'Write Start Audit log
+            EHSClaimBasePage.AuditLogRedirectFormIDEAS(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, strIdeasVersion)
 
-                'Write Start Audit log
-                'EHSClaimBasePage.AuditLogRedirectFormIDEAS(_udtAuditLogEntry, udtSchemeClaim.SchemeCode)
-                EHSClaimBasePage.AuditLogRedirectFormIDEAS(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, strIdeasVersion)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            MyBase.EHSClaimTokenNumAssign(Me.hfEHSClaimTokenNum, FunctionCode)
 
-                MyBase.EHSClaimTokenNumAssign(Me.hfEHSClaimTokenNum, FunctionCode)
-                isReadingSmartID = True
-                '--------------------------------------------------------------------------------------------------------------------------------------------------
-                ' Smart ID Form Ideas
-                '--------------------------------------------------------------------------------------------------------------------------------------------------                
-                Dim ideasHelper As IdeasRM.IHelper = IdeasRM.HelpFactory.createHelper()
+            blnIsReadingSmartID = True
+            udtSmartIDContent.IsEndOfReadSmartID = True
+            '--------------------------------------------------------------------------------------------------------------------------------------------------
+            ' Smart ID Form Ideas
+            '--------------------------------------------------------------------------------------------------------------------------------------------------                
+            Dim ideasHelper As IdeasRM.IHelper = IdeasRM.HelpFactory.createHelper()
 
-                '--------------------------------------------------------------------------------------------------------------------------------------------------
-                ' Get CFD
-                '--------------------------------------------------------------------------------------------------------------------------------------------------
-                Dim udtAuditLogEntry_GetCFD As AuditLogEntry = _udtAuditLogEntry
-                EHSClaimBasePage.AuditLogGetCFD(udtAuditLogEntry_GetCFD, ideasBLL.Artifact)
+            '--------------------------------------------------------------------------------------------------------------------------------------------------
+            ' Get CFD
+            '--------------------------------------------------------------------------------------------------------------------------------------------------
+            Dim udtAuditLogEntry_GetCFD As AuditLogEntry = _udtAuditLogEntry
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                Dim ideasSamlResponse As IdeasRM.IdeasResponse = ideasHelper.getCardFaceData(udtSmartIDContent.TokenResponse, ideasBLL.Artifact, strIdeasVersion)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim ideasSamlResponse As IdeasRM.IdeasResponse = Nothing
+            Dim strArtifact As String = String.Empty
 
-                Dim udtPersonalInfoSmartID As EHSAccountModel.EHSPersonalInformationModel
-                Dim isValid As Boolean = True
+            If udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.Combo Or _
+                udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.ComboGender Then
 
-                Dim udtSystemMessage As SystemMessage = Nothing
+                strArtifact = udtSmartIDContent.Artifact
+                ideasSamlResponse = udtSmartIDContent.IdeasSamlResponse
+            Else
+                strArtifact = ideasBLL.Artifact
+                ideasSamlResponse = ideasHelper.getCardFaceData(udtSmartIDContent.TokenResponse, strArtifact, strIdeasVersion)
 
-                If ideasBLL.Artifact() Is Nothing Then
-                    '------------------------------------------------------------------------------------------------------
-                    'Error Handling : Err100 - 113
-                    '------------------------------------------------------------------------------------------------------
-                    If Not Request.QueryString("status") Is Nothing Then
-                        Dim strErrorCode As String = Request.QueryString("status").Trim()
-                        Dim strErrorMsg As String = IdeasRM.ErrorMessageMapper.MapMAStatus(strErrorCode)
-                        If Not strErrorMsg Is Nothing Then
+            End If
 
-                            Me.Clear()
-                            'Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
-                            Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                            Me.udcMsgBoxErr.AddMessageDesc(FunctionCode, strErrorCode, strErrorMsg)
+            EHSClaimBasePage.AuditLogGetCFD(udtAuditLogEntry_GetCFD, strArtifact)
 
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
-                            'EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, strErrorCode, strErrorMsg)
-                            EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, strErrorCode, strErrorMsg, strIdeasVersion)
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                            Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry_GetCFD, Common.Component.LogID.LOG00063, "Get CFD Fail")
-                            isValid = False
-                        End If
-                    End If
-                End If
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
-                If isValid Then
+            Dim udtPersonalInfoSmartID As EHSAccountModel.EHSPersonalInformationModel
+            Dim isValid As Boolean = True
 
-                    If ideasSamlResponse.StatusCode.Equals("samlp:Success") Then
-                        EHSClaimBasePage.AuditLogGetCFDComplete(udtAuditLogEntry_GetCFD, ideasBLL.Artifact)
+            Dim udtSystemMessage As SystemMessage = Nothing
 
-                        '[Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel
-                        Dim udtEHSAccountExist As EHSAccountModel = Nothing
-                        Dim blnNotMatchAccountExist As Boolean = False
-                        Dim blnExceedDocTypeLimit As Boolean = False
-                        Dim udtEligibleResult As EligibleResult = Nothing
-                        Dim goToCreation As Boolean = True
-                        Dim strError As String = String.Empty
+            If strArtifact Is Nothing OrElse strArtifact = String.Empty Then
+                '------------------------------------------------------------------------------------------------------
+                'Error Handling : Err100 - 113
+                '------------------------------------------------------------------------------------------------------
+                If Not Request.QueryString("status") Is Nothing Then
+                    Dim strErrorCode As String = Request.QueryString("status").Trim()
+                    Dim strErrorMsg As String = IdeasRM.ErrorMessageMapper.MapMAStatus(strErrorCode)
+                    If Not strErrorMsg Is Nothing Then
 
-                        Try
-                            If udtSmartIDContent.IsDemonVersion Then
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                ' ----------------------------------------------------------------------------------------
-                                udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtSchemeClaim, udtSmartIDContent.IdeasVersion)
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                                udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
-
-                            Else
-                                Dim udtCFD As IdeasRM.CardFaceData
-                                udtCFD = ideasSamlResponse.CardFaceDate()
-                                If IsNothing(udtCFD) Then
-                                    strError = "ideasSamlResponse.CardFaceDate() is nothing"
-                                End If
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                ' ----------------------------------------------------------------------------------------
-                                udtSmartIDContent.EHSAccount = ideasBLL.GetCardFaceDataEHSAccount(udtCFD, udtSchemeClaim, FunctionCode, udtSmartIDContent.IdeasVersion)
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                            End If
-                        Catch ex As Exception
-                            udtSmartIDContent.EHSAccount = Nothing
-                            strError = ex.Message
-                        End Try
-
-                        Dim udtAuditlogEntry_Search As AuditLogEntry = _udtAuditLogEntry
-                        Dim strHKICNo As String = String.Empty
-
-                        If Not udtSmartIDContent.EHSAccount Is Nothing Then
-                            strHKICNo = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
-                        End If
-
-                        EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFD(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, strHKICNo, strError, strIdeasVersion, "Claim")
-
-                        If Not udtSmartIDContent.EHSAccount Is Nothing Then
-                            udtPersonalInfoSmartID = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC)
-
-                            '------------------------------------------------------------------------------------------------------
-                            'Card Face Data Validation
-                            '------------------------------------------------------------------------------------------------------
-                            udtSystemMessage = EHSClaimBasePage.SmartIDCardFaceDataValidation(udtPersonalInfoSmartID)
-                            If Not udtSystemMessage Is Nothing Then
-                                isValid = False
-                                If Not udtPersonalInfoSmartID.IdentityNum Is Nothing Then udtAuditlogEntry_Search.AddDescripton("HKID", udtPersonalInfoSmartID.IdentityNum)
-                                If udtPersonalInfoSmartID.DateofIssue.HasValue Then udtAuditlogEntry_Search.AddDescripton("DOI", udtPersonalInfoSmartID.DateofIssue)
-                                udtAuditlogEntry_Search.AddDescripton("DOB", udtPersonalInfoSmartID.DOB)
-
-                                Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
-                            End If
-
-                            If isValid Then
-
-                                ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-                                ' ----------------------------------------------------------
-                                ' ----------------------------------------------
-                                ' 1. Search account in EHS 
-                                ' ----------------------------------------------
-                                udtSystemMessage = Me._udtEHSClaimBLL.SearchEHSAccountSmartID(udtSchemeClaim.SchemeCode.Trim(), DocTypeModel.DocTypeCode.HKIC, udtPersonalInfoSmartID.IdentityNum, _
-                                                Me._udtFormatter.formatDOB(udtPersonalInfoSmartID.DOB, udtPersonalInfoSmartID.ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing), _
-                                                udtEHSAccountExist, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, blnNotMatchAccountExist, blnExceedDocTypeLimit, _
-                                                FunctionCode, True)
-
-                                ' ----------------------------------------------
-                                ' 2. Call OCSSS to check HKIC if input is shown
-                                ' ----------------------------------------------
-                                If udtSystemMessage Is Nothing Then
-                                    ' HKIC must be formated in 9 characters e.g. " A1234567" or "CD1234567"
-                                    If SessionHandler.UIDisplayHKICSymbolGetFormSession(FunctionCode) Then
-
-                                        ' INT18-XXX (Refine auditlog) [Start][Chris YIM]
-                                        ' --------------------------------------------------------------------------------------
-                                        'Log Enter Info
-                                        EHSClaimBasePage.AuditLogSearchOCSSSStart(_udtAuditLogEntry, udtPersonalInfoSmartID.DocCode, _
-                                                                                   SessionHandler.HKICSymbolGetFormSession(FunctionCode), udtPersonalInfoSmartID.IdentityNum)
-
-                                        udtSystemMessage = CheckHKIDByOCSSS(udtPersonalInfoSmartID.IdentityNum, _udtSP.SPID, udtSchemeClaim.SchemeCode.Trim())
-
-                                        If udtSystemMessage Is Nothing Then
-                                            EHSClaimBasePage.AuditLogSearchOCSSSEnd(New AuditLogEntry(FunctionCode, Me), True)
-                                        Else
-                                            EHSClaimBasePage.AuditLogSearchOCSSSEnd(New AuditLogEntry(FunctionCode, Me), False)
-                                        End If
-
-                                        ' INT18-XXX (Refine auditlog) [End][Chris YIM]
-                                    Else
-                                        SessionHandler.HKICSymbolRemoveFromSession(FunctionCode)
-                                    End If
-                                End If
-
-                                ' ----------------------------------------------
-                                ' Search Account Error Issue
-                                ' ----------------------------------------------
-                                If Not udtSystemMessage Is Nothing Then
-                                    isValid = False
-
-                                    Select Case udtSystemMessage.MessageCode
-                                        Case "00141", "00142"
-                                            Me.udcStep1ClaimSearch.SetHKICNoError(True)
-                                    End Select
-
-                                    Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
-                                Else
-                                    'Validation Success
-
-                                    'Store residential status in model
-                                    ' INT18-0018 (Fix read smart IC with HKBC account) [Start][Koala]
-                                    If udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC) IsNot Nothing Then
-                                        udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).HKICSymbol = SessionHandler.HKICSymbolGetFormSession(FunctionCode)
-                                    End If
-                                    ' INT18-0018 (Fix read smart IC with HKBC account) [End][Koala]
-                                End If
-                                ' CRE17-010 (OCSSS integration) [End][Chris YIM]
-
-                            End If
-
-                            If isValid Then
-                                Dim strRuleResultKey As String = String.Empty
-
-                                If udtEligibleResult Is Nothing Then
-                                    MyBase.SessionHandler.EligibleResultRemoveFromSession()
-                                Else
-                                    Dim udtRuleResults As RuleResultCollection = New RuleResultCollection()
-
-                                    udtEligibleResult.PromptConfirmed = True
-                                    'Key = 1_G0002 -> not need prompt confirm popup dox -> reminder in step2a
-                                    strRuleResultKey = Me.RuleResultKey(ActiveViewIndex.Step1, udtEligibleResult.RuleType)
-
-                                    udtRuleResults.Add(strRuleResultKey, udtEligibleResult)
-                                    MyBase.SessionHandler.EligibleResultSaveToSession(udtRuleResults)
-                                End If
-
-                                udtEHSAccountExist.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
-
-                                'Only one case go to Claim directly -> Account validated && Search DocCode = PersonalInfo DocCode 
-                                'udtSmartIDContent.SmartIDReadStatus = BLL.SmartIDHandler.CheckSmartIDCardStatus(udtSmartIDContent.EHSAccount, udtEHSAccountExist)
-                                MyBase.SessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmartIDContent)
-                                MyBase.SessionHandler.NotMatchAccountExistSaveToSession(blnNotMatchAccountExist)
-                                MyBase.SessionHandler.ExceedDocTypeLimitSaveToSession(blnExceedDocTypeLimit)
-                                MyBase.SessionHandler.EHSAccountSaveToSession(udtEHSAccountExist, FunctionCode)
-
-                                Select Case udtSmartIDContent.SmartIDReadStatus
-                                    Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_SameDetail
-
-                                        goToCreation = False
-
-                                    Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_SameDOB_NoCCCode
-
-                                        goToCreation = False
-                                        udtPersonalInfoSmartID.VoucherAccID = udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).VoucherAccID
-                                        udtPersonalInfoSmartID.Gender = udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).Gender
-                                        udtPersonalInfoSmartID.TSMP = udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).TSMP
-                                        Try
-                                            Me._udtEHSAccountBll.UpdateEHSAccountNameBySmartIC(udtPersonalInfoSmartID, Me._udtSP.SPID)
-                                        Catch eSQL As SqlClient.SqlException
-                                            If eSQL.Number = 50000 Then
-                                                udtSystemMessage = New Common.ComObject.SystemMessage("990001", SeverityCode.SEVD, eSQL.Message)
-                                                Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
-                                            Else
-                                                Throw eSQL
-                                            End If
-                                        End Try
-
-                                        If udtSystemMessage Is Nothing Then
-                                            'udtEHSAccountExist = Me._udtEHSAccountBll.LoadEHSAccountByVRID(udtPersonalInfoSmartID.VoucherAccID)
-                                            'udtEHSAccountExist.SetSearchDocCode(udtEHSAccountExist.EHSPersonalInformationList(0).DocCode)
-                                            udtEHSAccountExist = Me._udtEHSAccountBll.LoadEHSAccountByIdentity(udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum, DocTypeModel.DocTypeCode.HKIC)
-                                            udtEHSAccountExist.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
-
-                                            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-                                            ' ----------------------------------------------------------
-                                            udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).HKICSymbol = SessionHandler.HKICSymbolGetFormSession(FunctionCode)
-                                            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
-
-                                            MyBase.SessionHandler.EHSAccountSaveToSession(udtEHSAccountExist, FunctionCode)
-                                        End If
-                                End Select
-                            Else
-                                goToCreation = False
-                            End If
-
-                            If goToCreation Then
-
-                                EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFDComplete(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, udtSmartIDContent, True)
-                                MyBase.SessionHandler.AccountCreationComeFromClaimSaveToSession(True)
-
-                                '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
-
-                                RedirectHandler.ToURL("EHSAccountCreationV1.aspx")
-
-                                '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
-                            Else
-
-                                If Not udtSystemMessage Is Nothing Then
-                                    '---------------------------------------------------------------------------------------------------------------
-                                    ' Block Case 
-                                    '---------------------------------------------------------------------------------------------------------------
-                                    Me.Clear()
-                                    'Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
-                                    Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                                    Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
-                                Else
-                                    ' To Handle Concurrent Browser:
-                                    EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFDComplete(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, udtSmartIDContent, False)
-
-                                    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-                                    ' --------------------------------------------------------------------------------------
-                                    Select Case udtSchemeClaim.ControlType
-                                        Case SchemeClaimModel.EnumControlType.CIVSS, SchemeClaimModel.EnumControlType.EVSS, SchemeClaimModel.EnumControlType.HSIVSS, _
-                                             SchemeClaimModel.EnumControlType.RVP, SchemeClaimModel.EnumControlType.PIDVSS, SchemeClaimModel.EnumControlType.VSS, _
-                                             SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP
-
-                                            Me.GoToVersion2()
-
-                                        Case Else
-                                            Me.ResetStep2aServiceDate()
-                                            Me.SetStep2aInputEHSClaimControlReadFromSession(True)
-                                            Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step2a
-                                            EHSClaimBasePage.AuditLogEnterClaimDetailLoaded(_udtAuditLogEntry)
-
-                                            ' Default service date in here:
-                                            Dim udtSubPlatformBLL As New SubPlatformBLL
-
-                                            txtStep2aServiceDate.Text = DateTime.Today.ToString(Me._udtFormatter.EnterDateFormat(udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform)))
-
-                                    End Select
-                                    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
-                                End If
-                            End If
-                        Else
-                            '---------------------------------------------------------------------------------------------------------------
-                            ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
-                            '---------------------------------------------------------------------------------------------------------------
-                            Me.Clear()
-                            'Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
-                            Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                            Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
-                        End If
-
-                        Me.udcMsgBoxErr.BuildMessageBox(_strValidationFail, udtAuditlogEntry_Search, Common.Component.LogID.LOG00052, "Search & validate account with CFD Fail")
-                    Else
-
-                        '---------------------------------------------------------------------------------------------------------------
-                        ' ideasSamlResponse.StatusCode is not "samlp:Success"
-                        '---------------------------------------------------------------------------------------------------------------
                         Me.Clear()
                         Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                        Me.udcMsgBoxErr.AddMessageDesc(FunctionCode, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
-                        'Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail")
+                        Me.udcMsgBoxErr.AddMessageDesc(FunctionCode, strErrorCode, strErrorMsg)
 
-                        'Write End Audit log
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
-                        'EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
-                        EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, ideasBLL.Artifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail, strIdeasVersion)
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                        EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, strArtifact, strErrorCode, strErrorMsg, strIdeasVersion)
+
                         Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry_GetCFD, Common.Component.LogID.LOG00063, "Get CFD Fail")
-
+                        isValid = False
                     End If
                 End If
             End If
-            Return isReadingSmartID
+
+            If isValid Then
+
+                If ideasSamlResponse.StatusCode.Equals("samlp:Success") Then
+                    EHSClaimBasePage.AuditLogGetCFDComplete(udtAuditLogEntry_GetCFD, strArtifact)
+
+                    Dim udtEHSAccountExist As EHSAccountModel = Nothing
+                    Dim blnNotMatchAccountExist As Boolean = False
+                    Dim blnExceedDocTypeLimit As Boolean = False
+                    Dim udtEligibleResult As EligibleResult = Nothing
+                    Dim goToCreation As Boolean = True
+                    Dim strError As String = String.Empty
+
+                    Try
+                        If udtSmartIDContent.IsDemonVersion Then
+
+                            udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(udtSchemeClaim, udtSmartIDContent.IdeasVersion)
+
+                            udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
+
+                        Else
+                            Dim udtCFD As IdeasRM.CardFaceData = ideasSamlResponse.CardFaceDate()
+
+                            If IsNothing(udtCFD) Then
+                                strError = "ideasSamlResponse.CardFaceDate() is nothing"
+                            End If
+
+                            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            udtSmartIDContent.EHSAccount = ideasBLL.GetCardFaceDataEHSAccount(udtCFD, udtSchemeClaim, FunctionCode, udtSmartIDContent)
+                            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+                        End If
+                    Catch ex As Exception
+                        udtSmartIDContent.EHSAccount = Nothing
+                        strError = ex.Message
+                    End Try
+
+                    Dim udtAuditlogEntry_Search As AuditLogEntry = _udtAuditLogEntry
+                    Dim strHKICNo As String = String.Empty
+
+                    If Not udtSmartIDContent.EHSAccount Is Nothing Then
+                        strHKICNo = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
+                    End If
+
+                    EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFD(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, strHKICNo, strError, strIdeasVersion, "Claim")
+
+                    If Not udtSmartIDContent.EHSAccount Is Nothing Then
+                        udtPersonalInfoSmartID = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC)
+
+                        '------------------------------------------------------------------------------------------------------
+                        'Card Face Data Validation
+                        '------------------------------------------------------------------------------------------------------
+                        udtSystemMessage = EHSClaimBasePage.SmartIDCardFaceDataValidation(udtPersonalInfoSmartID)
+                        If Not udtSystemMessage Is Nothing Then
+                            isValid = False
+                            If Not udtPersonalInfoSmartID.IdentityNum Is Nothing Then udtAuditlogEntry_Search.AddDescripton("HKID", udtPersonalInfoSmartID.IdentityNum)
+                            If udtPersonalInfoSmartID.DateofIssue.HasValue Then udtAuditlogEntry_Search.AddDescripton("DOI", udtPersonalInfoSmartID.DateofIssue)
+                            udtAuditlogEntry_Search.AddDescripton("DOB", udtPersonalInfoSmartID.DOB)
+
+                            Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
+                        End If
+
+                        If isValid Then
+
+                            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
+                            ' ----------------------------------------------------------
+                            ' ----------------------------------------------
+                            ' 1. Search account in EHS 
+                            ' ----------------------------------------------
+                            udtSystemMessage = Me._udtEHSClaimBLL.SearchEHSAccountSmartID(udtSchemeClaim.SchemeCode.Trim(), DocTypeModel.DocTypeCode.HKIC, udtPersonalInfoSmartID.IdentityNum, _
+                                            Me._udtFormatter.formatDOB(udtPersonalInfoSmartID.DOB, udtPersonalInfoSmartID.ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing), _
+                                            udtEHSAccountExist, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, blnNotMatchAccountExist, blnExceedDocTypeLimit, _
+                                            FunctionCode, True)
+
+                            ' ----------------------------------------------
+                            ' 2. Call OCSSS to check HKIC if input is shown
+                            ' ----------------------------------------------
+                            If udtSystemMessage Is Nothing Then
+                                ' HKIC must be formated in 9 characters e.g. " A1234567" or "CD1234567"
+                                If SessionHandler.UIDisplayHKICSymbolGetFormSession(FunctionCode) Then
+
+                                    ' INT18-XXX (Refine auditlog) [Start][Chris YIM]
+                                    ' --------------------------------------------------------------------------------------
+                                    'Log Enter Info
+                                    EHSClaimBasePage.AuditLogSearchOCSSSStart(_udtAuditLogEntry, udtPersonalInfoSmartID.DocCode, _
+                                                                               SessionHandler.HKICSymbolGetFormSession(FunctionCode), udtPersonalInfoSmartID.IdentityNum)
+
+                                    udtSystemMessage = CheckHKIDByOCSSS(udtPersonalInfoSmartID.IdentityNum, _udtSP.SPID, udtSchemeClaim.SchemeCode.Trim())
+
+                                    If udtSystemMessage Is Nothing Then
+                                        EHSClaimBasePage.AuditLogSearchOCSSSEnd(New AuditLogEntry(FunctionCode, Me), True)
+                                    Else
+                                        EHSClaimBasePage.AuditLogSearchOCSSSEnd(New AuditLogEntry(FunctionCode, Me), False)
+                                    End If
+
+                                    ' INT18-XXX (Refine auditlog) [End][Chris YIM]
+                                Else
+                                    SessionHandler.HKICSymbolRemoveFromSession(FunctionCode)
+                                End If
+                            End If
+
+                            ' ----------------------------------------------
+                            ' Search Account Error Issue
+                            ' ----------------------------------------------
+                            If Not udtSystemMessage Is Nothing Then
+                                isValid = False
+
+                                Select Case udtSystemMessage.MessageCode
+                                    Case "00141", "00142"
+                                        Me.udcStep1ClaimSearch.SetHKICNoError(True)
+                                End Select
+
+                                Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
+                            Else
+                                'Validation Success
+
+                                'Store residential status in model
+                                ' INT18-0018 (Fix read smart IC with HKBC account) [Start][Koala]
+                                If udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC) IsNot Nothing Then
+                                    udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).HKICSymbol = SessionHandler.HKICSymbolGetFormSession(FunctionCode)
+                                End If
+                                ' INT18-0018 (Fix read smart IC with HKBC account) [End][Koala]
+                            End If
+                            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+
+                        End If
+
+                        If isValid Then
+                            Dim strRuleResultKey As String = String.Empty
+
+                            If udtEligibleResult Is Nothing Then
+                                MyBase.SessionHandler.EligibleResultRemoveFromSession()
+                            Else
+                                Dim udtRuleResults As RuleResultCollection = New RuleResultCollection()
+
+                                udtEligibleResult.PromptConfirmed = True
+                                'Key = 1_G0002 -> not need prompt confirm popup dox -> reminder in step2a
+                                strRuleResultKey = Me.RuleResultKey(ActiveViewIndex.Step1, udtEligibleResult.RuleType)
+
+                                udtRuleResults.Add(strRuleResultKey, udtEligibleResult)
+                                MyBase.SessionHandler.EligibleResultSaveToSession(udtRuleResults)
+                            End If
+
+                            udtEHSAccountExist.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
+
+                            'Only one case go to Claim directly -> Account validated && Search DocCode = PersonalInfo DocCode 
+                            'udtSmartIDContent.SmartIDReadStatus = BLL.SmartIDHandler.CheckSmartIDCardStatus(udtSmartIDContent.EHSAccount, udtEHSAccountExist)
+                            MyBase.SessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmartIDContent)
+                            MyBase.SessionHandler.NotMatchAccountExistSaveToSession(blnNotMatchAccountExist)
+                            MyBase.SessionHandler.ExceedDocTypeLimitSaveToSession(blnExceedDocTypeLimit)
+                            MyBase.SessionHandler.EHSAccountSaveToSession(udtEHSAccountExist, FunctionCode)
+
+                            Select Case udtSmartIDContent.SmartIDReadStatus
+                                Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_SameDetail
+
+                                    goToCreation = False
+
+                                Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_SameDOB_NoCCCode
+
+                                    goToCreation = False
+                                    udtPersonalInfoSmartID.VoucherAccID = udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).VoucherAccID
+                                    udtPersonalInfoSmartID.Gender = udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).Gender
+                                    udtPersonalInfoSmartID.TSMP = udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).TSMP
+                                    Try
+                                        Me._udtEHSAccountBll.UpdateEHSAccountNameBySmartIC(udtPersonalInfoSmartID, Me._udtSP.SPID)
+                                    Catch eSQL As SqlClient.SqlException
+                                        If eSQL.Number = 50000 Then
+                                            udtSystemMessage = New Common.ComObject.SystemMessage("990001", SeverityCode.SEVD, eSQL.Message)
+                                            Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
+                                        Else
+                                            Throw eSQL
+                                        End If
+                                    End Try
+
+                                    If udtSystemMessage Is Nothing Then
+                                        'udtEHSAccountExist = Me._udtEHSAccountBll.LoadEHSAccountByVRID(udtPersonalInfoSmartID.VoucherAccID)
+                                        'udtEHSAccountExist.SetSearchDocCode(udtEHSAccountExist.EHSPersonalInformationList(0).DocCode)
+                                        udtEHSAccountExist = Me._udtEHSAccountBll.LoadEHSAccountByIdentity(udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum, DocTypeModel.DocTypeCode.HKIC)
+                                        udtEHSAccountExist.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
+
+                                        ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
+                                        ' ----------------------------------------------------------
+                                        udtEHSAccountExist.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).HKICSymbol = SessionHandler.HKICSymbolGetFormSession(FunctionCode)
+                                        ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+
+                                        MyBase.SessionHandler.EHSAccountSaveToSession(udtEHSAccountExist, FunctionCode)
+                                    End If
+                            End Select
+                        Else
+                            goToCreation = False
+                        End If
+
+                        If goToCreation Then
+
+                            EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFDComplete(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, udtSmartIDContent, True)
+                            MyBase.SessionHandler.AccountCreationComeFromClaimSaveToSession(True)
+
+                            '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
+
+                            RedirectHandler.ToURL("EHSAccountCreationV1.aspx")
+
+                            '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
+                        Else
+
+                            If Not udtSystemMessage Is Nothing Then
+                                '---------------------------------------------------------------------------------------------------------------
+                                ' Block Case 
+                                '---------------------------------------------------------------------------------------------------------------
+                                Me.Clear()
+                                'Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                                Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                                Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
+                            Else
+                                ' To Handle Concurrent Browser:
+                                EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFDComplete(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, udtSmartIDContent, False)
+
+                                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
+                                ' --------------------------------------------------------------------------------------
+                                Select Case udtSchemeClaim.ControlType
+                                    Case SchemeClaimModel.EnumControlType.CIVSS, SchemeClaimModel.EnumControlType.EVSS, SchemeClaimModel.EnumControlType.HSIVSS, _
+                                         SchemeClaimModel.EnumControlType.RVP, SchemeClaimModel.EnumControlType.PIDVSS, SchemeClaimModel.EnumControlType.VSS, _
+                                         SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP
+
+                                        Me.GoToVersion2()
+
+                                    Case Else
+                                        Me.ResetStep2aServiceDate()
+                                        Me.SetStep2aInputEHSClaimControlReadFromSession(True)
+                                        Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step2a
+                                        EHSClaimBasePage.AuditLogEnterClaimDetailLoaded(_udtAuditLogEntry)
+
+                                        ' Default service date in here:
+                                        Dim udtSubPlatformBLL As New SubPlatformBLL
+
+                                        txtStep2aServiceDate.Text = DateTime.Today.ToString(Me._udtFormatter.EnterDateFormat(udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform)))
+
+                                End Select
+                                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+                            End If
+                        End If
+                    Else
+                        '---------------------------------------------------------------------------------------------------------------
+                        ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
+                        '---------------------------------------------------------------------------------------------------------------
+                        Me.Clear()
+                        Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                        Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
+                    End If
+
+                    Me.udcMsgBoxErr.BuildMessageBox(_strValidationFail, udtAuditlogEntry_Search, Common.Component.LogID.LOG00052, "Search & validate account with CFD Fail")
+                Else
+
+                    '---------------------------------------------------------------------------------------------------------------
+                    ' ideasSamlResponse.StatusCode is not "samlp:Success"
+                    '---------------------------------------------------------------------------------------------------------------
+                    Me.Clear()
+                    Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                    Me.udcMsgBoxErr.AddMessageDesc(FunctionCode, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
+
+                    'Write End Audit log
+                    EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, strArtifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail, strIdeasVersion)
+
+                    Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry_GetCFD, Common.Component.LogID.LOG00063, "Get CFD Fail")
+
+                End If
+            End If
+
+            Return blnIsReadingSmartID
         End Function
         '==================================================================================================================================================================
 
@@ -993,14 +994,32 @@ Namespace Text
         Private Sub udcClaimSearch_HKICSymbolListClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles udcStep1ClaimSearch.HKICSymbolListClick
             SessionHandler.HKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.HKICSymbol)
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            If Not btnStep1GO.Enabled Or Not btnStep1ReadOldSmartID.Enabled Or Not btnStep1ReadNewSmartID.Enabled Then
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strIDEASComboClientInstalled As String = IIf(SessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, SessionHandler.IDEASComboClientGetFormSession())
+            Dim blnIDEASComboClientInstalled As Boolean = IIf(strIDEASComboClientInstalled = YesNo.Yes, True, False)
+
+            If Not btnStep1GO.Enabled Then
                 btnStep1GO.Enabled = True
-                btnStep1ReadOldSmartID.Enabled = True
-                btnStep1ReadNewSmartID.Enabled = True
             End If
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+            If blnIDEASComboClientInstalled Then
+                If Not btnStep1ReadNewSmartIDCombo.Enabled Then
+                    btnStep1ReadNewSmartIDCombo.Enabled = True
+                End If
+
+            Else
+                If Not btnStep1ReadOldSmartID.Enabled Then
+                    btnStep1ReadOldSmartID.Enabled = True
+                End If
+
+                If Not btnStep1ReadNewSmartID.Enabled Then
+                    btnStep1ReadNewSmartID.Enabled = True
+                End If
+
+            End If
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
         End Sub
 #End Region
 
@@ -1521,33 +1540,37 @@ Namespace Text
         End Function
 
         '==================================================================== Code for SmartID ============================================================================
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Private Sub btnStep1ReadSmartID_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStep1ReadNewSmartID.Click
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-            ' ----------------------------------------------------------
             SessionHandler.UIDisplayHKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.UIDisplayHKICSymbol)
             SessionHandler.OCSSSRefStatusRemoveFromSession(FunctionCode)
-            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'Me.RedirectToIdeas(True)
-            Me.RedirectToIdeas(True, True)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            Me.RedirectToIdeas(IdeasBLL.EnumIdeasVersion.Two)
+
         End Sub
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Private Sub btnStep1ReadOldSmartID_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStep1ReadOldSmartID.Click
             SessionHandler.UIDisplayHKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.UIDisplayHKICSymbol)
             SessionHandler.OCSSSRefStatusRemoveFromSession(FunctionCode)
 
-            Me.RedirectToIdeas(True, False)
+            Me.RedirectToIdeas(IdeasBLL.EnumIdeasVersion.One)
         End Sub
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Sub btnStep1ReadOldSmartIDCombo_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStep1ReadNewSmartIDCombo.Click
+            SessionHandler.UIDisplayHKICSymbolSaveToSession(FunctionCode, Me.udcStep1ClaimSearch.UIDisplayHKICSymbol)
+            SessionHandler.OCSSSRefStatusRemoveFromSession(FunctionCode)
+
+            Me.RedirectToIdeasCombo(IdeasBLL.EnumIdeasVersion.Combo)
+        End Sub
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
         '==================================================================================================================================================================
 
         Protected Overrides Sub SetupStep1(ByVal createPopupPractice As Boolean, ByVal activeViewChange As Boolean)
@@ -1594,57 +1617,98 @@ Namespace Text
             Dim strDocumentTyepCode = SessionHandler.DocumentTypeSelectedGetFromSession(FunctionCode)
 
             Me.udcStep1ClaimSearch.SchemeCode = udtSchemeClaim.SchemeCode
-            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-            ' ----------------------------------------------------------
+
             If strDocumentTyepCode = DocTypeModel.DocTypeCode.HKIC Then
                 Me.udcStep1ClaimSearch.UIEnableHKICSymbol = True
             End If
             Me.udcStep1ClaimSearch.Build(strDocumentTyepCode)
             Me.btnStep1GO.Enabled = True
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            Me.btnStep1ReadOldSmartID.Enabled = True
-            Me.btnStep1ReadNewSmartID.Enabled = True
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
-
             '==================================================================== Code for SmartID ============================================================================
-            If strDocumentTyepCode.Equals(DocType.DocTypeModel.DocTypeCode.HKIC) AndAlso BLL.SmartIDHandler.EnableSmartID AndAlso MyBase.IsSupportedDevice Then
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strIDEASComboClientInstalled As String = IIf(SessionHandler.IDEASComboClientGetFormSession() Is Nothing, YesNo.No, SessionHandler.IDEASComboClientGetFormSession())
+            Dim blnIDEASComboClientInstalled As Boolean = IIf(strIDEASComboClientInstalled = YesNo.Yes, True, False)
+            Dim blnIDEASComboClientForceToUse As Boolean = IIf((New GeneralFunction).getSystemParameter("SmartID_IDEAS_Combo_Force_To_Use") = YesNo.Yes, True, False)
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                'If BLL.SmartIDHandler.EnableSmartID Then
-                If BLL.SmartIDHandler.TurnOnSmartID Then
+            btnStep1ReadOldSmartID.Enabled = False
+            btnStep1ReadNewSmartID.Enabled = False
+            btnStep1ReadNewSmartIDCombo.Enabled = False
 
-                    btnStep1ReadOldSmartID.Visible = True
-                    btnStep1ReadOldSmartID.Text = Me.GetGlobalResourceObject("AlternateText", "ReadOldCardAndSearchBtn")
-                    btnStep1ReadNewSmartID.Visible = True
-                    btnStep1ReadNewSmartID.Text = Me.GetGlobalResourceObject("AlternateText", "ReadNewCardAndSearchBtn")
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            btnStep1ReadOldSmartID.Style.Add("display", "none")
+            btnStep1ReadNewSmartID.Style.Add("display", "none")
+            btnStep1ReadNewSmartIDCombo.Style.Add("display", "none")
 
-                    lblReadCardAndSearchNA.Visible = False
-                Else
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
-                    btnStep1ReadOldSmartID.Visible = False
-                    btnStep1ReadNewSmartID.Visible = False
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            lblReadCardAndSearchNA.Visible = False
 
-                    lblReadCardAndSearchNA.Visible = True
-                    lblReadCardAndSearchNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchTextOnlyNA")
+            trSmartIDSoftwareAvailableDownload.Visible = False
+            trSmartID.Visible = False
+            trSmartIDSoftwareNotInstalled.Visible = False
+            trSmartIDCombo.Visible = False
+            trSmartIDNoService.Visible = False
+
+            If strDocumentTyepCode.Equals(DocType.DocTypeModel.DocTypeCode.HKIC) Then
+                If BLL.SmartIDHandler.EnableSmartID AndAlso MyBase.IsSupportedDevice Then
+                    If BLL.SmartIDHandler.TurnOnSmartID Then
+
+                        If blnIDEASComboClientForceToUse Then
+                            ' Combo Client Only Period
+                            If blnIDEASComboClientInstalled Then
+                                trSmartIDCombo.Visible = True
+
+                                btnStep1ReadNewSmartIDCombo.Enabled = True
+                                btnStep1ReadNewSmartIDCombo.Style.Remove("display")
+                                btnStep1ReadNewSmartIDCombo.Text = Me.GetGlobalResourceObject("Text", "ReadSmartIDAndSearch")
+
+                            Else
+                                trSmartIDCombo.Visible = True
+
+                                ' Disable "Read Smart ID And Search" if the client is not installed
+                                btnStep1ReadNewSmartIDCombo.Enabled = False
+                                btnStep1ReadNewSmartIDCombo.Style.Remove("display")
+                                btnStep1ReadNewSmartIDCombo.Text = Me.GetGlobalResourceObject("Text", "ReadSmartIDAndSearch")
+                                trSmartIDSoftwareNotInstalled.Visible = True
+
+                            End If
+
+                        Else
+                            ' Transition Period
+                            If blnIDEASComboClientInstalled Then
+                                trSmartIDCombo.Visible = True
+
+                                btnStep1ReadNewSmartIDCombo.Enabled = True
+                                btnStep1ReadNewSmartIDCombo.Style.Remove("display")
+                                btnStep1ReadNewSmartIDCombo.Text = Me.GetGlobalResourceObject("Text", "ReadSmartIDAndSearch")
+
+                            Else
+                                trSmartIDSoftwareAvailableDownload.Visible = True
+                                trSmartID.Visible = True
+
+                                btnStep1ReadOldSmartID.Enabled = True
+                                btnStep1ReadOldSmartID.Style.Remove("display")
+                                btnStep1ReadOldSmartID.Text = Me.GetGlobalResourceObject("AlternateText", "ReadOldCardAndSearchBtn")
+
+                                btnStep1ReadNewSmartID.Enabled = True
+                                btnStep1ReadNewSmartID.Style.Remove("display")
+                                btnStep1ReadNewSmartID.Text = Me.GetGlobalResourceObject("AlternateText", "ReadNewCardAndSearchBtn")
+
+                            End If
+
+                        End If
+
+                    Else
+                        trSmartIDNoService.Visible = True
+                        lblReadCardAndSearchNA.Visible = True
+                        lblReadCardAndSearchNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchTextOnlyNA")
+
+                    End If
+
                 End If
-
-            Else
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                Me.btnStep1ReadOldSmartID.Visible = False
-                Me.btnStep1ReadNewSmartID.Visible = False
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-                lblReadCardAndSearchNA.Visible = False
             End If
+
+
             '==================================================================================================================================================================
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
             ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
             ' ----------------------------------------------------------
@@ -1652,11 +1716,17 @@ Namespace Text
                 If Me.udcStep1ClaimSearch.UIEnableHKICSymbol And Me.udcStep1ClaimSearch.UIDisplayHKICSymbol Then
                     If Me.udcStep1ClaimSearch.HKICSymbolSelectedValue = String.Empty Then
                         Me.btnStep1GO.Enabled = False
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
-                        Me.btnStep1ReadOldSmartID.Enabled = False
-                        Me.btnStep1ReadNewSmartID.Enabled = False
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If blnIDEASComboClientInstalled Then
+                            Me.btnStep1ReadNewSmartIDCombo.Enabled = False
+                        Else
+                            Me.btnStep1ReadOldSmartID.Enabled = False
+                            Me.btnStep1ReadNewSmartID.Enabled = False
+                        End If
+                        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
                     End If
                 End If
             End If
@@ -6331,89 +6401,75 @@ Namespace Text
         End Sub
 
         '==================================================================== Code for SmartID ============================================================================
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        Private Sub RedirectToIdeas(ByVal blnShowPopup As Boolean, ByVal blnIsNewSmartIC As Boolean)
-            'Private Sub RedirectToIdeas(ByVal blnShowPopup As Boolean)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Sub RedirectToIdeas(ByVal enumIDEASVersion As IdeasBLL.EnumIdeasVersion)
 
-            Dim udtSmarIDContent As BLL.SmartIDContentModel = New BLL.SmartIDContentModel
-            Dim ideasHelper As IdeasRM.IHelper = IdeasRM.HelpFactory.createHelper()
             Dim udtSchemeClaim As SchemeClaimModel = MyBase.SessionHandler.SchemeSelectedGetFromSession(FunctionCode)
-            Dim ideasTokenResponse As IdeasRM.TokenResponse
-            Dim isDemoVersion As String = String.Empty
+            Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(enumIDEASVersion)
+            Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
+
+            EHSClaimBasePage.AuditLogReadSamrtID(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, strIdeasVersion, Nothing)
+
+            ' (1) Language
             Dim strLang As String = String.Empty
 
-            ' To Do, Retrieve SystemParameter for Remove Card Alert Setting
-            If Session("language").ToString().Trim.ToUpper = "ZH-TW" Then
+            If LCase(Session("language")) = CultureLanguage.TradChinese Then
                 strLang = "zh_HK"
             Else
                 strLang = "en_US"
             End If
 
-            ' Remove Card Setting Read From SystemParameters
+            ' (2) Remove Card Setting
             Dim strRemoveCard As String = String.Empty
-            Me._udtCommfunct.getSystemParameter("SmartID_RemoveCard", strRemoveCard, String.Empty)
+
+            Dim udtGeneralFunction As New GeneralFunction
+            udtGeneralFunction.getSystemParameter("SmartID_RemoveCard", strRemoveCard, String.Empty)
             If strRemoveCard = String.Empty Then
                 strRemoveCard = "Y"
             End If
 
-            ' INT14-0033 - Enforce HCSP accept server cert for connecting IDEAS Testing server [Start][Lawrence]
+            ' (3) IDEAS token
+            Dim ideasHelper As IHelper = HelpFactory.createHelper()
+            Dim ideasTokenResponse As TokenResponse = Nothing
+
+            ' Enforce HCSP accept server cert for connecting IDEAS Testing server
             ServicePointManager.ServerCertificateValidationCallback = New Security.RemoteCertificateValidationCallback(AddressOf (New BLL.IdeasBLL).ValidateCertificate)
-            ' INT14-0033 - Enforce HCSP accept server cert for connecting IDEAS Testing server [End][Lawrence]
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             ' Get Token From Ideas, input: the return URL from Ideas to eHS
-            Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(blnIsNewSmartIC)
-            Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
-            udtSmarIDContent.IdeasVersion = eIdeasVersion
-
-            'ideasTokenResponse = ideasHelper.getToken(BLL.IdeasBLL.DeptCode, BLL.IdeasBLL.RaCode, BLL.IdeasBLL.AppRefId, RedirectHandler.AppendPageKeyToURL(Me.Page.Request.Url.GetLeftPart(UriPartial.Path)), "Target", strLang, strRemoveCard)
             ideasTokenResponse = IdeasBLL.GetToken(eIdeasVersion, Me.Page.Request.Url.GetLeftPart(UriPartial.Path), strLang, strRemoveCard)
 
-            'EHSClaimBasePage.AuditLogReadSamrtID(_udtAuditLogEntry, udtSchemeClaim.SchemeCode)
-            EHSClaimBasePage.AuditLogReadSamrtID(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, strIdeasVersion, blnIsNewSmartIC)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            Dim isDemoVersion As String = ConfigurationManager.AppSettings("SmartIDDemoVersion")
 
-            isDemoVersion = ConfigurationManager.AppSettings("SmartIDDemoVersion")
             If Not ideasTokenResponse.ErrorCode Is Nothing And Not isDemoVersion.Equals("Y") Then
                 Me.udcMsgBoxErr.AddMessageDesc(FunctionCode, ideasTokenResponse.ErrorCode, ideasTokenResponse.ErrorMessage)
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                If isDemoVersion.Equals("Y") Then
-                    EHSClaimBasePage.AuditLogConnectIdeasFail(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "Y", strIdeasVersion)
-                Else
-                    EHSClaimBasePage.AuditLogConnectIdeasFail(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "N", strIdeasVersion)
-                End If
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                EHSClaimBasePage.AuditLogConnectIdeasFail(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "N", strIdeasVersion)
 
                 Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", _udtAuditLogEntry, Common.Component.LogID.LOG00049, "Click 'Read and Search Card' and Token Request Fail")
+
             Else
-                isDemoVersion = ConfigurationManager.AppSettings("SmartIDDemoVersion")
+                Dim udtSessionHandler As New SessionHandler
+                Dim udtSmarIDContent As New SmartIDContentModel
                 udtSmarIDContent.IsReadSmartID = True
                 udtSmarIDContent.TokenResponse = ideasTokenResponse
+                udtSmarIDContent.IdeasVersion = eIdeasVersion
 
                 If isDemoVersion.Equals("Y") Then
                     udtSmarIDContent.IsDemonVersion = True
+
                     MyBase.SessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmarIDContent)
 
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
                     EHSClaimBasePage.AuditLogConnectIdeasComplete(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "Y", strIdeasVersion)
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                     RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageTextOnlyVersion").ToString().Replace("@", "&"))
 
                 Else
                     udtSmarIDContent.IsDemonVersion = False
+
                     MyBase.SessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmarIDContent)
 
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
                     EHSClaimBasePage.AuditLogConnectIdeasComplete(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "N", strIdeasVersion)
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                     ' Redirect to Ideas, no need to add page key
                     Response.Redirect(ideasTokenResponse.IdeasMAURL)
@@ -6421,6 +6477,97 @@ Namespace Text
                 End If
             End If
         End Sub
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Sub RedirectToIdeasCombo(ByVal enumIDEASVersion As IdeasBLL.EnumIdeasVersion)
+
+            Dim udtSchemeClaim As SchemeClaimModel = MyBase.SessionHandler.SchemeSelectedGetFromSession(FunctionCode)
+            Dim eIdeasVersion As IdeasBLL.EnumIdeasVersion = IdeasBLL.GetIdeasVersion(enumIDEASVersion)
+            Dim strIdeasVersion As String = IdeasBLL.ConvertIdeasVersion(eIdeasVersion)
+
+            EHSClaimBasePage.AuditLogReadSamrtID(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, strIdeasVersion, Nothing)
+
+            ' (1) Language
+            Dim strLang As String = String.Empty
+
+            If LCase(Session("language")) = CultureLanguage.TradChinese Then
+                strLang = "zh_HK"
+            Else
+                strLang = "en_US"
+            End If
+
+            ' (2) Remove Card Setting
+            Dim strRemoveCard As String = String.Empty
+
+            Dim udtGeneralFunction As New GeneralFunction
+            udtGeneralFunction.getSystemParameter("SmartID_RemoveCard", strRemoveCard, String.Empty)
+            If strRemoveCard = String.Empty Then
+                strRemoveCard = "Y"
+            End If
+
+            ' (3) IDEAS token
+            Dim ideasHelper As IHelper = HelpFactory.createHelper()
+            Dim ideasTokenResponse As TokenResponse = Nothing
+
+            ' Enforce HCSP accept server cert for connecting IDEAS Testing server
+            ServicePointManager.ServerCertificateValidationCallback = New Security.RemoteCertificateValidationCallback(AddressOf (New IdeasBLL).ValidateCertificate)
+
+            ' Get Token From Ideas, input: the return URL from Ideas to eHS
+            Select Case eIdeasVersion
+                Case IdeasBLL.EnumIdeasVersion.One, IdeasBLL.EnumIdeasVersion.Two, IdeasBLL.EnumIdeasVersion.TwoGender
+                    ideasTokenResponse = IdeasBLL.GetToken(eIdeasVersion, Me.Page.Request.Url.GetLeftPart(UriPartial.Path), strLang, strRemoveCard)
+
+                Case IdeasBLL.EnumIdeasVersion.Combo, IdeasBLL.EnumIdeasVersion.ComboGender
+                    Dim strPageName As String = New IO.FileInfo(Me.Request.Url.LocalPath).Name
+                    Dim strComboReturnURL As String = Me.Page.Request.Url.GetLeftPart(UriPartial.Path)
+                    Dim strFolderName As String = "/text"
+
+                    strComboReturnURL = strComboReturnURL.Replace(strFolderName + "/" + strPageName, "/IDEASComboReader/IDEASComboReader.aspx")
+                    ideasTokenResponse = IdeasBLL.GetToken(eIdeasVersion, strComboReturnURL, strLang, strRemoveCard)
+
+            End Select
+
+            Dim isDemoVersion As String = ConfigurationManager.AppSettings("SmartIDDemoVersion")
+
+            If Not ideasTokenResponse.ErrorCode Is Nothing And Not isDemoVersion.Equals("Y") Then
+                udcMsgBoxErr.AddMessageDesc(FunctionCode, ideasTokenResponse.ErrorCode, ideasTokenResponse.ErrorMessage)
+
+                EHSClaimBasePage.AuditLogConnectIdeasFail(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "N", strIdeasVersion)
+
+                Me.udcMsgBoxErr.BuildMessageDescBox("SmartIDActionFail", _udtAuditLogEntry, Common.Component.LogID.LOG00050, "Click 'Read Smart ID Card' and Token Request Fail")
+
+            Else
+                Dim udtSessionHandler As New SessionHandler
+                Dim udtSmarIDContent As New SmartIDContentModel
+                udtSmarIDContent.IsReadSmartID = True
+                udtSmarIDContent.TokenResponse = ideasTokenResponse
+                udtSmarIDContent.IdeasVersion = eIdeasVersion
+
+                If isDemoVersion.Equals("Y") Then
+                    udtSmarIDContent.IsDemonVersion = True
+
+                    MyBase.SessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmarIDContent)
+
+                    EHSClaimBasePage.AuditLogConnectIdeasComplete(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "Y", strIdeasVersion)
+
+                    RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageTextOnlyVersion").ToString().Replace("@", "&"))
+
+                Else
+                    udtSmarIDContent.IsDemonVersion = False
+
+                    MyBase.SessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmarIDContent)
+
+                    EHSClaimBasePage.AuditLogConnectIdeasComplete(_udtAuditLogEntry, udtSchemeClaim.SchemeCode, ideasTokenResponse, "N", strIdeasVersion)
+
+                    ' Prompt the popup include iframe to show IDEAS Combo UI
+                    ucIDEASCombo.ReadSmartIC(IdeasBLL.EnumIdeasVersion.Combo, ideasTokenResponse, FunctionCode)
+
+                End If
+            End If
+        End Sub
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         Private Function SmartIDShowRealID() As Boolean
             Dim udtGeneralFunction As New GeneralFunction
@@ -6635,6 +6782,15 @@ Namespace Text
 
         End Function
         ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+
+        Private Sub lbtnUpdateNow_Click(sender As Object, e As EventArgs) Handles lbtnUpdateNow.Click
+
+            ScriptManager.RegisterStartupScript(Me, Page.GetType, "UpdateNow", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
+
+        End Sub
+
     End Class
+
+
 
 End Namespace

@@ -187,9 +187,10 @@ Namespace BLL
                                 If udtExistingPersonalInfo.CreateBySmartID Then
                                     'Validated Account -> is same DOI -> is same DOB -> Created by SmartID
 
-                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                    ' ----------------------------------------------------------------------------------------
-                                    If udtExistingPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Then
+                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    If udtExistingPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Or _
+                                        udtExistingPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS_Combo_New_WithGender Then
                                         'Validated Account -> is same DOI -> is same DOB -> Created by SmartID -> With Gender
                                         'Block Claim, all info (include Gender) should be same for the same card
                                         Return SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOIDOB_CreateBySmartID_WithGender
@@ -214,7 +215,7 @@ Namespace BLL
                                             Return SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOIDOB_CreateBySmartID_WithoutGender_DiffName
                                         End If
                                     End If
-                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                                 Else
                                     'Validated Account -> is same DOI -> is same DOB -> not is Created by SmartID 
 
@@ -301,9 +302,10 @@ Namespace BLL
                             If udtSmartIDPersonalInfo.DateofIssue.Equals(udtExistingPersonalInfo.DateofIssue) AndAlso _
                                 udtSmartIDPersonalInfo.DOB.Equals(udtExistingPersonalInfo.DOB) Then
 
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                ' ----------------------------------------------------------------------------------------
-                                If udtExistingPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Then
+                                ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                ' ---------------------------------------------------------------------------------------------------------
+                                If udtExistingPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Or _
+                                   udtExistingPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS_Combo_New_WithGender Then
                                     'case 11: Temp VRA Found -> Diff detail -> is created by smart ID -> Same DOI DOB -> With Gender
                                     'Block Claim (Same Card)
                                     Return SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithGender
@@ -326,7 +328,7 @@ Namespace BLL
                                         Return SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithoutGender_DiffName
                                     End If
                                 End If
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                                ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
                             Else
                                 'Case 12: Temp VRA Found -> Account details are not same -> is created by smart ID -> DOI and DOB are not same as existing account
@@ -435,6 +437,13 @@ Namespace BLL
         ' ----------------------------------------------------------------------------------------
         Dim _enumIdeasVersion As IdeasBLL.EnumIdeasVersion
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim _udtIdeasSamlResponse As IdeasRM.IdeasResponse
+        Dim _strArtifact As String = String.Empty
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+
 
         Public Sub New()
             If Not _isPilotRunSP AndAlso _isReadSmartID Then
@@ -442,7 +451,7 @@ Namespace BLL
             End If
         End Sub
 
-
+#Region "Property"
         Public Property TokenResponse() As IdeasRM.TokenResponse
             Get
                 Return Me._udtIdeasTokenResponse
@@ -556,12 +565,60 @@ Namespace BLL
                         strSmartIDVer = SmartIDVersion.IDEAS2
                     Case IdeasBLL.EnumIdeasVersion.TwoGender
                         strSmartIDVer = SmartIDVersion.IDEAS2_WithGender
+                    Case IdeasBLL.EnumIdeasVersion.Combo
+                        If Me.CardVersion = 1 Then
+                            strSmartIDVer = SmartIDVersion.IDEAS_Combo_Old
+                        End If
+
+                        If Me.CardVersion = 2 Then
+                            strSmartIDVer = SmartIDVersion.IDEAS_Combo_New
+                        End If
+
+                    Case IdeasBLL.EnumIdeasVersion.ComboGender
+                        If Me.CardVersion = 1 Then
+                            strSmartIDVer = SmartIDVersion.IDEAS_Combo_Old
+                        End If
+
+                        If Me.CardVersion = 2 Then
+                            strSmartIDVer = SmartIDVersion.IDEAS_Combo_New_WithGender
+                        End If
+
                 End Select
 
                 Return strSmartIDVer
             End Get
         End Property
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property IdeasSamlResponse() As IdeasRM.IdeasResponse
+            Get
+                Return Me._udtIdeasSamlResponse
+            End Get
+            Set(ByVal value As IdeasRM.IdeasResponse)
+                Me._udtIdeasSamlResponse = value
+            End Set
+        End Property
+
+        Public Property Artifact() As String
+            Get
+                Return Me._strArtifact
+            End Get
+            Set(ByVal value As String)
+                Me._strArtifact = value
+            End Set
+        End Property
+
+        Public ReadOnly Property CardVersion() As String
+            Get
+                Return Me._udtIdeasSamlResponse.CardFaceDate.CardVersion
+            End Get
+        End Property
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+#End Region
+
     End Class
 
 End Namespace

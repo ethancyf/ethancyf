@@ -1,12 +1,16 @@
+Imports Common.ComFunction
+Imports Common.ComObject
+Imports Common.Component
+Imports Common.Component.DataEntryUser
+Imports Common.Component.EHSAccount
+Imports Common.Component.ServiceProvider
+Imports Common.Component.UserAC
+Imports Common.DataAccess
+Imports Common.Format
+Imports Common.Validation
+Imports System.Data.SqlClient
 Imports System.Net.Security
 Imports System.Security.Cryptography.X509Certificates
-
-Imports Common.Component
-Imports Common.Validation
-Imports Common.ComObject
-Imports Common.Format
-Imports Common.ComFunction
-Imports Common.Component.EHSAccount
 
 Namespace BLL
 
@@ -19,30 +23,32 @@ Namespace BLL
         Public Shared RaCode_IDEAS2 As String = ConfigurationManager.AppSettings("SmartID_RaCode_IDEAS2").ToString()
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public Enum EnumIdeasVersion
             One
             Two
             TwoGender
+            Combo
+            ComboGender
         End Enum
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
 #Region "Shared Function"
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        ' Add IdeasVersion
-        Shared Function GetCardFaceDataEHSAccount(ByVal cfData As IdeasRM.CardFaceData, ByVal udtSchemeClaim As Scheme.SchemeClaimModel, ByVal strFunctionCode As String, ByVal eIdeasVersion As BLL.IdeasBLL.EnumIdeasVersion) As EHSAccountModel
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Shared Function GetCardFaceDataEHSAccount(ByVal cfData As IdeasRM.CardFaceData, ByVal udtSchemeClaim As Scheme.SchemeClaimModel, ByVal strFunctionCode As String, ByVal udtSmartIDContent As BLL.SmartIDContentModel) As EHSAccountModel
 
-            Return GetCardFaceDataEHSAccount(cfData, udtSchemeClaim.SchemeCode, strFunctionCode, eIdeasVersion)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            Return GetCardFaceDataEHSAccount(cfData, udtSchemeClaim.SchemeCode, strFunctionCode, udtSmartIDContent)
+
         End Function
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         ' Add IdeasVersion
-        Shared Function GetCardFaceDataEHSAccount(ByVal cfData As IdeasRM.CardFaceData, ByVal strSchemeClaim As String, ByVal strFunctionCode As String, ByVal eIdeasVersion As BLL.IdeasBLL.EnumIdeasVersion) As EHSAccountModel
+        Shared Function GetCardFaceDataEHSAccount(ByVal cfData As IdeasRM.CardFaceData, ByVal strSchemeClaim As String, ByVal strFunctionCode As String, ByVal udtSmartIDContent As BLL.SmartIDContentModel) As EHSAccountModel
             ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
             Dim isValid As Boolean = True
 
@@ -64,6 +70,8 @@ Namespace BLL
             Dim strCCCode6 As String = String.Empty
             Dim strCName As String = String.Empty
             Dim dtDOB As Date
+
+            Dim eIdeasVersion As BLL.IdeasBLL.EnumIdeasVersion = udtSmartIDContent.IdeasVersion
 
             udtFormatter.seperateEName(cfData.PersonalEnglishNameDetails.UnstructuredName.Value.ToUpper, strSurName, strFirstName)
 
@@ -175,8 +183,8 @@ Namespace BLL
 
                 udtEHSPersonalInfo.CreateBySmartID = True
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
+                ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 udtEHSPersonalInfo.Gender = cfData.Gender
 
                 Select Case eIdeasVersion
@@ -188,8 +196,27 @@ Namespace BLL
 
                     Case BLL.IdeasBLL.EnumIdeasVersion.TwoGender
                         udtEHSPersonalInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS2_WithGender
+
+                    Case BLL.IdeasBLL.EnumIdeasVersion.Combo
+                        If udtSmartIDContent.CardVersion = 1 Then
+                            udtEHSPersonalInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS_Combo_Old
+                        End If
+
+                        If udtSmartIDContent.CardVersion = 2 Then
+                            udtEHSPersonalInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS_Combo_New
+                        End If
+
+                    Case BLL.IdeasBLL.EnumIdeasVersion.ComboGender
+                        If udtSmartIDContent.CardVersion = 1 Then
+                            udtEHSPersonalInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS_Combo_Old
+                        End If
+
+                        If udtSmartIDContent.CardVersion = 2 Then
+                            udtEHSPersonalInfo.SmartIDVer = Common.Component.SmartIDVersion.IDEAS_Combo_New_WithGender
+                        End If
+
                 End Select
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
                 udtEHSAccount.SetSearchDocCode(DocType.DocTypeModel.DocTypeCode.HKIC)
                 Return udtEHSAccount
@@ -273,27 +300,43 @@ Namespace BLL
         End Function
         ' INT14-0033 - Enforce HCSP accept server cert for connecting IDEAS Testing server [End][Lawrence]
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        Public Shared Function GetIdeasVersion(ByVal blnIsNewSmartIC As Boolean) As EnumIdeasVersion
-            If blnIsNewSmartIC Then
-                ' IDEAS2 / 2.5 ( Not read gender / Read Gender)
-                Dim strReadGender As String = String.Empty
-                Dim udtGeneralFunction As New GeneralFunction
-                udtGeneralFunction.getSystemParameter("SmartID_IDEAS2_ReadGender", strReadGender, String.Empty)
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Shared Function GetIdeasVersion(ByVal enumIDEASVersion As EnumIdeasVersion) As EnumIdeasVersion
+            Dim enumResult As EnumIdeasVersion = Nothing
 
-                If strReadGender = YesNo.Yes Then
-                    Return EnumIdeasVersion.TwoGender
-                Else
-                    Return EnumIdeasVersion.Two
-                End If
-            Else
-                ' IDEAS
-                Return EnumIdeasVersion.One
-            End If
+            Dim strReadGender As String = String.Empty
+            Dim udtGeneralFunction As New GeneralFunction
+            udtGeneralFunction.getSystemParameter("SmartID_IDEAS2_ReadGender", strReadGender, String.Empty)
+
+            Select Case enumIDEASVersion
+                Case IdeasBLL.EnumIdeasVersion.One
+                    enumResult = enumIDEASVersion.One
+
+                Case IdeasBLL.EnumIdeasVersion.Two
+                    If strReadGender = YesNo.Yes Then
+                        ' IDEAS2 / 2.5 ( Not read gender / Read Gender)
+                        enumResult = enumIDEASVersion.TwoGender
+                    Else
+                        enumResult = enumIDEASVersion.Two
+                    End If
+
+                Case IdeasBLL.EnumIdeasVersion.Combo
+                    If strReadGender = YesNo.Yes Then
+                        enumResult = enumIDEASVersion.ComboGender
+                    Else
+                        enumResult = enumIDEASVersion.Combo
+                    End If
+
+            End Select
+
+            Return enumResult
 
         End Function
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public Shared Function ConvertIdeasVersion(ByVal eIdeasVersion As EnumIdeasVersion) As String
             Select Case eIdeasVersion
                 Case EnumIdeasVersion.One
@@ -302,10 +345,16 @@ Namespace BLL
                     Return "2"
                 Case EnumIdeasVersion.TwoGender
                     Return "2.5"
+                Case EnumIdeasVersion.Combo
+                    Return "Combo"
+                Case EnumIdeasVersion.ComboGender
+                    Return "ComboGender"
                 Case Else
                     Return String.Empty
             End Select
         End Function
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
 
         Public Shared Function GetToken(ByVal eIdeasVersion As EnumIdeasVersion, ByVal strURL As String, ByVal strLang As String, ByVal strRemoveCard As String) As IdeasRM.TokenResponse
             Dim ideasTokenResponse As IdeasRM.TokenResponse = Nothing
@@ -315,18 +364,65 @@ Namespace BLL
                 Case IdeasBLL.EnumIdeasVersion.One
                     ideasTokenResponse = ideasHelper.getToken(IdeasBLL.DeptCode, IdeasBLL.RaCode, IdeasBLL.AppRefId, _
                                                               RedirectHandler.AppendPageKeyToURL(strURL), "Target", strLang, strRemoveCard, ConvertIdeasVersion(eIdeasVersion))
+
                 Case IdeasBLL.EnumIdeasVersion.Two
                     ideasTokenResponse = ideasHelper.getToken(IdeasBLL.DeptCode, IdeasBLL.RaCode, IdeasBLL.AppRefId, _
                                                               RedirectHandler.AppendPageKeyToURL(strURL), "Target", strLang, strRemoveCard, ConvertIdeasVersion(eIdeasVersion))
+
                 Case IdeasBLL.EnumIdeasVersion.TwoGender
                     ideasTokenResponse = ideasHelper.getToken(IdeasBLL.DeptCode, IdeasBLL.RaCode_IDEAS2, IdeasBLL.AppRefId, _
                                                               RedirectHandler.AppendPageKeyToURL(strURL), "Target", strLang, strRemoveCard, ConvertIdeasVersion(eIdeasVersion))
+
+                Case IdeasBLL.EnumIdeasVersion.Combo
+                    ideasTokenResponse = ideasHelper.registerBrokerService(IdeasBLL.DeptCode, IdeasBLL.RaCode, IdeasBLL.AppRefId, _
+                                                                           RedirectHandler.AppendPageKeyToURL(strURL), "Target", "", "", "", "", strLang, "", strRemoveCard, "", False)
+
+                Case IdeasBLL.EnumIdeasVersion.ComboGender
+                    ideasTokenResponse = ideasHelper.registerBrokerService(IdeasBLL.DeptCode, IdeasBLL.RaCode, IdeasBLL.AppRefId, _
+                                                                           RedirectHandler.AppendPageKeyToURL(strURL), "Target", "", "", "", "", strLang, "", strRemoveCard, "", True)
             End Select
 
             Return ideasTokenResponse
         End Function
 
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Sub UpdateIDEASComboInfo(ByVal udtUserAC As UserACModel, ByVal strInstalled As String, ByVal strVersion As String)
+            Dim db As New Database
+
+            If udtUserAC.UserType = SPAcctType.ServiceProvider Then
+                Dim udtServiceProvider As ServiceProviderModel = CType(udtUserAC, ServiceProviderModel)
+
+                Dim parms() As SqlParameter = { _
+                                db.MakeInParam("@SPID", SqlDbType.Char, 8, udtServiceProvider.SPID), _
+                                db.MakeInParam("@DataEntryID", SqlDbType.VarChar, 20, String.Empty), _
+                                db.MakeInParam("@Installed", SqlDbType.Char, 1, IIf(strInstalled Is Nothing, YesNo.No, strInstalled)), _
+                                db.MakeInParam("@Version", SqlDbType.VarChar, 20, IIf(strVersion Is Nothing, String.Empty, strVersion)), _
+                                db.MakeInParam("@LastUpdateDtm", SqlDbType.DateTime, 8, DateTime.Now) _
+                                }
+
+                db.RunProc("proc_IDEASComboClientLogBook_add_upd", parms)
+
+            Else
+                Dim udtDataEntryUser As DataEntryUserModel = CType(udtUserAC, DataEntryUserModel)
+
+                Dim parms() As SqlParameter = { _
+                                db.MakeInParam("@SPID", SqlDbType.Char, 8, udtDataEntryUser.SPID), _
+                                db.MakeInParam("@DataEntryID", SqlDbType.VarChar, 20, udtDataEntryUser.DataEntryAccount), _
+                                db.MakeInParam("@Installed", SqlDbType.Char, 1, IIf(strInstalled Is Nothing, YesNo.No, strInstalled)), _
+                                db.MakeInParam("@Version", SqlDbType.VarChar, 20, IIf(strVersion Is Nothing, String.Empty, strVersion)), _
+                                db.MakeInParam("@LastUpdateDtm", SqlDbType.DateTime, 8, DateTime.Now) _
+                                }
+
+                db.RunProc("proc_IDEASComboClientLogBook_add_upd", parms)
+
+            End If
+
+        End Sub
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
 #End Region
 
     End Class

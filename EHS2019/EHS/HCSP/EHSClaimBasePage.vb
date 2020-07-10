@@ -1037,19 +1037,22 @@ Public MustInherit Class EHSClaimBasePage
     '=========================================================================Audit Log for smart ID=========================================================================
 #Region "Read Smart IC"
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     'Search Account : Read Samrt ID: LOG00047
-    'Public Shared Sub AuditLogReadSamrtID(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strSchemeCode As String)
-    Public Shared Sub AuditLogReadSamrtID(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strSchemeCode As String, ByVal strIdeasVersion As String, ByVal blnIsNewSmartIC As Boolean)
+    Public Shared Sub AuditLogReadSamrtID(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strSchemeCode As String, ByVal strIdeasVersion As String, ByVal blnIsNewSmartIC As Nullable(Of Boolean))
+        Dim strNewSmartIC As String = String.Empty
+
+        If Not blnIsNewSmartIC Is Nothing Then
+            strNewSmartIC = IIf(blnIsNewSmartIC, YesNo.Yes, YesNo.No)
+        End If
 
         If Not IsNothing(strSchemeCode) Then udtAuditLogEntry.AddDescripton("Scheme Code", strSchemeCode)
-        udtAuditLogEntry.AddDescripton("New Card", IIf(blnIsNewSmartIC, YesNo.Yes, YesNo.No))
+        udtAuditLogEntry.AddDescripton("New Card", strNewSmartIC)
         udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
         udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00047, "Click 'Read and Search Card' and Token Request")
     End Sub
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
     ' ----------------------------------------------------------------------------------------
@@ -1065,8 +1068,19 @@ Public MustInherit Class EHSClaimBasePage
         ' ----------------------------------------------------------------------------------------
         udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00048, "Click 'Read and Search Card' and Token Request Complelet")
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00048, "Click 'Read and Search Card' and Token Request Complete")
     End Sub
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Shared Sub AuditLogConnectIdeasComboComplete(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strSchemeCode As String, ByVal ideasTokenResponse As IdeasRM.TokenResponse, ByVal strDemoVersion As String, ByVal strIdeasVersion As String)
+        If Not IsNothing(strSchemeCode) Then udtAuditLogEntry.AddDescripton("Scheme Code", strSchemeCode)
+        udtAuditLogEntry.AddDescripton("Ideas Broker URL", ideasTokenResponse.BrokerURL)
+        udtAuditLogEntry.AddDescripton("Demo Version", strDemoVersion)
+        udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00048, "Click 'Read and Search Card' and Token Request Complete")
+    End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
     ' ----------------------------------------------------------------------------------------

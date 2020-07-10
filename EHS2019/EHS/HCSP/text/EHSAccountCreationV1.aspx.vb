@@ -625,12 +625,12 @@ Namespace Text
             '==================================================================== Code for SmartID ============================================================================
             If Not udtSmartIDContent Is Nothing Then
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
+                ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 Select Case udtSmartIDContent.SmartIDReadStatus
                     Case SmartIDHandler.SmartIDResultStatus.TempAccountExist_SameDetail
 
-                        If udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.TwoGender Then
+                        If udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.TwoGender Or udtSmartIDContent.IdeasVersion = IdeasBLL.EnumIdeasVersion.ComboGender Then
                             'A temporary eHealth (Subsidies) Account with the same input information is found in the System. Please verify all information against those on the recipient's presented document.
                             Me.lblStep1a2TempAccDisclaimerText.Text = Me.GetGlobalResourceObject("Text", "ConfirmTempAccDisclaim")
 
@@ -642,7 +642,7 @@ Namespace Text
                             udtSmartIDContent.HighLightGender = True
                         End If
                 End Select
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                ' CRE19-028 (IDEAS Combo) [End][Chris YIM]
 
             Else
                 Me.lblStep1a2TempAccDisclaimerText.Text = Me.GetGlobalResourceObject("Text", "ConfirmTempAccDisclaim")

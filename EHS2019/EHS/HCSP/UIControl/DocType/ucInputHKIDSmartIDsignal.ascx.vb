@@ -102,9 +102,10 @@ Partial Public Class ucInputHKIDSmartIDSignal
         Me.SetCName(udtPersonalInfoSmartID)
         Me.SetEName()
 
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        If _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.TwoGender Then
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        If _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.TwoGender Or _
+           _udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.ComboGender Then
             Me.SetGender(True)
         Else
             'Select Gender
@@ -118,7 +119,7 @@ Partial Public Class ucInputHKIDSmartIDSignal
                 End If
             End If
         End If
-        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
         If MyBase.ActiveViewChanged Then
             Me.SetGenderSmartIDError(False)

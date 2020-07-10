@@ -482,13 +482,13 @@ Partial Public Class ucClaimSearch
     Protected WithEvents panSearchHKIC As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''trHKICSymbol control.
+    '''tblHKICSymbol control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents trHKICSymbol As Global.System.Web.UI.HtmlControls.HtmlTableRow
+    Protected WithEvents tblHKICSymbol As Global.System.Web.UI.HtmlControls.HtmlTable
 
     '''<summary>
     '''lblHKICSymbolText control.
@@ -525,6 +525,42 @@ Partial Public Class ucClaimSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ErrHKICSymbol As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''tblDownloadComboClient control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblDownloadComboClient As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''lblSmartIDSoftwareAvailableDownload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSmartIDSoftwareAvailableDownload As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divUpdateNow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divUpdateNow As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lbtnUpdateNow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbtnUpdateNow As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
     '''tblManual control.
@@ -624,6 +660,24 @@ Partial Public Class ucClaimSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnSearchHKIC As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''mvIDEASCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mvIDEASCombo As Global.System.Web.UI.WebControls.MultiView
+
+    '''<summary>
+    '''vOldIDEAS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vOldIDEAS As Global.System.Web.UI.WebControls.View
 
     '''<summary>
     '''mvOldHKIC control.
@@ -822,6 +876,87 @@ Partial Public Class ucClaimSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReadNewCardAndSearchNA As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''vNewIDEAS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vNewIDEAS As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''tblNewSmartICCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblNewSmartICCombo As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''lblReadNewSmartICCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadNewSmartICCombo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNewSmartICComboChipFaceUp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewSmartICComboChipFaceUp As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divSmartIDSoftwareNotInstalled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divSmartIDSoftwareNotInstalled As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblSmartIDSoftwareNotInstalled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSmartIDSoftwareNotInstalled As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''td1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents td1 As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''btnShortIdentityNoNewSmartIDCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnShortIdentityNoNewSmartIDCombo As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''lblReadNewCardAndSearchComboNA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadNewCardAndSearchComboNA As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''filteredSearchHKICNo control.

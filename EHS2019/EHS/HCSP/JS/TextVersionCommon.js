@@ -190,3 +190,22 @@ function doSetCaretPosition(ctrl, caretPos) {
         }
     }
 }
+
+function showUpdateNow(lang) {
+    var language;
+
+    switch (lang) {
+        case 'en-us':
+            language = 'EN';
+            break;
+        case 'zh-tw':
+            language = 'ZH';
+            break;
+        default:
+            language = 'EN';
+    }
+
+    newwindow = window.open('../' + language + '/ReadSmartIDTips.htm', 'ReadSmartIDTips', 'toolbar=no, height=auto, width=auto, menubar=no, resizable=yes, location=no, status=no');
+    newwindow.focus();
+    return false;
+}

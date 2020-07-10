@@ -1,5 +1,5 @@
 <%@ Page Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPage.Master"
-    Codebehind="EHSClaimV1.aspx.vb" Inherits="HCSP.EHSClaimV1" Title="<%$ Resources:Title, Claim %>" %>
+    CodeBehind="EHSClaimV1.aspx.vb" Inherits="HCSP.EHSClaimV1" Title="<%$ Resources:Title, Claim %>" %>
 
 <%@ Register Src="../UIControl/ucVaccinationRecordProvider.ascx" TagName="ucVaccinationRecordProvider"
     TagPrefix="uc10" %>
@@ -23,20 +23,24 @@
 <%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc2" %>
 <%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc3" %>
 <%@ Register Src="~/UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp" TagPrefix="uc1" %>
+
+<%@ Register Src="~/UIControl/IDEASCombo/IDEASCombo.ascx" TagName="IDEASCombo" TagPrefix="uc11" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
+            <uc11:IDEASCombo ID="ucIDEASCombo" runat="server" />
             <asp:Panel Style="display: none" ID="panPopupConfirmCancel" runat="server" Width="500px">
-                <uc1:ucNoticePopUp ID="ucNoticePopUpConfirm" runat="server" NoticeMode="Confirmation" ButtonMode="YesNo" 
-                                 MessageText="<%$ Resources:Text, CancelAlert %>"/>
+                <uc1:ucNoticePopUp ID="ucNoticePopUpConfirm" runat="server" NoticeMode="Confirmation" ButtonMode="YesNo"
+                    MessageText="<%$ Resources:Text, CancelAlert %>" />
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panPopupDuplicateClaimAlert" runat="server" Width="500px">
                 <uc1:ucNoticePopUp ID="ucNoticePopUpDuplicateClaimAlert" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon"
-                    ButtonMode="ProceedNotProceed" HeaderText="<%$ Resources:Text, DuplicateClaimAlertTitle %>" MessageText="<%$ Resources:Text, DuplicateClaimAlertMessage %>"/>
+                    ButtonMode="ProceedNotProceed" HeaderText="<%$ Resources:Text, DuplicateClaimAlertTitle %>" MessageText="<%$ Resources:Text, DuplicateClaimAlertMessage %>" />
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panPopupExclamationConfirmationBox" runat="server" Width="500px">
-                <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationConfirm" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel" 
-                                 MessageText=""/>
+                <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationConfirm" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel"
+                    MessageText="" />
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panPopupPracticeSelection" runat="server" BorderStyle="Solid"
                 BackColor="#E0E0E0" BorderWidth="1px">
@@ -44,7 +48,7 @@
                     <cc3:PracticeRadioButtonGroup runat="server" ID="udcPopupPracticeRadioButtonGroup"
                         HeaderText="<%$ Resources:Text, SelectPractice%>" HeaderTextCss="tableText" PracticeRadioButtonCss="tableText"
                         PracticeTextCss="tableTextChi" HeaderCss="" SchemeLabelCss="tableTitle" SelectButtonURL="~/Images/button/icon_button/btn_Arrow_to_Right.png"
-                        MaskBankAccountNo="True" PanelHeight="400" ShowCloseButton="True"/>
+                        MaskBankAccountNo="True" PanelHeight="400" ShowCloseButton="True" />
                 </div>
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panPopupPrintOptionSelection" runat="server"
@@ -71,50 +75,38 @@
                 <asp:Panel Style="cursor: move" ID="panRCHSearchHomeListHeading" runat="server">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 980px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px;">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px;">
                                 <asp:Label ID="lblRCHSearchFormTitle" runat="server" Text="<%$ Resources:Text, Search %>"></asp:Label></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table style="width: 980px" cellspacing="0" cellpadding="0" border="0">
                     <tbody>
                         <tr>
-                            <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                             <td style="background-color: #ffffff; padding: 5px 5px 5px 5px" align="left">
                                 <asp:Panel ID="panRCHRecord" runat="server">
                                     <uc6:RVPHomeListSearch ID="udcRVPHomeListSearch" runat="server"></uc6:RVPHomeListSearch>
                                 </asp:Panel>
                             </td>
-                            <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                         </tr>
                         <tr>
-                            <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                             <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                                 <asp:ImageButton ID="btnPopupRVPHomeListSearchCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn %>"
                                     ImageUrl="<%$ Resources:ImageUrl, CancelBtn %>"></asp:ImageButton>
                                 <asp:ImageButton ID="btnPopupRVPHomeListSearchSelect" runat="server" AlternateText="<%$ Resources:AlternateText, SelectBtn %>"
                                     ImageUrl="<%$ Resources:ImageUrl, SelectBtn %>" />
                             </td>
-                            <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                         </tr>
                         <tr>
-                            <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                            </td>
-                            <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                                height: 7px">
-                            </td>
-                            <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                                height: 7px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                            <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                            <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -123,46 +115,34 @@
                 <asp:Panel ID="panSchemeLegendHeading" runat="server" Style="cursor: move;">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 620px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblSchemeLegnedHeading" runat="server" Text="<%$ Resources:Text, Legend %>"></asp:Label></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 620px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
                             <asp:Panel ID="panSchemeLegnedContent" runat="server" ScrollBars="vertical" Height="330px">
                                 <uc7:SchemeLegend ID="udcSchemeLegend" runat="server"></uc7:SchemeLegend>
                             </asp:Panel>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                             <asp:ImageButton ID="btnSchemeLegnedClose" runat="server" AlternateText="<%$ Resources:AlternateText, CloseBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>" /></td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -170,20 +150,16 @@
                 <asp:Panel ID="panAddHocPrintSelectionHeading" runat="server" Style="cursor: move">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 250px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 9px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 9px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblAddHocPrintSelectionHeading" runat="server" Text="<%$ Resources:Text, PrintConsentForm %>"></asp:Label></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 250px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff">
                             <table style="width: 100%">
                                 <tr>
@@ -192,23 +168,22 @@
                                             <table border="0" cellpadding="0" cellspacing="0">
                                                 <tr>
                                                     <td>
-                                                        <asp:Label ID="lblAdhocPrintFull" runat="server" CssClass="tableText" Text="<%$ Resources:Text, FullVersionPrintOut %>" ></asp:Label></td>
+                                                        <asp:Label ID="lblAdhocPrintFull" runat="server" CssClass="tableText" Text="<%$ Resources:Text, FullVersionPrintOut %>"></asp:Label></td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <asp:RadioButton ID="rbAdhocPrintFullLang1" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText"/></td>
+                                                        <asp:RadioButton ID="rbAdhocPrintFullLang1" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <asp:RadioButton ID="rbAdhocPrintFullLang2" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText"/></td>
+                                                        <asp:RadioButton ID="rbAdhocPrintFullLang2" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <asp:RadioButton ID="rbAdhocPrintFullLang3" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText"/></td>
+                                                        <asp:RadioButton ID="rbAdhocPrintFullLang3" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText" /></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="height: 10px">
-                                                    </td>
+                                                    <td style="height: 10px"></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -220,15 +195,15 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <asp:RadioButton ID="rbAdhocPrintCondenseLang1" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText"/></td>
+                                                        <asp:RadioButton ID="rbAdhocPrintCondenseLang1" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <asp:RadioButton ID="rbAdhocPrintCondenseLang2" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText"/></td>
+                                                        <asp:RadioButton ID="rbAdhocPrintCondenseLang2" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <asp:RadioButton ID="rbAdhocPrintCondenseLang3" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText"/></td>
+                                                        <asp:RadioButton ID="rbAdhocPrintCondenseLang3" GroupName="AdhocPrintSelection" runat="server" CssClass="tableText" /></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -244,18 +219,12 @@
                                 </tr>
                             </table>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -263,47 +232,35 @@
                 <asp:Panel ID="panSchemeDocTypeLegendHeading" runat="server" Style="cursor: move;">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 920px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblSchemeDocTypeLegnedHeading" runat="server" Text="<%$ Resources:Text, AcceptedDocList %>"></asp:Label></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 920px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
                             <asp:Panel ID="panSchemeDocTypeLegnedContent" runat="server" ScrollBars="vertical"
                                 Height="550px">
                                 <uc8:SchemeDocTypeLegend ID="udcSchemeDocTypeLegend" runat="server" />
                             </asp:Panel>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                             <asp:ImageButton ID="btnSchemeDocTypeLegnedClose" runat="server" AlternateText="<%$ Resources:AlternateText, CloseBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>" /></td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -311,31 +268,25 @@
                 <asp:Panel ID="panVaccinationRecordHeading" runat="server" Style="cursor: move;">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 980px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblVaccinationRecordHeading" runat="server" Text="<%$ Resources:Text, VaccinationRecord %>"></asp:Label></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 980px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
                             <asp:Panel ID="panVaccinationRecordContent" runat="server" ScrollBars="Auto" Height="508px">
                                 <uc9:VaccinationRecord ID="udcVaccinationRecord" runat="server" />
                             </asp:Panel>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
                             <table cellpadding="0" cellspacing="0">
                                 <tr>
@@ -350,28 +301,20 @@
                                 </tr>
                             </table>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                             <asp:ImageButton ID="btnVaccinationRecordClose" runat="server" ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>"
                                 AlternateText="<%$ Resources:AlternateText, CloseBtn %>" OnClick="btnVaccinationRecordClose_Click" />
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -379,47 +322,35 @@
                 <asp:Panel ID="panSubsidizeDisabledRemarkHeading" runat="server" Style="cursor: move;">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 520px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblpanSubsidizeDisabledDetailsHeading" runat="server" /></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 520px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
-                            <asp:Panel ID="panSubsidizeDisabledRemarkContent" runat="server" ScrollBars="None" >
-                                <%--<div id="divSubsidizeDisabledDetailsTitle" runat="server" style="width:480px;margin: 14px 2px 0px 2px"></div>--%>                                                            
-                                <div id="divSubsidizeDisabledDetailsContent" runat="server" style="width:480px;margin: 6px 2px 2px 2px"></div>
+                            <asp:Panel ID="panSubsidizeDisabledRemarkContent" runat="server" ScrollBars="None">
+                                <%--<div id="divSubsidizeDisabledDetailsTitle" runat="server" style="width:480px;margin: 14px 2px 0px 2px"></div>--%>
+                                <div id="divSubsidizeDisabledDetailsContent" runat="server" style="width: 480px; margin: 6px 2px 2px 2px"></div>
                             </asp:Panel>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                             <asp:ImageButton ID="btnSubsidizeDisabledRemarkClose" runat="server" AlternateText="<%$ Resources:AlternateText, CloseBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>" /></td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -427,47 +358,35 @@
                 <asp:Panel ID="panRecipientConditionHelpHeading" runat="server" Style="cursor: move;">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 660px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblpanRecipientConditionHelpHeading" runat="server" /></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 660px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
-                            <asp:Panel ID="panRecipientConditionHelpContent" runat="server" ScrollBars="None" >
-                                <div id="divRecipientConditionHelpTitle" runat="server" style="width:620px;margin: 14px 2px 0px 2px"></div>                                                            
-                                <div id="divRecipientConditionHelpContent" runat="server" style="width:620px;margin: 6px 2px 2px 2px"></div>
+                            <asp:Panel ID="panRecipientConditionHelpContent" runat="server" ScrollBars="None">
+                                <div id="divRecipientConditionHelpTitle" runat="server" style="width: 620px; margin: 14px 2px 0px 2px"></div>
+                                <div id="divRecipientConditionHelpContent" runat="server" style="width: 620px; margin: 6px 2px 2px 2px"></div>
                             </asp:Panel>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                             <asp:ImageButton ID="btnRecipientConditionHelpClose" runat="server" AlternateText="<%$ Resources:AlternateText, CloseBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>" /></td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -486,26 +405,22 @@
                 TargetControlID="btnModalPopupPracticeSelection" PopupControlID="panPopupPracticeSelection"
                 RepositionMode="None">
             </cc1:ModalPopupExtender>
-            <asp:Button Style="display: none" ID="btnModalPopupPracticeSelection" runat="server">
-            </asp:Button>
+            <asp:Button Style="display: none" ID="btnModalPopupPracticeSelection" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupPrintOptionSelection" runat="server" BackgroundCssClass="modalBackground"
                 TargetControlID="btnModalPopupPrintOptionSelection" PopupControlID="panPopupPrintOptionSelection"
                 RepositionMode="None">
             </cc1:ModalPopupExtender>
-            <asp:Button Style="display: none" ID="btnModalPopupPrintOptionSelection" runat="server">
-            </asp:Button>
-            <cc1:ModalPopupExtender ID="ModalPopupExclamationConfirmationBox" runat="server" BackgroundCssClass="modalBackgroundTransparent" 
-                TargetControlID="btnModalPopupExclamationConfirmationBox" PopupControlID="panPopupExclamationConfirmationBox" 
+            <asp:Button Style="display: none" ID="btnModalPopupPrintOptionSelection" runat="server"></asp:Button>
+            <cc1:ModalPopupExtender ID="ModalPopupExclamationConfirmationBox" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupExclamationConfirmationBox" PopupControlID="panPopupExclamationConfirmationBox"
                 PopupDragHandleControlID="" RepositionMode="None">
             </cc1:ModalPopupExtender>
-            <asp:Button Style="display: none" ID="btnModalPopupExclamationConfirmationBox" runat="server">
-            </asp:Button>
+            <asp:Button Style="display: none" ID="btnModalPopupExclamationConfirmationBox" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderRVPHomeListSearch" runat="server" BackgroundCssClass="modalBackgroundTransparent"
                 TargetControlID="btnModalPopupRVPHomeListSearch" PopupControlID="panPopupRVPHomeListSearch"
                 PopupDragHandleControlID="panRCHSearchHomeListHeading" RepositionMode="None">
             </cc1:ModalPopupExtender>
-            <asp:Button Style="display: none" ID="btnModalPopupRVPHomeListSearch" runat="server">
-            </asp:Button>
+            <asp:Button Style="display: none" ID="btnModalPopupRVPHomeListSearch" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderSchemeLegned" runat="server" BackgroundCssClass="modalBackgroundTransparent"
                 TargetControlID="btnModalPopupSchemeLegned" PopupControlID="panSchemeLegend"
                 PopupDragHandleControlID="panSchemeLegendHeading" RepositionMode="None">
@@ -516,8 +431,7 @@
                 PopupControlID="panSchemeDocTypeLegend" PopupDragHandleControlID="panSchemeDocTypeLegendHeading"
                 RepositionMode="None">
             </cc1:ModalPopupExtender>
-            <asp:Button Style="display: none" ID="btnModalPopupSchemeDocTypeLegend" runat="server">
-            </asp:Button>
+            <asp:Button Style="display: none" ID="btnModalPopupSchemeDocTypeLegend" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderAddHocPrintSelection" runat="server"
                 BackgroundCssClass="modalBackgroundTransparent" TargetControlID="btnModalPopupAddHocPrintSelection"
                 PopupControlID="panAddHocPrintSelection" PopupDragHandleControlID="panAddHocPrintSelectionHeading"
@@ -547,13 +461,12 @@
             <asp:Button ID="btnModalPopupRecipientConditionHelp" runat="server" Style="display: none" />
             <%-- End of Popup for Subsidize Disabled Remark --%>
 
-            <table style="width: 100%;height:78px" cellspacing="0" cellpadding="0">
+            <table style="width: 100%; height: 78px" cellspacing="0" cellpadding="0">
                 <tbody>
                     <tr>
                         <td style="height: 50px" valign="middle">
                             <asp:Image ID="imgHeaderClaimVoucher" runat="server" AlternateText="<%$ Resources:AlternateText, ClaimVoucherBanner %>"
-                                ImageUrl="<%$ Resources:ImageUrl, ClaimVoucherBanner %>" ImageAlign="AbsMiddle">
-                            </asp:Image></td>
+                                ImageUrl="<%$ Resources:ImageUrl, ClaimVoucherBanner %>" ImageAlign="AbsMiddle"></asp:Image></td>
                         <td style="padding-right: 10px; width: 120px" valign="top" align="right" rowspan="2">
                             <asp:Image ID="imgSchemeLogo" runat="server" Width="102px" Height="78px"></asp:Image></td>
                     </tr>
@@ -565,17 +478,20 @@
                                         <tr>
                                             <td>
                                                 <asp:Panel ID="panClaimValidatedTimelineStep1" runat="server" CssClass="highlightTimelineLast">
-                                                    <asp:Label ID="lblClaimValidatedStep1" runat="server" Text="<%$ Resources:Text, ClaimStep1 %>"></asp:Label></asp:Panel>
+                                                    <asp:Label ID="lblClaimValidatedStep1" runat="server" Text="<%$ Resources:Text, ClaimStep1 %>"></asp:Label>
+                                                </asp:Panel>
                                             </td>
                                             <td>
                                                 <asp:Panel ID="panClaimValidatedTimelineStep2" runat="server" CssClass="unhighlightTimeline">
                                                     &nbsp;
-                                                    <asp:Label ID="lblClaimValidatedStep2" runat="server" Text="<%$ Resources:Text, ClaimStep2 %>"></asp:Label></asp:Panel>
+                                                    <asp:Label ID="lblClaimValidatedStep2" runat="server" Text="<%$ Resources:Text, ClaimStep2 %>"></asp:Label>
+                                                </asp:Panel>
                                             </td>
                                             <td>
                                                 <asp:Panel ID="panClaimValidatedTimelineStep3" runat="server" CssClass="unhighlightTimeline">
                                                     &nbsp;
-                                                    <asp:Label ID="lblClaimValidatedStep3" runat="server" Text="<%$ Resources:Text, ClaimStep3 %>"></asp:Label></asp:Panel>
+                                                    <asp:Label ID="lblClaimValidatedStep3" runat="server" Text="<%$ Resources:Text, ClaimStep3 %>"></asp:Label>
+                                                </asp:Panel>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -617,15 +533,14 @@
                                     runat="server" Text="Elderly Health Care Voucher Scheme"></asp:Label>
                             </td>
                         </tr>
-                        <asp:panel ID="panNonClinicSettingStep1" runat="server" Visible="false">
-                        <tr style="height: 25px">
-                            <td style="padding-bottom: 10px;" valign="middle" width="175px">
-                            </td>
-                            <td valign="middle" style="padding-bottom: 10px">
-                                <asp:Label ID="lblNonClinicSettingStep1" runat="server" CssClass="tableText"></asp:Label>
-                            </td>
-                        </tr>
-                        </asp:panel>
+                        <asp:Panel ID="panNonClinicSettingStep1" runat="server" Visible="false">
+                            <tr style="height: 25px">
+                                <td style="padding-bottom: 10px;" valign="middle" width="175px"></td>
+                                <td valign="middle" style="padding-bottom: 10px">
+                                    <asp:Label ID="lblNonClinicSettingStep1" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                        </asp:Panel>
                     </table>
                     <table border="0" cellpadding="0" cellspacing="0">
                         <tr style="height: 90px">
@@ -671,36 +586,20 @@
                     <asp:Panel ID="panStep2aReminder" runat="server">
                         <table border="0" cellpadding="0" cellspacing="0" width="800">
                             <tr>
-                                <td style="background-attachment: inherit; background-image: url(../Images/others/reminder_topleft.png);
-                                    width: 30px; background-repeat: no-repeat; height: 30px">
-                                </td>
-                                <td style="background-image: url(../Images/others/reminder_topmiddle.png); width: 740px;
-                                    background-repeat: repeat-x; height: 30px">
-                                </td>
-                                <td style="background-image: url(../Images/others/reminder_topright.png); width: 30px;
-                                    background-repeat: no-repeat; height: 30px">
-                                </td>
+                                <td style="background-attachment: inherit; background-image: url(../Images/others/reminder_topleft.png); width: 30px; background-repeat: no-repeat; height: 30px"></td>
+                                <td style="background-image: url(../Images/others/reminder_topmiddle.png); width: 740px; background-repeat: repeat-x; height: 30px"></td>
+                                <td style="background-image: url(../Images/others/reminder_topright.png); width: 30px; background-repeat: no-repeat; height: 30px"></td>
                             </tr>
                             <tr>
-                                <td style="background-image: url(../Images/others/reminder_left.png); width: 30px;
-                                    background-repeat: repeat-y">
-                                </td>
+                                <td style="background-image: url(../Images/others/reminder_left.png); width: 30px; background-repeat: repeat-y"></td>
                                 <td style="line-height: 20px; background-color: #f9f9f9; width: 740px;">
                                     <asp:Label ID="lblStep2aReminder" runat="server" CssClass="tableText"></asp:Label></td>
-                                <td style="background-image: url(../Images/others/reminder_right.png); width: 30px;
-                                    background-repeat: repeat-y">
-                                </td>
+                                <td style="background-image: url(../Images/others/reminder_right.png); width: 30px; background-repeat: repeat-y"></td>
                             </tr>
                             <tr>
-                                <td style="background-image: url(../Images/others/reminder_bottomleft.png); width: 30px;
-                                    background-repeat: no-repeat; height: 30px">
-                                </td>
-                                <td style="background-image: url(../Images/others/reminder_bottommiddle.png); width: 740px;
-                                    background-repeat: repeat-x; height: 30px">
-                                </td>
-                                <td style="background-image: url(../Images/others/reminder_bottomright.png); width: 30px;
-                                    background-repeat: no-repeat; height: 30px">
-                                </td>
+                                <td style="background-image: url(../Images/others/reminder_bottomleft.png); width: 30px; background-repeat: no-repeat; height: 30px"></td>
+                                <td style="background-image: url(../Images/others/reminder_bottommiddle.png); width: 740px; background-repeat: repeat-x; height: 30px"></td>
+                                <td style="background-image: url(../Images/others/reminder_bottomright.png); width: 30px; background-repeat: no-repeat; height: 30px"></td>
                             </tr>
                         </table>
                     </asp:Panel>
@@ -716,121 +615,118 @@
                                     <hr width="100%" />
                                 </td>
                             </tr>
-                     </table>     
-                    
-                <table cellspacing="0" cellpadding="0" border="0" style="width: 100%">        
-               <tr>
-                <td>               
-                      <table cellspacing="0" cellpadding="0" border="0"> 
-                            <tr>
-                                <td class="eHSTableHeading" colspan="2">
-                                    <asp:Label ID="Label1" runat="server" Text="<%$ Resources:Text, ClaimInfo%>"></asp:Label></td>
-                            </tr>
-                        </tbody>
                     </table>
-                    <table cellspacing="0" cellpadding="0" border="0">
-                        <tbody>
-                            <tr>
-                                <td height="25" style="width: 205px" valign="top">
-                                    <asp:Label ID="lblStep2aPracticeText" runat="server" Text="<%$ Resources:Text, Practice %>"
-                                        CssClass="tableTitle" Width="160px"></asp:Label></td>
-                                <td valign="top" height="25">
-                                    <asp:Label ID="lblStep2aPractice" runat="server" CssClass="tableTitleChi"></asp:Label>
-                                    <asp:ImageButton ID="btnStep2aChangePractice" runat="server" AlternateText="<%$ Resources:AlternateText, ChangePracticeBtn %>"
-                                        ImageUrl="~/Images/button/icon_button/btn_change_scheme.png" ImageAlign="Top"></asp:ImageButton><asp:TextBox
-                                            ID="hfStep2aPractice" runat="server" Visible="false"></asp:TextBox></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <asp:Panel ID="panStep2aClaimDetaila" runat="server" Width="100%">
-                        <table style="width: 630px" cellspacing="0" cellpadding="0">
-                            <tr>
-                                <td style="width: 205px; height: 25px" valign="top">
-                                    <asp:Label ID="lblStep2aSchemeText" runat="server" CssClass="tableTitle" Width="205px"></asp:Label></td>
-                                <td style="vertical-align:top">
-                                    <asp:Label ID="lblStep2aSchemeSelectedText" runat="server" CssClass="tableText"></asp:Label><asp:DropDownList
-                                        ID="ddlStep2aScheme" runat="server" Width="430px" AutoPostBack="true">
-                                        <asp:ListItem Value="HCVS">Elderly Health Care Voucher Scheme</asp:ListItem>
-                                        <asp:ListItem Value="CIVSS">Childhood Influenza Vaccination Subsidy Scheme</asp:ListItem>
-                                        <asp:ListItem Value="HVSS">Elderly Vaccination Subsidy Scheme</asp:ListItem>
-                                        <asp:ListItem Value="HSIS">Human Swine Influenza Vaccination Subsidy Scheme for Chronic Patient</asp:ListItem>
-                                    </asp:DropDownList></td>
-                            </tr>
-                            <asp:panel ID="panNonClinicSettingStep2a" runat="server" Visible="false">
-                            <tr style="height: 25px">
-                                <td style="padding-bottom: 10px;" valign="middle" width="205">
-                                </td>
-                                <td valign="middle" style="padding-bottom: 10px">
-                                    <asp:Label ID="lblNonClinicSettingStep2a" runat="server" CssClass="tableText"></asp:Label>
-                                </td>
-                            </tr>
-                            </asp:panel>
-                            <tr>
-                                <td style="width: 205px; height: 23px;" valign="top" class="tableCellStyle">
-                                    <asp:Label ID="lblStep2aServiceDateText" runat="server" CssClass="tableTitle" Width="205px"  style="top: 1px; position: relative;"></asp:Label></td>
-                                <td style="vertical-align:top">
-                                    <table style="border-collapse:collapse; border-spacing:0px 0px; margin:0px">
+
+                    <table cellspacing="0" cellpadding="0" border="0" style="width: 100%">
+                        <tr>
+                            <td>
+                                <table cellspacing="0" cellpadding="0" border="0">
+                                    <tr>
+                                        <td class="eHSTableHeading" colspan="2">
+                                            <asp:Label ID="Label1" runat="server" Text="<%$ Resources:Text, ClaimInfo%>"></asp:Label></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <table cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
                                         <tr>
-                                            <td style="vertical-align:top;padding-left:0px">
-                                                <asp:TextBox ID="txtStep2aServiceDate" runat="server" Width="71px" Height="15" ForeColor="DimGray"
-                                                    MaxLength="10" AutoPostBack="True" OnTextChanged="txtStep2aServiceDate_TextChanged"
-                                                    onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
-                                                    onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
-                                                    onblur="filterDateInput(this);"></asp:TextBox>
-                                                <cc1:CalendarExtender runat="server" ID="Step2aCalendarExtenderServiceDate" CssClass="ajax_cal" PopupPosition="BottomLeft" TargetControlID="txtStep2aServiceDate"
-                                                    PopupButtonID="btnStep2aServiceDateCal" Format="dd-MM-yyyy">
-                                                </cc1:CalendarExtender>
-                                                <cc1:FilteredTextBoxExtender ID="filtereditStep2aDtlServiceDate" runat="server" TargetControlID="txtStep2aServiceDate"
-                                                    FilterType="Custom, Numbers" ValidChars="-">
-                                                </cc1:FilteredTextBoxExtender>
-                                                <asp:Label ID="lblStep2aServiceDate" runat="server" CssClass="tableText"></asp:Label>
-                                            </td>
-                                            <td style="padding-left: 5px; vertical-align:central">
-                                                <asp:ImageButton ID="btnStep2aServiceDateCal" runat="server" AlternateText="<%$ Resources:AlternateText, CalenderBtn %>"
-                                                    ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>" ImageAlign="AbsMiddle" style="vertical-align:top"></asp:ImageButton>
-                                            </td>
-                                            <td style="padding-left: 5px; vertical-align:top">
-                                                <asp:Image ID="imgStep2aServiceDateError" runat="server" Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                                                    ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="AbsMiddle" style="vertical-align:top"></asp:Image>
+                                            <td height="25" style="width: 205px" valign="top">
+                                                <asp:Label ID="lblStep2aPracticeText" runat="server" Text="<%$ Resources:Text, Practice %>"
+                                                    CssClass="tableTitle" Width="160px"></asp:Label></td>
+                                            <td valign="top" height="25">
+                                                <asp:Label ID="lblStep2aPractice" runat="server" CssClass="tableTitleChi"></asp:Label>
+                                                <asp:ImageButton ID="btnStep2aChangePractice" runat="server" AlternateText="<%$ Resources:AlternateText, ChangePracticeBtn %>"
+                                                    ImageUrl="~/Images/button/icon_button/btn_change_scheme.png" ImageAlign="Top"></asp:ImageButton><asp:TextBox
+                                                        ID="hfStep2aPractice" runat="server" Visible="false"></asp:TextBox></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <asp:Panel ID="panStep2aClaimDetaila" runat="server" Width="100%">
+                                    <table style="width: 630px" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td style="width: 205px; height: 25px" valign="top">
+                                                <asp:Label ID="lblStep2aSchemeText" runat="server" CssClass="tableTitle" Width="205px"></asp:Label></td>
+                                            <td style="vertical-align: top">
+                                                <asp:Label ID="lblStep2aSchemeSelectedText" runat="server" CssClass="tableText"></asp:Label><asp:DropDownList
+                                                    ID="ddlStep2aScheme" runat="server" Width="430px" AutoPostBack="true">
+                                                    <asp:ListItem Value="HCVS">Elderly Health Care Voucher Scheme</asp:ListItem>
+                                                    <asp:ListItem Value="CIVSS">Childhood Influenza Vaccination Subsidy Scheme</asp:ListItem>
+                                                    <asp:ListItem Value="HVSS">Elderly Vaccination Subsidy Scheme</asp:ListItem>
+                                                    <asp:ListItem Value="HSIS">Human Swine Influenza Vaccination Subsidy Scheme for Chronic Patient</asp:ListItem>
+                                                </asp:DropDownList></td>
+                                        </tr>
+                                        <asp:Panel ID="panNonClinicSettingStep2a" runat="server" Visible="false">
+                                            <tr style="height: 25px">
+                                                <td style="padding-bottom: 10px;" valign="middle" width="205"></td>
+                                                <td valign="middle" style="padding-bottom: 10px">
+                                                    <asp:Label ID="lblNonClinicSettingStep2a" runat="server" CssClass="tableText"></asp:Label>
+                                                </td>
+                                            </tr>
+                                        </asp:Panel>
+                                        <tr>
+                                            <td style="width: 205px; height: 23px;" valign="top" class="tableCellStyle">
+                                                <asp:Label ID="lblStep2aServiceDateText" runat="server" CssClass="tableTitle" Width="205px" Style="top: 1px; position: relative;"></asp:Label></td>
+                                            <td style="vertical-align: top">
+                                                <table style="border-collapse: collapse; border-spacing: 0px 0px; margin: 0px">
+                                                    <tr>
+                                                        <td style="vertical-align: top; padding-left: 0px">
+                                                            <asp:TextBox ID="txtStep2aServiceDate" runat="server" Width="71px" Height="15" ForeColor="DimGray"
+                                                                MaxLength="10" AutoPostBack="True" OnTextChanged="txtStep2aServiceDate_TextChanged"
+                                                                onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
+                                                                onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
+                                                                onblur="filterDateInput(this);"></asp:TextBox>
+                                                            <cc1:CalendarExtender runat="server" ID="Step2aCalendarExtenderServiceDate" CssClass="ajax_cal" PopupPosition="BottomLeft" TargetControlID="txtStep2aServiceDate"
+                                                                PopupButtonID="btnStep2aServiceDateCal" Format="dd-MM-yyyy"></cc1:CalendarExtender>
+                                                            <cc1:FilteredTextBoxExtender ID="filtereditStep2aDtlServiceDate" runat="server" TargetControlID="txtStep2aServiceDate"
+                                                                FilterType="Custom, Numbers" ValidChars="-"></cc1:FilteredTextBoxExtender>
+                                                            <asp:Label ID="lblStep2aServiceDate" runat="server" CssClass="tableText"></asp:Label>
+                                                        </td>
+                                                        <td style="padding-left: 5px; vertical-align: central">
+                                                            <asp:ImageButton ID="btnStep2aServiceDateCal" runat="server" AlternateText="<%$ Resources:AlternateText, CalenderBtn %>"
+                                                                ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>" ImageAlign="AbsMiddle" Style="vertical-align: top"></asp:ImageButton>
+                                                        </td>
+                                                        <td style="padding-left: 5px; vertical-align: top">
+                                                            <asp:Image ID="imgStep2aServiceDateError" runat="server" Visible="False" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="AbsMiddle" Style="vertical-align: top"></asp:Image>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </td>
                                         </tr>
                                     </table>
-                                </td>
-                            </tr>
-                        </table>
-                   </asp:Panel>
-                  </td>
-                 <td style="width: 34%">
-                      <asp:Panel ID="panNotice" runat="server" Width="93%" Height="100px" BorderColor="#007FC2" BorderWidth="2px" BorderStyle="solid">                    
-                             <table border="0" style="width:100%; height:100%;border-collapse:collapse;" cellspacing="0">
-                                           <tr style="height:15%;">
-                                                <td width="40%" align="center" bgcolor="#007FC2" >
-                                                  <!--empty-->
-                                                </td> 
-                                                 <td width="20%" align="center" bgcolor="#007FC2">
-                                                        <asp:Label ID="lblNoticeTitle" runat="server"  ForeColor="white" Font-Bold="true" Text="<%$ Resources:Text, Notice %>" Font-Size="11pt"></asp:Label>    
-                                                </td> 
-                                               <td width="20%" align="center" bgcolor="#007FC2" >
-                                                  <!--empty-->
-                                                </td>  
-                                                <td width="20%" align="center" bgcolor="#007FC2" style="vertical-align:top">
-                                                        <asp:Panel ID="panNoticeNew" runat="server" Width="100%" Height="100%">         
-                                                            <div style="background-image:url(../Images/others/NoticeNewbg.gif);width:100%;">
-                                                                    <asp:Label ID="lblNew" runat="server"  ForeColor="Red" Font-Bold="true" Text="<%$ Resources:Text, NewNotice %>" Font-Size="11pt"></asp:Label>                                                                  
-                                                              </div>
-                                                         </asp:Panel> 
-                                                </td>
-                                           </tr>      
-                                            <tr style="height:75%;" bgcolor="#FFFFFF">
-                                                <td colspan="4"  align="left" valign="middle">
-                                                            <asp:Literal ID="ltlNoticeContent" runat="server"></asp:Literal>
-                                                </td>
-                                           </tr>      
-                            </table>                                                  
-                      </asp:Panel>                                              
-                 </td>
-                 </tr> 
-              </table>        
+                                </asp:Panel>
+                            </td>
+                            <td style="width: 34%">
+                                <asp:Panel ID="panNotice" runat="server" Width="93%" Height="100px" BorderColor="#007FC2" BorderWidth="2px" BorderStyle="solid">
+                                    <table border="0" style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0">
+                                        <tr style="height: 15%;">
+                                            <td width="40%" align="center" bgcolor="#007FC2">
+                                                <!--empty-->
+                                            </td>
+                                            <td width="20%" align="center" bgcolor="#007FC2">
+                                                <asp:Label ID="lblNoticeTitle" runat="server" ForeColor="white" Font-Bold="true" Text="<%$ Resources:Text, Notice %>" Font-Size="11pt"></asp:Label>
+                                            </td>
+                                            <td width="20%" align="center" bgcolor="#007FC2">
+                                                <!--empty-->
+                                            </td>
+                                            <td width="20%" align="center" bgcolor="#007FC2" style="vertical-align: top">
+                                                <asp:Panel ID="panNoticeNew" runat="server" Width="100%" Height="100%">
+                                                    <div style="background-image: url(../Images/others/NoticeNewbg.gif); width: 100%;">
+                                                        <asp:Label ID="lblNew" runat="server" ForeColor="Red" Font-Bold="true" Text="<%$ Resources:Text, NewNotice %>" Font-Size="11pt"></asp:Label>
+                                                    </div>
+                                                </asp:Panel>
+                                            </td>
+                                        </tr>
+                                        <tr style="height: 75%;" bgcolor="#FFFFFF">
+                                            <td colspan="4" align="left" valign="middle">
+                                                <asp:Literal ID="ltlNoticeContent" runat="server"></asp:Literal>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </asp:Panel>
+                            </td>
+                        </tr>
+                    </table>
                     <asp:Panel ID="panStep2aClaimDetailb" runat="server" Width="100%">
                         <table cellspacing="0" cellpadding="0" border="0">
                             <tbody>
@@ -841,15 +737,15 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </asp:Panel>               
+                    </asp:Panel>
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
-                                <td style="width: 175px; padding-top: 10px;">
-                                </td>
+                                <td style="width: 175px; padding-top: 10px;"></td>
                                 <td style="padding-top: 10px">
                                     <asp:ImageButton ID="btnStep2aCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn%>"
-                                        ImageUrl="<%$ Resources:ImageUrl, CancelBtn%>" OnClientClick="return ReasonForVisitInitialComplete();"></asp:ImageButton>
+                                        ImageUrl="<%$ Resources:ImageUrl, CancelBtn%>" 
+                                        OnClientClick="return ReasonForVisitInitialComplete();"></asp:ImageButton>
                                     <asp:ImageButton ID="btnStep2aClaim" runat="server" AlternateText="<%$ Resources:AlternateText, ClaimBtn%>"
                                         ImageUrl="<%$ Resources:ImageUrl, ClaimBtn %>" OnClientClick="return ReasonForVisitInitialComplete();"></asp:ImageButton>
                                 </td>
@@ -889,15 +785,14 @@
                                 <td class="tableCellStyle" valign="top">
                                     <asp:Label ID="lblStep2bScheme" runat="server" CssClass="tableText"></asp:Label></td>
                             </tr>
-                            <asp:panel ID="panNonClinicSettingStep2b" runat="server" Visible="false">
-                            <tr style="height: 25px">
-                                <td class="tableCellStyle" style="width: 205px" valign="top">
-                                </td>
-                                <td class="tableCellStyle" valign="top">
-                                    <asp:Label ID="lblNonClinicSettingStep2b" runat="server"  CssClass="tableText" style="position:relative;top:-1px"></asp:Label>
-                                </td>
-                            </tr>
-                            </asp:panel>
+                            <asp:Panel ID="panNonClinicSettingStep2b" runat="server" Visible="false">
+                                <tr style="height: 25px">
+                                    <td class="tableCellStyle" style="width: 205px" valign="top"></td>
+                                    <td class="tableCellStyle" valign="top">
+                                        <asp:Label ID="lblNonClinicSettingStep2b" runat="server" CssClass="tableText" Style="position: relative; top: -1px"></asp:Label>
+                                    </td>
+                                </tr>
+                            </asp:Panel>
                             <tr>
                                 <td style="width: 205px;" valign="top" class="tableCellStyle">
                                     <asp:Label ID="lbllblStep2bServiceDateText" runat="server" Text="<%$ Resources:Text, ServiceDate %>"
@@ -936,11 +831,10 @@
                         </tr>
                     </table>
                     <asp:Panel ID="panStep2bPrintClaimConsentForm" runat="server">
-                        <table cellspacing="0" cellpadding="0" border="0" style="min-height:50px">
+                        <table cellspacing="0" cellpadding="0" border="0" style="min-height: 50px">
                             <tbody>
                                 <tr>
-                                    <td style="width: 175px">
-                                    </td>
+                                    <td style="width: 175px"></td>
                                     <td>
                                         <asp:Panel ID="panlblStep2bPrintConsent" runat="server">
                                             <table border="0" cellpadding="0" cellspacing="0">
@@ -948,7 +842,7 @@
                                                     <td>
                                                         <asp:ImageButton ID="btnStep2bPrintClaimConsentForm" runat="server" AlternateText="<%$ Resources:AlternateText, VRAPrintClaimConsentFormBtn%>"
                                                             ImageUrl="<%$ Resources:ImageUrl, VRAPrintClaimConsentFormBtn%>" />
-                                                        <asp:HiddenField ID="hfCurrentPrintOption" runat="server"/>
+                                                        <asp:HiddenField ID="hfCurrentPrintOption" runat="server" />
                                                     </td>
                                                     <td>
                                                         <asp:RadioButtonList ID="rbStep2bPrintClaimConsentFormLanguage" runat="server" RepeatDirection="Horizontal">
@@ -973,18 +867,16 @@
                                     </td>
                                     <td valign="top" rowspan="2" style="padding-bottom: 5px; padding-left: 5px;">
                                         <asp:ImageButton ID="btnStep2bChangePrintOption" runat="server" AlternateText="<%$ Resources:AlternateText, ChangePrintOption%>"
-                                            ImageUrl="~/Images/button/icon_button/btn_change_print_option.png" ImageAlign="AbsMiddle">
-                                        </asp:ImageButton></td>
+                                            ImageUrl="~/Images/button/icon_button/btn_change_print_option.png" ImageAlign="AbsMiddle"></asp:ImageButton></td>
                                     <td rowspan="2" align="top">
                                         <asp:Panel ID="panStep2bAdhocPrint" runat="server">
-                                            <asp:ImageButton ID="btnStep2bPrintAdhocClaimConsentForm" runat="server" /></asp:Panel>
+                                            <asp:ImageButton ID="btnStep2bPrintAdhocClaimConsentForm" runat="server" />
+                                        </asp:Panel>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 175px">
-                                    </td>
-                                    <td>
-                                    </td>
+                                    <td style="width: 175px"></td>
+                                    <td></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -992,15 +884,15 @@
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr id="trStep2bDeclareClaim" runat="server">
-                                <td style="width: 175px; height: 16px">
-                                </td>
+                                <td style="width: 175px; height: 16px"></td>
                                 <td style="width: 550px; height: 16px" class="checkboxStyle">
                                     <asp:CheckBox ID="chkStep2bDeclareClaim" TabIndex="1" runat="server" Text="<%$ Resources:Text, ProvidedInfoTrueClaimSP%>"
-                                        AutoPostBack="True"></asp:CheckBox></td>
+                                        AutoPostBack="True">
+                                    </asp:CheckBox>
+                                </td>
                             </tr>
                             <tr>
-                                <td style="padding-bottom: 5px; width: 175px; padding-top: 5px; height: 16px">
-                                </td>
+                                <td style="padding-bottom: 5px; width: 175px; padding-top: 5px; height: 16px"></td>
                                 <td style="padding-bottom: 5px; padding-top: 5px">
                                     <asp:ImageButton ID="btnStep2bBack" TabIndex="2" runat="server" AlternateText="<%$ Resources:AlternateText, BackBtn%>"
                                         ImageUrl="<%$ Resources:ImageUrl, BackBtn%>"></asp:ImageButton>&nbsp;<asp:ImageButton
@@ -1015,10 +907,10 @@
                         <tbody>
                             <tr>
                                 <td class="eHSTableHeading">
-                                    <asp:Label ID="lblStep3AcctInfoText" runat="server" Text="<%$ Resources:Text, AccountInfo %>" ></asp:Label></td>
+                                    <asp:Label ID="lblStep3AcctInfoText" runat="server" Text="<%$ Resources:Text, AccountInfo %>"></asp:Label></td>
                             </tr>
                             <tr>
-                                <td style="padding-top:4px">
+                                <td style="padding-top: 4px">
                                     <uc2:ucReadOnlyDocumnetType ID="udcStep3ReadOnlyDocumnetType" runat="server"></uc2:ucReadOnlyDocumnetType>
                                 </td>
                             </tr>
@@ -1030,111 +922,112 @@
                                 <td class="eHSTableHeading" valign="top" colspan="2">
                                     <asp:Label ID="lblStep3ClaimInfo" runat="server" Text="<%$ Resources:Text, ClaimInfo %>"></asp:Label></td>
                             </tr>
-                            <tr >
-                                <td class="tableCellStyle" style="width: 205px;padding:10px 0px 3px 0px;" valign="top">
+                            <tr>
+                                <td class="tableCellStyle" style="width: 205px; padding: 10px 0px 3px 0px;" valign="top">
                                     <asp:Label ID="lblStep3TransNumText" runat="server" Text="<%$ Resources:Text, TransactionNo %>"
-                                        CssClass="tableTitle" Width="160px" ></asp:Label></td>
+                                        CssClass="tableTitle" Width="160px"></asp:Label></td>
                                 <td class="tableCellStyle" valign="middle">
                                     <table cellspacing="0" cellpadding="0">
-                                    <tbody>
-                                        <tr><td class="" valign="middle" style="padding:10px 0px 3px 0px;" height="auto">
-                                            <asp:Label ID="lblStep3TransNum" runat="server" CssClass="tableText" ForeColor="Blue" height="16px"></asp:Label>
-                                            </td>
-                                            <td class="" valign="middle" style="padding:10px 0px 3px 0px;">
-                                                <asp:Label ID="lblStep3PrefixTransNum" runat="server" CssClass="tableText" ForeColor="Black" Font-Strikeout="true" ></asp:Label>
-                                            </td>
-                                           <td class="" width ="10px" valign="middle">
-                                               
-                                            </td>
-                                            <td class="" valign="middle" style="padding:6px 0px 3px 0px;">
-                                                <asp:ImageButton ID="ibtnStep3ViewLatestTransactionID" AlternateText="<%$ Resources:AlternateText, ViewLatestTransactionIDBtn%>"
-                                                    ImageUrl="<%$ Resources:ImageUrl, ViewLatestTransactionIDBtn%>" runat="server" Visible="true" /> </td>
-                                                <td class="" valign="middle" style="padding:5px 0px 0px 0px;"> 
+                                        <tbody>
+                                            <tr>
+                                                <td class="" valign="middle" style="padding: 10px 0px 3px 0px;" height="auto">
+                                                    <asp:Label ID="lblStep3TransNum" runat="server" CssClass="tableText" ForeColor="Blue" Height="16px"></asp:Label>
+                                                </td>
+                                                <td class="" valign="middle" style="padding: 10px 0px 3px 0px;">
+                                                    <asp:Label ID="lblStep3PrefixTransNum" runat="server" CssClass="tableText" ForeColor="Black" Font-Strikeout="true"></asp:Label>
+                                                </td>
+                                                <td class="" width="10px" valign="middle"></td>
+                                                <td class="" valign="middle" style="padding: 6px 0px 3px 0px;">
+                                                    <asp:ImageButton ID="ibtnStep3ViewLatestTransactionID" AlternateText="<%$ Resources:AlternateText, ViewLatestTransactionIDBtn%>"
+                                                        ImageUrl="<%$ Resources:ImageUrl, ViewLatestTransactionIDBtn%>" runat="server" Visible="true" />
+                                                </td>
+                                                <td class="" valign="middle" style="padding: 5px 0px 0px 0px;">
                                                     <asp:Label ID="lblHTMLRightPointArrow" runat="server" Text="<%$ Resources:Text, HTMLRightPointArrow %>" ForeColor="Blue"
-                                                    CssClass="tableText" Visible="false" Font-Size="16"></asp:Label> </td>
-                                            <td width ="6px" valign="middle"></td>
-                                               <td class="" valign="middle" style="padding:10px 0px 3px 0px;">  <asp:Label ID="lblLatestTransactionID" CssClass="tableText" runat="server" Text="Label" ForeColor="Blue" Visible="false"></asp:Label>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                                        CssClass="tableText" Visible="false" Font-Size="16"></asp:Label>
+                                                </td>
+                                                <td width="6px" valign="middle"></td>
+                                                <td class="" valign="middle" style="padding: 10px 0px 3px 0px;">
+                                                    <asp:Label ID="lblLatestTransactionID" CssClass="tableText" runat="server" Text="Label" ForeColor="Blue" Visible="false"></asp:Label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
 
                                     <asp:Label ID="lblStep3TransactionIDUpdateNoticeBeforeViewLatest" runat="server" color="red" CssClass="tableText" ForeColor="Red" Text="<%$ Resources:Text, TransactionIDUpdateNoticeBeforeViewLatest %>" Visible="false"></asp:Label>
                                     <asp:Label ID="lblStep3TransactionIDUpdateNoticeAfterViewLatest" runat="server" color="red" CssClass="tableText" ForeColor="Red" Text="<%$ Resources:Text, TransactionIDUpdateNoticeAfterViewLatest %>" Visible="false"></asp:Label>
                                 </td>
-                        </tr>
+                            </tr>
                             <tr>
-                                    <td class="tableCellStyle" style="width: 205px" valign="top">
-                                        <asp:Label ID="lblStep3TransDateText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TransactionDate %>" Width="160px"></asp:Label>
-                                    </td>
-                                    <td class="tableCellStyle" valign="top">
-                                        <asp:Label ID="lblStep3TransDate" runat="server" CssClass="tableText"></asp:Label>
-                                    </td>
-                                </tr>
-                            <tr>
-                                    <td class="tableCellStyle" style="width: 205px;" valign="top">
-                                        <asp:Label ID="lblStep3SchemeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Scheme %>" Width="160px"></asp:Label>
-                                    </td>
-                                    <td class="tableCellStyle" valign="top">
-                                        <asp:Label ID="lblStep3Scheme" runat="server" CssClass="tableText"></asp:Label>
-                                    </td>
-                                </tr>
-                            <asp:panel ID="panNonClinicSettingStep3" runat="server" Visible="false">
-                            <tr>
-                                <td class="tableCellStyle" style="width: 205px;" valign="top">
+                                <td class="tableCellStyle" style="width: 205px" valign="top">
+                                    <asp:Label ID="lblStep3TransDateText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TransactionDate %>" Width="160px"></asp:Label>
                                 </td>
                                 <td class="tableCellStyle" valign="top">
-                                    <asp:Label ID="lblNonClinicSettingStep3" runat="server" CssClass="tableText" style="position:relative;top:-1px"></asp:Label>
+                                    <asp:Label ID="lblStep3TransDate" runat="server" CssClass="tableText"></asp:Label>
                                 </td>
                             </tr>
-                            </asp:panel>
                             <tr>
-                                    <td class="tableCellStyle" style="vertical-align: top">
-                                        <asp:Label ID="lblTransactionStatusText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TransactionStatus %>"></asp:Label>
-                                    </td>
-                                    <td style="vertical-align: top">
-                                        <asp:Label ID="lblTransactionStatus" runat="server" CssClass="tableText"></asp:Label>
-                                    </td>
-                                </tr>
-                            <tr>
-                                    <td class="tableCellStyle" style="width: 205px;" valign="top">
-                                        <asp:Label ID="lblStep3ServiceDateText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ServiceDate %>" Width="160px"></asp:Label>
-                                    </td>
+                                <td class="tableCellStyle" style="width: 205px;" valign="top">
+                                    <asp:Label ID="lblStep3SchemeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Scheme %>" Width="160px"></asp:Label>
+                                </td>
+                                <td class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3Scheme" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <asp:Panel ID="panNonClinicSettingStep3" runat="server" Visible="false">
+                                <tr>
+                                    <td class="tableCellStyle" style="width: 205px;" valign="top"></td>
                                     <td class="tableCellStyle" valign="top">
-                                        <asp:Label ID="lblStep3ServiceDate" runat="server" CssClass="tableText"></asp:Label>
+                                        <asp:Label ID="lblNonClinicSettingStep3" runat="server" CssClass="tableText" Style="position: relative; top: -1px"></asp:Label>
                                     </td>
                                 </tr>
+                            </asp:Panel>
                             <tr>
-                                    <td class="tableCellStyle" style="width: 205px;" valign="top">
-                                        <asp:Label ID="lblStep3PracticeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Practice %>" Width="160px"></asp:Label>
-                                    </td>
-                                    <td class="tableCellStyle" valign="top" >
-                                        <asp:Label ID="lblStep3Practice" runat="server" CssClass="tableTextChi"></asp:Label>
-                                    </td>
-                                </tr>
+                                <td class="tableCellStyle" style="vertical-align: top">
+                                    <asp:Label ID="lblTransactionStatusText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TransactionStatus %>"></asp:Label>
+                                </td>
+                                <td style="vertical-align: top">
+                                    <asp:Label ID="lblTransactionStatus" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
                             <tr>
-                                    <td class="tableCellStyle" valign="top">
-                                        <asp:Label ID="lblStep3BankAcctText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, BankAccountNo %>" Width="160px"></asp:Label>
-                                    </td>
-                                    <td align="left" class="tableCellStyle" valign="top" >
-                                        <asp:Label ID="lblStep3BankAcct" runat="server" CssClass="tableText"></asp:Label>
-                                    </td>
-                                </tr>
+                                <td class="tableCellStyle" style="width: 205px;" valign="top">
+                                    <asp:Label ID="lblStep3ServiceDateText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ServiceDate %>" Width="160px"></asp:Label>
+                                </td>
+                                <td class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3ServiceDate" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
                             <tr>
-                                    <td class="tableCellStyle" valign="top">
-                                        <asp:Label ID="lblStep3ServiceTypeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ServiceType %>" Width="160px"></asp:Label>
-                                    </td>
-                                    <td align="left" class="tableCellStyle" valign="top" >
-                                        <asp:Label ID="lblStep3ServiceType" runat="server" CssClass="tableText"></asp:Label>
-                                    </td>
-                                </tr>
+                                <td class="tableCellStyle" style="width: 205px;" valign="top">
+                                    <asp:Label ID="lblStep3PracticeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Practice %>" Width="160px"></asp:Label>
+                                </td>
+                                <td class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3Practice" runat="server" CssClass="tableTextChi"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3BankAcctText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, BankAccountNo %>" Width="160px"></asp:Label>
+                                </td>
+                                <td align="left" class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3BankAcct" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3ServiceTypeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ServiceType %>" Width="160px"></asp:Label>
+                                </td>
+                                <td align="left" class="tableCellStyle" valign="top">
+                                    <asp:Label ID="lblStep3ServiceType" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <uc4:ucReadOnlyEHSClaim ID="udcStep3ReadOnlyEHSClaim" runat="server" />
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
-                                <td style="height:4px" />
+                                <td style="height: 4px" />
                             </tr>
                             <tr>
                                 <td style="width: 175px; padding-top: 5px" />
@@ -1151,7 +1044,7 @@
                     <cc3:PracticeRadioButtonGroup runat="server" ID="PracticeRadioButtonGroup" HeaderText="<%$ Resources:Text, SelectPractice%>"
                         HeaderTextCss="tableText" PracticeRadioButtonCss="tableText" PracticeTextCss="tableTextChi"
                         SchemeLabelCss="tableTitle" SelectButtonURL="~/Images/button/icon_button/btn_Arrow_to_Right.png"
-                        MaskBankAccountNo="True" ShowCloseButton="False"/>
+                        MaskBankAccountNo="True" ShowCloseButton="False" />
                 </asp:View>
                 <asp:View ID="vEHSClaimError" runat="server">
                     <asp:ImageButton ID="btnInternalErrorBack" TabIndex="2" runat="server"></asp:ImageButton>
@@ -1162,47 +1055,35 @@
                 <asp:Panel ID="panVaccinationRecordProviderHeading" runat="server" Style="cursor: move;">
                     <table border="0" cellpadding="0" cellspacing="0" style="width: 900px">
                         <tr>
-                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px">
-                            </td>
-                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png);
-                                color: #ffffff; background-repeat: repeat-x; height: 35px">
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
                                 <asp:Label ID="lblVaccinationRecordProviderHeading" runat="server" Text="<%$ Resources:Text, VaccinationRecordProvider %>"></asp:Label></td>
-                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px">
-                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
                         </tr>
                     </table>
                 </asp:Panel>
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 900px">
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
                             <asp:Panel ID="panVaccinationRecordProviderContent" runat="server" ScrollBars="Auto"
                                 Height="420px">
                                 <uc10:ucVaccinationRecordProvider ID="ucVaccinationRecordProvider" runat="server" />
                             </asp:Panel>
                         </td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
                             <asp:ImageButton ID="ibtnVaccinationRecordProviderClose" runat="server" ImageUrl="<%$ Resources:ImageUrl, CloseBtn %>"
                                 AlternateText="<%$ Resources:AlternateText, CloseBtn %>" OnClick="ibtnVaccinationRecordProviderClose_Click" /></td>
-                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>
                     <tr>
-                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x;
-                            height: 7px">
-                        </td>
-                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px;
-                            height: 7px">
-                        </td>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
                     </tr>
                 </table>
             </asp:Panel>
@@ -1211,8 +1092,7 @@
                 PopupControlID="panVaccinationRecordProvider" PopupDragHandleControlID="panVaccinationRecordProviderHeading"
                 RepositionMode="None">
             </cc1:ModalPopupExtender>
-            <asp:Button Style="display: none" ID="btnModalPopupVaccinationRecordProvider" runat="server">
-            </asp:Button>
+            <asp:Button Style="display: none" ID="btnModalPopupVaccinationRecordProvider" runat="server"></asp:Button>
             <%-- End of Popup for Vaccination Record Provider --%>
         </ContentTemplate>
     </asp:UpdatePanel>

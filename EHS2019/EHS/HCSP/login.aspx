@@ -33,6 +33,10 @@
 
     <script type="text/javascript" src="JS/Common.js"></script>
 
+    <script language="Javascript" src="JS/ideasComboLib4Ra.js" type="text/javascript"></script>
+
+    <script language="Javascript" src="JS/ideasComboVersion.js" type="text/javascript"></script>
+
     <script type="text/javascript">
         function fnTrapKD(e) {
             var btn = document.getElementById('ibtnLogin')
@@ -88,16 +92,93 @@
         var chkpopup = 0;
     </script>
 
+    <script type="text/javascript">
+        //function displayIDEASResult() {
+        //    document.getElementById("btnDisplayResultComboiframe").click();
+        //}
+
+        // TODO _param to be confirmed
+        function checkIdeasComboClientSuccessEHS(_param) {
+            //var param = { result: _param, ideasVer: "", artifactId: "" };
+            //checkIdeasComboClientSuccessCallback(param);
+            //document.getElementById("btnReadSmartICCombo").disabled = false;
+            //document.getElementById("btnReadSmartICComboiframe").disabled = false;
+            //console.log('Success:' + _param.result);
+            //console.log(_param);
+            //alert(_param.result);
+            var obj = document.getElementById("txtIDEASComboResult")
+            obj.value = _param.result
+            //updateIdeasComboClientResult(_param.result);
+        }
+
+        // TODO _param to be confirmed
+        function checkIdeasComboClientFailureEHS(_param) {
+            //var param = { result: _param, ideasVer: "", artifactId: "" };
+            //checkIdeasComboClientFailureCallback(param);
+            //document.getElementById("btnReadSmartICCombo").disabled = true;
+            //document.getElementById("btnReadSmartICComboiframe").disabled = true;
+            //console.log('Failure:' + _param.result);
+            //console.log(_param);
+            //alert(_param.result);
+            var obj = document.getElementById("txtIDEASComboResult")
+            obj.value = _param.result
+            //updateIdeasComboClientResult(_param.result);
+        }
+
+        //checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);
+
+        <%--function updateIdeasComboClientResult(result) {
+            xmlHttpRequestIdeasResult = new XMLHttpRequest();
+            xmlHttpRequestIdeasResult.open("POST", "<%=GetUpdateIdeaResultPath()%>", true);
+            xmlHttpRequestIdeasResult.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xmlHttpRequestIdeasResult.timeout = 5000;
+            xmlHttpRequestIdeasResult.onreadystatechange = function () {
+                //if (xmlHttpRequestIdeasResult != null) {
+                //    if (xmlHttpRequestIdeasResult.readyState == IC4RA_HTTP_READYSTATE_LOADED) {
+                //        var status = xmlHttpRequestIdeasResult.status;
+                //        xmlHttpRequestIdeasResult = null;
+                //        if (status == IC4RA_HTTP_STATUS_OK) {
+                //            checkIdeasComboClientSuccess(IC4RA_ERRORCODE_SUCCESS);
+                //        } else {
+                //            checkIdeasComboClientFailure(IC4RA_ERRORCODE_NOCLIENT);
+                //        }
+                //    } else {
+                //    }
+                //}
+            };
+            xmlHttpRequestIdeasResult.ontimeout = function () {
+                console.log("Update Result Timeout");
+            };
+            xmlHttpRequestIdeasResult.send(JSON.stringify({ "result": result }));
+        }--%>
+
+        function eHSSuccessCallbackFunc(IDEASComboVersion) { //Success get IDEAS Version
+            //alert(IDEASComboVersion);
+            var obj = document.getElementById("txtIDEASComboVersion")
+            obj.value = IDEASComboVersion
+        }
+        function eHSFailCallbackFunc() { //IDEAS Combo not yet be installed
+            //alert("eHS IDEAS Combo is not available.");
+            var obj = document.getElementById("txtIDEASComboVersion")
+            obj.value = ""
+        }
+
+        function checkIDEASComboClientAndVersion() {
+            <%--eHR: http://127.0.0.1:44827, eHS: http://127.0.0.1:44927--%>
+            <%--Return:<html><head><title>IDEAS Client Info</title></head><body><h1>IDEAS Client Information</h1>Version: 1.0</body></html>--%>
+
+            checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);
+            getIDEASComboVersion();
+        }
+    </script>
+
 </head>
 <body>
     <form id="form1" runat="server" defaultbutton="ibtnLogin">
         <asp:ScriptManager ID="ScriptManager1" EnablePartialRendering="true" runat="server"></asp:ScriptManager>
-<%--        <cc2:ToolkitScriptManager ID="ScriptManager1" EnablePartialRendering="true" runat="server">
-            <Scripts>
-                <asp:ScriptReference Path="~/JS/jquery-3.4.1.min.js" />
-            </Scripts>
-        </cc2:ToolkitScriptManager>--%>
         <asp:TextBox ID="NonLoginPageKey" runat="server" Style="display: none" />
+        <asp:TextBox ID="txtIDEASComboResult" runat="server" Style="display: none;" />
+        <asp:TextBox ID="txtIDEASComboVersion" runat="server" Style="display: none;" />
         <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
         <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
             <table style="width: 150px; height: 150px; background-color: #ffffff" border="0"
@@ -148,7 +229,6 @@
             </table>
         </asp:Panel>
 
-        <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
         <asp:Button runat="server" ID="btnHiddenLoginConfirmMsg" Style="display: none" />
         <asp:Panel ID="panLoginConfirmMsg" runat="server" Style="display: none;">
             <asp:Panel ID="panLoginConfirmMsgHeading" runat="server" Style="cursor: move;">
@@ -196,15 +276,11 @@
             </table>
         </asp:Panel>
 
-        <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
-
-        <!---[CRE17-015] Disallow public using WinXP [2018-04-01] Start--->
         <asp:Button runat="server" ID="btnHiddenReminderWindowsVersion" Style="display: none" />
         <asp:Panel Style="display: none" ID="panReminderWindowsVersion" runat="server" Width="540px">
                 <uc1:ucNoticePopUp ID="ucNoticePopUpReminderWindowsVersion" runat="server" NoticeMode="Custom" IconMode="Information" ButtonMode="OK" DialogImagePath="Images/dialog/"
                                  HeaderText="<%$ Resources:Text, ReminderTitle %>" MessageText="<%$ Resources:Text, ReminderWindowsVersion %>"/>
         </asp:Panel>
-        <!---[CRE17-015] Disallow public using WinXP [2018-04-01] End--->
 
         <asp:Button runat="server" ID="btnHiddenShowCopyList" Style="display: none" />
         <asp:UpdateProgress runat="server" ID="UpdateProgress1" DisplayAfter="0">
@@ -219,17 +295,13 @@
             BehaviorID="mdlPopupBlocker" DropShadow="False" RepositionMode="None" OkControlID="ibtnDialogConfirm"
             OnOkScript="okClick()" />
 
-        <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
         <cc2:ModalPopupExtender ID="ModalPopupExtenderConfirm" runat="server" TargetControlID="btnHiddenLoginConfirmMsg"
             PopupControlID="panLoginConfirmMsg" BehaviorID="mdlPopupConcurrentBrowser" BackgroundCssClass="modalBackgroundTransparent"
             DropShadow="False" RepositionMode="None" PopupDragHandleControlID="panLoginConfirmMsgHeading" />
-        <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
 
-        <!---[CRE17-015] Disallow public using WinXP [2018-04-01] Start--->
         <cc2:ModalPopupExtender ID="ModalPopupExtenderReminderWindowsVersion" runat="server" TargetControlID="btnHiddenReminderWindowsVersion"
             PopupControlID="panReminderWindowsVersion" BehaviorID="mdlPopupReminderWindowsVersion" BackgroundCssClass="modalBackgroundTransparent"
             DropShadow="False" RepositionMode="None" PopupDragHandleControlID="panReminderWindowsVersionHeading" />
-        <!---[CRE17-015] Disallow public using WinXP [2018-04-01] End--->
 
         <table id="tblBanner" border="0" cellpadding="0" cellspacing="0" style="background-image: url(Images/master/banner_header_en.jpg); width: 985px; background-repeat: no-repeat; height: 100px"
             runat="server">
@@ -255,10 +327,8 @@
                 <tr>
                     <td style="background-image: url(Images/master/background.jpg); background-position: bottom; background-repeat: repeat-x; height: 546px"
                         valign="top">
-                        <!---[I-CRE16-007-02] Refine system from CheckMarx findings [Start][Dickson Law]--->
                         <asp:MultiView ID="loginMultiView" runat="server" ActiveViewIndex="0">
                             <asp:View ID="LoginView" runat="server">
-                                <!---[I-CRE16-007-02] Refine system from CheckMarx findings [End][Dickson Law]--->
                                 <table style="width: 100%; height: 100%;">
                                     <tr>
                                         <td style="width: 200px; border-right: #ffffff 2px solid;" valign="top">
@@ -400,7 +470,8 @@
                                                     <td class="tableText" style="width: 260px; height: 40px;"></td>
                                                     <td style="width: 230px; height: 40px;" valign="top">
                                                         <asp:ImageButton ID="ibtnLogin" runat="server" ImageUrl="~/Images/button/btn_login.png"
-                                                            TabIndex="6" AlternateText="Login" /></td>
+                                                            TabIndex="6" AlternateText="Login" />
+                                                    </td>
                                                     <td style="width: 260px; height: 40px;"></td>
                                                 </tr>
                                                 <%--<tr>
@@ -413,7 +484,6 @@
                                         </td>
                                     </tr>
                                 </table>
-                            <!---[I-CRE16-007-02] Refine system from CheckMarx findings [Start][Dickson Law]--->
                             </asp:View>
 
                             <asp:View ID="SPHashPWExpiredView" runat="server">
@@ -495,7 +565,6 @@
                                 </table>
                             </asp:View>
                         </asp:MultiView>
-                        <!---[I-CRE16-007-02] Refine system from CheckMarx findings [End][Dickson Law]--->
                     </td>
                 </tr>
                 <tr>

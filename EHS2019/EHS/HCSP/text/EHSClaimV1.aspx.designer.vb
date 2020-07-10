@@ -15,6 +15,15 @@ Namespace Text
     Partial Public Class EHSClaimV1
 
         '''<summary>
+        '''ucIDEASCombo control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents ucIDEASCombo As Global.HCSP.IDEASCombo
+
+        '''<summary>
         '''udcMsgBoxErr control.
         '''</summary>
         '''<remarks>
@@ -186,6 +195,60 @@ Namespace Text
         Protected WithEvents btnStep1GO As Global.System.Web.UI.WebControls.Button
 
         '''<summary>
+        '''trSmartIDSoftwareAvailableDownload control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trSmartIDSoftwareAvailableDownload As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblSmartIDSoftwareAvailableDownload control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblSmartIDSoftwareAvailableDownload As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''divUpdateNow control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents divUpdateNow As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+        '''<summary>
+        '''lblUpdateNow control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblUpdateNow As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lbtnUpdateNow control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lbtnUpdateNow As Global.System.Web.UI.WebControls.LinkButton
+
+        '''<summary>
+        '''trSmartID control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trSmartID As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
         '''btnStep1ReadOldSmartID control.
         '''</summary>
         '''<remarks>
@@ -202,6 +265,51 @@ Namespace Text
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents btnStep1ReadNewSmartID As Global.System.Web.UI.WebControls.Button
+
+        '''<summary>
+        '''trSmartIDSoftwareNotInstalled control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trSmartIDSoftwareNotInstalled As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblSmartIDSoftwareNotInstalled control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblSmartIDSoftwareNotInstalled As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trSmartIDCombo control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trSmartIDCombo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''btnStep1ReadNewSmartIDCombo control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents btnStep1ReadNewSmartIDCombo As Global.System.Web.UI.WebControls.Button
+
+        '''<summary>
+        '''trSmartIDNoService control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trSmartIDNoService As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
         '''<summary>
         '''lblReadCardAndSearchNA control.

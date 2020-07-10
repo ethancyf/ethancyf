@@ -1221,11 +1221,12 @@ Namespace BLL
                             If udtTempEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
                                 If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
 
-                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                    ' ----------------------------------------------------------------------------------------
+                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
                                     ' Get latest version
-                                    Dim strExistSmartIDVer As String = udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer
-                                    Dim strCurrentSmartIDVer As String = udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer
+                                    Dim strExistSmartIDVer As String = Replace(udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                    Dim strCurrentSmartIDVer As String = Replace(udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
                                     If SmartIDHandler.IsExistingOldSmartIDVersion(strExistSmartIDVer, strCurrentSmartIDVer) Then
                                         udtTempEHSAccount = udtCurEHSAccount
@@ -1236,7 +1237,7 @@ Namespace BLL
                                             udtTempEHSAccount = udtCurEHSAccount
                                         End If
                                     End If
-                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                                 End If
                             Else
                                 If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
@@ -1339,11 +1340,12 @@ Namespace BLL
                             If udtTempEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
                                 If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
 
-                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                    ' ----------------------------------------------------------------------------------------
+                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
                                     ' Get latest version
-                                    Dim strExistSmartIDVer As String = udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer
-                                    Dim strCurrentSmartIDVer As String = udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer
+                                    Dim strExistSmartIDVer As String = Replace(udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                    Dim strCurrentSmartIDVer As String = Replace(udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
                                     If SmartIDHandler.IsExistingOldSmartIDVersion(strExistSmartIDVer, strCurrentSmartIDVer) Then
                                         udtTempEHSAccount = udtCurEHSAccount
@@ -1354,7 +1356,7 @@ Namespace BLL
                                             udtTempEHSAccount = udtCurEHSAccount
                                         End If
                                     End If
-                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                                 End If
                             Else
                                 If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
@@ -1445,11 +1447,12 @@ Namespace BLL
                                                     If udtTempEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
                                                         If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
 
-                                                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                                            ' ----------------------------------------------------------------------------------------
+                                                            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                                            ' ---------------------------------------------------------------------------------------------------------
                                                             ' Get latest version
-                                                            Dim strExistSmartIDVer As String = udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer
-                                                            Dim strCurrentSmartIDVer As String = udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer
+                                                            Dim strExistSmartIDVer As String = Replace(udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                                            Dim strCurrentSmartIDVer As String = Replace(udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                                            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]
 
                                                             If SmartIDHandler.IsExistingOldSmartIDVersion(strExistSmartIDVer, strCurrentSmartIDVer) Then
                                                                 udtTempEHSAccount = udtCurEHSAccount
@@ -1460,7 +1463,7 @@ Namespace BLL
                                                                     udtTempEHSAccount = udtCurEHSAccount
                                                                 End If
                                                             End If
-                                                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                                                         End If
                                                     Else
                                                         If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
@@ -1553,11 +1556,12 @@ Namespace BLL
                                                     If udtTempEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
                                                         If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
 
-                                                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                                            ' ----------------------------------------------------------------------------------------
+                                                            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                                            ' ---------------------------------------------------------------------------------------------------------
                                                             ' Get latest version
-                                                            Dim strExistSmartIDVer As String = udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer
-                                                            Dim strCurrentSmartIDVer As String = udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer
+                                                            Dim strExistSmartIDVer As String = Replace(udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                                            Dim strCurrentSmartIDVer As String = Replace(udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                                            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]
 
                                                             If SmartIDHandler.IsExistingOldSmartIDVersion(strExistSmartIDVer, strCurrentSmartIDVer) Then
                                                                 udtTempEHSAccount = udtCurEHSAccount
@@ -1568,7 +1572,7 @@ Namespace BLL
                                                                     udtTempEHSAccount = udtCurEHSAccount
                                                                 End If
                                                             End If
-                                                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                                                         End If
                                                     Else
                                                         If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
@@ -2440,11 +2444,12 @@ Namespace BLL
                                             If udtTempEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
                                                 If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then
 
-                                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                                    ' ----------------------------------------------------------------------------------------
+                                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                                    ' ---------------------------------------------------------------------------------------------------------
                                                     ' Get latest version
-                                                    Dim strExistSmartIDVer As String = udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer
-                                                    Dim strCurrentSmartIDVer As String = udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer
+                                                    Dim strExistSmartIDVer As String = Replace(udtTempEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                                    Dim strCurrentSmartIDVer As String = Replace(udtCurEHSAccount.EHSPersonalInformationList(0).SmartIDVer, "C", "")
+                                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
                                                     If SmartIDHandler.IsExistingOldSmartIDVersion(strExistSmartIDVer, strCurrentSmartIDVer) Then
                                                         enumSmartIDReadStatus = enumTempSmartIDReadStatus
@@ -2457,7 +2462,7 @@ Namespace BLL
                                                             udtTempEHSAccount = udtCurEHSAccount
                                                         End If
                                                     End If
-                                                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                                                 End If
                                             Else
                                                 If udtCurEHSAccount.EHSPersonalInformationList(0).CreateBySmartID Then

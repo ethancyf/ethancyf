@@ -25,13 +25,15 @@ Partial Public Class ucClaimSearch
     Private _blnECDOBSelected As Boolean
     Private _blnShowTips As Boolean
     Private _blnSchemeSelected As Boolean = False
-    ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-    ' ----------------------------------------------------------
     Private _blnEnabledHKICSymbol As Boolean = False
     Private _blnDisplayHKICSymbol As Boolean = False
     Private _strHKICSymbol As String = String.Empty
     Private _strSchemeCode As String = String.Empty
-    ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private _blnIDEASComboClientInstalled As Boolean = False
+    Private _blnIDEASComboForceToUse As Boolean = False
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
 #End Region
 
@@ -41,14 +43,15 @@ Partial Public Class ucClaimSearch
         Public Const DocType As String = "UCCLAIMSEARCH_DOCTYPE"
     End Class
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Public Enum SearchHKICOption
         ManualInput
         ReadOldSmartIC
         ReadNewSmartIC
+        ReadNewSmartICCombo
     End Enum
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
 #End Region
 
@@ -64,6 +67,11 @@ Partial Public Class ucClaimSearch
     Public Event HKICSymbolHelpClick(ByVal sender As System.Object, ByVal e As EventArgs)
     Public Event ReadOldSmartIDButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Event ReadNewSmartIDComboButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
 #End Region
 
@@ -280,20 +288,24 @@ Partial Public Class ucClaimSearch
                 EnableHKICSymbolRadioButtonList(_blnEnabledHKICSymbol)
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
-                    txtSearchHKICNo.Enabled = False
-                    txtSearchHKICDOB.Enabled = False
-                    ibtnSearchHKICCancel.Visible = True
-
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
+                    'Change manual input header
                     lblManualInput.Text = Me.GetGlobalResourceObject("Text", "SearchAccountHeader")
 
+                    'Show "Cancel" button
+                    ibtnSearchHKICCancel.Visible = True
+
+                    'Not to show tip for download latest SmartIC software
+                    tblDownloadComboClient.Visible = False
+
+                    'Show old and new HKIC sample only
                     tdSearchNewSmartICButton.Visible = False
                     tdSearchOldSmartICButton.Visible = False
                     mvOldHKIC.SetActiveView(vOldHKICSample)
                     mvNewHKIC.SetActiveView(vNewHKICSample)
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
+                    'Assign Value and disable it 
+                    txtSearchHKICNo.Enabled = False
+                    txtSearchHKICDOB.Enabled = False
                     txtSearchHKICNo.Text = udtFormatter.FormatDocIdentityNoForDisplay(DocTypeModel.DocTypeCode.HKIC, udtEHSPersonalInfo.IdentityNum, False)
                     txtSearchHKICDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, CultureLanguage.English, Nothing, Nothing)
 
@@ -301,35 +313,55 @@ Partial Public Class ucClaimSearch
                     txtSearchHKICNo.Enabled = True
                     txtSearchHKICDOB.Enabled = True
                     ibtnSearchHKICCancel.Visible = False
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
                     lblManualInput.Text = Me.GetGlobalResourceObject("Text", "ManualInput")
 
                     tdSearchNewSmartICButton.Visible = True
                     tdSearchOldSmartICButton.Visible = True
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                    tblDownloadComboClient.Visible = False
+                    divSmartIDSoftwareNotInstalled.Visible = False
 
                     If SmartIDHandler.EnableSmartID AndAlso strDocCode.Equals(DocTypeModel.DocTypeCode.HKIC) Then
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
-                        'Me.lblHKICOR.Visible = True
-                        'Me.lblHKICOR.Text = Me.GetGlobalResourceObject("Text", "ORUpper")
-                        Me.btnShortIdentityNoNewSmartID.Visible = True
-                        Me.btnShortIdentityNoNewSmartID.Enabled = True
+                        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If _blnIDEASComboForceToUse Then
+                            'Combo Only Period
 
-                        Me.btnShortIdentityNoOldSmartID.Visible = True
-                        Me.btnShortIdentityNoOldSmartID.Enabled = True
+                            mvIDEASCombo.SetActiveView(vNewIDEAS)
 
-                        mvOldHKIC.SetActiveView(vOldHKICSearch)
-                        mvNewHKIC.SetActiveView(vNewHKICSearch)
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                            Me.btnShortIdentityNoNewSmartIDCombo.Visible = True
+                            Me.btnShortIdentityNoNewSmartIDCombo.Enabled = True
+
+                        Else
+                            'Transition Period
+                            If _blnIDEASComboClientInstalled Then
+                                mvIDEASCombo.SetActiveView(vNewIDEAS)
+
+                                Me.btnShortIdentityNoNewSmartIDCombo.Visible = True
+                                Me.btnShortIdentityNoNewSmartIDCombo.Enabled = True
+
+                            Else
+                                mvIDEASCombo.SetActiveView(vOldIDEAS)
+
+                                tblDownloadComboClient.Visible = True
+
+                                Me.btnShortIdentityNoNewSmartID.Visible = True
+                                Me.btnShortIdentityNoNewSmartID.Enabled = True
+
+                                Me.btnShortIdentityNoOldSmartID.Visible = True
+                                Me.btnShortIdentityNoOldSmartID.Enabled = True
+
+                                mvOldHKIC.SetActiveView(vOldHKICSearch)
+                                mvNewHKIC.SetActiveView(vNewHKICSearch)
+
+                            End If
+                        End If
 
                         EnableSmartIDButton(True)
 
                         If _blnEnabledHKICSymbol And _blnDisplayHKICSymbol Then
                             If rblHKICSymbol.SelectedValue = String.Empty Then
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                ' ----------------------------------------------------------------------------------------
+
                                 If btnShortIdentityNoOldSmartID.Visible Then
                                     btnShortIdentityNoOldSmartID.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchDisableBtn")
                                     btnShortIdentityNoOldSmartID.Enabled = False
@@ -343,11 +375,20 @@ Partial Public Class ucClaimSearch
 
                                     EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartIC)
                                 End If
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                                If btnShortIdentityNoNewSmartIDCombo.Visible Then
+                                    btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchDisableBtn")
+                                    btnShortIdentityNoNewSmartIDCombo.Enabled = False
+
+                                    If _blnIDEASComboForceToUse And Not _blnIDEASComboClientInstalled Then
+                                        divSmartIDSoftwareNotInstalled.Visible = True
+                                    End If
+
+                                    EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartICCombo)
+                                End If
+
                             Else
 
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                                ' ----------------------------------------------------------------------------------------
                                 If btnShortIdentityNoOldSmartID.Visible Then
                                     btnShortIdentityNoOldSmartID.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
                                     btnShortIdentityNoOldSmartID.Enabled = True
@@ -361,13 +402,32 @@ Partial Public Class ucClaimSearch
 
                                     EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartIC)
                                 End If
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                                If btnShortIdentityNoNewSmartIDCombo.Visible Then
+                                    If _blnIDEASComboForceToUse Then
+                                        If _blnIDEASComboClientInstalled Then
+                                            btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
+                                            btnShortIdentityNoNewSmartIDCombo.Enabled = True
+                                        Else
+                                            btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchDisableBtn")
+                                            btnShortIdentityNoNewSmartIDCombo.Enabled = False
+                                            divSmartIDSoftwareNotInstalled.Visible = True
+                                        End If
+                                    Else
+                                        btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
+                                        btnShortIdentityNoNewSmartIDCombo.Enabled = True
+                                    End If
+
+                                    EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
+                                End If
+
                             End If
                         End If
-
+                        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                     End If
-                    ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+
                 End If
+                ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
                 Me.filteredSearchHKICNo.ValidChars = "()"
                 Me.txtSearchHKICNo.Attributes("onChange") = "javascript:formatHKID(this);"
@@ -901,6 +961,29 @@ Partial Public Class ucClaimSearch
         End Set
     End Property
 
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property IDEASComboClientInstalled() As Boolean
+        Get
+            Return _blnIDEASComboClientInstalled
+        End Get
+        Set(ByVal value As Boolean)
+            _blnIDEASComboClientInstalled = value
+        End Set
+    End Property
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property IDEASComboClientForceToUse() As Boolean
+        Get
+            Return _blnIDEASComboForceToUse
+        End Get
+        Set(ByVal value As Boolean)
+            _blnIDEASComboForceToUse = value
+        End Set
+    End Property
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 #End Region
 
 #Region "Events"
@@ -929,6 +1012,13 @@ Partial Public Class ucClaimSearch
         RaiseEvent ReadOldSmartIDButtonClick(sender, e)
     End Sub
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub btnShortIdentityNoNewSmartIDCombo_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnShortIdentityNoNewSmartIDCombo.Click
+        RaiseEvent ReadNewSmartIDComboButtonClick(sender, e)
+    End Sub
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
     ' ----------------------------------------------------------
@@ -1240,81 +1330,125 @@ Partial Public Class ucClaimSearch
         Return False
     End Function
 
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Public Sub EnableSmartIDButton(ByVal blnVisible As Boolean)
         If blnVisible Then
-
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'lblHKICOR.Visible = True
-            'imgCardReader.Visible = True
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             ' Check system parameters to see if enable
-            'If TurnOnSmartID() Then
-            If SmartIDHandler.TurnOnSmartID Then
-                'imgCardReader.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CardReader")
-                btnShortIdentityNoOldSmartID.Visible = True
-                btnShortIdentityNoOldSmartID.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
-                lblReadOldCardAndSearchNA.Visible = False
+            If _blnIDEASComboForceToUse Then
+                'IDEAS Combo Only Period 
+                If _blnIDEASComboClientInstalled Then
+                    'IDEAS Combo Client Installed
+                    If SmartIDHandler.TurnOnSmartID Then
+                        lblReadNewCardAndSearchComboNA.Visible = False
+                        btnShortIdentityNoNewSmartIDCombo.Visible = True
+                        btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
 
-                EnableHKICSearchOption(True, SearchHKICOption.ReadOldSmartIC)
+                        EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
 
-                lblReadNewCardAndSearchNA.Visible = False
+                    Else
+                        btnShortIdentityNoNewSmartIDCombo.Visible = False
+                        lblReadNewCardAndSearchComboNA.Visible = True
+                        lblReadNewCardAndSearchComboNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
 
-                btnShortIdentityNoNewSmartID.Visible = True
-                btnShortIdentityNoNewSmartID.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
+                        EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartICCombo)
 
-                EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartIC)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                    End If
+                Else
+                    'IDEAS Combo Client Not Installed
+                    divSmartIDSoftwareNotInstalled.Visible = True
+
+                    If SmartIDHandler.TurnOnSmartID Then
+                        lblReadNewCardAndSearchComboNA.Visible = False
+                        btnShortIdentityNoNewSmartIDCombo.Visible = True
+                        btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchDisableBtn")
+                        btnShortIdentityNoNewSmartIDCombo.Enabled = False
+
+                        EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
+
+                    Else
+                        btnShortIdentityNoNewSmartIDCombo.Visible = False
+                        lblReadNewCardAndSearchComboNA.Visible = True
+                        lblReadNewCardAndSearchComboNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+
+                        EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartICCombo)
+
+                    End If
+                End If
             Else
+                'Transition Period
+                If _blnIDEASComboClientInstalled Then
+                    'IDEAS Combo
+                    If SmartIDHandler.TurnOnSmartID Then
+                        lblReadNewCardAndSearchComboNA.Visible = False
+                        btnShortIdentityNoNewSmartIDCombo.Visible = True
+                        btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                'imgCardReader.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CardReaderDisable")
-                btnShortIdentityNoNewSmartID.Visible = False
-                lblReadNewCardAndSearchNA.Visible = True
-                lblReadNewCardAndSearchNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+                        EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
 
-                btnShortIdentityNoOldSmartID.Visible = False
-                lblReadOldCardAndSearchNA.Visible = True
-                btnShortIdentityNoOldSmartID.ImageUrl = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+                    Else
+                        btnShortIdentityNoNewSmartIDCombo.Visible = False
+                        lblReadNewCardAndSearchComboNA.Visible = True
+                        lblReadNewCardAndSearchComboNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
 
-                EnableHKICSearchOption(False, SearchHKICOption.ReadOldSmartIC)
-                EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartIC)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                        EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartICCombo)
+
+                    End If
+                Else
+                    'IDEAS Lite
+                    If SmartIDHandler.TurnOnSmartID Then
+                        lblReadOldCardAndSearchNA.Visible = False
+                        btnShortIdentityNoOldSmartID.Visible = True
+                        btnShortIdentityNoOldSmartID.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
+
+                        EnableHKICSearchOption(True, SearchHKICOption.ReadOldSmartIC)
+
+                        lblReadNewCardAndSearchNA.Visible = False
+                        btnShortIdentityNoNewSmartID.Visible = True
+                        btnShortIdentityNoNewSmartID.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
+
+                        EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartIC)
+
+                    Else
+                        btnShortIdentityNoNewSmartID.Visible = False
+                        lblReadNewCardAndSearchNA.Visible = True
+                        lblReadNewCardAndSearchNA.Text = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+
+                        btnShortIdentityNoOldSmartID.Visible = False
+                        lblReadOldCardAndSearchNA.Visible = True
+                        btnShortIdentityNoOldSmartID.ImageUrl = Me.GetGlobalResourceObject("Text", "ReadCardAndSearchNA")
+
+                        EnableHKICSearchOption(False, SearchHKICOption.ReadOldSmartIC)
+                        EnableHKICSearchOption(False, SearchHKICOption.ReadNewSmartIC)
+
+                    End If
+                End If
             End If
 
+
         Else
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'lblHKICOR.Visible = False
-            'imgCardReader.Visible = False
-            btnShortIdentityNoNewSmartID.Visible = False
-            lblReadNewCardAndSearchNA.Visible = False
 
-            btnShortIdentityNoOldSmartID.Visible = False
-            lblReadOldCardAndSearchNA.Visible = False
+            If _blnIDEASComboClientInstalled Then
+                'IDEAS Combo
+                btnShortIdentityNoNewSmartIDCombo.Visible = False
+                lblReadNewCardAndSearchComboNA.Visible = False
 
-            mvOldHKIC.SetActiveView(vOldHKICSample)
-            mvNewHKIC.SetActiveView(vNewHKICSample)
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            Else
+                'IDEAS Lite
+                btnShortIdentityNoNewSmartID.Visible = False
+                lblReadNewCardAndSearchNA.Visible = False
+
+                btnShortIdentityNoOldSmartID.Visible = False
+                lblReadOldCardAndSearchNA.Visible = False
+
+                mvOldHKIC.SetActiveView(vOldHKICSample)
+                mvNewHKIC.SetActiveView(vNewHKICSample)
+
+            End If
+
         End If
 
     End Sub
-
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
-    ' Changed to Common Function
-    'Private Function TurnOnSmartID() As Boolean
-    '    Dim strParmValue As String = String.Empty
-    '    Dim udtGeneralFunction As New GeneralFunction
-    '    udtGeneralFunction.getSystemParameter("TurnOnSmartID", strParmValue, String.Empty)
-    '    Return strParmValue.Trim = "Y"
-
-    'End Function
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
     ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
     ' ----------------------------------------------------------
@@ -1357,7 +1491,7 @@ Partial Public Class ucClaimSearch
                 End If
 
                 _blnDisplayHKICSymbol = True
-                trHKICSymbol.Style.Remove("display")
+                tblHKICSymbol.Style.Remove("display")
 
                 If Me._blnSchemeSelected Then
                     Me.rblHKICSymbol.Enabled = True
@@ -1367,21 +1501,20 @@ Partial Public Class ucClaimSearch
 
             Else
                 _blnDisplayHKICSymbol = False
-                trHKICSymbol.Style.Add("display", "none")
-
+                tblHKICSymbol.Style.Add("display", "none")
             End If
 
         Else
             _blnDisplayHKICSymbol = False
-            trHKICSymbol.Style.Add("display", "none")
+            tblHKICSymbol.Style.Add("display", "none")
 
         End If
 
     End Sub
     ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-    ' ----------------------------------------------------------------------------------------
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
     Public Sub EnableHKICSearchOption(ByVal blnEnable As Boolean, ByVal eSearchHKICOption As SearchHKICOption)
         If blnEnable Then
             Dim sb As New StringBuilder()
@@ -1409,7 +1542,33 @@ Partial Public Class ucClaimSearch
                     sb.Append(Me.Page.ClientScript.GetPostBackEventReference(btnShortIdentityNoNewSmartID, ""))
                     sb.Append("; return false;")
                     tblNewSmartIC.Attributes.Add("onclick", sb.ToString())
-                    
+
+                Case SearchHKICOption.ReadNewSmartICCombo
+                    If _blnIDEASComboForceToUse Then
+                        If _blnIDEASComboClientInstalled Then
+                            tblNewSmartICCombo.Style.Add("background-image", String.Format("url({0})", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICComboDisabled"))))
+                            tblNewSmartICCombo.Attributes.Add("onmouseover", String.Format("this.style.backgroundImage= 'url({0})'; this.style.cursor = 'pointer';", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICCombo"))))
+                            tblNewSmartICCombo.Attributes.Add("onmouseout", String.Format("this.style.backgroundImage= 'url({0})';", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICComboDisabled"))))
+
+                            sb.Append(Me.Page.ClientScript.GetPostBackEventReference(btnShortIdentityNoNewSmartIDCombo, ""))
+                            sb.Append("; return false;")
+                            tblNewSmartICCombo.Attributes.Add("onclick", sb.ToString())
+                        Else
+                            tblNewSmartICCombo.Style.Add("background-image", String.Format("url({0})", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "NewSmartIDComboEmptyDisabled"))))
+                            tblNewSmartICCombo.Attributes.Add("onmouseover", String.Format("this.style.backgroundImage= 'url({0})';", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "NewSmartIDComboEmpty"))))
+                            tblNewSmartICCombo.Attributes.Add("onmouseout", String.Format("this.style.backgroundImage= 'url({0})';", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "NewSmartIDComboEmptyDisabled"))))
+                        End If
+
+                    Else
+                        tblNewSmartICCombo.Style.Add("background-image", String.Format("url({0})", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICComboDisabled"))))
+                        tblNewSmartICCombo.Attributes.Add("onmouseover", String.Format("this.style.backgroundImage= 'url({0})'; this.style.cursor = 'pointer';", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICCombo"))))
+                        tblNewSmartICCombo.Attributes.Add("onmouseout", String.Format("this.style.backgroundImage= 'url({0})';", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICComboDisabled"))))
+
+                        sb.Append(Me.Page.ClientScript.GetPostBackEventReference(btnShortIdentityNoNewSmartIDCombo, ""))
+                        sb.Append("; return false;")
+                        tblNewSmartICCombo.Attributes.Add("onclick", sb.ToString())
+                    End If
+
             End Select
 
         Else
@@ -1431,12 +1590,26 @@ Partial Public Class ucClaimSearch
                     tblNewSmartIC.Attributes.Remove("onmouseout")
                     tblNewSmartIC.Attributes.Remove("onclick")
 
+                Case SearchHKICOption.ReadNewSmartICCombo
+                    If _blnIDEASComboForceToUse Then
+                        If _blnIDEASComboClientInstalled Then
+                            tblNewSmartICCombo.Style.Add("background-image", String.Format("url({0})", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICComboDisabled"))))
+                        Else
+                            tblNewSmartICCombo.Style.Add("background-image", String.Format("url({0})", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "NewSmartIDComboEmptyDisabled"))))
+                        End If
+                    Else
+                        tblNewSmartICCombo.Style.Add("background-image", String.Format("url({0})", ResolveClientUrl(Me.GetGlobalResourceObject("ImageUrl", "SearchNewSmartICComboDisabled"))))
+                    End If
+
+                    tblNewSmartICCombo.Attributes.Remove("onmouseover")
+                    tblNewSmartICCombo.Attributes.Remove("onmouseout")
+                    tblNewSmartICCombo.Attributes.Remove("onclick")
             End Select
 
         End If
 
     End Sub
-    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
     ' ----------------------------------------------------------------------------------------
@@ -1446,5 +1619,11 @@ Partial Public Class ucClaimSearch
     End Function
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 #End Region
+
+    Private Sub lbtnUpdateNow_Click(sender As Object, e As EventArgs) Handles lbtnUpdateNow.Click
+
+        ScriptManager.RegisterStartupScript(Me, Page.GetType, "UpdateNow", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
+
+    End Sub
 
 End Class

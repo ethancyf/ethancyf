@@ -15,9 +15,13 @@
     TagPrefix="uc4" %>
 <%@ Register Src="../UIControl/ucInputDocumentType.ascx" TagName="ucInputDocumentType"
     TagPrefix="uc5" %>
+<%@ Register Src="~/UIControl/IDEASCombo/IDEASCombo.ascx" TagName="IDEASCombo" 
+    TagPrefix="uc6" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
+            <uc6:IDEASCombo ID="ucIDEASCombo" runat="server" />
             <table width="100%">
                 <tr>
                     <td>

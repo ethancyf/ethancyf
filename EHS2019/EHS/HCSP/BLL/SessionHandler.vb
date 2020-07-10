@@ -99,6 +99,15 @@ Namespace BLL
             Public Const SESS_SmartIDContent As String = "SESS_SMARTIDCONTENT"
             Public Const SESS_PilotRunSmartID As String = "SESS_PILOTRUNSMARTID"
 
+            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Const SESS_IDEASComboClient As String = "SESS_IDEASComboClient"
+            Public Const SESS_IDEASComboVersion As String = "SESS_IDEASComboVersion"
+            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+            '------------------------------------------------------------------------------------------
+            'VaccinationRecordEnquiry
+            '------------------------------------------------------------------------------------------
             Public Const SESS_FromVaccinationRecordEnquiry As String = "SESS_FROMVACCINATIONRECORDENQUIRY"
             Public Const SESS_VREEHSAccount As String = "SESS_VREEHSACCOUNT"
             Public Const SESS_SearchAccountStatus As String = "SESS_SEARCHACCOUNTSTATUS"
@@ -1109,22 +1118,6 @@ Namespace BLL
         End Sub
 
 #End Region
-        '#Region "Request Time Key (the value of prevent F5 Pressed)"
-
-        '        Public Sub RequestTimeKeySaveToSession(ByVal strFunctionCode As String)
-        '            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.RequestTimeKey)) = String.Format("{0}{1}{2}{3}{4}{5}{6}", Now.Year, Now.Month, Now.Day, Now.Hour, Now.Minute, Now.Second, Now.Millisecond)
-        '        End Sub
-
-        '        Public Function RequestTimeKeyGetFromSession(ByVal strFunctionCode As String) As String
-        '            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.RequestTimeKey)), String)
-        '        End Function
-
-        '        Public Sub RequestTimeKeyRemoveFromSession(ByVal strFunctionCode As String)
-        '            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.RequestTimeKey))
-        '        End Sub
-
-        '#End Region
-
 
         Public Sub RVPRCHCodeSaveToSession(ByVal strFunctionCode As String, ByVal strRCHCode As String)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_RVPRCHCode)) = strRCHCode.Trim()
@@ -1141,6 +1134,7 @@ Namespace BLL
         '---------------------------------------------------------------------------------------
         ' SmartID
         '---------------------------------------------------------------------------------------
+        'SmartIDContent Model
         Public Sub SmartIDContentSaveToSession(ByVal strFunctionCode As String, ByVal udtSmartIDContent As BLL.SmartIDContentModel)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SmartIDContent)) = udtSmartIDContent
         End Sub
@@ -1151,6 +1145,32 @@ Namespace BLL
 
         Public Sub SmartIDContentRemoveFormSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SmartIDContent))
+        End Sub
+
+        'SmartID Ideas Combo Client Installation Result
+        Public Sub IDEASComboClientSaveToSession(ByVal strResult As String)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboClient)) = strResult
+        End Sub
+
+        Public Function IDEASComboClientGetFormSession() As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboClient)), String)
+        End Function
+
+        Public Sub IDEASComboClientRemoveFormSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_IDEASComboClient))
+        End Sub
+
+        'SmartID Ideas Combo Version
+        Public Sub IDEASComboVersionSaveToSession(ByVal strVersion As String)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboVersion)) = strVersion
+        End Sub
+
+        Public Function IDEASComboVersionGetFormSession() As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboVersion)), String)
+        End Function
+
+        Public Sub IDEASComboVersionRemoveFormSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_IDEASComboVersion))
         End Sub
 
 

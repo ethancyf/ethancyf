@@ -50,6 +50,15 @@ Partial Public Class EHSRectification
     Protected WithEvents udcMsgBoxErr As Global.CustomControls.MessageBox
 
     '''<summary>
+    '''ucIDEASCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucIDEASCombo As Global.HCSP.IDEASCombo
+
+    '''<summary>
     '''panChooseCCCode control.
     '''</summary>
     '''<remarks>
@@ -572,6 +581,15 @@ Partial Public Class EHSRectification
     Protected WithEvents tblRectifyReadSmartIC As Global.System.Web.UI.HtmlControls.HtmlTable
 
     '''<summary>
+    '''tblRectifyReadOldSmartIC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblRectifyReadOldSmartIC As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
     '''imgRectifyReadOldSmartIC control.
     '''</summary>
     '''<remarks>
@@ -588,6 +606,15 @@ Partial Public Class EHSRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRectifyOldSmartICChipFaceUp As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tblRectifyReadNewSmartIC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblRectifyReadNewSmartIC As Global.System.Web.UI.HtmlControls.HtmlTable
 
     '''<summary>
     '''imgRectifyReadNewSmartIC control.
@@ -608,6 +635,33 @@ Partial Public Class EHSRectification
     Protected WithEvents lblRectifyNewSmartICChipFaceUp As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''tblRectifyReadNewSmartICCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblRectifyReadNewSmartICCombo As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''imgRectifyReadNewSmartICCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgRectifyReadNewSmartICCombo As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblRectifyNewSmartICComboChipFaceUp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyNewSmartICComboChipFaceUp As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''ibtnRectifyReadSmartIDTips control.
     '''</summary>
     '''<remarks>
@@ -617,6 +671,24 @@ Partial Public Class EHSRectification
     Protected WithEvents ibtnRectifyReadSmartIDTips As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''trSmartIDSoftwareNotInstalled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trSmartIDSoftwareNotInstalled As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblSmartIDSoftwareNotInstalled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSmartIDSoftwareNotInstalled As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''ibtnRectifyReadOldSmartIC control.
     '''</summary>
     '''<remarks>
@@ -624,6 +696,15 @@ Partial Public Class EHSRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnRectifyReadOldSmartIC As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''divReadOldSmartIDCardNA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divReadOldSmartIDCardNA As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
     '''lblReadOldSmartIDCardNA control.
@@ -644,6 +725,15 @@ Partial Public Class EHSRectification
     Protected WithEvents ibtnRectifyReadNewSmartIC As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''divReadNewSmartIDCardNA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divReadNewSmartIDCardNA As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
     '''lblReadNewSmartIDCardNA control.
     '''</summary>
     '''<remarks>
@@ -651,6 +741,33 @@ Partial Public Class EHSRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReadNewSmartIDCardNA As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnRectifyReadNewSmartICCombo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnRectifyReadNewSmartICCombo As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''divReadNewSmartIDComboCardNA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divReadNewSmartIDComboCardNA As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblReadNewSmartIDComboCardNA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadNewSmartIDComboCardNA As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''panReminder control.

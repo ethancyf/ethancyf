@@ -110,7 +110,11 @@ Module Core
 
                 udteHealthAccountDeathRecordBLL.UpdateDeathRecordFileHeaderStatus(strFileID, eHealthAccountDeathRecordBLL.DeathRecordFileHeaderTable.RecordStatus.ImportFail, "EHS", udtDB)
                 blnResult = False
-                MyBase.Log(String.Format("Process entry fail: <Exception: {0}>", ex.Message), EnumLogAction.ProcessQueue, EnumLogStatus.Fail)
+
+                ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [Start][Winnie]
+                'MyBase.Log(String.Format("Process entry fail: <Exception: {0}>", ex.Message), EnumLogAction.ProcessQueue, EnumLogStatus.Fail)
+                MyBase.Log(String.Format("Process entry fail: <Exception: {0}>", ex.ToString), EnumLogAction.ProcessQueue, EnumLogStatus.Fail)
+                ' INT20-0019 (Fix generate write-off for account deceased before voucher scheme start) [End][Winnie]
             End Try
 
             Return blnResult
