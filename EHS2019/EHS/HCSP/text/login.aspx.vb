@@ -920,6 +920,11 @@ Imports System.Web.Security.AntiXss
                                 Dim udtSytemMessage As Common.ComObject.SystemMessage = Nothing
                                 Try
                                     udtLoginBLL.UpdateSuccessLoginDtm(udtUserAC)
+                                    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+                                    ' ---------------------------------------------------------------------------------------------------------
+                                    Dim udtIdeasBLL As New IdeasBLL
+                                    udtIdeasBLL.UpdateIDEASComboInfo(udtUserAC, udtSessionHandler.IDEASComboClientGetFormSession(), udtSessionHandler.IDEASComboVersionGetFormSession())
+                                    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                                 Catch eSQL As SqlClient.SqlException
                                     If eSQL.Number = 50000 Then
                                         Dim strmsg As String

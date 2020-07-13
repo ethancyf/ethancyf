@@ -9,6 +9,8 @@
 
     <script language="Javascript" src="../JS/ideasComboLib4Ra.js" type="text/javascript"></script>
 
+    <script language="Javascript" src="../JS/ideasComboVersion.js" type="text/javascript"></script>
+
         <script type="text/javascript">
         function checkIdeasComboClientSuccessEHS(_param) {
             var obj = document.getElementById("txtIDEASComboResult")
