@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN	
 -- Modified date:	17 Sep 2019
 -- CR No.			CRE19-006 (DHC)
@@ -66,7 +73,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col3,''),  
   isnull(Col4,'')
  FROM         
-  RpteHSM0006VoucherClaimByAge    
+  RpteHSM0006VoucherClaimByAge WITH (NOLOCK)    
  ORDER BY    
   Display_Seq   
 
@@ -89,7 +96,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col12,''),
   isnull(Col13,'')
  FROM         
-  RpteHSM0006VRByAgeStat    
+  RpteHSM0006VRByAgeStat WITH (NOLOCK)    
  ORDER BY    
   Display_Seq    
 
@@ -111,7 +118,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col11,''),
   isnull(Col12,'')
  FROM  
-  RpteHSM0006VoucherClaimByProfStat  
+  RpteHSM0006VoucherClaimByProfStat WITH (NOLOCK)  
  ORDER BY  
   Display_Seq   
 -- --------------------------------------------------  
@@ -129,7 +136,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col9,''),  
   isnull(Col10,'')
  FROM  
-  RpteHSM0006VoucherClaimByProfStat_HCVSDHC
+  RpteHSM0006VoucherClaimByProfStat_HCVSDHC WITH (NOLOCK)
  ORDER BY  
   Display_Seq   
 -- --------------------------------------------------  
@@ -150,7 +157,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col12,''),
   isnull(Col13,'') 
  FROM    
-  RpteHSM0006VoucherClaimByReasonForVisitStat  
+  RpteHSM0006VoucherClaimByReasonForVisitStat WITH (NOLOCK)  
  ORDER BY  
   Display_Seq   
 -- --------------------------------------------------  
@@ -168,7 +175,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col9,''),  
   isnull(Col10,'')
  FROM    
-  RpteHSM0006VoucherClaimByReasonForVisitStat_HCVSDHC
+  RpteHSM0006VoucherClaimByReasonForVisitStat_HCVSDHC WITH (NOLOCK)
  ORDER BY  
   Display_Seq
 -- --------------------------------------------------  
@@ -178,7 +185,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col1,''), isnull(Col2,''), isnull(Col3,''), isnull(Col4,''), isnull(Col5,''),  
   isnull(Col6,''), isnull(Col7,''), isnull(Col8,''), isnull(Col9,''), isnull(Col10,'')
  FROM    
-  RpteHSM0006VoucherClaimByAgeByPractice_HCVSDHC 
+  RpteHSM0006VoucherClaimByAgeByPractice_HCVSDHC WITH (NOLOCK) 
  ORDER BY  
   Display_Seq  
 
@@ -197,7 +204,7 @@ SELECT 'Report Generation Time: ' + @strGenDtm
   isnull(Col41,''), isnull(Col42,''), isnull(Col43,''), isnull(Col44,''), isnull(Col45,''),  
   isnull(Col46,''), isnull(Col47,''), isnull(Col48,''), isnull(Col49,''), isnull(Col50,'')
  FROM    
-  RpteHSM0006VoucherClaimByAgeByPractice_HCVSCHN  
+  RpteHSM0006VoucherClaimByAgeByPractice_HCVSCHN WITH (NOLOCK)  
  ORDER BY  
   Display_Seq  
 
@@ -222,7 +229,7 @@ SELECT '1.Profession Type Legend', ''
 
 INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 SELECT Service_Category_Code, Service_Category_Desc 
-FROM Profession
+FROM Profession WITH (NOLOCK)
 ORDER BY Service_Category_Code
 
 

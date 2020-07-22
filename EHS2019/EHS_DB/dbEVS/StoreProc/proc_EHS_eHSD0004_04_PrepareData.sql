@@ -8,11 +8,11 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
--- =============================================  
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- ============================================= 
 -- =============================================      
 -- Author:   		Marco CHOI
 -- Create date:		3 August 2017
@@ -160,16 +160,16 @@ AS BEGIN
   VT.Create_by_smartID,    
   10 + ROW_NUMBER() OVER (ORDER BY VT.Transaction_Dtm)          
  FROM          
-  VoucherTransaction VT          
-   INNER JOIN TransactionDetail TD          
+  VoucherTransaction VT WITH (NOLOCK)          
+   INNER JOIN TransactionDetail TD WITH (NOLOCK)          
     ON VT.Transaction_ID = TD.Transaction_ID                     
    --INNER JOIN TransactionAdditionalField TAF1          
    -- ON VT.Transaction_ID = TAF1.Transaction_ID          
    --  AND TAF1.AdditionalFieldID = 'CategoryCode'          
-   INNER JOIN TransactionAdditionalField TAF2          
+   INNER JOIN TransactionAdditionalField TAF2 WITH (NOLOCK)          
     ON VT.Transaction_ID = TAF2.Transaction_ID          
      AND TAF2.AdditionalFieldID = 'RHCCode'          
-   INNER JOIN RVPHomeList HL          
+   INNER JOIN RVPHomeList HL WITH (NOLOCK)          
     ON TAF2.AdditionalFieldValueCode = HL.RCH_Code
 	LEFT JOIN SubsidizeGroupClaim SGC
 	on	td.Scheme_Code = SGC.Scheme_Code
@@ -180,11 +180,11 @@ AS BEGIN
 AND VT.Transaction_Dtm <= @Cutoff_Dtm          
 AND VT.Transaction_Dtm > DATEADD(dd, -1 * @Date_Range + 1, @Report_Dtm)             
 AND VT.Record_Status NOT IN    
- (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')     
+ (SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')     
  AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'     
  AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm)))       
 AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In     
- (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')     
+ (SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')     
  AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'    
  AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm))))
 ORDER BY VT.Transaction_Dtm
@@ -216,7 +216,7 @@ WHERE
    END          
  FROM          
   @Transaction VT          
-   INNER JOIN ReimbursementAuthTran RAT          
+   INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)          
     ON VT.Transaction_ID = RAT.Transaction_ID 
  WHERE VT.Transaction_Status = 'A'         	
                     
@@ -272,7 +272,7 @@ WHERE
   VT.Row          
  FROM          
   @Transaction VT          
-   INNER JOIN PersonalInformation VP          
+   INNER JOIN PersonalInformation VP WITH (NOLOCK)          
     ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID          
      AND VT.Doc_Code = VP.Doc_Code          
  WHERE          
@@ -369,7 +369,7 @@ WHERE
   VT.Row          
  FROM          
   @Transaction VT          
-   INNER JOIN SpecialPersonalInformation SP          
+   INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)          
     ON VT.Special_Acc_ID = SP.Special_Acc_ID          
  WHERE          
   VT.Voucher_Acc_ID = ''          
@@ -431,16 +431,16 @@ VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Service Date', 'Catego
   case when T.Create_By_SmartID = 'Y' THEN 'Card Reader' ELSE 'Manual' END Create_By_SmartID        
  FROM          
   @Account A INNER JOIN @Transaction T ON A.Transaction_id = T.Transaction_ID AND A.Vaccine = T.Vaccine        
-   INNER JOIN ClaimCategory CC          
+   INNER JOIN ClaimCategory CC WITH (NOLOCK)          
     ON A.Category_Code = CC.Category_Code          
-   INNER JOIN SubsidizeItemDetails SID          
+   INNER JOIN SubsidizeItemDetails SID WITH (NOLOCK)          
     ON A.Dose = SID.Available_Item_Code          
 --     AND SID.Subsidize_Item_Code = 'SIV'        
      AND SID.Subsidize_Item_Code = T.Subsidize_Item_Code        
-   INNER JOIN StatusData SD1          
+   INNER JOIN StatusData SD1 WITH (NOLOCK)          
     ON A.Transaction_Status = SD1.Status_Value          
      AND SD1.Enum_Class = 'ClaimTransStatus'          
-   LEFT JOIN StatusData SD2          
+   LEFT JOIN StatusData SD2 WITH (NOLOCK)          
     ON A.Reimbursement_Status = SD2.Status_Value          
      AND SD2.Enum_Class = 'ReimbursementStatus'          
               

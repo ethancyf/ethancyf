@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Mar 2020
 -- CR No.:			INT20-0005
@@ -57,8 +64,8 @@ SET @schemeDate = CONVERT(VARCHAR(11), DATEADD(dd, -1, @strGenDtm), 111)
 
 EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] @Scheme_Code, @schemeDate    
 
-SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
-SELECT @Scheme_Display_Code = RTRIM(Display_Code) FROM SchemeClaim WHERE Scheme_Code = @Scheme_Code
+SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
+SELECT @Scheme_Display_Code = RTRIM(Display_Code) FROM SchemeClaim WITH (NOLOCK) WHERE Scheme_Code = @Scheme_Code
 
 INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0033-01', 'Report on eHealth (Subsidies) accounts created (by document type)'
@@ -104,7 +111,7 @@ SELECT
 	isnull(Col19,'')
 
 FROM         
-	RpteHSD0033_01_PPPKG_eHA_ByDocType    
+	RpteHSD0033_01_PPPKG_eHA_ByDocType WITH (NOLOCK)    
 ORDER BY    
 	Display_Seq    
      
@@ -134,7 +141,7 @@ SELECT
 	isnull(Col19,''),   
 	isnull(Col20,'')
 FROM    
-	RpteHSD0033_02_PPPKG_Tx_ByAgeGroup_ByYear  
+	RpteHSD0033_02_PPPKG_Tx_ByAgeGroup_ByYear WITH (NOLOCK)  
 ORDER BY  
 	Display_Seq	  
   
@@ -154,7 +161,7 @@ SELECT
 	isnull(Col9,''),  
 	isnull(Col10,'')
 FROM    
-	RpteHSD0033_03_PPPKG_QIV_Tx_BySchoolCode
+	RpteHSD0033_03_PPPKG_QIV_Tx_BySchoolCode WITH (NOLOCK)
 ORDER BY  
 	Display_Seq  
 
@@ -174,7 +181,7 @@ SELECT
 	isnull(Col9,''),  
 	isnull(Col10,'')
 FROM    
-	RpteHSD0033_03_PPPKG_LAIV_Tx_BySchoolCode
+	RpteHSD0033_03_PPPKG_LAIV_Tx_BySchoolCode WITH (NOLOCK)
 ORDER BY  
 	Display_Seq  
 
@@ -204,7 +211,7 @@ SELECT
 	isnull(Col19,''),
 	isnull(Col20,'')
 FROM       
-	RpteHSD0033_04_PPPKG_Tx_Raw  
+	RpteHSD0033_04_PPPKG_Tx_Raw WITH (NOLOCK)  
 ORDER BY  
 	Display_Seq  
   

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN	
 -- Modified date:	11 Sep 2019
 -- CR No.			CRE19-006 (DHC)
@@ -385,21 +392,21 @@ AS BEGIN
 
 	-- Profession
 	INSERT INTO @Profession
-	SELECT Service_Category_Code FROM profession
+	SELECT Service_Category_Code FROM profession WITH (NOLOCK)
 
 	-- Reason for Visit
 	INSERT INTO @Reason(Reason_Code, Reason_Desc, Secondary)
-	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'N' FROM ReasonForVisitL1
+	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'N' FROM ReasonForVisitL1 WITH (NOLOCK)
 	UNION
 	SELECT 5, 'Defer Input', 'N'
 	UNION
-	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'Y' FROM ReasonForVisitL1
+	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'Y' FROM ReasonForVisitL1 WITH (NOLOCK)
 
 
 	INSERT INTO @Reason_HCVSDHC(Reason_Code, Reason_Desc, Secondary)
-	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'N' FROM ReasonForVisitL1
+	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'N' FROM ReasonForVisitL1 WITH (NOLOCK)
 	UNION
-	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'Y' FROM ReasonForVisitL1	
+	SELECT DISTINCT Reason_L1_Code, Reason_L1, 'Y' FROM ReasonForVisitL1 WITH (NOLOCK)	
 	
 
 	SET @scheme_code_HK			= 'HCVS'
@@ -476,28 +483,28 @@ AS BEGIN
 			CASE WHEN VP.Voucher_Acc_ID IS NULL THEN ACTP.Logical_DOD ELSE ACVP.Logical_DOD END AS [SFC_Logical_DOD],
 			CASE WHEN VP.Voucher_Acc_ID IS NULL THEN ACTP.DOB ELSE ACVP.DOB END AS [DOB]
 		FROM
-			 VoucherTransaction  VT
-			INNER JOIN TransactionDetail TD
+			 VoucherTransaction  VT WITH (NOLOCK)
+			INNER JOIN TransactionDetail TD WITH (NOLOCK)
 				ON VT.Transaction_ID = TD.Transaction_ID
-			LEFT JOIN TransactionAdditionalField TAF1
+			LEFT JOIN TransactionAdditionalField TAF1 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF1.Transaction_ID
 					AND TAF1.AdditionalFieldID = 'Reason_for_Visit_L1'
-			LEFT JOIN TransactionAdditionalField TAF2
+			LEFT JOIN TransactionAdditionalField TAF2 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF2.Transaction_ID
 					AND TAF2.AdditionalFieldID = 'ReasonforVisit_S1_L1'
-			LEFT JOIN TransactionAdditionalField TAF3
+			LEFT JOIN TransactionAdditionalField TAF3 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF3.Transaction_ID
 					AND TAF3.AdditionalFieldID = 'ReasonforVisit_S2_L1'
-			LEFT JOIN TransactionAdditionalField TAF4
+			LEFT JOIN TransactionAdditionalField TAF4 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF4.Transaction_ID
 					AND TAF4.AdditionalFieldID = 'ReasonforVisit_S3_L1'
-			LEFT JOIN PersonalInformation VP
+			LEFT JOIN PersonalInformation VP WITH (NOLOCK)
 				ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID
-			LEFT JOIN RptAccountSFC ACVP 
+			LEFT JOIN RptAccountSFC ACVP WITH (NOLOCK) 
 				ON VP.Encrypt_Field1 = ACVP.identity_num AND ACVP.Is_Terminate = 'N'
-			LEFT JOIN TempPersonalInformation TP
+			LEFT JOIN TempPersonalInformation TP WITH (NOLOCK)
 				ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID
-			LEFT JOIN RptAccountSFC ACTP
+			LEFT JOIN RptAccountSFC ACTP WITH (NOLOCK)
 				ON TP.Encrypt_Field1 = ACTP.identity_num AND ACTP.Is_Terminate = 'N'
 		WHERE
 				VT.Scheme_Code IN (@scheme_code_HK, @scheme_code_mainland, @scheme_code_DHC)
@@ -525,7 +532,7 @@ AS BEGIN
 				SELECT
 					Status_Value
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(report_id = 'ALL' OR report_id = 'eHSD0001') 
 						AND Table_Name = 'VoucherTransaction'
@@ -540,7 +547,7 @@ AS BEGIN
 				SELECT
 					Status_Value
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(report_id = 'ALL' OR report_id = 'eHSD0001') 
 						AND Table_Name = 'VoucherTransaction'
@@ -630,12 +637,12 @@ AS BEGIN
 	DECLARE @NoRegElder_65to69 INT, @NoRegElder_70 INT
 	DECLARE @NoRegElderDeath_65to69 INT, @NoRegElderDeath_70 INT
 
-	SELECT	@NoRegElder_65to69 = COUNT(1) FROM	RptAccountSFC WHERE Is_Terminate = 'N' AND Age BETWEEN 65 AND 69
-	SELECT	@NoRegElder_70 = COUNT(1) FROM	RptAccountSFC WHERE Is_Terminate = 'N' AND Age >= 70
+	SELECT	@NoRegElder_65to69 = COUNT(1) FROM	RptAccountSFC WITH (NOLOCK) WHERE Is_Terminate = 'N' AND Age BETWEEN 65 AND 69
+	SELECT	@NoRegElder_70 = COUNT(1) FROM	RptAccountSFC WITH (NOLOCK) WHERE Is_Terminate = 'N' AND Age >= 70
 
 	-- Match Death Record
-	SELECT	@NoRegElderDeath_65to69 = COUNT(1) FROM	RptAccountSFC WHERE Is_Terminate = 'N' AND Deceased = 1 AND Age BETWEEN 65 AND 69 
-	SELECT	@NoRegElderDeath_70 = COUNT(1) FROM	RptAccountSFC WHERE Is_Terminate = 'N' AND Deceased = 1 AND Age >= 70
+	SELECT	@NoRegElderDeath_65to69 = COUNT(1) FROM	RptAccountSFC WITH (NOLOCK) WHERE Is_Terminate = 'N' AND Deceased = 1 AND Age BETWEEN 65 AND 69 
+	SELECT	@NoRegElderDeath_70 = COUNT(1) FROM	RptAccountSFC WITH (NOLOCK) WHERE Is_Terminate = 'N' AND Deceased = 1 AND Age >= 70
 
 ------------------------------------------------------------
 -- Result
@@ -839,9 +846,9 @@ AS BEGIN
 		AC.Age,
 		AC.Deceased
 	FROM 
-		VoucherAccount VA
-		INNER JOIN PersonalInformation PI ON VA.Voucher_Acc_ID = PI.Voucher_Acc_ID
-		INNER JOIN RptAccountSFC AC ON PI.Encrypt_Field1 = AC.Identity_Num 
+		VoucherAccount VA WITH (NOLOCK)
+		INNER JOIN PersonalInformation PI WITH (NOLOCK) ON VA.Voucher_Acc_ID = PI.Voucher_Acc_ID
+		INNER JOIN RptAccountSFC AC WITH (NOLOCK) ON PI.Encrypt_Field1 = AC.Identity_Num 
 	WHERE
 		VA.Create_By = @HKUSZH_SP_ID and VA.Effective_Dtm < @CutOffDtm
 
@@ -905,7 +912,7 @@ AS BEGIN
 		END
 	FROM
 	--@VA_CreatedByBO
-		PersonalInformation
+		PersonalInformation WITH (NOLOCK)
 	WHERE Voucher_Acc_ID IN (SELECT ITEM FROM func_Split_string(@BO_Voucher_Acc_ID,','))
 	ORDER BY 
 		Voucher_Acc_ID
@@ -948,7 +955,7 @@ AS BEGIN
 
 	--Deceased
 	SELECT	@NoRegElderDeath_70AndAbove_Since2018 = COUNT(1) 
-	FROM	RptAccountSFC R
+	FROM	RptAccountSFC R WITH (NOLOCK)
 	WHERE Is_Terminate = 'N' 
 		AND R.Deceased = 1
 		AND YEAR(R.Logical_DOD) - YEAR(R.DOB) >= @Age70_from_age
@@ -956,7 +963,7 @@ AS BEGIN
 	
 	--Alive
 	SELECT	@NoRegElder_70AndAbove_Since2018 = COUNT(1) 
-	FROM	RptAccountSFC R
+	FROM	RptAccountSFC R WITH (NOLOCK)
 	WHERE Is_Terminate = 'N' 
 		AND Deceased = 0 
 		AND YEAR(R.DOB) BETWEEN @Age70_from_DOB AND @Age70_to_DOB
@@ -1672,12 +1679,12 @@ AS BEGIN
 	SELECT 
 		P.SP_ID, P.Display_Seq, P.Practice_Name, PRO.Service_Category_Code
 	FROM 
-		ServiceProvider SP
-	INNER JOIN PracticeSchemeInfo PSI
+		ServiceProvider SP WITH (NOLOCK)
+	INNER JOIN PracticeSchemeInfo PSI WITH (NOLOCK)
 		ON SP.SP_ID = PSI.SP_ID AND PSI.Scheme_Code = @scheme_code_DHC
-	INNER JOIN Practice P
+	INNER JOIN Practice P WITH (NOLOCK)
 		ON SP.SP_ID = P.SP_ID AND PSI.Practice_Display_Seq = P.Display_Seq
-	INNER JOIN Professional Pro
+	INNER JOIN Professional Pro WITH (NOLOCK)
 		ON SP.SP_ID = Pro.SP_ID AND P.Professional_Seq = Pro.Professional_Seq
 		
 	-- 
@@ -1806,7 +1813,7 @@ AS BEGIN
 		Display_Seq, 
 		CAST(Display_Seq AS VARCHAR) + '.' + Practice_Name 
     FROM
-		Practice
+		Practice WITH (NOLOCK)
     WHERE
 		SP_ID = @HKUSZH_SP_ID
 	

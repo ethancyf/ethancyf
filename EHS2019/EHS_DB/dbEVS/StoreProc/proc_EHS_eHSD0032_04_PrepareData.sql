@@ -5,7 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-  
+ 
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
 -- ============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -177,7 +184,7 @@ BEGIN
 		VT.Category_Code,
 		TAF.AdditionalFieldValueCode AS [SchoolCode]
 	FROM          
-		VoucherTransaction VT 
+		VoucherTransaction VT WITH (NOLOCK) 
 	INNER JOIN 
 		transactiondetail td ON vt.transaction_id = td.transaction_id  AND vt.scheme_code = @Scheme_Code AND vt.scheme_code = td.scheme_code     
 	INNER JOIN 
@@ -192,14 +199,14 @@ BEGIN
 	AND VT.Transaction_Dtm > DATEADD(dd, -1 * @Date_Range + 1, @Report_Dtm)          
 	AND VT.Record_Status NOT IN (
 			SELECT Status_Value 
-			FROM StatStatusFilterMapping 
+			FROM StatStatusFilterMapping WITH (NOLOCK) 
 			WHERE (report_id = 'ALL' OR report_id = @Report_ID)     
 			AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'     
 			AND ((Effective_Date IS NULL OR Effective_Date <= @cutoff_dtm) AND (Expiry_Date IS NULL OR Expiry_Date >= @cutoff_dtm))
 	)       
 	AND (VT.Invalidation IS NULL OR VT.Invalidation NOT IN (     
 			SELECT Status_Value 
-			FROM StatStatusFilterMapping 
+			FROM StatStatusFilterMapping WITH (NOLOCK) 
 			WHERE (report_id = 'ALL' OR report_id = @Report_ID)     
 	AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'    
 		AND ((Effective_Date IS NULL OR Effective_Date <= @cutoff_dtm) AND (Expiry_Date IS NULL OR Expiry_Date >= @cutoff_dtm))
@@ -233,7 +240,7 @@ BEGIN
 		END          
 	FROM          
 		#Transaction VT          
-		INNER JOIN ReimbursementAuthTran RAT          
+		INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)          
 		ON VT.Transaction_ID = RAT.Transaction_ID          
 	WHERE VT.Transaction_Status = 'A'         	
                     
@@ -343,7 +350,7 @@ BEGIN
 		VT.SchoolCode
 	FROM          
 		#Transaction VT          
-		INNER JOIN TempPersonalInformation TP          
+		INNER JOIN TempPersonalInformation TP WITH (NOLOCK)          
 		ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID          
 	WHERE          
 		VT.Voucher_Acc_ID = ''          
@@ -394,7 +401,7 @@ BEGIN
 		VT.SchoolCode
 	FROM          
 		#Transaction VT          
-		INNER JOIN SpecialPersonalInformation SP          
+		INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)          
 		ON VT.Special_Acc_ID = SP.Special_Acc_ID          
 	WHERE          
 		VT.Voucher_Acc_ID = ''          
@@ -408,7 +415,7 @@ BEGIN
 	-- Build frame          
 	-- ---------------------------------------------    
 	DECLARE @Display_Text_RecepientCondition 	VARCHAR(100)
-	SELECT @Display_Text_RecepientCondition = Description FROM SystemResource WHERE ObjectType='Text' AND ObjectName='RecipientCondition'
+	SELECT @Display_Text_RecepientCondition = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType='Text' AND ObjectName='RecipientCondition'
                   
 	INSERT INTO @ResultTable (result_seq, result_value1)    
 	VALUES (0, 'eHS(S)D0032-04: Raw Data of PPP-PS claim transactions')    
@@ -454,15 +461,15 @@ BEGIN
 		CASE when A.Create_By_SmartID = 'Y' THEN 'Card Reader' ELSE 'Manual' END Create_By_SmartID
 	FROM          
 	#Account A
-	INNER JOIN SubsidizeItemDetails SID
+	INNER JOIN SubsidizeItemDetails SID WITH (NOLOCK)
 		ON A.Dose = SID.Available_Item_Code
 		AND SID.Subsidize_Item_Code = A.Subsidize_Item_Code
-	INNER JOIN StatusData SD1
+	INNER JOIN StatusData SD1 WITH (NOLOCK)
 		ON A.Transaction_Status = SD1.Status_Value
 		AND SD1.Enum_Class = 'ClaimTransStatus'
-	INNER JOIN ClaimCategory CC
+	INNER JOIN ClaimCategory CC WITH (NOLOCK)
 		ON A.Category_Code = CC.Category_Code
-	LEFT JOIN StatusData SD2
+	LEFT JOIN StatusData SD2 WITH (NOLOCK)
 		ON A.Reimbursement_Status = SD2.Status_Value
 			AND SD2.Enum_Class = 'ReimbursementStatus'
                

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- ============================================= 
+-- =============================================
+-- Modification History
 -- CR. No			CRE14-016
 -- Modified by:		Dickson Law			
 -- Modified date:	02 Jan 2018
@@ -118,7 +125,7 @@ AS BEGIN
 		--invalidAC,
 		totalAC
 	FROM
-		_EHS_Account_ALL
+		_EHS_Account_ALL WITH (NOLOCK)
 	WHERE
 		report_dtm = @Report_Dtm
 
@@ -142,7 +149,7 @@ AS BEGIN
 		validatedAC_Terminated,
 		validatedAC
 	FROM
-		_EHS_Account_ALL
+		_EHS_Account_ALL WITH (NOLOCK)
 	WHERE
 		report_dtm = @Report_Dtm
 
@@ -201,7 +208,7 @@ AS BEGIN
 		'' AS [Result_Value20],
 		Total
 	FROM
-		RpteHSD0005_02_eHA_ByAge
+		RpteHSD0005_02_eHA_ByAge WITH (NOLOCK)
 	WHERE
 		Report_Dtm = @Report_Dtm
 
@@ -230,7 +237,7 @@ AS BEGIN
 		Col10,
 		Col11
 	FROM
-		RpteHSD0005_03_eHA_ByDocType
+		RpteHSD0005_03_eHA_ByDocType WITH (NOLOCK)
 	WHERE
 		Display_Seq IN (13, 14, 15, 16)
 	

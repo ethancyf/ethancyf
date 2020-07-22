@@ -8,6 +8,13 @@ GO
   
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-020 (HKIC Symbol Others)
 -- Modified by:		Winnie SUEN
 -- Modified date:	25 Feb 2019
@@ -65,9 +72,9 @@ SET @system_Dtm = getdate()
 SET @Date_Range = 7    
 SET @Scheme_Code = 'VSS'  
 SET @Report_ID = 'eHSD0028'  
-SELECT @Str_HighRisk = Data_Value FROM StaticData WHERE Column_Name='VSS_RECIPIENTCONDITION' AND Item_No='HIGHRISK'
-SELECT @Str_NonHighRisk = Data_Value FROM StaticData WHERE Column_Name='VSS_RECIPIENTCONDITION' AND Item_No='NOHIGHRISK' 
-SELECT @Str_NA = Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName='NA'
+SELECT @Str_HighRisk = Data_Value FROM StaticData WITH (NOLOCK) WHERE Column_Name='VSS_RECIPIENTCONDITION' AND Item_No='HIGHRISK'
+SELECT @Str_NonHighRisk = Data_Value FROM StaticData WITH (NOLOCK) WHERE Column_Name='VSS_RECIPIENTCONDITION' AND Item_No='NOHIGHRISK' 
+SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName='NA'
 	
 -- =============================================    
 -- Return results    
@@ -188,10 +195,10 @@ SELECT @Str_NA = Description FROM SystemResource WHERE ObjectType = 'Text' AND O
   VT.Category_Code,
   VT.HKIC_Symbol
  FROM          
-  VoucherTransaction VT 
-  INNER JOIN transactiondetail td     
+  VoucherTransaction VT WITH (NOLOCK) 
+  INNER JOIN transactiondetail td WITH (NOLOCK)     
 	ON vt.transaction_id = td.transaction_id  AND vt.scheme_code = @Scheme_Code AND vt.scheme_code = td.scheme_code     
-	LEFT JOIN SubsidizeGroupClaim SGC
+	LEFT JOIN SubsidizeGroupClaim SGC WITH (NOLOCK)
 	ON	td.Scheme_Code = SGC.Scheme_Code
 	AND	td.Scheme_Seq = SGC.Scheme_Seq
 	AND td.Subsidize_Code = SGC.Subsidize_Code   
@@ -201,14 +208,14 @@ SELECT @Str_NA = Description FROM SystemResource WHERE ObjectType = 'Text' AND O
    AND VT.Transaction_Dtm > DATEADD(dd, -1 * @Date_Range + 1, @Report_Dtm)          
 	AND VT.Record_Status NOT IN (
 		SELECT Status_Value 
-		FROM StatStatusFilterMapping 
+		FROM StatStatusFilterMapping WITH (NOLOCK) 
 		WHERE (report_id = 'ALL' OR report_id = @Report_ID)     
 AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'     
 		AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm))
 	)       
 	AND (VT.Invalidation IS NULL OR VT.Invalidation NOT IN (     
 			SELECT Status_Value 
-			FROM StatStatusFilterMapping 
+			FROM StatStatusFilterMapping WITH (NOLOCK) 
 			WHERE (report_id = 'ALL' OR report_id = @Report_ID)     
 AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'    
 			AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm))
@@ -242,7 +249,7 @@ WHERE
    END          
  FROM          
   @Transaction VT          
-   INNER JOIN ReimbursementAuthTran RAT          
+   INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)          
     ON VT.Transaction_ID = RAT.Transaction_ID          
  WHERE VT.Transaction_Status = 'A'         	
                     
@@ -296,7 +303,7 @@ WHERE
   VT.Category_Code        
  FROM          
   @Transaction VT          
-   INNER JOIN PersonalInformation VP          
+   INNER JOIN PersonalInformation VP WITH (NOLOCK)          
     ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID          
      AND VT.Doc_Code = VP.Doc_Code          
  WHERE          
@@ -340,7 +347,7 @@ WHERE
   VT.Category_Code           
  FROM          
   @Transaction VT          
-   INNER JOIN TempPersonalInformation TP          
+   INNER JOIN TempPersonalInformation TP WITH (NOLOCK)          
     ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID          
  WHERE          
   VT.Voucher_Acc_ID = ''          
@@ -385,7 +392,7 @@ WHERE
   VT.Category_Code
  FROM          
   @Transaction VT          
-   INNER JOIN SpecialPersonalInformation SP          
+   INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)          
     ON VT.Special_Acc_ID = SP.Special_Acc_ID          
  WHERE          
   VT.Voucher_Acc_ID = ''          
@@ -399,7 +406,7 @@ WHERE
 -- Build frame          
 -- ---------------------------------------------    
 DECLARE @Display_Text_RecepientCondition 	VARCHAR(100)
-SELECT @Display_Text_RecepientCondition = Description FROM SystemResource WHERE ObjectType='Text' AND ObjectName='RecipientCondition'
+SELECT @Display_Text_RecepientCondition = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType='Text' AND ObjectName='RecipientCondition'
                   
 INSERT INTO @ResultTable (result_seq, result_value1)    
 VALUES (0, 'eHS(S)D0028-04: Raw Data of VSS transactions')    
@@ -454,18 +461,18 @@ VALUES (4, 'Transaction ID', 'Transaction Time', 'SPID', 'Service Date', 'Catego
 	INNER JOIN @Transaction T 
 		ON A.Transaction_id = T.Transaction_ID 
 			AND A.Vaccine = T.Vaccine    
-	INNER JOIN SubsidizeItemDetails SID          
+	INNER JOIN SubsidizeItemDetails SID WITH (NOLOCK)          
 		ON A.Dose = SID.Available_Item_Code          
 			AND SID.Subsidize_Item_Code = T.Subsidize_Item_Code       
-	INNER JOIN StatusData SD1          
+	INNER JOIN StatusData SD1 WITH (NOLOCK)          
 		ON A.Transaction_Status = SD1.Status_Value          
 			AND SD1.Enum_Class = 'ClaimTransStatus'    
-	INNER JOIN ClaimCategory CC          
+	INNER JOIN ClaimCategory CC WITH (NOLOCK)          
 		ON A.Category_Code = CC.Category_Code 
-	LEFT JOIN StatusData SD2          
+	LEFT JOIN StatusData SD2 WITH (NOLOCK)          
 		ON A.Reimbursement_Status = SD2.Status_Value          
 			AND SD2.Enum_Class = 'ReimbursementStatus'
-	LEFT JOIN StatusData SD3
+	LEFT JOIN StatusData SD3 WITH (NOLOCK)
 		ON T.HKIC_Symbol = SD3.Status_Value
 			AND SD3.Enum_Class = 'HKICSymbol'               
 -- =============================================          

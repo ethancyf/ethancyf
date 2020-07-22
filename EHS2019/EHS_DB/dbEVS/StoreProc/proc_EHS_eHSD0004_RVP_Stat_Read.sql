@@ -6,7 +6,14 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
  
- -- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- ============================================= 
+ -- ============================================
 -- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	13 Jan 2020
@@ -146,7 +153,7 @@ EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] 'RVP', @schemeDate
 INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0004-01', 'Report on eHealth (Subsidies) Accounts with RVP claim transactions by document type'
 INSERT INTO @ContentTable (Value1, Value2)
-SELECT 'eHS(S)D0004-02', REPLACE('Report on yearly RVP transaction ([DATE])', '[DATE]',  (SELECT Season_Desc FROM VaccineSeason WHERE Scheme_Code = 'RVP' AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'))
+SELECT 'eHS(S)D0004-02', REPLACE('Report on yearly RVP transaction ([DATE])', '[DATE]',  (SELECT Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = 'RVP' AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'))
 INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0004-03', 'Report on RVP transaction (by cutoff date)'
 INSERT INTO @ContentTable (Value1, Value2)
@@ -177,7 +184,7 @@ SELECT
 	Result_Value11,    
 	Result_Value12   
 FROM
-	RpteHSD0004_01_eHA_RVP_Tx_ByDocType 
+	RpteHSD0004_01_eHA_RVP_Tx_ByDocType WITH (NOLOCK) 
 ORDER BY    
 	Display_Seq     
 
@@ -203,7 +210,7 @@ SELECT
 	IsNull(Result_Value15,''),  
 	IsNull(Result_Value16,'')    
 FROM     
-	RpteHSD0004_02_RVP_Tx_ByYear
+	RpteHSD0004_02_RVP_Tx_ByYear WITH (NOLOCK)
 ORDER BY    
 	Display_Seq    
 
@@ -229,7 +236,7 @@ SELECT
 	IsNull(Result_Value15,''),  
 	IsNull(Result_Value16,'')    
 FROM  
-	RpteHSD0004_03_RVP_Tx_ByCutoffDate
+	RpteHSD0004_03_RVP_Tx_ByCutoffDate WITH (NOLOCK)
 ORDER BY    
 	Display_Seq    
 	
@@ -255,7 +262,7 @@ SELECT
 	Result_Value15,    
 	Result_Value16   
 FROM      
-	RpteHSD0004_04_RVP_Tx_Raw   
+	RpteHSD0004_04_RVP_Tx_Raw WITH (NOLOCK)   
 ORDER BY    
 	Display_Seq    
 

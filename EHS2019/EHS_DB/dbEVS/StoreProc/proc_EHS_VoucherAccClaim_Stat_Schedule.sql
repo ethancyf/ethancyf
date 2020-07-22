@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN	
 -- Modified date:	11 Sep 2019
 -- CR No.			CRE19-006 (DHC)
@@ -292,7 +299,7 @@ AS BEGIN
 	EXEC [proc_Prepare_RptAccountSFC] @CutoffDtm, 0
 
 
-	SELECT @Str_NA = Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName='NA'
+	SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName='NA'
 
 
 -- =============================================
@@ -423,7 +430,7 @@ AS BEGIN
 	SELECT 
 		@latest_scheme_seq = MAX(Scheme_Seq)
 	FROM 
-		SubsidizeGroupClaim
+		SubsidizeGroupClaim WITH (NOLOCK)
 	WHERE	
 		Scheme_Code = @scheme_code
 		AND Subsidize_Code = @subsidize_code
@@ -438,7 +445,7 @@ AS BEGIN
 	SELECT 
 		@eligibileAge = [Value]
 	FROM 
-		EligibilityRule
+		EligibilityRule WITH (NOLOCK)
 	WHERE	
 		Scheme_Code = @scheme_code
 		AND Scheme_Seq = @latest_scheme_seq
@@ -485,18 +492,18 @@ AS BEGIN
 		SGC1.Last_service_Dtm,
 		ER.Value
 	FROM 
-		(SELECT * FROM SchemeClaim WHERE Scheme_Code = @scheme_code AND Record_Status <> 'I') SC
+		(SELECT * FROM SchemeClaim WITH (NOLOCK) WHERE Scheme_Code = @scheme_code AND Record_Status <> 'I') SC
 			INNER JOIN 
-				(SELECT * FROM SubsidizeGroupClaim WHERE Scheme_Code = @scheme_code AND Record_Status <> 'I') SGC1 
+				(SELECT * FROM SubsidizeGroupClaim WITH (NOLOCK) WHERE Scheme_Code = @scheme_code AND Record_Status <> 'I') SGC1 
 					ON SC.Scheme_Code = SGC1.Scheme_Code
 			INNER JOIN 
-				(SELECT * FROM SubsidizeGroupClaim WHERE Scheme_Code = @scheme_code AND Record_Status <> 'I') SGC2 
+				(SELECT * FROM SubsidizeGroupClaim WITH (NOLOCK) WHERE Scheme_Code = @scheme_code AND Record_Status <> 'I') SGC2 
 					ON SGC1.Scheme_Code = SGC2.Scheme_Code 
 						AND SGC1.Claim_Period_From >= SGC2.Claim_Period_From
 			INNER JOIN 
 				(SELECT 
 					Scheme_Code, Scheme_Seq, Rule_Name, [Type], MIN(Value) as Value
-				FROM EligibilityRule
+				FROM EligibilityRule WITH (NOLOCK)
 				WHERE 
 					Scheme_Code = @scheme_code	
 					AND Rule_Name = @rule_name
@@ -644,8 +651,8 @@ AS BEGIN
 		SGC.Last_Service_Dtm,
 		SGC.Num_Subsidize
 	FROM 
-		SchemeClaim SC
-			INNER JOIN SubsidizeGroupClaim SGC
+		SchemeClaim SC WITH (NOLOCK)
+			INNER JOIN SubsidizeGroupClaim SGC WITH (NOLOCK)
 				ON SC.Scheme_Code = SGC.Scheme_Code
 					AND SGC.Scheme_Code = @scheme_code
 					AND SGC.Record_Status <> 'I'
@@ -653,7 +660,7 @@ AS BEGIN
 				(SELECT 
 					* 
 				FROM 
-					EligibilityRule 
+					EligibilityRule WITH (NOLOCK) 
 				WHERE 
 					Rule_Name = @rule_name
 					AND [Type] = @type
@@ -664,7 +671,7 @@ AS BEGIN
 				(SELECT 
 					Scheme_Code, Scheme_Seq, Value, Rule_Group_Code
 				FROM 
-					EligibilityRule
+					EligibilityRule WITH (NOLOCK)
 				WHERE 
 					[Type] = 'SERVICEDTM'
 					AND scheme_code= @scheme_code
@@ -777,7 +784,7 @@ AS BEGIN
 		Deceased,
 		logical_DOD
 	FROM 
-		RptAccountSFC
+		RptAccountSFC WITH (NOLOCK)
 
 	-- ---------------------------------------------------------------
 	-- Patch "Total_WriteOff_Amt" and "WriteOff_Exist"
@@ -794,7 +801,7 @@ AS BEGIN
 			WO.Exact_DOB,
 			WriteOffTotal = ISNULL(SUM(WO.WriteOff_Unit), 0) 
 		FROM 
-			eHASubsidizeWriteOff WO 
+			eHASubsidizeWriteOff WO WITH (NOLOCK) 
 		WHERE
 			WO.Scheme_Code = @scheme_code  
 			AND WO.Create_Dtm < @cutoffDtm
@@ -893,35 +900,35 @@ AS BEGIN
 		VT.Manual_Reimburse,
 		VT.DHC_Service
 	FROM
-		VoucherTransaction VT
-			INNER JOIN TransactionDetail TD
+		VoucherTransaction VT WITH (NOLOCK)
+			INNER JOIN TransactionDetail TD WITH (NOLOCK)
 				ON VT.Transaction_ID = TD.Transaction_ID
-			LEFT OUTER JOIN TransactionAdditionalField TAF1
+			LEFT OUTER JOIN TransactionAdditionalField TAF1 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF1.Transaction_ID
 					AND TAF1.AdditionalFieldID = 'Reason_for_Visit_L1'
-			LEFT OUTER JOIN TransactionAdditionalField TAF2
+			LEFT OUTER JOIN TransactionAdditionalField TAF2 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF2.Transaction_ID
 					AND TAF2.AdditionalFieldID = 'ReasonforVisit_S1_L1'
-			LEFT OUTER JOIN TransactionAdditionalField TAF3
+			LEFT OUTER JOIN TransactionAdditionalField TAF3 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF3.Transaction_ID
 					AND TAF3.AdditionalFieldID = 'ReasonforVisit_S2_L1'
-			LEFT OUTER JOIN TransactionAdditionalField TAF4
+			LEFT OUTER JOIN TransactionAdditionalField TAF4 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF4.Transaction_ID
 					AND TAF4.AdditionalFieldID = 'ReasonforVisit_S3_L1'
-			LEFT OUTER JOIN TransactionAdditionalField TAF5
+			LEFT OUTER JOIN TransactionAdditionalField TAF5 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF5.Transaction_ID
 					AND TAF5.AdditionalFieldID = 'CoPaymentFee'
-			LEFT OUTER JOIN TransactionAdditionalField TAF6
+			LEFT OUTER JOIN TransactionAdditionalField TAF6 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF6.Transaction_ID
 					AND TAF6.AdditionalFieldID = 'CoPaymentFeeRMB'
-			LEFT OUTER JOIN TransactionAdditionalField TAF7
+			LEFT OUTER JOIN TransactionAdditionalField TAF7 WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF7.Transaction_ID
 					AND TAF7.AdditionalFieldID = 'PaymentType'
-			LEFT JOIN PersonalInformation VP
+			LEFT JOIN PersonalInformation VP WITH (NOLOCK)
 				ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID
 			LEFT JOIN #Account ACVP 
 				ON VP.Encrypt_Field1 = ACVP.identity_num
-			LEFT JOIN TempPersonalInformation TP
+			LEFT JOIN TempPersonalInformation TP WITH (NOLOCK)
 				ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID
 			LEFT JOIN #Account ACTP
 				ON TP.Encrypt_Field1 = ACTP.identity_num
@@ -930,7 +937,7 @@ AS BEGIN
 			SELECT
 				1
 			FROM
-				StatStatusFilterMapping
+				StatStatusFilterMapping WITH (NOLOCK)
 			WHERE 
 				(Report_id = 'ALL' OR Report_id = 'eHSD0001') 
 				AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status' 
@@ -943,7 +950,7 @@ AS BEGIN
 				SELECT
 					1
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(Report_id = 'ALL' OR Report_id = 'eHSD0001') 
 					AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'
@@ -1801,10 +1808,10 @@ AS BEGIN
 			SUM(noOfVoucher_Deceased),
 			(
 			SELECT MAX(Display_Seq) + 1 
-			FROM RpteHSD0001_02_AvailableVoucher_Summary 
+			FROM RpteHSD0001_02_AvailableVoucher_Summary WITH (NOLOCK) 
 			WHERE report_dtm = @reportDtm 
 			)
-	FROM RpteHSD0001_02_AvailableVoucher_Summary
+	FROM RpteHSD0001_02_AvailableVoucher_Summary WITH (NOLOCK)
 	WHERE report_dtm = @reportDtm
 
 -- +------------------------------------------------------------------------------------------------------------------+
@@ -1980,11 +1987,11 @@ create table #VoucherWriteOff
 			--'03',
 			(
 			SELECT max(Display_Seq) + 1 
-			FROM RpteHSD0001_03_WriteOffVoucher_Summary 
+			FROM RpteHSD0001_03_WriteOffVoucher_Summary WITH (NOLOCK) 
 			WHERE report_dtm = @reportDtm 
 			--AND SubReport_ID = '03'
 			)
-	from RpteHSD0001_03_WriteOffVoucher_Summary
+	from RpteHSD0001_03_WriteOffVoucher_Summary WITH (NOLOCK)
 	where report_dtm = @reportDtm 
 	--AND SubReport_ID = '03'
 
@@ -2099,11 +2106,11 @@ create table #VoucherWriteOff
 			sum(noOfVoucherAC_Deceased),
 			sum(noOfVoucher_Deceased),
 			--'04',
-			(SELECT max(Display_Seq) + 1 FROM RpteHSD0001_04_TotalEntitledVoucher_Summary
+			(SELECT max(Display_Seq) + 1 FROM RpteHSD0001_04_TotalEntitledVoucher_Summary WITH (NOLOCK)
 			where report_dtm = @reportDtm 
 			--AND SubReport_ID = '04'
 			)
-	from RpteHSD0001_04_TotalEntitledVoucher_Summary
+	from RpteHSD0001_04_TotalEntitledVoucher_Summary WITH (NOLOCK)
 	where report_dtm = @reportDtm 
 
 -- +------------------------------------------------------------------------------------------------------------------+
@@ -2461,7 +2468,7 @@ declare @total_T int
 		@RRD_T,
 		@total_T,
 		--@tempClaimTran			-- added CRP11-009 on 20110908: preserve ordering
-		(SELECT max(SortOrder) +1  FROM RpteHSD0001_06a_VoucherClaimPerVoucherSummary WHERE  report_dtm = @reportDtm )
+		(SELECT max(SortOrder) +1  FROM RpteHSD0001_06a_VoucherClaimPerVoucherSummary WITH (NOLOCK) WHERE  report_dtm = @reportDtm )
 
 
 
@@ -2471,7 +2478,7 @@ declare @total_T int
 -------------------------------------------------------------------
 DECLARE @UpperBound_DHC int 
 
-SELECT @UpperBound_DHC = MAX(Claim_Amt_Max) FROM ProfessionDHC WHERE Service_Category_Code IN ('DIT','POD','SPT')
+SELECT @UpperBound_DHC = MAX(Claim_Amt_Max) FROM ProfessionDHC WITH (NOLOCK) WHERE Service_Category_Code IN ('DIT','POD','SPT')
 
 IF @UpperBound_DHC > @UpperBound
 BEGIN
@@ -2561,7 +2568,7 @@ declare @DHC_total_T int
 		@SPT_T,
 		@DHC_total_T,
 		--@tempClaimTran			-- added CRP11-009 on 20110908: preserve ordering
-		(SELECT max(SortOrder) +1  FROM RpteHSD0001_06b_VoucherClaimPerVoucherSummary WHERE  report_dtm = @reportDtm )
+		(SELECT max(SortOrder) +1  FROM RpteHSD0001_06b_VoucherClaimPerVoucherSummary WITH (NOLOCK) WHERE  report_dtm = @reportDtm )
 
 
 -- +------------------------------------------------------------------------------------------------------------------+
@@ -2583,7 +2590,7 @@ insert into #r1
 	reason_code,
 	reason
 )
-select distinct reason_l1_code, reason_l1 from ReasonForVisitL1
+select distinct reason_l1_code, reason_l1 from ReasonForVisitL1 WITH (NOLOCK)
 
 declare @r1 as int
 set @r1 = 1
@@ -2983,18 +2990,18 @@ select @RPT_T = 0
 select @RRD_T = 0
 select @total_T = 0
 
-Select @ENU_T = (select IsNULL(sum(ENU), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y') 
-Select @RCM_T = (select IsNULL(sum(RCM), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @RCP_T = (select IsNULL(sum(RCP), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @RDT_T = (select IsNULL(sum(RDT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @RMP_T = (select IsNULL(sum(RMP), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @RMT_T = (select IsNULL(sum(RMT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and RMT>0 and Secondary='Y')
-Select @RNU_T = (select IsNULL(sum(RNU), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @ROP_T = (select IsNULL(sum(ROP), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @ROT_T = (select IsNULL(sum(ROT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @RPT_T = (select IsNULL(sum(RPT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @RRD_T = (select IsNULL(sum(RRD), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @total_T = (select IsNULL(sum(total), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
+Select @ENU_T = (select IsNULL(sum(ENU), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y') 
+Select @RCM_T = (select IsNULL(sum(RCM), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @RCP_T = (select IsNULL(sum(RCP), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @RDT_T = (select IsNULL(sum(RDT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @RMP_T = (select IsNULL(sum(RMP), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @RMT_T = (select IsNULL(sum(RMT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and RMT>0 and Secondary='Y')
+Select @RNU_T = (select IsNULL(sum(RNU), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @ROP_T = (select IsNULL(sum(ROP), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @ROT_T = (select IsNULL(sum(ROT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @RPT_T = (select IsNULL(sum(RPT), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @RRD_T = (select IsNULL(sum(RRD), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @total_T = (select IsNULL(sum(total), 0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
 
 	insert into RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary
 	(
@@ -3237,11 +3244,11 @@ select @POD_T = 0
 select @SPT_T = 0
 select @total_T = 0
 
-Select @DIT_T = (select IsNULL(sum(DIT), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y') 
-Select @POD_T = (select IsNULL(sum(POD), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
-Select @SPT_T = (select IsNULL(sum(SPT), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
+Select @DIT_T = (select IsNULL(sum(DIT), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y') 
+Select @POD_T = (select IsNULL(sum(POD), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
+Select @SPT_T = (select IsNULL(sum(SPT), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
 
-Select @total_T = (select IsNULL(sum(total), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary where report_dtm= @reportDtm and Secondary='Y')
+Select @total_T = (select IsNULL(sum(total), 0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm= @reportDtm and Secondary='Y')
 
 	insert into RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary
 	(
@@ -3340,7 +3347,7 @@ select v.transaction_id,
 	v.OCSSS_Ref_Status,
 	v.Manual_Reimburse,
 	v.DHC_Service
-from #vouchertransaction v, practice p
+from #vouchertransaction v, practice p WITH (NOLOCK)
 where v.sp_id = p.sp_id  collate database_default
 and v.practice_Display_Seq = p.display_seq
 and v.transaction_dtm between dateadd(day, -7, @cutOffDtm) and @cutOffDtm
@@ -3368,7 +3375,7 @@ SET
 						   END
 FROM
 	#transaction VT
-		INNER JOIN ReimbursementAuthTran RAT
+		INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
 			ON VT.Transaction_ID = RAT.Transaction_ID
 WHERE
 	VT.Transaction_Status = 'A'
@@ -3436,10 +3443,10 @@ SET
 	#transaction.district_board = district.district_board,
 	#transaction.area_name = district_area.area_name
 FROM
-	district
-		INNER JOIN DistrictBoard
+	district WITH (NOLOCK)
+		INNER JOIN DistrictBoard WITH (NOLOCK)
 			ON district.District_Board = DistrictBoard.District_Board
-		INNER JOIN district_area
+		INNER JOIN district_area WITH (NOLOCK)
 			ON DistrictBoard.area_code = district_area.area_code
 WHERE
 	#transaction.district = district.district_code collate database_default
@@ -3492,13 +3499,13 @@ select getdate(),
 		Manual_Reimburse,
 		ISNULL(DHC_Service, 'N')
 from #transaction
-	INNER JOIN StatusData SD1          
+	INNER JOIN StatusData SD1 WITH (NOLOCK)          
 		ON Transaction_Status = SD1.Status_Value          
 			AND SD1.Enum_Class = 'ClaimTransStatus'    
-	LEFT JOIN StatusData SD2          
+	LEFT JOIN StatusData SD2 WITH (NOLOCK)          
 		ON Reimbursement_Status = SD2.Status_Value          
 			AND SD2.Enum_Class = 'ReimbursementStatus' 
-	LEFT JOIN StatusData SD3
+	LEFT JOIN StatusData SD3 WITH (NOLOCK)
 		ON HKIC_Symbol = SD3.Status_Value 
 			AND SD3.Enum_Class = 'HKICSymbol'			   
 
@@ -3572,7 +3579,7 @@ select v.transaction_id,
 	v.HKIC_Symbol,
 	v.OCSSS_Ref_Status,
 	v.Manual_Reimburse
-from #vouchertransaction v, practice p
+from #vouchertransaction v, practice p WITH (NOLOCK)
 where v.sp_id = p.sp_id  collate database_default
 and v.practice_Display_Seq = p.display_seq
 and v.transaction_dtm between dateadd(day, -7, @cutOffDtm) and @cutOffDtm
@@ -3601,7 +3608,7 @@ SET
 						   END
 FROM
 	#HCVSDHCtransaction VT
-		INNER JOIN ReimbursementAuthTran RAT
+		INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
 			ON VT.Transaction_ID = RAT.Transaction_ID
 WHERE
 	VT.Transaction_Status = 'A'
@@ -3660,10 +3667,10 @@ SET
 	#HCVSDHCtransaction.district_board = district.district_board,
 	#HCVSDHCtransaction.area_name = district_area.area_name
 FROM
-	district
-		INNER JOIN DistrictBoard
+	district WITH (NOLOCK)
+		INNER JOIN DistrictBoard WITH (NOLOCK)
 			ON district.District_Board = DistrictBoard.District_Board
-		INNER JOIN district_area
+		INNER JOIN district_area WITH (NOLOCK)
 			ON DistrictBoard.area_code = district_area.area_code
 WHERE
 	#HCVSDHCtransaction.district = district.district_code collate database_default
@@ -3714,13 +3721,13 @@ select getdate(),
 		OCSSS_Ref_Status,
 		Manual_Reimburse
 from #HCVSDHCtransaction
-	INNER JOIN StatusData SD1          
+	INNER JOIN StatusData SD1 WITH (NOLOCK)          
 		ON Transaction_Status = SD1.Status_Value          
 			AND SD1.Enum_Class = 'ClaimTransStatus'    
-	LEFT JOIN StatusData SD2          
+	LEFT JOIN StatusData SD2 WITH (NOLOCK)          
 		ON Reimbursement_Status = SD2.Status_Value          
 			AND SD2.Enum_Class = 'ReimbursementStatus'    
-	LEFT JOIN StatusData SD3
+	LEFT JOIN StatusData SD3 WITH (NOLOCK)
 		ON HKIC_Symbol = SD3.Status_Value 
 			AND SD3.Enum_Class = 'HKICSymbol'
 
@@ -3800,7 +3807,7 @@ select v.transaction_id,
 	v.HKIC_Symbol,
 	v.OCSSS_Ref_Status,
 	v.Manual_Reimburse
-from #vouchertransaction v, practice p
+from #vouchertransaction v, practice p WITH (NOLOCK)
 where v.sp_id = p.sp_id  collate database_default
 and v.practice_Display_Seq = p.display_seq
 and v.transaction_dtm between dateadd(day, -7, @cutOffDtm) and @cutOffDtm
@@ -3828,7 +3835,7 @@ SET
 						   END
 FROM
 	#HCVSCHNTransaction VT
-		INNER JOIN ReimbursementAuthTran RAT
+		INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
 			ON VT.Transaction_ID = RAT.Transaction_ID
 WHERE
 	VT.Transaction_Status = 'A'
@@ -3887,10 +3894,10 @@ SET
 	#HCVSCHNTransaction.district_board = district.district_board,
 	#HCVSCHNTransaction.area_name = district_area.area_name
 FROM
-	district
-		INNER JOIN DistrictBoard
+	district WITH (NOLOCK)
+		INNER JOIN DistrictBoard WITH (NOLOCK)
 			ON district.District_Board = DistrictBoard.District_Board
-		INNER JOIN district_area
+		INNER JOIN district_area WITH (NOLOCK)
 			ON DistrictBoard.area_code = district_area.area_code
 WHERE
 	#HCVSCHNTransaction.district = district.district_code collate database_default
@@ -3947,16 +3954,16 @@ select getdate(),
 		OCSSS_Ref_Status,
 		Manual_Reimburse
 from #HCVSCHNTransaction
-	INNER JOIN StatusData SD1          
+	INNER JOIN StatusData SD1 WITH (NOLOCK)          
 		ON Transaction_Status = SD1.Status_Value          
 			AND SD1.Enum_Class = 'ClaimTransStatus'
-	INNER JOIN StaticData ST
+	INNER JOIN StaticData ST WITH (NOLOCK)
 		ON Payment_Type = ST.Item_No
 			AND ST.Column_Name = 'HCVSCHN_PAYMENTTYPE'
-	LEFT JOIN StatusData SD2          
+	LEFT JOIN StatusData SD2 WITH (NOLOCK)          
 		ON Reimbursement_Status = SD2.Status_Value          
 			AND SD2.Enum_Class = 'ReimbursementStatus'    
-	LEFT JOIN StatusData SD3
+	LEFT JOIN StatusData SD3 WITH (NOLOCK)
 		ON HKIC_Symbol = SD3.Status_Value 
 			AND SD3.Enum_Class = 'HKICSymbol'
 

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN	
 -- Modified date:	11 Sep 2019
 -- CR No.			CRE19-006 (DHC)
@@ -201,9 +208,9 @@ DECLARE @Str_NA as varchar(10)
 DECLARE @Str_Valid varchar(10)
 DECLARE @Str_ConnectionFailed varchar(50)
 
-SELECT @Str_NA = Description 				FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName='NA'
-SELECT @Str_Valid = Description 			FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName='OCSSSResultValid'
-SELECT @Str_ConnectionFailed = Description 	FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName='OCSSSResultConnectionFailed'
+SELECT @Str_NA = Description 				FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName='NA'
+SELECT @Str_Valid = Description 			FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName='OCSSSResultValid'
+SELECT @Str_ConnectionFailed = Description 	FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName='OCSSSResultConnectionFailed'
 
 
 
@@ -770,22 +777,22 @@ INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03)
  where report_dtm = @reportDtm  
   */
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, DisplaySeq)  
- select @wsSummary, 'Any Voucher Scheme', noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary  
+ select @wsSummary, 'Any Voucher Scheme', noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm AND Scheme_Code = 'ALL'
 SELECT @wsSummary_ct=@wsSummary_ct+1
 
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, DisplaySeq)  
- select @wsSummary, Scheme_Code, noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary  
+ select @wsSummary, Scheme_Code, noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm AND Scheme_Code = 'HCVS'
 SELECT @wsSummary_ct=@wsSummary_ct+1
 
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, DisplaySeq)  
- select @wsSummary, Scheme_Code, noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary  
+ select @wsSummary, Scheme_Code, noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm AND Scheme_Code = 'HCVSCHN'
 SELECT @wsSummary_ct=@wsSummary_ct+1
 
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, DisplaySeq)  
- select @wsSummary, Scheme_Code, noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary  
+ select @wsSummary, Scheme_Code, noOfVoucherClaimed, noOfTransaction , noOfSP, @wsSummary_ct  from RpteHSD0001VoucherSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm AND Scheme_Code = 'HCVSDHC'
 SELECT @wsSummary_ct=@wsSummary_ct+1
 
@@ -799,7 +806,7 @@ select @ws01, 'Any Voucher Scheme',
 		AliveAccWithClaim, DeceasedAccWithClaim, 
 		AliveTotalAcc, DeceasedTotalAcc, 
 		'', ValidAcc, @ws01_ct 
-from RpteHSD0001_01_eHA_Summary  
+from RpteHSD0001_01_eHA_Summary WITH (NOLOCK)  
 where report_dtm = @reportDtm AND Scheme_Code = 'ALL'
 SELECT @ws01_ct=@ws01_ct+1
 
@@ -808,7 +815,7 @@ select @ws01, Scheme_Code,
 		AliveAccWithoutClaim, DeceasedAccWithoutClaim, 
 		AliveAccWithClaim, DeceasedAccWithClaim, 
 		@ws01_ct 
-from RpteHSD0001_01_eHA_Summary  
+from RpteHSD0001_01_eHA_Summary WITH (NOLOCK)  
 where report_dtm = @reportDtm AND Scheme_Code = 'HCVS'
 SELECT @ws01_ct=@ws01_ct+1
 
@@ -817,7 +824,7 @@ select @ws01, Scheme_Code,
 		AliveAccWithoutClaim, DeceasedAccWithoutClaim, 
 		AliveAccWithClaim, DeceasedAccWithClaim, 
 		@ws01_ct 
-from RpteHSD0001_01_eHA_Summary  
+from RpteHSD0001_01_eHA_Summary WITH (NOLOCK)  
 where report_dtm = @reportDtm AND Scheme_Code = 'HCVSCHN'
 SELECT @ws01_ct=@ws01_ct+1
 
@@ -826,7 +833,7 @@ select @ws01, Scheme_Code,
 		AliveAccWithoutClaim, DeceasedAccWithoutClaim, 
 		AliveAccWithClaim, DeceasedAccWithClaim, 
 		@ws01_ct 
-from RpteHSD0001_01_eHA_Summary  
+from RpteHSD0001_01_eHA_Summary WITH (NOLOCK)  
 where report_dtm = @reportDtm AND Scheme_Code = 'HCVSDHC'
 SELECT @ws01_ct=@ws01_ct+1
 
@@ -846,7 +853,7 @@ INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Disp
 SELECT
 	@ws01, ValidateAccountActive, ValidateAccountSuspend, ValidateAccountTerminate, ValidateAccountTotal, @ws01_ct
 FROM
-	RpteHSD0001_01_eHA_Summary  
+	RpteHSD0001_01_eHA_Summary WITH (NOLOCK)  
 WHERE
 	report_dtm = @ReportDtm AND Scheme_Code = 'ALL'
 SELECT @ws01_ct=@ws01_ct+1
@@ -869,7 +876,7 @@ SELECT @ws02, voucherBalance,
 		noOfVoucherAC_Deceased,
 		noOfVoucher_Deceased, 
 		cast(@ws02_ct as int) + (Display_Seq + 1) 
-FROM RpteHSD0001_02_AvailableVoucher_Summary   
+FROM RpteHSD0001_02_AvailableVoucher_Summary WITH (NOLOCK)   
 WHERE report_dtm = @reportDtm 
 --AND SubReport_ID = '02'
 ORDER BY Display_Seq
@@ -893,7 +900,7 @@ SELECT
 	@ws02, 'No. of Voucher Account', ValidateAccountTerminate,@ws02_ct
 FROM
 	--RpteHSD0001VoucherAccSummary 
-	RpteHSD0001_01_eHA_Summary 
+	RpteHSD0001_01_eHA_Summary WITH (NOLOCK) 
 WHERE
 	report_dtm = @ReportDtm
 		AND Scheme_Code = 'ALL'
@@ -905,7 +912,7 @@ SELECT
 	@ws02, 'Total Voucher Amount ($)', TerminateVoucher,@ws02_ct
 FROM
 	--RpteHSD0001VoucherAccSummary 
-	RpteHSD0001_01_eHA_Summary  
+	RpteHSD0001_01_eHA_Summary WITH (NOLOCK)  
 WHERE
 	report_dtm = @ReportDtm
 			AND Scheme_Code = 'ALL'
@@ -925,7 +932,7 @@ SELECT @ws03, voucherBalance, noOfVoucherAC, noOfVoucher,
 	noOfVoucherAC_Alive, noOfVoucher_Alive,  
 	noOfVoucherAC_Deceased, noOfVoucher_Deceased, 
 	cast(@ws03_ct as int) + (Display_Seq + 1) 
-from RpteHSD0001_03_WriteOffVoucher_Summary   
+from RpteHSD0001_03_WriteOffVoucher_Summary WITH (NOLOCK)   
 WHERE report_dtm = @reportDtm 
 --AND SubReport_ID = '03'
 ORDER BY Display_Seq 
@@ -948,7 +955,7 @@ SELECT @ws04, voucherBalance, noOfVoucherAC, noOfVoucher,
 	noOfVoucherAC_Alive, noOfVoucher_Alive,  
 	noOfVoucherAC_Deceased, noOfVoucher_Deceased, 
 	cast(@ws04_ct as int) + (Display_Seq + 1) 
-from RpteHSD0001_04_TotalEntitledVoucher_Summary   
+from RpteHSD0001_04_TotalEntitledVoucher_Summary WITH (NOLOCK)   
 WHERE report_dtm = @reportDtm 
 --AND SubReport_ID = '04'
 ORDER BY Display_Seq
@@ -963,7 +970,7 @@ SELECT @ws04_ct=@ws04_ct + 1
 -- =================================================================
 INSERT INTO @WorkBook (	WorkSheetID, Result01, Result02, Result03, Result04, Result05,  
 						Result06, Result07, Result08, Result09, Result10, Result11, Result12, DisplaySeq)  
- select @ws05, ENU, RCM, RCP, RDT, RMP, RMT, RNU, ROP, ROT, RPT, RRD, Total, @ws05_ct from RpteHSD0001_05_VoucherClaimByProfSummary  
+ select @ws05, ENU, RCM, RCP, RDT, RMP, RMT, RNU, ROP, ROT, RPT, RRD, Total, @ws05_ct from RpteHSD0001_05_VoucherClaimByProfSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm
 SELECT @ws05_ct=@ws05_ct+1
  
@@ -973,20 +980,20 @@ SELECT @ws05_ct=@ws05_ct+1
 -- =================================================================
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Result05,  
 Result06, Result07, Result08, Result09, Result10, Result11, Result12, Result13, DisplaySeq)  
- select @ws06a, noOfClaim, ENU, RCM, RCP, RDT, RMP, RMT, RNU, ROP, ROT, RPT, RRD, Total, @ws06a_ct+SortOrder from RpteHSD0001_06a_VoucherClaimPerVoucherSummary  
+ select @ws06a, noOfClaim, ENU, RCM, RCP, RDT, RMP, RMT, RNU, ROP, ROT, RPT, RRD, Total, @ws06a_ct+SortOrder from RpteHSD0001_06a_VoucherClaimPerVoucherSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm  
   order by SortOrder
-SELECT @ws06a_ct=@ws06a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_06a_VoucherClaimPerVoucherSummary where report_dtm = @reportDtm),0))
+SELECT @ws06a_ct=@ws06a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_06a_VoucherClaimPerVoucherSummary WITH (NOLOCK) where report_dtm = @reportDtm),0))
 
 
 -- =================================================================
 -- eHSD0001-06b: Report on Voucher Amount Claim per Transaction by Profession (HCVSDHC)
 -- =================================================================
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Result05, DisplaySeq)  
- select @ws06b, noOfClaim, DIT, POD, SPT, Total, @ws06b_ct+SortOrder from RpteHSD0001_06b_VoucherClaimPerVoucherSummary  
+ select @ws06b, noOfClaim, DIT, POD, SPT, Total, @ws06b_ct+SortOrder from RpteHSD0001_06b_VoucherClaimPerVoucherSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm  
   order by SortOrder
-SELECT @ws06b_ct=@ws06b_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_06b_VoucherClaimPerVoucherSummary where report_dtm = @reportDtm),0))
+SELECT @ws06b_ct=@ws06b_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_06b_VoucherClaimPerVoucherSummary WITH (NOLOCK) where report_dtm = @reportDtm),0))
 
 
 
@@ -1003,10 +1010,10 @@ INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Resu
      when -1 then 'N/A'  
      else CONVERT(VARCHAR(10), RMT)  
   end,  
-  RNU, ROP, ROT, RPT,RRD, Total, SortOrder+@ws07a_ct from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary  
+  RNU, ROP, ROT, RPT,RRD, Total, SortOrder+@ws07a_ct from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm and Secondary='N'
  order by SortOrder
-SELECT @ws07a_ct=@ws07a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm = @reportDtm and Secondary='N'),0))
+SELECT @ws07a_ct=@ws07a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm = @reportDtm and Secondary='N'),0))
 
 -- insert an empty row
 INSERT INTO @WorkBook (WorkSheetID, DisplaySeq) VALUES (@ws07a, @ws07a_ct)  
@@ -1026,10 +1033,10 @@ INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Resu
      when -1 then 'N/A'  
      else CONVERT(VARCHAR(10), RMT)  
   end,  
-  RNU, ROP, ROT, RPT,RRD, Total, SortOrder+@ws07a_ct from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary  
+  RNU, ROP, ROT, RPT,RRD, Total, SortOrder+@ws07a_ct from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm and Secondary='Y'
  order by SortOrder
-SELECT @ws07a_ct=@ws07a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary where report_dtm = @reportDtm and Secondary='Y'),0))
+SELECT @ws07a_ct=@ws07a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07a_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm = @reportDtm and Secondary='Y'),0))
 
 
 -- =================================================================
@@ -1037,10 +1044,10 @@ SELECT @ws07a_ct=@ws07a_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from 
 -- =================================================================
 
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Result05, DisplaySeq)  
- select  @ws07b, reason, DIT, POD, SPT, Total, SortOrder+@ws07b_ct from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary  
+ select  @ws07b, reason, DIT, POD, SPT, Total, SortOrder+@ws07b_ct from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm and Secondary='N'
  order by SortOrder
-SELECT @ws07b_ct=@ws07b_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary where report_dtm = @reportDtm and Secondary='N'),0))
+SELECT @ws07b_ct=@ws07b_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm = @reportDtm and Secondary='N'),0))
 
 -- insert an empty row
 INSERT INTO @WorkBook (WorkSheetID, DisplaySeq) VALUES (@ws07b, @ws07b_ct)  
@@ -1054,10 +1061,10 @@ SELECT @ws07b_ct=@ws07b_ct+1
 
 -- insert the Secondary Reason For Visit Data
 INSERT INTO @WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Result05, DisplaySeq)  
- select  @ws07b, reason, DIT, POD, SPT, Total, SortOrder+@ws07b_ct from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary  
+ select  @ws07b, reason, DIT, POD, SPT, Total, SortOrder+@ws07b_ct from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK)  
  where report_dtm = @reportDtm and Secondary='Y'
  order by SortOrder
-SELECT @ws07b_ct=@ws07b_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary where report_dtm = @reportDtm and Secondary='Y'),0))
+SELECT @ws07b_ct=@ws07b_ct+(SELECT ISNULL((SELECT IsNULL(max(SortOrder),0) from RpteHSD0001_07b_VoucherClaimPerReasonForVisitSummary WITH (NOLOCK) where report_dtm = @reportDtm and Secondary='Y'),0))
 
 
 -- =================================================================
@@ -1094,7 +1101,7 @@ SELECT  @ws08a,
 	row_number() over (order by transaction_dtm),
 	@ws08a_ct 	
 FROM
-	RpteHSD0001_08a_TransactionSummary R
+	RpteHSD0001_08a_TransactionSummary R WITH (NOLOCK)
 WHERE
 	report_dtm = @reportDtm  
 ORDER BY
@@ -1135,7 +1142,7 @@ SELECT  @ws08b,
 	row_number() over (order by transaction_dtm),
 	@ws08b_ct 	
 FROM
-	RpteHSD0001_08b_HCVSDHCTransactionSummary R
+	RpteHSD0001_08b_HCVSDHCTransactionSummary R WITH (NOLOCK)
 WHERE
 	report_dtm = @reportDtm  
 ORDER BY
@@ -1176,7 +1183,7 @@ SELECT
 	END AS [OCSSS_Ref_Status],   
 	row_number() over (order by transaction_dtm), @ws08c_ct 	
 FROM
-	RpteHSD0001_08c_HCVSCHNTransactionSummary R
+	RpteHSD0001_08c_HCVSCHNTransactionSummary R WITH (NOLOCK)
 WHERE
 	report_dtm = @reportDtm  
 ORDER BY

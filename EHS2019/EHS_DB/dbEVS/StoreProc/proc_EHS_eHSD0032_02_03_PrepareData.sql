@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
 -- ============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -113,10 +120,10 @@ SET NOCOUNT ON;
 	SET @schemeDate = DATEADD(dd, -1, @Cutoff_Dtm)  
 
 	EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] @Scheme_Code, @schemeDate  
-	SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
+	SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
 	SELECT @Current_Season_Start_Dtm = MIN(SG.Claim_Period_From)
-	FROM SubsidizeGroupClaim  SG
-	INNER JOIN SubsidizeGroupClaimItemDetails SGD
+	FROM SubsidizeGroupClaim  SG WITH (NOLOCK)
+	INNER JOIN SubsidizeGroupClaimItemDetails SGD WITH (NOLOCK)
 		ON SG.Scheme_Code = SGD.Scheme_Code
 		AND SG.Scheme_Seq = SGD.Scheme_Seq
 		AND SG.Subsidize_Code = SGD.Subsidize_Code
@@ -132,12 +139,12 @@ SET NOCOUNT ON;
 		SCA.Category_Code,
 		CC.Display_Seq
 	FROM 
-		[SubsidizeGroupClaim] SGC
-		INNER JOIN [Subsidize]	S
+		[SubsidizeGroupClaim] SGC WITH (NOLOCK)
+		INNER JOIN [Subsidize]	S WITH (NOLOCK)
 			ON SGC.[Subsidize_Code] = S.[Subsidize_Code]
-		INNER JOIN [SubsidizeGroupCategory] SCA
+		INNER JOIN [SubsidizeGroupCategory] SCA WITH (NOLOCK)
 			ON SCA.[Subsidize_Code] = S.[Subsidize_Code]
-		INNER JOIN [ClaimCategory] CC
+		INNER JOIN [ClaimCategory] CC WITH (NOLOCK)
 			ON CC.Category_Code = SCA.Category_Code
 	WHERE 
 		SGC.[Scheme_Code] = @Scheme_Code		
@@ -231,7 +238,7 @@ OPEN SYMMETRIC KEY sym_Key
 			Status_Name, 
 			Status_Value 
 	FROM 
-			StatStatusFilterMapping 
+			StatStatusFilterMapping WITH (NOLOCK) 
 	WHERE 
 			(Report_id = 'ALL' OR Report_id = @Report_ID) 
 			AND Table_Name = 'VoucherTransaction'
@@ -276,7 +283,7 @@ OPEN SYMMETRIC KEY sym_Key
 		p.doc_code,    
 		p.dob    
 	FROM 
-		voucheraccount va, personalinformation p    
+		voucheraccount va WITH (NOLOCK), personalinformation p WITH (NOLOCK)    
 	WHERE 
 		va.voucher_acc_id = p.voucher_acc_id    
 		--and va.record_status <> 'D'    
@@ -297,7 +304,7 @@ OPEN SYMMETRIC KEY sym_Key
 		p.doc_code,    
 		p.dob    
 	FROM 
-		tempvoucheraccount va, temppersonalinformation p    
+		tempvoucheraccount va WITH (NOLOCK), temppersonalinformation p WITH (NOLOCK)    
 	WHERE 
 		va.voucher_acc_id = p.voucher_acc_id    
 		--and va.record_status <> 'D'    
@@ -372,15 +379,15 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN D.Available_Item_Code = '1STDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '2NDDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT
-		INNER JOIN TransactionDetail D on VT.Transaction_ID = D.Transaction_ID  
-		INNER JOIN TransactionAdditionalField AF ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
-		INNER JOIN PersonalInformation VR		 
+	FROM VoucherTransaction VT WITH (NOLOCK)
+		INNER JOIN TransactionDetail D WITH (NOLOCK) on VT.Transaction_ID = D.Transaction_ID  
+		INNER JOIN TransactionAdditionalField AF WITH (NOLOCK) ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
+		INNER JOIN PersonalInformation VR WITH (NOLOCK)		 
 			ON VT.Voucher_Acc_ID = VR.Voucher_Acc_ID     
 				AND VT.Doc_Code = VR.Doc_Code         
 				AND VT.Voucher_Acc_ID IS NOT NULL    
 				AND VT.Voucher_Acc_ID <> ''    
-		INNER JOIN VoucherAccount A    
+		INNER JOIN VoucherAccount A WITH (NOLOCK)    
 				ON VT.Voucher_Acc_ID = A.Voucher_Acc_ID     
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm
@@ -434,11 +441,11 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN D.Available_Item_Code = '1STDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '2NDDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT    
-		INNER JOIN TransactionDetail D     
+	FROM VoucherTransaction VT WITH (NOLOCK)    
+		INNER JOIN TransactionDetail D WITH (NOLOCK)     
 			ON VT.Transaction_ID = D.Transaction_ID     
-		INNER JOIN TransactionAdditionalField AF ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
-		INNER JOIN TempPersonalInformation TVR     
+		INNER JOIN TransactionAdditionalField AF WITH (NOLOCK) ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
+		INNER JOIN TempPersonalInformation TVR WITH (NOLOCK)     
 			ON VT.Temp_Voucher_Acc_ID = TVR.Voucher_Acc_ID     
 				AND (VT.Voucher_Acc_ID = '' OR VT.Voucher_Acc_ID IS NULL)    
 				AND VT.Special_Acc_ID IS NULL    
@@ -446,7 +453,7 @@ OPEN SYMMETRIC KEY sym_Key
 				AND VT.Temp_Voucher_Acc_ID <> ''     
 				AND VT.Temp_Voucher_Acc_ID IS NOT NULL     
 				AND VT.Doc_Code = TVR.Doc_Code    
-		INNER JOIN TempVoucherAccount A    
+		INNER JOIN TempVoucherAccount A WITH (NOLOCK)    
 			ON VT.Temp_Voucher_Acc_ID = A.Voucher_Acc_ID      
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm
@@ -497,16 +504,16 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN D.Available_Item_Code = '1STDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = '2NDDOSE' THEN 1 ELSE 0 END,
 		CASE WHEN D.Available_Item_Code = 'ONLYDOSE' THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT    
-		INNER JOIN TransactionDetail D     
+	FROM VoucherTransaction VT WITH (NOLOCK)    
+		INNER JOIN TransactionDetail D WITH (NOLOCK)     
 			ON VT.Transaction_ID = D.Transaction_ID    
-		INNER JOIN TransactionAdditionalField AF ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
-		INNER JOIN SpecialPersonalInformation TVR ON VT.Special_Acc_ID = TVR.Special_Acc_ID     
+		INNER JOIN TransactionAdditionalField AF WITH (NOLOCK) ON VT.Transaction_ID = AF.Transaction_ID  AND AF.AdditionalFieldID = 'SchoolCode'
+		INNER JOIN SpecialPersonalInformation TVR WITH (NOLOCK) ON VT.Special_Acc_ID = TVR.Special_Acc_ID     
 			AND VT.Special_Acc_ID IS NOT NULL    
 			AND (VT.Voucher_Acc_ID IS NULL OR VT.Voucher_Acc_ID = '')    
 			AND VT.Invalid_Acc_ID IS NULL    
 			AND VT.Doc_Code = TVR.Doc_Code     
-		INNER JOIN SpecialAccount A    
+		INNER JOIN SpecialAccount A WITH (NOLOCK)    
 			ON VT.Special_Acc_ID = A.Special_Acc_ID    
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm

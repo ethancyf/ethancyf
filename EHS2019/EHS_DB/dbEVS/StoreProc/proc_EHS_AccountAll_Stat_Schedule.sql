@@ -8,6 +8,14 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	15 Jul 2020
+-- CR. No			INT20-0024
+-- Description:		(1) Add WITH (NOLOCK)
+--					(2) Add index to temp tables
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Dickson Law
 -- Modified date:	28 Dec 2017
 -- CR. No			CRE14-016
@@ -102,6 +110,8 @@ AS BEGIN
 		Exact_DOD				char(1)  --CRE14-016
 	)
 
+	CREATE CLUSTERED INDEX PK_EHS01_AllAccount_1 ON #EHS01_AllAccount (Doc_Code, Encrypt_Field1) 
+
 	CREATE TABLE #EHS01_GroupAccount (
 		Account_Type			char(1),
 		Doc_Code				char(10),
@@ -113,6 +123,8 @@ AS BEGIN
 		DOD						datetime --CRE14-016
 	)
 	
+	CREATE CLUSTERED INDEX PK_EHS01_GroupAccount_1 ON #EHS01_GroupAccount (Doc_Code, Encrypt_Field1) 
+
 	DECLARE @ResultTableAccount table (
 		CountType							varchar(10),
 		No_Validated_Account				int,
@@ -186,8 +198,8 @@ AS BEGIN
 		VP.DOD, 
 		VP.Exact_DOD 
 	FROM
-		VoucherAccount VA
-			INNER JOIN PersonalInformation VP
+		VoucherAccount VA WITH (NOLOCK)
+			INNER JOIN PersonalInformation VP WITH (NOLOCK)
 				ON VA.Voucher_Acc_ID = VP.Voucher_Acc_ID
 	WHERE
 		VA.Effective_Dtm <= @Cutoff_Dtm
@@ -223,8 +235,8 @@ AS BEGIN
 		TP.DOD, 
 		TP.Exact_DOD 
 	FROM
-		TempVoucherAccount TA
-			INNER JOIN TempPersonalInformation TP
+		TempVoucherAccount TA WITH (NOLOCK)
+			INNER JOIN TempPersonalInformation TP WITH (NOLOCK)
 				ON TA.Voucher_Acc_ID = TP.Voucher_Acc_ID
 	WHERE
 		TA.Record_Status <> 'D'
@@ -262,8 +274,8 @@ AS BEGIN
 		SP.DOD, 
 		SP.Exact_DOD 
 	FROM
-		SpecialAccount SA
-			INNER JOIN SpecialPersonalInformation SP
+		SpecialAccount SA WITH (NOLOCK)
+			INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)
 				ON SA.Special_Acc_ID = SP.Special_Acc_ID
 	WHERE 
 		SA.Record_Status <> 'D'

@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================  
 -- ============================================= 
 -- Modification History
 -- Modified by:		Chris YIM
@@ -146,10 +153,10 @@ SET NOCOUNT ON;
 	SET @schemeDate = DATEADD(dd, -1, @Cutoff_Dtm)  
 	
 	EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] @Scheme_Code, @schemeDate  
-	SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
+	SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
 	SELECT @Current_Season_Start_Dtm = MIN(SG.Claim_Period_From)
-	FROM SubsidizeGroupClaim  SG
-	INNER JOIN SubsidizeGroupClaimItemDetails SGD
+	FROM SubsidizeGroupClaim  SG WITH (NOLOCK)
+	INNER JOIN SubsidizeGroupClaimItemDetails SGD WITH (NOLOCK)
 		ON SG.Scheme_Code = SGD.Scheme_Code
 		AND SG.Scheme_Seq = SGD.Scheme_Seq
 		AND SG.Subsidize_Code = SGD.Subsidize_Code
@@ -165,12 +172,12 @@ SET NOCOUNT ON;
 		SCA.Category_Code,
 		CC.Display_Seq
 	FROM 
-		[SubsidizeGroupClaim] SGC
-		INNER JOIN [Subsidize]	S
+		[SubsidizeGroupClaim] SGC WITH (NOLOCK)
+		INNER JOIN [Subsidize]	S WITH (NOLOCK)
 			ON SGC.[Subsidize_Code] = S.[Subsidize_Code]
-		INNER JOIN [SubsidizeGroupCategory] SCA
+		INNER JOIN [SubsidizeGroupCategory] SCA WITH (NOLOCK)
 			ON SCA.[Subsidize_Code] = S.[Subsidize_Code]
-		INNER JOIN [ClaimCategory] CC
+		INNER JOIN [ClaimCategory] CC WITH (NOLOCK)
 			ON CC.Category_Code = SCA.Category_Code
 	
 	WHERE 
@@ -307,7 +314,7 @@ OPEN SYMMETRIC KEY sym_Key
 			Status_Name, 
 			Status_Value 
 	FROM 
-			StatStatusFilterMapping 
+			StatStatusFilterMapping WITH (NOLOCK) 
 	WHERE 
 			(Report_id = 'ALL' OR Report_id = @Report_ID) 
 			AND Table_Name = 'VoucherTransaction'
@@ -365,28 +372,28 @@ OPEN SYMMETRIC KEY sym_Key
 	 service_receive_dtm,    
 	 SP_ID    
 	)  
-	select transaction_id, voucher_acc_id, temp_voucher_acc_id, service_receive_dtm, SP_ID from vouchertransaction    
+	select transaction_id, voucher_acc_id, temp_voucher_acc_id, service_receive_dtm, SP_ID from vouchertransaction WITH (NOLOCK)    
 	where scheme_code = 'HCVS'    
 	--and service_receive_dtm between '19 Oct 2009' and @Cutoff_Dtm    
 	and service_receive_dtm < @Cutoff_Dtm 
 	and service_type = 'RMP'    
-	and record_status not in (SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
+	and record_status not in (SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
 	AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'     
 	AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm)))    
 	AND (Invalidation IS NULL OR Invalidation NOT In     
-	(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
+	(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
 	AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'    
 	AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm))))
         
 	update #temp_HCVS    
 	set Reason1 = 'Y'    
-	from #temp_HCVS t, transactionAdditionalField taf    
+	from #temp_HCVS t, transactionAdditionalField taf WITH (NOLOCK)    
 	where t.transaction_id = taf.transaction_id     
 	and taf.additionalfieldID = 'Reason_for_Visit_L1'     
 	and taf.additionalfieldvaluecode = '1' 
 	update #temp_HCVS    
 	set Reason2 = 'Y'    
-	from #temp_HCVS t, transactionAdditionalField taf    
+	from #temp_HCVS t, transactionAdditionalField taf WITH (NOLOCK)    
 	where t.transaction_id = taf.transaction_id     
 	and taf.additionalfieldID = 'Reason_for_Visit_L2'     
 	and taf.additionalfieldvaluecode = '3' 
@@ -404,7 +411,7 @@ OPEN SYMMETRIC KEY sym_Key
 	convert(varchar, DecryptByKey(p.Encrypt_Field1)),    
 	p.doc_code,    
 	p.dob    
-	from voucheraccount va, personalinformation p    
+	from voucheraccount va, personalinformation p WITH (NOLOCK)    
 	where va.voucher_acc_id = p.voucher_acc_id    
 	--and va.record_status <> 'D'    
 	and va.create_dtm < @Cutoff_Dtm    
@@ -422,7 +429,7 @@ OPEN SYMMETRIC KEY sym_Key
 	convert(varchar, DecryptByKey(p.Encrypt_Field1)),    
 	p.doc_code,    
 	p.dob    
-	from tempvoucheraccount va, temppersonalinformation p    
+	from tempvoucheraccount va, temppersonalinformation p WITH (NOLOCK)    
 	where va.voucher_acc_id = p.voucher_acc_id    
 	--and va.record_status <> 'D'    
 	--and va.account_purpose in ('C', 'V')    
@@ -496,9 +503,9 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN Subsidize_Item_Code = 'PV13' THEN 1 ELSE 0 END,
 		CASE WHEN Subsidize_Item_Code = 'MMR' THEN 1 ELSE 0 END,
 		CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT
-		INNER JOIN TransactionDetail D on VT.Transaction_ID = D.Transaction_ID     
-		INNER JOIN PersonalInformation VR    
+	FROM VoucherTransaction VT WITH (NOLOCK)
+		INNER JOIN TransactionDetail D WITH (NOLOCK) on VT.Transaction_ID = D.Transaction_ID     
+		INNER JOIN PersonalInformation VR WITH (NOLOCK)    
 			ON VT.Voucher_Acc_ID = VR.Voucher_Acc_ID     
 				AND VT.Doc_Code = VR.Doc_Code         
 				AND VT.Voucher_Acc_ID IS NOT NULL    
@@ -558,10 +565,10 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN Subsidize_Item_Code = 'PV13' THEN 1 ELSE 0 END,
 		CASE WHEN Subsidize_Item_Code = 'MMR' THEN 1 ELSE 0 END,
 		CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT    
-		INNER JOIN TransactionDetail D     
+	FROM VoucherTransaction VT WITH (NOLOCK)    
+		INNER JOIN TransactionDetail D WITH (NOLOCK)     
 			ON VT.Transaction_ID = D.Transaction_ID     
-		INNER JOIN TempPersonalInformation TVR     
+		INNER JOIN TempPersonalInformation TVR WITH (NOLOCK)     
 			ON VT.Temp_Voucher_Acc_ID = TVR.Voucher_Acc_ID     
 				AND (VT.Voucher_Acc_ID = '' OR VT.Voucher_Acc_ID IS NULL)    
 				AND VT.Special_Acc_ID IS NULL    
@@ -569,7 +576,7 @@ OPEN SYMMETRIC KEY sym_Key
 				AND VT.Temp_Voucher_Acc_ID <> ''     
 				AND VT.Temp_Voucher_Acc_ID IS NOT NULL     
 				AND VT.Doc_Code = TVR.Doc_Code    
-		INNER JOIN TempVoucherAccount A    
+		INNER JOIN TempVoucherAccount A WITH (NOLOCK)   
 			ON VT.Temp_Voucher_Acc_ID = A.Voucher_Acc_ID      
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm
@@ -623,15 +630,15 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN Subsidize_Item_Code = 'PV13' THEN 1 ELSE 0 END,
 		CASE WHEN Subsidize_Item_Code = 'MMR' THEN 1 ELSE 0 END,
 		CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT    
-		INNER JOIN TransactionDetail D     
+	FROM VoucherTransaction VT WITH (NOLOCK)    
+		INNER JOIN TransactionDetail D WITH (NOLOCK)     
 			ON VT.Transaction_ID = D.Transaction_ID    
-		INNER JOIN SpecialPersonalInformation TVR ON VT.Special_Acc_ID = TVR.Special_Acc_ID     
+		INNER JOIN SpecialPersonalInformation TVR WITH (NOLOCK) ON VT.Special_Acc_ID = TVR.Special_Acc_ID     
 			AND VT.Special_Acc_ID IS NOT NULL    
 			AND (VT.Voucher_Acc_ID IS NULL OR VT.Voucher_Acc_ID = '')    
 			AND VT.Invalid_Acc_ID IS NULL    
 			AND VT.Doc_Code = TVR.Doc_Code     
-		INNER JOIN SpecialAccount A    
+		INNER JOIN SpecialAccount A WITH (NOLOCK)    
 			ON VT.Special_Acc_ID = A.Special_Acc_ID    
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm

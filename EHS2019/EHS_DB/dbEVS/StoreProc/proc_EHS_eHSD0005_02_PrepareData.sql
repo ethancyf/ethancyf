@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- ============================================= 
+-- =============================================
+-- Modification History
 -- CR. No			CRE14-016
 -- Modified by:		Dickson Law			
 -- Modified date:	02 Jan 2018
@@ -165,8 +172,8 @@ AS BEGIN
 		PI.Voucher_Acc_ID,
 		MIN(PI.Create_Dtm) AS [Create_Dtm]
 	FROM
-		VoucherAccount VA
-			INNER JOIN PersonalInformation PI
+		VoucherAccount VA WITH (NOLOCK)
+			INNER JOIN PersonalInformation PI WITH (NOLOCK)
 				ON VA.Voucher_Acc_ID = PI.Voucher_Acc_ID
 	WHERE
 		VA.Effective_Dtm <= @Cutoff_Dtm
@@ -201,8 +208,8 @@ AS BEGIN
 		PI.DOD,
 		PI.Exact_DOD 
 	FROM
-		VoucherAccount VA
-			INNER JOIN PersonalInformation PI
+		VoucherAccount VA WITH (NOLOCK)
+			INNER JOIN PersonalInformation PI WITH (NOLOCK)
 				ON VA.Voucher_Acc_ID = PI.Voucher_Acc_ID
 			INNER JOIN @EarliestPersonalInformation EPI
 				ON VA.Voucher_Acc_ID = EPI.Voucher_Acc_ID
@@ -255,8 +262,8 @@ AS BEGIN
 		TP.DOD,
 		TP.Exact_DOD 
 	FROM
-		TempVoucherAccount TA
-			INNER JOIN TempPersonalInformation TP
+		TempVoucherAccount TA WITH (NOLOCK)
+			INNER JOIN TempPersonalInformation TP WITH (NOLOCK)
 				ON TA.Voucher_Acc_ID = TP.Voucher_Acc_ID
 	WHERE
 		TA.Record_Status NOT IN ('V', 'D')
@@ -294,8 +301,8 @@ AS BEGIN
 		SP.DOD,
 		SP.Exact_DOD 
 	FROM
-		SpecialAccount SA
-			INNER JOIN SpecialPersonalInformation SP
+		SpecialAccount SA WITH (NOLOCK)
+			INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)
 				ON SA.Special_Acc_ID = SP.Special_Acc_ID			
 	WHERE
 		SA.Record_Status NOT IN ('V', 'D')

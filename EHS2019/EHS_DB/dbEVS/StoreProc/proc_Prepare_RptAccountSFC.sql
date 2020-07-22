@@ -1,4 +1,19 @@
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_Prepare_RptAccountSFC]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_Prepare_RptAccountSFC]
+GO
 
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -43,15 +58,6 @@
 ----						- Remove Indices
 ----						- Remove unnecessary output column
 ---- =============================================
-
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_Prepare_RptAccountSFC]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	DROP PROCEDURE [dbo].[proc_Prepare_RptAccountSFC]
-GO
-
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
-GO
-
 CREATE PROCEDURE [dbo].[proc_Prepare_RptAccountSFC] (
 	@cutOffDtm DATETIME,
 	@forceExecute BIT = 0
@@ -64,7 +70,7 @@ BEGIN
 	DECLARE @RptAccountSFC_GenDate DATETIME
 
 	SET @RptAccountSFC_GenDate = (SELECT CONVERT(DATETIME, Variable_Value) 
-									FROM SystemVariable
+									FROM SystemVariable WITH (NOLOCK)
 									WHERE Variable_ID = 'AccountSFC_Generation_Check') 
 	
 	IF @RptAccountSFC_GenDate < @cutoffDtm OR @forceExecute = 1
@@ -82,7 +88,7 @@ BEGIN
 
 		DECLARE @65ClaimRuleEffDtm VARCHAR(10)	
 		SET @65ClaimRuleEffDtm = (SELECT CONVERT(DATE, Value) 
-									FROM EligibilityRule 
+									FROM EligibilityRule WITH (NOLOCK) 
 									WHERE [Type] = 'SERVICEDTM' 
 										AND Scheme_Code = 'HCVS' 
 										AND Rule_Group_Code <> 'G0001')	
@@ -204,8 +210,8 @@ BEGIN
 			[Identity_Num] = P.Encrypt_Field1,
 			[Doc_Code] = CASE P.Doc_Code WHEN 'HKBC' THEN 'HKIC' ELSE P.Doc_Code END 
 		FROM
-			VoucherAccount VA
-			INNER JOIN PersonalInformation P
+			VoucherAccount VA WITH (NOLOCK)
+			INNER JOIN PersonalInformation P WITH (NOLOCK)
 				ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID
 		WHERE
 			VA.Record_Status = 'D' -- Terminated
@@ -218,7 +224,7 @@ BEGIN
 		SELECT	
 			@2017_1st_EligibleAge = [Value] 
 		FROM	
-			EligibilityRule
+			EligibilityRule WITH (NOLOCK)
 		WHERE	
 			Scheme_Code = @scheme_code
 			AND Scheme_Seq = 10
@@ -229,7 +235,7 @@ BEGIN
 		SELECT	
 			@2017_2nd_EligibleAge = [Value] 
 		FROM	
-			EligibilityRule
+			EligibilityRule WITH (NOLOCK)
 		WHERE	
 			Scheme_Code = @scheme_code
 			AND Scheme_Seq = 10
@@ -240,7 +246,7 @@ BEGIN
 		SELECT	
 			@current_scheme_seq = MAX(Scheme_Seq)								
 		FROM 
-			SubsidizeGroupClaim
+			SubsidizeGroupClaim WITH (NOLOCK)
 		WHERE	
 			Scheme_Code = @scheme_code
 			AND Record_Status = 'A'
@@ -255,7 +261,7 @@ BEGIN
 				END
 			)
 		FROM
-			EligibilityRule
+			EligibilityRule WITH (NOLOCK)
 		WHERE
 			Scheme_Code = @scheme_code
 				AND Rule_Name = @rule_name
@@ -302,8 +308,8 @@ BEGIN
 			SGC.Last_Service_Dtm,
 			SGC.Num_Subsidize
 		FROM 
-			SchemeClaim SC
-				INNER JOIN SubsidizeGroupClaim SGC
+			SchemeClaim SC WITH (NOLOCK)
+				INNER JOIN SubsidizeGroupClaim SGC WITH (NOLOCK)
 					ON SC.Scheme_Code = SGC.Scheme_Code
 						AND SGC.Scheme_Code = 'HCVS'
 						AND SGC.Record_Status <> 'I'
@@ -311,7 +317,7 @@ BEGIN
 					(SELECT 
 						* 
 					FROM 
-						EligibilityRule 
+						EligibilityRule WITH (NOLOCK) 
 					WHERE 
 						Rule_Name = 'MinAge' 
 						AND [Type] = 'Age'
@@ -322,7 +328,7 @@ BEGIN
 					(SELECT 
 						Scheme_Code, Scheme_Seq, Value, Rule_Group_Code
 					FROM 
-						EligibilityRule
+						EligibilityRule WITH (NOLOCK)
 					WHERE 
 						[Type] = 'SERVICEDTM'
 						AND scheme_code='HCVS'
@@ -389,15 +395,15 @@ BEGIN
 			VT.SourceApp,
 			VT.Scheme_Code	
 		FROM
-			VoucherTransaction VT
-				INNER JOIN PersonalInformation P
+			VoucherTransaction VT WITH (NOLOCK)
+				INNER JOIN PersonalInformation P WITH (NOLOCK)
 					ON VT.Voucher_Acc_ID = P.Voucher_Acc_ID 
 		WHERE
 			NOT EXISTS (
 				SELECT
 					1
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(Report_id = 'ALL' OR Report_id = 'eHSD0001') 
 						AND Table_Name = 'VoucherTransaction'
@@ -410,7 +416,7 @@ BEGIN
 				SELECT
 					1
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(report_id = 'ALL' OR report_id = 'eHSD0001') 
 						AND Table_Name = 'VoucherTransaction'
@@ -460,15 +466,15 @@ BEGIN
 			VT.SourceApp,
 			VT.Scheme_Code	
 		FROM
-			VoucherTransaction VT
-				INNER JOIN TempPersonalInformation TP
+			VoucherTransaction VT WITH (NOLOCK)
+				INNER JOIN TempPersonalInformation TP WITH (NOLOCK)
 					ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID
 		WHERE
 			NOT EXISTS (
 				SELECT
 					1
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(report_id = 'ALL' OR report_id = 'eHSD0001') 
 						AND Table_Name = 'VoucherTransaction'
@@ -481,7 +487,7 @@ BEGIN
 				SELECT
 					1
 				FROM
-					StatStatusFilterMapping
+					StatStatusFilterMapping WITH (NOLOCK)
 				WHERE
 					(report_id = 'ALL' OR report_id = 'eHSD0001') 
 						AND Table_Name = 'VoucherTransaction'
@@ -552,8 +558,8 @@ BEGIN
 			P.Exact_DOD,
 			P.DOD			
 		FROM 
-			VoucherAccount VA
-				INNER JOIN PersonalInformation P 
+			VoucherAccount VA WITH (NOLOCK)
+				INNER JOIN PersonalInformation P WITH (NOLOCK) 
 					ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID 
 		WHERE 
 			P.Create_Dtm < @cutOffDtm
@@ -592,8 +598,8 @@ BEGIN
 			TP.Exact_DOD,
 			TP.DOD
 		FROM
-			TempVoucherAccount TVA
-				INNER JOIN TempPersonalInformation TP
+			TempVoucherAccount TVA WITH (NOLOCK)
+				INNER JOIN TempPersonalInformation TP WITH (NOLOCK)
 					ON TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID
 		WHERE 
 			TVA.Record_Status NOT IN ('V', 'D')

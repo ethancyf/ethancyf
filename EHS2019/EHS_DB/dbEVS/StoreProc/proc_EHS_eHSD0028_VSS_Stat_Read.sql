@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Mar 2020
 -- CR No.:			INT20-0005
@@ -80,7 +87,7 @@ EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] 'VSS', @schemeDate
 INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0028-01', 'Report on eHealth (Subsidies) accounts created (by document type)'
 INSERT INTO @ContentTable (Value1, Value2)
-SELECT 'eHS(S)D0028-02', REPLACE('Report on yearly VSS claim transaction by age group and target group ([DATE])', '[DATE]',  (SELECT Season_Desc FROM VaccineSeason WHERE Scheme_Code = 'VSS' AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV' ))
+SELECT 'eHS(S)D0028-02', REPLACE('Report on yearly VSS claim transaction by age group and target group ([DATE])', '[DATE]',  (SELECT Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = 'VSS' AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV' ))
 INSERT INTO @ContentTable (Value1, Value2)
 SELECT 'eHS(S)D0028-03', 'Report on cumulative VSS claim transaction by age group and target group' 
 INSERT INTO @ContentTable (Value1, Value2)
@@ -113,7 +120,7 @@ ORDER BY
   isnull(Col11,''),
   isnull(Col12,'')   
  FROM         
-  RpteHSD0028_01_eHA_ByDocType    
+  RpteHSD0028_01_eHA_ByDocType WITH (NOLOCK)    
  ORDER BY    
   Display_Seq    
      
@@ -152,7 +159,7 @@ ORDER BY
   isnull(Col28,''),  
   isnull(Col29,'')    
  FROM    
-  RpteHSD0028_02_VSS_Tx_ByAgeGroup_ByYear  
+  RpteHSD0028_02_VSS_Tx_ByAgeGroup_ByYear WITH (NOLOCK)  
  ORDER BY  
   Display_Seq  
   
@@ -191,7 +198,7 @@ ORDER BY
   isnull(Col28,''),  
   isnull(Col29,'')    
  FROM    
-  RpteHSD0028_03_VSS_Tx_ByAgeGroup_Cumulative  
+  RpteHSD0028_03_VSS_Tx_ByAgeGroup_Cumulative WITH (NOLOCK)  
  ORDER BY  
   Display_Seq  
 
@@ -217,7 +224,7 @@ ORDER BY
   isnull(Col15,''),
   isnull(Col16,'')
  FROM       
-  RpteHSD0028_04_VSS_Tx_Raw  
+  RpteHSD0028_04_VSS_Tx_Raw WITH (NOLOCK)  
  ORDER BY  
   Display_Seq  
   

@@ -5,7 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-  
+ 
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================  
 -- =============================================
 -- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
@@ -138,8 +145,8 @@ BEGIN
 			CASE WHEN VP.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 		END
 	FROM  
-		VoucherAccount VA  
-		INNER JOIN PersonalInformation VP ON VA.Voucher_Acc_ID = VP.Voucher_Acc_ID  
+		VoucherAccount VA WITH (NOLOCK)  
+		INNER JOIN PersonalInformation VP WITH (NOLOCK) ON VA.Voucher_Acc_ID = VP.Voucher_Acc_ID  
 	WHERE  
 		VA.Effective_Dtm <= @Cutoff_Dtm  
    
@@ -159,8 +166,8 @@ BEGIN
 			CASE WHEN TP.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 		END
 	FROM  
-		TempVoucherAccount TA  
-		INNER JOIN TempPersonalInformation TP ON TA.Voucher_Acc_ID = TP.Voucher_Acc_ID  
+		TempVoucherAccount TA WITH (NOLOCK)  
+		INNER JOIN TempPersonalInformation TP WITH (NOLOCK) ON TA.Voucher_Acc_ID = TP.Voucher_Acc_ID  
 	WHERE  
 		TA.Record_Status NOT IN ('V', 'D')  
 		AND TA.Create_Dtm <= @Cutoff_Dtm  
@@ -181,8 +188,8 @@ BEGIN
 			CASE WHEN SP.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 		END
 	FROM  
-		SpecialAccount SA  
-		INNER JOIN SpecialPersonalInformation SP ON SA.Special_Acc_ID = SP.Special_Acc_ID     
+		SpecialAccount SA WITH (NOLOCK)  
+		INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK) ON SA.Special_Acc_ID = SP.Special_Acc_ID     
 	WHERE  
 		SA.Record_Status NOT IN ('V', 'D')  
 		AND SA.Create_Dtm <= @Cutoff_Dtm  
@@ -367,7 +374,7 @@ BEGIN
 		vTran.special_acc_ID,
 		vTran.doc_code
 	FROM 
-		voucherTransaction vTran 
+		voucherTransaction vTran WITH (NOLOCK) 
 	WHERE 
 		vTran.Scheme_Code = @Scheme_Code
 	AND 
@@ -376,7 +383,7 @@ BEGIN
 		vTran.Invalidation IS NULL
 		OR vTran.Invalidation NOT IN (
 			SELECT Status_Value
-			FROM StatStatusFilterMapping
+			FROM StatStatusFilterMapping WITH (NOLOCK)
 			WHERE ( report_id = 'ALL' OR report_id = @Report_ID)
 				AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'
 				AND (( Effective_Date IS NULL OR Effective_Date <= @cutoff_dtm)
@@ -385,7 +392,7 @@ BEGIN
 		)
 	AND vTran.Record_Status NOT IN (
 		SELECT Status_Value
-		FROM StatStatusFilterMapping
+		FROM StatStatusFilterMapping WITH (NOLOCK)
 		WHERE ( report_id = 'ALL'OR report_id = @Report_ID)
 			AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'
 			AND (( Effective_Date IS NULL OR Effective_Date <= @cutoff_dtm)
@@ -408,8 +415,8 @@ BEGIN
 			[Deceased] = CASE WHEN pInfo.Deceased IS NULL THEN 'N' ELSE
 				CASE WHEN pInfo.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 			END
-		FROM personalInformation pInfo,
-			voucherAccount vACC
+		FROM personalInformation pInfo WITH (NOLOCK),
+			voucherAccount vACC WITH (NOLOCK)
 		WHERE 
 			 vAcc.voucher_acc_ID = pInfo.voucher_acc_ID
 			AND vAcc.record_status <> 'D') pInfovACC
@@ -433,8 +440,8 @@ BEGIN
 			[Deceased] = CASE WHEN sInfo.Deceased IS NULL THEN 'N' ELSE
 				CASE WHEN sInfo.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 			END
-		FROM specialpersonalinformation sInfo,
-				specialaccount sAcc
+		FROM specialpersonalinformation sInfo WITH (NOLOCK),
+				specialaccount sAcc WITH (NOLOCK)
 			WHERE  sAcc.special_acc_ID = sInfo.special_acc_ID
 				AND sAcc.record_status NOT IN ('V', 'D')) sInfovACC
 	WHERE 
@@ -457,8 +464,8 @@ BEGIN
 			[Deceased] = CASE WHEN tInfo.Deceased IS NULL THEN 'N' ELSE
 				CASE WHEN tInfo.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 			END
-		FROM temppersonalinformation tInfo,
-				tempvoucheraccount tAcc
+		FROM temppersonalinformation tInfo WITH (NOLOCK),
+				tempvoucheraccount tAcc WITH (NOLOCK)
 			WHERE tAcc.voucher_acc_ID = tInfo.voucher_acc_ID
 				AND tAcc.record_status NOT IN ('V', 'D')) tInfovACC
 	WHERE 

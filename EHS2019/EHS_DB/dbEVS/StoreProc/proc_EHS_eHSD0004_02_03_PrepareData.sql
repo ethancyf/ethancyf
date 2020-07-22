@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by		Chris YIM
 -- Modified date	25 June 2019
 -- CR No.			CRE19-004 (New initiatives for RVP in 2019-20)
@@ -56,7 +63,7 @@ AS BEGIN
 		SGD.Subsidize_Item_Code,
 		SG.Claim_Period_From
 	INTO #SubsidyDateTT
-	FROM SubsidizeGroupClaim  SG
+	FROM SubsidizeGroupClaim  SG WITH (NOLOCK)
 	INNER JOIN SubsidizeGroupClaimItemDetails SGD
 		ON SG.Scheme_Code = SGD.Scheme_Code
 		AND SG.Scheme_Seq = SGD.Scheme_Seq
@@ -67,7 +74,7 @@ AS BEGIN
 	SELECT @PCV13_Start_Dtm = MIN(Claim_Period_From) FROM #SubsidyDateTT WHERE Scheme_Code = 'RVP' AND Scheme_Seq = '1' AND Subsidize_Item_Code='PV13'
 	SELECT @MMR_Start_Dtm = MIN(Claim_Period_From) FROM #SubsidyDateTT WHERE Scheme_Code = 'RVP' AND Scheme_Seq = '1' AND Subsidize_Item_Code='MMR'
 	SELECT @IV_Current_Season_Start_Dtm = MIN(Claim_Period_From) FROM #SubsidyDateTT WHERE Scheme_Code = 'RVP' AND Scheme_Seq = @current_scheme_Seq
-	SELECT @current_scheme_desc = Season_Desc FROM VaccineSeason WHERE Scheme_Code = 'RVP' AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
+	SELECT @current_scheme_desc = Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = 'RVP' AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
 	
 -- =============================================      
 -- Temporary table      
@@ -198,27 +205,27 @@ AS BEGIN
 		VT.SP_ID,  
 		HL.Type AS [RCH_Type]  
 	FROM      
-		VoucherTransaction VT 
-			INNER JOIN TransactionDetail D 
+		VoucherTransaction VT WITH (NOLOCK) 
+			INNER JOIN TransactionDetail D WITH (NOLOCK) 
 				ON VT.Transaction_ID = D.Transaction_ID 
-			INNER JOIN TransactionAdditionalField TAF2        
+			INNER JOIN TransactionAdditionalField TAF2 WITH (NOLOCK)        
 				ON VT.Transaction_ID = TAF2.Transaction_ID        
 			AND TAF2.AdditionalFieldID = 'RHCCode'        
-			INNER JOIN RVPHomeList HL        
+			INNER JOIN RVPHomeList HL WITH (NOLOCK)        
 				ON TAF2.AdditionalFieldValueCode = HL.RCH_Code   
 	WHERE      
 		VT.Scheme_Code = 'RVP'      
 		AND VT.Transaction_Dtm < @Cutoff_Dtm      
 		AND VT.Record_Status NOT IN  
-			(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+			(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
 			AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'   
 		AND ((Effective_Date is null or Effective_Date <= @Cutoff_Dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date )))     
 		AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In   
-				(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+				(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
 				AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'  
 				AND ((Effective_Date is null or Effective_Date <= @Cutoff_Dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date ))))  
 		AND D.subsidize_code in 
-			(select subsidize_code from SubsidizeGroupClaimItemDetails where   
+			(select subsidize_code from SubsidizeGroupClaimItemDetails WITH (NOLOCK) where   
 				scheme_code = VT.Scheme_Code AND Scheme_seq = @current_scheme_Seq AND subsidize_item_code in ('SIV'))      
 		AND D.Scheme_Seq = @current_scheme_Seq  
 
@@ -254,25 +261,25 @@ AS BEGIN
 		VT.SP_ID,  
 		HL.Type AS [RCH_Type]  
 	FROM      
-		VoucherTransaction VT INNER JOIN TransactionDetail D ON VT.Transaction_ID = D.Transaction_ID 
-			INNER JOIN TransactionAdditionalField TAF2        
+		VoucherTransaction VT WITH (NOLOCK) INNER JOIN TransactionDetail D WITH (NOLOCK) ON VT.Transaction_ID = D.Transaction_ID 
+			INNER JOIN TransactionAdditionalField TAF2 WITH (NOLOCK)        
 				ON VT.Transaction_ID = TAF2.Transaction_ID        
 		AND TAF2.AdditionalFieldID = 'RHCCode'        
-			INNER JOIN RVPHomeList HL        
+			INNER JOIN RVPHomeList HL WITH (NOLOCK)        
 				ON TAF2.AdditionalFieldValueCode = HL.RCH_Code   
 	WHERE      
 		VT.Scheme_Code = 'RVP'      
 		AND VT.Transaction_Dtm < @Cutoff_Dtm      
 		AND VT.Record_Status NOT IN  
-			(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+			(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
 		AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'   
 			AND ((Effective_Date is null or Effective_Date <= @Cutoff_Dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date)))     
 		AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In   
-			(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
+			(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004')   
 		AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'  
 			AND ((Effective_Date is null or Effective_Date <= @Cutoff_Dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date))))  
 		AND D.subsidize_code in 
-			(select subsidize_code from SubsidizeGroupClaimItemDetails where   
+			(select subsidize_code from SubsidizeGroupClaimItemDetails WITH (NOLOCK) where   
 				scheme_code = VT.Scheme_Code AND (subsidize_item_code = 'PV' or subsidize_item_code = 'PV13' or subsidize_item_code = 'MMR'))  
       
 	-- Validated account with RVP       
@@ -303,7 +310,7 @@ AS BEGIN
 		VP.Exact_DOB      
 	FROM      
 		#RVPTransaction VT      
-			INNER JOIN PersonalInformation VP      
+			INNER JOIN PersonalInformation VP WITH (NOLOCK)      
 				ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID      
 		AND VT.Doc_Code = VP.Doc_Code      
 	WHERE      
@@ -337,7 +344,7 @@ AS BEGIN
 		TP.Exact_DOB      
 	FROM      
 		#RVPTransaction VT      
-			INNER JOIN TempPersonalInformation TP      
+			INNER JOIN TempPersonalInformation TP WITH (NOLOCK)      
 				ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID      
 	WHERE      
 		VT.Voucher_Acc_ID = ''      
@@ -372,7 +379,7 @@ AS BEGIN
 		SP.Exact_DOB     
 	FROM      
 		#RVPTransaction VT      
-			INNER JOIN SpecialPersonalInformation SP      
+			INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)      
 				ON VT.Special_Acc_ID = SP.Special_Acc_ID      
 	WHERE      
 		VT.Voucher_Acc_ID = ''      
@@ -513,8 +520,8 @@ AS BEGIN
 	Declare @displayCodeRQIV_RQIVHCW nvarchar(255)
 	SET @displayCodeRQIV_RQIVHCW = ( select Display_Code_For_Claim + ' + ' from 
 							(select Display_Code_For_Claim
-								from subsidizegroupclaim sgc
-									inner join subsidize s
+								from subsidizegroupclaim sgc WITH (NOLOCK)
+									inner join subsidize s WITH (NOLOCK)
 										on sgc.subsidize_code = s.subsidize_code
 								where 
 									sgc.scheme_code = 'RVP' 
@@ -526,8 +533,8 @@ AS BEGIN
 	Declare @displayCodeRQIVPID nvarchar(255)
 	SET @displayCodeRQIVPID = ( select Display_Code_For_Claim + ' + ' from 
 							(select Display_Code_For_Claim
-								from subsidizegroupclaim sgc
-									inner join subsidize s
+								from subsidizegroupclaim sgc WITH (NOLOCK)
+									inner join subsidize s WITH (NOLOCK)
 										on sgc.subsidize_code = s.subsidize_code
 								where 
 									sgc.scheme_code = 'RVP' 

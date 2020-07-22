@@ -8,6 +8,13 @@ GO
   
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
+-- ============================================= 
+-- =============================================
+-- Modification History
 -- Modified by:		Dickson Law	
 -- Modified date:	02 Jan 2018
 -- CR No.:			CRE14-016
@@ -104,8 +111,8 @@ BEGIN
 			CASE WHEN VP.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 		END
 	FROM  
-		VoucherAccount VA  
-		INNER JOIN PersonalInformation VP ON VA.Voucher_Acc_ID = VP.Voucher_Acc_ID  
+		VoucherAccount VA WITH (NOLOCK)  
+		INNER JOIN PersonalInformation VP WITH (NOLOCK) ON VA.Voucher_Acc_ID = VP.Voucher_Acc_ID  
 	WHERE  
 		VA.Effective_Dtm <= @Cutoff_Dtm  
    	
@@ -125,8 +132,8 @@ BEGIN
 			CASE WHEN TP.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 		END
 	FROM  
-		TempVoucherAccount TA  
-		INNER JOIN TempPersonalInformation TP ON TA.Voucher_Acc_ID = TP.Voucher_Acc_ID  
+		TempVoucherAccount TA WITH (NOLOCK)  
+		INNER JOIN TempPersonalInformation TP WITH (NOLOCK) ON TA.Voucher_Acc_ID = TP.Voucher_Acc_ID  
 	WHERE  
 		TA.Record_Status NOT IN ('V', 'D')  
 		AND TA.Create_Dtm <= @Cutoff_Dtm  
@@ -147,8 +154,8 @@ BEGIN
 			CASE WHEN SP.Deceased = 'Y' THEN 'Y' ELSE 'N' END
 		END
 	FROM  
-		SpecialAccount SA  
-		INNER JOIN SpecialPersonalInformation SP ON SA.Special_Acc_ID = SP.Special_Acc_ID     
+		SpecialAccount SA WITH (NOLOCK)  
+		INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK) ON SA.Special_Acc_ID = SP.Special_Acc_ID     
 	WHERE  
 		SA.Record_Status NOT IN ('V', 'D')  
 		AND SA.Create_Dtm <= @Cutoff_Dtm  

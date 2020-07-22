@@ -8,9 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- Description:		
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jul 2020
+-- CR. No			INT20-0025
+-- Description:		(1) Add WITH (NOLOCK)
 -- =============================================
 -- =============================================
 -- Modified by:		Marco CHOI
@@ -98,16 +99,16 @@ SET NOCOUNT ON;
 		ISNULL(Invalid_Acc_ID, ''),
 		Doc_Code
 	FROM
-		VoucherTransaction VT
+		VoucherTransaction VT WITH (NOLOCK)
 	WHERE
 		Scheme_Code = 'RVP'
 AND Transaction_Dtm <= @Cutoff_Dtm
 AND VT.Record_Status NOT IN
-	(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004') 
+	(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004') 
 		AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status' 
 		AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date )))			
 AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In 
-	(SELECT Status_Value FROM StatStatusFilterMapping WHERE (report_id = 'ALL' OR report_id = 'eHSD0004') 
+	(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0004') 
 	AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'
 	AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date))))
 
@@ -129,7 +130,7 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 		END
 	FROM
 		#RVPTransaction VT
-			INNER JOIN PersonalInformation VP
+			INNER JOIN PersonalInformation VP WITH (NOLOCK)
 				ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID
 					AND VT.Doc_Code = VP.Doc_Code
 	WHERE
@@ -153,7 +154,7 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 		END
 	FROM
 		#RVPTransaction VT
-			INNER JOIN TempPersonalInformation TP
+			INNER JOIN TempPersonalInformation TP WITH (NOLOCK)
 				ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID
 	WHERE
 		VT.Voucher_Acc_ID = ''
@@ -178,7 +179,7 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 		END
 	FROM
 		#RVPTransaction VT
-			INNER JOIN SpecialPersonalInformation SP
+			INNER JOIN SpecialPersonalInformation SP WITH (NOLOCK)
 				ON VT.Special_Acc_ID = SP.Special_Acc_ID
 	WHERE
 		VT.Voucher_Acc_ID = ''
