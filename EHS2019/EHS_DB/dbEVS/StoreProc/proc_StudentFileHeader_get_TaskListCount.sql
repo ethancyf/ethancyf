@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	2 Dec 2019
+-- CR No.:			INT19-0031 (Fix issue after upgraded .Net 4.8)
+-- Description:		Include New status 'Confirm Claim reactiviation' (CA)
+-- =============================================    
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	21 September 2018
 -- CR No.:			CRE17-018 (New initiatives for VSS and RVP in 2018-19)
@@ -41,7 +48,7 @@ AS BEGIN
 			FROM
 				StudentFileHeader S
 			WHERE
-				Record_Status IN ('CU', 'CR', 'CT', 'CE')
+				Record_Status IN ('CU', 'CR', 'CT', 'CE', 'CA')
 		
 			UNION
 			
@@ -50,7 +57,7 @@ AS BEGIN
 			FROM
 				StudentFileHeaderStaging
 			WHERE
-				Record_Status IN ('CU', 'CR', 'CT', 'CE')
+				Record_Status IN ('CU', 'CR', 'CT', 'CE', 'CA')
 					
 		) S
 		

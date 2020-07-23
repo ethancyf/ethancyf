@@ -9,6 +9,21 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
+-- Modified date:	22 Nov 2019
+-- CR No.:			INT19-0029
+-- Description:		Fix Parameter Sniffing
+--					Fix Insert into [#TempTargetRecipientForCaseV] without validated account id
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	19 Nov 2019
+-- CR No.:			INT19-0028
+-- Description:		Add - WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
 -- Modified date:	26 Sep 2018
 -- CR No.:			CRE17-010 (OCSSS integration - VSS Aberrant)
 -- Description:		[01] - Add Summary
@@ -43,6 +58,11 @@ AS BEGIN
 -- Test Data
 --SET @target_period_from = '2014-01-01'
 --SET @target_period_to = '2016-04-28'
+
+	DECLARE @In_request_dtm				DATETIME = @request_dtm
+	DECLARE @In_target_period_from		DATETIME = @target_period_from
+	DECLARE @In_target_period_to		DATETIME = @target_period_to
+	DECLARE @In_is_debug				BIT = @is_debug
 
 	------------------------------------------------------------------------------------------
 	-- Report Helper Field
@@ -88,6 +108,12 @@ AS BEGIN
 		, Aberrant_Pattern	CHAR(1)
 	)
 
+	CREATE NONCLUSTERED INDEX IX_TempTargetRecipientTransaction_Transaction_ID
+		ON #TempTargetRecipientTransaction (Transaction_ID); 
+
+	CREATE NONCLUSTERED INDEX IX_TempTargetRecipientTransaction_Voucher_Acc_ID_Doc_Code
+		ON #TempTargetRecipientTransaction (Voucher_Acc_ID, Doc_Code); 
+
 	------------------------------------------------------------------------------------------
 	-- Temp Table for Recipient for Case V
 	CREATE TABLE #TempTargetRecipientForCaseV (
@@ -95,12 +121,33 @@ AS BEGIN
 		, Doc_Code			CHAR(20)
 	)
 
+	CREATE NONCLUSTERED INDEX IX_TempTargetRecipientForCaseV_Voucher_Acc_ID_Doc_Code
+		ON #TempTargetRecipientForCaseV (Voucher_Acc_ID, Doc_Code); 
+
+	------------------------------------------------------------------------------------------
+	-- Temp Table for Recipient Base for Case R
+	CREATE TABLE #TempTargetRecipientBaseForCaseR ( 
+		ROWNUM		INT
+		, System_Dtm		DATETIME 
+		, Voucher_Acc_ID	CHAR(15)	
+		, DOC_Code			CHAR(20)
+		, DOB				DATETIME
+		, Exact_DOB			CHAR(1)
+		, Eng_Name			CHAR(100)	
+	)  
+
+	CREATE NONCLUSTERED INDEX IX_TempTargetRecipientBaseForCaseR_Voucher_Acc_ID_Doc_Code
+		ON #TempTargetRecipientBaseForCaseR (Voucher_Acc_ID, Doc_Code, System_Dtm); 
+
 	------------------------------------------------------------------------------------------
 	-- Temp Table for Recipient for Case R
 	CREATE TABLE #TempTargetRecipientForCaseR (
 		Voucher_Acc_ID		CHAR(15)
 		, Doc_Code			CHAR(20)
 	)
+
+	CREATE NONCLUSTERED INDEX IX_TempTargetRecipientForCaseR_Voucher_Acc_ID_Doc_Code
+		ON #TempTargetRecipientForCaseR (Voucher_Acc_ID, Doc_Code); 
 	
 	------------------------------------------------------------------------------------------	
 	-- Temp Table for grouping Target Recipient and Season
@@ -114,7 +161,7 @@ AS BEGIN
 		, Exact_DOB			CHAR(1)
 		, Eng_Name			CHAR(100)	
 		, Season_Seq		SMALLINT
- )  
+	)  
   	
 	------------------------------------------------------------------------------------------
 	-- Temp Table for Transaction treated as aberrant usage
@@ -179,20 +226,20 @@ AS BEGIN
 
 	------------------------------------------------------------------------------------------
 	-- Init the Request_Dtm (Reference) DateTime to Avoid Null value
-	IF @request_dtm is null
-		SET @request_dtm = GETDATE()
+	IF @In_request_dtm is null
+		SET @In_request_dtm = GETDATE()
 
 	-- The Pass 7 day, ensure the time start from 00:00 (datetime compare logic use ">=")
-	IF @target_period_from is null
-		SET @target_period_from = CONVERT(datetime, CONVERT(varchar(10), DATEADD(d, -7, @request_dtm), 105), 105)
+	IF @In_target_period_from is null
+		SET @In_target_period_from = CONVERT(datetime, CONVERT(varchar(10), DATEADD(d, -7, @In_request_dtm), 105), 105)
 	ELSE
-		SET @target_period_from = CONVERT(datetime, CONVERT(varchar(10), @target_period_from, 105), 105)
+		SET @In_target_period_from = CONVERT(datetime, CONVERT(varchar(10), @In_target_period_from, 105), 105)
 
 	-- The Pass 1 day, ensure the time start from 00:00 (datetime compare logic use "<", so get today's date)
-	IF @target_period_to is null
-		SET @target_period_to = CONVERT(datetime, CONVERT(varchar(10), @request_dtm, 105), 105)
+	IF @In_target_period_to is null
+		SET @In_target_period_to = CONVERT(datetime, CONVERT(varchar(10), @In_request_dtm, 105), 105)
 	ELSE
-		SET @target_period_to = CONVERT(datetime, CONVERT(varchar(10), @target_period_to, 105), 105)
+		SET @In_target_period_to = CONVERT(datetime, CONVERT(varchar(10), @In_target_period_to, 105), 105)
 
 	------------------------------------------------------------------------------------------
 	INSERT INTO @TempSubsidizeItem (Subsidize_Item_Code) VALUES ('SIV'), ('SIVSH')
@@ -204,11 +251,11 @@ AS BEGIN
 			Status_Name, 
 			Status_Value 
 	FROM 
-			StatStatusFilterMapping 
+			StatStatusFilterMapping WITH (NOLOCK)
 	WHERE 
 			(Report_id = 'ALL' OR Report_id = @Report_ID)     
-			AND (Effective_Date IS NULL OR Effective_Date <= @target_period_to) 
-			AND (Expiry_Date IS NULL OR Expiry_Date >= @target_period_to)
+			AND (Effective_Date IS NULL OR Effective_Date <= @In_target_period_to) 
+			AND (Expiry_Date IS NULL OR Expiry_Date >= @In_target_period_to)
 	
 	
 	------------------------------------------------------------------------------------------
@@ -225,9 +272,9 @@ AS BEGIN
 				VS.Season_Desc,
 				CONVERT(datetime, CONVERT(varchar(10), MIN(SC.Claim_Period_From), 105), 105) AS [Season_Start]
 		FROM 
-				SubsidizeGroupClaimItemDetails SD
-		INNER JOIN	SubsidizeGroupClaim SC ON SD.Subsidize_Code = SC.Subsidize_Code AND SD.Scheme_Seq = SC.Scheme_Seq
-		INNER JOIN	VaccineSeason VS ON SD.Scheme_Code = VS.Scheme_Code AND SD.Scheme_Seq = VS.Scheme_Seq AND SD.Subsidize_Item_Code = VS.Subsidize_Item_Code
+				SubsidizeGroupClaimItemDetails SD WITH (NOLOCK)
+		INNER JOIN	SubsidizeGroupClaim SC WITH (NOLOCK) ON SD.Subsidize_Code = SC.Subsidize_Code AND SD.Scheme_Seq = SC.Scheme_Seq
+		INNER JOIN	VaccineSeason VS WITH (NOLOCK) ON SD.Scheme_Code = VS.Scheme_Code AND SD.Scheme_Seq = VS.Scheme_Seq AND SD.Subsidize_Item_Code = VS.Subsidize_Item_Code
 		INNER JOIN	@TempSubsidizeItem TSI ON SD.Subsidize_Item_Code = TSI.Subsidize_Item_Code
 		GROUP BY 
 				VS.Season_Seq, VS.Season_Desc
@@ -247,8 +294,8 @@ AS BEGIN
 	
 	
 	-- Find current season period based on the report period (Can be cross season)		
-	SET	@Current_Season_Start = (SELECT MAX(Season_Start) FROM @TempSeasonPeriod WHERE	@target_period_from >= Season_Start)
-	SET	@Current_Season_End = (SELECT MIN(Season_End) FROM @TempSeasonPeriod WHERE	@target_period_To <= Season_End)
+	SET	@Current_Season_Start = (SELECT MAX(Season_Start) FROM @TempSeasonPeriod WHERE	@In_target_period_from >= Season_Start)
+	SET	@Current_Season_End = (SELECT MIN(Season_End) FROM @TempSeasonPeriod WHERE	@In_target_period_to <= Season_End)
 
 
 	--======================================================================
@@ -265,12 +312,12 @@ AS BEGIN
 			VT.Doc_Code,
 			'C'
 	FROM	
-			VoucherTransaction VT
-	INNER JOIN	TransactionDetail TD ON VT.Transaction_ID = TD.Transaction_ID
+			VoucherTransaction VT WITH (NOLOCK)
+	INNER JOIN	TransactionDetail TD WITH (NOLOCK) ON VT.Transaction_ID = TD.Transaction_ID
 	INNER JOIN	@TempSubsidizeItem TSI ON TD.Subsidize_Item_Code = TSI.Subsidize_Item_Code
 	WHERE	
-			VT.Transaction_Dtm >= @target_period_from
-			AND VT.Transaction_Dtm < @target_period_to
+			VT.Transaction_Dtm >= @In_target_period_from
+			AND VT.Transaction_Dtm < @In_target_period_to
 			AND	VT.Voucher_Acc_ID <> ''
 			AND (VT.Invalidation IS NULL   
 				OR VT.Invalidation NOT IN (SELECT Status_Value FROM @TempTransactionStatusFilter WHERE Status_Name = 'Invalidation'))
@@ -288,27 +335,27 @@ AS BEGIN
 			SELECT  
 					Voucher_Acc_ID
 			FROM   
-					TempVoucherAccMatchLog   
+					TempVoucherAccMatchLog WITH (NOLOCK) 
 			WHERE	
 					Processed = 'Y'  
-					AND Return_Dtm >= @target_period_from  
-					AND Return_Dtm < @target_period_to  
+					AND Return_Dtm >= @In_target_period_from  
+					AND Return_Dtm < @In_target_period_to  
 					AND Valid_HKID = 'Y'
 			UNION ALL  
 			SELECT  
 					Voucher_Acc_ID
 			FROM   
-					TempVoucherAccManualMatchLOG  
+					TempVoucherAccManualMatchLOG WITH (NOLOCK)
 			WHERE
-					Return_Dtm >= @target_period_from  
-					AND Return_Dtm < @target_period_to  
+					Return_Dtm >= @In_target_period_from  
+					AND Return_Dtm < @In_target_period_to  
 					AND Valid = 'Y' 
 		)	MatchResult
-    INNER JOIN	TempVoucherAccount TVA ON MatchResult.Voucher_Acc_ID = TVA.Voucher_Acc_ID 
-    INNER JOIN	TempPersonalInformation TPI ON MatchResult.Voucher_Acc_ID = TPI.Voucher_Acc_ID
+    INNER JOIN	TempVoucherAccount TVA WITH (NOLOCK) ON MatchResult.Voucher_Acc_ID = TVA.Voucher_Acc_ID 
+    INNER JOIN	TempPersonalInformation TPI WITH (NOLOCK) ON MatchResult.Voucher_Acc_ID = TPI.Voucher_Acc_ID
     WHERE
 			TVA.Account_Purpose NOT IN ('A', 'O')  			
-
+			AND TVA.Validated_Acc_ID <> ''
 	
 	-- Prepare Table for the Target Recipient Transaction for Case V (SIV Claim in ANY Season)
 	INSERT INTO #TempTargetRecipientTransaction (Transaction_ID, Transaction_Dtm, Service_Receive_Dtm, Voucher_Acc_ID, Doc_Code, Aberrant_Pattern)
@@ -321,8 +368,8 @@ AS BEGIN
 			'V'
 	FROM	
 			#TempTargetRecipientForCaseV RV
-	INNER JOIN	VoucherTransaction VT ON RV.Voucher_Acc_ID = VT.Voucher_Acc_ID AND RV.Doc_Code = VT.Doc_Code 
-	INNER JOIN	TransactionDetail TD ON VT.Transaction_ID = TD.Transaction_ID 
+	INNER JOIN	VoucherTransaction VT WITH (NOLOCK) ON RV.Voucher_Acc_ID = VT.Voucher_Acc_ID AND RV.Doc_Code = VT.Doc_Code 
+	INNER JOIN	TransactionDetail TD WITH (NOLOCK) ON VT.Transaction_ID = TD.Transaction_ID 
 	INNER JOIN	@TempSubsidizeItem TSI ON TD.Subsidize_Item_Code = TSI.Subsidize_Item_Code
 	WHERE					
 			(VT.Invalidation IS NULL   
@@ -333,52 +380,50 @@ AS BEGIN
 	------------------------------------------------------------------------------------------
 	-- Prepare Table for the Target Recipient for Case R (Who rectified English name or DOB in Reporting Period)	
 
-	;WITH CTE AS (
-		SELECT  
-				ROW_NUMBER() OVER 
-				( 
-					PARTITION BY Voucher_Acc_ID, Doc_Code
-					ORDER BY System_Dtm 
-				) AS rownum, 
-				System_Dtm,	
-				Voucher_Acc_ID,
-				Doc_Code,
-				DOB,
-				Exact_DOB,
-				dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar, DecryptByKey(Encrypt_Field2))) AS EngName
-				
-		FROM
-				PersonalInfoAmendHistory  H1
-				
-		WHERE	
-				Voucher_Acc_ID IN (
-									SELECT  DISTINCT Voucher_Acc_ID
-									FROM   
-											PersonalInfoAmendHistory  H2
-									WHERE	
-											Voucher_Acc_ID <> ''
-											AND H1.Doc_Code = H2.Doc_Code
-											AND System_Dtm >= @target_period_from  
-											AND System_Dtm < @target_period_to  
-											AND Record_Status = 'A')
-				AND Record_Status = 'A'
-	)
-	
+
+
+	INSERT INTO #TempTargetRecipientBaseForCaseR 
+		(ROWNUM, System_Dtm, Voucher_Acc_ID, DOC_Code, DOB, Exact_DOB, Eng_Name)
+	SELECT  
+			ROW_NUMBER() OVER (PARTITION BY Voucher_Acc_ID, Doc_Code ORDER BY System_Dtm) AS ROWNUM, 
+			System_Dtm,	
+			Voucher_Acc_ID,
+			Doc_Code,
+			DOB,
+			Exact_DOB,
+			dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar, DecryptByKey(Encrypt_Field2))) AS EngName			
+	FROM
+			PersonalInfoAmendHistory H1 WITH (NOLOCK)			
+	WHERE	
+			EXISTS (SELECT  
+							DISTINCT Voucher_Acc_ID
+					FROM   
+							PersonalInfoAmendHistory H2 WITH (NOLOCK)
+					WHERE										
+							Voucher_Acc_ID <> ''
+							AND H1.Voucher_Acc_ID = Voucher_Acc_ID AND H1.Doc_Code = Doc_Code
+							AND System_Dtm >= @In_target_period_from AND System_Dtm < @In_target_period_to  
+							AND Record_Status = 'A')
+			AND Record_Status = 'A'
+
 	-- Compare with previous record	
 	INSERT INTO #TempTargetRecipientForCaseR (Voucher_Acc_ID, Doc_Code)
 	(	
 		SELECT	DISTINCT 
-				CTE.Voucher_Acc_ID, 
-				CTE.Doc_Code
+				R.Voucher_Acc_ID, 
+				R.Doc_Code
 		FROM	
-				CTE
-		INNER JOIN	CTE prev ON cte.Voucher_Acc_ID = prev.Voucher_Acc_ID AND cte.Doc_Code = prev.Doc_Code AND prev.rownum = CTE.rownum - 1
+				#TempTargetRecipientBaseForCaseR R
+					INNER JOIN	#TempTargetRecipientBaseForCaseR R_PREV 
+						ON R.Voucher_Acc_ID = R_PREV.Voucher_Acc_ID 
+							AND R.Doc_Code = R_PREV.Doc_Code 
+							AND R_PREV.ROWNUM = R.ROWNUM - 1
 		WHERE 
-				CTE.System_Dtm >= @target_period_from  
-				AND CTE.System_Dtm < @target_period_to   	
-				AND ( DateDiff(dd, CTE.DOB, prev.DOB) <> 0
-					OR CTE.Exact_DOB <> prev.Exact_DOB
-					OR CTE.EngName <> prev.EngName
+				R.System_Dtm >= @In_target_period_from  
+				AND R.System_Dtm < @In_target_period_to   	
+				AND ( DATEDIFF(dd, R.DOB, R_PREV.DOB) <> 0
+					OR R.Exact_DOB <> R_PREV.Exact_DOB
+					OR R.Eng_Name <> R_PREV.Eng_Name
 				)
 	)
 
@@ -416,7 +461,7 @@ AS BEGIN
 			Exact_DOB = CASE [PI].Exact_DOB WHEN 'T' THEN 'D'
 								WHEN 'U' THEN 'M'
 								WHEN 'V' THEN 'Y'
-								ELSE [PI].Exact_DOB END  -- Regardless of ¡§exact date¡¨ and ¡§In Word¡¨ date 							
+								ELSE [PI].Exact_DOB END  -- Regardless of â€œexact dateâ€ and â€œIn Wordâ€ date 							
 	FROM	
 			#TempTargetRecipientTransaction RT
 	INNER JOIN	PersonalInformation [PI] ON RT.Voucher_Acc_ID = [PI].Voucher_Acc_ID AND RT.Doc_Code = [PI].Doc_Code
@@ -435,7 +480,7 @@ AS BEGIN
 	--							2. age >= Age Limit at service receive date
 	DELETE	#TempTargetRecipientTransaction
 	WHERE 
-			Transaction_Dtm	>= @target_period_to
+			Transaction_Dtm	>= @In_target_period_to
 			OR DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= @Age_Limit
 	--======================================================================
 	--	End of Step 1: Find target transaction
@@ -496,9 +541,9 @@ AS BEGIN
 						#TempTargetRecipientGroup
 			) RG
 	INNER JOIN	@TempSeasonPeriod SP ON RG.Season_Seq = SP.Season_Seq
-	INNER JOIN	VoucherTransaction VT ON SP.Season_Start <= VT.Service_receive_dtm AND SP.Season_End > VT.Service_receive_dtm
-	INNER JOIN	TransactionDetail TD ON VT.Transaction_ID = TD.Transaction_ID 
-	INNER JOIN	PersonalInformation [PI] ON VT.Voucher_Acc_ID = [PI].Voucher_Acc_ID AND VT.Doc_Code = [PI].Doc_Code
+	INNER JOIN	VoucherTransaction VT WITH (NOLOCK) ON SP.Season_Start <= VT.Service_receive_dtm AND SP.Season_End > VT.Service_receive_dtm
+	INNER JOIN	TransactionDetail TD WITH (NOLOCK) ON VT.Transaction_ID = TD.Transaction_ID 
+	INNER JOIN	PersonalInformation [PI] WITH (NOLOCK) ON VT.Voucher_Acc_ID = [PI].Voucher_Acc_ID AND VT.Doc_Code = [PI].Doc_Code
 	INNER JOIN	@TempSubsidizeItem TSI ON TD.Subsidize_Item_Code = TSI.Subsidize_Item_Code
 	WHERE		
 			
@@ -536,7 +581,7 @@ AS BEGIN
 	--							2. age >= Age Limit at service receive date
 	DELETE	#TempAberrantTransaction
 	WHERE 
-			Transaction_Dtm	>= @target_period_to
+			Transaction_Dtm	>= @In_target_period_to
 			OR DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= @Age_Limit
 			
 
@@ -588,12 +633,12 @@ AS BEGIN
 			VT.SP_ID,
 			VT.HKIC_Symbol
 	FROM	
-			VoucherTransaction VT
-	INNER JOIN	TransactionDetail TD ON VT.Transaction_ID = TD.Transaction_ID
+			VoucherTransaction VT WITH (NOLOCK)
+	INNER JOIN	TransactionDetail TD WITH (NOLOCK) ON VT.Transaction_ID = TD.Transaction_ID
 	INNER JOIN Subsidizeitem SI ON TD.subsidize_item_Code = SI.Subsidize_Item_Code AND SI.Subsidize_Type = 'VACCINE'
 	WHERE	
-			VT.Transaction_Dtm >= @target_period_from
-			AND VT.Transaction_Dtm < @target_period_to
+			VT.Transaction_Dtm >= @In_target_period_from
+			AND VT.Transaction_Dtm < @In_target_period_to
 			AND VT.Scheme_Code IN (SELECT ITEM FROM func_Split_string(@OCSSS_Scheme,';')) -- Scheme for OCSSS checking
 			AND	VT.HKIC_Symbol IN ('C','U')
 			AND VT.OCSSS_Ref_Status IN ('C','N')	-- Connection Fail / OCSSS is turn off
@@ -610,7 +655,7 @@ AS BEGIN
 
 	------------------------------------------------------------------------------------------
 
-	IF @is_debug = 1
+	IF @In_is_debug = 1
 	BEGIN
 		SELECT	'' as 'debug:', * FROM @TempSeasonPeriod					
 		SELECT '' as 'debug:', @Current_Season_Start AS Current_Season_Start, @Current_Season_End AS Current_Season_End
@@ -631,8 +676,8 @@ AS BEGIN
 
 	-- Prepare Result Table
 	-- Header 1
-	INSERT INTO @TempResultTable_01 (Result_Value1) VALUES ('Reporting period: ' + CONVERT(varchar(10), @target_period_from, 111) + 
-														' to ' + CONVERT(varchar(10), DATEADD(d, -1, @target_period_to), 111))
+	INSERT INTO @TempResultTable_01 (Result_Value1) VALUES ('Reporting period: ' + CONVERT(varchar(10), @In_target_period_from, 111) + 
+														' to ' + CONVERT(varchar(10), DATEADD(d, -1, @In_target_period_to), 111))
 														
 	-- Line Break Before Data
 	INSERT INTO @TempResultTable_01 (Result_Value1) VALUES ('')
@@ -675,9 +720,9 @@ AS BEGIN
 				1
 		FROM	
 				#TempAberrantTransaction T
-		INNER JOIN	VoucherTransaction VT ON T.Transaction_ID = VT.Transaction_ID
-		INNER JOIN	TransactionDetail TD ON VT.Transaction_ID = TD.Transaction_ID
-		INNER JOIN	PersonalInformation [PI] ON VT.Voucher_Acc_ID = [PI].Voucher_Acc_ID AND VT.Doc_Code = [PI].Doc_Code
+		INNER JOIN	VoucherTransaction VT WITH (NOLOCK) ON T.Transaction_ID = VT.Transaction_ID
+		INNER JOIN	TransactionDetail TD WITH (NOLOCK) ON VT.Transaction_ID = TD.Transaction_ID
+		INNER JOIN	PersonalInformation [PI] WITH (NOLOCK) ON VT.Voucher_Acc_ID = [PI].Voucher_Acc_ID AND VT.Doc_Code = [PI].Doc_Code
 		INNER JOIN	SubsidizeGroupClaim SGC ON TD.Scheme_Code = SGC.Scheme_Code AND TD.Scheme_Seq = SGC.Scheme_Seq AND TD.Subsidize_Code = SGC.Subsidize_Code
 		INNER JOIN	SubsidizeItemDetails SD ON TD.Subsidize_Item_Code = SD.Subsidize_Item_Code AND TD.Available_Item_Code = SD.Available_Item_Code
 		LEFT JOIN	#TempTargetRecipientTransaction ATC ON T.Transaction_ID = ATC.Transaction_ID AND ATC.Aberrant_Pattern = 'C'
@@ -696,8 +741,8 @@ AS BEGIN
 -- Excel Worksheet (02 - OCSSS)
 -- ---------------------------------------
 	-- Header 1
-	INSERT INTO @TempResultTable_02 (Result_Value1) VALUES ('Reporting period: ' + CONVERT(varchar(10), @target_period_from, 111) + 
-														' to ' + CONVERT(varchar(10), DATEADD(d, -1, @target_period_to), 111))
+	INSERT INTO @TempResultTable_02 (Result_Value1) VALUES ('Reporting period: ' + CONVERT(varchar(10), @In_target_period_from, 111) + 
+														' to ' + CONVERT(varchar(10), DATEADD(d, -1, @In_target_period_to), 111))
 														
 	-- Line Break Before Data
 	INSERT INTO @TempResultTable_02 (Result_Value1) VALUES ('')
@@ -736,7 +781,7 @@ AS BEGIN
 
 	-- Report Parameter
 	SELECT	CASE WHEN ISNULL(@ResultCount, 0) > 0 THEN 'Y' ELSE 'N' END AS 'HaveResult',
-			CONVERT(varchar(11), DATEADD(d, -1, @target_period_to), 106) AS 'Date'
+			CONVERT(varchar(11), DATEADD(d, -1, @In_target_period_to), 106) AS 'Date'
 					
 	-- Result Set 1: Table of Content
 	SELECT	'Report Generation Time: ' + CONVERT(varchar, GETDATE(), 111) + ' ' + CONVERT(VARCHAR(5), GETDATE(), 108) AS Result_Value
@@ -795,3 +840,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSW0002] TO HCVU
 GO
+

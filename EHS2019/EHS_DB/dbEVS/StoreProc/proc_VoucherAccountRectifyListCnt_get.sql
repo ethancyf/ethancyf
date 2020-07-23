@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	2 Dec 2019
+-- CR No.:			INT19-0031 (Fix issue after upgraded .Net 4.8)
+-- Description:		Exclude Special Account
+-- =============================================    
+-- =============================================
+-- Modification History
 -- Modified by:		Paul Yip
 -- Modified date:	26 July 2010
 -- Description:		Retrieve both fail temp acc (created by back office) and special acc
@@ -49,6 +56,8 @@ select @record_num_validated = count(VA.Voucher_Acc_ID)
 	and (TP.Validating is null or TP.Validating = 'N')
 	) 
 
+select @record_num_special = 0
+/*
 select @record_num_special = count(SA.Special_Acc_ID) 
 	from SpecialAccount SA, SpecialPersonalInformation SP
 	where 
@@ -56,6 +65,7 @@ select @record_num_special = count(SA.Special_Acc_ID)
 	and SA.Record_Status = 'I'
 	and SA.Account_Purpose = 'C' 
 	and (SP.Validating is null or SP.Validating = 'N')
+*/
 	
 Select @record_num_temp = count(TA.Voucher_Acc_ID)
  from TempVoucherAccount TA, TempPersonalInformation TP, VoucherAccountCreationLOG C    
