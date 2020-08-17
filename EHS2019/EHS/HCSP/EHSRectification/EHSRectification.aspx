@@ -499,7 +499,9 @@
                                     </tr>
                                     <tr id="trSmartIDSoftwareNotInstalled">
                                         <td colspan="3" style="vertical-align:top;padding-bottom: 5px; vertical-align:middle">
-                                            <asp:Label ID="lblSmartIDSoftwareNotInstalled" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled %>"/>
+                                            <asp:Label ID="lblSmartIDSoftwareNotInstalled1" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled1 %>"/>
+                                            <asp:LinkButton ID ="lbtnSmartIDSoftwareNotInstalled2" runat="server" style="font-size:16px;color:rgba(31, 87, 255, 1)" Text ="<%$ Resources:Text, SmartIDSoftwareNotInstalled2 %>" />
+                                            <asp:Label ID="lblSmartIDSoftwareNotInstalled3" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled3 %>"/>
                                         </td>    
                                     </tr>
                                     <tr>

@@ -6783,11 +6783,27 @@ Namespace Text
         End Function
         ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
+        ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Private Sub lbtnUpdateNow_Click(sender As Object, e As EventArgs) Handles lbtnUpdateNow.Click
 
             ScriptManager.RegisterStartupScript(Me, Page.GetType, "UpdateNow", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
 
+            _udtAuditLogEntry.WriteLog(LogID.LOG00092, "Click Update Now for software of reading Smart ID card")
+
         End Sub
+        ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
+
+        ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Sub lbtnHere_Click(sender As Object, e As EventArgs) Handles lbtnSmartIDSoftwareNotInstalled2.Click
+
+            ScriptManager.RegisterStartupScript(Me, Page.GetType, "Here", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
+
+            _udtAuditLogEntry.WriteLog(LogID.LOG00093, "Click HERE for software of reading Smart ID card")
+
+        End Sub
+        ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
 
     End Class
 

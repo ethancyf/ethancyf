@@ -743,6 +743,26 @@ Partial Public Class VaccinationRecordEnquiry
         ScriptManager.RegisterStartupScript(Me, Page.GetType, "DocumentSmaple", String.Format("javascript:show{0}Help('{1}');", udcDocumentTypeRadioButtonGroup.SelectedValue.Trim.Replace("/", ""), Session("language")), True)
     End Sub
 
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub udcClaimSearch_UpdateNowClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles udcClaimSearch.UpdateNowLinkButtonClick
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00072, "Click Update Now for software of reading Smart ID card")
+
+    End Sub
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
+
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub udcClaimSearch_HereClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles udcClaimSearch.HereLinkButtonClick
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00073, "Click HERE for software of reading Smart ID card")
+
+    End Sub
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
+
     Protected Sub udcClaimSearch_SearchButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcClaimSearch.SearchButtonClick
         Dim strDocCode As String = udcDocumentTypeRadioButtonGroup.SelectedValue
         udcClaimSearch.SetProperty(strDocCode)

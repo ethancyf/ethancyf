@@ -680,13 +680,31 @@ Partial Public Class EHSRectification
     Protected WithEvents trSmartIDSoftwareNotInstalled As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
-    '''lblSmartIDSoftwareNotInstalled control.
+    '''lblSmartIDSoftwareNotInstalled1 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblSmartIDSoftwareNotInstalled As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblSmartIDSoftwareNotInstalled1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lbtnSmartIDSoftwareNotInstalled2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbtnSmartIDSoftwareNotInstalled2 As Global.System.Web.UI.WebControls.LinkButton
+
+    '''<summary>
+    '''lblSmartIDSoftwareNotInstalled3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSmartIDSoftwareNotInstalled3 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''ibtnRectifyReadOldSmartIC control.

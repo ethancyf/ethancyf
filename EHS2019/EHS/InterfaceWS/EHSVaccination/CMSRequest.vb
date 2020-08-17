@@ -555,8 +555,11 @@ Namespace EHSVaccination
             Dim blnValidDocNo As Boolean = True
             Dim strPattern As String = "^[U][A-Z]"
 
+            ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' Fix to include DocType "HKID" to check prefix of document no. "U")
             For Each udtPatientDocument As PatientDocument In udtPatient.PatientDocumentList
-                If udtPatientDocument.DocumentType = DocTypeModel.DocTypeCode.HKIC Or _
+                If udtPatientDocument.DocumentType = DocTypeModel.DocTypeCode.HKIC Or udtPatientDocument.DocumentType = "HKID" Or _
                    udtPatientDocument.DocumentType = DocTypeModel.DocTypeCode.HKBC Or _
                    udtPatientDocument.DocumentType = DocTypeModel.DocTypeCode.EC Then
 
@@ -566,6 +569,7 @@ Namespace EHSVaccination
                     End If
                 End If
             Next
+            ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service) [End][Chris YIM]	
 
             If Not blnValidDocNo Then
                 Throw New Exception(String.Format("Invalid document no. is found in Patient ID: {0}", udtPatient.PatientID))

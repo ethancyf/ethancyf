@@ -5076,4 +5076,13 @@ Partial Public Class EHSRectification
     End Function
     ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
+    Private Sub lbtnHere_Click(sender As Object, e As EventArgs) Handles lbtnSmartIDSoftwareNotInstalled2.Click
+
+        ScriptManager.RegisterStartupScript(Me, Page.GetType, "UpdateNow", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
+
+        Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
+
+        Me.udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00071, "Click HERE for software of reading Smart ID card")
+
+    End Sub
 End Class

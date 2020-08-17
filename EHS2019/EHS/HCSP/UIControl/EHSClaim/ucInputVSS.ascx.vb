@@ -1068,8 +1068,11 @@ Partial Public Class ucInputVSS
                 Me.rbCategorySelection.DataTextField = ClaimCategoryModel._Category_Name
             End If
 
-            Me.rbCategorySelection.DataBind()
+            ' INT20-0023 (Fix to hide SIV on season end) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Me.rbCategorySelection.ClearSelection()
+            Me.rbCategorySelection.DataBind()
+            ' INT20-0023 (Fix to hide SIV on season end) [End][Chris YIM]
 
             If updateByTransactionModel Then
                 strSelectedValue = MyBase.EHSTransaction.CategoryCode

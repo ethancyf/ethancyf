@@ -447,27 +447,29 @@ Namespace Component.Scheme
                             udtSchemeInfo.RecordStatus = SchemeInformationMaintenanceDisplayStatus.ActivePendingDelist OrElse _
                             udtSchemeInfo.RecordStatus = SchemeInformationMaintenanceDisplayStatus.ActivePendingSuspend Then
 
-                            'Dim udtSchemeBackOfficeBLL As New SchemeBackOfficeBLL()
-
-                            'Dim udtSchemeBackOfficeModel As SchemeBackOfficeModel = udtSchemeBackOfficeBLL.GetAllEffectiveSchemeBackOfficeWithSubsidizeGroupFromCache().Filter(udtPracticeSchemeInfoModel.SchemeCode)
-                            'Dim udtSchemeBackOfficeModel As SchemeBackOfficeModel = udtSchemeBackOfficeBLL.getAllDistinctSchemeBackOffice().FilterLastEffective(udtPracticeSchemeInfoModel.SchemeCode, dtmDate)
+                            ' INT20-0023 (Fix to hide SIV on season end) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
                             Dim udtSchemeBackOfficeModel As SchemeBackOfficeModel = udtSchemeBackOfficeList.FilterLastEffective(udtPracticeSchemeInfoModel.SchemeCode, dtmServiceDate)
-                            Dim udtSubdizeGroupBackOfficeModel As SubsidizeGroupBackOfficeModel = udtSchemeBackOfficeModel.SubsidizeGroupBackOfficeList().Filter(udtPracticeSchemeInfoModel.SchemeCode, udtPracticeSchemeInfoModel.SubsidizeCode)
 
-                            If Not udtSubdizeGroupBackOfficeModel.ServiceFeeCompulsory OrElse _
-                                (udtSubdizeGroupBackOfficeModel.ServiceFeeCompulsory AndAlso udtPracticeSchemeInfoModel.ProvideServiceFee.HasValue AndAlso udtPracticeSchemeInfoModel.ProvideServiceFee.Value = True) Then
+                            If Not udtSchemeBackOfficeModel Is Nothing Then
+                                Dim udtSubdizeGroupBackOfficeModel As SubsidizeGroupBackOfficeModel = udtSchemeBackOfficeModel.SubsidizeGroupBackOfficeList().Filter(udtPracticeSchemeInfoModel.SchemeCode, udtPracticeSchemeInfoModel.SubsidizeCode)
 
-                                Dim arrDr As DataRow() = dtSubsidizeMap.Select( _
-                                    tableSubsidizeEnrolClaimMap.Scheme_Code_Enrol + "='" + udtPracticeSchemeInfoModel.SchemeCode.Trim() + "' AND " _
-                                    + tableSubsidizeEnrolClaimMap.Subsidize_Code_Enrol + "='" + udtPracticeSchemeInfoModel.SubsidizeCode.Trim() + "'")
+                                If Not udtSubdizeGroupBackOfficeModel.ServiceFeeCompulsory OrElse _
+                                    (udtSubdizeGroupBackOfficeModel.ServiceFeeCompulsory AndAlso udtPracticeSchemeInfoModel.ProvideServiceFee.HasValue AndAlso udtPracticeSchemeInfoModel.ProvideServiceFee.Value = True) Then
 
-                                For Each drRow As DataRow In arrDr
-                                    lstStrSchemeCodeClaim.Add(drRow(tableSubsidizeEnrolClaimMap.Scheme_Code_Claim).ToString().Trim())
-                                    lstStrSubsidizeCodeClaim.Add(drRow(tableSubsidizeEnrolClaimMap.Subsidize_Code_Claim).ToString().Trim())
-                                Next
+                                    Dim arrDr As DataRow() = dtSubsidizeMap.Select( _
+                                        tableSubsidizeEnrolClaimMap.Scheme_Code_Enrol + "='" + udtPracticeSchemeInfoModel.SchemeCode.Trim() + "' AND " _
+                                        + tableSubsidizeEnrolClaimMap.Subsidize_Code_Enrol + "='" + udtPracticeSchemeInfoModel.SubsidizeCode.Trim() + "'")
+
+                                    For Each drRow As DataRow In arrDr
+                                        lstStrSchemeCodeClaim.Add(drRow(tableSubsidizeEnrolClaimMap.Scheme_Code_Claim).ToString().Trim())
+                                        lstStrSubsidizeCodeClaim.Add(drRow(tableSubsidizeEnrolClaimMap.Subsidize_Code_Claim).ToString().Trim())
+                                    Next
+
+                                End If
 
                             End If
-
+                            ' INT20-0023 (Fix to hide SIV on season end) [End][Chris YIM]
                         End If
                     End If
                 End If

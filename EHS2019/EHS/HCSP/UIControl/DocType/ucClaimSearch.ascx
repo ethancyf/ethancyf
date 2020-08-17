@@ -440,7 +440,9 @@
                                                     <tr style="height:180px">
                                                         <td style="vertical-align:top;padding-bottom: 5px; text-align: center; vertical-align:middle">
                                                             <div id="divSmartIDSoftwareNotInstalled" runat="server" style="padding-left:20px;padding-right:20px">
-                                                                <asp:Label ID="lblSmartIDSoftwareNotInstalled" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled %>"/>
+                                                                <asp:Label ID="lblSmartIDSoftwareNotInstalled1" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled1 %>"/>
+                                                                <asp:LinkButton ID ="lbtnSmartIDSoftwareNotInstalled2" runat="server" style="font-size:16px;color:rgba(31, 87, 255, 1)" Text ="<%$ Resources:Text, SmartIDSoftwareNotInstalled2 %>" />
+                                                                <asp:Label ID="lblSmartIDSoftwareNotInstalled3" runat="server" Font-Size="16px" style="color:#4d4d4d" Text="<%$ Resources:Text, SmartIDSoftwareNotInstalled3 %>"/>
                                                             </div>
                                                         </td>                                    
                                                     </tr>

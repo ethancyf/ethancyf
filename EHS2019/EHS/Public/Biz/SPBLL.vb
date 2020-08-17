@@ -53,7 +53,17 @@ Public Class SPBLL
 
         End If
 
-        Return dtSDSubsidizeGroup.Copy
+
+        ' INT20-0023  Fix to hide SIV on sesson end [Start][Koala]
+        '-----------------------------------------------------------------------------------------
+        Dim dvSDSubsidizeGroup As DataView = dtSDSubsidizeGroup.DefaultView
+        dvSDSubsidizeGroup.RowFilter = String.Format("'{0}' >= Search_Period_From AND '{0}' < Search_Period_To AND Search_Available = 'Y'", _
+                                                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+        dvSDSubsidizeGroup.Sort = "Display_Seq"
+        Return dvSDSubsidizeGroup.ToTable()
+        'Return dtSDSubsidizeGroup.Copy
+        ' INT20-0023  Fix to hide SIV on sesson end [End][Koala]
+
 
     End Function
 
@@ -954,10 +964,15 @@ Public Class SPBLL
 
             For Each dr As DataRow In dtSDScheme.Rows
 
+
                 Dim dvSDSubsidizeGroup As DataView = dtSDSubsidizeGroup.DefaultView
-                dvSDSubsidizeGroup.RowFilter = String.Format("Scheme_Code = '{0}' AND '{1}' >= Search_Period_From AND '{1}' < Search_Period_To AND Search_Available = 'Y'", _
-                                                             dr("Scheme_Code"), _
-                                                             dtmNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                ' INT20-0023  Fix to hide SIV on sesson end [Start][Koala]
+                '-----------------------------------------------------------------------------------------
+                dvSDSubsidizeGroup.RowFilter = String.Format("Scheme_Code = '{0}'", dr("Scheme_Code"))
+                'dvSDSubsidizeGroup.RowFilter = String.Format("Scheme_Code = '{0}' AND '{1}' >= Search_Period_From AND '{1}' < Search_Period_To AND Search_Available = 'Y'", _
+                '                                             dr("Scheme_Code"), _
+                '                                             dtmNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                ' INT20-0023  Fix to hide SIV on sesson end [End][Koala]
                 dvSDSubsidizeGroup.Sort = "Display_Seq"
 
                 Dim dtSubsidizeGroup As DataTable = dvSDSubsidizeGroup.ToTable(True, "Search_Group", "Subsidize_Desc", "Subsidize_Desc_Chi")

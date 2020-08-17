@@ -1431,6 +1431,26 @@ Partial Public Class EHSClaimV1
 
     End Sub
 
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub udcClaimSearch_UpdateNowClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles udcClaimSearch.UpdateNowLinkButtonClick
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00088, "Click Update Now for software of reading Smart ID card")
+
+    End Sub
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
+
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub udcClaimSearch_HereClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles udcClaimSearch.HereLinkButtonClick
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00089, "Click HERE for software of reading Smart ID card")
+
+    End Sub
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
+
     '==================================================================== Code for SmartID ============================================================================
     ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
@@ -3042,37 +3062,53 @@ Partial Public Class EHSClaimV1
                 Dim udtSelectedPractice As PracticeDisplayModel = (New SessionHandler).PracticeDisplayGetFromSession(FunctionCode)
                 Dim udtInputPicker As InputPickerModel = New InputPickerModel
 
-                If udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.RVP) OrElse _
-                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.HSIVSS) OrElse _
-                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.VSS) OrElse _
-                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.ENHVSSO) OrElse _
-                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.PPP) Then
+                ' INT20-0023 (Fix to hide SIV on season end) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                ' Load the new SubsidizeGroupClaim list after service date changed
+                Dim udtCurrentSchemeClaimList As SchemeClaimModelCollection = Me._udtSessionHandler.SchemeSubsidizeListGetFromSession(FunctCode)
+                Dim udtUpdatedSchemeClaimList As SchemeClaimModelCollection = Nothing
+
+                ' Get all available Scheme with SubsidizeGroupClaim list (Filter by Provided Service in BO & Service date) 
+                udtUpdatedSchemeClaimList = _udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(Me._udtSP.PracticeList(udtSelectedPractice.PracticeID).PracticeSchemeInfoList, _
+                                                                                                                                  Me._udtSP.SchemeInfoList, _
+                                                                                                                                  dtmServiceDate)
+
+                ' Get all available SubsidizeGroupClaim List (Filter by Eligibility Rule)
+                udtUpdatedSchemeClaimList = _udtSchemeClaimBLL.searchEligibleClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtUpdatedSchemeClaimList)
+
+                ' Re-new the SubsidizeGroupClaim list
+                For Each udtCurrentSchemeClaim As SchemeClaimModel In udtCurrentSchemeClaimList
+                    Dim udtUpdatedSchemeClaim As SchemeClaimModel = udtUpdatedSchemeClaimList.Filter(udtCurrentSchemeClaim.SchemeCode)
+
+                    If Not udtUpdatedSchemeClaim Is Nothing Then
+                        udtCurrentSchemeClaim.SubsidizeGroupClaimList = udtUpdatedSchemeClaim.SubsidizeGroupClaimList
+                    End If
+
+                Next
+
+                Dim udtNewSchemeClaim As SchemeClaimModel = udtCurrentSchemeClaimList.Filter(udtSchemeClaim.SchemeCode)
+
+                If udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.RVP) OrElse _
+                    udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.HSIVSS) OrElse _
+                    udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.VSS) OrElse _
+                    udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.ENHVSSO) OrElse _
+                    udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.PPP) Then
 
                     Dim udtEHSTransactionBLL As New EHSTransactionBLL()
                     Dim udtTranBenefitList As TransactionDetailModelCollection = Nothing
 
                     ' Transaction Checking will be only apply on Vaccine scheme
-                    If udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
+                    If udtNewSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
                         ' Retrieve the Transaction Detail (may have mutil SubsidizeCodes)
                         udtTranBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSPersonalInformation.DocCode, udtEHSPersonalInformation.IdentityNum)
                     End If
 
-                    Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Me._udtSessionHandler.SchemeSubsidizeListGetFromSession(FunctCode)
 
-                    For Each udtCurrentSchemeClaim As SchemeClaimModel In udtSchemeClaimModelCollection
-                        Dim udtUpdatedSchemeClaim As SchemeClaimModel = _udtSchemeClaimBLL.getAllEffectiveSchemeClaim_WithSubsidizeGroup(dtmServiceDate).Filter(udtCurrentSchemeClaim.SchemeCode)
 
-                        udtCurrentSchemeClaim.SubsidizeGroupClaimList = udtUpdatedSchemeClaim.SubsidizeGroupClaimList.Filter(dtmServiceDate)
-                    Next
-
-                    Dim udtNewSchemeClaim As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(udtSchemeClaim.SchemeCode)
-
-                    ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                    ' -----------------------------------------------------------------------------------------
-                    ' Vaccine Scheme with category (e.g RVP & HSIVSS)
-                    'Dim udtClaimCategorys As ClaimCategoryModelCollection = Me._udtClaimCategoryBLL.getDistinctCategoryByScheme(udtSchemeClaim, udtEHSPersonalInformation, dtmServiceDate)
+                    ' Re-generate the category list by new SubsidizeGroupClaim list (e.g VSS & RVP)
                     Dim udtClaimCategorys As ClaimCategoryModelCollection = Me._udtClaimCategoryBLL.getDistinctCategoryByScheme(udtNewSchemeClaim, udtEHSPersonalInformation, dtmServiceDate)
-                    ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+
+
 
                     udtClaimCategory = Me._udtSessionHandler.ClaimCategoryGetFromSession(FunctCode)
 
@@ -3086,7 +3122,7 @@ Partial Public Class EHSClaimV1
 
 
                     Dim udtPractice As PracticeModel = Nothing
-                    Dim udtFilterSchemeClaim As SchemeClaimModel = New SchemeClaimModel(udtSchemeClaim)
+                    Dim udtFilterSchemeClaim As SchemeClaimModel = New SchemeClaimModel(udtNewSchemeClaim)
                     If Not IsNothing(udtSelectedPractice) Then
                         udtPractice = udtSP.PracticeList(udtSelectedPractice.PracticeID)
                     End If
@@ -3161,7 +3197,7 @@ Partial Public Class EHSClaimV1
                         Me._udtSessionHandler.ClaimCategorySaveToSession(udtClaimCategory, FunctCode)
 
                     ElseIf Not udtClaimCategory Is Nothing AndAlso udtClaimCategorys.Count > 1 Then
-                        If udtClaimCategorys.FilterByCategoryCode(udtSchemeClaim.SchemeCode, udtClaimCategory.CategoryCode) Is Nothing Then
+                        If udtClaimCategorys.FilterByCategoryCode(udtNewSchemeClaim.SchemeCode, udtClaimCategory.CategoryCode) Is Nothing Then
                             udtClaimCategory = Nothing
                             Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
                         End If
@@ -3174,7 +3210,7 @@ Partial Public Class EHSClaimV1
                     'strServiceDate is Changed
                     If Not udtClaimCategory Is Nothing AndAlso (Not strServiceDate.Equals(strPreviousValdatedServiceDate) OrElse IsNothing(sender)) Then
                         'Update session of SchemeClaim model list
-                        Me._udtSessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaimModelCollection, FunctCode)
+                        Me._udtSessionHandler.SchemeSubsidizeListSaveToSession(udtCurrentSchemeClaimList, FunctCode)
 
                         'Update session of SchemeClaim model
                         Me._udtSessionHandler.SchemeSelectedSaveToSession(udtNewSchemeClaim, FunctCode)
@@ -3182,7 +3218,7 @@ Partial Public Class EHSClaimV1
                         'Add CategoryCode
                         udtInputPicker.CategoryCode = udtClaimCategory.CategoryCode
 
-                        udtEHSClaimVaccine = Me._udtEHSClaimBLL.SearchEHSClaimVaccine(udtSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), udtInputPicker)
+                        udtEHSClaimVaccine = Me._udtEHSClaimBLL.SearchEHSClaimVaccine(udtNewSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), udtInputPicker)
 
                         Me._udtSessionHandler.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine)
                         Me.udcStep2aInputEHSClaim.ResetSchemeType()
@@ -3196,7 +3232,7 @@ Partial Public Class EHSClaimV1
 
                     'CRE16-002 (Revamp VSS) [Start][Chris YIM]
                     '-----------------------------------------------------------------------------------------
-                    Select Case udtSchemeClaim.SchemeCode
+                    Select Case udtNewSchemeClaim.SchemeCode
                         Case SchemeClaimModel.EnumControlType.VSS.ToString.Trim
                             If Me.udcStep2aInputEHSClaim.AvaliableForClaim Then
                                 Dim udcInputVSS As ucInputVSS = CType(Me.udcStep2aInputEHSClaim.GetVSSControl(), ucInputVSS)
@@ -3228,7 +3264,7 @@ Partial Public Class EHSClaimV1
                 Else
                     ' Vaccine scheme without cateogry (e.g. CIVSS & EVSS)
                     If Not strServiceDate.Equals(strPreviousValdatedServiceDate) OrElse IsNothing(sender) Then
-                        udtEHSClaimVaccine = Me._udtEHSClaimBLL.SearchEHSClaimVaccine(udtSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), Nothing)
+                        udtEHSClaimVaccine = Me._udtEHSClaimBLL.SearchEHSClaimVaccine(udtNewSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), Nothing)
 
                         Me._udtSessionHandler.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine)
                         Me.udcStep2aInputEHSClaim.ResetSchemeType()
@@ -3236,6 +3272,7 @@ Partial Public Class EHSClaimV1
 
                     End If
                 End If
+                ' INT20-0023 (Fix to hide SIV on season end) [End][Chris YIM]
             End If
         Else
             Me.udcMsgBoxInfo.Clear()

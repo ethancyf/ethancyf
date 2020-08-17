@@ -70,8 +70,14 @@ Partial Public Class ucClaimSearch
 
     ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Public Event ReadNewSmartIDComboButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event ReadNewSmartIDComboButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
     ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Event UpdateNowLinkButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
+    Public Event HereLinkButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
+    ' INT20-0021 (Add auditlog for click UpdateNow & Fix GetEHSVaccine web service ) [End][Chris YIM]	
 
 #End Region
 
@@ -422,6 +428,7 @@ Partial Public Class ucClaimSearch
                                 End If
 
                             End If
+                            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                         End If
                         ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                     End If
@@ -1623,6 +1630,16 @@ Partial Public Class ucClaimSearch
     Private Sub lbtnUpdateNow_Click(sender As Object, e As EventArgs) Handles lbtnUpdateNow.Click
 
         ScriptManager.RegisterStartupScript(Me, Page.GetType, "UpdateNow", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
+
+        RaiseEvent UpdateNowLinkButtonClick(sender, e)
+
+    End Sub
+
+    Private Sub lbtnHere_Click(sender As Object, e As EventArgs) Handles lbtnSmartIDSoftwareNotInstalled2.Click
+
+        ScriptManager.RegisterStartupScript(Me, Page.GetType, "Here", String.Format("javascript:showUpdateNow('{0}');", Session("language")), True)
+
+        RaiseEvent HereLinkButtonClick(sender, e)
 
     End Sub
 
