@@ -173,7 +173,11 @@ Namespace ComFunction
         ''' <returns>Well formatted xml dcoument</returns>
         ''' <remarks></remarks>
         Public Shared Function Dataset2Xml(ByVal dsSource As DataSet, ByVal sXsltFilePath As String) As XmlDocument
-            Return XsltTransform(New XmlDataDocument(dsSource), sXsltFilePath)
+            Dim xmlDoc As XmlDocument = New XmlDocument()
+            xmlDoc.Load(dsSource.GetXml())
+
+            'Return XsltTransform(New XmlDataDocument(dsSource), sXsltFilePath)
+            Return XsltTransform(xmlDoc.CreateNavigator, sXsltFilePath)
         End Function
 
 
@@ -216,6 +220,9 @@ Namespace ComFunction
 
             Dim strW As StringWriter = New System.IO.StringWriter
 
+            Dim xNamespaces As New Serialization.XmlSerializerNamespaces()
+            xNamespaces.Add(String.Empty, String.Empty)
+
             Dim xmlSettings As XmlWriterSettings = New XmlWriterSettings
             xmlSettings.Indent = False
             xmlSettings.NewLineHandling = NewLineHandling.None
@@ -223,7 +230,7 @@ Namespace ComFunction
             Dim xmlW As XmlWriter = XmlWriter.Create(strW, xmlSettings)
 
             Dim xmlSerializer As Serialization.XmlSerializer = New Serialization.XmlSerializer(obj.GetType)
-            xmlSerializer.Serialize(xmlW, obj)
+            xmlSerializer.Serialize(xmlW, obj, xNamespaces)
 
             strOutput = strW.ToString
 

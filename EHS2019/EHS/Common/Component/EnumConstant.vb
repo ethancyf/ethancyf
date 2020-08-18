@@ -700,6 +700,7 @@ Namespace Component
         Public Const FUNT010901 As String = "010901" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
         Public Const FUNT011001 As String = "011001" ' [CRE11-013] RVP Home List Maintenance
         Public Const FUNT011101 As String = "011101" ' Inspection Record Management
+        Public Const FUNT011102 As String = "011102" ' Inspection Record Approval
         Public Const FUNT019916 As String = "019916" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
         Public Const FUNT020001 As String = "020001"
         Public Const FUNT020002 As String = "020002"
@@ -842,7 +843,7 @@ Namespace Component
         Public Const FUNT070105 As String = "070105"
         Public Const FUNT070106 As String = "070106"
 
-        Public Const FUNT070201 As String = "070201" ' eHR-to-eHS: getExternalWebS()
+        Public Const FUNT070201 As String = "070201" ' eHR-to-eHS: getExternalWebS() - TokenService
         Public Const FUNT070202 As String = "070202" ' eHR-to-eHS: getExternalWebS() - PatientPortal
         Public Const FUNT070301 As String = "070301" ' eHS-to-eHR: verifySystem()
         Public Const FUNT070302 As String = "070302" ' eHS-to-eHR: getEhrWebS()
@@ -2449,6 +2450,10 @@ Namespace Component
         Public Const PCDStatusUpdater As String = "PCDStatusUpdater" ' CRE17-016 (Checking of PCD status during VSS enrolment) [Chris YIM]
         Public Const StudentFileChecking As String = "StudentFileChecking" ' CRE17-018-03 (New initiatives for VSS and RVP in 2018-19 - Phase 3 - Claim) [Koala]
         Public Const StudentAccountMatching As String = "StudentAccountMatching"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const PatientPortalDoctorListGenerator As String = "PatientPortalDoctorListGenerator"
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
     End Class
 
@@ -2470,6 +2475,7 @@ Namespace Component
         Public Const PCDStatusUpdater As String = "019918"  ' CRE17-016 (Checking of PCD status during VSS enrolment) [Chris YIM]
         Public Const StudentFileChecking As String = "019919" ' CRE17-018-03 (New initiatives for VSS and RVP in 2018-19 - Phase 3 - Claim) [Koala]
         Public Const StudentAccountMatching As String = "019920"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
+        Public Const PatientPortalDoctorListGenerator As String = "019921" ' CRE18-XXX (Provide data to eHR Portal) [Chris YIM]
     End Class
 
     Public Class ScheduleJobLogStatus
@@ -2610,6 +2616,12 @@ Namespace Component
         Public Const eHSVF005 As String = "eHSVF005"
         Public Const eHSVF006 As String = "eHSVF006"
         ' CRE19-001-04 (PPP 2019-20) [End][Koala]
+
+        ' CRE19-022 Inspection Module [Start][Winnie]
+        ' Inspection Report 
+        Public Const INSP0001 As String = "INSP0001" ' Search Result
+        ' CRE19-022 Inspection Module [End][Winnie]
+
     End Class
 
     ' To Be Confirm The Report Submission File
@@ -3108,4 +3120,30 @@ Namespace Component
     End Enum
     ' I-CRE20-001 (Mid term solution to handle special characters in HA_MingLiu) [End][Winnie]
 
+    ' CRE19-022 (Inspection management) [Start][Golden]
+    Public Class InspectionStatus
+        Public Const Creating As String = ""
+        Public Const Closed As String = "C"
+        Public Const Incomplete As String = "I"
+        Public Const InspectionResultInputted As String = "RI"
+        Public Const ClosePendingApproval As String = "CC"
+        Public Const PendingForSiteVisit As String = "PV"
+        Public Const ReopenPendingApproval As String = "CO"
+        Public Const RemovePendingApproval As String = "CD"
+        Public Const Removed As String = "D"
+    End Class
+    Public Class RoleType
+        Public Const InspectionObserver As String = "19"
+        Public Const InspectionOfficer As String = "20"
+        Public Const InspectionEndorser As String = "21"
+        Public Const InspectionSEO As String = "22"
+    End Class
+
+    Public Class InspectionReportType
+        Public Const InternalReference As String = "InternalReference"
+        Public Const ConfirmationLetter As String = "ConfirmationLetter"
+        Public Const InspectionSummary As String = "InspectionSummary"
+    End Class
+
+    ' CRE19-022 (Inspection management) [End][Golden]
 End Namespace

@@ -228,4 +228,18 @@
 		<DBFlag>DBFlag2</DBFlag>
 		<!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
 	</Report>
+  <Report>
+    <ReportID>R0017</ReportID>
+    <ReportName>eHS(S)D0034-eHRSS Patient Portal Connection Report (Daily)</ReportName>
+    <ReportDesc>eHS(S)D0034-eHRSS Patient Portal Connection Report (Daily)</ReportDesc>
+    <ExecSP>proc_PatientPortalConnection_Stat_Read</ExecSP>
+    <TemplateName>eHSD0034_eHRSS_Patient_Portal_Connection_Daily_Report</TemplateName>
+    <ReportFileExt>XLSX</ReportFileExt>
+    <StartRowNo>5,4,3</StartRowNo>
+    <FileNameFormat>eHS(S)D0034-eHRSS Patient Portal Connection Daily Report</FileNameFormat>
+    <MinusDateForFileName>1</MinusDateForFileName>
+    <DailyGenerate>T</DailyGenerate>
+    <DBFlag>DBFlag2</DBFlag>
+    <!-- DBFlag = Primary DB / DBFlag2 = Secondary DB -->
+  </Report>  
 </ReportList>

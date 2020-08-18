@@ -21,30 +21,31 @@
             </table>
             <br />
             <table cellpadding="0" cellspacing="0">
-                <tr>
-                    <td style="width: 100px">Endpoint URL:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="txtEndpointURL" runat="server" Width="500px"></asp:TextBox>
+                <tr style="height:35px">
+                    <td style="width: 200px">Token Endpoint URL:</td>
+                    <td style="width: 500px">
+                        <asp:TextBox ID="txtEndpointURL" runat="server" Width="450px"></asp:TextBox>
                     </td>
                     <td style="width: 50px"></td>
-                    <td style="width: 90px">Load Sample:
-                    </td>
-                    <td>
-                        <asp:DropDownList ID="ddlLoadSample" runat="server" Width="300" OnSelectedIndexChanged="ddlLoadSample_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                    <td style="width: 100px">Load Sample:</td>
+                    <td style="width: 300px">
+                        <asp:DropDownList ID="ddlLoadSample" runat="server" Width="290" OnSelectedIndexChanged="ddlLoadSample_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>Patient Portal Endpoint URL:</td>
                     <td>
-                        <asp:Label ID="lblLoadSampleInstruction" runat="server" Font-Size="8pt"></asp:Label></td>
+                        <asp:TextBox ID="txtPatientPortalEndpointURL" runat="server" Width="450px"></asp:TextBox>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td style="vertical-align:top">
+                        <asp:Label ID="lblLoadSampleInstruction" runat="server" Font-Size="8pt"></asp:Label>
+                    </td>
                 </tr>
-                <tr style="height: 5px"></tr>
+                <tr style="height: 10px"></tr>
             </table>
-            <asp:TextBox ID="txtRequest" runat="server" EnableViewState="false" Height="200px" TextMode="MultiLine" Width="100%"></asp:TextBox>
+            <asp:TextBox ID="txtRequest" runat="server" EnableViewState="false" Height="250px" TextMode="MultiLine" Width="100%"></asp:TextBox>
             <table cellpadding="0" cellspacing="0">
                 <tr>
                     <td style="width: 100px">
@@ -60,6 +61,10 @@
             </table>
             <br />
             <asp:TextBox ID="txtResult" runat="server" EnableViewState="false" Height="300px" TextMode="MultiLine" Width="100%"></asp:TextBox>
+            <br />
+            <br />
+            <%--<asp:TextBox ID="txtByte" runat="server" EnableViewState="false" Height="300px" TextMode="MultiLine" Width="100%"></asp:TextBox>--%>
+            <asp:Button ID="btnDownload" runat="server" Text="DownloadZip" OnClick="btnDownload_Click" Visible="false" />
         </div>
     </form>
 </body>

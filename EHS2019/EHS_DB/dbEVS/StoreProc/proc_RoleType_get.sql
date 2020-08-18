@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_RoleType_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_RoleType_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_RoleType_get]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE19-022
+-- Modified by:		Winnie SUEN
+-- Modified date:	05 Aug 2020
+-- Description:		1. Sort by Display_Order
+-- =============================================  
 -- =============================================  
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -25,7 +32,7 @@ as
 select Role_Type, Role_Description, Available_HCVU_SubPlatform
 from RoleType
 where Record_Status = 'A'
-order by Role_Type
+order by Display_Order
 
 GO
 

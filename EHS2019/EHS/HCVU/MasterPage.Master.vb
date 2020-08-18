@@ -295,24 +295,25 @@ Partial Public Class MasterPage
         strPleaseWaitScript.Append("upd._startDelegate = Function.createDelegate(upd, ModalUpdProgStartRequest);")
         strPleaseWaitScript.Append("upd._pageRequestManager.add_endRequest(upd._endRequestHandlerDelegate);}")
         strPleaseWaitScript.Append("function ModalUpdProgStartRequest() {")
-        strPleaseWaitScript.Append("document.getElementById('" + Me.pnlPleaseWait.ClientID + "').style.visibility='hidden';")
+        strPleaseWaitScript.Append("$('#" + Me.pnlPleaseWait.ClientID + "').show();")
+
         strPleaseWaitScript.Append("if (this._pageRequestManager.get_isInAsyncPostBack()) {")
-        strPleaseWaitScript.Append("ShowPleaseWait();}}")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
+        strPleaseWaitScript.Append("this._timerCookie = setTimeout(ShowPleaseWait, 2000);}}")
         strPleaseWaitScript.Append("function ShowPleaseWait() {")
-        strPleaseWaitScript.Append("$find('" & Me.ModalPopupExtender1.ClientID & "').show();")
         ' CRE19-003 (Opt voucher capping) [End][Koala]
         ' ----------------------------------------------------------------------------------------
         ' Bring "Please Wait" Image to foreground and block click action in background
-        strPleaseWaitScript.Append("$find('" & Me.ModalPopupExtender1.ClientID & "')._backgroundElement.style.zIndex = 20000;")
-        strPleaseWaitScript.Append("$find('" & Me.ModalPopupExtender1.ClientID & "')._popupElement.style.zIndex = 20001;")
         ' CRE19-003 (Opt voucher capping) [End][Koala]
-        strPleaseWaitScript.Append("document.getElementById('" & Me.ModalPopupExtender1.ClientID & "_backgroundElement').style.height = document.documentElement.clientHeight + document.documentElement.scrollTop;")
-        strPleaseWaitScript.Append("setTimeout(""document.getElementById('" + Me.pnlPleaseWait.ClientID + "').style.visibility='visible'"", 2000);")
-        strPleaseWaitScript.Append("this._timerCookie = null;}")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='visible';")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.height = document.documentElement.clientHeight + document.documentElement.scrollTop;")
+        strPleaseWaitScript.Append("}")
         strPleaseWaitScript.Append("function ModalUpdProgEndRequest(sender, arg) {")
-        strPleaseWaitScript.Append("document.getElementById('" + Me.pnlPleaseWait.ClientID + "').style.visibility='hidden';")
-        strPleaseWaitScript.Append(" $find('" & ModalPopupExtender1.ClientID & "').hide();")
+
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
+        strPleaseWaitScript.Append("window.clearTimeout(this._timerCookie);")
         strPleaseWaitScript.Append("if (this._timerCookie) {")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
         strPleaseWaitScript.Append("window.clearTimeout(this._timerCookie);")
         strPleaseWaitScript.Append("this._timerCookie = null;}}")
         strPleaseWaitScript.Append("Sys.Application.add_load(ModalUpdProgInitialize);")

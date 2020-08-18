@@ -69,6 +69,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\CommonBin\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\CommonBin\Microsoft.Office.Interop.Word.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\Microsoft.Vbe.Interop.dll</HintPath>
@@ -129,6 +134,7 @@
     <Content Include="ClaimManagement\VaccinationFileConfirmation.aspx" />
     <Content Include="ClaimManagement\VaccinationFileRectification.aspx" />
     <Content Include="ClaimManagement\VaccinationFileUpload.aspx" />
+    <Content Include="CSS\CommonStyleInspection.css" />
     <Content Include="CSS\ReportSubmission\CommonControlStyle.css" />
     <Content Include="CSS\CustomMenuStyle.css" />
     <Content Include="CSS\PPC\PPC0001Style.css" />
@@ -151,6 +157,11 @@
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileUpload.png" />
     <Content Include="Images\banner\eHSAccount\banner_eHealthSubsidiesAccountEnquiryCallCentre.png" />
     <Content Include="Images\banner\ReportAndDownload\banner_PostPaymentCheck.png" />
+    <Content Include="Images\banner\Surveillance\banner_InspectionRecordApproval.png" />
+    <Content Include="Images\banner\Surveillance\banner_InspectionRecordManagement.png" />
+    <Content Include="Images\button\btn_Approve_D.png" />
+    <Content Include="Images\button\btn_CloseCase.png" />
+    <Content Include="Images\button\btn_CloseCase_D.png" />
     <Content Include="Images\button\btn_ConfirmAndAcceptWarning.png" />
     <Content Include="Images\button\btn_ConversionRateHistory.png" />
     <Content Include="Images\button\btn_ConversionRateHistory_D.png" />
@@ -160,12 +171,22 @@
     <Content Include="Images\button\btn_DownloadRectificationReport.png" />
     <Content Include="Images\button\btn_DownloadRectificationReport_D.png" />
     <Content Include="Images\button\btn_EditInformation.png" />
+    <Content Include="Images\button\btn_EditResult.png" />
+    <Content Include="Images\button\btn_EditResult_D.png" />
+    <Content Include="Images\button\btn_EditVisitDetail.png" />
+    <Content Include="Images\button\btn_EditVisitDetail_D.png" />
     <Content Include="Images\button\btn_ExportLatestStudentReport.png" />
     <Content Include="Images\button\btn_ExportLatestStudentReport_D.png" />
     <Content Include="Images\button\btn_ExportReport.png" />
     <Content Include="Images\button\btn_GetFromEHRSS.png" />
+    <Content Include="Images\button\btn_InputInspectionResult.png" />
+    <Content Include="Images\button\btn_InputInspectionResult_D.png" />
     <Content Include="Images\button\btn_joinPCD_D.png" />
     <Content Include="Images\button\btn_NewClaimTransaction_D.png" />
+    <Content Include="Images\button\btn_NewInspectionRecord.png" />
+    <Content Include="Images\button\btn_NewInspectionRecord_D.png" />
+    <Content Include="Images\button\btn_PDF.png" />
+    <Content Include="Images\button\btn_PDF_D.png" />
     <Content Include="Images\button\btn_ReactivateTransaction.png" />
     <Content Include="Images\button\btn_RemoveRectifiedFile.png" />
     <Content Include="Images\button\btn_RemoveRectifiedFile_D.png" />
@@ -174,6 +195,9 @@
     <Content Include="Images\button\btn_RemoveVaccinationClaim_D.png" />
     <Content Include="Images\button\btn_RemoveVaccinationFile.png" />
     <Content Include="Images\button\btn_RemoveVaccinationFile_D.png" />
+    <Content Include="Images\button\btn_Remove_D.png" />
+    <Content Include="Images\button\btn_ReopenCase.png" />
+    <Content Include="Images\button\btn_ReopenCase_D.png" />
     <Content Include="Images\button\btn_ReplaceToken_D.png" />
     <Content Include="Images\button\btn_ShowRectificationRecord.png" />
     <Content Include="Images\button\btn_ShowVaccinationClaimRecord.png" />
@@ -183,6 +207,7 @@
     <Content Include="Images\button\btn_UploadRectifiedFile_D.png" />
     <Content Include="Images\button\btn_UploadVaccinationClaim.png" />
     <Content Include="Images\button\btn_UploadVaccinationClaim_D.png" />
+    <Content Include="Images\button\btn_Word.png" />
     <Content Include="Images\button\icon_button\btn_Download.png" />
     <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
@@ -228,6 +253,9 @@
     <Content Include="JS\jquery-1.10.2.js" />
     <Content Include="JS\ReportSubmission\CommonControl.js" />
     <Content Include="ReportAndDownload\PostPaymentCheck.aspx" />
+    <Content Include="Surveillance\InspectionRecordApproval.aspx" />
+    <Content Include="Surveillance\InspectionRecordManagement.aspx" />
+    <Content Include="Surveillance\irmInspectionPrintOutViewer.aspx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
@@ -317,6 +345,8 @@
     <Compile Include="BLL\eHSAccountMaint\eHSAccountMaintBLL.vb">
     </Compile>
     <Compile Include="BLL\EHSClaimBLL.vb" />
+    <Compile Include="BLL\InspectionRecord\InspectionRecordBLL.vb" />
+    <Compile Include="BLL\InspectionRecord\InspectionRecordModel.vb" />
     <Compile Include="BLL\KeyGenerator.vb" />
     <Compile Include="BLL\LoginBLL.vb" />
     <Compile Include="BLL\MenuControlBLL.vb" />
@@ -608,6 +638,27 @@
     </Compile>
     <Compile Include="ServiceProvider\spTokenReplacementPrintOutViewer.aspx.vb">
       <DependentUpon>spTokenReplacementPrintOutViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Surveillance\InspectionRecordApproval.aspx.designer.vb">
+      <DependentUpon>InspectionRecordApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Surveillance\InspectionRecordApproval.aspx.vb">
+      <DependentUpon>InspectionRecordApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Surveillance\InspectionRecordManagement.aspx.designer.vb">
+      <DependentUpon>InspectionRecordManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Surveillance\InspectionRecordManagement.aspx.vb">
+      <DependentUpon>InspectionRecordManagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Surveillance\irmInspectionPrintOutViewer.aspx.designer.vb">
+      <DependentUpon>irmInspectionPrintOutViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Surveillance\irmInspectionPrintOutViewer.aspx.vb">
+      <DependentUpon>irmInspectionPrintOutViewer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.designer.vb">
@@ -2220,6 +2271,10 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <Content Include="PrintOut\InspectionReport\ConfirmationLetter.docx" />
+    <Content Include="PrintOut\InspectionReport\InternalReference.docx" />
+    <Content Include="PrintOut\InspectionReport\SummaryOfInspectionVisit.docx" />
+    <Content Include="ReportAndDownload\Template\INSP0001-InspectionSearchResult_Template.xlsx" />
     <None Include="ReportAndDownload\Template\STAT00001_template.xlsx" />
     <None Include="ReportAndDownload\Template\STAT00002_template.xlsx" />
     <None Include="ReportAndDownload\Template\STAT00003_template.xlsx" />
@@ -2332,14 +2387,6 @@
     <ProjectReference Include="..\SSODataType\SSODataType.vbproj">
       <Project>{e65e8a79-91f8-4ddd-8b33-8f9dfad82736}</Project>
       <Name>SSODataType</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SSOLib\SSOLib.vbproj">
-      <Project>{cbdd772e-5452-4a30-b683-3f59d4cd6c2c}</Project>
-      <Name>SSOLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SSOUtil\SSOUtil.vbproj">
-      <Project>{da1c6063-9549-4914-9a85-5586406bd7e6}</Project>
-      <Name>SSOUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

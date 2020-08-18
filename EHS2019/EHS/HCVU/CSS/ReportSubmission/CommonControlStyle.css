@@ -330,7 +330,7 @@
 /*UI - DateFormatMonthAndYear*/
 
 .FormatOfDateMY_tr{
-    height: 24px !important;
+    height: 25px !important;
 }
 
 .FormatOfDateMY_FormatLabelWidth{
@@ -363,6 +363,10 @@
 .FormatOfDateMY_DateValue {
     position:relative !important;
     left:-3px !important;
+}
+
+.FormatOfDateMY_PanelDisplay {
+    display:inline-block;    
 }
 
 /*UI - CheckBox*/

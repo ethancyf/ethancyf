@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- Modified by:	    Chris YIM
+-- Modified date:   20 Feb 2019
+-- CR No.:			CRE20-005
+-- Description:		Grant rights of WSEXT
 -- =============================================
 -- =============================================
 -- Author:			Winnie SUEN
@@ -51,11 +51,6 @@ BEGIN
 END
 GO
 
-GRANT EXECUTE ON [dbo].[proc_ProfessionVoucherQuota_get_cache] TO HCSP
+GRANT EXECUTE ON [dbo].[proc_ProfessionVoucherQuota_get_cache] TO HCSP, HCVU, HCPUBLIC, WSEXT
 GO
 
-GRANT EXECUTE ON [dbo].[proc_ProfessionVoucherQuota_get_cache] TO HCVU
-GO
-
-GRANT EXECUTE ON [dbo].[proc_ProfessionVoucherQuota_get_cache] TO HCPUBLIC
-GO

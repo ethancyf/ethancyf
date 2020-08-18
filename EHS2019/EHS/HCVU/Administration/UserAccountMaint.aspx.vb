@@ -14,6 +14,7 @@ Imports Common.Component.Token
 Imports Common.Component
 Imports Common.DataAccess
 Imports Common.ComFunction.AccountSecurity
+Imports Common.Component.StaticData
 
 Partial Public Class UserAccountMaint
     Inherits BasePage
@@ -23,6 +24,14 @@ Partial Public Class UserAccountMaint
         EDIT = 1
         ADD = 2
     End Enum
+
+    ' CRE19-022 Inspection Module [Start][Winnie]
+    Public Class Gender
+        Public Const Male As String = "M"
+        Public Const Female As String = "F"
+        Public Const NotProvided As String = "N"
+    End Class
+    ' CRE19-022 Inspection Module [End][Winnie]
 
     Private blnUserListIndexChange As Boolean = True
     Private Const SESS_USERACCOUNTMAINT As String = "SESS_USERACCOUNTMAINT"
@@ -61,6 +70,18 @@ Partial Public Class UserAccountMaint
         Me.chkSuspended.Enabled = blnEdit
 
         Me.ckbScheme.Enabled = blnEdit
+
+        ' CRE19-022 - Inspection [Begin][Golden]
+        lblChineseName.Visible = Not blnEdit
+        txtChineseName.Visible = blnEdit
+
+        lblGender.Visible = Not blnEdit
+        rdlGender.Visible = blnEdit
+
+        txtContactNo.Visible = blnEdit
+        lblContactNo.Visible = Not blnEdit
+        ' CRE19-022 - Inspection [End][Golden]
+
     End Sub
 
     Private Sub SetControlState(ByVal state As StateType)
@@ -215,6 +236,15 @@ Partial Public Class UserAccountMaint
             Me.ckbScheme.DataSource = udtSchemeClaimModelCollection
             Me.ckbScheme.DataBind()
 
+            ' CRE19-022 -  [Begin][Golden]
+            Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
+            Me.rdlGender.Items.Clear()
+            Me.rdlGender.DataSource = udtStaticDataBLL.GetStaticDataListByColumnName("Gender")
+            rdlGender.DataTextField = "DataValue"
+            rdlGender.DataValueField = "ItemNo"
+            rdlGender.DataBind()
+            ' CRE19-022 -  [End][Golden]
+
         End If
 
         Dim strScript As String
@@ -276,6 +306,17 @@ Partial Public Class UserAccountMaint
         Me.txtEffectiveDate.Text = ""
         Me.txtExpiryDate.Text = ""
         Me.txtTokenSN.Text = ""
+
+        ' CRE19-022 - Inspection [Begin][Golden]
+        Me.lblChineseName.Text = ""
+        Me.lblGender.Text = ""
+        Me.lblContactNo.Text = ""
+        Me.txtChineseName.Text = ""
+        Me.txtContactNo.Text = ""
+
+        Me.rdlGender.SelectedValue = Gender.NotProvided
+        ' CRE19-022 - Inspection [End][Golden]
+
 
         Me.chkSuspended.Checked = False
         Me.chkAccountLocked.Checked = False
@@ -356,11 +397,39 @@ Partial Public Class UserAccountMaint
         Me.chkSuspended.Checked = udtHCVUUser.Suspended
         Me.chkAccountLocked.Checked = udtHCVUUser.Locked
 
+        ' CRE19-022 - Inspection [Begin][Golden]
+        If udtHCVUUser.ChineseName = "" Then
+            Me.lblChineseName.Text = "--"
+        Else
+            Me.lblChineseName.Text = udtHCVUUser.ChineseName
+        End If
+
+        Me.lblGender.Text = GetGenderText(udtHCVUUser.Gender)
+
+        If udtHCVUUser.ContactNo = "" Then
+            Me.lblContactNo.Text = "--"
+        Else
+            Me.lblContactNo.Text = udtHCVUUser.ContactNo
+        End If
+
+        Me.txtChineseName.Text = udtHCVUUser.ChineseName
+        Me.rdlGender.SelectedValue = If(udtHCVUUser.Gender = String.Empty, Gender.NotProvided, udtHCVUUser.Gender)
+        Me.txtContactNo.Text = udtHCVUUser.ContactNo
+
+        ' CRE19-022 - Inspection [End][Golden]
+
         Session(SESS_USERACCOUNTMAINT) = udtHCVUUser
 
         Return udtHCVUUser
     End Function
-
+    Private Function GetGenderText(Gender As String) As String
+        For Each item As ListItem In rdlGender.Items
+            If Gender.Trim = item.Value.Trim Then
+                Return item.Text
+            End If
+        Next
+        Return String.Empty
+    End Function
     Private Sub ClearUserRole()
         Dim li As ListItem
         For Each li In Me.chklRole.Items
@@ -541,6 +610,7 @@ Partial Public Class UserAccountMaint
                 ' I-CRE16-007-02 Refine system from CheckMarx findings [Start][Dickson Law]
                 displayInfoResetPWMsgBox(udtHCVUUser)
                 ' I-CRE16-007-02 Refine system from CheckMarx findings [End][Dickson Law]
+
 
 
                 udtAuditLogEntry.AddDescripton("User_ID", Me.ddlUserList.SelectedValue)
@@ -895,6 +965,7 @@ Partial Public Class UserAccountMaint
         Me.imgTokenSNAlert.Visible = False
         Me.imgRoleAlert.Visible = False
         Me.imgSchemeAlert.Visible = False
+        Me.imgGenderAlert.Visible = False
     End Sub
 
     Private Function chkLoginID(ByVal strLoginID As String) As SystemMessage
@@ -944,6 +1015,8 @@ Partial Public Class UserAccountMaint
         Dim blnChangedEffectiveDate As Boolean = True
         Dim blnChangedExpiryDate As Boolean = True
 
+        Dim blnOriginalGenderProvided As Boolean = False
+
         Me.udcMessageBox.Visible = False
         ResetAlertImage()
 
@@ -981,6 +1054,13 @@ Partial Public Class UserAccountMaint
                 If _strExpiryDate.Trim = Me.txtExpiryDate.Text.Trim Then
                     blnChangedExpiryDate = False
                 End If
+
+                ' CRE19-022 Inspection Module [Start][Winnie]
+                Dim strOriginalGender As String = udtHCVUUser.Gender
+                If strOriginalGender <> Gender.NotProvided Then
+                    blnOriginalGenderProvided = True
+                End If
+                ' CRE19-022 Inspection Module [End][Winnie]
 
             Case StateType.LOADED
 
@@ -1103,6 +1183,32 @@ Partial Public Class UserAccountMaint
             Me.imgRoleAlert.Visible = True
         End If
 
+        'Check Gender whether must be provided
+        If rdlGender.SelectedValue = Gender.NotProvided Then
+            Dim blnMustProvideGender As Boolean = False
+
+            ' If Gender has been provided before
+            If blnOriginalGenderProvided Then
+                blnMustProvideGender = True
+            Else
+
+                'if inspection officer is selected
+                Dim isInspectionOfficerSelected As Boolean = False
+                For Each item As ListItem In chklRole.Items
+                    If item.Selected AndAlso item.Value = RoleType.InspectionOfficer Then
+                        blnMustProvideGender = True
+                        Exit For
+                    End If
+                Next
+            End If
+
+            If blnMustProvideGender Then
+                Me.imgGenderAlert.Visible = True
+                Me.udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00445, "%s", Me.GetGlobalResourceObject("Text", "Gender"))
+            End If
+        End If
+
+        ' 
         Dim blnValidated As Boolean = True
 
         If Me.udcMessageBox.GetCodeTable.Rows.Count > 0 Then
@@ -1162,6 +1268,12 @@ Partial Public Class UserAccountMaint
             udtToken.TokenSerialNo = Me.txtTokenSN.Text.Trim
             .Token = udtToken
         End With
+
+        ' CRE19-022 - Inspection [Begin][Golden]
+        udtHCVUUser.ChineseName = txtChineseName.Text.Trim
+        udtHCVUUser.Gender = rdlGender.SelectedValue
+        udtHCVUUser.ContactNo = txtContactNo.Text
+        ' CRE19-022 - Inspection [End][Golden]
 
         Return udtHCVUUser
     End Function

@@ -907,13 +907,14 @@ Namespace Component.EHSTransaction
                         ' Available Voucher 
                         Dim intAvailableVoucher As Integer = 0
 
-                        ' CRE18-021 (Voucher balance Enquiry show forfeited) [Start][Chris YIM]
+                        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
                         ' ---------------------------------------------------------------------------------------------------------
                         intAvailableVoucher = Me.getAvailableVoucher(udtEHSTransactionModel.ServiceDate, _
                                                                      udtSchemeClaimModel, _
                                                                      udtEHSPersonalInfo, _
+                                                                     WriteOff.UpdateDB, _
                                                                      udtDB).GetAvailableVoucher()
-                        ' CRE18-021 (Voucher balance Enquiry show forfeited) [End][Chris YIM]
+                        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
                         'I-CRE17-005 (Performance Tuning) [Start][Chris YIM]
                         '-----------------------------------------------------------------------------------------
@@ -2756,6 +2757,7 @@ Namespace Component.EHSTransaction
                                                           ByVal udtEHSPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel, _
                                                           ByVal strSchemeCode As String, _
                                                           ByVal strSubsidizeCode As String, _
+                                                          ByVal enumUpdateDBWriteOff As EHSAccount.WriteOff, _
                                                           Optional ByVal udtDB As Database = Nothing) As VoucherInfoModel
 
             Dim udtVoucherDetailList As New VoucherDetailModelCollection
@@ -2778,7 +2780,9 @@ Namespace Component.EHSTransaction
                                                                                        udtEHSPersonalInformation.DOB, udtEHSPersonalInformation.ExactDOB, _
                                                                                        udtEHSPersonalInformation.DOD, udtEHSPersonalInformation.ExactDOD, _
                                                                                        strSchemeCode, strSubsidizeCode, _
-                                                                                       eHASubsidizeWriteOff_CreateReason.TxEnquiry, udtDB), _
+                                                                                       eHASubsidizeWriteOff_CreateReason.TxEnquiry, _
+                                                                                       enumUpdateDBWriteOff, _
+                                                                                       udtDB), _
                                        VoucherDetailModelCollection.VoucherDetailPart.WriteOff)
 
             'Get Total Refund ***
@@ -2812,6 +2816,7 @@ Namespace Component.EHSTransaction
                                             ByVal udtEHSPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel, _
                                             ByVal strSchemeCode As String, _
                                             ByVal strSubsidizeCode As String, _
+                                            ByVal enumUpdateDBWriteOff As EHSAccount.WriteOff, _
                                             ByVal udtDB As Database) As VoucherInfoModel
 
             Dim udtEHSClaimBLL As New EHSClaim.EHSClaimBLL.EHSClaimBLL()
@@ -2824,25 +2829,28 @@ Namespace Component.EHSTransaction
                 udtCloneEHSPersonalInformation.ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration
             End If
 
-            Return getAvailableVoucher_CurrentSeason(dtmServiceDate, udtCloneEHSPersonalInformation, strSchemeCode, strSubsidizeCode, udtDB)
+            Return getAvailableVoucher_CurrentSeason(dtmServiceDate, udtCloneEHSPersonalInformation, strSchemeCode, strSubsidizeCode, enumUpdateDBWriteOff, udtDB)
 
         End Function
         ' CRE18-021 (Voucher balance Enquiry show forfeited) [End][Chris YIM]
 
-        ' CRE18-021 (Voucher balance Enquiry show forfeited) [Start][Chris YIM]
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         Public Function getAvailableVoucher(ByVal dtmServiceDate As Date, _
                                             ByVal udtSchemeClaimModel As SchemeClaimModel, _
                                             ByVal udtEHSPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel, _
+                                            ByVal enumUpdateDBWriteOff As EHSAccount.WriteOff, _
                                             Optional ByVal udtDB As Database = Nothing) As VoucherInfoModel
 
             Return Me.getAvailableVoucher(dtmServiceDate, _
                                           udtEHSPersonalInformation, _
                                           udtSchemeClaimModel.SchemeCode, _
-                                          udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeCode, udtDB)
+                                          udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeCode, _
+                                          enumUpdateDBWriteOff, _
+                                          udtDB)
 
         End Function
-        ' CRE18-021 (Voucher balance Enquiry show forfeited) [End][Chris YIM]
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
         ' CRE19-003 (Opt voucher capping) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
@@ -3350,11 +3358,13 @@ Namespace Component.EHSTransaction
             'Return udtTransactionDetailList
         End Function
 
-        Public Function getTransactionDetailLatestRecord(ByVal strDocCode As String, ByVal strIdentityNum As String, _
-                                                         ByVal strSchemeCode As String, ByVal strSubsidizeCode As String, _
-                                                         ByVal strAccType As String, _
-                                                         Optional ByVal udtDB As Database = Nothing) As DataTable
-            
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function getPatientPortalVoucherTransactionHistory(ByVal strDocCode As String, ByVal strIdentityNum As String, _
+                                                                    ByVal strSchemeCode As String, ByVal strSubsidizeCode As String, _
+                                                                    ByVal strAccType As String, _
+                                                                    Optional ByVal udtDB As Database = Nothing) As DataTable
+
             Dim udtTransactionDetailList As New TransactionDetailModelCollection()
             Dim udtTranDetailModel As TransactionDetailModel = Nothing
 
@@ -3369,8 +3379,8 @@ Namespace Component.EHSTransaction
                     udtDB.MakeInParam("@Subsidize_Code", SubsidizeGroupClaimModel.Subsidize_Code_DataType, SubsidizeGroupClaimModel.Subsidize_Code_DataSize, IIf(strSubsidizeCode = String.Empty, DBNull.Value, strSubsidizeCode)), _
                     udtDB.MakeInParam("@Acc_Type", SqlDbType.Char, 1, IIf(strAccType = String.Empty, DBNull.Value, strAccType)) _
                 }
-                
-                udtDB.RunProc("proc_TransactionDetail_get_latest_byDocCodeDocIDSchemeSubsidizeAll", prams, dt)
+
+                udtDB.RunProc("proc_PatientPortalVoucherTransactionHistory_get", prams, dt)
 
             Catch eSQL As SqlException
                 Throw eSQL
@@ -3381,6 +3391,7 @@ Namespace Component.EHSTransaction
             Return dt
 
         End Function
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]
 
         ' CRE19-026 (HCVS hotline service) [Start][Winnie]
         ' ------------------------------------------------------------------------

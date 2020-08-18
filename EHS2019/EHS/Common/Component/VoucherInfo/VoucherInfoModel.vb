@@ -26,6 +26,11 @@ Namespace Component.VoucherInfo
         Private _dtmNextForfeitDate As Nullable(Of Date) = Nothing
         Private _intNextForfeitAmount As Nullable(Of Integer) = Nothing
 
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _enumUpdateDBWriteOff As EHSAccount.WriteOff = WriteOff.UpdateDB
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
+
 #End Region
 
 #Region "Constant"
@@ -311,13 +316,29 @@ Namespace Component.VoucherInfo
                 Return Me._udtVoucherDetailList.GetAllTransaction
             End Get
         End Property
+
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property UpdateDBWriteOff() As EHSAccount.WriteOff
+            Get
+                Return Me._enumUpdateDBWriteOff
+            End Get
+            Set(ByVal value As EHSAccount.WriteOff)
+                Me._enumUpdateDBWriteOff = value
+            End Set
+        End Property
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
+
 #End Region
 
 #Region "Constructor"
-
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public Sub New()
             _udtVoucherDetailList = New VoucherDetailModelCollection
             _udtVoucherQuotaList = New VoucherQuotaModelCollection
+
+            _enumUpdateDBWriteOff = WriteOff.UpdateDB
 
         End Sub
 
@@ -328,6 +349,8 @@ Namespace Component.VoucherInfo
             _udtVoucherDetailList = New VoucherDetailModelCollection
             _udtVoucherQuotaList = New VoucherQuotaModelCollection
 
+            _enumUpdateDBWriteOff = WriteOff.UpdateDB
+
         End Sub
 
         Public Sub New(ByVal udtVoucherInfo As VoucherInfoModel)
@@ -337,7 +360,9 @@ Namespace Component.VoucherInfo
             _udtVoucherDetailList = udtVoucherInfo.VoucherDetailList.Copy
             _udtVoucherQuotaList = udtVoucherInfo.VoucherQuotalist.Copy
 
+            _enumUpdateDBWriteOff = udtVoucherInfo.UpdateDBWriteOff
         End Sub
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
 #End Region
 
@@ -531,7 +556,7 @@ Namespace Component.VoucherInfo
         End Function
 
         ' Retrieve quota based on voucher info's service date
-        Public Function GetVoucherQuota(ByVal udtSchemeClaimModel As SchemeClaimModel,
+        Private Function GetVoucherQuota(ByVal udtSchemeClaimModel As SchemeClaimModel,
                                         ByVal udtEHSPersonalInformation As EHSPersonalInformationModel,
                                         ByVal strProfessionCode As String, _
                                         Optional ByVal dtmClaimPeriodTo As Date? = Nothing, _
@@ -549,7 +574,7 @@ Namespace Component.VoucherInfo
             Return Me.GetVoucherQuota(dtmServiceDate, udtSchemeClaimModel, udtEHSPersonalInformation, strProfessionCode, dtmClaimPeriodTo, udtDB)
         End Function
 
-        Public Function GetVoucherQuotaList(ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtEHSPersonalInformation As EHSPersonalInformationModel) As VoucherQuotaModelCollection
+        Private Function GetVoucherQuotaList(ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtEHSPersonalInformation As EHSPersonalInformationModel) As VoucherQuotaModelCollection
 
             Dim udtVoucherQuotaModelCollection As VoucherQuotaModelCollection = New VoucherQuotaModelCollection
 
@@ -579,10 +604,11 @@ Namespace Component.VoucherInfo
         Public Function GetInfo(ByVal dtmServiceDate As Date, _
                                 ByVal udtSchemeClaimModel As SchemeClaimModel, _
                                 ByVal udtEHSPersonalInformation As EHSPersonalInformationModel, _
-                                Optional ByVal strProfessionCode As String = "") As VoucherInfoModel
+                                Optional ByVal strProfessionCode As String = "", _
+                                Optional ByVal udtDB As Database = Nothing) As VoucherInfoModel
 
             If Me.EnableVoucherDetail Then
-                Me.GetVoucherDetails(dtmServiceDate, udtSchemeClaimModel, udtEHSPersonalInformation)
+                Me.GetVoucherDetails(dtmServiceDate, udtSchemeClaimModel, udtEHSPersonalInformation, udtDB)
             End If
 
             If Me.EnableVoucherQuota Then
@@ -598,12 +624,32 @@ Namespace Component.VoucherInfo
 
         End Function
 
-        Public Sub GetVoucherDetails(ByVal dtmServiceDate As Date, _
+        Private Sub GetVoucherDetails(ByVal dtmServiceDate As Date, _
                                           ByVal udtSchemeClaimModel As SchemeClaimModel, _
-                                          ByVal udtEHSPersonalInformation As EHSPersonalInformationModel)
+                                          ByVal udtEHSPersonalInformation As EHSPersonalInformationModel, _
+                                          Optional ByVal udtDB As Database = Nothing)
 
             Dim udtEHSTransactionBLL As New EHSTransactionBLL
-            Dim udtVoucherInfo As VoucherInfoModel = udtEHSTransactionBLL.getAvailableVoucher(dtmServiceDate, udtSchemeClaimModel, udtEHSPersonalInformation)
+
+            ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim enumUpdateWriteOff As EHSAccount.WriteOff
+
+            If Me.UpdateDBWriteOff Then
+                enumUpdateWriteOff = EHSAccount.WriteOff.UpdateDB
+            Else
+                enumUpdateWriteOff = EHSAccount.WriteOff.NotUpdateDB
+            End If
+
+            Dim udtVoucherInfo As VoucherInfoModel
+
+            If Not udtDB Is Nothing Then
+                udtVoucherInfo = udtEHSTransactionBLL.getAvailableVoucher(dtmServiceDate, udtSchemeClaimModel, udtEHSPersonalInformation, enumUpdateWriteOff, udtDB)
+            Else
+                udtVoucherInfo = udtEHSTransactionBLL.getAvailableVoucher(dtmServiceDate, udtSchemeClaimModel, udtEHSPersonalInformation, enumUpdateWriteOff)
+            End If
+
+            ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
             Me.ServiceDate = udtVoucherInfo.ServiceDate
             Me.CurrentDate = udtVoucherInfo.CurrentDate

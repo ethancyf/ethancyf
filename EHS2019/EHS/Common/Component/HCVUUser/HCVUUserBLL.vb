@@ -151,6 +151,27 @@ Namespace Component.HCVUUser
                 udtHCVUUser.Locked = False
             End If
 
+            ' CRE19-022 - Inspection [Begin][Golden]
+            If dt.Rows(0).Item("Chinese_Name") Is DBNull.Value Then
+                udtHCVUUser.ChineseName = ""
+            Else
+                udtHCVUUser.ChineseName = dt.Rows(0).Item("Chinese_Name")
+            End If
+
+            If dt.Rows(0).Item("Gender") Is DBNull.Value Then
+                udtHCVUUser.Gender = ""
+            Else
+                udtHCVUUser.Gender = dt.Rows(0).Item("Gender")
+            End If
+
+            If dt.Rows(0).Item("Contact_No") Is DBNull.Value Then
+                udtHCVUUser.ContactNo = ""
+            Else
+                udtHCVUUser.ContactNo = dt.Rows(0).Item("Contact_No")
+            End If
+            ' CRE19-022 - Inspection [End][Golden]
+
+
             Dim dtSN As DataTable
             dtSN = udtTokenBLL.GetTokenSerialNoByUserID(udtHCVUUser.UserID, db)
 
@@ -190,7 +211,10 @@ Namespace Component.HCVUUser
                             db.MakeInParam("@Expiry_Date", SqlDbType.DateTime, 8, IIf(udtHCVUUser.ExpiryDate.HasValue, udtHCVUUser.ExpiryDate, DBNull.Value)), _
                             db.MakeInParam("@Suspended", SqlDbType.Char, 1, IIf(udtHCVUUser.Suspended, "Y", DBNull.Value)), _
                             db.MakeInParam("@Account_Locked", SqlDbType.Char, 1, IIf(udtHCVUUser.Locked, "Y", "N")), _
-                            db.MakeInParam("@Create_By", SqlDbType.VarChar, 20, strCreateBy)}
+                            db.MakeInParam("@Create_By", SqlDbType.VarChar, 20, strCreateBy), _
+                            db.MakeInParam("@Chinese_Name", SqlDbType.NVarChar, 100, udtHCVUUser.ChineseName), _
+                            db.MakeInParam("@Gender", SqlDbType.VarChar, 20, udtHCVUUser.Gender), _
+                            db.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, udtHCVUUser.ContactNo)}
             db.RunProc("proc_HCVUUserAC_add", parms)
         End Sub
         ' I-CRE16-007-02 Refine system from CheckMarx findings [End][Dickson Law]
@@ -205,6 +229,9 @@ Namespace Component.HCVUUser
                 db.MakeInParam("@Suspended", SqlDbType.Char, 1, IIf(udtHCVUUser.Suspended, "Y", DBNull.Value)), _
                 db.MakeInParam("@Account_Locked", SqlDbType.Char, 1, IIf(udtHCVUUser.Locked, "Y", "N")), _
                 db.MakeInParam("@Update_By", SqlDbType.VarChar, 20, strUpdateBy), _
+                db.MakeInParam("@Chinese_Name", SqlDbType.NVarChar, 100, udtHCVUUser.ChineseName), _
+                db.MakeInParam("@Gender", SqlDbType.VarChar, 20, udtHCVUUser.Gender), _
+                db.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, udtHCVUUser.ContactNo), _
                 db.MakeInParam("@tsmp", SqlDbType.Timestamp, 8, tsmp)}
             db.RunProc("proc_HCVUUserAC_upd", parms)
         End Sub

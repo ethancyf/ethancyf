@@ -71,6 +71,30 @@
     <EventID>2001</EventID>
     <Severity>Warning</Severity>
     <Message>(Drill) EHRSS to EHS out sync case</Message>
+  </Log>
+  <Log>
+    <EventSource>EHRSS2EHS_PP_SlowResponse_Lv1</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHRSS to EHS PP slow response Lv1 case</Message>
+  </Log>
+  <Log>
+    <EventSource>EHRSS2EHS_PP_SlowResponse_Lv1</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHRSS to EHS PP slow response Lv1 case</Message>
+  </Log>
+  <Log>
+    <EventSource>EHRSS2EHS_PP_SlowResponse_Lv2</EventSource>
+    <EventID>2000</EventID>
+    <Severity>Error</Severity>
+    <Message>(Drill) EHRSS to EHS PP slow response Lv2 case</Message>
   </Log>  
+  <Log>
+    <EventSource>EHRSS2EHS_PP_SlowResponse_Lv2</EventSource>
+    <EventID>2001</EventID>
+    <Severity>Warning</Severity>
+    <Message>(Drill) EHRSS to EHS PP slow response Lv2 case</Message>
+  </Log>    
 </LogList>
 

@@ -1960,6 +1960,8 @@ Namespace Component.Practice
             ' -----------------------------------------------------------------------------------------
             Private _udtProfession As Profession.ProfessionModel
             ' CRE11-024-01 HCVS Pilot Extension Part 1 [End]
+
+            Private _strPhone_Daytime As String
 #End Region
 
 #Region "Property"
@@ -2126,6 +2128,16 @@ Namespace Component.Practice
                 End Set
             End Property
 
+            Public Property PhoneDaytime() As String
+                Get
+                    Return _strPhone_Daytime
+                End Get
+                Set(ByVal value As String)
+                    _strPhone_Daytime = value
+                End Set
+            End Property
+
+
             ' Addition Field
 
             Private _blnDisplayEngOnly As Boolean = False
@@ -2192,6 +2204,7 @@ Namespace Component.Practice
                 End Get
             End Property
             ' CRE19-006 (DHC) [End][Winnie]
+
 #End Region
 
 #Region "Constructor"
@@ -2261,6 +2274,12 @@ Namespace Component.Practice
                     Me._intAddress_Code = Nothing
                 Else
                     Me._intAddress_Code = CInt(drPracticeBank("Address_Code"))
+                End If
+
+                If drPracticeBank.IsNull("Phone_Daytime") Then
+                    Me._strPhone_Daytime = Nothing
+                Else
+                    Me._strPhone_Daytime = drPracticeBank("Phone_Daytime").ToString().Trim()
                 End If
 
 

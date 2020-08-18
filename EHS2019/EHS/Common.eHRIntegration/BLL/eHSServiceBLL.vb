@@ -1,19 +1,26 @@
-﻿Imports System.Data.SqlClient
-Imports System.Net.Security
-Imports System.Security.Cryptography.X509Certificates
-Imports System.Text.RegularExpressions
-Imports Common.ComFunction
+﻿Imports Common.ComFunction
 Imports Common.Component
+Imports Common.Component.EHSAccount
+Imports Common.Component.Mapping
 Imports Common.Component.RSA_Manager
 Imports Common.Component.ServiceProvider
 Imports Common.Component.StaticData
 Imports Common.Component.Token
 Imports Common.Component.Token.TokenBLL
 Imports Common.Component.UserAC
+Imports Common.Component.VoucherInfo
 Imports Common.DataAccess
 Imports Common.eHRIntegration.DAL
 Imports Common.eHRIntegration.Model.Xml.eHSService
 Imports Common.Format
+Imports Common.ComObject
+Imports System.Data.SqlClient
+Imports System.IO
+Imports System.Net.Security
+Imports System.Security.Cryptography.X509Certificates
+Imports System.Text
+Imports System.Text.RegularExpressions
+
 
 Namespace BLL
 
@@ -823,6 +830,718 @@ Namespace BLL
             udtSPOut = udtServiceProviderBLL.GetServiceProviderBySPID(New Database, strTargetSPIDOut)
 
             Return True
+
+        End Function
+
+        ' CRE18-XXX (Provide data to eHR Portal) [Start][Chris YIM]
+        ' --------------------------------------------------------------------------------------
+        Public Function GeteHSDoctorList(udtInXml As InGeteHSSDoctorListXmlModel, _
+                                         ByRef strStackTrace As String, _
+                                         ByVal strConnectReplicationDB As String, _
+                                         udtDB As Database) As OutGeteHSSDoctorListXmlModel
+
+            Dim udtOutXml As OutGeteHSSDoctorListXmlModel
+
+            ' ---------------------------------------
+            ' Validation In Xml
+            ' ---------------------------------------
+            ' Timestamp cannot be null
+            If udtInXml.Timestamp = String.Empty Then
+                udtOutXml = New OutGeteHSSDoctorListXmlModel(eHSPatientPortalResultCode.R9001_InvalidParameter, udtInXml.Timestamp)
+                strStackTrace = "Timestamp is empty. "
+                Return udtOutXml
+
+            End If
+
+            ' Format
+            udtInXml.Timestamp = udtInXml.Timestamp.Trim
+
+            ' ---------------------------------------
+            ' Generate Out Xml
+            ' ---------------------------------------
+
+            udtOutXml = New OutGeteHSSDoctorListXmlModel(eHSPatientPortalResultCode.R1000_Success, udtInXml.Timestamp)
+
+            ' ---------------------------------------
+            ' Convert the XML file to byte
+            ' ---------------------------------------
+            Dim udtGeneralFunction As New GeneralFunction
+
+            ' 1. Find the target XML file
+            Dim strXMLPath As String = udtGeneralFunction.getSystemParameter("EHRSS_PP_DoctorList_ExportPath")
+            Dim strArchiveFormat As String = udtGeneralFunction.getSystemParameter("EHRSS_PP_DoctorList_ArchiveFormat")
+
+            ' Validation: 
+            ' a. Path is not found; or 
+            ' b. Archive format is not found
+            If strXMLPath = String.Empty Or strArchiveFormat = String.Empty Then
+                udtOutXml = New OutGeteHSSDoctorListXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                If strXMLPath = String.Empty Then
+                    strStackTrace = strStackTrace + String.Format("The value of ""EHRSS_PP_DoctorList_ExportPath"" is not found in DB table[SystemParameters]. ")
+                End If
+
+                If strArchiveFormat = String.Empty Then
+                    strStackTrace = strStackTrace + String.Format("The value of ""EHRSS_PP_DoctorList_ArchiveFormat"" is not found in DB table[SystemParameters]. ")
+                End If
+
+                Return udtOutXml
+
+            End If
+
+            ' 2. Convert byte to Base64 string
+
+            'Dim byteXML() As Byte = System.IO.File.ReadAllBytes(String.Concat(strXMLPath, String.Format("{0}.{1}", strFileName, strArchiveFormat)))
+
+            Dim byteXML() As Byte = Me.GetXMLFileContent(udtDB, strArchiveFormat, strConnectReplicationDB)
+
+            If byteXML Is Nothing Then
+                Throw New Exception(String.Format("File is not generated in the {0} format.", strArchiveFormat))
+            End If
+
+            Dim strBase64 As String = Convert.ToBase64String(byteXML)
+
+            'Dim strHex As StringBuilder = New StringBuilder(byteXML.Length * 2)
+
+            'For Each byteHex As Byte In byteXML
+            '    strHex.AppendFormat("{0:x2}", byteHex)
+            'Next
+
+            ' 3. Assign the value in model 
+            udtOutXml.Result = strBase64
+            'udtOutXml.Result = strHex.ToString
+
+            Return udtOutXml
+
+        End Function
+        ' CRE18-XXX (Provide data to eHR Portal) [End][Chris YIM]
+
+        ' CRE18-XXX (Provide data to eHR Portal) [Start][Chris YIM]
+        ' --------------------------------------------------------------------------------------
+        Public Function GeteHSVoucherBalance(udtInXml As InGeteHSSVoucherBalanceXmlModel, _
+                                             ByRef strStackTrace As String, _
+                                             ByVal enumUpdateDBWriteOff As EHSAccount.WriteOff, _
+                                             udtDB As Database) As OutGeteHSSVoucherBalanceXmlModel
+
+            Dim udtOutXml As OutGeteHSSVoucherBalanceXmlModel = Nothing
+            Dim udtSchemeClaim As Scheme.SchemeClaimModel = Nothing
+            Dim udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel = Nothing
+            Dim udtSM As SystemMessage = Nothing
+            Dim blnValid As Boolean = True
+            Dim rgx As Regex = Nothing
+
+            Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime
+
+            Dim strHKIC As String = String.Empty
+            Dim strDocType As String = String.Empty
+            Dim strDOB As String = String.Empty
+            Dim dtmDOB As DateTime
+            'Dim strDOBFormat As String = String.Empty
+            Dim intAge As Integer = Nothing
+            Dim strDOR As String = String.Empty
+            'Dim dtmDOR As DateTime
+
+            ' ---------------------------------------
+            ' Validation In Xml
+            ' ---------------------------------------
+            Dim udtValidator As New Common.Validation.Validator
+
+            ' 1. Input values cannot be null
+            If udtInXml.Timestamp = String.Empty Then
+                strStackTrace = strStackTrace + "Timestamp is empty. "
+                blnValid = False
+            End If
+
+            If udtInXml.HKID = String.Empty Then
+                strStackTrace = strStackTrace + "HKID is empty. "
+                blnValid = False
+            End If
+
+            If udtInXml.DocType = String.Empty Then
+                strStackTrace = strStackTrace + "DocType is empty. "
+                blnValid = False
+            End If
+
+            If udtInXml.DOB = String.Empty Then
+                strStackTrace = strStackTrace + "DOB is empty. "
+                blnValid = False
+            End If
+
+            If udtInXml.DOBFormat = String.Empty Then
+                strStackTrace = strStackTrace + "DOBFormat is empty. "
+                blnValid = False
+            End If
+
+            'If (udtInXml.DOB = String.Empty Or udtInXml.DOBFormat = String.Empty) And _
+            '    (udtInXml.EC_Age = String.Empty Or udtInXml.EC_RegDate = String.Empty) Then
+            '    strStackTrace = strStackTrace + "Either (DOB and DOBFormat) or (Age and DOR) is empty. "
+            '    blnValid = False
+            'End If
+
+            If Not blnValid Then
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9001_InvalidParameter, udtInXml.Timestamp)
+                Return udtOutXml
+            End If
+
+            ' Format
+            udtInXml.Timestamp = udtInXml.Timestamp.Trim
+
+            ' 2. Input values cannot be invalid
+            ' DocType
+            Select Case udtInXml.DocType.Trim
+                Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC
+                    strDocType = udtInXml.DocType.Trim
+                Case Else
+                    strStackTrace = strStackTrace + String.Format("DocType({0}) is invalid. ", udtInXml.DocType)
+                    blnValid = False
+            End Select
+
+            ' HKID
+            udtSM = udtValidator.chkIdentityNumber(udtInXml.DocType, udtInXml.HKID, Nothing)
+
+            If Not udtSM Is Nothing OrElse udtInXml.HKID.Length > 9 Then
+                strStackTrace = strStackTrace + String.Format("HKID({0}) is invalid. ", udtInXml.HKID)
+                blnValid = False
+            Else
+                strHKIC = udtInXml.HKID
+            End If
+
+            ' DOB & DOBFormat
+            If udtInXml.DOB <> String.Empty And udtInXml.DOBFormat <> String.Empty Then
+                Select Case udtInXml.DOBFormat.Trim
+                    Case "DD/MM/YYYY"
+                        rgx = New Regex("^\d{2}\/\d{2}\/\d{4}$", RegexOptions.IgnoreCase)
+                        If rgx.IsMatch(udtInXml.DOB) Then
+                            strDOB = udtInXml.DOB
+                            'strDOBFormat = udtInXml.DOBFormat.Trim
+                        Else
+                            strStackTrace = strStackTrace + String.Format("DOB({0}) is invalid under DOBFormat({1}). ", udtInXml.DOB, udtInXml.DOBFormat)
+                            blnValid = False
+                        End If
+
+                    Case "MM/YYYY"
+                        rgx = New Regex("^\d{2}\/\d{4}$", RegexOptions.IgnoreCase)
+                        If rgx.IsMatch(udtInXml.DOB) Then
+                            '01/MM/YYYY
+                            strDOB = String.Format("01/{0}", udtInXml.DOB)
+                            'strDOBFormat = udtInXml.DOBFormat.Trim
+                        Else
+                            strStackTrace = strStackTrace + String.Format("DOB({0}) is invalid under DOBFormat({1}). ", udtInXml.DOB, udtInXml.DOBFormat)
+                            blnValid = False
+                        End If
+
+                    Case "YYYY"
+                        rgx = New Regex("^\d{4}$", RegexOptions.IgnoreCase)
+                        If rgx.IsMatch(udtInXml.DOB) Then
+                            '01/01/YYYY
+                            strDOB = String.Format("01/01/{0}", udtInXml.DOB)
+                            'strDOBFormat = udtInXml.DOBFormat.Trim
+                        Else
+                            strStackTrace = strStackTrace + String.Format("DOB({0}) is invalid under DOBFormat({1}). ", udtInXml.DOB, udtInXml.DOBFormat)
+                            blnValid = False
+                        End If
+
+                    Case Else
+                        strStackTrace = strStackTrace + String.Format("DOBFormat({0}) is invalid. ", udtInXml.DOBFormat)
+                        blnValid = False
+
+                End Select
+
+                'Convert DOB from String to Date 
+                If blnValid Then
+                    Dim strDate() As String = Split(strDOB, "/")
+
+                    If CInt(strDate(2)) < DateValidation.YearMinValue Or strDate(2) > DateValidation.YearMaxValue Then
+                        strStackTrace = strStackTrace + String.Format("Converted DOB({0}) is invalid. ", strDOB)
+                        blnValid = False
+                    End If
+
+                    Try
+                        If blnValid Then
+                            dtmDOB = New Date(strDate(2), strDate(1), strDate(0))
+
+                            If dtmDOB > dtmCurrentDate Then
+                                strStackTrace = strStackTrace + String.Format("Converted DOB({0}) is future date. ", strDOB)
+                                blnValid = False
+                            End If
+                        End If
+
+                    Catch ex As Exception
+                        strStackTrace = strStackTrace + String.Format("Converted DOB({0}) is invalid. ", strDOB)
+                        blnValid = False
+                    End Try
+                End If
+
+            End If
+
+            '' Age
+            'If udtInXml.EC_Age <> String.Empty Then
+            '    Try
+            '        If IsNumeric(udtInXml.EC_Age) AndAlso udtInXml.EC_Age > 0 Then
+            '            intAge = CInt(udtInXml.EC_Age)
+            '        Else
+            '            Throw New Exception(String.Format("Age({0}) is invalid. ", udtInXml.EC_Age))
+            '        End If
+            '    Catch ex As Exception
+            '        strStackTrace = strStackTrace + ex.Message
+            '        blnValid = False
+            '    End Try
+            'End If
+
+            '' DOR
+            'If udtInXml.EC_RegDate <> String.Empty Then
+            '    ' DOR Format
+            '    rgx = New Regex("^\d{2}\/\d{2}\/\d{4}$", RegexOptions.IgnoreCase)
+            '    If rgx.IsMatch(udtInXml.EC_RegDate) Then
+            '        strDOR = udtInXml.EC_RegDate
+            '    Else
+            '        strStackTrace = strStackTrace + String.Format("DOR({0}) is invalid. ", udtInXml.EC_RegDate)
+            '        blnValid = False
+            '    End If
+
+            '    'Convert DOR from String to Date 
+            '    If blnValid Then
+            '        Dim strDORDate() As String = Split(strDOR, "/")
+
+            '        If CInt(strDORDate(2)) < DateValidation.YearMinValue Or strDORDate(2) > DateValidation.YearMaxValue Then
+            '            strStackTrace = strStackTrace + String.Format("Converted DOR({0}) is invalid. ", strDOR)
+            '            blnValid = False
+            '        End If
+
+            '        Try
+            '            If blnValid Then
+            '                dtmDOR = New Date(strDORDate(2), strDORDate(1), strDORDate(0))
+
+            '                If dtmDOR > dtmCurrentDate Then
+            '                    strStackTrace = strStackTrace + String.Format("Converted DOR({0}) is future date. ", strDOR)
+            '                    blnValid = False
+            '                End If
+            '            End If
+            '        Catch ex As Exception
+            '            strStackTrace = strStackTrace + String.Format("Converted DOR({0}) is invalid. ", strDOR)
+            '            blnValid = False
+            '        End Try
+            '    End If
+            'End If
+
+            If Not blnValid Then
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9001_InvalidParameter, udtInXml.Timestamp)
+                Return udtOutXml
+            End If
+
+            ' ---------------------------------------
+            ' Generate Out Xml
+            ' ---------------------------------------
+            udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R1000_Success, udtInXml.Timestamp)
+
+            ' ---------------------------------------
+            ' Search validated account
+            ' ---------------------------------------
+            Dim udtEHSAccountBLL As EHSAccount.EHSAccountBLL = New EHSAccount.EHSAccountBLL
+            Dim udtEHSTransactionBLL As New EHSTransaction.EHSTransactionBLL()
+            Dim udtFormatter As New Formatter
+            Dim udtSchemeClaimBLL As Scheme.SchemeClaimBLL = New Scheme.SchemeClaimBLL()
+
+            Dim udtEHSAccount As EHSAccount.EHSAccountModel = Nothing
+            Dim udtEHSPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel = Nothing
+            Dim strSearchDocCode As String = String.Empty
+
+            Try
+                'Format Doc No.
+                strHKIC = udtFormatter.formatDocumentIdentityNumber(strDocType, strHKIC)
+
+                'Search EHS account
+                udtEHSAccount = udtEHSAccountBLL.LoadEHSAccountByIdentity(strHKIC, strDocType, udtDB)
+                If Not udtEHSAccount Is Nothing Then
+                    strSearchDocCode = strDocType
+                End If
+
+                '---------------------------------------
+                ' Check Validated Account
+                '---------------------------------------
+                If udtEHSAccount Is Nothing OrElse (udtEHSAccount.AccountSource <> EHSAccount.EHSAccountModel.SysAccountSource.ValidateAccount) Then
+                    strStackTrace = strStackTrace + String.Format("No EHSAccount found. ")
+                    blnValid = False
+                End If
+
+                '---------------------------------------
+                ' Check Deceased Status
+                '---------------------------------------
+                If blnValid Then
+                    If udtEHSAccount.Deceased Then
+                        ' For deceased account, same behavior as no account found
+                        strStackTrace = strStackTrace + String.Format("The EHSAccount marked with deceased status. ")
+                        blnValid = False
+                    End If
+                End If
+
+                '---------------------------------------
+                ' Check Account Status
+                '---------------------------------------
+                If blnValid Then
+                    If udtEHSAccount.RecordStatus = EHSAccount.EHSAccountModel.ValidatedAccountRecordStatusClass.Terminated Then
+                        strStackTrace = strStackTrace + String.Format("The EHSAccount is terminated. ")
+                        blnValid = False
+                    End If
+                End If
+
+
+                '---------------------------------------
+                ' Check Enquiry Status
+                '---------------------------------------
+                If blnValid Then
+                    If udtEHSAccount.PublicEnquiryStatus <> EHSAccount.EHSAccountModel.EnquiryStatusClass.Available Then
+                        strStackTrace = strStackTrace + String.Format("The enquiry status of EHSAccount is not available. ")
+                        blnValid = False
+                    End If
+                End If
+
+                If blnValid Then
+                    udtEHSPersonalInformation = udtEHSAccount.EHSPersonalInformationList.Filter(strSearchDocCode)
+                    udtSchemeClaim = udtSchemeClaimBLL.getEffectiveSchemeClaimWithSubsidize(Scheme.SchemeClaimModel.HCVS)
+                    udtSubsidizeGroupClaim = udtSchemeClaim.SubsidizeGroupClaimList.Filter((New GeneralFunction).GetSystemDateTime())(0)
+
+                    ' Get available voucher
+                    If udtEHSAccount.VoucherInfo Is Nothing Then
+                        Dim udtVoucherInfo As New VoucherInfoModel(VoucherInfoModel.AvailableVoucher.Include, _
+                                                                   VoucherInfoModel.AvailableQuota.Include)
+
+                        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        udtVoucherInfo.UpdateDBWriteOff = enumUpdateDBWriteOff
+
+                        udtVoucherInfo.GetInfo(dtmCurrentDate, udtSchemeClaim, udtEHSPersonalInformation, String.Empty, udtDB)
+                        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
+
+                        udtEHSAccount.VoucherInfo = udtVoucherInfo
+                    End If
+                End If
+
+            Catch ex As Exception
+                strStackTrace = ex.Message
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                Return udtOutXml
+            End Try
+
+            If Not blnValid Then
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R1001_PatientNotFound, udtInXml.Timestamp)
+                Return udtOutXml
+            End If
+
+            ' ---------------------------------------
+            ' DOB
+            ' ---------------------------------------
+            Try
+                Select Case udtEHSPersonalInformation.ExactDOB
+                    Case "D", "T"
+                        If udtEHSPersonalInformation.DOB <> dtmDOB Or udtInXml.DOBFormat.Trim <> "DD/MM/YYYY" Then
+                            blnValid = False
+                        End If
+
+                    Case "M", "U"
+                        If udtEHSPersonalInformation.DOB <> dtmDOB Or udtInXml.DOBFormat.Trim <> "MM/YYYY" Then
+                            blnValid = False
+                        End If
+
+                    Case "Y", "V", "R"
+                        If udtEHSPersonalInformation.DOB <> dtmDOB Or udtInXml.DOBFormat.Trim <> "YYYY" Then
+                            blnValid = False
+                        End If
+
+                    Case "A"
+                        If Not udtEHSPersonalInformation.ECAge.HasValue Or Not udtEHSPersonalInformation.ECDateOfRegistration.HasValue Then
+                            blnValid = False
+                        Else
+                            Dim dtmLogicalDOB As Date = DateAdd(DateInterval.Year, CInt(udtEHSPersonalInformation.ECAge.Value) * -1, CDate(udtEHSPersonalInformation.ECDateOfRegistration))
+
+                            If dtmLogicalDOB.Year <> dtmDOB.Year Or _
+                                (udtInXml.DOBFormat.Trim <> "DD/MM/YYYY" And udtInXml.DOBFormat.Trim <> "MM/YYYY" And udtInXml.DOBFormat.Trim <> "YYYY") Then
+
+                                blnValid = False
+                            End If
+                        End If
+
+                        'Case "A"
+                        '    blnValid = False
+
+                        'If udtEHSPersonalInformation.ECAge.HasValue And udtEHSPersonalInformation.ECDateOfRegistration.HasValue Then
+                        '    If udtEHSPersonalInformation.ECAge.Value <> intAge Or udtEHSPersonalInformation.ECDateOfRegistration <> dtmDOR Then
+                        '        blnValid = False
+                        '    End If
+                        'Else
+                        '    blnValid = False
+                        'End If
+
+                    Case Else
+                        Throw New Exception(String.Format("Invalid Exact DOB Format({0}).", udtEHSPersonalInformation.ExactDOB))
+                End Select
+
+            Catch ex As Exception
+                strStackTrace = ex.Message
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                Return udtOutXml
+            End Try
+
+            If Not blnValid Then
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R1001_PatientNotFound, udtInXml.Timestamp)
+                Return udtOutXml
+            End If
+
+            '---------------------------------------
+            ' Check eligiblility for HCVS
+            '---------------------------------------
+            Dim udtClaimRuleBLL As New Common.Component.ClaimRules.ClaimRulesBLL
+            Dim udtResult As Common.Component.ClaimRules.ClaimRulesBLL.EligibleResult
+
+            Try
+                If blnValid Then
+                    udtResult = udtClaimRuleBLL.CheckEligibilityAny(udtSchemeClaim, udtEHSPersonalInformation, dtmCurrentDate)
+
+                    If Not udtResult.IsEligible Then
+                        strStackTrace = strStackTrace + String.Format("The EHSAccount is not eligible. ")
+                        blnValid = False
+                    End If
+
+                End If
+
+            Catch ex As Exception
+                strStackTrace = ex.Message
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                Return udtOutXml
+            End Try
+
+            If Not blnValid Then
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R1002_PatientNotEligible, udtInXml.Timestamp)
+                Return udtOutXml
+            End If
+
+            ' ---------------------------------------
+            ' Quota
+            ' ---------------------------------------
+            Dim arrQuota As New ArrayList
+
+            Try
+                If udtEHSAccount.VoucherInfo.VoucherQuotalist.FilterByEffectiveDtm(dtmCurrentDate).Count > 0 Then
+
+                    For Each udtVoucherQuota As VoucherQuotaModel In udtEHSAccount.VoucherInfo.VoucherQuotalist.FilterByEffectiveDtm(dtmCurrentDate)
+                        Dim intMaxUsableBalance As Integer = udtEHSAccount.VoucherInfo.GetMaxUsableBalance(udtVoucherQuota.ProfCode)
+
+                        Dim udtQuota As OutGeteHSSVoucherBalanceXmlModel.Quota = New OutGeteHSSVoucherBalanceXmlModel.Quota()
+                        udtQuota.QuotaProfCode = GetProfessionMappingForEHRSS(udtVoucherQuota.ProfCode).CodeTarget.Trim
+                        udtQuota.QuotaRemain = udtVoucherQuota.AvailableQuota
+                        udtQuota.QuotaMaxUsableRemain = IIf(intMaxUsableBalance > 0, intMaxUsableBalance, 0)
+                        udtQuota.QuotaRemainEndDate = String.Format("{0:dd/MM/yyyy}", udtVoucherQuota.PeriodEndDtm)
+
+                        arrQuota.Add(udtQuota)
+
+                    Next
+
+                End If
+
+            Catch ex As Exception
+                strStackTrace = ex.Message
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                Return udtOutXml
+            End Try
+
+            ' ---------------------------------------
+            ' Forfeit
+            ' ---------------------------------------
+            Dim udtForfeit As OutGeteHSSVoucherBalanceXmlModel.ForfeitInfo = New OutGeteHSSVoucherBalanceXmlModel.ForfeitInfo()
+
+            Try
+                udtForfeit.NextDepositAmount = udtEHSAccount.VoucherInfo.GetNextDepositAmount
+                udtForfeit.NextCappingAmount = udtEHSAccount.VoucherInfo.GetNextCappingAmount
+                udtForfeit.NextForfeitDate = udtEHSAccount.VoucherInfo.GetNextForfeitDate
+                udtForfeit.NextForfeitAmount = udtEHSAccount.VoucherInfo.GetNextForfeitAmount
+
+            Catch ex As Exception
+                strStackTrace = ex.Message
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                Return udtOutXml
+            End Try
+
+            ' ---------------------------------------
+            ' Transaction History
+            ' ---------------------------------------
+            Dim arrTx As New ArrayList
+
+            Try
+                Dim dt As DataTable = udtEHSTransactionBLL.getPatientPortalVoucherTransactionHistory(strDocType, strHKIC, _
+                                                                                                     String.Empty, _
+                                                                                                     udtSubsidizeGroupClaim.SubsidizeCode, _
+                                                                                                     EHealthAccountType.Validated)
+
+                If dt.Rows.Count > 0 Then
+                    For Each dr As DataRow In dt.Rows
+                        Dim udtTx As OutGeteHSSVoucherBalanceXmlModel.Transaction = New OutGeteHSSVoucherBalanceXmlModel.Transaction
+                        udtTx.ServiceDate = String.Format("{0:dd/MM/yyyy}", CDate(dr("Service_Receive_Dtm")))
+                        udtTx.UsedVoucherAmt = CInt(dr("Total_Amount")).ToString
+                        udtTx.ProfCode = GetProfessionMappingForEHRSS(CStr(dr("Service_Type")).Trim).CodeTarget.Trim
+
+                        If Not IsDBNull(dr("SP_Name")) Then
+                            udtTx.SPName_en = CStr(dr("SP_Name")).Trim
+                        End If
+                        If Not IsDBNull(dr("SP_Name_Chi")) Then
+                            udtTx.SPName_tc = CStr(dr("SP_Name_Chi")).Trim
+                        End If
+
+                        If Not IsDBNull(dr("Practice_Name")) Then
+                            udtTx.PracticeName_en = CStr(dr("Practice_Name")).Trim
+                        End If
+                        If Not IsDBNull(dr("Practice_Name_Chi")) Then
+                            udtTx.PracticeName_tc = CStr(dr("Practice_Name_Chi")).Trim
+                        End If
+
+                        If Not IsDBNull(dr("Practice_Address")) Then
+                            udtTx.PracticeAddr_en = CStr(dr("Practice_Address")).Trim
+                        End If
+                        If Not IsDBNull(dr("Practice_Address_Chi")) Then
+                            udtTx.PracticeAddr_tc = CStr(dr("Practice_Address_Chi")).Trim
+                        End If
+
+                        If Not IsDBNull(dr("Phone_Daytime")) Then
+                            udtTx.PracticeTelNo = CStr(dr("Phone_Daytime")).Trim
+                        End If
+
+                        arrTx.Add(udtTx)
+
+                    Next
+                End If
+
+            Catch ex As Exception
+                strStackTrace = ex.Message
+                udtOutXml = New OutGeteHSSVoucherBalanceXmlModel(eHSPatientPortalResultCode.R9999_UnexpectedFailure, udtInXml.Timestamp)
+                Return udtOutXml
+            End Try
+
+            ' ---------------------------------------
+            ' Assign the value in model 
+            ' ---------------------------------------
+            ' Special Handle for negative number of available voucher
+            If udtEHSAccount.VoucherInfo IsNot Nothing AndAlso udtEHSAccount.VoucherInfo.GetAvailableVoucher() < 0 Then
+                udtOutXml.VoucherBalanceAmt = 0
+            Else
+                udtOutXml.VoucherBalanceAmt = udtEHSAccount.VoucherInfo.GetAvailableVoucher()
+            End If
+
+            udtOutXml.MaxAccumulativeAmt = udtSubsidizeGroupClaim.NumSubsidizeCeiling
+
+            If arrQuota.Count > 0 Then
+                Dim QuotaList(arrQuota.Count - 1) As OutGeteHSSVoucherBalanceXmlModel.Quota
+
+                For i As Integer = 0 To arrQuota.Count - 1
+                    QuotaList(i) = (arrQuota(i))
+                Next
+
+                udtOutXml.QuotaList = QuotaList
+            Else
+                udtOutXml.QuotaList = Nothing
+            End If
+
+            udtOutXml.Forfeit = udtForfeit
+
+            If arrTx.Count > 0 Then
+                Dim TransactionHistory(arrTx.Count - 1) As OutGeteHSSVoucherBalanceXmlModel.Transaction
+
+                For i As Integer = 0 To arrTx.Count - 1
+                    TransactionHistory(i) = (arrTx(i))
+                Next
+
+                udtOutXml.TransactionHistory = TransactionHistory
+            Else
+                udtOutXml.TransactionHistory = Nothing
+            End If
+
+            Return udtOutXml
+
+        End Function
+        ' CRE18-XXX (Provide data to eHR Portal) [End][Chris YIM]
+
+        ' CRE18-XXX (Provide data to eHR Portal) [Start][Chris YIM]
+        ' --------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Map EHS code to EHRSS code
+        ''' </summary>
+        ''' <param name="strSourceCode">EHS code</param>
+        ''' <returns>Return EHRSS code</returns>
+        ''' <remarks></remarks>
+        Public Shared Function GetProfessionMappingForEHRSS(ByVal strSourceCode As String) As CodeMappingModel
+            Dim udtCodeMapList As CodeMappingCollection = Nothing
+            Dim udtCodeMap As CodeMappingModel = Nothing
+
+            udtCodeMapList = CodeMappingBLL.GetAllCodeMapping
+            udtCodeMap = udtCodeMapList.GetMappingByCode(CodeMappingModel.EnumSourceSystem.EHS, _
+                                                         CodeMappingModel.EnumTargetSystem.EHRSS, _
+                                                         "EHRPatientPortal_ProfessionalCode", _
+                                                         strSourceCode)
+
+            If udtCodeMap Is Nothing Then
+                Throw New Exception(String.Format("No available mapping in DB [CodeMapping] of professional code({0}) converting from EHS to EHRSS.", strSourceCode))
+            End If
+
+            Return udtCodeMap
+
+        End Function
+        ' CRE18-XXX (Provide data to eHR Portal) [End][Chris YIM]
+
+        Public Function UpdateXMLFileContent(ByRef udtDB As Database, ByVal dtmSDIRLastUpdate As DateTime, ByVal arrByteContent As Byte(), ByVal strFileType As String) As Boolean
+            Dim SDIRLastUpdateDtm_DataType As SqlDbType = SqlDbType.DateTime
+            Dim SDIRLastUpdateDtm_DataSize As Integer = 8
+
+            Dim FileContent_DataType As SqlDbType = SqlDbType.Image
+            Dim FileContent_DataSize As Integer = 2147483647
+
+            Dim FileType_DataType As SqlDbType = SqlDbType.VarChar
+            Dim FileType_DataSize As Integer = 3
+
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@SDIR_Last_Update_Dtm", SDIRLastUpdateDtm_DataType, SDIRLastUpdateDtm_DataSize, dtmSDIRLastUpdate), _
+                                               udtDB.MakeInParam("@File_Content", FileContent_DataType, FileContent_DataSize, arrByteContent), _
+                                               udtDB.MakeInParam("@File_Type", FileType_DataType, FileType_DataSize, strFileType)}
+
+                udtDB.RunProc("proc_PatientPortalDoctorList_upd_FileContent", prams)
+
+                Return True
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+                Return False
+            End Try
+        End Function
+
+        Public Function GetXMLFileContent(ByRef udtDB As Database, ByVal strFileType As String, ByVal strConnectReplicationDB As String) As Byte()
+            Dim FileType_DataType As SqlDbType = SqlDbType.VarChar
+            Dim FileType_DataSize As Integer = 3
+
+            Dim arrByteFileContent As Byte() = Nothing
+
+            Try
+                Dim dtResult As New DataTable()
+
+                Dim params() As SqlParameter = {udtDB.MakeInParam("@File_Type", FileType_DataType, FileType_DataSize, strFileType)}
+
+                If strConnectReplicationDB = YesNo.Yes Then
+                    udtDB.RunProc("proc_PatientPortalDoctorList_get_WithFileContent_Replication", params, dtResult)
+                Else
+                    udtDB.RunProc("proc_PatientPortalDoctorList_get_WithFileContent", params, dtResult)
+                End If
+
+                If dtResult.Rows.Count > 0 Then
+
+                    Dim drRow As DataRow = dtResult.Rows(0)
+
+                    If Not IsDBNull(drRow("File_Content")) Then
+                        arrByteFileContent = CType(drRow("File_Content"), Byte())
+                    End If
+
+                End If
+
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return arrByteFileContent
 
         End Function
 

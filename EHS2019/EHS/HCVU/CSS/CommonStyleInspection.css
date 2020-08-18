@@ -1,0 +1,242 @@
+﻿.fontBold {
+    font-weight: bold;
+}
+
+.mRight20 {
+    margin-right: 20px;
+}
+
+.mLet20 {
+    margin-Left: 20px;
+}
+
+
+.popTitle {
+    color: white;
+    font-size: 14px;
+    line-height: 35px;
+    font-weight: bold;
+}
+
+.popTopLeft {
+    background-image: url(../images/dialog/top-left.png);
+    width: 7px;
+    height: 35px;
+}
+
+.popTopMid {
+    background-image: url(../images/dialog/top-mid.png);
+    width: auto;
+    height: 35px;
+    background-repeat: repeat-x;
+    color: #ffffff;
+}
+
+.popTopRight {
+    background-image: url(../images/dialog/top-right.png);
+    width: 7px;
+    height: 35px;
+}
+
+.popLeft {
+    background-image: url(../images/dialog/left.png);
+    background-repeat: repeat-y;
+    width: 1px;
+}
+
+.popMid {
+    padding: 10px;
+    max-height: 750px;
+    overflow: auto;
+    background-color: #FFFFFF;
+}
+
+.popRgith {
+    background-image: url(../images/dialog/right.png);
+    width: 7px;
+    background-repeat: repeat-y;
+}
+
+.popBottomLeft {
+    background-image: url(../images/dialog/bottom-left.png);
+    width: 7px;
+    height: 7px;
+}
+
+.popBottomMid {
+    background-image: url(../images/dialog/bottom-mid.png);
+    width: auto;
+    height: 7px;
+    background-repeat: repeat-x;
+}
+
+.popBottomRight {
+    background-image: url(../images/dialog/bottom-right.png);
+    width: 7px;
+    height: 7px;
+}
+
+.bottomBtnBox {
+    text-align: center;
+    position: relative;
+    margin-top: 20px;
+}
+
+.clsNoOfClaim {
+    width: 650px;
+    font-weight: 600;
+}
+
+.clsNoOfClaim .tdheader {
+    text-align: center;
+    background-color: AliceBlue;
+    font-weight: 600;
+}
+
+.clsNoOfClaim .fieldCaption {
+    font-weight: 600;
+}
+
+.clsNoOfClaim td {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    width: 150px;
+}
+
+.clsNoOfClaim .tdinput {
+    text-align: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: white;
+}
+
+.clsNoOfClaim .tdinput input {
+    width: 50%;
+    text-align: center;
+}
+
+.actiontobetaken {
+    width: 650px;
+    background-color: white;
+}
+
+.actiontobetaken .tdheader {
+    text-align: left;
+    background-color: #FFD961;
+    font-weight: 600;
+}
+
+.actiontobetaken .fieldCaption {
+    font-weight: 600;
+}
+
+.actiontobetaken td {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    font-weight: 600;
+}
+
+.actiontobetaken .tdinput {
+    text-align: left;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.actiontobetaken .tdinput input {
+    width: 50%;
+}
+
+.actiontobetaken .noborder {
+    border-style: hidden;
+    border: 0px;
+    text-align: center;
+}
+
+.actiontobetakenshow {
+    width: 650px;
+    background-color: white;
+    border-collapse: collapse;
+}
+
+.actiontobetakenshow .tdheader {
+    text-align: left;
+    background-color: #FFD961;
+    font-weight: 600;
+}
+
+.actiontobetakenshow td {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    border: 2px solid;
+    font-weight: 600;
+}
+
+.padright20 {
+    padding-right: 20px;
+}
+
+.commonTable {
+    width: 100%;
+}
+
+.commonTable .fieldCaption {
+    width: 250px;
+}
+
+.typIns {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    width:100%;
+    background-color:white;    
+}
+
+
+
+.typIns li {
+    float: left;
+    width: 250px;
+}
+
+.typIns li span {
+    float: left;
+    width: 250px;
+}
+
+.typIns td > input[type='checkbox']:checked {
+     background-color:black
+}
+.typIns li > input[type='checkbox']:checked {
+    background: #D6B887;
+}
+
+.clsMargin01 {
+    margin-left: 2px;
+}
+
+.clsMargin20 {
+    margin-left: 20px;
+}
+
+.checkBoxHighlight {
+    background-color: #fef3ca !important;
+}
+
+.visitTargetTable {
+    width:100%;
+}
+
+.visitTargetTable td {
+    padding-bottom:3px;
+}
+
+.visitTargetTable td div {
+    padding-bottom:2px;
+}
+
+.verticalAlignMiddle {
+    vertical-align: middle;
+}

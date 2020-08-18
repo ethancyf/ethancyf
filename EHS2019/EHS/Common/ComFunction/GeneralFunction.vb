@@ -1352,6 +1352,12 @@ Namespace ComFunction
         Private Const Profile_ID_DataType As SqlDbType = SqlDbType.Char
         Private Const Profile_ID_DataSize As Integer = 10
 
+        Private Const Profile_Year_DataType As SqlDbType = SqlDbType.SmallInt
+        Private Const Profile_Year_DataSize As Integer = 2
+
+        Private Const Profile_Month_DataType As SqlDbType = SqlDbType.SmallInt
+        Private Const Profile_Month_DataSize As Integer = 2
+
         'CRE15-003 System-generated Form [Start][Philip Chau]
         ''' <summary>
         ''' Retrieve SystemProfile Profile_Prefix
@@ -1428,21 +1434,57 @@ Namespace ComFunction
 
             Try
                 udtDB.BeginTransaction()
-                'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
-                'intRes = Me.getSeqNo_Prefix(strSeqNoType, strSchemeCode, strPrefix, udtDB)
+
                 intRes = Me.getSeqNo_Prefix(strSeqNoType, strSchemeCode, strPrefix, udtDB, udtCustomDB)
-                'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+
                 udtDB.CommitTransaction()
                 Return intRes
 
             Catch eSQL As SqlException
                 udtDB.RollBackTranscation()
-                Throw eSQL
+                Throw
             Catch ex As Exception
                 udtDB.RollBackTranscation()
                 intRes = 0
-                Throw ex
+                Throw
+                Return intRes
+            End Try
+        End Function
+
+        ''' <summary>
+        ''' Retrieve SystemProfile Profile_Num + Profile_Prefix
+        ''' </summary>
+        ''' <param name="strSeqNoType"></param>
+        ''' <param name="strSchemeCode"></param>
+        ''' <param name="strPrefix">Output Prefix</param>
+        ''' <param name="udtCustomDB">Output Database</param>
+        ''' <returns>Profile_Num</returns>
+        ''' <remarks></remarks>
+        ''' Public Function getSeqNo_Prefix(ByVal strSeqNoType As String, ByVal strSchemeCode As String, ByRef strPrefix As String) As Integer
+        Public Function getSeqNo_Prefix_ByYearMonth(ByVal strSeqNoType As String, ByVal strSchemeCode As String, ByVal intYear As Integer, ByVal intMonth As Integer, _
+                                        ByRef strPrefix As String, Optional ByRef udtCustomDB As Database = Nothing) As Integer
+
+            Dim intRes As Integer = 0
+            Dim dt As DataTable = New DataTable()
+            Dim udtDB As Database = New Database()
+
+            Try
+                udtDB.BeginTransaction()
+                ' CRE19-022 Inspection Module [Start][Winnie]
+                '-----------------------------------------------------------------------------------------
+                'intRes = Me.getSeqNo_Prefix(strSeqNoType, strSchemeCode, strPrefix, udtDB, udtCustomDB)
+                intRes = Me.getSeqNo_Prefix(strSeqNoType, strSchemeCode, strPrefix, udtDB, udtCustomDB, intYear, intMonth)
+                ' CRE19-022 Inspection Module [End][Winnie]
+                udtDB.CommitTransaction()
+                Return intRes
+
+            Catch eSQL As SqlException
+                udtDB.RollBackTranscation()
+                Throw
+            Catch ex As Exception
+                udtDB.RollBackTranscation()
+                intRes = 0
+                Throw
                 Return intRes
             End Try
         End Function
@@ -1457,7 +1499,8 @@ Namespace ComFunction
         ''' <param name="udtCustomDB">Output Database</param>
         ''' <returns>Profile_Num</returns>
         ''' <remarks></remarks>
-        Private Function getSeqNo_Prefix(ByVal strSeqNoType As String, ByVal strSchemeCode As String, ByRef strPrefix As String, ByVal udtDefaultDB As Database, Optional ByRef udtCustomDB As Database = Nothing) As Integer
+        Private Function getSeqNo_Prefix(ByVal strSeqNoType As String, ByVal strSchemeCode As String, ByRef strPrefix As String, ByVal udtDefaultDB As Database, Optional ByRef udtCustomDB As Database = Nothing, _
+                                         Optional ByVal intYear As Integer = 0, Optional ByVal intMonth As Integer = 0) As Integer
 
             Dim intRes As Integer = 0
             Dim dt As DataTable = New DataTable()
@@ -1473,9 +1516,14 @@ Namespace ComFunction
             'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
 
             Try
+
+                ' CRE19-022 Inspection Module [Start][Winnie]
                 Dim prams() As SqlParameter = { _
                     udtDB.MakeInParam("@Profile_ID", Profile_ID_DataType, Profile_ID_DataSize, strSeqNoType), _
+                    udtDB.MakeInParam("@Profile_Year", Profile_Year_DataType, Profile_Year_DataSize, IIf(intYear = 0, DBNull.Value, intYear)), _
+                    udtDB.MakeInParam("@Profile_Month", Profile_Month_DataType, Profile_Month_DataSize, IIf(intMonth = 0, DBNull.Value, intMonth)), _
                     udtDB.MakeInParam("@Scheme_Code", Scheme_Code_DataType, Scheme_Code_DataSize, strSchemeCode)}
+                ' CRE19-022 Inspection Module [End][Winnie]
 
                 udtDB.RunProc("proc_SystemProfile_get_byProfileID", prams, dt)
 
@@ -1677,6 +1725,50 @@ Namespace ComFunction
         End Function
         'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
 
+        ' by James for Generate ID
+        Public Function GenerateVoucherRefundRequestID() As String
+            Dim strRes As String = String.Empty
+            Dim strDBPrefix As String = String.Empty
+            Dim strProfileType As String = "VRRID"
+            Dim strSchemeCode As String = "ALL"
+
+            Dim intNextNum As Integer
+
+            intNextNum = Me.getSeqNo_Prefix(strProfileType, strSchemeCode, strDBPrefix)
+            If intNextNum > 99999999 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateVoucherRefundRequestID], Message = The retrieved [Profile_Num] has exceeded its limit and the limit is 99999999")
+            End If
+
+            strRes = strDBPrefix.Trim() + intNextNum.ToString().PadLeft(8, "0")
+
+            If strRes.Length <> 11 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateVoucherRefundRequestID], Message = The number of characters of [SentOutMsgID] must be 11")
+            End If
+
+            Return strRes
+        End Function
+
+        Public Function GenerateVoucherRefundID() As String
+            Dim strRes As String = String.Empty
+            Dim strDBPrefix As String = String.Empty
+            Dim strProfileType As String = "VRID"
+            Dim strSchemeCode As String = "ALL"
+
+            Dim intNextNum As Integer
+
+            intNextNum = Me.getSeqNo_Prefix(strProfileType, strSchemeCode, strDBPrefix)
+            If intNextNum > 99999999 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateVoucherRefundID], Message = The retrieved [Profile_Num] has exceeded its limit and the limit is 99999999")
+            End If
+
+            strRes = strDBPrefix.Trim() + intNextNum.ToString().PadLeft(8, "0")
+
+            If strRes.Length <> 10 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateVoucherRefundID], Message = The number of characters of [SentOutMsgID] must be 10")
+            End If
+
+            Return strRes
+        End Function
         'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
         ''' <summary>
@@ -1695,7 +1787,7 @@ Namespace ComFunction
             Dim intNextNum As Integer
             'Dim strPrefix_y, strPrefix_m, strPrefix_d As String
 
-            intNextNum = Me.getSeqNo_Prefix(strProfileType, strSchemeCode, strDBPrefix, udtDB)
+            intNextNum = Me.getSeqNo_Prefix(strProfileType, strSchemeCode, strDBPrefix, udtDB, Nothing, Nothing, Nothing)
             If intNextNum > 999999 Then
                 Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateSentOutMsgID], Message = The retrieved [Profile_Num] has exceeded its limit and the limit is 999")
             End If
@@ -1912,6 +2004,67 @@ Namespace ComFunction
             Return String.Format("{0}{1}-{2}", strPrefix.Trim, dtToday.ToString("yyyyMMdd"), intNextNum.ToString.PadLeft(3, "0"))
 
         End Function
+
+        ' CRE19-022 Inspection Module [Start][Winnie]
+        Public Function GenerateInspectionRecordID(ByRef udtDB As Database) As String
+            Dim strRes As String = String.Empty
+            Dim strDBPrefix As String = String.Empty
+            Dim strProfileType As String = "INSID"
+            Dim strSchemeCode As String = "ALL"
+
+            Dim intNextNum As Integer
+
+            intNextNum = Me.getSeqNo_Prefix(strProfileType, strSchemeCode, strDBPrefix, udtDB)
+            If intNextNum > 999 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateInspectionRecordID], Message = The retrieved [Profile_Num] has exceeded its limit and the limit is 999")
+            End If
+
+            Dim dtToday As DateTime = Me.GetSystemDateTime()
+            Dim strPrefix_y, strPrefix_m, strPrefix_d As String
+
+            strPrefix_y = dtToday.Year.ToString()
+            strPrefix_m = dtToday.Month.ToString().PadLeft(2, "0")
+            strPrefix_d = dtToday.Day.ToString().PadLeft(2, "0")
+
+            strRes = strDBPrefix.Trim() + strPrefix_y + strPrefix_m + strPrefix_d + intNextNum.ToString().PadLeft(3, "0")
+
+            If strRes.Length <> 14 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateInspectionRecordID], Message = The number of characters of [InspectionID] must be 14")
+            End If
+
+            Return strRes
+        End Function
+
+        Public Function GenerateInspectionFileRefNo(ByVal strFileReferenceNo As String, ByRef udtDB As Database) As String
+            Dim strRes As String = String.Empty
+            Dim strDBPrefix As String = String.Empty
+            Dim strSchemeCode As String = "ALL"
+
+            Dim strFileRefNoPrefix As String = Me.getSeqNo_Prefix_Without_Update_ProfileNum("INS_TYPE_1", "ALL")
+            Dim match = Regex.Match(strFileReferenceNo, strFileRefNoPrefix & "(\d+)/(\d+)-(\d+)", RegexOptions.IgnoreCase)
+            Dim strType As String = match.Groups(1).Value
+            Dim strYear As String = match.Groups(2).Value
+            Dim strMonth As String = match.Groups(3).Value
+
+            Dim intYear As Integer = 2000 + CInt(strYear)
+            Dim intMonth As Integer = CInt(strMonth)
+            Dim strProfileType As String = String.Format("INS_TYPE_{0}", strType)
+            Dim intNextNum As Integer
+
+            intNextNum = Me.getSeqNo_Prefix_ByYearMonth(strProfileType, strSchemeCode, intYear, intMonth, strDBPrefix, udtDB)
+            If intNextNum > 999 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateInspectionFileRefNo], Message = The retrieved [Profile_Num] has exceeded its limit and the limit is 999")
+            End If
+
+            strRes = String.Format("{0}{1}/{2}-{3}-{4}", strDBPrefix.Trim(), strType, strYear, strMonth, intNextNum.ToString.PadLeft(3, "0"))
+
+            If strRes.Length <> 24 Then
+                Throw New Exception("Error: Class = [Common.ComFunction.GeneralFunction], Method = [GenerateInspectionFileRefNo], Message = The number of characters of [FileRefNo] must be 24")
+            End If
+
+            Return strRes
+        End Function
+        ' CRE19-022 Inspection Module [End][Winnie]
 
 #End Region
 

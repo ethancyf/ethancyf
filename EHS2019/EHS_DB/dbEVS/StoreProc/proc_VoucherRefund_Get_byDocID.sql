@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_VoucherRefund_Get_byDocID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_VoucherRefund_Get_byDocID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_VoucherRefund_Get_byDocID]
 GO
 
@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- CR No.:			
--- Modified by:	    
--- Modified date:   
--- Description:		
+-- Modified by:	    Chris YIM
+-- Modified date:   20 Feb 2019
+-- CR No.:			CRE20-005
+-- Description:		Grant rights of WSEXT
 -- =============================================
 -- =============================================
 -- Author:			Chris YIM
@@ -69,7 +69,7 @@ BEGIN
 END  
 GO
 
-GRANT EXECUTE ON [dbo].[proc_VoucherRefund_Get_byDocID] TO HCSP, HCVU, HCPUBLIC
+GRANT EXECUTE ON [dbo].[proc_VoucherRefund_Get_byDocID] TO HCSP, HCVU, HCPUBLIC, WSEXT
 GO
 
 

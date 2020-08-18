@@ -1,4 +1,4 @@
- IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_HCVUUserAC_after_upd')
+﻿ IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_HCVUUserAC_after_upd')
 	BEGIN
 		DROP  Trigger [dbo].[tri_HCVUUserAC_after_upd]
 	END
@@ -8,6 +8,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	07 Jul 2020
+-- CR No.			CRE19-022 Inspection Module
+-- Description:		Add field [Encrypt_Field3] (Chinese Name), [Sex], [Contact_No]
+-- =============================================
 -- =============================================
 -- Author:		Kathy LEE
 -- Create date: 27 Sept 2008
@@ -55,7 +63,10 @@ BEGIN
 		Encrypt_Field1,
 		Encrypt_Field2,
 		Force_Pwd_Change,
-		User_Password_Level
+		User_Password_Level,
+		Encrypt_Field3,
+		Sex,
+		Contact_No
 	)
 	SELECT
 		getdate(),
@@ -76,7 +87,10 @@ BEGIN
 		Encrypt_Field1,
 		Encrypt_Field2,
 		Force_Pwd_Change,
-		User_Password_Level
+		User_Password_Level,
+		Encrypt_Field3,
+		Sex,
+		Contact_No
 	FROM inserted
 
 END

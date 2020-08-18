@@ -95,9 +95,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="eHSService.svc" />
+    <Content Include="eHSServicePatientPortal.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="My Project\PublishProfiles\eHRIntegration.pubxml" />
     <None Include="WSDL\ExampleWebS.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -105,6 +107,9 @@
   <ItemGroup>
     <Compile Include="eHSService.svc.vb">
       <DependentUpon>eHSService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="eHSServicePatientPortal.svc.vb">
+      <DependentUpon>eHSServicePatientPortal.svc</DependentUpon>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -191,7 +196,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>16396</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/eHRIntegration_DEV</IISUrl>
+          <IISUrl>https://localhost/eHRIntegration</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StaticData_get_cache]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StaticData_get_cache]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StaticData_get_cache]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	8 Jul 2020
+-- CR No.:			CRE19-022 (Inspection Module)
+-- Description:		Return [Display_Order]
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Lawrence TSANG
@@ -23,13 +30,6 @@ GO
 -- Author:		Kathy LEE
 -- Create date: 30 Apr 2008
 -- Description:	Retrieve data from StaticData Table
--- =============================================
-
--- =============================================
--- Modification History
--- Modified by:	
--- Modified date: 
--- Description:	
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_StaticData_get_cache]
@@ -53,7 +53,7 @@ BEGIN
 -- Return results
 -- =============================================
 
-	SELECT Column_Name, Item_No, Data_Value, Data_Value_Chi, Data_Value_CN
+	SELECT Column_Name, Item_No, Data_Value, Data_Value_Chi, Data_Value_CN, Display_Order
 	FROM dbo.StaticData
 	WHERE Record_Status = 'A'
 	ORDER BY Display_Order

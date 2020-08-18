@@ -158,6 +158,7 @@
     <None Include="Template\eHSU0009-PCV13_Statistic_Template.xlsx" />
     <None Include="Template\eHSU0010-SP_Claim_Pattern_Template.xlsx" />
     <None Include="Template\eHSU0011_MeansOfInput_Rank_Template.xlsx" />
+    <None Include="Template\eHSU0012_Inspection_Record_Template.xlsx" />
     <None Include="Template\eHSVF000-VaccinationFileTemplate.xlsx" />
     <None Include="Template\eHSVF001-VaccinationFileTemplate-MMR.xlsx" />
     <None Include="Template\eHSVF001-VaccinationFileTemplate-PV.xlsx" />
@@ -173,6 +174,7 @@
     <None Include="Template\eHSW0002-Template.xlsx" />
     <None Include="Template\eHSW0003-PCV13_Weekly_Statistic_Template.xlsx" />
     <None Include="Template\eHSW0004-Vaccination_Weekly_Template.xlsx" />
+    <None Include="Template\eHSW0005-Inspection_Weekly_Template.xlsx" />
     <None Include="Template\PPC0001-Template.xlsx" />
     <None Include="Template\PPC0002-Template.xlsx" />
     <None Include="Template\PPC0003-Template.xlsx" />

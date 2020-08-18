@@ -59,13 +59,13 @@ Partial Public Class MasterPage
     Protected WithEvents pnlPleaseWait As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''imgLoading control.
+    '''Image1 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgLoading As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents Image1 As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''UpdateProgress1 control.
@@ -75,15 +75,6 @@ Partial Public Class MasterPage
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents UpdateProgress1 As Global.System.Web.UI.UpdateProgress
-
-    '''<summary>
-    '''ModalPopupExtender1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ModalPopupExtender1 As Global.AjaxControlToolkit.ModalPopupExtender
 
     '''<summary>
     '''tblBanner control.

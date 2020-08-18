@@ -66,4 +66,28 @@ Namespace Model.Xml.eHSService
 
     End Class
 
+    ' CRE18-XXX (Provide data to eHR Portal) [Start][Chris YIM]
+    ' --------------------------------------------------------------------------------------
+    <XmlRoot("geteHSSDoctorList")>
+    Public Class InGeteHSSDoctorListXmlModel
+        Public Timestamp As String
+
+    End Class
+    ' CRE18-XXX (Provide data to eHR Portal) [End][Chris YIM]
+
+    ' CRE18-XXX (Provide data to eHR Portal) [Start][Chris YIM]
+    ' --------------------------------------------------------------------------------------
+    <XmlRoot("geteHSSVoucherBalance")>
+    Public Class InGeteHSSVoucherBalanceXmlModel
+        Public HKID As String
+        Public DocType As String
+        Public DOBFormat As String
+        Public DOB As String
+        Public EC_Age As String
+        Public EC_RegDate As String
+        Public Timestamp As String
+
+    End Class
+    ' CRE18-XXX (Provide data to eHR Portal) [End][Chris YIM]
+
 End Namespace

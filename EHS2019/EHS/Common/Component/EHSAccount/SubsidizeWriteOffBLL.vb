@@ -8,6 +8,14 @@ Imports Common.Component.VoucherInfo
 
 Namespace Component.EHSAccount
 
+#Region "Enum"
+    Public Enum WriteOff
+        NotUpdateDB = 0
+        UpdateDB = 1
+    End Enum
+
+#End Region
+
     Public Class SubsidizeWriteOffBLL
 
         Private Function GetAllSubsidizeWriteOff(ByVal strDocCode As String, ByVal strDocID As String, ByVal dtmDOB As DateTime, ByVal strExactDOB As String, _
@@ -875,7 +883,7 @@ Namespace Component.EHSAccount
         End Function
         ' CRE18-021 (Voucher balance Enquiry show forfeited) [End][Chris YIM]
 
-        ' CRE18-021 (Voucher balance Enquiry show forfeited) [Start][Chris YIM]
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         ''' <summary>
         ''' Retrieve Full Write Off List
@@ -889,13 +897,16 @@ Namespace Component.EHSAccount
         ''' <param name="strSchemeCode"></param>        
         ''' <param name="strSubsidizeCode"></param>        
         ''' <param name="strCreateReason"></param>                
+        ''' <param name="enumUpdateDBWriteOff"></param>                
         ''' <param name="udtDB"></param>     
         ''' <remarks></remarks>
         Public Function GetSubsidizeWriteOffList(ByVal strDocCode As String, ByVal strDocID As String, _
                                                  ByVal dtmDOB As DateTime, ByVal strExactDOB As String, _
                                                  ByVal dtmDOD As Nullable(Of DateTime), ByVal strExactDOD As String, _
                                                  ByVal strSchemeCode As String, ByVal strSubsidizeCode As String, _
-                                                 ByVal strCreateReason As String, Optional ByVal udtDB As Database = Nothing) As SubsidizeWriteOffModelCollection
+                                                 ByVal strCreateReason As String, _
+                                                 ByVal enumUpdateDBWriteOff As EHSAccount.WriteOff, _
+                                                 Optional ByVal udtDB As Database = Nothing) As SubsidizeWriteOffModelCollection
 
             Dim udtSubsidizeWriteOffList As New SubsidizeWriteOffModelCollection()
             Dim udtSchemeClaimBLL As New SchemeClaimBLL
@@ -912,6 +923,10 @@ Namespace Component.EHSAccount
 
                 Select Case udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType
                     Case SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVoucher
+                        If enumUpdateDBWriteOff = WriteOff.NotUpdateDB Then
+                            blnNotUpdateDB = True
+                        End If
+
                         udtSubsidizeWriteOffList = HandleWriteOff(HandleWriteOffMode.MissingSeasonOnly, Nothing, _
                                                                   strDocCode, strDocID, dtmDOB, strExactDOB, dtmDOD, strExactDOD, _
                                                                   strSchemeCode, strSubsidizeCode, strCreateReason, Nothing, blnNotUpdateDB, udtDB)
@@ -925,9 +940,9 @@ Namespace Component.EHSAccount
             Return udtSubsidizeWriteOffList
 
         End Function
-        ' CRE18-021 (Voucher balance Enquiry show forfeited) [End][Chris YIM]
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
-        ' CRE18-021 (Voucher balance Enquiry show forfeited) [Start][Chris YIM]
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         ''' <summary>
         ''' Retrieve Total Write Off  Amount
@@ -941,13 +956,16 @@ Namespace Component.EHSAccount
         ''' <param name="strSchemeCode"></param>        
         ''' <param name="strSubsidizeCode"></param>        
         ''' <param name="strCreateReason"></param>                
+        ''' <param name="enumUpdateDBWriteOff"></param>                
         ''' <param name="udtDB"></param>     
         ''' <remarks></remarks>
         Public Function GetTotalWriteOff(ByVal strDocCode As String, ByVal strDocID As String, _
                                          ByVal dtmDOB As DateTime, ByVal strExactDOB As String, _
                                          ByVal dtmDOD As Nullable(Of DateTime), ByVal strExactDOD As String, _
                                          ByVal strSchemeCode As String, ByVal strSubsidizeCode As String, _
-                                         ByVal strCreateReason As String, Optional ByVal udtDB As Database = Nothing) As VoucherDetailModelCollection
+                                         ByVal strCreateReason As String, _
+                                         ByVal enumUpdateDBWriteOff As EHSAccount.WriteOff, _
+                                         Optional ByVal udtDB As Database = Nothing) As VoucherDetailModelCollection
 
             Dim udtSubsidizeWriteOffList As New SubsidizeWriteOffModelCollection()
             Dim udtSchemeClaimBLL As New SchemeClaimBLL
@@ -959,7 +977,7 @@ Namespace Component.EHSAccount
                 Select Case udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType
                     Case SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVoucher
                         udtSubsidizeWriteOffList = GetSubsidizeWriteOffList(strDocCode, strDocID, dtmDOB, strExactDOB, dtmDOD, strExactDOD, _
-                                                                            strSchemeCode, strSubsidizeCode, strCreateReason, udtDB)
+                                                                            strSchemeCode, strSubsidizeCode, strCreateReason, enumUpdateDBWriteOff, udtDB)
 
                         Return GetWriteOffAmount(udtSubsidizeWriteOffList, Nothing, Nothing)
 
@@ -969,7 +987,7 @@ Namespace Component.EHSAccount
                 End Select
             End If
         End Function
-        ' CRE18-021 (Voucher balance Enquiry show forfeited) [End][Chris YIM]
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
         ''' <summary>
         ''' Handle Write Off for Newly Created Account

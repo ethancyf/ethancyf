@@ -21,14 +21,10 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -110,12 +106,67 @@
     <Content Include="Sample\CallEHR\VerifySystem\1-VPRequest.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_EC.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002168.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002176.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002184.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002192.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002206.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002214.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002222.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002230.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002249.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002257.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002265.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002273.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D200229A.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002303.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002281.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC_D2002001.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Sample\CallEHS\8-geteHSSVoucherBalance_HKIC.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Sample\CallEHS\1-geteHSSTokenInfo.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Sample\CallEHS\2-seteHSSTokenShared.xml" />
     <Content Include="Sample\CallEHS\3-replaceeHSSToken.xml" />
     <Content Include="Sample\CallEHS\4-notifyeHSSTokenDeactivated.xml" />
+    <Content Include="Sample\CallEHS\7-geteHSSDoctorList.xml" />
     <Content Include="Sample\CallEHS\6-healthCheckeHSS.xml" />
     <Content Include="Sample\CallEHS\5-geteHSSLoginAlias.xml" />
     <Content Include="Web.config">
@@ -177,6 +228,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
+    <None Include="My Project\PublishProfiles\eHRIntegrationTester.pubxml" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>
@@ -193,6 +245,10 @@
     <ProjectReference Include="..\Common.eHRIntegration\Common.eHRIntegration.vbproj">
       <Project>{a096aa76-6acf-4117-80e1-b7abaf11ed26}</Project>
       <Name>Common.eHRIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{9405b1bf-72c2-4a3c-bdb5-44956b723670}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
@@ -222,7 +278,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1159</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/eHRIntegrationTester</IISUrl>
+          <IISUrl>https://localhost/eHRIntegrationTester</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

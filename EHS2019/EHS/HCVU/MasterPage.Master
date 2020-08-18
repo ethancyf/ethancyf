@@ -161,6 +161,19 @@
 
         });
 
+        //Block enter key to form submit
+        //But allow enter key if pressing enter key on a textbox with list (e.g. Officer list in Inspection Record Management function) 
+        $(document).keypress(
+          function (event) {
+              if (event.which == '13') {
+                  if (event.target.type == 'text' && event.target.list != null) {
+                      return true;
+                  }
+                  else {
+                      return false;
+                  }
+          }
+        });
     </script>
 
 
@@ -175,15 +188,15 @@
     <asp:ContentPlaceHolder ID="ContentPlaceHolderHead" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body>
-    <form id="form1" runat="server" defaultbutton="btnHidden" autocomplete="off">
+    <form id="form1" runat="server" autocomplete="off">
         <div>
             <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
-            <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
-                <table style="width: 150px; height: 150px; background-color: #ffffff" border="0"
+            <asp:Panel ID="pnlPleaseWait" runat="server" Style="visibility: hidden; position: fixed; z-index: 29999; width: 100%; height: 100%;">
+                <table style="width: 150px; height: 150px; background-color: #ffffff; position: fixed; left: 50%; top: 50%; margin-top: -150px; margin-left: -50px; z-index: 30000;" border="0"
                     cellpadding="0" cellspacing="0">
                     <tr>
                         <td align="center" valign="middle">
-                            <asp:Image ID="imgLoading" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
+                            <asp:Image ID="Image1" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
                                 AlternateText="<%$ Resources:AlternateText, PleaseWait %>" /></td>
                     </tr>
                 </table>
@@ -192,8 +205,6 @@
                 <ProgressTemplate>
                 </ProgressTemplate>
             </asp:UpdateProgress>
-            <cc2:ModalPopupExtender ID="ModalPopupExtender1" runat="server" PopupControlID="pnlPleaseWait"
-                TargetControlID="btnHiddenPleaseWait" BackgroundCssClass="modalBackgroundTransparent" />
             <table border="0" cellpadding="0" cellspacing="0" style="background-image: url(Images/master/banner_header.jpg); width: 994px; background-repeat: no-repeat; height: 100px"
                 id="tblBanner" runat="server">
                 <tr>
@@ -209,7 +220,8 @@
                             ID="ibtnLogout" runat="server" AlternateText="<%$ Resources:AlternateText, LogoutBtn %>" ImageUrl="<%$ Resources:ImageUrl, LogoutBtn %>" />
                         <asp:ImageButton ID="ibtnInbox" runat="server" AlternateText="<%$ Resources:AlternateText, InboxBtn %>" ImageUrl="<%$ Resources:ImageUrl, InboxBtn %>" />
                         <asp:ImageButton ID="ibtnHome" runat="server" AlternateText="<%$ Resources:AlternateText, HomeBtn %>" ImageUrl="<%$ Resources:ImageUrl, HomeBtn %>" /><asp:Label ID="lblWelcome" runat="server" CssClass="bannerText" Text="<%$ Resources:Text, Welcome %>"></asp:Label>
-                        <asp:Label ID="lblLoginName" runat="server" CssClass="bannerText"></asp:Label></td>
+                        <asp:Label ID="lblLoginName" runat="server" CssClass="bannerText"></asp:Label>
+                    </td>
                     <%-- CRE11-010 Relax back date limit request [Start][Tommy L] ----------------------------------------------------%>
                     <td align="right">
                         <asp:ImageButton ID="ibtnChangePW" runat="server" AlternateText="<%$ Resources:AlternateText, ChangePasswordBtn %>" ImageUrl="<%$ Resources:ImageUrl, ChangePasswordBtn %>" OnClick="ibtnChangePW_Click" />
@@ -219,7 +231,7 @@
                         <asp:Label ID="lblClock" runat="server"></asp:Label></td>
                 </tr>
             </table>
-            <table border="0" cellpadding="0" cellspacing="0" style="width: 994px">
+            <table border="0" cellpadding="0" cellspacing="0" style="width: 1060px">
                 <tr>
                     <td>
                         <nav>
@@ -230,7 +242,7 @@
             </table>
         </div>
         <div>
-            <table border="0" cellpadding="0" cellspacing="0" style="background-position: bottom; background-image: url(../Images/master/body_background.jpg); width: 994px; background-repeat: repeat-x">
+            <table border="0" cellpadding="0" cellspacing="0" style="background-position: bottom; background-image: url(../Images/master/body_background.jpg); width: 1060px; background-repeat: repeat-x">
                 <tr>
                     <td style="width: 5px; height: 515px;" valign="top">
                         <img src="../Images/others/transparent.gif" alt="" width="5px" />
@@ -280,7 +292,7 @@
         <asp:Button runat="server" ID="btnHidden" Style="display: none" OnClientClick="return false;" />
         <!-- Timeout Reminder -->
         <script type="text/javascript" src="../JS/TimeoutReminder.js"></script>
-        <asp:Panel ID="panTimeoutReminder" runat="server" Style="display: none"  Width="500px" >
+        <asp:Panel ID="panTimeoutReminder" runat="server" Style="display: none" Width="500px">
             <uc1:ucNoticePopUp ID="ucNoticePopUpTimeoutReminder" runat="server" NoticeMode="Timeout" ButtonMode="OK"
                 MessageText="<%$ Resources: Text, TimeoutReminderMessage %>" />
         </asp:Panel>
@@ -292,7 +304,7 @@
     </form>
     <script type="text/javascript">
         //alert(document.getElementById('ctl00_caMenu').innerHTML)
-        if (Sys.Extended.UI.TabContainer != null){
+        if (Sys.Extended.UI.TabContainer != null) {
             Sys.Extended.UI.TabContainer.prototype._app_onload = function (sender, e) {
                 if (this._cachedActiveTabIndex != -1) {
                     this.set_activeTabIndex(this._cachedActiveTabIndex);

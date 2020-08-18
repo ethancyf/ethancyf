@@ -1,11 +1,17 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_AR_Report_Schedule]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_AR_Report_Schedule]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_AR_Report_Schedule]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Martin TANG
+-- Modified date:	22 JULY 2020
+-- CR No.:			CRE19-022 (Inspection Schedule Weekly Report) 
+-- Description:		New Weekly Report eHSW0005
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -167,6 +173,9 @@ AS BEGIN
 		
 		-- Weekly Vaccination Schedule Report
 		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0004' ,'' ,'eHS(S)'
+
+		-- Inspection Schedule Weekly Report
+		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0005' ,'' ,'eHS(S)'
 	END
 
 	---------------------------------------------------------------------------------------------

@@ -214,6 +214,17 @@
                                     <asp:Image ID="imgUserNameAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif"  AlternateText="<%$ Resources:AlternateText, ErrorImg %>" style="position: absolute;"/>
                                 </td>
                             </tr>
+                            <!--Golden Add-->
+                            <tr style="height: 24px">
+                                <td>
+                                    <asp:Label ID="lblChineseNameText" runat="server" Text="<%$Resources:Text, NameInChinese%>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtChineseName" runat="server" Visible="false" MaxLength="6"></asp:TextBox>        
+                                    <asp:Label ID="lblChineseName" runat="server"></asp:Label>
+                                    <asp:Image ID="imgChineseNameAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Style="position: absolute;" />
+                                </td>
+                            </tr>
                             <tr style="height: 24px">
                                 <td>
                                     <asp:Label ID="lblHKIDText" runat="server" Text="<%$Resources:Text, HKID%>"></asp:Label>
@@ -225,6 +236,31 @@
                                     </cc1:FilteredTextBoxExtender>
                                     <asp:Label ID="lblHKID" runat="server"></asp:Label>
                                     <asp:Image ID="imgHKIDAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif"  AlternateText="<%$ Resources:AlternateText, ErrorImg %>" style="position: absolute;"/>
+                                </td>
+                            </tr>
+                            <!--Golden Add-->
+                            <tr style="height: 24px">
+                                <td>
+                                    <asp:Label ID="lblGenderText" runat="server" Text="<%$Resources:Text, Gender%>"></asp:Label>
+                                </td>
+                                <td>                                    
+                                    <asp:RadioButtonList id="rdlGender" runat="server" Visible="false" RepeatDirection="Horizontal" Style="position:relative;left:-7px;top:-2px;display:inline-block" >
+                                    </asp:RadioButtonList>
+                                    <asp:Label ID="lblGender" runat="server" Visible="false"></asp:Label>
+                                    <asp:Image ID="imgGenderAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Style="position: absolute;" />
+                                </td>
+                            </tr>
+                            <tr style="height: 24px">
+                                <td>
+                                    <asp:Label ID="lblContactNoText" runat="server" Text="<%$Resources:Text, ContactNo2%>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtContactNo" runat="server" Visible="false" MaxLength="20"></asp:TextBox>
+                                    <cc1:FilteredTextBoxExtender ID="filtertxtContactNo" runat="server" TargetControlID="txtContactNo"
+                                        FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars=" ~!@#$%^&*()_+`-=[]\{}|;':<>?,./&quot;">
+                                    </cc1:FilteredTextBoxExtender>
+                                    <asp:Label ID="lblContactNo" runat="server" Visible="false"></asp:Label>
+                                    <asp:Image ID="imgContactNoAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif" AlternateText="<%$ Resources:AlternateText, ErrorImg %>" Style="position: absolute;" />
                                 </td>
                             </tr>
                             <tr style="height: 24px">
@@ -331,7 +367,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                <asp:Panel ID="pnlFuncAccessRight" runat="server" BorderWidth="1px" Height="215px" Width="510px" ScrollBars="auto">
+                                <asp:Panel ID="pnlFuncAccessRight" runat="server" BorderWidth="1px" Height="250px" Width="510px" ScrollBars="auto">
                                     <asp:CheckBoxList ID="chklFuncAccessRight" runat="server" Enabled="false" DataTextField="Description" DataValueField="Function_Code">
                                     </asp:CheckBoxList>
                                 </asp:Panel>
@@ -349,7 +385,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                <asp:Panel ID="pnlFileGenerationRight" runat="server" BorderWidth="1px" Height="198px" Width="510px" ScrollBars="auto">
+                                <asp:Panel ID="pnlFileGenerationRight" runat="server" BorderWidth="1px" Height="222px" Width="510px" ScrollBars="auto">
                                     <asp:CheckBoxList id="chklFileGenerationRight" runat="server" Enabled="false" DataTextField="FileName" DataValueField="FileID">
                                     </asp:CheckBoxList>
                                 </asp:Panel>

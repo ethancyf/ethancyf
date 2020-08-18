@@ -74,6 +74,7 @@ Public Class ScheduleJob
         OCSSSHealthCheckFail
         OCSSSSlowResponse
         OCSSSConnectFail
+        EHRSSPatientPortalSlowResponse
     End Enum
 
 #End Region
@@ -405,6 +406,10 @@ Public Class ScheduleJob
         dtmLastCheck.Insert(HealthCheckType.OCSSSHealthCheckFail, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.OCSSSSlowResponse, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.OCSSSConnectFail, dtmNow)
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        dtmLastCheck.Insert(HealthCheckType.EHRSSPatientPortalSlowResponse, dtmNow)
+        ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
         CheckTime.ReadCheckTime(dtmLastCheck)
 
@@ -439,6 +444,11 @@ Public Class ScheduleJob
             CheckOCSSS_SlowResponse(dtmLastCheck(HealthCheckType.OCSSSSlowResponse), dtmNow)
 
             CheckOCSSS_ConnectFail(dtmLastCheck(HealthCheckType.OCSSSConnectFail), dtmNow)
+
+            ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            CheckEHRSS_PP_SlowResponse(dtmLastCheck(HealthCheckType.EHRSSPatientPortalSlowResponse), dtmNow)
+            ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
             CheckTime.WriteCheckTime(dtmLastCheck)
 
@@ -1882,6 +1892,204 @@ Public Class ScheduleJob
         End Select
     End Sub
     ' CRE17-010 (OCSSS integration) [End][Winnie SUEN]
+#End Region
+
+#Region "eHRSS - Patient Portal"
+
+    Private Sub CheckEHRSS_PP_SlowResponse(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
+        ' +-------------------------------------------------------------------------------+
+        ' | For every [5] minutes, monitor the EHRSS->EHS InterfaceLog.                   |
+        ' | For "geteHSSVoucherBalance", If there are at least [1] requests of:           |
+        ' |   >=[6] seconds, raise alert.                                                 |
+        ' |   >=[9] seconds, raise another separate alert.                                |
+        ' | For "geteHSSDoctorList", If there are at least [1] requests of:               |
+        ' |   >=[15] seconds, raise alert.                                                |
+        ' |   >=[20] seconds, raise another separate alert.                               |
+        ' +-------------------------------------------------------------------------------+
+
+        Log("Checking EHRSS_PatientPortal_SlowResponse")
+
+        ' Check whether need to run
+        If DateDiff(DateInterval.Minute, dtmLastCheck, dtmCurrent) < CInt(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_CheckInterval")) Then
+            Log("Smaller than CheckInterval, no need to run")
+
+            Return
+        End If
+
+        ' Update now to be the new LastCheckTime
+        dtmLastCheck = dtmCurrent
+
+        ' Check logs
+        Dim strAuditLogFunctionCode As String = ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_AuditLogFunctionCode")
+        Dim strDoctorListLogID As String = ConfigurationManager.AppSettings("EHRSS_PP_DoctorList_SlowResponse_AuditLogLogID")
+        Dim strVoucherBalanceLogID As String = ConfigurationManager.AppSettings("EHRSS_PP_VoucherBalance_SlowResponse_AuditLogLogID")
+        Dim intAuditLogMinuteBefore As Integer = CInt(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_AuditLogMinuteBefore"))
+
+        Dim strLevel1PagerAlert As String = ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_Level1_PagerAlert")
+        Dim strLevel1EmailAlert As String = ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_Level1_EmailAlert")
+        Dim strLevel2PagerAlert As String = ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_Level2_PagerAlert")
+        Dim strLevel2EmailAlert As String = ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_Level2_EmailAlert")
+
+        Dim dtDoctorList As DataTable = MonitorBLL.GetInterfaceLogProcessTimeByMinuteBefore(strAuditLogFunctionCode, strDoctorListLogID, intAuditLogMinuteBefore, Nothing)
+        Dim dtVoucherBalance As DataTable = MonitorBLL.GetInterfaceLogProcessTimeByMinuteBefore(strAuditLogFunctionCode, strVoucherBalanceLogID, intAuditLogMinuteBefore, Nothing)
+
+        Dim intSlowResponseCount As Integer = CInt(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponse_FailCount"))
+
+        Dim strSlowResponse_Message As String = "(EHRSS->EHS) {0}/{1} {2} Slow Performance Record count (>={3}s) in the past {4} mins [threshold: {5}]"
+
+        '---------------
+        ' Doctor List
+        '---------------
+        Dim dvDoctorList As DataView = New DataView(dtDoctorList)
+
+        ' Level 1: If any process on EHRSS->EHS Interface >=[15] seconds, raise alert
+        Dim intLv1DoctorListValue As Integer = CInt(ConfigurationManager.AppSettings("EHRSS_PP_DoctorList_SlowResponse_Level1Value"))
+
+        Dim drLv1DoctorList As DataRow() = dvDoctorList.ToTable.Select(String.Format("Time_Diff >= {0}", intLv1DoctorListValue * 1000))
+
+        If drLv1DoctorList.Length >= intSlowResponseCount Then
+            Dim strMessage As String = String.Format(strSlowResponse_Message, _
+                                                     drLv1DoctorList.Length, _
+                                                     dvDoctorList.Count, _
+                                                     "Doctor List", _
+                                                     intLv1DoctorListValue, _
+                                                     intAuditLogMinuteBefore, _
+                                                     intSlowResponseCount)
+
+            If strLevel1PagerAlert = "Y" Then
+                Log("EHRSS_PP_DoctorList_SlowResponse Lv1 pager alert")
+                WriteEHRSS_PP_SlowResponseLv1Alert(AlertType.PagerAlert, strMessage)
+            End If
+
+            If strLevel1EmailAlert = "Y" Then
+                Log("EHRSS_PP_DoctorList_SlowResponse Lv1 email alert")
+                WriteEHRSS_PP_SlowResponseLv1Alert(AlertType.EmailAlert, strMessage)
+            End If
+
+        End If
+
+        ' Level 2: If any process on CIMS->EHS Interface >=[20] seconds, raise alert
+        Dim intLv2DoctorListValue As Integer = CInt(ConfigurationManager.AppSettings("EHRSS_PP_DoctorList_SlowResponse_Level2Value"))
+
+        Dim drLv2DoctorList As DataRow() = dvDoctorList.ToTable.Select(String.Format("Time_Diff >= {0}", intLv2DoctorListValue * 1000))
+
+        If drLv2DoctorList.Length >= intSlowResponseCount Then
+            Dim strMessage As String = String.Format(strSlowResponse_Message, _
+                                                     drLv2DoctorList.Length, _
+                                                     dvDoctorList.Count, _
+                                                     "Doctor List", _
+                                                     intLv2DoctorListValue, _
+                                                     intAuditLogMinuteBefore, _
+                                                     intSlowResponseCount)
+
+            If strLevel2PagerAlert = "Y" Then
+                Log("EHRSS_PP_DoctorList_SlowResponse Lv2 pager alert")
+                WriteEHRSS_PP_SlowResponseLv2Alert(AlertType.PagerAlert, strMessage)
+            End If
+
+            If strLevel1EmailAlert = "Y" Then
+                Log("EHRSS_PP_DoctorList_SlowResponse Lv2 email alert")
+                WriteEHRSS_PP_SlowResponseLv2Alert(AlertType.EmailAlert, strMessage)
+            End If
+        End If
+
+        '------------------
+        ' Voucher Balance
+        '------------------
+        Dim dvVoucherBalance As DataView = New DataView(dtVoucherBalance)
+
+        ' Level 1: If any process on EHRSS->EHS Interface >=[6] seconds, raise alert
+        Dim intLv1VoucherBalanceValue As Integer = CInt(ConfigurationManager.AppSettings("EHRSS_PP_VoucherBalance_SlowResponse_Level1Value"))
+
+        Dim drLv1VoucherBalance As DataRow() = dvVoucherBalance.ToTable.Select(String.Format("Time_Diff >= {0}", intLv1VoucherBalanceValue * 1000))
+
+        If drLv1VoucherBalance.Length >= intSlowResponseCount Then
+            Dim strMessage As String = String.Format(strSlowResponse_Message, _
+                                                     drLv1VoucherBalance.Length, _
+                                                     dvVoucherBalance.Count, _
+                                                     "Voucher Balance", _
+                                                     intLv1VoucherBalanceValue, _
+                                                     intAuditLogMinuteBefore, _
+                                                     intSlowResponseCount)
+
+            If strLevel1PagerAlert = "Y" Then
+                Log("EHRSS_PP_VoucherBalance_SlowResponse Lv1 pager alert")
+                WriteEHRSS_PP_SlowResponseLv1Alert(AlertType.PagerAlert, strMessage)
+            End If
+
+            If strLevel1EmailAlert = "Y" Then
+                Log("EHRSS_PP_VoucherBalance_SlowResponse Lv1 email alert")
+                WriteEHRSS_PP_SlowResponseLv1Alert(AlertType.EmailAlert, strMessage)
+            End If
+        End If
+
+        ' Level 2: If any process on EHRSS->EHS Interface >=[9] seconds, raise alert
+        Dim intLv2VoucherBalanceValue As Integer = CInt(ConfigurationManager.AppSettings("EHRSS_PP_VoucherBalance_SlowResponse_Level2Value"))
+
+        Dim drLv2VoucherBalance As DataRow() = dvVoucherBalance.ToTable.Select(String.Format("Time_Diff >= {0}", intLv2VoucherBalanceValue * 1000))
+
+        If drLv2VoucherBalance.Length >= intSlowResponseCount Then
+            Dim strMessage As String = String.Format(strSlowResponse_Message, _
+                                                     drLv2VoucherBalance.Length, _
+                                                     dvVoucherBalance.Count, _
+                                                     "Voucher Balance", _
+                                                     intLv2VoucherBalanceValue, _
+                                                     intAuditLogMinuteBefore, _
+                                                     intSlowResponseCount)
+
+            If strLevel2PagerAlert = "Y" Then
+                Log("EHRSS_PP_VoucherBalance_SlowResponse Lv2 pager alert")
+                WriteEHRSS_PP_SlowResponseLv2Alert(AlertType.PagerAlert, strMessage)
+            End If
+
+            If strLevel2EmailAlert = "Y" Then
+                Log("EHRSS_PP_VoucherBalance_SlowResponse Lv2 email alert")
+                WriteEHRSS_PP_SlowResponseLv2Alert(AlertType.EmailAlert, strMessage)
+            End If
+        End If
+
+        Log("Completed Checking EHRSS_PP_SlowResponse")
+
+    End Sub
+
+    Private Sub WriteEHRSS_PP_SlowResponseLv1Alert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv1_EventSource"), _
+                              ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv1_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv1_EventSource"), _
+                              ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv1_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
+    Private Sub WriteEHRSS_PP_SlowResponseLv2Alert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv2_EventSource"), _
+                              ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv2_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv2_EventSource"), _
+                              ConfigurationManager.AppSettings("EHRSS_PP_SlowResponseLv2_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
 #End Region
 
 End Class

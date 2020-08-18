@@ -1,0 +1,298 @@
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_PatientPortalVoucherTransactionHistory_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_PatientPortalVoucherTransactionHistory_get]
+GO
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Modification History
+-- Modified by:		
+-- Modified date:	
+-- CR No.:			
+-- Description:		
+-- =============================================
+-- =============================================  
+-- Created by:		Chris YIM
+-- Created date:	25 February 2018
+-- CR No.:			CRE20-005
+-- Description:		Get the latest transaction for eHR patient portal - Voucher Balance
+-- =============================================  
+ 
+  
+CREATE PROCEDURE [dbo].[proc_PatientPortalVoucherTransactionHistory_get]   
+	@Doc_Code		CHAR(20),  
+	@identity		VARCHAR(20),  
+	@Scheme_Code	CHAR(10),  
+	@Subsidize_Code CHAR(10),
+	@Acc_Type		CHAR(1)
+AS  
+BEGIN  
+  
+-- Performance Issue: Do not count Temporary / Special Account with status = 'D'  
+  
+-- =============================================  
+-- Declaration  
+-- =============================================  
+	DECLARE @Performance_Start_Dtm DATETIME
+
+	DECLARE @In_Doc_Code		CHAR(20)
+	DECLARE @In_Identity		VARCHAR(20)
+	DECLARE @In_Scheme_Code		CHAR(10)
+	DECLARE @In_Subsidize_Code	CHAR(10)
+	DECLARE @In_Acc_Type		CHAR(1)
+	
+	DECLARE @ServiceDtmStartYear	INT			
+	DECLARE @ServiceDtmStart		Datetime			
+	DECLARE @ServiceDtmEnd			Datetime		
+	DECLARE @LatestHistoryByYear	INT	
+	DECLARE @CurrentDtm				Datetime
+		
+	DECLARE @blnOtherDoc_Code	TINYINT  
+	DECLARE @OtherDoc_Code		CHAR(20)  
+  
+	DECLARE @tblVoucherAcc Table(  
+		Voucher_Acc_ID CHAR(15)  
+	)  
+  
+	DECLARE @tblTempVoucherAcc Table(  
+		Voucher_Acc_ID CHAR(15)  
+	)  
+
+	DECLARE @tblSpecialAcc Table(  
+		Voucher_Acc_ID CHAR(15)  
+	)  
+  
+	DECLARE @tblInvalidAcc Table(  
+		Voucher_Acc_ID CHAR(15)  
+	)  
+  
+	DECLARE @tblVoucherTransaction Table(  
+		Transaction_ID CHAR(20)  
+	)  
+  
+-- =============================================  
+-- Validation   
+-- =============================================  
+	BEGIN TRY
+		SET @LatestHistoryByYear = (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'eHRSS_PP_VoucherBalance_LatestTransactionInYear')
+	END TRY
+
+	BEGIN CATCH    	    
+	
+	IF @LatestHistoryByYear IS NULL
+		BEGIN
+			RAISERROR ('The value of "eHRSS_PP_VoucherBalance_LatestTransactionInYear" in DB Table [SystemParameters] is invalid.',16,1)    
+			RETURN
+		END
+	END CATCH   
+
+-- =============================================  
+-- Initialization  
+-- ============================================= 
+	SET @Performance_Start_Dtm = GETDATE() 
+   
+	SET @In_Doc_Code = @Doc_Code
+	SET @In_Identity = @identity
+	SET @In_Scheme_Code = @Scheme_Code
+	SET @In_Subsidize_Code = @Subsidize_Code
+	SET @In_Acc_Type = @Acc_Type
+
+	SET @blnOtherDoc_Code = 0   
+	SET @OtherDoc_Code = @In_Doc_Code   
+  
+	IF LTRIM(RTRIM(@In_Doc_Code)) = 'HKIC'   
+		BEGIN  
+			 SET @blnOtherDoc_Code = 1  
+			 SET @OtherDoc_Code = 'HKBC'  
+		END  
+  
+	IF LTRIM(RTRIM(@In_Doc_Code)) = 'HKBC'   
+		BEGIN  
+			 SET @blnOtherDoc_Code = 1  
+			 SET @OtherDoc_Code = 'HKIC'  
+		END  
+
+	SET @CurrentDtm = CONVERT(DATETIME,CONVERT(VARCHAR(10),GETDATE(),121))
+	SET @ServiceDtmStartYear = YEAR(DATEADD(YYYY, (@LatestHistoryByYear * -1) + 1, @CurrentDtm))
+	SET @ServiceDtmStart = DATETIMEFROMPARTS(@ServiceDtmStartYear, 1, 1, 0, 0, 0, 0)
+	SET @ServiceDtmEnd = DATEADD(DD, 1, @CurrentDtm)
+  
+-- =============================================  
+-- Preparing Data 
+-- =============================================  
+  
+	OPEN SYMMETRIC KEY sym_Key   
+	DECRYPTION BY ASYMMETRIC KEY asym_Key  
+   
+	-- Retrieve VoucherAccount By Identity in different PersonalInformation Tables  
+
+	IF @In_Acc_Type IS NULL OR @In_Acc_Type = 'V'
+	BEGIN
+		INSERT INTO @tblVoucherAcc  
+			SELECT [Voucher_Acc_ID]  
+			FROM [PersonalInformation] WITH (NOLOCK) 
+			WHERE 
+				Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity) 
+				AND ([Doc_Code] = @In_Doc_Code OR (@blnOtherDoc_Code = 1 AND [Doc_Code] = @OtherDoc_Code))  
+	END
+
+	IF @In_Acc_Type IS NULL OR @In_Acc_Type = 'T'
+	BEGIN     
+		INSERT INTO @tblTempVoucherAcc 
+			SELECT TPI.[Voucher_Acc_ID]  
+			FROM [TempPersonalInformation] TPI WITH (NOLOCK) 
+				INNER JOIN [TempVoucherAccount] TVA WITH (NOLOCK)  
+					ON TPI.[Voucher_Acc_ID] = TVA.[Voucher_Acc_ID]  
+			WHERE   
+				Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity)
+				AND ([Doc_Code] = @In_Doc_Code OR (@blnOtherDoc_Code = 1 AND [Doc_Code] = @OtherDoc_Code))  
+				AND TVA.[Record_Status] <> 'D'
+	END
+ 
+	IF @In_Acc_Type IS NULL OR @In_Acc_Type = 'S'
+	BEGIN     
+		INSERT INTO @tblSpecialAcc   
+			SELECT SPI.[Special_Acc_ID]  
+			FROM [SpecialPersonalInformation] SPI WITH (NOLOCK)  
+				INNER JOIN [SpecialAccount] SVA WITH (NOLOCK)  
+					ON SPI.[Special_Acc_ID] = SVA.[Special_Acc_ID]    
+			WHERE   
+				Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity)
+				AND ([Doc_Code] = @In_Doc_Code OR (@blnOtherDoc_Code = 1 AND [Doc_Code] = @OtherDoc_Code))  
+				AND SVA.[Record_Status] <> 'D' 
+	END
+    
+	IF @In_Acc_Type IS NULL OR @In_Acc_Type = 'I' 
+	BEGIN 
+		INSERT INTO @tblInvalidAcc  
+			SELECT IPI.[Invalid_Acc_ID]  
+			FROM [InvalidPersonalInformation] IPI WITH (NOLOCK)   
+				INNER JOIN [InvalidAccount] IV WITH (NOLOCK)  
+					ON IPI.[Invalid_Acc_ID] = IV.[Invalid_Acc_ID]  
+			WHERE   
+				Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity)
+				AND ([Doc_Code] = @In_Doc_Code OR (@blnOtherDoc_Code = 1 AND [Doc_Code] = @OtherDoc_Code))  
+				AND IV.[Count_Benefit] = 'Y'  
+	END
+  
+	CLOSE SYMMETRIC KEY sym_Key   
+   
+	-- Retrieve Transaction Related to the [Voucher_Acc_ID](s)  
+   
+	INSERT INTO @tblVoucherTransaction  
+		SELECT Distinct(tmp.[Transaction_ID])  
+		FROM 
+			(
+			SELECT VT.[Transaction_ID]  
+			FROM @tblVoucherAcc tmp 
+				INNER JOIN [VoucherTransaction] VT WITH (NOLOCK)
+					ON VT.[Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]  
+			WHERE  
+				VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] IS NULL  
+   
+			UNION  
+
+			SELECT VT.[Transaction_ID]  
+			FROM @tblTempVoucherAcc tmp 
+				INNER JOIN [VoucherTransaction] VT WITH (NOLOCK)
+					ON VT.[Temp_Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]  
+			WHERE  
+				VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] IS NULL
+      
+			UNION  
+
+			SELECT VT.[Transaction_ID]  
+			FROM @tblSpecialAcc tmp 
+				INNER JOIN [VoucherTransaction] VT WITH (NOLOCK)
+					ON VT.[Special_Acc_ID] = tmp.[Voucher_Acc_ID]  
+			WHERE  
+				VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] IS NULL 
+    
+			UNION  
+
+			SELECT VT.[Transaction_ID]  
+			FROM @tblInvalidAcc tmp 
+				INNER JOIN [VoucherTransaction] VT WITH (NOLOCK)
+					ON VT.[Invalid_Acc_ID] = tmp.[Voucher_Acc_ID]  
+			WHERE  
+				VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'D'   
+			) tmp
+ 
+-- =============================================  
+-- Return results  
+-- =============================================   
+    
+	OPEN SYMMETRIC KEY sym_Key
+	DECRYPTION BY ASYMMETRIC KEY asym_Key
+
+	SELECT
+		TD.[Transaction_ID],
+		VT.[Service_Receive_Dtm],		  
+		TD.[Scheme_Code],  
+		TD.[Scheme_Seq],  
+		TD.[Subsidize_Code],  
+		TD.[Subsidize_Item_Code],  
+		TD.[Available_item_Code],  
+		TD.[Unit],  
+		TD.[Per_Unit_Value],  
+		TD.[Total_Amount],
+		TD.[Remark],  
+		TD.[ExchangeRate_Value],
+		TD.[Total_Amount_RMB],
+		VT.[SP_ID],		  
+		VT.[Service_Type],
+		Prof.[Service_Category_Desc_SD],  
+		Prof.[Service_Category_Desc_SD_Chi], 
+		[SP_Name] = CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)),
+		[SP_Name_Chi] = CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)),
+		P.[Practice_Name],
+		P.[Practice_Name_Chi],
+		[Practice_Address] = (SELECT [dbo].[func_formatEngAddress](P.[Room], P.[Floor], P.[Block], P.[Building], P.[District])),
+		[Practice_Address_Chi] = (SELECT [dbo].[func_format_Address_Chi](P.[Room], P.[Floor], P.[Block], P.Building_Chi, P.[District])),
+		P.Phone_Daytime
+	FROM  
+		@tblVoucherTransaction tblVT 
+			INNER JOIN [TransactionDetail] TD WITH (NOLOCK)
+				ON tblVT.[Transaction_ID] = TD.[Transaction_ID]  
+			INNER JOIN [VoucherTransaction] VT WITH (NOLOCK)
+				ON TD.[Transaction_ID] = VT.[Transaction_ID]  
+			INNER JOIN [Profession] Prof WITH (NOLOCK)
+				ON LTRIM(RTRIM(VT.[Service_Type])) = Prof.[Service_Category_Code] 
+			INNER JOIN [ServiceProvider] SP WITH (NOLOCK)
+				ON VT.[SP_ID] = SP.[SP_ID] 
+			INNER JOIN [Practice] P WITH (NOLOCK)
+				ON VT.[SP_ID] = P.[SP_ID] AND VT.[Practice_Display_Seq] = P.[Display_Seq]
+	WHERE    
+		((RTRIM(ISNULL(@In_Scheme_Code,'')) = '') OR (TD.[Scheme_Code] = @In_Scheme_Code)) 
+		AND
+		((RTRIM(ISNULL(@In_Subsidize_Code,'')) = '') OR (TD.[Subsidize_Code] = @In_Subsidize_Code)) 
+		AND
+		VT.Service_Receive_Dtm >= @ServiceDtmStart AND VT.Service_Receive_Dtm < @ServiceDtmEnd
+
+	ORDER BY 
+		[Service_Receive_Dtm] DESC
+
+-- =============================================  
+-- (Optional) Performance Capture 
+-- =============================================  
+
+	IF (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'EnableSProcPerformCapture' AND Scheme_Code = 'ALL') = 'Y' BEGIN
+		DECLARE @Performance_End_Dtm datetime
+		SET @Performance_End_Dtm = GETDATE()
+		DECLARE @Parameter varchar(255)
+		SET @Parameter = @In_Doc_Code + ',' + @In_Identity + ',' + @In_Scheme_Code + ',' + @In_Subsidize_Code + ',' + @In_Acc_Type
+						 	
+		EXEC proc_SProcPerformance_add 'proc_PatientPortalVoucherTransactionHistory_get',
+									   @Parameter,
+									   @Performance_Start_Dtm,
+									   @Performance_End_Dtm
+	END         
+   
+END  
+GO
+
+GRANT EXECUTE ON [dbo].[proc_PatientPortalVoucherTransactionHistory_get] TO HCSP, HCVU, HCPUBLIC, WSEXT
+GO
+

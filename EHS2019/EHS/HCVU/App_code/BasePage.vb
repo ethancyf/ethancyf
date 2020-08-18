@@ -79,6 +79,15 @@ Public MustInherit Class BasePage
             Request.Cookies("ASP.NET_SessionId").Secure = True
         End If
 
+        ' CRE19-022 Inspection Module [Start][Winnie]
+        '-------------------------------------------------------------------
+        ' Change AsyncPostBackTimeout to at least CommandTimeout to solve duplicate submit issue
+        Dim intCommandTimeout As Integer = (New Common.DataAccess.Database).GetCmdTimeout()
+        If _ScriptManager.AsyncPostBackTimeout < intCommandTimeout Then
+            _ScriptManager.AsyncPostBackTimeout = intCommandTimeout
+        End If
+        ' CRE19-022 Inspection Module [End][Winnie]
+
         Dim udtHCVUUser As HCVUUserModel = Nothing
         Dim udtHCVUUserBLL As New HCVUUserBLL
         Dim objLang As Object

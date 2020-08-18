@@ -36,7 +36,8 @@ Namespace Component.StaticData
                                                                 CType(row.Item("Item_No"), String).Trim, _
                                                                 CType(row.Item("Data_Value"), String).Trim, _
                                                                 CStr(IIf(row.Item("Data_Value_Chi") Is DBNull.Value, String.Empty, row.Item("Data_Value_Chi"))), _
-                                                                CStr(IIf(row.Item("Data_Value_CN") Is DBNull.Value, String.Empty, row.Item("Data_Value_CN"))))
+                                                                CStr(IIf(row.Item("Data_Value_CN") Is DBNull.Value, String.Empty, row.Item("Data_Value_CN"))), _
+                                                                CStr(IIf(row.Item("Display_Order") Is DBNull.Value, String.Empty, row.Item("Display_Order"))))
 
                         udtStaticDataModelCollection.add(udtStaticDataModel)
                     Next

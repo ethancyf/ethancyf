@@ -606,7 +606,7 @@ Partial Public Class udcDateFormatMonthAndYear
                 If txtToDate_MY.Text.Trim = String.Empty Then
                     strToDataValue = String.Empty
                 Else
-                    strToDataValue = txtToDate_MY.Text.Trim
+                    strToDataValue = DateAdd(DateInterval.Day, -1, DateAdd(DateInterval.Month, 1, StringToDateTime(txtToDate_MY.Text.Trim))).ToString("dd-MM-yyyy")
                 End If
 
             End If
@@ -618,12 +618,12 @@ Partial Public Class udcDateFormatMonthAndYear
         End If
 
         'Only From Date
-        If blnFromDateVisible Then
+        If blnFromDateVisible And Not blnToDateVisible Then
             udtParameterList.AddParam(strDateFormat, strFromDataValue)
         End If
 
         'Only To Date
-        If blnToDateVisible Then
+        If blnToDateVisible And Not blnFromDateVisible Then
             udtParameterList.AddParam(strDateFormat, strToDataValue)
         End If
 

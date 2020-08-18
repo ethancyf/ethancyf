@@ -9,6 +9,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
+-- Modified date:	8 June 2020
+-- CR No.:			INT20-0018 (Fix timeout on reimbursement report generation)
+-- Description:		Add no lock
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
 -- Modified date:	3 July 2019
 -- CR No.:			CRE18-015 (Enable PCV13 weekly report eHS(S)W003 upon request)
 -- Description:		Add criteria, filter out report which [Schedule_Gen_Dtm] is later than current date
@@ -83,14 +90,14 @@ SELECT
 	FGQ.[File_Description],
 	FGQ.[Schedule_Gen_Dtm]
 
-FROM [dbo].[FileGenerationQueue] As FGQ, [dbo].[FileGeneration] AS FG
+FROM [dbo].[FileGenerationQueue] As FGQ WITH (NOLOCK), [dbo].[FileGeneration] AS FG WITH (NOLOCK)
 
 WHERE
 	FGQ.[File_ID] = FG.[File_ID]
 	AND (EXISTS (SELECT 1 FROM @FileType AS FT WHERE FG.[File_Type] = FT.[File_Type]))
 	AND (( FGQ.[Status] = 'P' AND FGQ.[Start_dtm] IS NULL ) OR ( FGQ.[Status] = 'E' AND FGQ.[Start_dtm] IS NULL))
-	AND (FGQ.Generation_ID NOT IN (SELECT Generation_ID FROM [FileDownload]) -- for aberrant report, no record in FileDownload yet
-		OR EXISTS (SELECT 1 FROM [FileDownload] AS FD 
+	AND (FGQ.Generation_ID NOT IN (SELECT Generation_ID FROM [FileDownload] WITH (NOLOCK)) -- for aberrant report, no record in FileDownload yet
+		OR EXISTS (SELECT 1 FROM [FileDownload] AS FD WITH (NOLOCK)
 					WHERE FD.Generation_ID = FGQ.Generation_ID AND (FD.Download_Status <> 'I'))) -- for other reports, at least one user is waiting
 	AND (FGQ.[Schedule_Gen_Dtm] IS NULL	OR FGQ.[Schedule_Gen_Dtm] <= GETDATE())
 						

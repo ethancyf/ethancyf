@@ -48,7 +48,7 @@
     <%--                <asp:Image ID="imgErrorFromDate_MY" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                         Visible="false" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" style="z-index:1;position:relative;left:-9px;top:2px;"/>--%>
 
-                    <asp:Panel ID="pnlToDate" runat="server">
+                    <asp:Panel ID="pnlToDate" runat="server" CssClass="FormatOfDateMY_PanelDisplay">
                         <asp:Label ID="lblToDate_MY" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, To_S %>" style="position:relative;top:-2px;"></asp:Label>&nbsp;&nbsp;&nbsp;
 
                         <!-- Real Textbox -->

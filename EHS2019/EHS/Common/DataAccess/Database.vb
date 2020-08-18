@@ -470,7 +470,7 @@ Namespace DataAccess
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetCmdTimeout() As Integer
+        Public Function GetCmdTimeout() As Integer
 
             Dim intTimeout As Integer = 0
 

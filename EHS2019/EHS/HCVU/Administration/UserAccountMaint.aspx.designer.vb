@@ -230,6 +230,42 @@ Partial Public Class UserAccountMaint
     Protected WithEvents imgUserNameAlert As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblChineseNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblChineseNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtChineseName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtChineseName As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblChineseName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblChineseName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgChineseNameAlert control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgChineseNameAlert As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblHKIDText control.
     '''</summary>
     '''<remarks>
@@ -273,6 +309,87 @@ Partial Public Class UserAccountMaint
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgHKIDAlert As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblGenderText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblGenderText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rdlGender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rdlGender As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''lblGender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblGender As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgGenderAlert control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgGenderAlert As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtContactNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''filtertxtContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtertxtContactNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgContactNoAlert control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgContactNoAlert As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblEffectiveDateText control.

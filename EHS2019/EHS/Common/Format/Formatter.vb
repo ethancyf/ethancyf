@@ -262,7 +262,7 @@ Namespace Format
         Public Function formatChineseName(ByVal strOriCName As String) As String
             Dim strRes As String
             strRes = ""
-            If strOriCName.Trim.Equals(String.Empty) Then
+            If strOriCName Is Nothing OrElse strOriCName.Trim.Equals(String.Empty) Then
                 strRes = String.Empty
             Else
                 strRes = "(" + strOriCName + ")"
@@ -367,6 +367,12 @@ Namespace Format
             End If
 
             Return strRes
+        End Function
+        'add by golden 644
+        Public Function ConvertToDate(strDate As String) As DateTime
+            Dim rtnDate As DateTime = DateTime.MinValue
+            Date.TryParse(strDate, rtnDate)
+            Return rtnDate
         End Function
 
         Public Function convertMonthNumtoEng(ByVal strMonth As String) As String

@@ -10,6 +10,13 @@ Namespace Component.HCVUUser
         Private _strUserID As String
         Private _strUserName As String
         Private _strHKID As String
+
+        ' CRE19-022 - Inspection [Begin][Golden]
+        Private _strChineseName As String
+        Private _strGender As String
+        Private _strContactNo As String
+        ' CRE19-022 - Inspection [End][Golden]
+
         Private _dtmExpiryDate As Nullable(Of DateTime)
         Private _dtmEffectiveDate As DateTime
 
@@ -33,6 +40,8 @@ Namespace Component.HCVUUser
         Private _intPasswordLevel As Integer
 
         Private _udtToken As Token.TokenModel
+
+
 
         Public Sub New()
             '_udtUserRoleCollection = New UserRoleModelCollection
@@ -136,6 +145,38 @@ Namespace Component.HCVUUser
                 _strHKID = value
             End Set
         End Property
+
+        ' CRE19-022 - Inspection [Begin][Golden]
+        Public Property ChineseName() As String
+            Get
+                Return _strChineseName
+            End Get
+            Set(ByVal value As String)
+                _strChineseName = value
+            End Set
+        End Property
+
+        Public Property Gender() As String
+            Get
+                Return _strGender
+            End Get
+            Set(ByVal value As String)
+                _strGender = value
+            End Set
+        End Property
+
+        Public Property ContactNo() As String
+            Get
+                Return _strContactNo
+            End Get
+            Set(ByVal value As String)
+                _strContactNo = value
+            End Set
+        End Property
+
+        ' CRE19-022 - Inspection [End][Golden]
+
+
 
         Public Property Suspended() As Boolean
             Get
