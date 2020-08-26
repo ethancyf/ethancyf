@@ -77,13 +77,30 @@ Namespace Controllers
 
         End Function
 
-        Public Function PopUpDetail(JsonDetail As String) As ActionResult
+        ' INT20-0026 (Fix full width issue on public site) [Start][Koala]
+        ' -----------------------------------------------------------------------------------------
+        Public Function PopUpDetail(JsonDetailHex As String) As ActionResult
+            'Public Function PopUpDetail(JsonDetail As String) As ActionResult
+            ' INT20-0026 (Fix full width issue on public site) [End][Koala]
             Dim strLang = Threading.Thread.CurrentThread.CurrentCulture.Name.ToLower
+
+            ' INT20-0026 (Fix full width issue on public site) [Start][Koala]
+            ' -----------------------------------------------------------------------------------------
+            Dim JsonDetail As String = FromHexString(JsonDetailHex)
+            ' INT20-0026 (Fix full width issue on public site) [End][Koala]
             Dim vm As SPSViewModel = spBLL.PopUpDetail(JsonDetail, strLang)
 
             spBLL.WirtePracticeDetailPopupAuditLog()
 
             Return PartialView("PracticeDetail", vm)
+        End Function
+
+        Private Function FromHexString(ByVal hexString As String) As String
+            Dim bytes As Byte() = New Byte(hexString.Length / 2 - 1) {}
+            For i = 0 To bytes.Length - 1
+                bytes(i) = Convert.ToByte(hexString.Substring(i * 2, 2), 16)
+            Next
+            Return Encoding.BigEndianUnicode.GetString(bytes)
         End Function
 
         Public Function OrderQuery(selectedScheme As String) As ActionResult

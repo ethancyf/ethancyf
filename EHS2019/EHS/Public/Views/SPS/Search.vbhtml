@@ -969,12 +969,19 @@ End Using
     function showPracticeDetail(e) {
         $('.modal-dialog').empty();
         var detail = e.parent('div').next('.detailInfo').text();
+        //alert(detail);
+        detail = detail.hexEncode();
+        //detail = detail.hexDecode();
+        //if ((/[\uff01-\uff60|\u3000]/).test(detail)) {
+        //    detail = FullToHalf(detail);
+        //}
+        //alert(detail);
         $.ajax({
             url: "@Url.Action("PopUpDetail", "SPS")",
             dataType: "html",
             type: "POST",
             data: {
-                "JsonDetail": $.trim(detail)
+                "JsonDetailHex": $.trim(detail)
             },
             success: function (data) {
                 $('.modal-dialog').empty();
@@ -1409,6 +1416,60 @@ End Using
             }
         });
         return rtnValue;
+    }
+
+
+    $("input[type='text'], textarea").unbind('change').change(function () {
+        if (this.value.length > 0) {
+            this.value = this.value.replace(/<([^<\s>])/ig, "< $1")
+            if ((/[\uff01-\uff60|\u3000]/).test(this.value)) {
+                this.value = FullToHalf(this.value);
+            }
+        }
+    });
+    function FullToHalf(str) {
+        var tmp = "";
+        for (var i = 0; i < str.length; i++) {
+            //Space
+            if (str.charCodeAt(i) == 0x3000) {
+                tmp += " ";
+            }
+            else if (str.charCodeAt(i) >= 0xFF01 && str.charCodeAt(i) <= 0xFF5E) {
+                tmp += String.fromCharCode(str.charCodeAt(i) - 0xFEE0);
+            }
+            else if (str.charCodeAt(i) == 0xFF5F) {
+                tmp += String.fromCharCode(0x2985);
+            }
+            else if (str.charCodeAt(i) == 0xFF60) {
+                tmp += String.fromCharCode(0x2986);
+            }
+            else {
+                tmp += str[i];
+            }
+        }
+        return tmp
+    }
+
+    String.prototype.hexEncode = function () {
+        var hex, i;
+
+        var result = "";
+        for (i = 0; i < this.length; i++) {
+            hex = this.charCodeAt(i).toString(16);
+            result += ("000" + hex).slice(-4);
+        }
+
+        return result
+    }
+    String.prototype.hexDecode = function () {
+        var j;
+        var hexes = this.match(/.{1,4}/g) || [];
+        var back = "";
+        for (j = 0; j < hexes.length; j++) {
+            back += String.fromCharCode(parseInt(hexes[j], 16));
+        }
+
+        return back;
     }
 </script>
 <script src="~/js/serviceProvider.js"></script>

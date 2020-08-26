@@ -137,6 +137,8 @@ Public Class ScheduleJob
             udtSubsidizeWriteOffGeneratorQueueItem = udtSubsidizeWriteOffGeneratorQueue_P.Dequeue()
 
             Try
+                ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 'Get Write Off Detail
                 udtSubsidizeWriteOffBLL.GetTotalWriteOff(udtSubsidizeWriteOffGeneratorQueueItem.DocCode, _
                                                          udtSubsidizeWriteOffGeneratorQueueItem.DocID, _
@@ -146,7 +148,10 @@ Public Class ScheduleJob
                                                          udtSubsidizeWriteOffGeneratorQueueItem.ExactDOD, _
                                                          udtSubsidizeWriteOffGeneratorQueueItem.SchemeCode, _
                                                          udtSubsidizeWriteOffGeneratorQueueItem.SubsidizeCode, _
-                                                         eHASubsidizeWriteOff_CreateReason.TxEnquiry)
+                                                         eHASubsidizeWriteOff_CreateReason.TxEnquiry, _
+                                                         WriteOff.UpdateDB
+                                                         )
+                ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
                 intCount += 1
 

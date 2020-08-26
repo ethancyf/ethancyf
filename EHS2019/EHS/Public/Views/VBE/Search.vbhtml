@@ -452,4 +452,35 @@ End Using
             });
         }
     }
+
+    $("input[type='text'], input[type='tel'], textarea").unbind('change').change(function () {
+        if (this.value.length > 0) {
+            this.value = this.value.replace(/<([^<\s>])/ig, "< $1")
+            if ((/[\uff01-\uff60|\u3000]/).test(this.value)) {
+                this.value = FullToHalf(this.value);
+            }
+        }
+    });
+    function FullToHalf(str) {
+        var tmp = "";
+        for (var i = 0; i < str.length; i++) {
+            //Space
+            if (str.charCodeAt(i) == 0x3000) {
+                tmp += " ";
+            }
+            else if (str.charCodeAt(i) >= 0xFF01 && str.charCodeAt(i) <= 0xFF5E) {
+                tmp += String.fromCharCode(str.charCodeAt(i) - 0xFEE0);
+            }
+            else if (str.charCodeAt(i) == 0xFF5F) {
+                tmp += String.fromCharCode(0x2985);
+            }
+            else if (str.charCodeAt(i) == 0xFF60) {
+                tmp += String.fromCharCode(0x2986);
+            }
+            else {
+                tmp += str[i];
+            }
+        }
+        return tmp
+    }
 </script>
