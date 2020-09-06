@@ -138,6 +138,13 @@ Namespace BLL
 
             If dt.Rows.Count > 0 Then
                 For Each dr As DataRow In dt.Rows
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    If IsDBNull(dr("Service_Receive_Dtm")) Then
+                        dr("Service_Receive_Dtm") = dr("Service_Receive_Dtm_Header")
+                    End If
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                     cllnStudentModel.Add(BuildStudentModel(dr))
                 Next
             End If
@@ -218,11 +225,13 @@ Namespace BLL
                                                     IIf(dr.IsNull("Entitle_ONLYDOSE"), String.Empty, dr("Entitle_ONLYDOSE")), _
                                                     IIf(dr.IsNull("Entitle_1STDOSE"), String.Empty, dr("Entitle_1STDOSE")), _
                                                     IIf(dr.IsNull("Entitle_2NDDOSE"), String.Empty, dr("Entitle_2NDDOSE")), _
+                                                    IIf(dr.IsNull("Entitle_3RDDOSE"), String.Empty, dr("Entitle_3RDDOSE")), _
                                                     IIf(dr.IsNull("Entitle_Inject"), String.Empty, dr("Entitle_Inject")), _
                                                     IIf(dr.IsNull("Injected"), String.Empty, dr("Injected")), _
                                                     IIf(dr.IsNull("HA_Vaccine_Ref_Status"), String.Empty, dr("HA_Vaccine_Ref_Status")), _
                                                     IIf(dr.IsNull("DH_Vaccine_Ref_Status"), String.Empty, dr("DH_Vaccine_Ref_Status")), _
                                                     IIf(dr.IsNull("Acc_Type"), String.Empty, dr("Acc_Type")), _
+                                                    IIf(dr.IsNull("HKIC_Symbol"), String.Empty, dr("HKIC_Symbol")), _
                                                     IIf(dr.IsNull("Acc_Record_Status"), String.Empty, dr("Acc_Record_Status")), _
                                                     udtTempPersonalInformation)
 
@@ -271,6 +280,13 @@ Namespace BLL
 
             If dt.Rows.Count > 0 Then
                 For Each dr As DataRow In dt.Rows
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    If IsDBNull(dr("Service_Receive_Dtm")) Then
+                        dr("Service_Receive_Dtm") = dr("Service_Receive_Dtm_Header")
+                    End If
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                     cllnStudentModel.Add(BuildStudentModel(dr))
                 Next
             End If
@@ -316,7 +332,8 @@ Namespace BLL
 
             Dim prams() As SqlParameter
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             If udtStudentHeaderModel.Precheck Then
                 ' For RVP pre-check, all [StudentFileEntryStaging].[Entitle_XXX] value will be null.
                 ' Actual subsidize entitlement will be stored in [StudentFileEntrySubsidizePrecheckStaging]
@@ -326,10 +343,18 @@ Namespace BLL
                             udtDB.MakeInParam("@Entitle_ONLYDOSE", SqlDbType.Char, 1, DBNull.Value),
                             udtDB.MakeInParam("@Entitle_1STDOSE", SqlDbType.Char, 1, DBNull.Value), _
                             udtDB.MakeInParam("@Entitle_2NDDOSE", SqlDbType.Char, 1, DBNull.Value), _
+                            udtDB.MakeInParam("@Entitle_3RDDOSE", SqlDbType.Char, 1, DBNull.Value), _
                             udtDB.MakeInParam("@Entitle_Inject", SqlDbType.Char, 1, DBNull.Value), _
                             udtDB.MakeInParam("@Entitle_Inject_Fail_Reason", SqlDbType.VarChar, 1000, DBNull.Value)}
             Else
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
+                Dim objEntitle3rdDose As Object = Nothing
+
+                If udtVaccineEntitle.Entitle3rdDose Is Nothing Then
+                    objEntitle3rdDose = DBNull.Value
+                Else
+                    objEntitle3rdDose = IIf(udtVaccineEntitle.Entitle3rdDose, YesNo.Yes, YesNo.No)
+                End If
 
                 prams = { _
                             udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentModel.StudentFileID), _
@@ -337,9 +362,11 @@ Namespace BLL
                             udtDB.MakeInParam("@Entitle_ONLYDOSE", SqlDbType.Char, 1, IIf(udtVaccineEntitle.EntitleOnlyDose, YesNo.Yes, YesNo.No)),
                             udtDB.MakeInParam("@Entitle_1STDOSE", SqlDbType.Char, 1, IIf(udtVaccineEntitle.Entitle1stDose, YesNo.Yes, YesNo.No)), _
                             udtDB.MakeInParam("@Entitle_2NDDOSE", SqlDbType.Char, 1, IIf(udtVaccineEntitle.Entitle2ndDose, YesNo.Yes, YesNo.No)), _
+                            udtDB.MakeInParam("@Entitle_3RDDOSE", SqlDbType.Char, 1, objEntitle3rdDose), _
                             udtDB.MakeInParam("@Entitle_Inject", SqlDbType.Char, 1, IIf(udtVaccineEntitle.EntitleInject, YesNo.Yes, YesNo.No)), _
                             udtDB.MakeInParam("@Entitle_Inject_Fail_Reason", SqlDbType.VarChar, 1000, IIf(udtVaccineEntitle.EntitleInjectFailReason = String.Empty, DBNull.Value, udtVaccineEntitle.EntitleInjectFailReason))}
             End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             Select Case eStudentFileLocation
                 Case StudentFileLocation.Staging
@@ -592,11 +619,11 @@ Namespace BLL
                 For Each dr As DataRow In dt.Rows
                     udtTranVaccine = New TransactionDetailVaccineModel( _
                                 String.Empty, _
-                                dr("Scheme_Code").ToString(), _
+                                dr("Scheme_Code").ToString().Trim, _
                                 CInt(dr("Scheme_Seq")), _
-                                dr("Subsidize_Code").ToString(), _
-                                dr("Subsidize_Item_Code").ToString(), _
-                                dr("Available_Item_Code").ToString(), _
+                                dr("Subsidize_Code").ToString().Trim, _
+                                dr("Subsidize_Item_Code").ToString().Trim, _
+                                dr("Available_Item_Code").ToString().Trim, _
                                 0, _
                                 0, _
                                 0, _
@@ -854,7 +881,7 @@ Namespace BLL
             Dim prams() As SqlParameter = { _
                 udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentModel.StudentFileID), _
                 udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 2, udtStudentModel.StudentSeq), _
-                udtDB.MakeInParam("@Class_Name", SqlDbType.Char, 10, udtStudentModel.ClassName.Trim()), _
+                udtDB.MakeInParam("@Class_Name", SqlDbType.Char, 40, udtStudentModel.ClassName.Trim()), _
                 udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, udtSubsidizeGroupClaim.SchemeCode.Trim()), _
                 udtDB.MakeInParam("@Scheme_Seq", SqlDbType.SmallInt, 2, udtSubsidizeGroupClaim.SchemeSeq), _
                 udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, udtSubsidizeGroupClaim.SubsidizeCode), _

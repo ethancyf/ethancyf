@@ -59,6 +59,15 @@ Partial Public Class ucStudentFileDetail
     Protected WithEvents lblDScheme As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panDSchoolRCH control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDSchoolRCH As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''lblDSchoolCodeText control.
     '''</summary>
     '''<remarks>
@@ -264,6 +273,69 @@ Partial Public Class ucStudentFileDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDDoseToInject As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panDMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDMMR As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDVaccinationDateMMRText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDateMMRText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDateMMR As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDSubsidyMMRText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDSubsidyMMRText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDSubsidyMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDSubsidyMMR As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDDoseOfMMRText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDDoseOfMMRText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDDoseOfMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDDoseOfMMR As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblDUploadedByText control.

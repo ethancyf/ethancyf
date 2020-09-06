@@ -2162,9 +2162,16 @@ Partial Public Class ClaimCreation
             udtValidationResults = udtCommonEHSClaimBLL.ValidateClaimCreation(EHSClaim.EHSClaimBLL.EHSClaimBLL.ClaimAction.HCVUClaim, udtEHSTransaction, udtHAVaccineResult, udtDHVaccineResult, udtAuditLogEntry)
             ' CRE18-001(CIMS Vaccination Sharing) [End][Chris YIM]
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             udtBlockMessage = udtValidationResults.BlockResults
             For Each udtBlock As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtBlockMessage.RuleResults
-                Me.udcMessageBox.AddMessage(udtBlock.ErrorMessage)
+                If Not IsNothing(udtBlock.MessageVariableNameArrayList) And Not IsNothing(udtBlock.MessageVariableValueArrayList) Then
+                    Me.udcMessageBox.AddMessage(udtBlock.ErrorMessage, udtBlock.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtBlock.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
+                Else
+                    Me.udcMessageBox.AddMessage(udtBlock.ErrorMessage)
+                End If
+
                 blnIsValid = False
             Next
 
@@ -2173,8 +2180,7 @@ Partial Public Class ClaimCreation
                 If udtWarningMessage.RuleResults.Count > 0 Then
                     udtEHSTransaction.WarningMessage = udtWarningMessage
                     For Each udtWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtWarningMessage.RuleResults
-                        'Me.udcMessageBox.AddMessage(udtOutsideClaimWarningMessage)
-                        If Not IsNothing(udtWarning.MessageVariableNameArrayList) And Not IsNothing(udtWarning.MessageVariableNameArrayList) Then
+                        If Not IsNothing(udtWarning.MessageVariableNameArrayList) And Not IsNothing(udtWarning.MessageVariableValueArrayList) Then
                             Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage, udtWarning.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtWarning.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
                         Else
                             Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage)
@@ -2184,6 +2190,8 @@ Partial Public Class ClaimCreation
                     Next
                 End If
             End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
         End If
 
         If blnIsValid Then

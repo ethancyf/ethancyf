@@ -1,11 +1,17 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeader_get_forVaccineCheck]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeader_get_forVaccineCheck]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StudentFileHeader_get_forVaccineCheck]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	20 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -39,18 +45,23 @@ AS BEGIN
 	-- 1st Priority
 	--		Reach the date for final report generation
 	--		Process earliest service date first
-	SELECT DISTINCT H.Student_File_ID, 1 AS [Priority], Service_Receive_Dtm AS [Priority_Date]
+	SELECT DISTINCT 
+		H.Student_File_ID, 
+		1 AS [Priority], 
+		H.Service_Receive_Dtm AS [Priority_Date]
 	FROM StudentFileheader H
 		INNER JOIN StudentFileEntry E
-		ON H.Student_File_ID = E.Student_File_ID
+			ON H.Student_File_ID = E.Student_File_ID
 	WHERE H.Record_Status = 'FR'
 		AND H.Final_Checking_Report_Generation_Date <= @Check_Dtm
 		--AND E.Vaccination_Checking_Status = 'P'
 		--AND E.Acc_Type IS NOT NULL
-	ORDER BY [Priority], [Priority_Date]
+	ORDER BY 
+		[Priority], [Priority_Date]
 
 END
 GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileHeader_get_forVaccineCheck] TO HCVU
 GO
+

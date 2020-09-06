@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	17 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add optional input parameter (Scheme_Seq)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	28 Aug 2019
 -- CR No.			CRE19-001
@@ -33,45 +40,46 @@ GO
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_StudentFileHeaderStaging_add]
-	@Student_File_ID							varchar(15),
-	@School_Code								varchar(30),
-	@SP_ID										char(8),
-	@Practice_Display_Seq						smallint,
-	@Service_Receive_Dtm						datetime,
-	@Dose										varchar(20),
-	@Final_Checking_Report_Generation_Date		datetime,
-	@Record_Status								varchar(2),
-	@Upload_By									varchar(20),
-	@Upload_Dtm									datetime,
-	@Last_Rectify_By							varchar(20),
-	@Last_Rectify_Dtm							datetime,
-	@Claim_Upload_By							varchar(20),
-	@Claim_Upload_Dtm							datetime,
-	@File_Confirm_By							varchar(20),
-	@File_Confirm_Dtm							datetime,
-	@Request_Remove_By							varchar(20),
-	@Request_Remove_Dtm							datetime,
-	@Request_Remove_Function					varchar(20),
-	@Confirm_Remove_By							varchar(20),
-	@Confirm_Remove_Dtm							datetime,
-	@Request_Claim_Reactivate_By				varchar(20),
-	@Request_Claim_Reactivate_Dtm				datetime,
-	@Confirm_Claim_Reactivate_By				varchar(20),
-	@Confirm_Claim_Reactivate_Dtm				datetime,
+	@Student_File_ID							VARCHAR(15),
+	@School_Code								VARCHAR(30),
+	@SP_ID										CHAR(8),
+	@Practice_Display_Seq						SMALLINT,
+	@Service_Receive_Dtm						DATETIME,
+	@Dose										VARCHAR(20),
+	@Final_Checking_Report_Generation_Date		DATETIME,
+	@Record_Status								VARCHAR(2),
+	@Upload_By									VARCHAR(20),
+	@Upload_Dtm									DATETIME,
+	@Last_Rectify_By							VARCHAR(20),
+	@Last_Rectify_Dtm							DATETIME,
+	@Claim_Upload_By							VARCHAR(20),
+	@Claim_Upload_Dtm							DATETIME,
+	@File_Confirm_By							VARCHAR(20),
+	@File_Confirm_Dtm							DATETIME,
+	@Request_Remove_By							VARCHAR(20),
+	@Request_Remove_Dtm							DATETIME,
+	@Request_Remove_Function					VARCHAR(20),
+	@Confirm_Remove_By							VARCHAR(20),
+	@Confirm_Remove_Dtm							DATETIME,
+	@Request_Claim_Reactivate_By				VARCHAR(20),
+	@Request_Claim_Reactivate_Dtm				DATETIME,
+	@Confirm_Claim_Reactivate_By				VARCHAR(20),
+	@Confirm_Claim_Reactivate_Dtm				DATETIME,
 	@Name_List_File_ID							VARCHAR(15),		
-	@Vaccination_Report_File_ID					varchar(15),		
-	@Onsite_Vaccination_File_ID					varchar(15),
-	@Claim_Creation_Report_File_ID				varchar(15),
-	@Rectification_File_ID						varchar(15),
-	@Update_By									varchar(20),
-	@Update_Dtm									datetime,
-	@Scheme_Code								char(10),
-	@Subsidize_Code								char(10),
-	@Service_Receive_Dtm_2ndDose				datetime,
-	@Final_Checking_Report_Generation_Date_2ndDose		datetime,
-	@Upload_Precheck							char(1),
-	@Original_Student_File_ID					varchar(15),
-	@Request_Rectify_Status						varchar(2)
+	@Vaccination_Report_File_ID					VARCHAR(15),		
+	@Onsite_Vaccination_File_ID					VARCHAR(15),
+	@Claim_Creation_Report_File_ID				VARCHAR(15),
+	@Rectification_File_ID						VARCHAR(15),
+	@Update_By									VARCHAR(20),
+	@Update_Dtm									DATETIME,
+	@Scheme_Code								CHAR(10),
+	@Subsidize_Code								CHAR(10),
+	@Service_Receive_Dtm_2ndDose				DATETIME,
+	@Final_Checking_Report_Generation_Date_2ndDose		DATETIME,
+	@Upload_Precheck							CHAR(1),
+	@Original_Student_File_ID					VARCHAR(15),
+	@Request_Rectify_Status						VARCHAR(2),
+	@Scheme_Seq									SMALLINT
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -85,20 +93,27 @@ AS BEGIN
 -- =============================================
 -- Initialization
 -- =============================================
-	DECLARE @Scheme_Seq		smallint = 0
-	
-	IF @Upload_Precheck = 'N'
-	BEGIN
-		SELECT
-			@Scheme_Seq = ISNULL( MAX(Scheme_Seq), 0 )
-		FROM
-			SubsidizeGroupClaim
-		WHERE
-			Scheme_Code = @Scheme_Code
-				AND Subsidize_Code = @Subsidize_Code
-				AND @Service_Receive_Dtm >= Claim_Period_From
-				AND Record_Status= 'A'
-	END
+	DECLARE @IN_Scheme_Seq SMALLINT = 0
+
+	IF @Scheme_Seq IS NOT NULL
+		BEGIN
+			SET @IN_Scheme_Seq = @Scheme_Seq
+		END
+	ELSE
+		BEGIN
+			IF @Upload_Precheck = 'N'
+			BEGIN
+				SELECT
+					@IN_Scheme_Seq = ISNULL( MAX(Scheme_Seq), 0 )
+				FROM
+					SubsidizeGroupClaim
+				WHERE
+					Scheme_Code = @Scheme_Code
+						AND Subsidize_Code = @Subsidize_Code
+						AND @Service_Receive_Dtm >= Claim_Period_From
+						AND Record_Status= 'A'
+			END
+		END
 
 
 -- =============================================
@@ -154,7 +169,7 @@ AS BEGIN
 		@Practice_Display_Seq,
 		@Service_Receive_Dtm,
 		@Scheme_Code,
-		@Scheme_Seq,
+		@IN_Scheme_Seq,
 		@Subsidize_Code,
 		@Dose,
 		@Final_Checking_Report_Generation_Date,

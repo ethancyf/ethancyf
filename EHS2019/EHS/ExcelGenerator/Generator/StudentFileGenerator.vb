@@ -3,6 +3,7 @@ Imports Common.Component
 Imports Common.ComFunction.ParameterFunction
 Imports Common.Component.Inbox
 Imports Common.Component.InternetMail
+Imports Common.Component.Scheme
 
 Public Class StudentFileGenerator
     Inherits Generator.StudentFileGeneratorBase
@@ -115,6 +116,16 @@ Public Class StudentFileGenerator
     'End Function
 
     Public Overrides Sub ConstructMessageParamaterList(ByRef udtDB As Common.DataAccess.Database, ByRef udtMessageCollection As MessageModelCollection, ByRef udtMessageReaderCollection As MessageReaderModelCollection)
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ' Retrieve Student File Header
+        Dim udtStudentHeader As Common.Component.StudentFile.StudentFileHeaderModel = GetStudentFileHeader()
+
+        If udtStudentHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+            Return
+        End If
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
         Dim udtFileGenerationBLL As New Common.Component.FileGeneration.FileGenerationBLL()
         Dim udtGeneral As New Common.ComFunction.GeneralFunction()
         Dim udtParamFunction As New Common.ComFunction.ParameterFunction()
@@ -233,43 +244,62 @@ Public Class StudentFileGenerator
         End If
         ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         ' Construct Message & MessageReader
         Dim udtMessage As New MessageModel()
         udtMessage.MessageID = udtGeneral.generateInboxMsgID()
 
         ' Construct Inbox Message Subject (No param)
         Dim paramsSubject As New ParameterCollection()
-        paramsSubject.AddParam("SchoolCode", udtStudentHeader.SchoolCode)
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
+        If udtStudentHeader.SchoolCode <> String.Empty Then
+            paramsSubject.AddParam("SchoolCode", String.Format("-{0}", udtStudentHeader.SchoolCode))
+        End If
+
         paramsSubject.AddParam("VaccineType", strVaccineType)
         paramsSubject.AddParam("Dose", strDoseEN)
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
-
 
         ' Construct Inbox Message Content
         Dim paramsContentEN As New ParameterCollection()
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
         paramsContentEN.AddParam("FileID", udtStudentHeader.StudentFileID)
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
-        paramsContentEN.AddParam("SchoolCode", udtStudentHeader.SchoolCode)
+
+        If udtStudentHeader.SchoolCode <> String.Empty Then
+            paramsContentEN.AddParam("SchoolCode", String.Format("-{0}", udtStudentHeader.SchoolCode))
+        End If
+
         paramsContentEN.AddParam("SchoolName", udtStudentHeader.SchoolNameEN)
         If Not udtStudentHeader.Precheck Then
-            paramsContentEN.AddParam("ServiceDate", udtStudentHeader.ServiceReceiveDtm.Value.ToString(udtFormatter.DisplayDateFormat))
+
+            If Not udtStudentHeader.ServiceReceiveDtm Is Nothing Then
+                paramsContentEN.AddParam("ServiceDate", udtStudentHeader.ServiceReceiveDtm.Value.ToString(udtFormatter.DisplayDateFormat))
+            End If
+
             paramsContentEN.AddParam("Dose", strDoseEN)
         End If
 
         Dim paramsContentCH As New ParameterCollection()
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
         paramsContentCH.AddParam("FileID", udtStudentHeader.StudentFileID)
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
-        paramsContentCH.AddParam("SchoolCode", udtStudentHeader.SchoolCode)
+
+        If udtStudentHeader.SchoolCode <> String.Empty Then
+            paramsContentCH.AddParam("SchoolCode", String.Format("-{0}", udtStudentHeader.SchoolCode))
+        End If
+
         paramsContentCH.AddParam("SchoolName", udtStudentHeader.SchoolNameCH)
         If Not udtStudentHeader.Precheck Then
-            paramsContentCH.AddParam("Day", udtStudentHeader.ServiceReceiveDtm.Value.ToString("dd"))
-            paramsContentCH.AddParam("Month", udtStudentHeader.ServiceReceiveDtm.Value.ToString("MM"))
-            paramsContentCH.AddParam("Year", udtStudentHeader.ServiceReceiveDtm.Value.Year.ToString())
+
+            If Not udtStudentHeader.ServiceReceiveDtm Is Nothing Then
+                paramsContentCH.AddParam("Day", udtStudentHeader.ServiceReceiveDtm.Value.ToString("dd"))
+                paramsContentCH.AddParam("Month", udtStudentHeader.ServiceReceiveDtm.Value.ToString("MM"))
+                paramsContentCH.AddParam("Year", udtStudentHeader.ServiceReceiveDtm.Value.Year.ToString())
+            End If
+
             paramsContentCH.AddParam("Dose", strDoseCH)
         End If
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' Build Message Subject
         Dim strLang As EnumLanguage = (New UserAC.UserACBLL).GetUserACDefaultLang(udtStudentHeader.SPID)

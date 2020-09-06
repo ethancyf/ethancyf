@@ -246,19 +246,24 @@ Public Class ucVaccinationFileDetail
             ' ------------------------------------------------------------------------------------------
             ' Code, Name, No. of Class/Category, No. of Student/Client, No. of Student/Client Injected
             ' ------------------------------------------------------------------------------------------
-            If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                lblDSchoolCodeText.Text = GetGlobalResourceObject("Text", "RCHCode")
-                lblDSchoolNameText.Text = GetGlobalResourceObject("Text", "RCHName")
-                lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfCategory")
-                lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfClient")
-                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
-            Else
-                lblDSchoolCodeText.Text = GetGlobalResourceObject("Text", "SchoolCode")
-                lblDSchoolNameText.Text = GetGlobalResourceObject("Text", "SchoolName")
-                lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfClass")
-                lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfStudent")
-                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
-            End If
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select udtStudentFile.SchemeCode
+                Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                    lblDSchoolCodeText.Text = GetGlobalResourceObject("Text", "RCHCode")
+                    lblDSchoolNameText.Text = GetGlobalResourceObject("Text", "RCHName")
+                    lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfCategory")
+                    lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfClient")
+                    lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
+                Case Else
+                    lblDSchoolCodeText.Text = GetGlobalResourceObject("Text", "SchoolCode")
+                    lblDSchoolNameText.Text = GetGlobalResourceObject("Text", "SchoolName")
+                    lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfClass")
+                    lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfStudent")
+                    lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
+            End Select
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
 
             ' -------------------------------------
             ' Vaccination Date
@@ -325,13 +330,17 @@ Public Class ucVaccinationFileDetail
             ' -------------------------------------------------------------------
             ' Information, Class/Category Name, No. of Warning Record 
             ' -------------------------------------------------------------------
-            If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClientInformation")
-                lblDClassNameText.Text = GetGlobalResourceObject("Text", "Category")
-            Else
-                lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClassAndStudentInformation")
-                lblDClassNameText.Text = GetGlobalResourceObject("Text", "ClassName")
-            End If
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select udtStudentFile.SchemeCode
+                Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                    lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClientInformation")
+                    lblDClassNameText.Text = GetGlobalResourceObject("Text", "Category")
+                Case Else
+                    lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClassAndStudentInformation")
+                    lblDClassNameText.Text = GetGlobalResourceObject("Text", "ClassName")
+            End Select
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             lblDNoOfWarningRecordText.Text = HttpContext.GetGlobalResourceObject("Text", "NoOfWarningRecord", New System.Globalization.CultureInfo(strSelectedLanguage))
 
@@ -566,19 +575,23 @@ Public Class ucVaccinationFileDetail
         lblDNoOfStudentInjected.Text = dt.Select("Injected = 'Y'").Length
 
         If Not udtStudentFile Is Nothing Then
-            If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfCategory")
-                lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfClient")
-                lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClientInformation")
-                lblDClassNameText.Text = GetGlobalResourceObject("Text", "Category")
-                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
-            Else
-                lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfClass")
-                lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfStudent")
-                lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClassAndStudentInformation")
-                lblDClassNameText.Text = GetGlobalResourceObject("Text", "ClassName")
-                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
-            End If
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select udtStudentFile.SchemeCode
+                Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                    lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfCategory")
+                    lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfClient")
+                    lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClientInformation")
+                    lblDClassNameText.Text = GetGlobalResourceObject("Text", "Category")
+                    lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
+                Case Else
+                    lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfClass")
+                    lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfStudent")
+                    lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClassAndStudentInformation")
+                    lblDClassNameText.Text = GetGlobalResourceObject("Text", "ClassName")
+                    lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
+            End Select
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End If
 
         lblDNoOfClassText.Text = HttpContext.GetGlobalResourceObject("Text", "NoOfClass", New System.Globalization.CultureInfo(strSelectedLanguage))
@@ -703,7 +716,7 @@ Public Class ucVaccinationFileDetail
         'gvD.Columns(16).Visible = False ' Account Reference No.
         'gvD.Columns(17).Visible = False ' Temp Account Status
         'gvD.Columns(18).Visible = False ' Account Validation Result
-        'gvD.Columns(19).Visible = False ' Field Difference
+        gvD.Columns(19).Visible = False ' Field Difference
 
         trDNoOfWarningRecord.Visible = False
         trDNoOfStudentInjected.Visible = False
@@ -715,16 +728,21 @@ Public Class ucVaccinationFileDetail
                  StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify
 
                 'gvD.Columns(15).Visible = True ' Warning Message
+                gvD.Columns(19).Visible = True ' Field Difference
                 trDNoOfWarningRecord.Visible = True
 
             Case StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
                 'If dtmCurrentDate < udtStudentFile.FinalCheckingReportGenerationDate Then
                 gvD.Columns(2).Visible = True  ' Action
                 'End If
+                gvD.Columns(19).Visible = True ' Field Difference
 
                 gvD.Width = Unit.Pixel(1200)
 
             Case StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim
+                gvD.Columns(2).Visible = True
+                gvD.Columns(19).Visible = True ' Field Difference
+
                 If strAction = VaccinationFileManagement.Action.Claim Or strAction = VaccinationFileManagement.Action.Inputting Then
                     gvD.Columns(10).Visible = True ' Mark Injected
                     gvD.Width = Unit.Pixel(1600)
@@ -733,19 +751,18 @@ Public Class ucVaccinationFileDetail
                 End If
 
             Case StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim
+                gvD.Columns(2).Visible = True
                 gvD.Columns(10).Visible = True ' Mark Injected
+                gvD.Columns(19).Visible = True ' Field Difference
                 trDNoOfStudentInjected.Visible = True
 
                 gvD.Width = Unit.Pixel(1600)
 
-            Case StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim
-                gvD.Columns(11).Visible = True ' Injected
-                trDNoOfStudentInjected.Visible = True
+            Case StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim,
+                StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim
 
-                gvD.Width = Unit.Pixel(1400)
-
-            Case StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim
                 gvD.Columns(11).Visible = True ' Injected
+                gvD.Columns(19).Visible = True ' Field Difference
                 trDNoOfStudentInjected.Visible = True
 
                 gvD.Width = Unit.Pixel(1400)
@@ -756,6 +773,7 @@ Public Class ucVaccinationFileDetail
 
                 trDNoOfStudentInjected.Visible = True
 
+                gvD.Columns(2).Visible = True
                 gvD.Columns(11).Visible = True ' Injected
                 gvD.Columns(12).Visible = True ' Transaction No.
                 gvD.Columns(13).Visible = True ' Transaction Record Status
@@ -786,13 +804,17 @@ Public Class ucVaccinationFileDetail
 
         Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
         If Not udtStudentFile Is Nothing Then
-            If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                tblHeaderClass.Text = GetGlobalResourceObject("Text", "Category")
-                tblHeaderNoOfStudent.Text = GetGlobalResourceObject("Text", "NoOfClient")
-            Else
-                tblHeaderClass.Text = GetGlobalResourceObject("Text", "Class")
-                tblHeaderNoOfStudent.Text = GetGlobalResourceObject("Text", "NoOfStudent")
-            End If
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select Case udtStudentFile.SchemeCode
+                Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                    tblHeaderClass.Text = GetGlobalResourceObject("Text", "Category")
+                    tblHeaderNoOfStudent.Text = GetGlobalResourceObject("Text", "NoOfClient")
+                Case Else
+                    tblHeaderClass.Text = GetGlobalResourceObject("Text", "Class")
+                    tblHeaderNoOfStudent.Text = GetGlobalResourceObject("Text", "NoOfStudent")
+            End Select
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End If
 
         For Each dr As DataRow In dt.DefaultView.ToTable(True, "Class_Name").Rows
@@ -1106,11 +1128,16 @@ Public Class ucVaccinationFileDetail
         If e.Row.RowType = DataControlRowType.Header Then
             Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
             If Not udtStudentFile Is Nothing Then
-                If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                    gvD.Columns(1).HeaderText = GetGlobalResourceObject("Text", "RefNoShort")
-                Else
-                    gvD.Columns(1).HeaderText = GetGlobalResourceObject("Text", "ClassNo")
-                End If
+                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Select udtStudentFile.SchemeCode
+                    Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                        gvD.Columns(1).HeaderText = GetGlobalResourceObject("Text", "RefNoShort")
+                    Case Else
+                        gvD.Columns(1).HeaderText = GetGlobalResourceObject("Text", "ClassNo")
+                End Select
+                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             End If
 
             If Session("language") = CultureLanguage.English Then

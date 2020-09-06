@@ -8,8 +8,6 @@ Namespace Component.ClaimRules
             CLAIMPERIOD
         End Enum
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Public Class RuleTypeClass
 
             ''' <summary>
@@ -37,7 +35,18 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const DUPLICATE = "DUPLICATE"
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ''' <summary>
+            ''' DOSE SEQ EXIST: eg. The first dose should taken before second Dose, The second dose should taken before third Dose
+            ''' </summary>
+            Public Const DOSESEQEXIST = "DOSESEQEXIST"
 
+            ''' <summary>
+            ''' SERVICE DATE: eg. Compare the service date with specific date
+            ''' </summary>
+            Public Const SERVICEDATE = "SERVICEDATE"
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ''' <summary>
             ''' SUBSIDIZE SEQ: eg. 1. The service date of SIV (4th season) could not be earlier than then same subsidize item of previous season.
@@ -59,7 +68,6 @@ Namespace Component.ClaimRules
             Public Const SCHOOLCODE = "SCHOOLCODE"
 
         End Class
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
 
 #Region "Schema"

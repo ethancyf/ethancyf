@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeaderStaging_get_forVaccineCheck]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeaderStaging_get_forVaccineCheck]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StudentFileHeaderStaging_get_forVaccineCheck]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	20 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -48,7 +55,7 @@ AS BEGIN
 	-- 1st Priority
 	--		Reach the date for final report generation
 	--		Process earliest service date first
-	SELECT DISTINCT H.Student_File_ID, 1 AS [Priority], Service_Receive_Dtm AS [Priority_Date]
+	SELECT DISTINCT H.Student_File_ID, 1 AS [Priority], H.Service_Receive_Dtm AS [Priority_Date]
 	FROM StudentFileheaderStaging H
 		INNER JOIN StudentFileEntryStaging E
 		ON H.Student_File_ID = E.Student_File_ID
@@ -58,7 +65,7 @@ AS BEGIN
 	-- 2nd Priority
 	--		Processing claim creation 
 	--		Process earliest service date first
-	SELECT DISTINCT H.Student_File_ID, 2 AS [Priority], Service_Receive_Dtm AS [Priority_Date]
+	SELECT DISTINCT H.Student_File_ID, 2 AS [Priority], H.Service_Receive_Dtm AS [Priority_Date]
 	FROM StudentFileheaderStaging H
 		INNER JOIN StudentFileEntryStaging E
 		ON H.Student_File_ID = E.Student_File_ID
@@ -88,3 +95,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileHeaderStaging_get_forVaccineCheck] TO HCVU
 GO
+

@@ -4,11 +4,13 @@ Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSTransaction
 Imports Common.Component.HCVUUser
+Imports Common.Component.SchemeDetails
 Imports Common.Component.ServiceProvider
 Imports Common.Component.StaticData
 Imports Common.Component.StudentFile
 Imports Common.DataAccess
 Imports Common.Format
+Imports Common.Component.Scheme
 
 Partial Public Class VaccinationFileConfirmation ' 010416
     Inherits BasePageWithControl
@@ -148,6 +150,17 @@ Partial Public Class VaccinationFileConfirmation ' 010416
             Dim dr As DataRowView = e.Row.DataItem
             Dim udtFormatter As New Formatter
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' School / RCH Code
+            Dim lblGSchoolCode As Label = e.Row.FindControl("lblGSchoolCode")
+
+            If IsDBNull(dr("School_Code")) OrElse dr("School_Code").ToString.Trim() = String.Empty Then
+                lblGSchoolCode.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            Else
+                lblGSchoolCode.Text = dr("School_Code").ToString.Trim
+            End If
+
             ' Vaccination Date
             Dim lblGVaccinationDate As Label = e.Row.FindControl("lblGVaccinationDate")
 
@@ -172,9 +185,26 @@ Partial Public Class VaccinationFileConfirmation ' 010416
             If IsDBNull(dr("Subsidize_Code")) OrElse dr("Subsidize_Code").ToString.Trim() = String.Empty Then
                 lblGDoseToInject.Text = Me.GetGlobalResourceObject("Text", "N/A")
             Else
-                lblGDoseToInject.Text = String.Format("{0}<br><br>{1}", _
-                                                        dr("SubsidizeDisplayName"), _
-                                                        (New StaticDataBLL).GetStaticDataByColumnNameItemNo("StudentFileDoseToInject", dr("Dose")).DataValue)
+                If dr("Subsidize_Code").ToString.Trim() = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    Dim strDose As String = String.Empty
+                    If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                        strDose = GetGlobalResourceObject("Text", "1stDose2")
+                    End If
+
+                    If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                        strDose = GetGlobalResourceObject("Text", "2ndDose")
+                    End If
+
+                    If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                        strDose = GetGlobalResourceObject("Text", "3rdDose")
+                    End If
+
+                    lblGDoseToInject.Text = String.Format("{0}<br><br>{1}", dr("SubsidizeDisplayName"), strDose)
+                Else
+                    lblGDoseToInject.Text = String.Format("{0}<br><br>{1}", _
+                                                            dr("SubsidizeDisplayName"), _
+                                                            (New StaticDataBLL).GetStaticDataByColumnNameItemNo("StudentFileDoseToInject", dr("Dose")).DataValue)
+                End If
             End If
 
             ' Upload By and Time
@@ -185,6 +215,7 @@ Partial Public Class VaccinationFileConfirmation ' 010416
             Dim lblGStatus As Label = e.Row.FindControl("lblGStatus")
             Status.GetDescriptionFromDBCode("StudentFileHeaderStatus", dr("Record_Status"), lblGStatus.Text, String.Empty, String.Empty)
 
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End If
 
     End Sub

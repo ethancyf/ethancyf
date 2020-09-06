@@ -175,6 +175,8 @@
     <None Include="Template\eHSW0003-PCV13_Weekly_Statistic_Template.xlsx" />
     <None Include="Template\eHSW0004-Vaccination_Weekly_Template.xlsx" />
     <None Include="Template\eHSW0005-Inspection_Weekly_Template.xlsx" />
+    <None Include="Template\eHSW0006-VSS_Non-immune_Adults_Weekly_Template.xlsx" />
+    <None Include="Template\INSP0001-InspectionSearchResult_Template.xlsx" />
     <None Include="Template\PPC0001-Template.xlsx" />
     <None Include="Template\PPC0002-Template.xlsx" />
     <None Include="Template\PPC0003-Template.xlsx" />

@@ -35,13 +35,13 @@ CREATE PROCEDURE [dbo].[proc_StudentFileHeader_search]
 	@SPID					VARCHAR(8),
 	@DataEntryAccount		VARCHAR(20),
 	@USERID					VARCHAR(20),
-	@Scheme_Code			VARCHAR(10),
+	@Scheme_Code			VARCHAR(5000),
 	@Subsidize_Code			VARCHAR(10),
 	@VaccinationDateFrom	DATETIME,
 	@VaccinationDateTo		DATETIME,
 	@CurrentSeason			BIT,
 	@PreCheck				BIT,
-	@Record_Status			VARCHAR(2)
+	@Record_Status			VARCHAR(5000)
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -54,13 +54,13 @@ AS BEGIN
 	DECLARE @IN_SPID					VARCHAR(8)
 	DECLARE @IN_DataEntryAccount		VARCHAR(20)
 	DECLARE @IN_USERID					VARCHAR(20)
-	DECLARE @IN_Scheme_Code				VARCHAR(10)
+	DECLARE @IN_Scheme_Code				VARCHAR(5000)
 	DECLARE @IN_Subsidize_Code			VARCHAR(10)
 	DECLARE @IN_VaccinationDateFrom		DATETIME
 	DECLARE @IN_VaccinationDateTo		DATETIME
 	DECLARE @IN_CurrentSeason			BIT
 	DECLARE @IN_PreCheck				BIT
-	DECLARE @IN_Record_Status			VARCHAR(2)
+	DECLARE @IN_Record_Status			VARCHAR(5000)
 
 	DECLARE @MinDate					DATETIME
 	DECLARE @ChangeSeasonDate			DATETIME
@@ -68,6 +68,18 @@ AS BEGIN
 	DECLARE @StartDate					DATETIME
 	DECLARE @EndDate					DATETIME
 	DECLARE @IsPreCheck					CHAR(1)
+
+	DECLARE @delimiter					VARCHAR(5)
+	DECLARE @chrIsAllRecordStatus		CHAR(1)
+	DECLARE @chrIsAllSchemeCode			CHAR(1)
+
+	DECLARE @tblSchemeCode TABLE(
+		Scheme_Code VARCHAR(10)
+	)
+
+	DECLARE @tblRecordStatus TABLE(
+		Record_Status VARCHAR(2)
+	)
 
 -- =============================================
 -- Validation 
@@ -93,6 +105,8 @@ AS BEGIN
 	SET @CurrentDate				= (SELECT CONVERT(DATETIME,CONVERT(VARCHAR(10),GETDATE(),121)))
 	SET @StartDate					= NULL		
 	SET @EndDate					= NULL		
+
+	SET @delimiter = ';'
 
 	-- ---------------------------------------------
 	-- Mininium Date to retrieve batch upload file
@@ -241,6 +255,34 @@ AS BEGIN
 					SET @IsPreCheck = 'N'
 				END
 		END
+
+	-- ---------------------------------------------
+	-- Scheme Code
+	-- ---------------------------------------------
+	IF @IN_Scheme_Code IS NOT NULL
+	BEGIN
+
+		INSERT @tblSchemeCode
+				SELECT * FROM func_split_string(@IN_Scheme_Code, @delimiter)
+
+		SET @chrIsAllSchemeCode = 'N'
+	END
+	ELSE 
+		SET @chrIsAllSchemeCode = 'Y'
+
+	-- ---------------------------------------------
+	-- Scheme Code
+	-- ---------------------------------------------
+	IF @IN_Record_Status IS NOT NULL
+	BEGIN
+
+		INSERT @tblRecordStatus
+				SELECT * FROM func_split_string(@IN_Record_Status, @delimiter)
+
+		SET @chrIsAllRecordStatus = 'N'
+	END
+	ELSE 
+		SET @chrIsAllRecordStatus = 'Y'
 
 -- =============================================
 -- Return results
@@ -391,17 +433,21 @@ AS BEGIN
 										SUM(CASE WHEN Injected IS NULL THEN 1 ELSE 0 END) AS [Complete] 
 									FROM StudentFileEntryStaging GROUP BY Student_File_ID) SFE 
 										ON S.Student_File_ID = SFE.Student_File_ID AND S.Record_Status = 'ST'
+					LEFT JOIN @tblSchemeCode tblSC
+						ON LTRIM(RTRIM(S.Scheme_Code)) = LTRIM(RTRIM(tblSC.Scheme_Code))
+					LEFT JOIN @tblRecordStatus tblRS
+						ON LTRIM(RTRIM(S.Record_Status)) = LTRIM(RTRIM(tblRS.Record_Status))
 			WHERE
 				(@Student_File_ID IS NULL OR S.Student_File_ID = @IN_Student_File_ID)
-					AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
-					AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
-					AND (@IN_Scheme_Code IS NULL OR LTRIM(RTRIM(S.Scheme_Code)) = @IN_Scheme_Code)
-					AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
-					AND (@IN_Record_Status IS NULL OR S.Record_Status = @IN_Record_Status)
-					AND (@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm)
-					AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo)
-					AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
-					AND S.Record_Status <> 'R'
+				AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
+				AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
+				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
+				AND (@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm)
+				AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo)
+				AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
+				AND S.Record_Status <> 'R'
+				AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)		
+				AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)		
 		
 			UNION ALL
 			
@@ -457,20 +503,24 @@ AS BEGIN
 										SUM(CASE WHEN Injected IS NULL THEN 1 ELSE 0 END) AS [Complete] 
 									FROM StudentFileEntryStaging GROUP BY Student_File_ID) SFE 
 										ON S.Student_File_ID = SFE.Student_File_ID AND S.Record_Status = 'ST'
+					LEFT JOIN @tblSchemeCode tblSC
+						ON LTRIM(RTRIM(S.Scheme_Code)) = LTRIM(RTRIM(tblSC.Scheme_Code))
+					LEFT JOIN @tblRecordStatus tblRS
+						ON LTRIM(RTRIM(S.Record_Status)) = LTRIM(RTRIM(tblRS.Record_Status))
 			WHERE
 				(@IN_Student_File_ID IS NULL OR S.Student_File_ID = @IN_Student_File_ID)
-					AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
-					AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
-					AND (@IN_Scheme_Code IS NULL OR LTRIM(RTRIM(S.Scheme_Code)) = @IN_Scheme_Code)
-					AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
-					AND (@IN_Record_Status IS NULL OR S.Record_Status = @IN_Record_Status)
-					AND (@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm)
-					AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo)
-					AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
-					AND S.Record_Status <> 'R'
-					AND S.Student_File_ID NOT IN (
-						SELECT Student_File_ID FROM StudentFileHeader WHERE Record_Status <> 'R'
-					)
+				AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
+				AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
+				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
+				AND (@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm)
+				AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo)
+				AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
+				AND S.Record_Status <> 'R'
+				AND S.Student_File_ID NOT IN (
+					SELECT Student_File_ID FROM StudentFileHeader WHERE Record_Status <> 'R'
+				)
+				AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)	
+				AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)		
 					
 		) S
 		LEFT OUTER JOIN SubsidizeGroupClaim SGC ON

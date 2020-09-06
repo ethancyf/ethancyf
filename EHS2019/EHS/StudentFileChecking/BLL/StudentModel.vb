@@ -18,19 +18,25 @@ Namespace BLL
 
         ' StudentFileEntry Information
         Private _intStudentSeq As Integer
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
         Private _strClassName As String
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
         Private _strAccProcessStage As String
         Private _strVaccinationProcessStage As String
         Private _blnEntitleOnlyDose As Boolean
         Private _blnEntitle1stDose As Boolean
         Private _blnEntitle2ndDose As Boolean
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _blnEntitle3rdDose As Boolean
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         Private _blnEntitleInject As Boolean
         Private _blnInjected As Boolean
         Private _strHAVaccineRefStatus As String
         Private _strDHVaccineRefStatus As String
         Private _enumAccountSource As SysAccountSource
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strHKICSymbol As String
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' Account Information
         Private _strAccRecordStatus As String
@@ -96,13 +102,11 @@ Namespace BLL
             End Get
         End Property
 
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
         Public ReadOnly Property ClassName As String
             Get
                 Return _strClassName
             End Get
         End Property
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
         Public ReadOnly Property AccProcessStage As String
             Get
@@ -134,6 +138,15 @@ Namespace BLL
             End Get
         End Property
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property Entitle3rdDose As Boolean
+            Get
+                Return _blnEntitle3rdDose
+            End Get
+        End Property
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
         Public ReadOnly Property HAVaccineRefStatus As String
             Get
                 Return _strHAVaccineRefStatus
@@ -164,6 +177,15 @@ Namespace BLL
             End Get
         End Property
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property HKICSymbol As String
+            Get
+                Return _strHKICSymbol
+            End Get
+        End Property
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
         Public ReadOnly Property AccRecordStatus As String
             Get
                 Return _strAccRecordStatus
@@ -192,11 +214,13 @@ Namespace BLL
                         ByVal strEntitleOnlyDose As String, _
                         ByVal strEntitle1stDose As String, _
                         ByVal strEntitle2ndDose As String, _
+                        ByVal strEntitle3rdDose As String, _
                         ByVal strEntitleInject As String, _
                         ByVal strInjected As String, _
                         ByVal strHAVaccineRefStatus As String, _
                         ByVal strDHVaccineRefStatus As String, _
                         ByVal strAccountSource As String, _
+                        ByVal strHKICSymbol As String, _
                         ByVal strAccRecordStatus As String, _
                         ByVal udtPersonalInformation As EHSPersonalInformationModel)
             _strStudentFileID = strStudentFileID
@@ -209,15 +233,14 @@ Namespace BLL
             _strDose = strDose
             _strClaimUploadBy = strClaimUploadBy
             _intStudentSeq = intStudentSeq
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             _strClassName = strClassName
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             _strAccProcessStage = strAccProcessStage
             _strVaccinationProcessStage = strVaccinationProcessStage
 
             _blnEntitleOnlyDose = (strEntitleOnlyDose = YesNo.Yes)
             _blnEntitle1stDose = (strEntitle1stDose = YesNo.Yes)
             _blnEntitle2ndDose = (strEntitle2ndDose = YesNo.Yes)
+            _blnEntitle3rdDose = (strEntitle3rdDose = YesNo.Yes)
             _blnEntitleInject = (strEntitleInject = YesNo.Yes)
             _blnInjected = (strInjected = YesNo.Yes)
 
@@ -233,6 +256,11 @@ Namespace BLL
                     _enumAccountSource = SysAccountSource.InvalidAccount
                     'Throw New Exception(String.Format("Invalid [StudentFileEntryStaging].[Acc_Type]({0})", strAccountSource))
             End Select
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            _strHKICSymbol = strHKICSymbol
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             _strAccRecordStatus = strAccRecordStatus
             _udtPersonalInformation = udtPersonalInformation

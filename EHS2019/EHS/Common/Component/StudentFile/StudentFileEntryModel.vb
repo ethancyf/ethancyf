@@ -79,6 +79,11 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("Original_Student_Seq")) Then _intOriginalStudentSeq = CInt(dr("Original_Student_Seq"))
             ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("HKIC_Symbol")) Then _strHKICSymbol = dr("HKIC_Symbol").ToString.Trim
+            If Not IsDBNull(dr("Service_Receive_Dtm")) Then _dtmServiceDate = dr("Service_Receive_Dtm")
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End Sub
 
 #End Region
@@ -213,6 +218,15 @@ Namespace Component.StudentFile
         Private _intOriginalStudentSeq As Integer
         ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strHKICSymbol As String
+        Private _dtmServiceDate As Nullable(Of DateTime)
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+#Region "Properties"
+
+#End Region
         Public Property StudentFileID() As String
             Get
                 Return _strStudentFileID
@@ -687,6 +701,27 @@ Namespace Component.StudentFile
             End Set
         End Property
         ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property HKICSymbol() As String
+            Get
+                Return _strHKICSymbol
+            End Get
+            Set(ByVal value As String)
+                _strHKICSymbol = value
+            End Set
+        End Property
+
+        Public Property ServiceDate() As Nullable(Of DateTime)
+            Get
+                Return _dtmServiceDate
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmServiceDate = value
+            End Set
+        End Property
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 #End Region
 
     End Class

@@ -6,6 +6,7 @@ Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.Scheme
 Imports Common.Component.SchemeDetails
+Imports Common.Component.StaticData
 
 Public Class ucStudentFileDetail
     Inherits System.Web.UI.UserControl
@@ -84,21 +85,36 @@ Public Class ucStudentFileDetail
         Public Const ECSerialNo As String = "SerialNoEC"
         Public Const ECReference As String = "ReferenceNoEC"
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const HKICSymbol As String = "HKICSymbolLong"
+        Public Const LaboratoryTestResultReport As String = "LaboratoryTestResultReport"
+        Public Const Ethnicity As String = "Ethnicity"
+        Public Const Category1 As String = "Category1"
+        Public Const Category2 As String = "Category2"
+        Public Const LotNumber As String = "LotNumber"
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
     End Class
 
     Private Class gvDColumn
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public Const RectifiedFlag As Integer = 2
+        Public Const DOB As Integer = 7
         Public Const OtherFields As Integer = 8
-        Public Const ConfirmNotToInject As Integer = 9
-        Public Const Injected As Integer = 10
-        Public Const WarningMessage As Integer = 11
-        Public Const TransactionNo As Integer = 12
-        Public Const TransactionRecordStatus As Integer = 13
-        Public Const TransactionFailReason As Integer = 14
-        Public Const AccountNo As Integer = 15
-        Public Const AccountStatus As Integer = 16
-        Public Const AccountValidationResult As Integer = 17
-        Public Const FieldDifference As Integer = 18
+        Public Const ServiceDate As Integer = 9
+        Public Const ConfirmNotToInject As Integer = 10
+        Public Const Injected As Integer = 11
+        Public Const WarningMessage As Integer = 12
+        Public Const TransactionNo As Integer = 13
+        Public Const TransactionRecordStatus As Integer = 14
+        Public Const TransactionFailReason As Integer = 15
+        Public Const AccountNo As Integer = 16
+        Public Const AccountStatus As Integer = 17
+        Public Const AccountValidationResult As Integer = 18
+        Public Const FieldDifference As Integer = 19
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
     End Class
 
@@ -168,97 +184,141 @@ Public Class ucStudentFileDetail
         ' Label
         If udtStudentFile.Precheck Then lblDVaccinationFileIDText.Text = Me.GetGlobalResourceObject("Text", "PreCheckFileID")
 
-        If udtStudentFile.SchemeCode = Scheme.SchemeClaimModel.RVP Then
-            lblDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
-            lblDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
-            lblDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfCategory")
-            lblDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfClient")
-            lblDClassNameText.Text = Me.GetGlobalResourceObject("Text", "Category")
-            lblDClassAndStudentInformation.Text = Me.GetGlobalResourceObject("Text", "ClientInformation")
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        panDSchoolRCH.Visible = False
 
-        Else
-            lblDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "SchoolCode")
-            lblDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "SchoolName")
-            lblDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfClass")
-            lblDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfStudent")
-            lblDClassNameText.Text = Me.GetGlobalResourceObject("Text", "ClassName")
-            lblDClassAndStudentInformation.Text = Me.GetGlobalResourceObject("Text", "ClassAndStudentInformation")
-        End If
+        Select Case udtStudentFile.SchemeCode
+            Case SchemeClaimModel.RVP
+                panDSchoolRCH.Visible = True
+
+                lblDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
+                lblDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
+                lblDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfCategory")
+                lblDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfClient")
+                lblDClassNameText.Text = Me.GetGlobalResourceObject("Text", "Category")
+                lblDClassAndStudentInformation.Text = Me.GetGlobalResourceObject("Text", "ClientInformation")
+                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
+
+            Case SchemeClaimModel.VSS
+                lblDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
+                lblDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
+                lblDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfCategory")
+                lblDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfClient")
+                lblDClassNameText.Text = Me.GetGlobalResourceObject("Text", "Category")
+                lblDClassAndStudentInformation.Text = Me.GetGlobalResourceObject("Text", "ClientInformation")
+                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
+
+            Case Else
+                panDSchoolRCH.Visible = True
+
+                lblDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "SchoolCode")
+                lblDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "SchoolName")
+                lblDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfClass")
+                lblDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfStudent")
+                lblDClassNameText.Text = Me.GetGlobalResourceObject("Text", "ClassName")
+                lblDClassAndStudentInformation.Text = Me.GetGlobalResourceObject("Text", "ClassAndStudentInformation")
+                lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
+
+        End Select
 
         ' -------------------------------------
         ' Vaccination Date / Subsidy / Dose
         ' -------------------------------------
-        If udtStudentFile.Precheck = False Then
-            ' Vaccination File
-            panDVaccinationInfo.Visible = True
+        panDVaccinationInfo.Visible = False
+        panDMMR.Visible = False
 
-            lblDVaccinationDate1.Text = String.Empty
-            lblDVaccinationDate2.Text = String.Empty
-            lblDVaccinationReportGenerationDate1.Text = String.Empty
-            lblDVaccinationReportGenerationDate2.Text = String.Empty
+        Select Case udtStudentFile.SchemeCode
+            Case SchemeClaimModel.VSS
+                panDMMR.Visible = True
 
-            Dim dtmVaccineDate1 As DateTime = DateTime.MinValue
-            Dim dtmReportGenerationDate1 As DateTime = DateTime.MinValue
-            Dim dtmVaccineDate2 As DateTime = DateTime.MinValue
-            Dim dtmReportGenerationDate2 As DateTime = DateTime.MinValue
+                lblDVaccinationDateMMR.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate.Value)
 
-            If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.ONLYDOSE OrElse _
-                udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                lblDVaccinationDate1.Text = udtFormatter.formatDisplayDate(udtStudentFile.ServiceReceiveDtm.Value)
-                lblDVaccinationReportGenerationDate1.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate.Value)
+                Select Case udtStudentFile.Dose
+                    Case SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+                        lblDDoseOfMMR.Text = GetGlobalResourceObject("Text", "1stDose2")
+                    Case SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+                        lblDDoseOfMMR.Text = GetGlobalResourceObject("Text", "2ndDose")
+                    Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
+                        lblDDoseOfMMR.Text = GetGlobalResourceObject("Text", "3rdDose")
+                End Select
 
-                If udtStudentFile.ServiceReceiveDtm2ndDose.HasValue Then
-                    lblDVaccinationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.ServiceReceiveDtm2ndDose.Value)
-                    lblDVaccinationReportGenerationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate2ndDose.Value)
+                lblDSubsidyMMR.Text = udtStudentFile.SubsidizeDisplay
 
-                    dtmVaccineDate2 = udtStudentFile.ServiceReceiveDtm2ndDose.Value
-                    dtmReportGenerationDate2 = udtStudentFile.FinalCheckingReportGenerationDate2ndDose.Value
+            Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG, SchemeClaimModel.RVP
+                If udtStudentFile.Precheck = False Then
+                    ' Vaccination File
+                    panDVaccinationInfo.Visible = True
+
+                    lblDVaccinationDate1.Text = String.Empty
+                    lblDVaccinationDate2.Text = String.Empty
+                    lblDVaccinationReportGenerationDate1.Text = String.Empty
+                    lblDVaccinationReportGenerationDate2.Text = String.Empty
+
+                    Dim dtmVaccineDate1 As DateTime = DateTime.MinValue
+                    Dim dtmReportGenerationDate1 As DateTime = DateTime.MinValue
+                    Dim dtmVaccineDate2 As DateTime = DateTime.MinValue
+                    Dim dtmReportGenerationDate2 As DateTime = DateTime.MinValue
+
+                    If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.ONLYDOSE OrElse _
+                        udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                        lblDVaccinationDate1.Text = udtFormatter.formatDisplayDate(udtStudentFile.ServiceReceiveDtm.Value)
+                        lblDVaccinationReportGenerationDate1.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate.Value)
+
+                        If udtStudentFile.ServiceReceiveDtm2ndDose.HasValue Then
+                            lblDVaccinationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.ServiceReceiveDtm2ndDose.Value)
+                            lblDVaccinationReportGenerationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate2ndDose.Value)
+
+                            dtmVaccineDate2 = udtStudentFile.ServiceReceiveDtm2ndDose.Value
+                            dtmReportGenerationDate2 = udtStudentFile.FinalCheckingReportGenerationDate2ndDose.Value
+                        End If
+
+                        dtmVaccineDate1 = udtStudentFile.ServiceReceiveDtm.Value
+                        dtmReportGenerationDate1 = udtStudentFile.FinalCheckingReportGenerationDate.Value
+
+                    ElseIf udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                        lblDVaccinationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.ServiceReceiveDtm.Value)
+                        lblDVaccinationReportGenerationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate.Value)
+
+                        dtmVaccineDate2 = udtStudentFile.ServiceReceiveDtm.Value
+                        dtmReportGenerationDate2 = udtStudentFile.FinalCheckingReportGenerationDate.Value
+                    End If
+
+                    ' Highlight abnormal Vaccination Date        
+                    lblDVaccinationDate1.Style.Remove("color")
+                    lblDVaccinationDate2.Style.Remove("color")
+
+                    ' 1st Dose
+                    If lblDVaccinationDate1.Text.Trim <> String.Empty Then
+                        If IsAbnormalVaccineDate(udtStudentFile.SchemeCode, dtmVaccineDate1, dtmReportGenerationDate1) Then
+                            lblDVaccinationDate1.Style.Add("color", "red")
+                        End If
+                    End If
+
+                    ' 2nd Dose
+                    If lblDVaccinationDate2.Text.Trim <> String.Empty Then
+                        If IsAbnormalVaccineDate(udtStudentFile.SchemeCode, dtmVaccineDate2, dtmReportGenerationDate2) Then
+                            lblDVaccinationDate2.Style.Add("color", "red")
+                        End If
+                    End If
+                    ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
+
+                    Dim strNA As String = Me.GetGlobalResourceObject("Text", "N/A")
+                    If lblDVaccinationDate1.Text = String.Empty Then lblDVaccinationDate1.Text = strNA
+                    If lblDVaccinationDate2.Text = String.Empty Then lblDVaccinationDate2.Text = strNA
+                    If lblDVaccinationReportGenerationDate1.Text = String.Empty Then lblDVaccinationReportGenerationDate1.Text = strNA
+                    If lblDVaccinationReportGenerationDate2.Text = String.Empty Then lblDVaccinationReportGenerationDate2.Text = strNA
+
+
+                    lblDSubsidy.Text = udtStudentFile.SubsidizeDisplay
+                    lblDDoseToInject.Text = udtStudentFile.DoseDisplay
+
+                Else
+                    ' PreCheck File
+                    panDVaccinationInfo.Visible = False
                 End If
-
-                dtmVaccineDate1 = udtStudentFile.ServiceReceiveDtm.Value
-                dtmReportGenerationDate1 = udtStudentFile.FinalCheckingReportGenerationDate.Value
-
-            ElseIf udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-                lblDVaccinationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.ServiceReceiveDtm.Value)
-                lblDVaccinationReportGenerationDate2.Text = udtFormatter.formatDisplayDate(udtStudentFile.FinalCheckingReportGenerationDate.Value)
-
-                dtmVaccineDate2 = udtStudentFile.ServiceReceiveDtm.Value
-                dtmReportGenerationDate2 = udtStudentFile.FinalCheckingReportGenerationDate.Value
-            End If
-
-            ' Highlight abnormal Vaccination Date        
-            lblDVaccinationDate1.Style.Remove("color")
-            lblDVaccinationDate2.Style.Remove("color")
-
-            ' 1st Dose
-            If lblDVaccinationDate1.Text.Trim <> String.Empty Then
-                If IsAbnormalVaccineDate(udtStudentFile.SchemeCode, dtmVaccineDate1, dtmReportGenerationDate1) Then
-                    lblDVaccinationDate1.Style.Add("color", "red")
-                End If
-            End If
-
-            ' 2nd Dose
-            If lblDVaccinationDate2.Text.Trim <> String.Empty Then
-                If IsAbnormalVaccineDate(udtStudentFile.SchemeCode, dtmVaccineDate2, dtmReportGenerationDate2) Then
-                    lblDVaccinationDate2.Style.Add("color", "red")
-                End If
-            End If
-            ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
-
-            Dim strNA As String = Me.GetGlobalResourceObject("Text", "N/A")
-            If lblDVaccinationDate1.Text = String.Empty Then lblDVaccinationDate1.Text = strNA
-            If lblDVaccinationDate2.Text = String.Empty Then lblDVaccinationDate2.Text = strNA
-            If lblDVaccinationReportGenerationDate1.Text = String.Empty Then lblDVaccinationReportGenerationDate1.Text = strNA
-            If lblDVaccinationReportGenerationDate2.Text = String.Empty Then lblDVaccinationReportGenerationDate2.Text = strNA
-
-
-            lblDSubsidy.Text = udtStudentFile.SubsidizeDisplay
-            lblDDoseToInject.Text = udtStudentFile.DoseDisplay
-
-        Else
-            ' PreCheck File
-            panDVaccinationInfo.Visible = False
-        End If
+        End Select
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' -------------------------------------
         ' Upload By / Last Rectified By / Request Claim Reactivate By
@@ -390,11 +450,16 @@ Public Class ucStudentFileDetail
             lblDMessage.Visible = True
 
             If udtStudentFile.RecordStatusEnum = StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify Then
-                If udtStudentFile.SchemeCode = Scheme.SchemeClaimModel.RVP Then
-                    lblDMessage.Text = Me.GetGlobalResourceObject("Text", "NoClientInformationRectified")
-                Else
-                    lblDMessage.Text = Me.GetGlobalResourceObject("Text", "NoClassAndStudentInformationRectified")
-                End If
+                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Select Case udtStudentFile.SchemeCode
+                    Case Scheme.SchemeClaimModel.RVP, Scheme.SchemeClaimModel.VSS
+                        lblDMessage.Text = Me.GetGlobalResourceObject("Text", "NoClientInformationRectified")
+                    Case Else
+                        lblDMessage.Text = Me.GetGlobalResourceObject("Text", "NoClassAndStudentInformationRectified")
+                End Select
+                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             End If
 
         Else
@@ -449,10 +514,9 @@ Public Class ucStudentFileDetail
         ' -------------------------------------------------------------------
         ' Gridview - Data Row
         ' -------------------------------------------------------------------
-
-
         gvD.Columns(gvDColumn.RectifiedFlag).Visible = False ' Rectified Flag
         gvD.Columns(gvDColumn.OtherFields).Visible = False ' Other Fields
+        gvD.Columns(gvDColumn.ServiceDate).Visible = False ' Service Date
         gvD.Columns(gvDColumn.ConfirmNotToInject).Visible = False ' Confirm not to inject
         gvD.Columns(gvDColumn.WarningMessage).Visible = False ' Warning Message
         gvD.Columns(gvDColumn.AccountNo).Visible = False ' Account Reference No.
@@ -471,12 +535,26 @@ Public Class ucStudentFileDetail
                  StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload
 
                 gvD.Columns(gvDColumn.OtherFields).Visible = True ' Other Fields
+                gvD.Columns(gvDColumn.OtherFields).ItemStyle.Width = Unit.Pixel(150) ' Other Fields
 
                 If udtStudentFile.TableLocationEnum = StudentFileHeaderModel.TableLocationEnumClass.Staging Then
                     gvD.Columns(gvDColumn.WarningMessage).Visible = True ' Warning Message                    
                     gvD.Width = Unit.Pixel(950)
 
                     trDNoOfWarningRecord.Visible = True
+                End If
+
+                If udtStudentFile.SchemeCode = SchemeClaimModel.VSS And udtStudentFile.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    gvD.Columns(gvDColumn.ServiceDate).Visible = True ' Service Date
+
+                    If udtStudentFile.TableLocationEnum = StudentFileHeaderModel.TableLocationEnumClass.Staging Then
+                        gvD.Width = Unit.Pixel(1250)
+                    Else
+                        gvD.Width = Unit.Pixel(1150)
+                    End If
+
+                    gvD.Columns(gvDColumn.DOB).ItemStyle.Width = Unit.Pixel(70) ' DOB
+                    gvD.Columns(gvDColumn.OtherFields).ItemStyle.Width = Unit.Pixel(220) ' Other Fields
                 End If
 
             Case StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify,
@@ -494,11 +572,30 @@ Public Class ucStudentFileDetail
                     trDNoOfWarningRecord.Visible = True
                 End If
 
+                If udtStudentFile.SchemeCode = SchemeClaimModel.VSS And udtStudentFile.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    gvD.Columns(gvDColumn.ServiceDate).Visible = True ' Service Date
+
+                    If udtStudentFile.TableLocationEnum = StudentFileHeaderModel.TableLocationEnumClass.Staging Then
+                        gvD.Width = Unit.Pixel(1150)
+                    Else
+                        gvD.Width = Unit.Pixel(1050)
+                    End If
+
+                    gvD.Columns(gvDColumn.OtherFields).ItemStyle.Width = Unit.Pixel(180) ' Other Fields
+                End If
+
             Case StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration,
                  StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim
 
                 gvD.Columns(gvDColumn.OtherFields).Visible = True ' Other Fields
                 gvD.Columns(gvDColumn.ConfirmNotToInject).Visible = True ' Confirm not to inject
+
+                If udtStudentFile.SchemeCode = SchemeClaimModel.VSS And udtStudentFile.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    gvD.Columns(gvDColumn.ServiceDate).Visible = True ' Service Date
+                    gvD.Width = Unit.Pixel(1300)
+
+                    gvD.Columns(gvDColumn.ServiceDate).ItemStyle.Width = Unit.Pixel(100) ' ServiceDate
+                End If
 
             Case StudentFileHeaderModel.RecordStatusEnumClass.PendingPreCheckGeneration
                 gvD.Columns(gvDColumn.OtherFields).Visible = True ' Other Fields
@@ -1202,25 +1299,33 @@ Public Class ucStudentFileDetail
     End Sub
 
     Protected Sub gvD_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         If e.Row.RowType = DataControlRowType.Header Then
             Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
             If Not udtStudentFile Is Nothing Then
-
                 Dim lbtnClassNo As LinkButton = e.Row.Cells(1).Controls(0)
-                If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                    lbtnClassNo.Text = GetGlobalResourceObject("Text", "RefNoShort")
-                Else
-                    lbtnClassNo.Text = GetGlobalResourceObject("Text", "ClassNo")
-                End If
+
+                Select Case udtStudentFile.SchemeCode
+                    Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                        lbtnClassNo.Text = GetGlobalResourceObject("Text", "RefNoShort")
+
+                    Case Else
+                        lbtnClassNo.Text = GetGlobalResourceObject("Text", "ClassNo")
+
+                End Select
 
             End If
         End If
 
         If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
             Dim dr As DataRowView = e.Row.DataItem
             Dim udtFormatter As New Formatter
 
+            ' --------------------
             ' Rectified Flag
+            ' --------------------
             Dim lblGRectifiedFlag As Label = e.Row.FindControl("lblGRectifiedFlag")
             If Not IsDBNull(dr("Rectified")) Then
                 If CStr(dr("Rectified")) = RectifiedFlag.Rectify Then
@@ -1232,7 +1337,9 @@ Public Class ucStudentFileDetail
                 End If
             End If
 
+            ' --------------------
             ' DOB
+            ' --------------------
             Dim lblGDOB As Label = e.Row.FindControl("lblGDOB")
             If IsDBNull(dr("DOB")) Then
                 lblGDOB.Text = String.Empty
@@ -1256,7 +1363,9 @@ Public Class ucStudentFileDetail
 
             End If
 
+            ' --------------------
             ' Document Type
+            ' --------------------
             Dim strDisplay As String = Me.GetGlobalResourceObject("Text", "StudentFileDocCodeDisplay")
             Dim lstSFDocType As List(Of StudentFileDocumentTypeDisplay) = (New JavaScriptSerializer).Deserialize(Of List(Of StudentFileDocumentTypeDisplay))(strDisplay)
 
@@ -1269,7 +1378,9 @@ Public Class ucStudentFileDetail
                 End If
             Next
 
+            ' --------------------
             ' Document No.
+            ' --------------------
             If Not IsDBNull(dr("Real_Acc_Type")) Then
                 Dim lblGDocNo As Label = e.Row.FindControl("lblGDocNo")
                 Dim _udtFormatter As New Formatter
@@ -1277,7 +1388,9 @@ Public Class ucStudentFileDetail
                 lblGDocNo.Text = _udtFormatter.FormatDocIdentityNoForDisplay(CStr(dr("Doc_Code")).Trim, lblGDocNo.Text.Trim, False, CStr(dr("Prefix")).Trim)
             End If
 
+            ' --------------------
             ' Chinese Name
+            ' --------------------
             Dim lblGNameCH As Label = e.Row.FindControl("lblGNameCH")
             If Not IsDBNull(dr("Name_CH")) AndAlso CStr(dr("Name_CH")).Trim <> String.Empty Then
                 lblGNameCH.Text = String.Format("({0})", CStr(dr("Name_CH")).Trim)
@@ -1287,7 +1400,9 @@ Public Class ucStudentFileDetail
                 End If
             End If
 
+            ' --------------------
             ' Other Info
+            ' --------------------
             Dim lstOtherField As New List(Of String)
             Dim lblGOtherField As Label = e.Row.FindControl("lblGOtherField")
             lblGOtherField.Text = String.Empty
@@ -1298,8 +1413,19 @@ Public Class ucStudentFileDetail
             Dim strECSerialNo As String = String.Empty
             Dim strECReference As String = String.Empty
 
+            Dim strHKICSymbol As String = String.Empty
+            Dim strNonImmune As String = String.Empty
+            Dim strEthnicity As String = String.Empty
+            Dim strCategory1 As String = String.Empty
+            Dim strCategory2 As String = String.Empty
+            Dim strLotNumber As String = String.Empty
+
+            'Dim strHtmlFormat As String = "{0}&nbsp;{1}:<div style='font-weight:bold;padding-left:9px;padding-bottom:5px'>{2}</div>"
+            Dim strHtmlFormat As String = "&nbsp;{0}&nbsp;{1}:<span style='font-weight:bold;padding-left:4px'>{2}</span><br/>"
+
+            ' DOI
             If Not IsDBNull(dr("Date_of_Issue")) Then
-                strDateOfIssue = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strDateOfIssue = String.Format(strHtmlFormat, _
                                                "•", _
                                                GetGlobalResourceObject("Text", OtherFieldResourceName.DateOfIssue), _
                                                udtFormatter.formatDisplayDate(dr("Date_of_Issue")))
@@ -1307,8 +1433,9 @@ Public Class ucStudentFileDetail
                 lstOtherField.Add(strDateOfIssue)
             End If
 
+            ' Permit to Remain Until
             If Not IsDBNull(dr("Permit_To_Remain_Until")) Then
-                strPermitToRemain = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strPermitToRemain = String.Format(strHtmlFormat, _
                                                   "•", _
                                                   GetGlobalResourceObject("Text", OtherFieldResourceName.PermitToRemain), _
                                                   udtFormatter.formatDisplayDate(dr("Permit_To_Remain_Until")))
@@ -1316,8 +1443,9 @@ Public Class ucStudentFileDetail
                 lstOtherField.Add(strPermitToRemain)
             End If
 
+            ' Passport No.
             If Not IsDBNull(dr("Foreign_Passport_No")) AndAlso CStr(dr("Foreign_Passport_No")) <> String.Empty Then
-                strForeignPassport = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strForeignPassport = String.Format(strHtmlFormat, _
                                                    "•", _
                                                    GetGlobalResourceObject("Text", OtherFieldResourceName.ForeignPassport), _
                                                    dr("Foreign_Passport_No"))
@@ -1325,8 +1453,9 @@ Public Class ucStudentFileDetail
                 lstOtherField.Add(strForeignPassport)
             End If
 
+            ' EC Serial No.
             If Not IsDBNull(dr("EC_Serial_No")) AndAlso CStr(dr("EC_Serial_No")) <> String.Empty Then
-                strECSerialNo = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strECSerialNo = String.Format(strHtmlFormat, _
                                                "•", _
                                                GetGlobalResourceObject("Text", OtherFieldResourceName.ECSerialNo), _
                                                dr("EC_Serial_No"))
@@ -1334,6 +1463,7 @@ Public Class ucStudentFileDetail
                 lstOtherField.Add(strECSerialNo)
             End If
 
+            ' EC Ref No.
             If Not IsDBNull(dr("EC_Reference_No")) AndAlso CStr(dr("EC_Reference_No")) <> String.Empty Then
                 ' EC Reference No. & Other Format
                 Dim _udtValidator As New Common.Validation.Validator
@@ -1350,7 +1480,7 @@ Public Class ucStudentFileDetail
                     strECReferenceNo = udtFormatter.formatReferenceNo(dr("EC_Reference_No"), False)
                 End If
 
-                strECReference = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strECReference = String.Format(strHtmlFormat, _
                                                 "•", _
                                                 GetGlobalResourceObject("Text", OtherFieldResourceName.ECReference), _
                                                 strECReferenceNo)
@@ -1358,10 +1488,157 @@ Public Class ucStudentFileDetail
                 lstOtherField.Add(strECReference)
             End If
 
-            If lstOtherField.Count > 0 Then lblGOtherField.Text = String.Join("<br>", lstOtherField.ToArray)
+            ' HKIC Symbol
+            If Not IsDBNull(dr("HKIC_Symbol")) AndAlso dr("HKIC_Symbol") <> String.Empty Then
+                Dim strHKICSymbolDesc As String = String.Empty
+                Status.GetDescriptionFromDBCode("HKICSymbol", dr("HKIC_Symbol"), strHKICSymbolDesc, String.Empty, String.Empty)
+
+                strHKICSymbol = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                GetGlobalResourceObject("Text", OtherFieldResourceName.HKICSymbol), _
+                                                strHKICSymbolDesc)
+
+                lstOtherField.Add(strHKICSymbol)
+            End If
 
 
+
+            If udtStudentFile.RecordStatusEnum = StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload Or _
+                udtStudentFile.RecordStatusEnum = StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload Then
+                ' Non-immune to measles
+                If Not IsDBNull(dr("Non_immune_to_measles")) Then
+                    Dim strNonImmuneDesc As String = String.Empty
+
+                    Select Case dr("Non_Immune_to_measles").ToString.Trim
+                        Case YesNo.Yes, YesNo.No
+                            strNonImmuneDesc = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("YesNo", dr("Non_Immune_to_measles")).DataValue.ToString.Trim
+                        Case "NA"
+                            strNonImmuneDesc = GetGlobalResourceObject("Text", "NA")
+                        Case String.Empty
+                            strNonImmuneDesc = GetGlobalResourceObject("Text", "NotProvided")
+                    End Select
+
+                    'strNonImmune = String.Format(strHtmlFormat, _
+                    '                                "•", _
+                    '                                GetGlobalResourceObject("Text", OtherFieldResourceName.LaboratoryTestResultReport), _
+                    '                                strNonImmuneDesc)
+
+                    strNonImmune = String.Format(strHtmlFormat, _
+                                                    "•", _
+                                                    "Lab. Test Result", _
+                                                    strNonImmuneDesc)
+
+                    lstOtherField.Add(strNonImmune)
+                End If
+
+                ' Ethnicity
+                If Not IsDBNull(dr("Ethnicity")) Then
+
+                    Dim strEthnicityDesc As String = String.Empty
+
+                    If dr("Ethnicity") <> String.Empty Then
+                        strEthnicityDesc = GetGlobalResourceObject("Text", dr("Ethnicity"))
+                    Else
+                        strEthnicityDesc = GetGlobalResourceObject("Text", "NotProvided")
+                    End If
+
+                    strEthnicity = String.Format(strHtmlFormat, _
+                                                    "•", _
+                                                    GetGlobalResourceObject("Text", OtherFieldResourceName.Ethnicity), _
+                                                    strEthnicityDesc)
+
+                    lstOtherField.Add(strEthnicity)
+                End If
+
+                ' Category 1
+                If Not IsDBNull(dr("Category1")) Then
+
+                    Dim strCategory1Desc As String = String.Empty
+
+                    If dr("Category1") <> String.Empty Then
+                        strCategory1Desc = GetGlobalResourceObject("Text", dr("Category1"))
+                    Else
+                        strCategory1Desc = GetGlobalResourceObject("Text", "NotProvided")
+                    End If
+
+                    'strCategory1 = String.Format(strHtmlFormat, _
+                    '                                "•", _
+                    '                                GetGlobalResourceObject("Text", OtherFieldResourceName.Category1), _
+                    '                                strCategory1Desc)
+
+                    strCategory1 = String.Format(strHtmlFormat, _
+                                                    "•", _
+                                                    "Cat. 1", _
+                                                    strCategory1Desc)
+
+                    lstOtherField.Add(strCategory1)
+                End If
+
+                ' Category 2
+                If Not IsDBNull(dr("Category2")) Then
+
+                    Dim strCategory2Desc As String = String.Empty
+
+                    If dr("Category2") <> String.Empty Then
+                        strCategory2Desc = GetGlobalResourceObject("Text", dr("Category2"))
+                    Else
+                        strCategory2Desc = GetGlobalResourceObject("Text", "NotProvided")
+                    End If
+
+                    'strCategory2 = String.Format(strHtmlFormat, _
+                    '                                "•", _
+                    '                                GetGlobalResourceObject("Text", OtherFieldResourceName.Category2), _
+                    '                                strCategory2Desc)
+
+                    strCategory2 = String.Format(strHtmlFormat, _
+                                                    "•", _
+                                                    "Cat. 2", _
+                                                    strCategory2Desc)
+
+                    lstOtherField.Add(strCategory2)
+                End If
+
+                ' Lot Number
+                If Not IsDBNull(dr("Lot_Number")) Then
+
+                    Dim strLotNumberDesc As String = String.Empty
+
+                    If dr("Lot_Number") <> String.Empty Then
+                        strLotNumberDesc = dr("Lot_Number").ToString.Trim
+                    Else
+                        strLotNumberDesc = GetGlobalResourceObject("Text", "NotProvided")
+                    End If
+
+                    'strLotNumber = String.Format(strHtmlFormat, _
+                    '                                "•", _
+                    '                                GetGlobalResourceObject("Text", OtherFieldResourceName.LotNumber), _
+                    '                                strLotNumberDesc)
+
+                    strLotNumber = String.Format(strHtmlFormat, _
+                                                    "•", _
+                                                    "Lot No.", _
+                                                    strLotNumberDesc)
+
+                    lstOtherField.Add(strLotNumber)
+                End If
+            End If
+
+            If lstOtherField.Count > 0 Then lblGOtherField.Text = String.Join("", lstOtherField.ToArray)
+
+            ' --------------------
+            ' Service Date
+            ' --------------------
+            Dim lblGServiceDate As Label = e.Row.FindControl("lblGServiceDate")
+
+            If Not IsDBNull(dr("Service_Receive_Dtm")) Then
+                lblGServiceDate.Text = udtFormatter.formatDisplayDate(dr("Service_Receive_Dtm"))
+            Else
+                lblGServiceDate.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            End If
+
+            ' --------------------
             ' Confirm not to Inject
+            ' --------------------
             Dim lblGConfirmNotToInject As Label = e.Row.FindControl("lblGConfirmNotToInject")
             If Not IsDBNull(dr("Reject_Injection")) Then
                 If CStr(dr("Reject_Injection")) = YesNo.No Then
@@ -1371,7 +1648,9 @@ Public Class ucStudentFileDetail
                 End If
             End If
 
+            ' --------------------
             ' Injected
+            ' --------------------
             Dim lblGInjected As Label = e.Row.FindControl("lblGInjected")
             If Not IsDBNull(dr("Injected")) Then
                 If CStr(dr("Injected")) = YesNo.Yes Then
@@ -1381,8 +1660,9 @@ Public Class ucStudentFileDetail
                 End If
             End If
 
-
+            ' --------------------
             ' Record Status
+            ' --------------------
             Dim lblGAccRecordStatus As Label = e.Row.FindControl("lblGAccRecordStatus")
             lblGAccRecordStatus.Text = String.Empty
 
@@ -1390,7 +1670,9 @@ Public Class ucStudentFileDetail
                 lblGAccRecordStatus.Text = dr("Acc_Record_Status_Desc")
             End If
 
+            ' --------------------
             ' Account Validation Result
+            ' --------------------
             Dim lblGAccountValidationResult As Label = e.Row.FindControl("lblGAccountValidationResult")
             'Default not to show result
             lblGAccountValidationResult.Visible = False
@@ -1399,7 +1681,9 @@ Public Class ucStudentFileDetail
                 lblGAccountValidationResult.Text = CStr(dr("Acc_Validation_Result")).Split("|||")(0)
             End If
 
-            'Temporary account
+            ' --------------------
+            ' Temporary account
+            ' --------------------
             If Not IsDBNull(dr("Real_Acc_Type")) Then
 
                 If CStr(dr("Real_Acc_Type")) = "T" Then
@@ -1421,7 +1705,9 @@ Public Class ucStudentFileDetail
 
             dr("Acc_Validation_Result_Desc") = IIf(lblGAccountValidationResult.Visible, lblGAccountValidationResult.Text, String.Empty)
 
+            ' --------------------
             ' Field Difference
+            ' --------------------
             Dim lblGFieldDiff As Label = e.Row.FindControl("lblGFieldDiff")
             If Not IsDBNull(dr("Field_Diff")) Then
                 If CStr(dr("Field_Diff")) = YesNo.Yes Then
@@ -1431,25 +1717,34 @@ Public Class ucStudentFileDetail
                 End If
             End If
 
+            ' --------------------
             ' Transaction No.
+            ' --------------------
             Dim lblGTransactionNo As Label = e.Row.FindControl("lblGTransactionNo")
 
             If Not IsDBNull(dr("Transaction_ID")) Then
                 lblGTransactionNo.Text = udtFormatter.formatSystemNumber(dr("Transaction_ID"))
             End If
 
-            ' CRE18-009 (Revise PPP doc age limit to warning) [Start][Koala]
+            ' --------------------
             ' Warning Message
+            ' --------------------
             Dim lblWarning As Label = e.Row.FindControl("lblGWarningMessage")
-            lblWarning.Text = lblWarning.Text.Replace("|||", "<br>")
-            ' CRE18-009 (Revise PPP doc age limit to warning) [End][Koala]
+            Dim strWarning() As String = Split(lblWarning.Text, "|||")
 
+            If strWarning.Length > 0 And lblWarning.Text <> String.Empty Then
+                lblWarning.Text = "<table style='border-collapse:collapse;padding:0px'>"
+
+                For i As Integer = 0 To strWarning.Length - 1
+                    lblWarning.Text += "<tr><td>•&nbsp;</td><td style='padding-bottom:5px'>" & strWarning(i) & "</td></tr>"
+                Next
+
+                lblWarning.Text += "</table>"
+            End If
 
             ' Highlight the row
             ' #ffcfd9 - Pending Rectify (e.g. No account/ Not for ImmD / With Field Different)
             Dim blnHighlight As Boolean = False
-
-            Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
 
             If udtStudentFile.TableLocationEnum = StudentFileHeaderModel.TableLocationEnumClass.Permanent Then
                 If IsDBNull(dr("Real_Acc_Type")) Then
@@ -1472,7 +1767,7 @@ Public Class ucStudentFileDetail
             End If
 
         End If
-
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
     End Sub
 
     Protected Sub gvD_PreRender(sender As Object, e As EventArgs)

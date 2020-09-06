@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_StudentFileEntry_after_upd')
+﻿IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_StudentFileEntry_after_upd')
 	DROP TRIGGER [dbo].[tri_StudentFileEntry_after_upd]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	15 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -83,6 +90,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		Ext_Ref_Status,
@@ -96,7 +104,9 @@ AS BEGIN
 		Last_Rectify_By,
 		Last_Rectify_Dtm,
 		Original_Student_File_ID,
-		Original_Student_Seq
+		Original_Student_Seq,
+		HKIC_Symbol,
+		Service_Receive_Dtm
 	)
 	SELECT
 		GETDATE(),
@@ -140,6 +150,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		Ext_Ref_Status,
@@ -153,10 +164,13 @@ AS BEGIN
 		Last_Rectify_By,
 		Last_Rectify_Dtm,
 		Original_Student_File_ID,
-		Original_Student_Seq
+		Original_Student_Seq,
+		HKIC_Symbol,
+		Service_Receive_Dtm
 	FROM
 		inserted
 
 
 END
 GO
+

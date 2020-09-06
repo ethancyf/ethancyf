@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSSF_Class_Report_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSSF_Class_Report_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_EHS_eHSSF_Class_Report_get]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	27 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -92,6 +99,8 @@ AS BEGIN
 	DECLARE @RowCount AS INT 
 	DECLARE @MaxRowCount AS INT 
 	DECLARE @VaccineType AS VARCHAR(10)
+	DECLARE @SchemeCode AS VARCHAR(10)
+	DECLARE @SubsidizeCode AS VARCHAR(10)
 
 	CREATE TABLE #Last3VaccineRowTT (
 		Student_Seq INT,
@@ -108,7 +117,7 @@ AS BEGIN
 		TableID		INT,		
 		Student_File_ID		VARCHAR(15),
 		Student_Seq		INT,
-		Class_Name	NVARCHAR(20),
+		Class_Name	NVARCHAR(40),
 		Class_No	NVARCHAR(20),
 		Chi_Name_Upload NVARCHAR(MAX),
 		Eng_Surname_Upload VARCHAR(MAX),
@@ -145,6 +154,8 @@ AS BEGIN
 		EC_Serial_No	VARCHAR(10),
 		EC_Reference_No		VARCHAR(40),
 		Reject_Injection	VARCHAR(1),
+		HKIC_Symbol		VARCHAR(1),
+		Service_Receive_Dtm	DATETIME,
 
 		Vaccination_Process_Stage_Dtm	DATETIME,
 		HA_Vaccine_Ref_Status	VARCHAR(10),
@@ -152,6 +163,7 @@ AS BEGIN
 		Entitle_ONLYDOSE	CHAR(1),
 		Entitle_1STDOSE		CHAR(1),
 		Entitle_2NDDOSE		CHAR(1),
+		Entitle_3RDDOSE		CHAR(1),
 		Entitle_Inject	CHAR(1),
 		Last3Vaccine	VARCHAR(4000),
 		Entitle_Inject_Fail_Reason	VARCHAR(1000),
@@ -165,10 +177,15 @@ AS BEGIN
 	)
 
 
-	SELECT @VaccineType = Vaccine_Type FROM StudentFileHeader h
-	INNER JOIN Subsidize s 
-	ON h.Subsidize_Code = s.Subsidize_Code
-		AND h.Student_File_ID =  @Input_Student_File_ID
+	SELECT 
+		@VaccineType = Vaccine_Type,
+		@SchemeCode = Scheme_Code,
+		@SubsidizeCode = h.Subsidize_Code
+	FROM 
+		StudentFileHeader h
+			INNER JOIN Subsidize s 
+			ON h.Subsidize_Code = s.Subsidize_Code
+				AND h.Student_File_ID =  @Input_Student_File_ID
 			
 	INSERT INTO #Last3VaccineRowTT (Student_Seq, Vaccine_Seq, Vaccine)
 	SELECT Student_Seq, 
@@ -248,12 +265,15 @@ AS BEGIN
 			EC_Serial_No,
 			EC_Reference_No,
 			Reject_Injection,
+			HKIC_Symbol,
+			Service_Receive_Dtm,
 			Vaccination_Process_Stage_Dtm,
 			HA_Vaccine_Ref_Status,
 			DH_Vaccine_Ref_Status,
 			Entitle_ONLYDOSE,
 			Entitle_1STDOSE,
 			Entitle_2NDDOSE,
+			Entitle_3RDDOSE,
 			Entitle_Inject,
 			Last3Vaccine,
 			Entitle_Inject_Fail_Reason,
@@ -388,12 +408,15 @@ AS BEGIN
 				ELSE PInfo.EC_Reference_No
 			END AS EC_Reference_No,
 			Reject_Injection,
+			E.HKIC_Symbol,
+			E.Service_Receive_Dtm,
 			CASE WHEN ISNULL(Entitle_Inject, '') = '' THEN NULL ELSE Vaccination_Process_Stage_Dtm END AS Vaccination_Process_Stage_Dtm,
 			Ext_Ref_Status,
 			DH_Vaccine_Ref_Status,
 			Entitle_ONLYDOSE,
 			Entitle_1STDOSE,
 			Entitle_2NDDOSE,
+			Entitle_3RDDOSE,
 			Entitle_Inject,
 			ISNULL(L3V.Vaccine, ''),
 			CASE WHEN ISNULL(Entitle_Inject_Fail_Reason, '') = '' THEN NULL ELSE Entitle_Inject_Fail_Reason END AS Entitle_Inject_Fail_Reason,
@@ -464,12 +487,15 @@ AS BEGIN
 			EC_Serial_No,
 			EC_Reference_No,
 			Reject_Injection,
+			HKIC_Symbol,
+			Service_Receive_Dtm,
 			Vaccination_Process_Stage_Dtm,
 			HA_Vaccine_Ref_Status,
 			DH_Vaccine_Ref_Status,
 			Entitle_ONLYDOSE,
 			Entitle_1STDOSE,
 			Entitle_2NDDOSE,
+			Entitle_3RDDOSE,
 			Entitle_Inject,
 			Last3Vaccine,
 			Entitle_Inject_Fail_Reason,
@@ -608,12 +634,15 @@ AS BEGIN
 				ELSE PInfo.EC_Reference_No
 			END AS EC_Reference_No,
 			Reject_Injection,
+			E.HKIC_Symbol,
+			E.Service_Receive_Dtm,
 			CASE WHEN ISNULL(Entitle_Inject, '') = '' THEN NULL ELSE Vaccination_Process_Stage_Dtm END AS Vaccination_Process_Stage_Dtm,
 			E.Ext_Ref_Status,
 			E.DH_Vaccine_Ref_Status,
 			Entitle_ONLYDOSE,
 			Entitle_1STDOSE,
 			Entitle_2NDDOSE,
+			Entitle_3RDDOSE,
 			Entitle_Inject,
 			L3V.Vaccine,
 			CASE WHEN ISNULL(Entitle_Inject_Fail_Reason, '') = '' THEN NULL ELSE Entitle_Inject_Fail_Reason END AS Entitle_Inject_Fail_Reason,
@@ -679,7 +708,6 @@ AS BEGIN
 
 	--ORDER BY Class_Name, Student_Seq
 
-
 	SET @RowCount = 1
 	SELECT @MaxRowCount = ISNULL(MAX(TableID), 0) FROM #StudentTT
 	
@@ -687,208 +715,498 @@ AS BEGIN
 	BEGIN 
 		IF @File_ID = 'EHSVF001'
 		BEGIN
-			SELECT 
-				-- Section 1 - Class & account information
-				Student_Seq,
-				Class_Name,
-				Class_No,
-				--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
-				CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
-							ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
-					ELSE
-							[dbo].[func_mask_ChiName](Chi_Name)
-					END AS Chi_Name_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
-				--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
-						CASE WHEN Eng_GivenName_Upload = '' THEN ''
-						ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
-					ELSE
-						CASE WHEN Eng_GivenName = '' THEN ''
-						ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
-					END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END,
-				--ISNULL(Contact_No, '') AS Contact_No,
-				'',
-				-- Section 2 - Account matching result
-				ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
-				ISNULL(Validated_Acc_Found, 'N'),
-				ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
-				ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
-				ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
-				CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
-				SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
-				CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
-				--Chi_Name,
-				--Eng_Surname,
-				--Eng_GivenName,
-				--Sex,
-				--DOB,
-				--Doc_Code,
-				--LTRIM(DocNumber),
-				--CASE WHEN Date_of_Issue IS NULL THEN '' ELSE FORMAT(Date_of_Issue, 'dd MMM yyyy') END AS Date_of_Issue,
-				--CASE WHEN Permit_To_Remain_Until IS NULL THEN '' ELSE FORMAT(Permit_To_Remain_Until, 'dd MMM yyyy') END AS Permit_To_Remain_Until,
-				--ISNULL(Foreign_Passport_No,'') AS Foreign_Passport_No,
-				--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
-				--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
-				'',
-				-- Section 3 - Section 3 - Vaccination checking result (generated by system)
-				CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
-				CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
-				CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
-				CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
-				CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
-				ISNULL(Last3Vaccine,''),
-				SUBSTRING(CONCAT(
-							CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END,
-							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
-							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
-							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
-							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000) AS Entitle_Inject_Fail_Reason
-			FROM #StudentTT T
-			WHERE TableID = @RowCount
-			ORDER BY Class_Name, Student_Seq
+			IF @SchemeCode = 'VSS' AND @SubsidizeCode = 'VNIAMMR'
+			BEGIN
+				SELECT 
+					-- Section 1 - Class & account information
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+								ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+						ELSE
+								[dbo].[func_mask_ChiName](Chi_Name)
+						END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+							CASE WHEN Eng_GivenName_Upload = '' THEN ''
+							ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+						ELSE
+							CASE WHEN Eng_GivenName = '' THEN ''
+							ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+						END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END,
+					[HKIC_Symbol] = ISNULL(SD.Status_Description, ''),
+					--ISNULL(Contact_No, '') AS Contact_No,
+					'',
+					-- Section 2 - Account matching result
+					ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
+					ISNULL(Validated_Acc_Found, 'N'),
+					ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
+					ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
+					ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
+					CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
+					SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
+					--Chi_Name,
+					--Eng_Surname,
+					--Eng_GivenName,
+					--Sex,
+					--DOB,
+					--Doc_Code,
+					--LTRIM(DocNumber),
+					--CASE WHEN Date_of_Issue IS NULL THEN '' ELSE FORMAT(Date_of_Issue, 'dd MMM yyyy') END AS Date_of_Issue,
+					--CASE WHEN Permit_To_Remain_Until IS NULL THEN '' ELSE FORMAT(Permit_To_Remain_Until, 'dd MMM yyyy') END AS Permit_To_Remain_Until,
+					--ISNULL(Foreign_Passport_No,'') AS Foreign_Passport_No,
+					--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
+					--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
+					'',
+					-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+					CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+					[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd'),
+					CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
+					CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
+					CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
+					CASE WHEN ISNULL(Entitle_3RDDOSE, '') = 'N' THEN 'No' ELSE Entitle_3RDDOSE END AS Entitle_3RDDOSE,
+					CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+					ISNULL(Last3Vaccine,''),
+					[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
+								CASE 
+									WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
+										CASE 
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) = 0 THEN ' / ' + Entitle_Inject_Fail_Reason
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) > 0 THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason, 0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) 
+										END
+									ELSE '' 
+								END,
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000)
+				FROM #StudentTT T
+					LEFT OUTER JOIN
+						StatusData SD
+							ON Enum_Class = 'HKICSymbol' AND T.HKIC_Symbol = SD.Status_Value
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+			END
+
+			ELSE
+
+			BEGIN
+				SELECT 
+					-- Section 1 - Class & account information
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+								ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+						ELSE
+								[dbo].[func_mask_ChiName](Chi_Name)
+						END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+							CASE WHEN Eng_GivenName_Upload = '' THEN ''
+							ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+						ELSE
+							CASE WHEN Eng_GivenName = '' THEN ''
+							ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+						END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END,
+					--ISNULL(Contact_No, '') AS Contact_No,
+					'',
+					-- Section 2 - Account matching result
+					ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
+					ISNULL(Validated_Acc_Found, 'N'),
+					ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
+					ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
+					ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
+					CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
+					SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
+					--Chi_Name,
+					--Eng_Surname,
+					--Eng_GivenName,
+					--Sex,
+					--DOB,
+					--Doc_Code,
+					--LTRIM(DocNumber),
+					--CASE WHEN Date_of_Issue IS NULL THEN '' ELSE FORMAT(Date_of_Issue, 'dd MMM yyyy') END AS Date_of_Issue,
+					--CASE WHEN Permit_To_Remain_Until IS NULL THEN '' ELSE FORMAT(Permit_To_Remain_Until, 'dd MMM yyyy') END AS Permit_To_Remain_Until,
+					--ISNULL(Foreign_Passport_No,'') AS Foreign_Passport_No,
+					--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
+					--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
+					'',
+					-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+					CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+					CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
+					CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
+					CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
+					CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+					ISNULL(Last3Vaccine,''),
+					[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
+								CASE 
+									WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
+										CASE 
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) = 0 THEN ' / ' + Entitle_Inject_Fail_Reason
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) > 0 THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason, 0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) 
+										END
+									ELSE '' 
+								END,
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000)
+				FROM #StudentTT T
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+
+			END
+
 		END
 		
 		IF @File_ID = 'EHSVF002'
 		BEGIN
-			SELECT 
-				Student_Seq,
-				Class_Name,
-				Class_No,
-				CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
-				--ISNULL(Contact_No, '') AS Contact_No,
-				'',
-				CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
-					THEN -- Check entitle
-						CASE WHEN ISNULL(Entitle_Inject, '') = 'N'
-						THEN '-'
-						ELSE @VaccineToInjectDisplay--Entitle_Inject
-						END
-					ELSE -- SP confirm not to inject
-						'-'
-				END AS Available_To_Inject,
-				CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
-					THEN -- Show entitle fail reason (Empty = entitle, not empty = not entitle)																								
-						CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END
-					ELSE -- SP confirm not to inject
-						'Service provider confirm not to inject' 
-				END AS Reject_Reason
-			FROM #StudentTT
-			WHERE TableID = @RowCount
-			ORDER BY Class_Name, Student_Seq
+			IF @SchemeCode = 'VSS' AND @SubsidizeCode = 'VNIAMMR'
+			BEGIN
+				SELECT 
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
+					[HKIC_Symbol] = ISNULL(SD.Status_Description, ''),
+					--ISNULL(Contact_No, '') AS Contact_No,
+					'',
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
+						THEN -- Check entitle
+							CASE WHEN ISNULL(Entitle_Inject, '') = 'N'
+							THEN '-'
+							ELSE @VaccineToInjectDisplay--Entitle_Inject
+							END
+						ELSE -- SP confirm not to inject
+							'-'
+					END AS Available_To_Inject,
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
+						THEN -- Show entitle fail reason (Empty = entitle, not empty = not entitle)																								
+							CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END
+						ELSE -- SP confirm not to inject
+							'Service provider confirm not to inject' 
+					END AS Reject_Reason,
+					'','','',
+					[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd')
+				FROM #StudentTT T
+					LEFT OUTER JOIN
+						StatusData SD
+							ON Enum_Class = 'HKICSymbol' AND T.HKIC_Symbol = SD.Status_Value
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+			END
+
+			ELSE
+
+			BEGIN
+				SELECT 
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
+					--ISNULL(Contact_No, '') AS Contact_No,
+					'',
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
+						THEN -- Check entitle
+							CASE WHEN ISNULL(Entitle_Inject, '') = 'N'
+							THEN '-'
+							ELSE @VaccineToInjectDisplay--Entitle_Inject
+							END
+						ELSE -- SP confirm not to inject
+							'-'
+					END AS Available_To_Inject,
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' 
+						THEN -- Show entitle fail reason (Empty = entitle, not empty = not entitle)																								
+							CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END
+						ELSE -- SP confirm not to inject
+							'Service provider confirm not to inject' 
+					END AS Reject_Reason
+				FROM #StudentTT
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+
+			END
+
 		END
 		
 		IF @File_ID = 'EHSVF003'
 		BEGIN
-			SELECT 
-				-- Section 1 - Class & account information
-				Student_Seq,
-				Class_Name,
-				Class_No,
-				--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
-				CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
-							ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
-					ELSE
-							[dbo].[func_mask_ChiName](Chi_Name)
-					END AS Chi_Name_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
-				--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
-						CASE WHEN Eng_GivenName_Upload = '' THEN ''
-						ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
-					ELSE
-						CASE WHEN Eng_GivenName = '' THEN ''
-						ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
-					END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
-				--ISNULL(Contact_No, '') AS Contact_No,
-				'',
-				-- Section 2 - Account matching result
-				ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
-				ISNULL(Validated_Acc_Found, 'N'),
-				ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
-				ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
-				ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
-				CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
-				SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
-				CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display	
-				--Chi_Name,
-				--Eng_Surname,
-				--Eng_GivenName,
-				--Sex,
-				--DOB,
-				--Doc_Code,
-				--LTRIM(DocNumber),
-				--CASE WHEN Date_of_Issue IS NULL THEN '' ELSE FORMAT(Date_of_Issue, 'dd MMM yyyy') END AS Date_of_Issue,
-				--CASE WHEN Permit_To_Remain_Until IS NULL THEN '' ELSE FORMAT(Permit_To_Remain_Until, 'dd MMM yyyy') END AS Permit_To_Remain_Until,
-				--ISNULL(Foreign_Passport_No,'') AS Foreign_Passport_No,
-				--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
-				--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
-				'',
-				-- Section 3 - Vaccination checking result (generated by system)
-				CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
-				CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
-				CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
-				CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
-				CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
-				ISNULL(Last3Vaccine,''),
-				SUBSTRING(CONCAT(							
-							CASE WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason,0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) ELSE '' END,
-							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
-							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
-							IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
-							IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000) AS Entitle_Inject_Fail_Reason,
-				'',
-				-- Section 4 - Vaccination record filled by service provider
-				CASE WHEN ISNULL(Injected, '') = 'N' THEN 'No' ELSE ISNULL(Injected, '') END AS Injected,
-				'',
-				-- Section 5 - Claim record (generated by system)
-				LTRIM(RTRIM(ISNULL(Transaction_ID, ''))) AS Transaction_ID,
-				ISNULL(Transaction_Status_Desc, '') AS Transaction_Status_Desc,
-				ISNULL(Transaction_result, '') AS Transaction_result
-			FROM #StudentTT
-			WHERE TableID = @RowCount
-			ORDER BY Class_Name, Student_Seq
+			IF @SchemeCode = 'VSS' AND @SubsidizeCode = 'VNIAMMR'
+			BEGIN
+				SELECT 
+					-- Section 1 - Class & account information
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+								ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+						ELSE
+								[dbo].[func_mask_ChiName](Chi_Name)
+						END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+							CASE WHEN Eng_GivenName_Upload = '' THEN ''
+							ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+						ELSE
+							CASE WHEN Eng_GivenName = '' THEN ''
+							ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+						END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
+					[HKIC_Symbol] = ISNULL(SD.Status_Description, ''),
+					--ISNULL(Contact_No, '') AS Contact_No,
+					'',
+					-- Section 2 - Account matching result
+					ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
+					ISNULL(Validated_Acc_Found, 'N'),
+					ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
+					ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
+					ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
+					CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
+					SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display	
+					--Chi_Name,
+					--Eng_Surname,
+					--Eng_GivenName,
+					--Sex,
+					--DOB,
+					--Doc_Code,
+					--LTRIM(DocNumber),
+					--CASE WHEN Date_of_Issue IS NULL THEN '' ELSE FORMAT(Date_of_Issue, 'dd MMM yyyy') END AS Date_of_Issue,
+					--CASE WHEN Permit_To_Remain_Until IS NULL THEN '' ELSE FORMAT(Permit_To_Remain_Until, 'dd MMM yyyy') END AS Permit_To_Remain_Until,
+					--ISNULL(Foreign_Passport_No,'') AS Foreign_Passport_No,
+					--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
+					--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
+					'',
+					-- Section 3 - Vaccination checking result (generated by system)
+					CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+					[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd'),
+					CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
+					CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
+					CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
+					CASE WHEN ISNULL(Entitle_3RDDOSE, '') = 'N' THEN 'No' ELSE Entitle_3RDDOSE END AS Entitle_3RDDOSE,
+					CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+					ISNULL(Last3Vaccine,''),
+					[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
+								CASE 
+									WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
+										CASE 
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) = 0 THEN ' / ' + Entitle_Inject_Fail_Reason
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) > 0 THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason, 0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) 
+										END
+									ELSE '' 
+								END,
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000),
+					'',
+					-- Section 4 - Vaccination record filled by service provider
+					CASE WHEN ISNULL(Injected, '') = 'N' THEN 'No' ELSE ISNULL(Injected, '') END AS Injected,
+					'',
+					-- Section 5 - Claim record (generated by system)
+					[Transaction_ID] = LTRIM(RTRIM(ISNULL(Transaction_ID, ''))),
+					[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd'),
+					[Transaction_Status_Desc] = ISNULL(Transaction_Status_Desc, ''),
+					[Transaction_result] = 
+						CASE 
+							WHEN Transaction_result IS NULL THEN ''
+							WHEN CHARINDEX('|||', Transaction_result) = 0 THEN Transaction_result
+							WHEN CHARINDEX('|||', Transaction_result) > 0 THEN SUBSTRING(Transaction_result, 0, CHARINDEX('|||', Transaction_result)) 
+							ELSE '' 
+						END
+				FROM #StudentTT T
+					LEFT OUTER JOIN
+						StatusData SD
+							ON Enum_Class = 'HKICSymbol' AND T.HKIC_Symbol = SD.Status_Value
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+			END
+
+			ELSE
+
+			BEGIN
+				SELECT 
+					-- Section 1 - Class & account information
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+								ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+						ELSE
+								[dbo].[func_mask_ChiName](Chi_Name)
+						END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+							CASE WHEN Eng_GivenName_Upload = '' THEN ''
+							ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+						ELSE
+							CASE WHEN Eng_GivenName = '' THEN ''
+							ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+						END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
+					--ISNULL(Contact_No, '') AS Contact_No,
+					'',
+					-- Section 2 - Account matching result
+					ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
+					ISNULL(Validated_Acc_Found, 'N'),
+					ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
+					ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
+					ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
+					CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
+					SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display	
+					--Chi_Name,
+					--Eng_Surname,
+					--Eng_GivenName,
+					--Sex,
+					--DOB,
+					--Doc_Code,
+					--LTRIM(DocNumber),
+					--CASE WHEN Date_of_Issue IS NULL THEN '' ELSE FORMAT(Date_of_Issue, 'dd MMM yyyy') END AS Date_of_Issue,
+					--CASE WHEN Permit_To_Remain_Until IS NULL THEN '' ELSE FORMAT(Permit_To_Remain_Until, 'dd MMM yyyy') END AS Permit_To_Remain_Until,
+					--ISNULL(Foreign_Passport_No,'') AS Foreign_Passport_No,
+					--ISNULL(EC_Serial_No,'') AS EC_Serial_No,
+					--ISNULL(EC_Reference_No,'') AS EC_Reference_No,
+					'',
+					-- Section 3 - Vaccination checking result (generated by system)
+					CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+					CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
+					CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
+					CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
+					CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+					ISNULL(Last3Vaccine,''),
+					[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
+								CASE 
+									WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
+										CASE 
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) = 0 THEN ' / ' + Entitle_Inject_Fail_Reason
+											WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) > 0 THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason, 0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) 
+										END
+									ELSE '' 
+								END,
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+								IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+								IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000),
+					'',
+					-- Section 4 - Vaccination record filled by service provider
+					CASE WHEN ISNULL(Injected, '') = 'N' THEN 'No' ELSE ISNULL(Injected, '') END AS Injected,
+					'',
+					-- Section 5 - Claim record (generated by system)
+					LTRIM(RTRIM(ISNULL(Transaction_ID, ''))) AS Transaction_ID,
+					ISNULL(Transaction_Status_Desc, '') AS Transaction_Status_Desc,
+					[Transaction_result] = 
+						CASE 
+							WHEN Transaction_result IS NULL THEN ''
+							WHEN CHARINDEX('|||', Transaction_result) = 0 THEN Transaction_result
+							WHEN CHARINDEX('|||', Transaction_result) > 0 THEN SUBSTRING(Transaction_result, 0, CHARINDEX('|||', Transaction_result)) 
+							ELSE '' 
+						END
+				FROM #StudentTT
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+			END
 		END
 
 		IF @File_ID = 'EHSVF005'
 		BEGIN
-			SELECT 
-				Student_Seq,
-				Class_Name,
-				Class_No,
-				--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
-				CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
-							ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
-					ELSE
-							[dbo].[func_mask_ChiName](Chi_Name)
-					END AS Chi_Name_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
-				--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
-						CASE WHEN Eng_GivenName_Upload = '' THEN ''
-						ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
-					ELSE
-						CASE WHEN Eng_GivenName = '' THEN ''
-						ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
-					END AS Eng_GivenName_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
-				CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code
-				--ISNULL(Contact_No, '') AS Contact_No
-			FROM #StudentTT
-			WHERE TableID = @RowCount
-			ORDER BY Class_Name, Student_Seq
+			IF @SchemeCode = 'VSS' AND @SubsidizeCode = 'VNIAMMR'
+			BEGIN
+				SELECT 
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+								ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+						ELSE
+								[dbo].[func_mask_ChiName](Chi_Name)
+						END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+							CASE WHEN Eng_GivenName_Upload = '' THEN ''
+							ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+						ELSE
+							CASE WHEN Eng_GivenName = '' THEN ''
+							ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+						END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code,
+					[HKIC_Symbol] = ISNULL(SD.Status_Description, '')
+					--ISNULL(Contact_No, '') AS Contact_No
+				FROM #StudentTT T
+					LEFT OUTER JOIN
+						StatusData SD
+							ON Enum_Class = 'HKICSymbol' AND T.HKIC_Symbol = SD.Status_Value
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+			END
+
+			ELSE
+
+			BEGIN
+				SELECT 
+					Student_Seq,
+					Class_Name,
+					Class_No,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Chi_Name_Upload,'') ELSE Chi_Name END AS Chi_Name_Upload,
+					CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+								ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+						ELSE
+								[dbo].[func_mask_ChiName](Chi_Name)
+						END AS Chi_Name_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+					--CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_GivenName_Upload,'') ELSE Eng_GivenName END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+							CASE WHEN Eng_GivenName_Upload = '' THEN ''
+							ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+						ELSE
+							CASE WHEN Eng_GivenName = '' THEN ''
+							ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+						END AS Eng_GivenName_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END AS Sex,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+					CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END As Doc_Code
+					--ISNULL(Contact_No, '') AS Contact_No
+				FROM #StudentTT
+				WHERE TableID = @RowCount
+				ORDER BY Class_Name, Student_Seq
+			END
+
 		END
 
 		IF @File_ID = 'EHSVF006'
@@ -921,3 +1239,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSSF_Class_Report_get] TO HCVU
 GO
+

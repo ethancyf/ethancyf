@@ -63,6 +63,15 @@ Partial Public Class VaccinationFileUpload ' 010413
         Public Const ECSerialNo As String = "SerialNoEC"
         Public Const ECReference As String = "ReferenceNoEC"
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const HKICSymbol As String = "HKICSymbolLong"
+        Public Const LaboratoryTestResultReport As String = "LaboratoryTestResultReport"
+        Public Const Ethnicity As String = "Ethnicity"
+        Public Const Category1 As String = "Category1"
+        Public Const Category2 As String = "Category2"
+        Public Const LotNumber As String = "LotNumber"
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
     End Class
 
     Private Class AuditLogDescription
@@ -80,6 +89,29 @@ Partial Public Class VaccinationFileUpload ' 010413
 
 
     End Class
+
+    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Class HKICSymbol
+        Public SF_HKICSymbol As String
+        Public EHS_HKICSymbol As String
+    End Class
+
+    Private Class Ethnicity
+        Public SF_Ethnicity As String
+        Public EHS_Ethnicity As String
+    End Class
+
+    Private Class Category1
+        Public SF_Category1 As String
+        Public EHS_Category1 As String
+    End Class
+
+    Private Class Category2
+        Public SF_Category2 As String
+        Public EHS_Category2 As String
+    End Class
+    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
 #End Region
 
@@ -163,6 +195,17 @@ Partial Public Class VaccinationFileUpload ' 010413
             Dim dr As DataRowView = e.Row.DataItem
             Dim udtFormatter As New Formatter
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' School / RCH Code
+            Dim lblGSchoolCode As Label = e.Row.FindControl("lblGSchoolCode")
+
+            If IsDBNull(dr("School_Code")) OrElse dr("School_Code").ToString.Trim() = String.Empty Then
+                lblGSchoolCode.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            Else
+                lblGSchoolCode.Text = dr("School_Code").ToString.Trim
+            End If
+
             ' Vaccination Date
             Dim lblGVaccinationDate As Label = e.Row.FindControl("lblGVaccinationDate")
 
@@ -187,9 +230,26 @@ Partial Public Class VaccinationFileUpload ' 010413
             If IsDBNull(dr("Subsidize_Code")) OrElse dr("Subsidize_Code").ToString.Trim() = String.Empty Then
                 lblGDoseToInject.Text = Me.GetGlobalResourceObject("Text", "N/A")
             Else
-                lblGDoseToInject.Text = String.Format("{0}<br><br>{1}", _
-                                                        dr("SubsidizeDisplayName"), _
-                                                        (New StaticDataBLL).GetStaticDataByColumnNameItemNo("StudentFileDoseToInject", dr("Dose")).DataValue)
+                If dr("Subsidize_Code").ToString.Trim() = "VNIAMMR" Then
+                    Dim strDose As String = String.Empty
+                    If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                        strDose = GetGlobalResourceObject("Text", "1stDose2")
+                    End If
+
+                    If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                        strDose = GetGlobalResourceObject("Text", "2ndDose")
+                    End If
+
+                    If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                        strDose = GetGlobalResourceObject("Text", "3rdDose")
+                    End If
+
+                    lblGDoseToInject.Text = String.Format("{0}<br><br>{1}", dr("SubsidizeDisplayName"), strDose)
+                Else
+                    lblGDoseToInject.Text = String.Format("{0}<br><br>{1}", _
+                                                            dr("SubsidizeDisplayName"), _
+                                                            (New StaticDataBLL).GetStaticDataByColumnNameItemNo("StudentFileDoseToInject", dr("Dose")).DataValue)
+                End If
             End If
 
             ' Upload By and Time
@@ -200,6 +260,7 @@ Partial Public Class VaccinationFileUpload ' 010413
             Dim lblGStatus As Label = e.Row.FindControl("lblGStatus")
             Status.GetDescriptionFromDBCode("StudentFileHeaderStatus", dr("Record_Status"), lblGStatus.Text, String.Empty, String.Empty)
 
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End If
 
     End Sub
@@ -364,6 +425,11 @@ Partial Public Class VaccinationFileUpload ' 010413
         imgIVaccinationReportGenerationDate2Error.Visible = False
         imgIVaccinationFileError.Visible = False
         imgIPasswordError.Visible = False
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        imgIddlIDoseOfMMRError.Visible = False
+        imgIVaccinationReportGenerationDateMMRError.Visible = False
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' Confirm
         imgCPracticeError.Visible = False
@@ -379,6 +445,10 @@ Partial Public Class VaccinationFileUpload ' 010413
         imgCFDMONameError.Visible = False
         imgCFDSchemeError.Visible = False
         imgCFDSubsidyError.Visible = False
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        imgCFDDoseOfMMRError.Visible = False
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         imgCFDSchoolCodeError.Visible = False
         imgCFDSchoolNameError.Visible = False
     End Sub
@@ -399,7 +469,7 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllDistinctSchemeClaim()
 
-        Dim strSchemeCode() As String = Split((New GeneralFunction).getSystemParameter("Batch_Upload_Scheme"), ";")
+        Dim strSchemeCode() As String = Split((New GeneralFunction).getSystemParameter("Batch_Upload_Scheme_BO"), ";")
 
         If strSchemeCode.Length > 0 Then
 
@@ -450,8 +520,11 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Dim blnIsPreCheck As Boolean = False
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         panIVaccinationInfo.Visible = False
         panISchoolRCH.Visible = False
+        panIMMR.Visible = False
 
         Select Case strSchemeCode
 
@@ -460,27 +533,40 @@ Partial Public Class VaccinationFileUpload ' 010413
                 lblISchoolRCHCodeText.Text = GetGlobalResourceObject("Text", "SchoolCode")
                 lblISchoolRCHNameText.Text = GetGlobalResourceObject("Text", "SchoolName")
 
+                panIVaccinationInfo.Visible = True
+
             Case SchemeClaimModel.RVP
                 panISchoolRCH.Visible = True
                 lblISchoolRCHCodeText.Text = GetGlobalResourceObject("Text", "RCHCode")
                 lblISchoolRCHNameText.Text = GetGlobalResourceObject("Text", "RCHName")
 
                 blnIsPreCheck = True
-        End Select
 
-        If strSchemeCode <> String.Empty Then
-
-            If blnIsPreCheck Then
                 panIVaccinationInfo.Visible = False
                 txtIVaccinationDate1.Text = String.Empty
                 txtIVaccinationDate2.Text = String.Empty
                 txtIVaccinationReportGenerateDate1.Text = String.Empty
                 txtIVaccinationReportGenerateDate2.Text = String.Empty
-            Else
-                panIVaccinationInfo.Visible = True
-            End If
 
-        End If
+            Case SchemeClaimModel.VSS
+                panIMMR.Visible = True
+
+        End Select
+
+        'If strSchemeCode <> String.Empty Then
+
+        '    If blnIsPreCheck Then
+        '        panIVaccinationInfo.Visible = False
+        '        txtIVaccinationDate1.Text = String.Empty
+        '        txtIVaccinationDate2.Text = String.Empty
+        '        txtIVaccinationReportGenerateDate1.Text = String.Empty
+        '        txtIVaccinationReportGenerateDate2.Text = String.Empty
+        '    Else
+        '        panIVaccinationInfo.Visible = True
+        '    End If
+
+        'End If
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         Session(SESS.UploadPrecheck) = blnIsPreCheck
     End Sub
@@ -938,12 +1024,34 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         End If
 
-        ' -------------------------------------
-        ' Vaccination Date
-        ' -------------------------------------
-        If Session(SESS.UploadPrecheck) = False Then
-            ValidateVaccinationDate()
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ' --------------------------------------------------
+        ' Dose of MMR (VSS only)
+        ' --------------------------------------------------
+        If ddlIScheme.SelectedValue.Trim = SchemeClaimModel.VSS Then
+            If ddlIDoseOfMMR.SelectedValue = String.Empty Then
+                ' Please select "Dose of MMR".
+                udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00367, "%s", GetGlobalResourceObject("Text", "DoseOfMMR"))
+                imgIddlIDoseOfMMRError.Visible = True
+            End If
         End If
+
+        ' --------------------------------------------------
+        ' Vaccination Date + Final Report Generation Date
+        ' --------------------------------------------------
+        Select Case ddlIScheme.SelectedValue.Trim
+            Case SchemeClaimModel.VSS
+                ValidateMMRVaccinationReportGenerationDate()
+
+            Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
+                ValidateVaccinationDate()
+
+            Case SchemeClaimModel.RVP
+                ' Not to check "Vaccination Date" + "Final Report Generation Date"
+
+        End Select
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' -------------------------------------
         ' Vaccination File
@@ -1035,12 +1143,35 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             End If
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim udtStudentFileSetting As StudentFileBLL.StudentFileSetting = StudentFileBLL.GetSetting(hfScheme.Value)
+
+            ' Student Count
+            If udtStudentFileSetting.Upload_Record_Limit > 0 Then
+                If dt.Rows.Count > udtStudentFileSetting.Upload_Record_Limit Then
+                    udtAuditLog.AddDescripton("StackTrace", "Exceed data rows in the Excel file")
+                    ' Cannot read any data in the Excel file.
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00074, "{0}", udtStudentFileSetting.Upload_Record_Limit)
+                    udcMessageBox.BuildMessageBox(MessageBoxHeaderKey.ValidationFail, udtAuditLog, LogID.LOG00015, "[StdFileUpload] UploadFile - Next click fail")
+
+                    Return
+
+                End If
+            End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             ' ----------------------------- End of Validation -----------------------------
 
             lblCScheme.Text = ddlIScheme.SelectedItem.Text
             lblCServiceProviderID.Text = txtIServiceProviderID.Text.Trim
             lblCPractice.Text = ddlIPractice.SelectedItem.Text
             lblCSchoolRCHCode.Text = txtISchoolRCHCode.Text
+
+            If ddlIScheme.SelectedItem.Text = SchemeClaimModel.VSS Then
+                lblCDoseOfMMR.Text = ddlIDoseOfMMR.SelectedItem.Text
+                lblCVaccinationDateMMR.Text = txtIVaccinationReportGenerateDateMMR.Text
+            End If
 
             If Not udtSP Is Nothing Then lblCServiceProviderName.Text = udtSP.EnglishName
             If Not udtMO Is Nothing Then lblCMOName.Text = udtMO.MOEngName
@@ -1126,6 +1257,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         lblCFDMOName.Text = String.Empty
         lblCFDScheme.Text = String.Empty
         lblCFDSubsidy.Text = String.Empty
+        lblCFDDoseOfMMR.Text = String.Empty
         lblCFDSchoolName.Text = String.Empty
 
 
@@ -1235,6 +1367,33 @@ Partial Public Class VaccinationFileUpload ' 010413
         End If
 
         ' -------------------------------------
+        ' Dose
+        ' -------------------------------------
+        ' Hide the dose
+        trCFDDose.Style.Add("display", "none")
+
+        ' Dose must match
+        If ddlIScheme.SelectedValue = SchemeClaimModel.VSS Then
+            ' Show the dose
+            trCFDDose.Style.Remove("display")
+
+            If dicUploadContent("Dose") = String.Empty Then
+                ' The "Dose" in upload file is missing.
+                udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00070)
+                imgCFDDoseOfMMRError.Visible = True
+
+            ElseIf dicUploadContent("Dose") <> ddlIDoseOfMMR.SelectedItem.Text.ToUpper Then
+                ' The "Dose" in upload file does not match with selected dose.
+                udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00071)
+                imgCFDDoseOfMMRError.Visible = True
+
+            Else
+
+
+            End If
+        End If
+
+        ' -------------------------------------
         ' SPID
         ' -------------------------------------
         If dicUploadContent("SPID") = String.Empty Then
@@ -1300,23 +1459,25 @@ Partial Public Class VaccinationFileUpload ' 010413
         ' -------------------------------------
         ' School / RCH Name
         ' -------------------------------------
-        If dicUploadContent("SchoolRCHName") = String.Empty Then
-            imgCFDSchoolNameError.Visible = True
+        If udtStudentFileSetting.Upload_ValidateSchoolRCHCode Then
+            If dicUploadContent("SchoolRCHName") = String.Empty Then
+                imgCFDSchoolNameError.Visible = True
 
-            Select Case ddlIScheme.SelectedValue
-                Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
-                    ' The "School Name" in upload file is missing.
-                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00050)
+                Select Case ddlIScheme.SelectedValue
+                    Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
+                        ' The "School Name" in upload file is missing.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00050)
 
-                Case SchemeClaimModel.RVP
-                    ' The "RCH Name" in upload file is missing.
-                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00055)
+                    Case SchemeClaimModel.RVP
+                        ' The "RCH Name" in upload file is missing.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00055)
 
-            End Select
+                End Select
 
-        ElseIf dicUploadContent("SchoolRCHName") <> lblCSchoolRCHName.Text.Trim.ToUpper Then
-            lblCFDSchoolNameDifference.Visible = True
+            ElseIf dicUploadContent("SchoolRCHName") <> lblCSchoolRCHName.Text.Trim.ToUpper Then
+                lblCFDSchoolNameDifference.Visible = True
 
+            End If
         End If
 
         ' -------------------------------------
@@ -1348,13 +1509,20 @@ Partial Public Class VaccinationFileUpload ' 010413
                 End If
 
                 If lstErrorClassName.Count > 0 Then
-                    If dicUploadContent("Scheme") = SchemeClaimModel.RVP Then
-                        'The excel file contains invalid category.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00059)
-                    Else
-                        'The excel file contains invalid class name.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00067)
-                    End If
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Select Case dicUploadContent("Scheme")
+                        Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                            'The excel file contains invalid category.
+                            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00059)
+
+                        Case Else
+                            'The excel file contains invalid class name.
+                            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00067)
+
+                    End Select
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                 End If
             End If
 
@@ -1378,13 +1546,20 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Next
 
                 If lstErrorClassName.Count > 0 Then
-                    If dicUploadContent("Scheme") = SchemeClaimModel.RVP Then
-                        'The Category is duplicated.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00065)
-                    Else
-                        'The Class Name is duplicated.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00066)
-                    End If
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Select Case dicUploadContent("Scheme")
+                        Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                            'The Category is duplicated.
+                            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00065)
+
+                        Case Else
+                            'The Class Name is duplicated.
+                            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00066)
+
+                    End Select
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                 End If
             End If
 
@@ -1397,13 +1572,20 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Next
 
                 If lstErrorClassName.Count > 0 Then
-                    If dicUploadContent("Scheme") = SchemeClaimModel.RVP Then
-                        'The Category must not contain full width characters.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00063)
-                    Else
-                        'The Class Name must not contain full width characters.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00064)
-                    End If
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Select Case dicUploadContent("Scheme")
+                        Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                            'The Category must not contain full width characters.
+                            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00063)
+
+                        Case Else
+                            'The Class Name must not contain full width characters.
+                            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00064)
+
+                    End Select
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                 End If
             End If
 
@@ -1417,6 +1599,11 @@ Partial Public Class VaccinationFileUpload ' 010413
         ' Input Details
         ' -------------------------------------
         panCVaccinationInfo.Visible = panIVaccinationInfo.Visible
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        panCMMR.Visible = panIMMR.Visible
+        panCSchoolRCH.Visible = panISchoolRCH.Visible
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
 
         ' -------------------------------------
@@ -1441,6 +1628,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         hfCVaccinationReportGenerationDate2.Value = String.Empty
         hfCDoseToInject.Value = String.Empty
 
+        'PPP-PS / PPP-KG
         If txtIVaccinationDate1.Text.Trim <> String.Empty Then
             ' Only Dose / 1st Dose
             hfCVaccinationDate1.Value = txtIVaccinationDate1.Text.Trim
@@ -1460,6 +1648,31 @@ Partial Public Class VaccinationFileUpload ' 010413
             hfCVaccinationReportGenerationDate1.Value = txtIVaccinationReportGenerateDate2.Text.Trim
             hfCDoseToInject.Value = SubsidizeItemDetailsModel.DoseCode.SecondDOSE
         End If
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'MMR
+        If txtIVaccinationReportGenerateDateMMR.Text.Trim <> String.Empty Then
+            Dim strDoseCode As String = String.Empty
+
+            If ddlIDoseOfMMR.SelectedValue = 1 Then
+                strDoseCode = SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+            End If
+
+            If ddlIDoseOfMMR.SelectedValue = 2 Then
+                strDoseCode = SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+            End If
+
+            If ddlIDoseOfMMR.SelectedValue = 3 Then
+                strDoseCode = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
+            End If
+
+            lblCVaccinationDateMMR.Attributes.Add("hfValue", txtIVaccinationReportGenerateDateMMR.Text.Trim)
+            hfCDoseToInject.Value = strDoseCode
+
+        End If
+
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
         ' ------------------------------------------------------------------------        
@@ -1543,36 +1756,62 @@ Partial Public Class VaccinationFileUpload ' 010413
         lblCFDSchoolName.Text = dicUploadContent("SchoolRCHName")
         lblCFDSubsidy.Text = dicUploadContent("Subsidy")
 
+        Select Case dicUploadContent("Dose")
+            Case "1ST DOSE"
+                lblCFDDoseOfMMR.Text = "1st Dose"
+            Case "2ND DOSE"
+                lblCFDDoseOfMMR.Text = "2nd Dose"
+            Case "3RD DOSE"
+                lblCFDDoseOfMMR.Text = "3rd Dose"
+        End Select
+
         ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
         'lblCFDNoOfClass.Text = dt.DefaultView.ToTable(True, "Class_Name").Rows.Count
         lblCFDNoOfClass.Text = dt.DefaultView.ToTable(True, "Class_Name_Excel").Rows.Count
         ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
         lblCFDNoOfStudent.Text = dt.Rows.Count
 
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Select Case dicUploadContent("Scheme")
+            Case SchemeClaimModel.RVP
+                trCFDSchoolCode.Style.Remove("display")
+                trCFDSchoolName.Style.Remove("display")
+                lblCFDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
+                lblCFDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
+                lblCFDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfCategory")
+                lblCFDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfClient")
+                lblCFDClass.Text = Me.GetGlobalResourceObject("Text", "Category")
 
-        If dicUploadContent("Scheme") = SchemeClaimModel.RVP Then
-            lblCFDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
-            trCFDSchoolCode.Visible = True
-            lblCFDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
-            lblCFDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfCategory")
-            lblCFDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfClient")
-            lblCFDClass.Text = Me.GetGlobalResourceObject("Text", "Category")
+                gvCFDClassDetail.Columns(0).HeaderText = Me.GetGlobalResourceObject("Text", "Category")
+                gvCFDClassDetail.Columns(1).HeaderText = Me.GetGlobalResourceObject("Text", "NoOfClient")
 
-            gvCFDClassDetail.Columns(0).HeaderText = Me.GetGlobalResourceObject("Text", "Category")
-            gvCFDClassDetail.Columns(1).HeaderText = Me.GetGlobalResourceObject("Text", "NoOfClient")
+            Case SchemeClaimModel.VSS
+                trCFDSchoolCode.Style.Add("display", "none")
+                trCFDSchoolName.Style.Add("display", "none")
+                lblCFDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
+                lblCFDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
+                lblCFDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfCategory")
+                lblCFDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfClient")
+                lblCFDClass.Text = Me.GetGlobalResourceObject("Text", "Category")
 
-        Else
-            lblCFDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "SchoolCode")
-            trCFDSchoolCode.Visible = False
-            lblCFDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "SchoolName")
-            lblCFDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfClass")
-            lblCFDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfStudent")
-            lblCFDClass.Text = Me.GetGlobalResourceObject("Text", "Class")
+                gvCFDClassDetail.Columns(0).HeaderText = Me.GetGlobalResourceObject("Text", "Category")
+                gvCFDClassDetail.Columns(1).HeaderText = Me.GetGlobalResourceObject("Text", "NoOfClient")
 
-            gvCFDClassDetail.Columns(0).HeaderText = Me.GetGlobalResourceObject("Text", "ClassName")
-            gvCFDClassDetail.Columns(1).HeaderText = Me.GetGlobalResourceObject("Text", "NoOfStudent")
+            Case Else
+                trCFDSchoolCode.Style.Add("display", "none")
+                trCFDSchoolName.Style.Remove("display")
+                lblCFDSchoolCodeText.Text = Me.GetGlobalResourceObject("Text", "SchoolCode")
+                lblCFDSchoolNameText.Text = Me.GetGlobalResourceObject("Text", "SchoolName")
+                lblCFDNoOfClassText.Text = Me.GetGlobalResourceObject("Text", "NoOfClass")
+                lblCFDNoOfStudentText.Text = Me.GetGlobalResourceObject("Text", "NoOfStudent")
+                lblCFDClass.Text = Me.GetGlobalResourceObject("Text", "Class")
 
-        End If
+                gvCFDClassDetail.Columns(0).HeaderText = Me.GetGlobalResourceObject("Text", "ClassName")
+                gvCFDClassDetail.Columns(1).HeaderText = Me.GetGlobalResourceObject("Text", "NoOfStudent")
+
+        End Select
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         ' -------------------------------------
         ' Class and Student Information
@@ -1912,6 +2151,52 @@ Partial Public Class VaccinationFileUpload ' 010413
         End If
     End Sub
 
+    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub ValidateMMRVaccinationReportGenerationDate()
+        Dim udtFormatter As New Formatter
+        Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
+
+        hfCSchemeSeq.Value = "1"
+
+        ' -------------------------------------
+        ' Vaccination Report Generation Date
+        ' -------------------------------------
+        If txtIVaccinationReportGenerateDateMMR.Text.Trim = String.Empty Then
+            ' Please input "Final Report Generation Date".
+            udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00028, "%s", lblIGenerationDateMMR.Text)
+            imgIVaccinationReportGenerationDateMMRError.Visible = True
+
+        Else
+            Dim dtm As DateTime = DateTime.MinValue
+
+            If DateTime.TryParseExact(txtIVaccinationReportGenerateDateMMR.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtm) = False Then
+                ' "Final Report Generation Date" is invalid.
+                udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00365, "%s", lblIGenerationDateMMR.Text)
+                imgIVaccinationReportGenerationDateMMRError.Visible = True
+
+            Else
+                If dtm <= dtmCurrentDate Then
+                    ' "Final Report Generation Date" should be future date.
+                    udcMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00439, "%en", lblIGenerationDateMMR.Text)
+                    imgIVaccinationReportGenerationDateMMRError.Visible = True
+
+                    ' Check limit
+                ElseIf (New StudentFileBLL).IsPendingRecordExceedLimit(Me.FunctionCode, dtm) Then
+                    ' The number of pending processing files with the Vaccination Report Generate Date {date} has reached the limit, please select another date.
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00032, "{date}", udtFormatter.convertDate(txtIVaccinationReportGenerateDateMMR.Text.Trim, String.Empty))
+                    imgIVaccinationReportGenerationDateMMRError.Visible = True
+
+                End If
+
+            End If
+
+        End If
+
+    End Sub
+    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+
     ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
     ' ------------------------------------------------------------------------
     Private Function IsAbnormalVaccineDate(ByVal strScheme As String,
@@ -1942,6 +2227,10 @@ Partial Public Class VaccinationFileUpload ' 010413
         dicUploadContent.Add("Subsidy", String.Empty)
         dicUploadContent.Add("SchoolRCHCode", String.Empty)
         dicUploadContent.Add("SchoolRCHName", String.Empty)
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        dicUploadContent.Add("Dose", String.Empty)
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         Dim udtStudentFileSetting As StudentFileBLL.StudentFileSetting = StudentFileBLL.GetSetting(hfScheme.Value)
 
@@ -1969,8 +2258,15 @@ Partial Public Class VaccinationFileUpload ' 010413
                     If Not IsNothing(aryValue(4, 1)) Then dicUploadContent("MOName") = aryValue(4, 1).ToString.Trim.ToUpper
                     If Not IsNothing(aryValue(6, 1)) Then dicUploadContent("Scheme") = aryValue(6, 1).ToString.Trim.ToUpper
                     If Not IsNothing(aryValue(7, 1)) Then dicUploadContent("Subsidy") = aryValue(7, 1).ToString.Trim.ToUpper
-                    If Not IsNothing(aryValue(8, 1)) Then dicUploadContent("SchoolRCHCode") = aryValue(8, 1).ToString.Trim.ToUpper
-                    If Not IsNothing(aryValue(9, 1)) Then dicUploadContent("SchoolRCHName") = aryValue(9, 1).ToString.Trim.ToUpper
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    If hfScheme.Value.Trim = SchemeClaimModel.VSS Then
+                        If Not IsNothing(aryValue(8, 1)) Then dicUploadContent("Dose") = aryValue(8, 1).ToString.Trim.ToUpper
+                    Else
+                        If Not IsNothing(aryValue(8, 1)) Then dicUploadContent("SchoolRCHCode") = aryValue(8, 1).ToString.Trim.ToUpper
+                        If Not IsNothing(aryValue(9, 1)) Then dicUploadContent("SchoolRCHName") = aryValue(9, 1).ToString.Trim.ToUpper
+                    End If
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                 Case Else
                     ' Class sheet
@@ -1983,26 +2279,26 @@ Partial Public Class VaccinationFileUpload ' 010413
                     Dim strSurnameEN As String = String.Empty
                     Dim strGivenNameEN As String = String.Empty
                     Dim strSex As String = String.Empty
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-                    Dim ObjDOB As Object = Nothing
+                    Dim objDOB As Object = Nothing
                     Dim strExactDOB As String = String.Empty
-                    'Dim strDOB As String = String.Empty
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                     Dim strDocType As String = String.Empty
                     Dim strDocNo As String = String.Empty
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                     Dim objDOI As Object = Nothing
-                    'Dim strDOI As String = String.Empty
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                     Dim strContactNo As String = String.Empty
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                     Dim objPermitToRemainUntil As Object = Nothing
-                    'Dim strPermitToRemainUntil As String = String.Empty
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                     Dim strPassportNo As String = String.Empty
                     Dim strECSerialNo As String = String.Empty
                     Dim strECReferenceNo As String = String.Empty
-
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Dim strHKICSymbol As String = String.Empty
+                    Dim objServiceDate As Object = Nothing
+                    Dim strIsNonImmuneMMR As String = String.Empty
+                    Dim strEthnicity As String = String.Empty
+                    Dim strCategory1 As String = String.Empty
+                    Dim strCategory2 As String = String.Empty
+                    Dim strLotNumber As String = String.Empty
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                     While True
                         ' Read the cells in the column Ax to Dx, where x is the current row
@@ -2017,23 +2313,26 @@ Partial Public Class VaccinationFileUpload ' 010413
                         strSurnameEN = String.Empty
                         strGivenNameEN = String.Empty
                         strSex = String.Empty
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-                        ObjDOB = Nothing
+                        objDOB = Nothing
                         strExactDOB = String.Empty
-                        'strDOB = String.Empty
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                         strDocType = String.Empty
                         strDocNo = String.Empty
                         strContactNo = String.Empty
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                         objDOI = Nothing
-                        'strDOI = String.Empty
                         objPermitToRemainUntil = Nothing
-                        'strPermitToRemainUntil = String.Empty
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                         strPassportNo = String.Empty
                         strECSerialNo = String.Empty
                         strECReferenceNo = String.Empty
+                        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        strHKICSymbol = String.Empty
+                        objServiceDate = Nothing
+                        strIsNonImmuneMMR = String.Empty
+                        strEthnicity = String.Empty
+                        strCategory1 = String.Empty
+                        strCategory2 = String.Empty
+                        strLotNumber = String.Empty
+                        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                         ' Read the value in cells
                         If Not IsNothing(aryValue(1, 1)) Then strClassNo = aryValue(1, 1).ToString.Trim
@@ -2041,20 +2340,18 @@ Partial Public Class VaccinationFileUpload ' 010413
                         If Not IsNothing(aryValue(1, 3)) Then strSurnameEN = aryValue(1, 3).ToString.Trim.ToUpper
                         If Not IsNothing(aryValue(1, 4)) Then strGivenNameEN = aryValue(1, 4).ToString.Trim.ToUpper
                         If Not IsNothing(aryValue(1, 5)) Then strSex = aryValue(1, 5).ToString.Trim.ToUpper
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                         If Not IsNothing(aryValue(1, 6)) Then
                             Try
                                 objRange = xlsWorkSheet.Cells(intRow, 6)
-                                ObjDOB = objRange.Value ' Datatype maybe Datetime / String
+                                objDOB = objRange.Value ' Datatype maybe Datetime / String
                             Catch ex As Exception
-                                ObjDOB = objRange.Value2
+                                objDOB = objRange.Value2
                             End Try
                         End If
-                        'If Not IsNothing(aryValue(1, 6)) Then strDOB = aryValue(1, 6).ToString.Trim
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
                         If Not IsNothing(aryValue(1, 7)) Then strDocType = aryValue(1, 7).ToString.Trim
                         If Not IsNothing(aryValue(1, 8)) Then strDocNo = aryValue(1, 8).ToString.Trim.ToUpper
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
                         If Not IsNothing(aryValue(1, 9)) Then
                             Try
                                 objRange = xlsWorkSheet.Cells(intRow, 9)
@@ -2063,10 +2360,9 @@ Partial Public Class VaccinationFileUpload ' 010413
                                 objDOI = objRange.Value2
                             End Try
                         End If
-                        'If Not IsNothing(aryValue(1, 9)) Then strDOI = aryValue(1, 9).ToString.Trim
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
                         If Not IsNothing(aryValue(1, 10)) Then strContactNo = aryValue(1, 10).ToString.Trim
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
                         If Not IsNothing(aryValue(1, 11)) Then
                             Try
                                 objRange = xlsWorkSheet.Cells(intRow, 11)
@@ -2075,50 +2371,72 @@ Partial Public Class VaccinationFileUpload ' 010413
                                 objPermitToRemainUntil = objRange.Value2
                             End Try
                         End If
-                        'If Not IsNothing(aryValue(1, 11)) Then strPermitToRemainUntil = aryValue(1, 11).ToString.Trim
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
                         If Not IsNothing(aryValue(1, 12)) Then strPassportNo = aryValue(1, 12).ToString.Trim
                         If Not IsNothing(aryValue(1, 13)) Then strECSerialNo = aryValue(1, 13).ToString.Trim
                         If Not IsNothing(aryValue(1, 14)) Then strECReferenceNo = aryValue(1, 14).ToString.Trim
+
+                        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If hfScheme.Value.Trim = SchemeClaimModel.VSS Then
+                            If Not IsNothing(aryValue(1, 15)) Then strHKICSymbol = aryValue(1, 15).ToString.Trim
+
+                            If Not IsNothing(aryValue(1, 16)) Then
+                                Try
+                                    objRange = xlsWorkSheet.Cells(intRow, 16)
+                                    objServiceDate = objRange.Value ' Datatype maybe Datetime / String
+                                Catch ex As Exception
+                                    objServiceDate = objRange.Value2
+                                End Try
+                            End If
+
+                            If Not IsNothing(aryValue(1, 17)) Then strIsNonImmuneMMR = aryValue(1, 17).ToString.Trim
+                            If Not IsNothing(aryValue(1, 18)) Then strEthnicity = aryValue(1, 18).ToString.Trim
+                            If Not IsNothing(aryValue(1, 19)) Then strCategory1 = aryValue(1, 19).ToString.Trim
+                            If Not IsNothing(aryValue(1, 20)) Then strCategory2 = aryValue(1, 20).ToString.Trim
+                            If Not IsNothing(aryValue(1, 21)) Then strLotNumber = aryValue(1, 21).ToString.Trim
+                        End If
+                        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                         ' Add the row to datatable
                         Dim dr As DataRow = dt.NewRow
 
                         dr("Student_Seq") = i
-                        ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
                         dr("Class_Name") = xlsWorkSheet.Name.Trim
                         dr("Class_Name_Excel") = xlsWorkSheet.Name
-                        ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
                         dr("Class_No") = strClassNo
                         dr("Name_CH_Excel") = strNameCH
                         dr("Surname_EN") = strSurnameEN
                         dr("Given_Name_EN") = strGivenNameEN
                         dr("Sex") = strSex
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-                        dr("DOB_Excel") = ObjDOB
+                        dr("DOB_Excel") = objDOB
                         dr("Exact_DOB_Excel") = strExactDOB ' Must empty string
-                        'dr("DOB_Excel") = strDOB
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                         dr("Doc_Code_Excel") = strDocType
                         dr("Doc_No") = strDocNo
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                         dr("Date_of_Issue_Excel") = objDOI
-                        'dr("Date_of_Issue_Excel") = strDOI
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                         dr("Contact_No") = strContactNo
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                         dr("Permit_To_Remain_Until_Excel") = objPermitToRemainUntil
-                        'dr("Permit_To_Remain_Until_Excel") = strPermitToRemainUntil
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                         dr("Foreign_Passport_No") = strPassportNo
                         dr("EC_Serial_No") = strECSerialNo
                         dr("EC_Reference_No") = strECReferenceNo
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
                         dr("EC_Reference_No_Other_Format") = String.Empty ' must empty string
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
                         dr("Reject_Injection") = "N"
                         dr("Upload_Error") = String.Empty
                         dr("Upload_Warning") = String.Empty
+
+                        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If hfScheme.Value.Trim = SchemeClaimModel.VSS Then
+                            dr("HKIC_Symbol_Excel") = strHKICSymbol
+                            dr("Service_Receive_Dtm_Excel") = objServiceDate
+
+                            dr("Non_Immune_to_measles_Excel") = strIsNonImmuneMMR
+                            dr("Ethnicity_Excel") = strEthnicity
+                            dr("Category1_Excel") = strCategory1
+                            dr("Category2_Excel") = strCategory2
+                            dr("Lot_Number") = IIf(strLotNumber = String.Empty, DBNull.Value, strLotNumber)
+                        End If
+                        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                         dt.Rows.Add(dr)
 
@@ -2160,7 +2478,10 @@ Partial Public Class VaccinationFileUpload ' 010413
         Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
 
         Dim blnDuplicateRecord As Boolean = False
-        
+
+        '------------------------------------------------------
+        ' Check Duplicate Submit
+        '------------------------------------------------------
         If hfCVaccinationDate1.Value <> String.Empty Then
 
             ' Duplicate Vaccine: Same School + Same Vaccinate Date
@@ -2223,11 +2544,13 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         ' Import the file into database
 
-        ' StudentFileHeader
         Dim udtStudentFileBLL As New StudentFileBLL
         Dim udtFormatter As New Formatter
         Dim udtStudentFileSetting As StudentFileSetting = StudentFileBLL.GetSetting(hfScheme.Value)
 
+        ' -----------------------------
+        ' Construct StudentFileHeader
+        ' -----------------------------
         Dim udtStudentFileHeader As New StudentFileHeaderModel
         udtStudentFileHeader.SchemeCode = hfScheme.Value
         udtStudentFileHeader.Precheck = Session(SESS.UploadPrecheck)
@@ -2248,6 +2571,13 @@ Partial Public Class VaccinationFileUpload ' 010413
                 udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose = DateTime.ParseExact(hfCVaccinationReportGenerationDate2.Value, udtFormatter.EnterDateFormat, Nothing)
 
             End If
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not lblCVaccinationDateMMR.Attributes("hfValue") Is Nothing AndAlso lblCVaccinationDateMMR.Attributes("hfValue").ToString <> String.Empty Then
+                udtStudentFileHeader.FinalCheckingReportGenerationDate = DateTime.ParseExact(lblCVaccinationDateMMR.Attributes("hfValue").ToString, udtFormatter.EnterDateFormat, Nothing)
+            End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             If hfCDoseToInject.Value <> String.Empty Then
                 udtStudentFileHeader.Dose = hfCDoseToInject.Value
@@ -2306,10 +2636,16 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Session(SESS.UploadModel) = udtStudentFileHeader
 
+        ' ------------------------------------
+        ' Validate each entry in Excel
+        ' ------------------------------------
         Dim dt As DataTable = Session(SESS.UploadDT)
 
         ValidateStudentFile(dt, udtStudentFileHeader.ServiceReceiveDtm)
 
+        ' ------------------------------------
+        ' Summary of validation
+        ' ------------------------------------
         Dim intStudentRecord As Integer = CInt(lblCFDNoOfStudent.Text)
         Dim intTotalRecord As Integer = 0
         Dim intSuccessfulRecord As Integer = 0
@@ -2328,7 +2664,11 @@ Partial Public Class VaccinationFileUpload ' 010413
             End If
         Next
 
+        ' ------------------------------------
+        ' Success - Save entry into database
+        ' ------------------------------------
         If intErrorRecord = 0 AndAlso intWarningRecord = 0 Then
+
             Dim strStudentFileID As String = InsertStudentFile(dt)
 
             udtAuditLog.AddDescripton("New Student File ID", strStudentFileID)
@@ -2340,14 +2680,15 @@ Partial Public Class VaccinationFileUpload ' 010413
             udcInfoMessageBox.BuildMessageBox()
 
         Else
+            ' ------------------------------------
+            ' Fail - show error or warning
+            ' ------------------------------------
             udtAuditLog.AddDescripton("Error Record", intErrorRecord)
             udtAuditLog.AddDescripton("Warning Record", intWarningRecord)
 
             Dim dtProcess As DataTable = dt.Clone
             dtProcess.Columns.Add("Severity", GetType(Integer))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             dtProcess.Columns.Add("Class_No_Sort", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
             Dim drProcess As DataRow = Nothing
 
@@ -2358,20 +2699,14 @@ Partial Public Class VaccinationFileUpload ' 010413
                 drProcess("Class_Name") = dr("Class_Name")
                 drProcess("Class_No") = dr("Class_No")
                 drProcess("Name_CH") = dr("Name_CH")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
                 drProcess("Name_CH_Excel") = dr("Name_CH_Excel")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
                 drProcess("Surname_EN") = dr("Surname_EN")
                 drProcess("Given_Name_EN") = dr("Given_Name_EN")
                 drProcess("Sex") = dr("Sex")
                 drProcess("DOB") = dr("DOB")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                 drProcess("Exact_DOB") = dr("Exact_DOB")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                 drProcess("DOB_Excel") = dr("DOB_Excel")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                 drProcess("Exact_DOB_Excel") = dr("Exact_DOB_Excel")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                 drProcess("Doc_Code") = dr("Doc_Code")
                 drProcess("Doc_No") = dr("Doc_No")
                 drProcess("Contact_No") = dr("Contact_No")
@@ -2382,14 +2717,22 @@ Partial Public Class VaccinationFileUpload ' 010413
                 drProcess("Foreign_Passport_No") = dr("Foreign_Passport_No")
                 drProcess("EC_Serial_No") = dr("EC_Serial_No")
                 drProcess("EC_Reference_No") = dr("EC_Reference_No")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
                 drProcess("EC_Reference_No_Other_Format") = dr("EC_Reference_No_Other_Format")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
                 drProcess("Severity") = 0
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                 drProcess("Class_No_Sort") = dr("Class_No").ToString.PadLeft(10, "0")
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    drProcess("HKIC_Symbol") = dr("HKIC_Symbol")
+                    drProcess("Service_Receive_Dtm") = dr("Service_Receive_Dtm")
+                    drProcess("Non_Immune_to_measles") = dr("Non_Immune_to_measles")
+                    drProcess("Ethnicity") = dr("Ethnicity")
+                    drProcess("Category1") = dr("Category1")
+                    drProcess("Category2") = dr("Category2")
+                    drProcess("Lot_Number") = dr("Lot_Number")
 
+                End If
+                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                 If dr("Upload_Error") = String.Empty Then
                     drProcess("Upload_Error") = String.Empty
@@ -2443,6 +2786,14 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Me.GridViewDataBind(gvE, dtDisplay, "Severity", "DESC", False)
                 gvE.Visible = True
 
+                If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    gvE.Width = 1400
+                    gvE.Columns(9).ItemStyle.Width = Unit.Pixel(240)
+                Else
+                    gvE.Columns(9).ItemStyle.Width = Unit.Pixel(120)
+                    gvE.Columns(10).Visible = False
+                End If
+
             Else
                 gvE.Visible = False
 
@@ -2483,13 +2834,30 @@ Partial Public Class VaccinationFileUpload ' 010413
     End Sub
 
     Private Sub ValidateStudentFile(ByRef dt As DataTable, dtmServiceReceiveDtm As Date?)
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Dim strMapping As String = Me.GetGlobalResourceObject("Text", String.Format("VaccinationFileDocCodeMapping_{0}", hfScheme.Value))
         Dim lstSFDocType As List(Of StudentFileDocumentType) = (New JavaScriptSerializer).Deserialize(Of List(Of StudentFileDocumentType))(strMapping)
+
+        Dim strHKICSymbolMapping As String = Me.GetGlobalResourceObject("Text", "VaccinationFileHKICSymbolMapping")
+        Dim lstHKICSymbol As List(Of HKICSymbol) = (New JavaScriptSerializer).Deserialize(Of List(Of HKICSymbol))(strHKICSymbolMapping)
+
+        Dim strEthnicityMapping As String = Me.GetGlobalResourceObject("Text", "VaccinationFileEthnicityMapping")
+        Dim lstEthnicity As List(Of Ethnicity) = (New JavaScriptSerializer).Deserialize(Of List(Of Ethnicity))(strEthnicityMapping)
+
+        Dim strCategory1Mapping As String = Me.GetGlobalResourceObject("Text", "VaccinationFileCategory1Mapping")
+        Dim lstCategory1 As List(Of Category1) = (New JavaScriptSerializer).Deserialize(Of List(Of Category1))(strCategory1Mapping)
+
+        Dim strCategory2Mapping As String = Me.GetGlobalResourceObject("Text", "VaccinationFileCategory2Mapping")
+        Dim lstCategory2 As List(Of Category2) = (New JavaScriptSerializer).Deserialize(Of List(Of Category2))(strCategory2Mapping)
+
         Dim udtStudentFileSetting As StudentFileSetting = StudentFileBLL.GetSetting(hfScheme.Value)
         Dim udtStudentFileUploadErrorDesc As StudentFileUploadErrorDesc = StudentFileBLL.GetUploadErrorDesc
         Dim udtDocTypeList As DocTypeModelCollection = (New DocTypeBLL).getAllDocType
         Dim dicClassNameNoCount As New Dictionary(Of String, Integer)
+        Dim dicDocumentTypeNoCount As New Dictionary(Of String, Integer)
         Dim udtValidator As New Common.Validation.Validator
+        Dim dtmNow As Date = (New GeneralFunction).GetSystemDateTime.Date
 
         For Each n As StudentFileDocumentType In lstSFDocType
             n.SFDocCode = Regex.Replace(n.SFDocCode, "[^a-zA-Z]", String.Empty).ToLower
@@ -2499,25 +2867,29 @@ Partial Public Class VaccinationFileUpload ' 010413
             Dim lstUploadError As New List(Of String)
             Dim lstUploadWarning As New List(Of String)
 
+            '-------------------
             ' Class No
+            '-------------------
             If dr("Class_No") = String.Empty Then
+                Select Case hfScheme.Value
+                    Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                        lstUploadError.Add(udtStudentFileUploadErrorDesc.RefNo_Empty)
 
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-                If hfScheme.Value = SchemeClaimModel.RVP Then
-                    lstUploadError.Add(udtStudentFileUploadErrorDesc.RefNo_Empty)
-                Else
-                    lstUploadError.Add(udtStudentFileUploadErrorDesc.ClassNo_Empty)
-                End If
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]                
+                    Case Else
+                        lstUploadError.Add(udtStudentFileUploadErrorDesc.ClassNo_Empty)
 
-                ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
+                End Select
+
             ElseIf udtValidator.ContainsFullWidthChar(dr("Class_No")) Then
-                If hfScheme.Value = SchemeClaimModel.RVP Then
-                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "RefNoShort")))
-                Else
-                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "ClassNo")))
-                End If
-                ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
+
+                Select Case hfScheme.Value
+                    Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "RefNoShort")))
+
+                    Case Else
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "ClassNo")))
+
+                End Select
 
             Else
                 Dim strClassNameNo As String = String.Format("{0}|||{1}", dr("Class_Name"), dr("Class_No"))
@@ -2530,7 +2902,9 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             End If
 
+            '-------------------
             ' Document Type
+            '-------------------
             If dr("Doc_Code_Excel") = String.Empty Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.DocType_Empty)
 
@@ -2555,14 +2929,14 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             End If
 
+            '-------------------
             ' Document Number
+            '-------------------
             If dr("Doc_No") = String.Empty Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_Empty)
 
-                ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
             ElseIf udtValidator.ContainsFullWidthChar(dr("Doc_No")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "DocumentNo")))
-                ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
             ElseIf (New Regex("^[A-Z0-9()\/-]+$")).IsMatch(dr("Doc_No")) = False Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_Invalid)
@@ -2573,21 +2947,22 @@ Partial Public Class VaccinationFileUpload ' 010413
                     lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_Invalid)
                 End If
 
+                Dim strDocumentTypeNo As String = String.Format("{0}|||{1}", dr("Doc_Code").ToString.Trim, dr("Doc_No").ToString.Trim)
+
+                If dicDocumentTypeNoCount.ContainsKey(strDocumentTypeNo) = False Then
+                    dicDocumentTypeNoCount.Add(strDocumentTypeNo, 0)
+                End If
+
+                dicDocumentTypeNoCount(strDocumentTypeNo) += 1
+
             ElseIf dr("Doc_No").ToString.Trim.Length > udtStudentFileSetting.Upload_DocNoLengthLimit Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_ExceedMaxLength)
 
             End If
 
-
+            '-------------------
             ' Chinese name
-
-            ' CRE18-006 Updating the Acceptance of Format in Student File for Upload under PPP [Start][Koala]
-            'If dr("Name_CH") = String.Empty Then
-            '    lstUploadError.Add(udtStudentFileUploadErrorDesc.ChiName_Empty)
-            'Else
-            ' CRE18-006 Updating the Acceptance of Format in Student File for Upload under PPP [End][Koala]
-
-            ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]            
+            '-------------------        
             If udtValidator.ContainsFullWidthChar(dr("Name_CH_Excel")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "ChineseName")))
             Else
@@ -2606,21 +2981,19 @@ Partial Public Class VaccinationFileUpload ' 010413
 
                 End Select
             End If
-            ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
-
+            '-------------------
             ' English surname
+            '-------------------
             Dim blnNameValid As Boolean = True
 
             If dr("Surname_EN") = String.Empty Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.EngSurname_Empty)
                 blnNameValid = False
 
-                ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
             ElseIf udtValidator.ContainsFullWidthChar(dr("Surname_EN")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "EnglishSurname")))
                 blnNameValid = False
-                ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
             ElseIf (New Regex("^[A-Z '-]+$")).IsMatch(dr("Surname_EN")) = False Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.EngSurname_Invalid)
@@ -2628,9 +3001,9 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             End If
 
+            '-------------------
             ' English given name
-
-            ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
+            '-------------------
             If dr("Given_Name_EN") <> String.Empty Then
                 If udtValidator.ContainsFullWidthChar(dr("Given_Name_EN")) Then
                     lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "EnglishGivenName")))
@@ -2642,9 +3015,10 @@ Partial Public Class VaccinationFileUpload ' 010413
 
                 End If
             End If
-            ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
+            '-------------------
             ' Whole name length
+            '-------------------
             If blnNameValid Then
                 If dr("Surname_EN").ToString.Trim.Length + dr("Given_Name_EN").ToString.Trim.Length > udtStudentFileSetting.Upload_NameENLengthHardLimit Then
                     lstUploadError.Add(udtStudentFileUploadErrorDesc.EngName_ExceedMaxLength)
@@ -2656,25 +3030,23 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             End If
 
+            '-------------------
             ' Sex
+            '-------------------
             If dr("Sex") = String.Empty Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.Sex_Empty)
 
-                ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
             ElseIf udtValidator.ContainsFullWidthChar(dr("Sex")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "Sex")))
-                ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             ElseIf (New Regex("^[MF男女]$")).IsMatch(dr("Sex")) = False Then
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.Sex_Invalid)
 
             End If
 
-
+            '-------------------
             ' Date of Birth
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+            '-------------------
             Dim dtmDOB As Nullable(Of DateTime) = Nothing
             Dim strExactDOB_Excel As String = String.Empty
 
@@ -2701,9 +3073,11 @@ Partial Public Class VaccinationFileUpload ' 010413
                     If Not dtmDOB.HasValue Then
                         lstUploadError.Add(udtStudentFileUploadErrorDesc.DOB_Invalid)
                     End If
+
                 Case dr("DOB_Excel").ToString = String.Empty
                     lstUploadError.Add(udtStudentFileUploadErrorDesc.DOB_Empty)
                     dtmDOB = Nothing
+
                 Case Else
                     ' Other Excel cell format
                     lstUploadError.Add(udtStudentFileUploadErrorDesc.DOB_DataType_Invalid)
@@ -2721,59 +3095,34 @@ Partial Public Class VaccinationFileUpload ' 010413
                 End If
             End If
 
-            'If dr("DOB_Excel") = String.Empty Then
-            '    lstUploadError.Add(udtStudentFileUploadErrorDesc.DOB_Empty)
-
-            'Else
-            '    Dim dtmDOB As Nullable(Of DateTime) = StudentFileBLL.ConvertStudentFileDOB(dr("DOB_Excel"))
-
-            '    If dtmDOB.HasValue Then
-            '        If dtmDOB.Value > Date.Today Then
-            '            lstUploadError.Add(udtStudentFileUploadErrorDesc.DOB_Future)
-            '        Else
-            '            dr("DOB") = dtmDOB.Value
-            '        End If
-
-            '        If dtmServiceReceiveDtm.HasValue Then
-            '            checkAgeExceedSchemeLimit(dr("DOB"), dtmServiceReceiveDtm.Value, lstUploadError, lstUploadWarning)
-            '        End If
-
-            '    Else
-            '        lstUploadError.Add(udtStudentFileUploadErrorDesc.DOB_Invalid)
-            '    End If
-            'End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
-
-
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+            '-------------------
             ' DOB + Scheme
+            '-------------------
             If dtmServiceReceiveDtm.HasValue Then
                 If Not IsDBNull(dr("DOB")) Then
                     checkAgeExceedSchemeLimit(dr("DOB"), dr("Exact_DOB"), dtmServiceReceiveDtm.Value, lstUploadError, lstUploadWarning)
 
                 End If
             End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
+            '---------------------
             ' DOB + Document Type
+            '---------------------
             If dtmServiceReceiveDtm.HasValue Then
                 If Not IsDBNull(dr("DOB")) AndAlso Not IsDBNull(dr("Doc_Code")) Then
                     Dim udtDocType As DocTypeModel = udtDocTypeList.Filter(dr("Doc_Code"))
 
                     If Not IsNothing(udtDocType) AndAlso udtDocType.IsExceedAgeLimit(dr("DOB"), dtmServiceReceiveDtm.Value) Then
-                        ' CRE18-009 (Revise PPP doc age limit to warning) [Start][Koala]
                         lstUploadWarning.Add(udtStudentFileUploadErrorDesc.DocType_ExceedAgeLimit)
-                        'lstUploadError.Add(udtStudentFileUploadErrorDesc.DocType_ExceedAgeLimit)
-                        ' CRE18-009 (Revise PPP doc age limit to warning) [End][Koala]
+
                     End If
 
                 End If
             End If
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+            '---------------------------
             ' Exact DOB + Document Type
+            '---------------------------
             If Not IsDBNull(dr("Exact_DOB")) AndAlso Not IsDBNull(dr("Doc_Code")) Then
 
                 Select Case dr("Doc_Code")
@@ -2793,65 +3142,289 @@ Partial Public Class VaccinationFileUpload ' 010413
                         End If
                 End Select
             End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
+            '-------------------
             ' Contact Number
-            ' CRE18-006 Updating the Acceptance of Format in Student File for Upload under PPP [Start][Koala]
-            'If dr("Contact_No") = String.Empty Then
-            '    lstUploadError.Add(udtStudentFileUploadErrorDesc.ContactNo_Empty)
-
-            'Else
-
-            ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
+            '-------------------
             If udtValidator.ContainsFullWidthChar(dr("Contact_No")) Then
                 lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "ContactNo2")))
-                ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
             ElseIf dr("Contact_No").ToString.Trim.Length > udtStudentFileSetting.Upload_ContactNoLengthLimit Then
                 lstUploadWarning.Add(udtStudentFileUploadErrorDesc.ContactNo_TooLongTrim)
+
             End If
-            ' CRE18-006 Updating the Acceptance of Format in Student File for Upload under PPP [End][Koala]
 
-
+            '------------------------
             ' Doc Type + Other Field
+            '------------------------
             Dim strDocCode As String = String.Empty
             If Not IsDBNull(dr("Doc_Code")) Then strDocCode = dr("Doc_Code").ToString.Trim
 
             checkOtherFieldFormat(dr, strDocCode, lstSFDocType, lstUploadError, lstUploadWarning)
 
+            ' For VSS only
+            If hfScheme.Value = SchemeClaimModel.VSS Then
+                '------------------------
+                ' HKIC Symbol
+                '------------------------
+                If dr("HKIC_Symbol_Excel") = String.Empty Then
+                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "HKICSymbolLong")))
+
+                Else
+                    Dim strHKICSymbolSF As String = Regex.Replace(dr("HKIC_Symbol_Excel"), "[^a-zA-Z]", String.Empty).ToLower
+
+                    While True
+                        For Each udtSFHKICSymbol As HKICSymbol In lstHKICSymbol
+                            If udtSFHKICSymbol.SF_HKICSymbol = strHKICSymbolSF Then
+                                dr("HKIC_Symbol") = udtSFHKICSymbol.EHS_HKICSymbol
+                                Exit While
+
+                            End If
+
+                        Next
+
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "HKICSymbolLong")))
+
+                        Exit While
+
+                    End While
+
+                End If
+
+                '------------------------
+                ' Service Date
+                '------------------------
+                Dim dtmServiceDate As Nullable(Of DateTime) = Nothing
+
+                Dim strDummy As String = String.Empty
+
+                Select Case True
+
+                    Case TypeOf dr("Service_Receive_Dtm_Excel") Is DateTime
+                        ' Excel cell format is "Short Date"/"Long Date"
+
+                        ' Re-use the DOB convert function on service date
+                        dtmServiceDate = StudentFileBLL.ConvertStudentFileDOB(dr("Service_Receive_Dtm_Excel"), strDummy)
+
+                        If Not dtmServiceDate.HasValue Then
+                            lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "ServiceDate")))
+                        End If
+
+                    Case TypeOf dr("Service_Receive_Dtm_Excel") Is String
+                        ' Excel cell format is "Text"
+
+                        Dim strServiceDtm As String = dr("Service_Receive_Dtm_Excel").ToString
+
+                        If strServiceDtm = String.Empty Then
+                            lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "ServiceDate")))
+                        Else
+                            ' Re-use the DOB convert function on service date
+                            dtmServiceDate = StudentFileBLL.ConvertStudentFileDOB(strServiceDtm, strDummy)
+                        End If
+
+                        If Not dtmServiceDate.HasValue Then
+                            lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "ServiceDate")))
+                        End If
+
+                    Case dr("Service_Receive_Dtm_Excel").ToString = String.Empty
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "ServiceDate")))
+                        dtmServiceDate = Nothing
+
+                    Case Else
+                        ' Other Excel cell format
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_DataType_Invalid, GetGlobalResourceObject("Text", "ServiceDate")))
+                        dtmServiceDate = Nothing
+                End Select
+
+                If dtmServiceDate.HasValue Then
+                    If dtmServiceDate.Value > dtmNow Then
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Future, GetGlobalResourceObject("Text", "ServiceDate")))
+                        dr("Service_Receive_Dtm") = dtmServiceDate.Value
+                    Else
+                        dr("Service_Receive_Dtm") = dtmServiceDate.Value
+                    End If
+                End If
+
+                '------------------------
+                ' Non-Immune to Measles
+                '------------------------
+                If dr("Non_Immune_to_measles_Excel") = String.Empty Then
+                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "LaboratoryTestResultReport")))
+
+                Else
+                    Dim strNonImmuneSF As String = Regex.Replace(dr("Non_Immune_to_measles_Excel"), "[^a-zA-Z]", String.Empty).ToLower
+
+                    Select Case strNonImmuneSF
+                        Case "yes"
+                            dr("Non_Immune_to_measles") = YesNo.Yes
+                        Case "no"
+                            dr("Non_Immune_to_measles") = YesNo.No
+                        Case "na"
+                            dr("Non_Immune_to_measles") = "NA"
+                        Case Else
+                            lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "LaboratoryTestResultReport")))
+
+                    End Select
+
+                End If
+
+                '------------------------
+                ' Ethnicity
+                '------------------------
+                If dr("Ethnicity_Excel") = String.Empty Then
+                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "Ethnicity")))
+
+                Else
+                    Dim strEthnicitySF As String = Regex.Replace(dr("Ethnicity_Excel"), "[^a-zA-Z]", String.Empty).ToLower
+
+                    While True
+                        For Each udtSFEthnicity As Ethnicity In lstEthnicity
+                            If udtSFEthnicity.SF_Ethnicity = strEthnicitySF Then
+                                dr("Ethnicity") = udtSFEthnicity.EHS_Ethnicity
+                                Exit While
+
+                            End If
+
+                        Next
+
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "Ethnicity")))
+
+                        Exit While
+
+                    End While
+
+                End If
+
+                '------------------------
+                ' Category 1
+                '------------------------
+                If dr("Category1_Excel") = String.Empty Then
+                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "Category1")))
+
+                Else
+                    Dim strCategory1SF As String = Regex.Replace(dr("Category1_Excel"), "[^a-zA-Z]", String.Empty).ToLower
+
+                    While True
+                        For Each udtSFCategory1 As Category1 In lstCategory1
+                            If udtSFCategory1.SF_Category1 = strCategory1SF Then
+                                dr("Category1") = udtSFCategory1.EHS_Category1
+                                Exit While
+
+                            End If
+
+                        Next
+
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "Category1")))
+
+                        Exit While
+
+                    End While
+
+                End If
+
+                '------------------------
+                ' Category 2
+                '------------------------
+                If dr("Category2_Excel") = String.Empty Then
+                    lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Empty, GetGlobalResourceObject("Text", "Category2")))
+
+                Else
+                    Dim strCategory2SF As String = Regex.Replace(dr("Category2_Excel"), "[^a-zA-Z]", String.Empty).ToLower
+
+                    While True
+                        For Each udtSFCategory2 As Category2 In lstCategory2
+                            If udtSFCategory2.SF_Category2 = strCategory2SF Then
+                                dr("Category2") = udtSFCategory2.EHS_Category2
+                                Exit While
+
+                            End If
+
+                        Next
+
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.Common_Invalid, GetGlobalResourceObject("Text", "Category2")))
+
+                        Exit While
+
+                    End While
+
+                End If
+
+                '-------------------
+                ' Lot Number
+                '-------------------
+                If Not IsDBNull(dr("Lot_Number")) Then
+                    If udtValidator.ContainsFullWidthChar(dr("Lot_Number")) Then
+                        lstUploadError.Add(String.Format(udtStudentFileUploadErrorDesc.FullWidthChar, GetGlobalResourceObject("Text", "LotNumber")))
+
+                    ElseIf dr("Lot_Number").ToString.Trim.Length > udtStudentFileSetting.Upload_LotNumberLengthLimit Then
+                        lstUploadWarning.Add(String.Format(udtStudentFileUploadErrorDesc.Common_TooLongTrim, GetGlobalResourceObject("Text", "LotNumber")))
+
+                    End If
+                End If
+
+            End If
 
             If lstUploadError.Count > 0 Then dr("Upload_Error") = String.Join("|||", lstUploadError.ToArray)
             If lstUploadWarning.Count > 0 Then dr("Upload_Warning") = String.Join("|||", lstUploadWarning.ToArray)
 
         Next
 
+        '---------------------
         ' Duplicate Class No.
+        '---------------------
         For Each kvp As KeyValuePair(Of String, Integer) In dicClassNameNoCount
             If kvp.Value > 1 Then
                 Dim strClassName As String = kvp.Key.Split(New String() {"|||"}, StringSplitOptions.None)(0)
                 Dim strClassNo As String = kvp.Key.Split(New String() {"|||"}, StringSplitOptions.None)(1)
 
                 For Each dr As DataRow In dt.Select(String.Format("Class_Name = '{0}' AND Class_No = '{1}'", strClassName, strClassNo))
-
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
                     Dim strClassNo_Duplicate As String = String.Empty
-                    If hfScheme.Value = SchemeClaimModel.RVP Then
-                        strClassNo_Duplicate = udtStudentFileUploadErrorDesc.RefNo_Duplicate
-                    Else
-                        strClassNo_Duplicate = udtStudentFileUploadErrorDesc.ClassNo_Duplicate
-                    End If
+
+                    Select Case hfScheme.Value
+                        Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                            strClassNo_Duplicate = udtStudentFileUploadErrorDesc.RefNo_Duplicate
+
+                        Case Else
+                            strClassNo_Duplicate = udtStudentFileUploadErrorDesc.ClassNo_Duplicate
+
+                    End Select
 
                     If dr("Upload_Error") = String.Empty Then
                         dr("Upload_Error") = strClassNo_Duplicate
                     Else
                         dr("Upload_Error") += "|||" + strClassNo_Duplicate
                     End If
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
+
                 Next
 
             End If
 
         Next
+
+        '------------------------
+        ' Duplicate Document No.
+        '------------------------
+        For Each kvpDocNo As KeyValuePair(Of String, Integer) In dicDocumentTypeNoCount
+            If kvpDocNo.Value > 1 Then
+                Dim strDocumentType As String = kvpDocNo.Key.Split(New String() {"|||"}, StringSplitOptions.None)(0)
+                Dim strDocumentNo As String = kvpDocNo.Key.Split(New String() {"|||"}, StringSplitOptions.None)(1)
+
+                For Each dr As DataRow In dt.Select(String.Format("Doc_Code = '{0}' AND Doc_No = '{1}'", strDocumentType, strDocumentNo))
+                    Dim strDocumentNo_Duplicate As String = udtStudentFileUploadErrorDesc.DocNo_Duplicate
+
+                    If dr("Upload_Error") = String.Empty Then
+                        dr("Upload_Error") = strDocumentNo_Duplicate
+                    Else
+                        dr("Upload_Error") += "|||" + strDocumentNo_Duplicate
+                    End If
+
+                Next
+
+            End If
+
+        Next
+
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
     End Sub
 
@@ -3260,7 +3833,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         Dim udtStudentFileHeader As StudentFileHeaderModel = Session(SESS.UploadModel)
         udtStudentFileHeader.StudentFileID = (New GeneralFunction).GenerateStudentFileID
 
-        ' Insert the records into [DeathRecordEntryStaging]
+        ' Insert the records into [StudentFileEntryStaging]
         dt = MassageData(dt)
 
         Dim udtDB As New Database
@@ -3305,37 +3878,42 @@ Partial Public Class VaccinationFileUpload ' 010413
     '
 
     Protected Sub gvE_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         If e.Row.RowType = DataControlRowType.Header Then
             Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.UploadModel)
 
             If Not udtStudentFile Is Nothing Then
-                If udtStudentFile.SchemeCode = SchemeClaimModel.RVP Then
-                    e.Row.Cells(0).Text = GetGlobalResourceObject("Text", "Category")
-                    e.Row.Cells(1).Text = GetGlobalResourceObject("Text", "RefNoShort")
-                Else
-                    e.Row.Cells(0).Text = GetGlobalResourceObject("Text", "ClassName")
-                    e.Row.Cells(1).Text = GetGlobalResourceObject("Text", "ClassNo")
-                End If
+                Select Case udtStudentFile.SchemeCode
+                    Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                        e.Row.Cells(0).Text = GetGlobalResourceObject("Text", "Category")
+                        e.Row.Cells(1).Text = GetGlobalResourceObject("Text", "RefNoShort")
+                    Case Else
+                        e.Row.Cells(0).Text = GetGlobalResourceObject("Text", "ClassName")
+                        e.Row.Cells(1).Text = GetGlobalResourceObject("Text", "ClassNo")
+                End Select
             End If
 
         ElseIf e.Row.RowType = DataControlRowType.DataRow Then
+
             Dim dr As DataRowView = e.Row.DataItem
             Dim udtFormatter As New Formatter
 
+            ' --------------------
             ' DOB
+            ' --------------------
             Dim lblGDOB As Label = e.Row.FindControl("lblGDOB")
 
             If Not IsDBNull(dr("DOB")) Then
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                 lblGDOB.Text = udtFormatter.formatDOB(dr("DOB"), dr("Exact_DOB"), Nothing, Nothing)
-                'lblGDOB.Text = udtFormatter.formatDisplayDate(dr("DOB"))
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
             Else
                 lblGDOB.Text = dr("DOB_Excel").ToString
             End If
 
-
+            ' --------------------
             ' Other Fields
+            ' --------------------
             Dim lstOtherField As New List(Of String)
             Dim lblGOtherField As Label = e.Row.FindControl("lblGOtherField")
 
@@ -3345,15 +3923,25 @@ Partial Public Class VaccinationFileUpload ' 010413
             Dim strECSerialNo As String = String.Empty
             Dim strECReference As String = String.Empty
 
+            Dim strHKICSymbol As String = String.Empty
+            Dim strNonImmune As String = String.Empty
+            Dim strEthnicity As String = String.Empty
+            Dim strCategory1 As String = String.Empty
+            Dim strCategory2 As String = String.Empty
+            Dim strLotNumber As String = String.Empty
+
+            'Dim strHtmlFormat As String = "{0}&nbsp;{1}:<div style='font-weight:bold;padding-left:9px;padding-bottom:5px'>{2}</div>"
+            Dim strHtmlFormat As String = "&nbsp;{0}&nbsp;{1}:<span style='font-weight:bold;padding-left:4px'>{2}</span><br/>"
+
             ' DOI
             If dr("Date_of_Issue_Excel").ToString <> String.Empty Then
                 If Not IsDBNull(dr("Date_of_Issue")) Then
-                    strDateOfIssue = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                    strDateOfIssue = String.Format(strHtmlFormat, _
                                                    "•", _
                                                     GetGlobalResourceObject("Text", OtherFieldResourceName.DateOfIssue), _
                                                     udtFormatter.formatDisplayDate(dr("Date_of_Issue")))
                 Else
-                    strDateOfIssue = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                    strDateOfIssue = String.Format(strHtmlFormat, _
                                                    "•", _
                                                     GetGlobalResourceObject("Text", OtherFieldResourceName.DateOfIssue), _
                                                     dr("Date_of_Issue_Excel"))
@@ -3365,13 +3953,13 @@ Partial Public Class VaccinationFileUpload ' 010413
             ' Permit to Remain Until
             If dr("Permit_To_Remain_Until_Excel").ToString <> String.Empty Then
                 If Not IsDBNull(dr("Permit_To_Remain_Until")) Then
-                    strPermitToRemain = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                    strPermitToRemain = String.Format(strHtmlFormat, _
                                                    "•", _
                                                    GetGlobalResourceObject("Text", OtherFieldResourceName.PermitToRemain), _
                                                    udtFormatter.formatDisplayDate(dr("Permit_To_Remain_Until")))
 
                 Else
-                    strPermitToRemain = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                    strPermitToRemain = String.Format(strHtmlFormat, _
                                                    "•", _
                                                    GetGlobalResourceObject("Text", OtherFieldResourceName.PermitToRemain), _
                                                    dr("Permit_To_Remain_Until_Excel"))
@@ -3383,7 +3971,7 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             ' Passport No.
             If dr("Foreign_Passport_No") <> String.Empty Then
-                strForeignPassport = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strForeignPassport = String.Format(strHtmlFormat, _
                                                 "•", _
                                                 GetGlobalResourceObject("Text", OtherFieldResourceName.ForeignPassport), _
                                                 dr("Foreign_Passport_No"))
@@ -3393,7 +3981,7 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             ' EC Serial No.
             If dr("EC_Serial_No") <> String.Empty Then
-                strECSerialNo = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strECSerialNo = String.Format(strHtmlFormat, _
                                                 "•", _
                                                 GetGlobalResourceObject("Text", OtherFieldResourceName.ECSerialNo), _
                                                 dr("EC_Serial_No"))
@@ -3403,7 +3991,7 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             ' EC Ref No.
             If dr("EC_Reference_No") <> String.Empty Then
-                strECReference = String.Format("{0}&nbsp;{1}:<br>&nbsp;&nbsp;{2}", _
+                strECReference = String.Format(strHtmlFormat, _
                                                 "•", _
                                                 GetGlobalResourceObject("Text", OtherFieldResourceName.ECReference), _
                                                 dr("EC_Reference_No"))
@@ -3411,38 +3999,190 @@ Partial Public Class VaccinationFileUpload ' 010413
                 lstOtherField.Add(strECReference)
             End If
 
-            If lstOtherField.Count > 0 Then lblGOtherField.Text = String.Join("<br>", lstOtherField.ToArray)
+            ' HKIC Symbol
+            If Not IsDBNull(dr("HKIC_Symbol")) AndAlso dr("HKIC_Symbol") <> String.Empty Then
+                Dim strHKICSymbolDesc As String = String.Empty
+                Status.GetDescriptionFromDBCode("HKICSymbol", dr("HKIC_Symbol"), strHKICSymbolDesc, String.Empty, String.Empty)
 
-            ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+                strHKICSymbol = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                GetGlobalResourceObject("Text", OtherFieldResourceName.HKICSymbol), _
+                                                strHKICSymbolDesc)
+
+                lstOtherField.Add(strHKICSymbol)
+            End If
+
+            ' Non-immune to measles
+            If Not IsDBNull(dr("Non_Immune_to_measles")) Then
+                Dim strNonImmuneDesc As String = String.Empty
+
+                Select Case dr("Non_Immune_to_measles").ToString.Trim
+                    Case YesNo.Yes, YesNo.No
+                        strNonImmuneDesc = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("YesNo", dr("Non_Immune_to_measles")).DataValue.ToString.Trim
+                    Case "NA"
+                        strNonImmuneDesc = GetGlobalResourceObject("Text", "NA")
+                    Case String.Empty
+                        strNonImmuneDesc = GetGlobalResourceObject("Text", "NotProvided")
+                End Select
+
+                'strNonImmune = String.Format(strHtmlFormat, _
+                '                                "•", _
+                '                                GetGlobalResourceObject("Text", OtherFieldResourceName.LaboratoryTestResultReport), _
+                '                                strNonImmuneDesc)
+                strNonImmune = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                "Lab. Test Result", _
+                                                strNonImmuneDesc)
+
+                lstOtherField.Add(strNonImmune)
+            End If
+
+            ' Ethnicity
+            If Not IsDBNull(dr("Ethnicity")) Then
+
+                Dim strEthnicityDesc As String = String.Empty
+
+                If dr("Ethnicity") <> String.Empty Then
+                    strEthnicityDesc = GetGlobalResourceObject("Text", dr("Ethnicity"))
+                Else
+                    strEthnicityDesc = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+
+                strEthnicity = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                GetGlobalResourceObject("Text", OtherFieldResourceName.Ethnicity), _
+                                                strEthnicityDesc)
+
+                lstOtherField.Add(strEthnicity)
+            End If
+
+            ' Category 1
+            If Not IsDBNull(dr("Category1")) Then
+
+                Dim strCategory1Desc As String = String.Empty
+
+                If dr("Category1") <> String.Empty Then
+                    strCategory1Desc = GetGlobalResourceObject("Text", dr("Category1"))
+                Else
+                    strCategory1Desc = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+
+                'strCategory1 = String.Format(strHtmlFormat, _
+                '                                "•", _
+                '                                GetGlobalResourceObject("Text", OtherFieldResourceName.Category1), _
+                '                                strCategory1Desc)
+
+                strCategory1 = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                "Cat. 1", _
+                                                strCategory1Desc)
+
+                lstOtherField.Add(strCategory1)
+            End If
+
+            ' Category 2
+            If Not IsDBNull(dr("Category2")) Then
+
+                Dim strCategory2Desc As String = String.Empty
+
+                If dr("Category2") <> String.Empty Then
+                    strCategory2Desc = GetGlobalResourceObject("Text", dr("Category2"))
+                Else
+                    strCategory2Desc = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+
+                'strCategory2 = String.Format(strHtmlFormat, _
+                '                                "•", _
+                '                                GetGlobalResourceObject("Text", OtherFieldResourceName.Category2), _
+                '                                strCategory2Desc)
+
+                strCategory2 = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                "Cat. 2", _
+                                                strCategory2Desc)
+
+                lstOtherField.Add(strCategory2)
+            End If
+
+            ' Lot Number
+            If Not IsDBNull(dr("Lot_Number")) Then
+
+                Dim strLotNumberDesc As String = String.Empty
+
+                If dr("Lot_Number") <> String.Empty Then
+                    strLotNumberDesc = dr("Lot_Number").ToString
+                Else
+                    strLotNumberDesc = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+
+                'strLotNumber = String.Format(strHtmlFormat, _
+                '                                "•", _
+                '                                GetGlobalResourceObject("Text", OtherFieldResourceName.LotNumber), _
+                '                                strLotNumberDesc)
+
+                strLotNumber = String.Format(strHtmlFormat, _
+                                                "•", _
+                                                "Lot No.", _
+                                                strLotNumberDesc)
+
+                lstOtherField.Add(strLotNumber)
+            End If
+
+            If lstOtherField.Count > 0 Then lblGOtherField.Text = String.Join("", lstOtherField.ToArray)
+
+            ' --------------------
+            ' Service Date
+            ' --------------------
+            Dim lblGServiceDate As Label = e.Row.FindControl("lblGServiceDate")
+
+            If Not IsDBNull(dr("Service_Receive_Dtm")) Then
+                lblGServiceDate.Text = udtFormatter.formatDisplayDate(dr("Service_Receive_Dtm"))
+            Else
+                lblGServiceDate.Text = dr("Service_Receive_Dtm_Excel").ToString
+            End If
+
+            ' --------------------
             ' Error
+            ' --------------------
             If dr("Upload_Error") <> String.Empty Then
                 Dim lstUploadError As New List(Of String)
                 lstUploadError.AddRange(Split(dr("Upload_Error"), "<br>"))
 
-                For i As Integer = 0 To lstUploadError.Count - 1
-                    lstUploadError.Item(i) = String.Format("{0}&nbsp;{1}", "•", lstUploadError.Item(i))
-                Next
-
                 Dim lblGErrorMessage As Label = e.Row.FindControl("lblGErrorMessage")
-                lblGErrorMessage.Text = String.Join("<br>", lstUploadError.ToArray)
+
+                If lstUploadError.Count > 0 Then
+                    lblGErrorMessage.Text = "<table style='border-collapse:collapse;padding:0px'>"
+
+                    For i As Integer = 0 To lstUploadError.Count - 1
+                        lblGErrorMessage.Text += "<tr><td>•&nbsp;</td><td style='padding-bottom:5px'>" & lstUploadError.Item(i) & "</td></tr>"
+                    Next
+
+                    lblGErrorMessage.Text += "</table>"
+                End If
             End If
 
-            'Warning
+            ' --------------------
+            ' Warning
+            ' --------------------
             If dr("Upload_Warning") <> String.Empty Then
                 Dim lstUploadWarning As New List(Of String)
                 lstUploadWarning.AddRange(Split(dr("Upload_Warning"), "<br>"))
 
-                For i As Integer = 0 To lstUploadWarning.Count - 1
-                    lstUploadWarning.Item(i) = String.Format("{0}&nbsp;{1}", "•", lstUploadWarning.Item(i))
-                Next
-
                 Dim lblGWarningMessage As Label = e.Row.FindControl("lblGWarningMessage")
-                lblGWarningMessage.Text = String.Join("<br>", lstUploadWarning.ToArray)
+
+                If lstUploadWarning.Count > 0 Then
+                    lblGWarningMessage.Text = "<table style='border-collapse:collapse;padding:0px'>"
+
+                    For i As Integer = 0 To lstUploadWarning.Count - 1
+                        lblGWarningMessage.Text += "<tr><td>•&nbsp;</td><td style='padding-bottom:5px'>" & lstUploadWarning.Item(i) & "</td></tr>"
+                    Next
+
+                    lblGWarningMessage.Text += "</table>"
+                End If
             End If
-            ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
 
         End If
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
     End Sub
 
@@ -3924,6 +4664,7 @@ Partial Public Class VaccinationFileUpload ' 010413
     ' ----------------------------------------------------------------------------------------
     Private Function BindPractice(ByVal udtSP As ServiceProviderModel) As Boolean
 
+        ddlIPractice.ClearSelection()
         ddlIPractice.Items.Clear()
         ddlIPractice.Enabled = False
 
@@ -3943,8 +4684,18 @@ Partial Public Class VaccinationFileUpload ' 010413
                             If udtPracticeSchemeInfo.SchemeCode = hfScheme.Value _
                                     AndAlso udtPracticeSchemeInfo.RecordStatusEnum = PracticeSchemeInfoModel.RecordStatusEnumClass.Active Then
 
-                                lstPractice.Add(udtPractice.DisplaySeq, String.Format("{0} ({1})", udtPractice.PracticeName, udtPractice.DisplaySeq))
-                                Exit For
+                                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                                ' ---------------------------------------------------------------------------------------------------------
+                                If ddlIScheme.SelectedValue.Trim = Scheme.SchemeClaimModel.VSS Then
+                                    If udtPracticeSchemeInfo.ClinicType <> PracticeSchemeInfoModel.ClinicTypeEnum.NonClinic Then
+                                        lstPractice.Add(udtPractice.DisplaySeq, String.Format("{0} ({1})", udtPractice.PracticeName, udtPractice.DisplaySeq))
+                                        Exit For
+                                    End If
+                                Else
+                                    lstPractice.Add(udtPractice.DisplaySeq, String.Format("{0} ({1})", udtPractice.PracticeName, udtPractice.DisplaySeq))
+                                    Exit For
+                                End If
+                                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                             End If
                         Next

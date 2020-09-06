@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:			
--- Modified date:	
--- CR No.			
--- Description:		
+-- Modified by:		Chris YIM
+-- Modified date:	27 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Enlarge column size (Class_Name)
 -- =============================================
 -- =============================================
 -- Modification History
@@ -24,7 +24,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_StudentFileEntryPrecheckSubsidizeInject_add]
 	@Student_File_ID	VARCHAR(15),
 	@Student_Seq		INT,
-	@Class_Name			NVARCHAR(10),
+	@Class_Name			NVARCHAR(40),
 	@Scheme_Code		CHAR(10),
 	@Scheme_Seq			SMALLINT,
 	@Subsidize_Code		CHAR(10),

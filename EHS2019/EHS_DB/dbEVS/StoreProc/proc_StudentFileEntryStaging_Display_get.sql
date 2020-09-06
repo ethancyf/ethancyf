@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	17 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -349,6 +356,7 @@ AS BEGIN
 		SFE.Entitle_ONLYDOSE,
 		SFE.Entitle_1STDOSE,
 		SFE.Entitle_2NDDOSE,
+		SFE.Entitle_3RDDOSE,
 		SFE.Entitle_Inject,
 		SFE.Entitle_Inject_Fail_Reason,
 		SFE.Ext_Ref_Status,
@@ -445,13 +453,23 @@ AS BEGIN
 		[Rectified] = IIF(SFEP.Student_Seq IS NULL, 'A', 'R'),
 
 		SFE.Original_Student_File_ID,
-		SFE.Original_Student_Seq
+		SFE.Original_Student_Seq,
+		SFE.HKIC_Symbol,
+		SFE.Service_Receive_Dtm,
+
+		SFEMMR.Non_immune_to_measles,
+		SFEMMR.Ethnicity,
+		SFEMMR.Category1,
+		SFEMMR.Category2,
+		SFEMMR.Lot_Number
 	FROM
 		StudentFileEntryStaging SFE
 			INNER JOIN #tblAcc ACC
 				ON SFE.Student_Seq = ACC.SeqNo
 			INNER JOIN StudentFileHeaderStaging SFH
 				ON SFE.Student_File_ID = SFH.Student_File_ID
+			LEFT OUTER JOIN StudentFileEntryMMRFieldStaging SFEMMR
+				ON SFE.Student_File_ID = SFEMMR.Student_File_ID AND SFE.Student_Seq = SFEMMR.Student_Seq
 			LEFT OUTER JOIN VoucherAccount VA
 				ON ACC.Real_Voucher_Acc_ID = VA.Voucher_Acc_ID 
 					AND ACC.Real_Acc_Type = 'V'

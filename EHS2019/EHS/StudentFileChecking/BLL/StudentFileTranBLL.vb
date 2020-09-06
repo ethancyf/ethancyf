@@ -40,7 +40,8 @@ Namespace BLL
                                                    ByVal udtVaccineEntitle As BLL.VaccineEntitleModel) As EHSTransactionModel
             Dim udtEHSTran As New EHSTransactionModel()
 
-
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             ' Account information
             udtEHSTran.DocCode = udtStudent.PersonalInformation.DocCode
             If udtAccount.AccountSource = SysAccountSource.ValidateAccount Then
@@ -48,7 +49,12 @@ Namespace BLL
             Else
                 udtEHSTran.TempVoucherAccID = udtAccount.VoucherAccID
             End If
+
             udtEHSTran.EHSAcct = udtAccount
+
+            If udtEHSTran.DocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
+                udtEHSTran.HKICSymbol = udtStudent.HKICSymbol
+            End If
 
             ' Service Provider & Practice
             udtEHSTran.ServiceType = udtPracticeModel.Professional.ServiceCategoryCode
@@ -62,10 +68,7 @@ Namespace BLL
             ' Claim, Scheme & subsidies
             udtEHSTran.SchemeCode = udtSchemeClaimModel.SchemeCode
             udtEHSTran.CategoryCode = udtClaimCategory.CategoryCode
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             udtEHSTran.ServiceDate = dtmServiceDate
-            'udtEHSTran.ServiceDate = udtStudent.ServiceReceviceDate
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             udtEHSTran.ClaimAmount = 0
 
             ' Vaccine Ref Status (e.g. Patient match, with vaccination record returned from different parties)
@@ -81,11 +84,6 @@ Namespace BLL
             ' Mise information
             ' udtEHSTran.SourceApp <-- SourceApp will be specified when call insert transaction function
             udtEHSTran.TransactionDtm = Now()
-
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'udtEHSTran.RecordStatus = udtSchemeClaimModel.ConfirmedTransactionStatus
-
             If udtAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
                 udtEHSTran.RecordStatus = udtSchemeClaimModel.ConfirmedTransactionStatus
             Else
@@ -95,9 +93,9 @@ Namespace BLL
             ' Transaction created by SP
             udtEHSTran.CreateBy = udtStudent.ServiceProviderID 'udtStudent.ClaimUploadBy
             udtEHSTran.UpdateBy = udtStudent.ServiceProviderID 'udtStudent.ClaimUploadBy
-            ' CRE19-001 (VSS 2019) [End][Winnie]
 
-            ConstructEHSTransactionDetails(udtSchemeClaimModel, udtSubsidizeGroupClaim, udtStudent, strDose, udtEHSTran, udtVaccineEntitle)
+            ConstructEHSTransactionDetails(udtSchemeClaimModel, udtSubsidizeGroupClaim, udtPracticeModel, udtStudent, strDose, udtEHSTran, udtVaccineEntitle)
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             Return udtEHSTran
 
@@ -116,6 +114,7 @@ Namespace BLL
         ''' <remarks></remarks>
         Public Shared Sub ConstructEHSTransactionDetails(ByVal udtSchemeClaimModel As SchemeClaimModel, _
                                                   ByVal udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel, _
+                                                  ByVal udtPracticeModel As PracticeModel, _
                                                   ByVal udtStudent As StudentModel, _
                                                   ByVal strDose As String, _
                                                   ByRef udtEHSTransactionModel As EHSTransactionModel, _
@@ -128,11 +127,9 @@ Namespace BLL
             Next
 
             ' Available Item Code
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             Dim strAvailalbeItemCode As String = strDose
-            'Dim strAvailalbeItemCode As String = udtStudent.Dose
+
             If strDose = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                 If udtVaccineEntitle Is Nothing Then
                     If udtStudent.EntitleOnlyDose Then
                         strAvailalbeItemCode = SubsidizeItemDetailsModel.DoseCode.ONLYDOSE
@@ -167,14 +164,22 @@ Namespace BLL
             udtTransactionAdditionalFieldModel.SchemeCode = udtSubsidizeGroupClaim.SchemeCode
             udtTransactionAdditionalFieldModel.SchemeSeq = udtSubsidizeGroupClaim.SchemeSeq
             udtTransactionAdditionalFieldModel.SubsidizeCode = udtSubsidizeGroupClaim.SubsidizeCode
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-            If udtSubsidizeGroupClaim.SchemeCode = SchemeClaimModel.RVP Then
-                udtTransactionAdditionalFieldModel.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.RCHCode
-            Else
-                udtTransactionAdditionalFieldModel.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.SchoolCode
-            End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-            udtTransactionAdditionalFieldModel.AdditionalFieldValueCode = udtStudent.SchoolCode
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select Case udtSubsidizeGroupClaim.SchemeCode
+                Case SchemeClaimModel.RVP
+                    udtTransactionAdditionalFieldModel.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.RCHCode
+                    udtTransactionAdditionalFieldModel.AdditionalFieldValueCode = udtStudent.SchoolCode
+                Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
+                    udtTransactionAdditionalFieldModel.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.SchoolCode
+                    udtTransactionAdditionalFieldModel.AdditionalFieldValueCode = udtStudent.SchoolCode
+                Case SchemeClaimModel.VSS
+                    udtTransactionAdditionalFieldModel.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ClinicType
+                    udtTransactionAdditionalFieldModel.AdditionalFieldValueCode = udtPracticeModel.PracticeSchemeInfoList.Filter(udtSubsidizeGroupClaim.SchemeCode, udtSubsidizeGroupClaim.SubsidizeCode).ClinicTypeToString
+            End Select
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             udtEHSTransactionModel.TransactionAdditionFields = New EHSTransaction.TransactionAdditionalFieldModelCollection
             udtEHSTransactionModel.TransactionAdditionFields.Add(udtTransactionAdditionalFieldModel)
         End Sub

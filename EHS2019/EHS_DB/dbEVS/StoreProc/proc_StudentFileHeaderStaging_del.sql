@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	27 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Delete StudentFileEntryMMRFieldStaging record
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	28 Aug 2019
 -- CR No.			CRE19-001
@@ -75,6 +82,12 @@ AS BEGIN
 	WHERE
 		Student_File_ID = @Student_File_ID
 
+	--
+	
+	DELETE
+		StudentFileEntryMMRFieldStaging
+	WHERE
+		Student_File_ID = @Student_File_ID
 
 END
 GO

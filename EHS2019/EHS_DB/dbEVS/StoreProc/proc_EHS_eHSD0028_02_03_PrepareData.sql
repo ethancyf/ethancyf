@@ -8,11 +8,11 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		Koala CHENG
--- Modified date:	16 Jul 2020
--- CR. No			INT20-0025
--- Description:		(1) Add WITH (NOLOCK)
--- =============================================  
+-- Modified by:		Chris YIM
+-- Modified date:	7 Aug 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add MMR-NIA
+-- =============================================
 -- ============================================= 
 -- Modification History
 -- Modified by:		Chris YIM
@@ -73,8 +73,8 @@ SET NOCOUNT ON;
 	DECLARE @result1 INT, @result2 INT, @result3 INT, @result4 INT, @result5 INT, @result6 INT, @result7 INT, @result8 INT, @result9 INT, @result10 INT
 	, @result11 INT, @result12 INT, @result13 INT, @result14 INT, @result15 INT, @result16 INT, @result17 INT, @result18 INT, @result19 INT, @result20 INT
 	, @result21 INT, @result22 INT, @result23 INT, @result24 INT, @result25 INT, @result26 INT, @result27 INT, @result28 INT, @result29 INT, @result30 INT
-	, @result31 INT
-
+	, @result31 INT, @result32 INT, @result33 INT, @result34 INT, @result35 INT, @result36 INT, @result37 INT, @result38 INT, @result39 INT, @result40 INT
+	, @result41 INT, @result42 INT
 	--Determine Scheme seq    
 	DECLARE @current_scheme_Seq INT
 	DECLARE @schemeDate	DATETIME
@@ -121,24 +121,23 @@ SET NOCOUNT ON;
 
 	CREATE table  #temp_HCVS
 	(    
-	 voucher_acc_id			char(15),    
-	 temp_voucher_acc_id	char(15),    
-	 transaction_id			varchar(20),    
-	 Reason1				char(1),    
-	 Reason2				char(1),    
-	 identity_num			varchar(20),    
-	 dob					datetime,    
-	 service_receive_dtm	datetime,    
-	 SP_ID					char(8)    
+		voucher_acc_id		CHAR(15),    
+		temp_voucher_acc_id	CHAR(15),    
+		transaction_id		VARCHAR(20),    
+		Reason1				CHAR(1),    
+		Reason2				CHAR(1),    
+		identity_num		VARCHAR(20),    
+		dob					DATETIME,    
+		service_receive_dtm	DATETIME,    
+		SP_ID				CHAR(8)    
 	)  
 	
-	CREATE table #account
-	(    
-	 voucher_acc_id			char(15),    
-	 temp_voucher_acc_id	char(15),    
-	 identity_num			varchar(20),    
-	 doc_code				char(10),    
-	 dob					datetime     
+	CREATE table #account(    
+		voucher_acc_id		CHAR(15),    
+		temp_voucher_acc_id	CHAR(15),    
+		identity_num		VARCHAR(20),    
+		doc_code			CHAR(10),    
+		dob					DATETIME     
 	)      
 	   
 	-- =============================================    
@@ -153,10 +152,10 @@ SET NOCOUNT ON;
 	SET @schemeDate = DATEADD(dd, -1, @Cutoff_Dtm)  
 	
 	EXEC @current_scheme_Seq = [proc_EHS_GetSchemeSeq_Stat] @Scheme_Code, @schemeDate  
-	SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WITH (NOLOCK) WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
+	SELECT @Current_scheme_desc = Season_Desc FROM VaccineSeason WHERE Scheme_Code = @Scheme_Code AND Scheme_Seq = @current_scheme_Seq AND Subsidize_Item_Code = 'SIV'
 	SELECT @Current_Season_Start_Dtm = MIN(SG.Claim_Period_From)
-	FROM SubsidizeGroupClaim  SG WITH (NOLOCK)
-	INNER JOIN SubsidizeGroupClaimItemDetails SGD WITH (NOLOCK)
+	FROM SubsidizeGroupClaim  SG
+	INNER JOIN SubsidizeGroupClaimItemDetails SGD
 		ON SG.Scheme_Code = SGD.Scheme_Code
 		AND SG.Scheme_Seq = SGD.Scheme_Seq
 		AND SG.Subsidize_Code = SGD.Subsidize_Code
@@ -172,12 +171,12 @@ SET NOCOUNT ON;
 		SCA.Category_Code,
 		CC.Display_Seq
 	FROM 
-		[SubsidizeGroupClaim] SGC WITH (NOLOCK)
-		INNER JOIN [Subsidize]	S WITH (NOLOCK)
+		[SubsidizeGroupClaim] SGC
+		INNER JOIN [Subsidize]	S
 			ON SGC.[Subsidize_Code] = S.[Subsidize_Code]
-		INNER JOIN [SubsidizeGroupCategory] SCA WITH (NOLOCK)
+		INNER JOIN [SubsidizeGroupCategory] SCA
 			ON SCA.[Subsidize_Code] = S.[Subsidize_Code]
-		INNER JOIN [ClaimCategory] CC WITH (NOLOCK)
+		INNER JOIN [ClaimCategory] CC
 			ON CC.Category_Code = SCA.Category_Code
 	
 	WHERE 
@@ -195,8 +194,8 @@ OPEN SYMMETRIC KEY sym_Key
 
 	CREATE TABLE #temp_VSS		-- Transaction with SIV and PV
 	(    			
-		voucher_acc_id			char(15),    
-		temp_voucher_acc_id		char(15), 		
+		voucher_acc_id			CHAR(15),    
+		temp_voucher_acc_id		CHAR(15), 		
 		Transaction_ID			VARCHAR(20),
 		Service_Receive_Dtm		DATETIME,
 		DOB						DATETIME,
@@ -206,7 +205,7 @@ OPEN SYMMETRIC KEY sym_Key
 		SP_ID					CHAR(8),
 		Subsidize_Code			VARCHAR(10),
 		Subsidize_Item_Code		CHAR(10),
-		identity_num			varchar(20), 
+		identity_num			VARCHAR(20), 
 		High_Risk				CHAR(1),
 		IsWithVoucher			TINYINT,
 		IsSIV					TINYINT,
@@ -221,75 +220,95 @@ OPEN SYMMETRIC KEY sym_Key
 	CREATE TABLE #result_table   
 	(    
 		_display_seq tinyint,
-		_result_value1 varchar(200) default '',    
-		_result_value2 varchar(100) default '',    
-		_result_value3 varchar(100) default '',    
-		_result_value4 varchar(100) default '',    
-		_result_value5 varchar(100) default '',    
-		_result_value6 varchar(100) default '',    
-		_result_value7 varchar(100) default '',    
-		_result_value8 varchar(100) default '',    
-		_result_value9 varchar(100) default '',    
-		_result_value10 varchar(100) default '',    
-		_result_value11 varchar(100) default '',    
-		_result_value12 varchar(100) default '',    
-		_result_value13 varchar(100) default '',    
-		_result_value14 varchar(100) default '',    
-		_result_value15 varchar(100) default '',
-		_result_value16 varchar(100) default '',    
-		_result_value17 varchar(100) default '',    
-		_result_value18 varchar(100) default '',    
-		_result_value19 varchar(100) default '',    
-		_result_value20 varchar(100) default '', 		
-		_result_value21 varchar(100) default '',    
-		_result_value22 varchar(100) default '',    
-		_result_value23 varchar(100) default '',    
-		_result_value24 varchar(100) default '',    
-		_result_value25 varchar(100) default '',    
-		_result_value26 varchar(100) default '',    
-		_result_value27 varchar(100) default '',    
-		_result_value28 varchar(100) default '',    
-		_result_value29 varchar(100) default '',		
-		_result_value30 varchar(100) default '',
-		_result_value31 varchar(100) default '',
-		_result_value32 varchar(100) default ''
+		_result_value1 VARCHAR(200) default '',    
+		_result_value2 VARCHAR(100) default '',    
+		_result_value3 VARCHAR(100) default '',    
+		_result_value4 VARCHAR(100) default '',    
+		_result_value5 VARCHAR(100) default '',    
+		_result_value6 VARCHAR(100) default '',    
+		_result_value7 VARCHAR(100) default '',    
+		_result_value8 VARCHAR(100) default '',    
+		_result_value9 VARCHAR(100) default '',    
+		_result_value10 VARCHAR(100) default '',    
+		_result_value11 VARCHAR(100) default '',    
+		_result_value12 VARCHAR(100) default '',    
+		_result_value13 VARCHAR(100) default '',    
+		_result_value14 VARCHAR(100) default '',    
+		_result_value15 VARCHAR(100) default '',
+		_result_value16 VARCHAR(100) default '',    
+		_result_value17 VARCHAR(100) default '',    
+		_result_value18 VARCHAR(100) default '',    
+		_result_value19 VARCHAR(100) default '',    
+		_result_value20 VARCHAR(100) default '', 		
+		_result_value21 VARCHAR(100) default '',    
+		_result_value22 VARCHAR(100) default '',    
+		_result_value23 VARCHAR(100) default '',    
+		_result_value24 VARCHAR(100) default '',    
+		_result_value25 VARCHAR(100) default '',    
+		_result_value26 VARCHAR(100) default '',    
+		_result_value27 VARCHAR(100) default '',    
+		_result_value28 VARCHAR(100) default '',    
+		_result_value29 VARCHAR(100) default '',		
+		_result_value30 VARCHAR(100) default '',
+		_result_value31 VARCHAR(100) default '',
+		_result_value32 VARCHAR(100) default '',
+		_result_value33 VARCHAR(100) default '',
+		_result_value34 VARCHAR(100) default '',
+		_result_value35 VARCHAR(100) default '',
+		_result_value36 VARCHAR(100) default '',
+		_result_value37 VARCHAR(100) default '',
+		_result_value38 VARCHAR(100) default '',
+		_result_value39 VARCHAR(100) default '',
+		_result_value40 VARCHAR(100) default '',
+		_result_value41 VARCHAR(100) default '',
+		_result_value42 VARCHAR(100) default ''
 	)
 
 	CREATE TABLE #Subresult_table   
 	(    
 		_display_seq tinyint,
-		_result_value1 varchar(200) default '',    
-		_result_value2 varchar(100) default '',    
-		_result_value3 varchar(100) default '',    
-		_result_value4 varchar(100) default '',    
-		_result_value5 varchar(100) default '',    
-		_result_value6 varchar(100) default '',    
-		_result_value7 varchar(100) default '',    
-		_result_value8 varchar(100) default '',    
-		_result_value9 varchar(100) default '',    
-		_result_value10 varchar(100) default '',    
-		_result_value11 varchar(100) default '',    
-		_result_value12 varchar(100) default '',    
-		_result_value13 varchar(100) default '',    
-		_result_value14 varchar(100) default '',    
-		_result_value15 varchar(100) default '',
-		_result_value16 varchar(100) default '',    
-		_result_value17 varchar(100) default '',    
-		_result_value18 varchar(100) default '',    
-		_result_value19 varchar(100) default '',    
-		_result_value20 varchar(100) default '', 		
-		_result_value21 varchar(100) default '',    
-		_result_value22 varchar(100) default '',    
-		_result_value23 varchar(100) default '',    
-		_result_value24 varchar(100) default '',    
-		_result_value25 varchar(100) default '',    
-		_result_value26 varchar(100) default '',    
-		_result_value27 varchar(100) default '',    
-		_result_value28 varchar(100) default '',    
-		_result_value29 varchar(100) default '',
-		_result_value30 varchar(100) default '',	
-		_result_value31 varchar(100) default '',	
-		_result_value32 varchar(100) default ''
+		_result_value1 VARCHAR(200) default '',    
+		_result_value2 VARCHAR(100) default '',    
+		_result_value3 VARCHAR(100) default '',    
+		_result_value4 VARCHAR(100) default '',    
+		_result_value5 VARCHAR(100) default '',    
+		_result_value6 VARCHAR(100) default '',    
+		_result_value7 VARCHAR(100) default '',    
+		_result_value8 VARCHAR(100) default '',    
+		_result_value9 VARCHAR(100) default '',    
+		_result_value10 VARCHAR(100) default '',    
+		_result_value11 VARCHAR(100) default '',    
+		_result_value12 VARCHAR(100) default '',    
+		_result_value13 VARCHAR(100) default '',    
+		_result_value14 VARCHAR(100) default '',    
+		_result_value15 VARCHAR(100) default '',
+		_result_value16 VARCHAR(100) default '',    
+		_result_value17 VARCHAR(100) default '',    
+		_result_value18 VARCHAR(100) default '',    
+		_result_value19 VARCHAR(100) default '',    
+		_result_value20 VARCHAR(100) default '', 		
+		_result_value21 VARCHAR(100) default '',    
+		_result_value22 VARCHAR(100) default '',    
+		_result_value23 VARCHAR(100) default '',    
+		_result_value24 VARCHAR(100) default '',    
+		_result_value25 VARCHAR(100) default '',    
+		_result_value26 VARCHAR(100) default '',    
+		_result_value27 VARCHAR(100) default '',    
+		_result_value28 VARCHAR(100) default '',    
+		_result_value29 VARCHAR(100) default '',
+		_result_value30 VARCHAR(100) default '',	
+		_result_value31 VARCHAR(100) default '',	
+		_result_value32 VARCHAR(100) default '',
+		_result_value33 VARCHAR(100) default '',
+		_result_value34 VARCHAR(100) default '',
+		_result_value35 VARCHAR(100) default '',
+		_result_value36 VARCHAR(100) default '',
+		_result_value37 VARCHAR(100) default '',
+		_result_value38 VARCHAR(100) default '',
+		_result_value39 VARCHAR(100) default '',
+		_result_value40 VARCHAR(100) default '',
+		_result_value41 VARCHAR(100) default '',
+		_result_value42 VARCHAR(100) default ''
 	)
 	
 	CREATE TABLE #result_table_age
@@ -297,6 +316,7 @@ OPEN SYMMETRIC KEY sym_Key
 		Display_Seq tinyint, 
 		Display_Code VARCHAR(50)
 	)
+
 	CREATE TABLE #result_table_age2
 	(    
 		Display_Seq tinyint, 
@@ -314,7 +334,7 @@ OPEN SYMMETRIC KEY sym_Key
 			Status_Name, 
 			Status_Value 
 	FROM 
-			StatStatusFilterMapping WITH (NOLOCK) 
+			StatStatusFilterMapping 
 	WHERE 
 			(Report_id = 'ALL' OR Report_id = @Report_ID) 
 			AND Table_Name = 'VoucherTransaction'
@@ -334,113 +354,141 @@ OPEN SYMMETRIC KEY sym_Key
 	('_6M_6Y_1stDose', '6 months to less than 6 years', '1st dose', 'Y')
 	,('_6M_6Y_2ndDose', '6 months to less than 6 years', '2nd dose', 'Y')
 	,('_6M_6Y_OnlyDose', '6 months to less than 6 years', 'Only dose', 'Y')
+	,('_6M_6Y_3rdDose', '6 months to less than 6 years', '3rd dose', 'N')
+
 	,('_6Y_9Y_1stDose', '6 years to less than 9 years', '1st dose', 'Y')
 	,('_6Y_9Y_2ndDose', '6 years to less than 9 years', '2nd dose', 'Y')
 	,('_6Y_9Y_OnlyDose', '6 years to less than 9 years', 'Only dose', 'Y')
+	,('_6Y_9Y_3rdDose', '6 years to less than 9 years', '3rd dose', 'N')
+
 	,('_9Y_12Y_1stDose', '9 years to less than 12 years', '1st dose', 'N')
 	,('_9Y_12Y_2ndDose', '9 years to less than 12 years', '2nd dose', 'N')
 	,('_9Y_12Y_OnlyDose', '9 years to less than 12 years', 'Only dose', 'Y')
+	,('_9Y_12Y_3rdDose', '9 years to less than 12 years', '3rd dose', 'N')
+
 	,('_12Y_16Y_1stDose', '12 years to less than 16 years', '1st dose', 'N')
 	,('_12Y_16Y_2ndDose', '12 years to less than 16 years', '2nd dose', 'N')
 	,('_12Y_16Y_OnlyDose', '12 years to less than 16 years', 'Only dose', 'Y')
+	,('_12Y_16Y_3rdDose', '12 years to less than 16 years', '3rd dose', 'N')
+
 	,('_16Y_50Y_1stDose', '16 years to less than 50 age year', '1st dose', 'N')
 	,('_16Y_50Y_2ndDose', '16 years to less than 50 age year', '2nd dose', 'N')
 	,('_16Y_50Y_OnlyDose', '16 years to less than 50 age year', 'Only dose', 'Y')
+	,('_16Y_50Y_3rdDose', '16 years to less than 50 age year', '3rd dose', 'N')
+
 	,('_50Y_64Y_1stDose', '50 to 64 age year', '1st dose', 'N')
 	,('_50Y_64Y_2ndDose', '50 to 64 age year', '2nd dose', 'N')
 	,('_50Y_64Y_OnlyDose', '50 to 64 age year', 'Only dose', 'Y')
+	,('_50Y_64Y_3rdDose', '50 to 64 age year', '3rd dose', 'N')
+
 	,('_65Y_1stDose', 'At 65 age year', '1st dose', 'N')
 	,('_65Y_2ndDose', 'At 65 age year', '2nd dose', 'N')
 	,('_65Y_OnlyDose', 'At 65 age year', 'Only dose', 'Y')
+	,('_65Y_3rdDose', 'At 65 age year', '3rd dose', 'N')
+
 	,('_66Y_69Y_1stDose', '66 to 69 age year', '1st dose', 'N')
 	,('_66Y_69Y_2ndDose', '66 to 69 age year', '2nd dose', 'N')
 	,('_66Y_69Y_OnlyDose', '66 to 69 age year', 'Only dose', 'Y')
+	,('_66Y_69Y_3rdDose', '66 to 69 age year', '3rd dose', 'N')
+
 	,('_70Y_79Y_1stDose', '70 to 79 age year', '1st dose', 'N')
 	,('_70Y_79Y_2ndDose', '70 to 79 age year', '2nd dose', 'N')
 	,('_70Y_79Y_OnlyDose', '70 to 79 age year', 'Only dose', 'Y')
+	,('_70Y_79Y_3rdDose', '70 to 79 age year', '3rd dose', 'N')
+
 	,('_80Y_1stDose', '>= 80 age year', '1st dose', 'N')
 	,('_80Y_2ndDose', '>= 80 age year', '2nd dose', 'N')
 	,('_80Y_OnlyDose', '>= 80 age year', 'Only dose', 'Y')
+	,('_80Y_3rdDose', '>= 80 age year', 'Only dose', 'N')
 
 
-
-	insert into #temp_HCVS    
-	(    
-	 transaction_id,    
-	 voucher_acc_id,    
-	 temp_voucher_acc_id,    
-	 service_receive_dtm,    
-	 SP_ID    
+	INSERT INTO #temp_HCVS(    
+		 transaction_id,    
+		 voucher_acc_id,    
+		 temp_voucher_acc_id,    
+		 service_receive_dtm,    
+		 SP_ID    
 	)  
-	select transaction_id, voucher_acc_id, temp_voucher_acc_id, service_receive_dtm, SP_ID from vouchertransaction WITH (NOLOCK)    
-	where scheme_code = 'HCVS'    
-	--and service_receive_dtm between '19 Oct 2009' and @Cutoff_Dtm    
-	and service_receive_dtm < @Cutoff_Dtm 
-	and service_type = 'RMP'    
-	and record_status not in (SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
-	AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'     
-	AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm)))    
-	AND (Invalidation IS NULL OR Invalidation NOT In     
-	(SELECT Status_Value FROM StatStatusFilterMapping WITH (NOLOCK) WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
-	AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'    
-	AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm))))
+	SELECT 
+		Transaction_ID, 
+		Voucher_Acc_ID, 
+		Temp_Voucher_Acc_ID, 
+		Service_Receive_Dtm, 
+		SP_ID 
+	FROM 
+		VoucherTransaction    
+	WHERE Scheme_Code = 'HCVS'    
+		AND Service_Receive_Dtm < @Cutoff_Dtm 
+		AND Service_Type = 'RMP'    
+		AND Record_Status NOT IN (SELECT Status_Value 
+									FROM StatStatusFilterMapping 
+									WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
+										AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Record_Status'     
+										AND ((Effective_Date IS NULL OR Effective_Date <= @cutoff_dtm) AND ([Expiry_Date] IS NULL OR [Expiry_Date] >= @cutoff_dtm))
+									)    
+		AND (Invalidation IS NULL 
+			OR Invalidation NOT IN (SELECT Status_Value 
+									FROM StatStatusFilterMapping 
+									WHERE (report_id = 'ALL' OR report_id = 'eHSD0028')     
+										AND Table_Name = 'VoucherTransaction' AND Status_Name = 'Invalidation'    
+										AND ((Effective_Date is null or Effective_Date <= @cutoff_dtm) AND (Expiry_Date is null or Expiry_Date >= @cutoff_dtm))
+									)
+			)
         
-	update #temp_HCVS    
-	set Reason1 = 'Y'    
-	from #temp_HCVS t, transactionAdditionalField taf WITH (NOLOCK)    
-	where t.transaction_id = taf.transaction_id     
-	and taf.additionalfieldID = 'Reason_for_Visit_L1'     
-	and taf.additionalfieldvaluecode = '1' 
-	update #temp_HCVS    
-	set Reason2 = 'Y'    
-	from #temp_HCVS t, transactionAdditionalField taf WITH (NOLOCK)    
-	where t.transaction_id = taf.transaction_id     
-	and taf.additionalfieldID = 'Reason_for_Visit_L2'     
-	and taf.additionalfieldvaluecode = '3' 
+	UPDATE #temp_HCVS    
+	SET Reason1 = 'Y'    
+	FROM #temp_HCVS T, TransactionAdditionalField TAF    
+	WHERE T.transaction_id = TAF.Transaction_ID     
+		AND TAF.AdditionalfieldID = 'Reason_for_Visit_L1'     
+		AND TAF.AdditionalFieldValueCode = '1' 
 
-	insert into #account    
-	(    
-	voucher_acc_id,    
-	temp_voucher_acc_id,    
-	identity_num,    
-	doc_code,    
-	dob    
+	UPDATE #temp_HCVS    
+	SET Reason2 = 'Y'    
+	FROM #temp_HCVS T, TransactionAdditionalField TAF    
+	WHERE T.transaction_id = TAF.Transaction_ID     
+		AND TAF.AdditionalFieldID = 'Reason_for_Visit_L2'     
+		AND TAF.AdditionalFieldValueCode = '3' 
+
+	INSERT INTO #account(    
+		voucher_acc_id,    
+		temp_voucher_acc_id,    
+		identity_num,    
+		doc_code,    
+		dob    
 	)    
-	select p.voucher_acc_id,    
-	NULL,    
-	convert(varchar, DecryptByKey(p.Encrypt_Field1)),    
-	p.doc_code,    
-	p.dob    
-	from voucheraccount va, personalinformation p WITH (NOLOCK)    
-	where va.voucher_acc_id = p.voucher_acc_id    
-	--and va.record_status <> 'D'    
-	and va.create_dtm < @Cutoff_Dtm    
+	SELECT
+		PInfo.Voucher_Acc_ID,    
+		NULL,    
+		CONVERT(VARCHAR, DecryptByKey(PInfo.Encrypt_Field1)),    
+		PInfo.Doc_Code,    
+		PInfo.DOB    
+	FROM VoucherAccount VA, PersonalInformation PInfo    
+	WHERE VA.Voucher_Acc_ID = PInfo.Voucher_Acc_ID    
+		AND VA.Create_Dtm < @Cutoff_Dtm    
     
-	insert into #account    
-	(    
-	voucher_acc_id,    
-	temp_voucher_acc_id,    
-	identity_num,    
-	doc_code,    
-	dob    
-	)    
-	select NULL,    
-	p.voucher_acc_id,      
-	convert(varchar, DecryptByKey(p.Encrypt_Field1)),    
-	p.doc_code,    
-	p.dob    
-	from tempvoucheraccount va, temppersonalinformation p WITH (NOLOCK)    
-	where va.voucher_acc_id = p.voucher_acc_id    
-	--and va.record_status <> 'D'    
-	--and va.account_purpose in ('C', 'V')    
-	and va.create_dtm < @Cutoff_Dtm    
+	INSERT INTO #account(    
+		voucher_acc_id,    
+		temp_voucher_acc_id,    
+		identity_num,    
+		doc_code,    
+		dob    
+	)      
+	SELECT 
+		NULL,    
+		TPInfo.Voucher_Acc_ID,      
+		CONVERT(VARCHAR, DecryptByKey(TPInfo.Encrypt_Field1)),    
+		TPInfo.Doc_Code,    
+		TPInfo.DOB    
+	FROM TempVoucherAccount TVA, TempPersonalInformation TPInfo    
+	WHERE TVA.Voucher_Acc_ID = TPInfo.Voucher_Acc_ID    
+	and TVA.Create_Dtm < @Cutoff_Dtm    
 
 -- ---------------------------------------------    
 -- Prepare Column List for Dynamic SQL String    
 -- ---------------------------------------------    
-	DECLARE @pivot_table_column_header  varchar(MAX)
-	DECLARE @pivot_table_column_list  varchar(MAX)
-	DECLARE @pivot_table_column_sum  varchar(MAX)
+	DECLARE @pivot_table_column_header  VARCHAR(MAX)
+	DECLARE @pivot_table_column_list  VARCHAR(MAX)
+	DECLARE @pivot_table_column_sum  VARCHAR(MAX)
 
 	DECLARE @sql NVARCHAR(MAX)
    
@@ -486,8 +534,8 @@ OPEN SYMMETRIC KEY sym_Key
 		IsCurrentSeason			
 	)    
 	SELECT    
-		vt.Voucher_Acc_ID,
-		vt.Temp_Voucher_Acc_ID,    
+		VT.Voucher_Acc_ID,
+		VT.Temp_Voucher_Acc_ID,    
 		VT.Transaction_ID,   
 		VT.Service_Receive_Dtm,   
 		VR.DOB,   
@@ -503,9 +551,9 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN Subsidize_Item_Code = 'PV13' THEN 1 ELSE 0 END,
 		CASE WHEN Subsidize_Item_Code = 'MMR' THEN 1 ELSE 0 END,
 		CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT WITH (NOLOCK)
-		INNER JOIN TransactionDetail D WITH (NOLOCK) on VT.Transaction_ID = D.Transaction_ID     
-		INNER JOIN PersonalInformation VR WITH (NOLOCK)    
+	FROM VoucherTransaction VT
+		INNER JOIN TransactionDetail D on VT.Transaction_ID = D.Transaction_ID     
+		INNER JOIN PersonalInformation VR    
 			ON VT.Voucher_Acc_ID = VR.Voucher_Acc_ID     
 				AND VT.Doc_Code = VR.Doc_Code         
 				AND VT.Voucher_Acc_ID IS NOT NULL    
@@ -565,10 +613,10 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN Subsidize_Item_Code = 'PV13' THEN 1 ELSE 0 END,
 		CASE WHEN Subsidize_Item_Code = 'MMR' THEN 1 ELSE 0 END,
 		CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT WITH (NOLOCK)    
-		INNER JOIN TransactionDetail D WITH (NOLOCK)     
+	FROM VoucherTransaction VT    
+		INNER JOIN TransactionDetail D     
 			ON VT.Transaction_ID = D.Transaction_ID     
-		INNER JOIN TempPersonalInformation TVR WITH (NOLOCK)     
+		INNER JOIN TempPersonalInformation TVR     
 			ON VT.Temp_Voucher_Acc_ID = TVR.Voucher_Acc_ID     
 				AND (VT.Voucher_Acc_ID = '' OR VT.Voucher_Acc_ID IS NULL)    
 				AND VT.Special_Acc_ID IS NULL    
@@ -576,7 +624,7 @@ OPEN SYMMETRIC KEY sym_Key
 				AND VT.Temp_Voucher_Acc_ID <> ''     
 				AND VT.Temp_Voucher_Acc_ID IS NOT NULL     
 				AND VT.Doc_Code = TVR.Doc_Code    
-		INNER JOIN TempVoucherAccount A WITH (NOLOCK)   
+		INNER JOIN TempVoucherAccount A    
 			ON VT.Temp_Voucher_Acc_ID = A.Voucher_Acc_ID      
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm
@@ -630,15 +678,15 @@ OPEN SYMMETRIC KEY sym_Key
 		CASE WHEN Subsidize_Item_Code = 'PV13' THEN 1 ELSE 0 END,
 		CASE WHEN Subsidize_Item_Code = 'MMR' THEN 1 ELSE 0 END,
 		CASE WHEN Service_Receive_Dtm >= @Current_Season_Start_Dtm THEN 1 ELSE 0 END
-	FROM VoucherTransaction VT WITH (NOLOCK)    
-		INNER JOIN TransactionDetail D WITH (NOLOCK)     
+	FROM VoucherTransaction VT    
+		INNER JOIN TransactionDetail D     
 			ON VT.Transaction_ID = D.Transaction_ID    
-		INNER JOIN SpecialPersonalInformation TVR WITH (NOLOCK) ON VT.Special_Acc_ID = TVR.Special_Acc_ID     
+		INNER JOIN SpecialPersonalInformation TVR ON VT.Special_Acc_ID = TVR.Special_Acc_ID     
 			AND VT.Special_Acc_ID IS NOT NULL    
 			AND (VT.Voucher_Acc_ID IS NULL OR VT.Voucher_Acc_ID = '')    
 			AND VT.Invalid_Acc_ID IS NULL    
 			AND VT.Doc_Code = TVR.Doc_Code     
-		INNER JOIN SpecialAccount A WITH (NOLOCK)    
+		INNER JOIN SpecialAccount A    
 			ON VT.Special_Acc_ID = A.Special_Acc_ID    
 	WHERE VT.Scheme_Code= @Scheme_Code
 			AND VT.Transaction_Dtm <= @Cutoff_Dtm
@@ -651,53 +699,58 @@ OPEN SYMMETRIC KEY sym_Key
 			AND (vt.Invalidation IS NULL OR vt.Invalidation NOT In     
 				(SELECT Status_Value FROM @TempTransactionStatusFilter WHERE Status_Name = 'Invalidation'))
 
-	update #temp_HCVS    
-	set identity_num = a.identity_num,    
-	 dob = a.dob    
-	from #account a, #temp_HCVS v    
-	where isnull(v.voucher_acc_id ,'') = ''    
-	and isnull(a.voucher_acc_id ,'') = ''    
-	and v.temp_voucher_acc_id = a.temp_voucher_acc_id    
+	UPDATE #temp_HCVS    
+	SET 
+		identity_num = a.identity_num,    
+		dob = a.dob    
+	FROM #account a, #temp_HCVS v    
+	WHERE ISNULL(v.voucher_acc_id ,'') = ''    
+		AND ISNULL(a.voucher_acc_id ,'') = ''    
+		AND v.temp_voucher_acc_id = a.temp_voucher_acc_id    
     
-	update #temp_HCVS    
-	set identity_num = a.identity_num,    
-	 dob = a.dob    
-	from #account a, #temp_HCVS v    
-	where isnull(v.voucher_acc_id ,'') <> ''    
-	and isnull(a.voucher_acc_id ,'') <> ''    
-	and v.voucher_acc_id = a.voucher_acc_id     
+	UPDATE #temp_HCVS    
+	SET 
+		identity_num = a.identity_num,    
+		dob = a.dob    
+	FROM #account a, #temp_HCVS v    
+	WHERE ISNULL(v.voucher_acc_id ,'') <> ''    
+		AND ISNULL(a.voucher_acc_id ,'') <> ''    
+		AND v.voucher_acc_id = a.voucher_acc_id     
 
 	--
 	-- ---------------------------------------------
 	-- Patch data
 	-- ---------------------------------------------
-	update #temp_VSS    
-	set identity_num = a.identity_num,    
-	 dob = a.dob    
-	from #account a, #temp_VSS vss    
-	where isnull(vss.voucher_acc_id ,'') = ''    
-	and isnull(a.voucher_acc_id ,'') = ''    
-	and vss.temp_voucher_acc_id = a.temp_voucher_acc_id    
+	UPDATE #temp_VSS    
+	SET 
+		identity_num = a.identity_num,    
+		dob = a.dob    
+	FROM #account a, #temp_VSS vss    
+	WHERE ISNULL(vss.voucher_acc_id ,'') = ''    
+		AND ISNULL(a.voucher_acc_id ,'') = ''    
+		AND vss.temp_voucher_acc_id = a.temp_voucher_acc_id    
     
-	update #temp_VSS    
-	set identity_num = a.identity_num,    
-	 dob = a.dob    
-	from #account a, #temp_VSS vss   
-	where isnull(vss.voucher_acc_id ,'') <> ''    
-	and isnull(a.voucher_acc_id ,'') <> ''    
-	and vss.voucher_acc_id = a.voucher_acc_id   
+	UPDATE #temp_VSS    
+	SET 
+		identity_num = a.identity_num,    
+		dob = a.dob    
+	FROM #account a, #temp_VSS vss   
+	WHERE ISNULL(vss.voucher_acc_id ,'') <> ''    
+		AND ISNULL(a.voucher_acc_id ,'') <> ''    
+		AND vss.voucher_acc_id = a.voucher_acc_id   
 
-	update #temp_VSS
-	Set IsWithVoucher = 1
+	UPDATE #temp_VSS
+	SET 
+		IsWithVoucher = 1
 	FROM #temp_VSS vss, #temp_HCVS hcvs
-	where vss.Service_Receive_Dtm = hcvs.service_receive_dtm   
-	and vss.identity_num = hcvs.identity_num 
-	and (hcvs.Reason1='Y' AND hcvs.Reason2='Y')
-	and vss.SP_ID = hcvs.SP_ID
+	WHERE vss.Service_Receive_Dtm = hcvs.service_receive_dtm   
+		AND vss.identity_num = hcvs.identity_num 
+		AND (hcvs.Reason1='Y' AND hcvs.Reason2='Y')
+		AND vss.SP_ID = hcvs.SP_ID
 		
 
 	UPDATE	#temp_VSS
-	SET		DOB = CONVERT(varchar, YEAR(DOB)) + '-' + CONVERT(varchar, MONTH(DOB)) + '-' + CONVERT(varchar, DAY(DATEADD(d, -DAY(DATEADD(m, 1, DOB)), DATEADD(m, 1, DOB))))
+	SET		DOB = CONVERT(VARCHAR, YEAR(DOB)) + '-' + CONVERT(VARCHAR, MONTH(DOB)) + '-' + CONVERT(VARCHAR, DAY(DATEADD(d, -DAY(DATEADD(m, 1, DOB)), DATEADD(m, 1, DOB))))
 	WHERE	Exact_DOB IN ('M', 'U')
 
 	UPDATE	#temp_VSS
@@ -707,7 +760,9 @@ OPEN SYMMETRIC KEY sym_Key
 	SET		DOB_Adjust = DATEADD(yyyy, 1, DOB)
 	WHERE	MONTH(DOB) > MONTH(Service_receive_dtm)
 			OR ( MONTH(DOB) = MONTH(Service_receive_dtm) AND DAY(DOB) > DAY(Service_receive_dtm) )
-	
+
+	--SELECT * FROM #temp_VSS WHERE Subsidize_Code = 'VNIAMMR'
+
 --SELECT
 --		Transaction_ID,    
 --		Service_Receive_Dtm,    
@@ -783,7 +838,7 @@ OPEN SYMMETRIC KEY sym_Key
 	INSERT INTO #result_table (_display_seq)    
 	VALUES (2)    
 	INSERT INTO #result_table (_display_seq, _result_value1)    
-	VALUES (3, 'Reporting period: as at ' + CONVERT(varchar, DATEADD(dd, -1, @Cutoff_Dtm), 111))    
+	VALUES (3, 'Reporting period: as at ' + CONVERT(VARCHAR, DATEADD(dd, -1, @Cutoff_Dtm), 111))    
 	INSERT INTO #result_table (_display_seq)    
 	VALUES (4)  
 
@@ -806,20 +861,12 @@ OPEN SYMMETRIC KEY sym_Key
 	,_result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsPV = 1 AND IsCurrentSeason = 1)  
 	WHERE _display_seq = 8
 
-	--UPDATE #result_table    
-	--SET _result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsPV = 1 AND IsCurrentSeason = 1)    
-	--WHERE _display_seq = 8
-
 	UPDATE #result_table    
 	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsPV13 = 1 AND IsCurrentSeason = 1)
 	,_result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsPV13 = 1 AND IsCurrentSeason = 1)    
 	WHERE _display_seq = 9
 
-	--UPDATE #result_table    
-	--SET _result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsPV13 = 1 AND IsCurrentSeason = 1)    
-	--WHERE _display_seq = 9
-
-		-----------------------------------------
+	-----------------------------------------
 	-- (ii) Measles Vaccination  
 	-----------------------------------------
 	INSERT INTO #result_table (_display_seq, _result_value1)    
@@ -828,15 +875,21 @@ OPEN SYMMETRIC KEY sym_Key
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5)  
 	VALUES (13, '', 'Sub-total', '', '', 'No. of SP involved')    
 	INSERT INTO #result_table (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5)
-	VALUES (14, 'Measles', '', '', '', '')    
-	INSERT INTO #result_table (_display_seq) VALUES (15)
-
+	VALUES (14, 'MMR-FDH', '', '', '', ''),    
+		   (15, 'MMR-NIA', '', '', '', '')    
+	INSERT INTO #result_table (_display_seq) VALUES (16)
 
 	UPDATE #result_table    
-	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsMMR = 1 AND IsCurrentSeason = 1)
-	,_result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsMMR = 1 AND IsCurrentSeason = 1)    
+	SET 
+		_result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE Subsidize_Code ='VFDHMMR' AND IsMMR = 1 AND IsCurrentSeason = 1),
+		_result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE Subsidize_Code ='VFDHMMR' AND  IsMMR = 1 AND IsCurrentSeason = 1)    
 	WHERE _display_seq = 14
 
+	UPDATE #result_table    
+	SET 
+		_result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE Subsidize_Code ='VNIAMMR' AND IsMMR = 1 AND IsCurrentSeason = 1),
+		_result_value5 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE Subsidize_Code ='VNIAMMR' AND  IsMMR = 1 AND IsCurrentSeason = 1)    
+	WHERE _display_seq = 15
 
 	-----------------------------------------
 	-- (iii) Seasonal Influenza Vaccination
@@ -1007,155 +1060,207 @@ OPEN SYMMETRIC KEY sym_Key
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
 						AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6)
+
+		SET @result4 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6)
 		
 		-- 6y - <9y
-		SET @result4 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result5 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
 						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9)
 									
-		SET @result5 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result6 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
 						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9)
 				
-		SET @result6 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result7 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9)
+
+		SET @result8 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
 						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9)
 				
 		-- 9y - <12y
-		SET @result7 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result9 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
 						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12)
 		
-		SET @result8 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result10 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
 						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12)
 						
-		SET @result9 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result11 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12)
+
+		SET @result12 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
 						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12)
 
 		-- 12y - <16y
-		SET @result10 = (SELECT COUNT(1) FROM #temp_VSS 
-						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
-						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
-		
-		SET @result11 = (SELECT COUNT(1) FROM #temp_VSS 
-						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
-						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
-						
-		SET @result12 = (SELECT COUNT(1) FROM #temp_VSS 
-						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
-						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
-
-		-- 16y - <50y
 		SET @result13 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
-						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
 		
 		SET @result14 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
-						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
-		
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
+						
 		SET @result15 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
-						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
 
-		-- 50y - 64y
 		SET @result16 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
-		
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16)
+
+		-- 16y - <50y
 		SET @result17 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
 		
 		SET @result18 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
 		
-		-- 65y
 		SET @result19 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
-		
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
+
 		SET @result20 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
-		
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50)
+
+		-- 50y - 64y
 		SET @result21 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
-
-		-- 66y - 69y
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
+		
 		SET @result22 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
 		
 		SET @result23 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
-		
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
+
 		SET @result24 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
-						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
-
-		-- 70y - 79y
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64)
+		
+		-- 65y
 		SET @result25 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79)
+						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
 		
 		SET @result26 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
-						AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79)
-									
+						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
+		
 		SET @result27 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
+
+		SET @result28 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) = 65)
+
+		-- 66y - 69y
+		SET @result29 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
+		
+		SET @result30 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
+		
+		SET @result31 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
+
+		SET @result32 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69)
+
+		-- 70y - 79y
+		SET @result33 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79)
+		
+		SET @result34 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79)
+									
+		SET @result35 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79)
+
+		SET @result36 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
 						AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79)
 									
 		-- 80y
-		SET @result28 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result37 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '1STDOSE'
 						AND DateDiff(yy, DOB, Service_receive_dtm) >= 80)
 
-		SET @result29 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result38 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '2NDDOSE'
 						AND DateDiff(yy, DOB, Service_receive_dtm) >= 80)
 		
-		SET @result30 = (SELECT COUNT(1) FROM #temp_VSS 
+		SET @result39 = (SELECT COUNT(1) FROM #temp_VSS 
 						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
 						AND subsidize_code = @SIV_Subsidize_Code AND Dose = 'ONLYDOSE'
 						AND DateDiff(yy, DOB, Service_receive_dtm) >= 80)
+
+		SET @result40 = (SELECT COUNT(1) FROM #temp_VSS 
+						WHERE IsSIV = 1 AND IsCurrentSeason = 1 
+						AND subsidize_code = @SIV_Subsidize_Code AND Dose = '3RDDOSE'
+						AND DateDiff(yy, DOB, Service_receive_dtm) >= 80)
 								
 		-- Total
-		SET @result31 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						 + @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19
-						 + @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+		SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
+
 		SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 					'VALUES (' + CONVERT(VARCHAR,@Row) + ', ''' + @SIV_Display_Code_For_Claim + ''', ' +  
 					CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
@@ -1167,7 +1272,12 @@ OPEN SYMMETRIC KEY sym_Key
 					CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
 					CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
 					CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
-					CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + CONVERT(VARCHAR, @result31) + ')'
+					CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+					CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+					CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+					CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+					CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
+
 		EXEC (@sql)
 
 		-- Next SIV
@@ -1194,79 +1304,88 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6
 	
 	-- 6y - <9y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9
 				
 	-- 9y - <12y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12
 			
 	-- 12y - <16y
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16
 		
 	-- 16y - <50y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50
 		
 	-- 50y - 64y
 	SELECT 
-		@result16 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result17 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result18 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result21 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result22 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result23 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result24 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64
 
 	-- 65y
 	SELECT 
-		@result19 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result20 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result21 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result28 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
 									
 	-- 66y - 69y
 	SELECT 
-		@result22 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result23 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result24 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result29 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result30 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result31 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result32 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
 
 	-- 70y - 79y	
 	SELECT 
-		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result33 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result34 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result35 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result36 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -1274,17 +1393,19 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result28 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result29 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result30 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result37 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result38 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result39 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result40 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 							
 	-- Total
-	SET @result31 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19
-						+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+	SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (100 , ''' + '23vPPV*' + ''', ' +  
@@ -1297,7 +1418,11 @@ OPEN SYMMETRIC KEY sym_Key
 				CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
 				CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
 				CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
-				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + CONVERT(VARCHAR, @result31) + ')'
+				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+				CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+				CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+				CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+				CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
 
 	EXEC (@sql)
 	
@@ -1308,7 +1433,8 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6
@@ -1316,9 +1442,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 6y - <9y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9
@@ -1326,9 +1453,10 @@ OPEN SYMMETRIC KEY sym_Key
 				
 	-- 9y - <12y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12
@@ -1336,9 +1464,10 @@ OPEN SYMMETRIC KEY sym_Key
 			
 	-- 12y - <16y
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16
@@ -1346,9 +1475,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 16y - <50y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50
@@ -1356,9 +1486,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 50y - 64y
 	SELECT 
-		@result16 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result17 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result18 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result21 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result22 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result23 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result24 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64
@@ -1366,9 +1497,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 65y
 	SELECT 
-		@result19 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result20 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result21 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result28 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
@@ -1376,9 +1508,10 @@ OPEN SYMMETRIC KEY sym_Key
 									
 	-- 66y - 69y
 	SELECT 
-		@result22 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result23 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result24 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result29 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result30 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result31 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result32 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
@@ -1386,9 +1519,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 70y - 79y	
 	SELECT 
-		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result33 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result34 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result35 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result36 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -1397,18 +1531,20 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result28 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result29 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result30 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result37 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result38 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result39 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result40 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
 							
 	-- Total
-	SET @result31 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19
-						+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+	SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (101 , ''' + '23vPPV (' + @Str_HighRisk + ')*'', ' +  
@@ -1421,7 +1557,11 @@ OPEN SYMMETRIC KEY sym_Key
 				CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
 				CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
 				CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
-				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + CONVERT(VARCHAR, @result31) + ')'
+				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+				CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+				CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+				CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+				CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
 
 	EXEC (@sql)
 	
@@ -1432,7 +1572,8 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6
@@ -1440,9 +1581,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 6y - <9y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9
@@ -1450,9 +1592,10 @@ OPEN SYMMETRIC KEY sym_Key
 				
 	-- 9y - <12y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12
@@ -1460,9 +1603,10 @@ OPEN SYMMETRIC KEY sym_Key
 			
 	-- 12y - <16y
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16
@@ -1470,9 +1614,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 16y - <50y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50
@@ -1480,9 +1625,10 @@ OPEN SYMMETRIC KEY sym_Key
 	
 	-- 50y - 64y
 	SELECT 
-		@result16 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result17 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result18 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result21 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result22 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result23 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result24 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64
@@ -1490,9 +1636,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 65y
 	SELECT 
-		@result19 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result20 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result21 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result28 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
@@ -1500,9 +1647,10 @@ OPEN SYMMETRIC KEY sym_Key
 									
 	-- 66y - 69y
 	SELECT 
-		@result22 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result23 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result24 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result29 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result30 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result31 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result32 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
@@ -1510,9 +1658,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 70y - 79y	
 	SELECT 
-		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result33 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result34 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result35 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result36 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -1521,18 +1670,20 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result28 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result29 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result30 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result37 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result38 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result39 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result40 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
 							
 	-- Total
-	SET @result31 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19
-						+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+	SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (102 , ''' + 'PCV13 (' + @Str_HighRisk + ')*'', ' +  
@@ -1545,7 +1696,11 @@ OPEN SYMMETRIC KEY sym_Key
 				CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
 				CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
 				CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
-				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + CONVERT(VARCHAR, @result31) + ')'
+				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+				CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+				CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+				CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+				CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
 
 	EXEC (@sql)
 		
@@ -1557,7 +1712,8 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6
@@ -1565,9 +1721,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 6y - <9y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9
@@ -1575,9 +1732,10 @@ OPEN SYMMETRIC KEY sym_Key
 				
 	-- 9y - <12y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12
@@ -1585,9 +1743,10 @@ OPEN SYMMETRIC KEY sym_Key
 			
 	-- 12y - <16y
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16
@@ -1595,9 +1754,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 16y - <50y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50
@@ -1605,9 +1765,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 50y - 64y
 	SELECT 
-		@result16 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result17 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result18 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result21 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result22 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result23 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result24 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64
@@ -1615,9 +1776,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 65y
 	SELECT 
-		@result19 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result20 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result21 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result28 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
@@ -1625,9 +1787,10 @@ OPEN SYMMETRIC KEY sym_Key
 									
 	-- 66y - 69y
 	SELECT 
-		@result22 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result23 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result24 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result29 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result30 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result31 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result32 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
@@ -1635,9 +1798,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 70y - 79y	
 	SELECT 
-		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result33 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result34 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result35 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result36 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -1646,18 +1810,20 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result28 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result29 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result30 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result37 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result38 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result39 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result40 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsCurrentSeason = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
 									
 	-- Total
-	SET @result31 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19
-						+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+	SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (103 , ''PCV13 and using healthcare voucher**'', ' +  
@@ -1670,113 +1836,128 @@ OPEN SYMMETRIC KEY sym_Key
 				CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
 				CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
 				CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
-				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + CONVERT(VARCHAR, @result31) + ')'
+				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+				CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+				CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+				CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+				CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
 
 	EXEC (@sql)
 	
 	-- PCV13 With Voucher End --
 	
 
-	-- MMR --
+	-- MMR-FDH --
 	-- By Age
 	-- 6m - <6y
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6
 	
 	-- 6y - <9y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9
 				
 	-- 9y - <12y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12
 			
 	-- 12y - <16y
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16
 		
 	-- 16y - <50y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50
 		
 	-- 50y - 64y
 	SELECT 
-		@result16 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result17 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result18 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result21 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result22 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result23 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result24 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64
 
 	-- 65y
 	SELECT 
-		@result19 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result20 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result21 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result28 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
 									
 	-- 66y - 69y
 	SELECT 
-		@result22 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result23 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result24 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result29 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result30 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result31 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result32 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR' 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
 
 	-- 70y - 79y	
 	SELECT 
-		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result33 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result34 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result35 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result36 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
 
 						
 	-- 80y
 	SELECT 
-		@result28 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result29 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result30 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result37 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result38 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result39 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result40 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 AND IsCurrentSeason = 1 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 							
 	-- Total
-	SET @result31 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19
-						+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+	SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
 					 
 	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (104 , ''' + 'Measles' + ''', ' +  
+				'VALUES (104 , ''' + 'MMR-FDH' + ''', ' +  
 				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
 				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
 				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
@@ -1786,11 +1967,146 @@ OPEN SYMMETRIC KEY sym_Key
 				CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
 				CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
 				CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
-				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + CONVERT(VARCHAR, @result31) + ')'
+				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+				CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+				CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+				CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+				CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
 
 	EXEC (@sql)
 	
-	-- MMR End --
+	-- MMR-FDH End --
+
+
+	-- MMR-NIA --
+	-- By Age
+	-- 6m - <6y
+	SELECT 
+		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(dd, DOB, Service_receive_dtm) >= 182 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 6
+	
+	-- 6y - <9y
+	SELECT 
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 6 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 9
+				
+	-- 9y - <12y
+	SELECT 
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 9 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 12
+			
+	-- 12y - <16y
+	SELECT 
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 12 AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) < 16
+		
+	-- 16y - <50y
+	SELECT 
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB_Adjust, Service_receive_dtm) >= 16 AND DateDiff(yy, DOB, Service_receive_dtm) < 50
+		
+	-- 50y - 64y
+	SELECT 
+		@result21 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result22 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result23 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result24 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 50 AND DateDiff(yy, DOB, Service_receive_dtm) <= 64
+
+	-- 65y
+	SELECT 
+		@result25 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result26 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result27 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result28 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
+									
+	-- 66y - 69y
+	SELECT 
+		@result29 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result30 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result31 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result32 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR' 
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
+
+	-- 70y - 79y	
+	SELECT 
+		@result33 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result34 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result35 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result36 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
+
+						
+	-- 80y
+	SELECT 
+		@result37 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result38 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result39 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result40 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND IsCurrentSeason = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
+							
+	-- Total
+	SET @result41 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					+ @result21 + @result22 + @result23 + @result24 + @result25 + @result26 + @result27 + @result28 + @result29 + @result30
+					+ @result31 + @result32 + @result33 + @result34 + @result35 + @result36 + @result37 + @result38 + @result39 + @result40
+					 
+	SET @sql = 'INSERT INTO #result_table_age (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
+				'VALUES (104 , ''' + 'MMR-NIA' + ''', ' +  
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
+				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
+				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
+				CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' +
+				CONVERT(VARCHAR, @result16) + ', ' + CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' +
+				CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' + CONVERT(VARCHAR, @result21) + ', ' +
+				CONVERT(VARCHAR, @result22) + ', ' + CONVERT(VARCHAR, @result23) + ', ' + CONVERT(VARCHAR, @result24) + ', ' +
+				CONVERT(VARCHAR, @result25) + ', ' + CONVERT(VARCHAR, @result26) + ', ' + CONVERT(VARCHAR, @result27) + ', ' +
+				CONVERT(VARCHAR, @result28) + ', ' + CONVERT(VARCHAR, @result29) + ', ' + CONVERT(VARCHAR, @result30) + ', ' + 
+				CONVERT(VARCHAR, @result31) + ', ' + CONVERT(VARCHAR, @result32) + ', ' + CONVERT(VARCHAR, @result33) + ', ' +
+				CONVERT(VARCHAR, @result34) + ', ' + CONVERT(VARCHAR, @result35) + ', ' + CONVERT(VARCHAR, @result36) + ', ' +
+				CONVERT(VARCHAR, @result37) + ', ' + CONVERT(VARCHAR, @result38) + ', ' + CONVERT(VARCHAR, @result39) + ', ' +
+				CONVERT(VARCHAR, @result40) + ', ' + CONVERT(VARCHAR, @result41) + ')'
+
+	EXEC (@sql)
+	
+	-- MMR-NIA End --
 
 	
 	DECLARE Age_Cursor CURSOR FOR   
@@ -1842,7 +2158,8 @@ OPEN SYMMETRIC KEY sym_Key
 				_result_value5, _result_value6, _result_value7, _result_value8, _result_value9, _result_value10,   
 				_result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16,   
 				_result_value17, _result_value18, _result_value19, _result_value20, _result_value21, _result_value22,   
-				_result_value23, _result_value24, _result_value25, _result_value26, _result_value27, _result_value28, _result_value29, _result_value30, _result_value31, _result_value32
+				_result_value23, _result_value24, _result_value25, _result_value26, _result_value27, _result_value28, _result_value29, _result_value30, _result_value31, _result_value32,
+				_result_value33, _result_value34, _result_value35, _result_value36, _result_value37, _result_value38, _result_value39, _result_value40, _result_value41, _result_value42
 				) SELECT Display_Seq, Display_Code,' + @ShowList + @EmptyList + ' FROM #result_table_age'
 	EXEC (@sql)
 	
@@ -1851,7 +2168,8 @@ OPEN SYMMETRIC KEY sym_Key
 				_result_value5, _result_value6, _result_value7, _result_value8, _result_value9, _result_value10,   
 				_result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16,   
 				_result_value17, _result_value18, _result_value19, _result_value20, _result_value21, _result_value22,   
-				_result_value23, _result_value24, _result_value25, _result_value26, _result_value27, _result_value28, _result_value29, _result_value30, _result_value31, _result_value32
+				_result_value23, _result_value24, _result_value25, _result_value26, _result_value27, _result_value28, _result_value29, _result_value30, _result_value31, _result_value32,
+				_result_value33, _result_value34, _result_value35, _result_value36, _result_value37, _result_value38, _result_value39, _result_value40, _result_value41, _result_value42
 				) VALUES (51, '''',' + @AgeHeaderList + @EmptyList + ')'
 	EXEC (@sql)
 	
@@ -1860,7 +2178,8 @@ OPEN SYMMETRIC KEY sym_Key
 				_result_value5, _result_value6, _result_value7, _result_value8, _result_value9, _result_value10,   
 				_result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16,   
 				_result_value17, _result_value18, _result_value19, _result_value20, _result_value21, _result_value22,   
-				_result_value23, _result_value24, _result_value25, _result_value26, _result_value27, _result_value28, _result_value29, _result_value30, _result_value31, _result_value32
+				_result_value23, _result_value24, _result_value25, _result_value26, _result_value27, _result_value28, _result_value29, _result_value30, _result_value31, _result_value32,
+				_result_value33, _result_value34, _result_value35, _result_value36, _result_value37, _result_value38, _result_value39, _result_value40, _result_value41, _result_value42
 				) VALUES (52, '''',' + @DoseHeaderList + @EmptyList + ')'
 	EXEC (@sql)	
 
@@ -1932,7 +2251,7 @@ OPEN SYMMETRIC KEY sym_Key
 
 
 
-		-----------------------------------------
+	-----------------------------------------
 	-- (ii) Measles Vaccination  
 	-----------------------------------------
 	INSERT INTO #Subresult_table (_display_seq, _result_value1)    
@@ -1941,33 +2260,46 @@ OPEN SYMMETRIC KEY sym_Key
 	INSERT INTO #Subresult_table (_display_seq, _result_value1, _result_value2, _result_value3)  
 	VALUES (13, '', 'Sub-total', 'No. of SP involved')    
 	INSERT INTO #Subresult_table (_display_seq, _result_value1, _result_value2, _result_value3)
-	VALUES (14, 'Measles****', '', '')    
-	INSERT INTO #Subresult_table (_display_seq) VALUES (15)
+	VALUES (14, 'MMR-FDH^', '', ''),
+		   (15, 'MMR-NIA^^', '', '')    
+	INSERT INTO #Subresult_table (_display_seq) VALUES (16)
 
 	UPDATE #Subresult_table    
-	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsMMR = 1 )  
-		,_result_value3 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsMMR = 1 )   
+	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR' )  
+		,_result_value3 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR' )   
 	WHERE _display_seq = 14
 
-	
+	UPDATE #Subresult_table    
+	SET _result_value2 = (SELECT COUNT(1) FROM #temp_VSS WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR'  )  
+		,_result_value3 = (SELECT COUNT(DISTINCT SP_ID) FROM #temp_VSS WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR' )   
+	WHERE _display_seq = 15
 
 	INSERT INTO @AgeDose (Age, AgeDesc, DoseDesc, MustShow)
 	VALUES
 	('_64Y_1stDose',		'<65 age year',			'1st dose',		'N')
 	,('_64Y_2ndDose',		'<65 age year',			'2nd dose',		'N')
 	,('_64Y_OnlyDose',		'<65 age year',			'Only dose',	'Y')
+	,('_64Y_3rdDose',		'<65 age year',			'3rd dose',		'N')
+
 	,('_65Y_1stDose',		'''''=65 age year',		'1st dose',		'N')
 	,('_65Y_2ndDose',		'''''=65 age year',		'2nd dose',		'N')
 	,('_65Y_OnlyDose',		'''''=65 age year',		'Only dose',	'Y')
+	,('_65Y_3rdDose',		'''''=65 age year',		'3rd dose',		'N')
+
 	,('_66Y_69Y_1stDose',	'66 to 69 age year',	'1st dose',		'N')
 	,('_66Y_69Y_2ndDose',	'66 to 69 age year',	'2nd dose',		'N')
 	,('_66Y_69Y_OnlyDose',	'66 to 69 age year',	'Only dose',	'Y')
+	,('_66Y_69Y_3rdDose',	'66 to 69 age year',	'3rd dose',		'N')
+
 	,('_70Y_79Y_1stDose',	'70 to 79 age year',	'1st dose',		'N')
 	,('_70Y_79Y_2ndDose',	'70 to 79 age year',	'2nd dose',		'N')
 	,('_70Y_79Y_OnlyDose',	'70 to 79 age year',	'Only dose',	'Y')
+	,('_70Y_79Y_3rdDose',	'70 to 79 age year',	'3rd dose',		'N')
+
 	,('_80Y_1stDose',		'>= 80 age year',		'1st dose',		'N')
 	,('_80Y_2ndDose',		'>= 80 age year',		'2nd dose',		'N')
 	,('_80Y_OnlyDose',		'>= 80 age year',		'Only dose',	'Y')
+	,('_80Y_3rdDose',		'>= 80 age year',		'3rd dose',		'N')
 
 	SET @pivot_table_column_header	= NULL
 	SET @pivot_table_column_list	= NULL 
@@ -1996,34 +2328,38 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) < 65
 		
 	-- 65y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
 									
 	-- 66y - 69y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
 
 	-- 70y - 79y	
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -2031,25 +2367,26 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1  
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 							
 	-- Total
-	SET @result16 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 
+	SET @result21 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 					 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (100 , ''' + '23vPPV*#' + ''', ' +  
-				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
-				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
-				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
-				CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
-				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' +
-				CONVERT(VARCHAR, @result16) + ')'
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
+				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
+				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' + CONVERT(VARCHAR, @result16) + ', ' +
+				CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' + CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' +
+				CONVERT(VARCHAR, @result21) + ')'
 				
 	EXEC (@sql)
 	
@@ -2061,7 +2398,8 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) < 65
@@ -2069,9 +2407,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 65y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
@@ -2079,9 +2418,10 @@ OPEN SYMMETRIC KEY sym_Key
 									
 	-- 66y - 69y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
@@ -2089,9 +2429,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 70y - 79y	
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -2100,26 +2441,27 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
 							
 	-- Total
-	SET @result16 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 
+	SET @result21 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 					 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (101 , ''' + '23vPPV (' + @Str_HighRisk + ')*'', ' +  
-				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
-				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
-				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
-				CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
-				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' +
-				CONVERT(VARCHAR, @result16) + ')'
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
+				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
+				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' + CONVERT(VARCHAR, @result16) + ', ' +
+				CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' + CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' +
+				CONVERT(VARCHAR, @result21) + ')'
 
 	EXEC (@sql)
 	
@@ -2131,7 +2473,8 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) < 65
@@ -2139,9 +2482,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 65y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
@@ -2149,9 +2493,10 @@ OPEN SYMMETRIC KEY sym_Key
 									
 	-- 66y - 69y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
@@ -2159,37 +2504,38 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 70y - 79y	
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
-
-						
+					
 	-- 80y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
 							
 	-- Total
-	SET @result16 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 
+	SET @result21 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (102 , ''' + 'PCV13 (' + @Str_HighRisk + ')**'', ' +  
-				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
-				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
-				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
-				CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
-				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' +
-				CONVERT(VARCHAR, @result16) + ')'
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
+				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
+				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' + CONVERT(VARCHAR, @result16) + ', ' +
+				CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' + CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' +
+				CONVERT(VARCHAR, @result21) + ')'
 
 	EXEC (@sql)
 		
@@ -2202,7 +2548,8 @@ OPEN SYMMETRIC KEY sym_Key
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) < 65
@@ -2210,9 +2557,10 @@ OPEN SYMMETRIC KEY sym_Key
 		
 	-- 65y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
@@ -2220,9 +2568,10 @@ OPEN SYMMETRIC KEY sym_Key
 									
 	-- 66y - 69y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
@@ -2230,9 +2579,10 @@ OPEN SYMMETRIC KEY sym_Key
 
 	-- 70y - 79y	
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
@@ -2241,96 +2591,174 @@ OPEN SYMMETRIC KEY sym_Key
 						
 	-- 80y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
 	WHERE IsPV13 = 1 AND IsWithVoucher = 1
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 	AND High_Risk IS NOT NULL AND High_Risk ='Y'
 									
 	-- Total
-	SET @result16 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 
+	SET @result21 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 					 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
 				'VALUES (103 , ''PCV13 and using healthcare voucher***'', ' +  
-				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
-				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
-				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
-				CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
-				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' +
-				CONVERT(VARCHAR, @result16) + ')'
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
+				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
+				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' + CONVERT(VARCHAR, @result16) + ', ' +
+				CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' + CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' +
+				CONVERT(VARCHAR, @result21) + ')'
 
 	EXEC (@sql)
 	
 	-- PCV13 With Voucher End --
 
 
-	-- MMR --
+	-- MMR-FDH --
 	-- By Age		
 	-- <65y
 	SELECT 
 		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
 		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) < 65
 		
 	-- 65y
 	SELECT 
-		@result4 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result5 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result6 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
 									
 	-- 66y - 69y
 	SELECT 
-		@result7 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result8 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result9 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
 
 	-- 70y - 79y	
 	SELECT 
-		@result10 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result11 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result12 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
 
 						
 	-- 80y
 	SELECT 
-		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
-		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
-		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0)
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
 	FROM #temp_VSS 
-	WHERE IsMMR = 1  
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VFDHMMR'
 	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
 							
 	-- Total
-	SET @result16 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
-						+ @result11 + @result12 + @result13 + @result14 + @result15 
+	SET @result21 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
 					 
 	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
-				'VALUES (104 , ''' + 'Measles****' + ''', ' +  
-				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +
-				CONVERT(VARCHAR, @result4) + ', ' + CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' +
-				CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + CONVERT(VARCHAR, @result9) + ', ' +
-				CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
-				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' +
-				CONVERT(VARCHAR, @result16) + ')'
+				'VALUES (104 , ''' + 'MMR-FDH^' + ''', ' +  
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
+				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
+				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' + CONVERT(VARCHAR, @result16) + ', ' +
+				CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' + CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' +
+				CONVERT(VARCHAR, @result21) + ')'
 				
 	EXEC (@sql)
 	
-	-- MMR End --
+	-- MMR-FDH End --
+
+
+	-- MMR-NIA --
+	-- By Age		
+	-- <65y
+	SELECT 
+		@result1 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result2 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result3 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result4 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) < 65
+		
+	-- 65y
+	SELECT 
+		@result5 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result6 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result7 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result8 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) = 65
+									
+	-- 66y - 69y
+	SELECT 
+		@result9 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result10 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result11 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result12 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 66 AND DateDiff(yy, DOB, Service_receive_dtm) <= 69
+
+	-- 70y - 79y	
+	SELECT 
+		@result13 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result14 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result15 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result16 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 70 AND DateDiff(yy, DOB, Service_receive_dtm) <= 79
+
+						
+	-- 80y
+	SELECT 
+		@result17 = ISNULL(SUM(CASE WHEN Dose = '1STDOSE'  THEN 1 ELSE 0 END), 0),
+		@result18 = ISNULL(SUM(CASE WHEN Dose = '2NDDOSE'  THEN 1 ELSE 0 END), 0),
+		@result19 = ISNULL(SUM(CASE WHEN Dose = 'ONLYDOSE' THEN 1 ELSE 0 END), 0),
+		@result20 = ISNULL(SUM(CASE WHEN Dose = '3RDDOSE' THEN 1 ELSE 0 END), 0)
+	FROM #temp_VSS 
+	WHERE IsMMR = 1 AND Subsidize_Code = 'VNIAMMR'
+	AND DateDiff(yy, DOB, Service_receive_dtm) >= 80
+							
+	-- Total
+	SET @result21 = @result1 + @result2 + @result3 + @result4 + @result5 + @result6 + @result7 + @result8 + @result9 + @result10
+					+ @result11 + @result12 + @result13 + @result14 + @result15 + @result16 + @result17 + @result18 + @result19 + @result20
+					 
+	SET @sql = 'INSERT INTO #result_table_age2 (Display_Seq, Display_Code,' + @pivot_table_column_list + ') ' +
+				'VALUES (104 , ''' + 'MMR-NIA^^' + ''', ' +  
+				CONVERT(VARCHAR, @result1) + ', ' + CONVERT(VARCHAR, @result2) + ', ' + CONVERT(VARCHAR, @result3) + ', ' +	CONVERT(VARCHAR, @result4) + ', ' + 
+				CONVERT(VARCHAR, @result5) + ', ' + CONVERT(VARCHAR, @result6) + ', ' + CONVERT(VARCHAR, @result7) + ', ' + CONVERT(VARCHAR, @result8) + ', ' + 
+				CONVERT(VARCHAR, @result9) + ', ' + CONVERT(VARCHAR, @result10) + ', ' + CONVERT(VARCHAR, @result11) + ', ' + CONVERT(VARCHAR, @result12) + ', ' +
+				CONVERT(VARCHAR, @result13) + ', ' + CONVERT(VARCHAR, @result14) + ', ' + CONVERT(VARCHAR, @result15) + ', ' + CONVERT(VARCHAR, @result16) + ', ' +
+				CONVERT(VARCHAR, @result17) + ', ' + CONVERT(VARCHAR, @result18) + ', ' + CONVERT(VARCHAR, @result19) + ', ' + CONVERT(VARCHAR, @result20) + ', ' +
+				CONVERT(VARCHAR, @result21) + ')'
+				
+	EXEC (@sql)
+	
+	-- MMR-NIA End --
+
 
 	DECLARE Age_Cursor2 CURSOR FOR   
 	SELECT Age, AgeDesc, DoseDesc, MustShow FROM @AgeDose  
@@ -2380,21 +2808,24 @@ OPEN SYMMETRIC KEY sym_Key
 	SET @sql = 'INSERT INTO #Subresult_table (	_display_seq, _result_value1, _result_value2, _result_value3, _result_value4,   
 				_result_value5, _result_value6, _result_value7, _result_value8, _result_value9, _result_value10,   
 				_result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16,   
-				_result_value17 ) SELECT Display_Seq, Display_Code,' + @ShowList + @EmptyList + ' FROM #result_table_age2'
+				_result_value17, _result_value18, _result_value19, _result_value20, _result_value21, _result_value22) SELECT Display_Seq, Display_Code,' + 
+				@ShowList + @EmptyList + ' FROM #result_table_age2'
 	EXEC (@sql)
 	
 	---- Age Header
 	SET @sql = 'INSERT INTO #Subresult_table (	_display_seq, _result_value1, _result_value2, _result_value3, _result_value4,   
 				_result_value5, _result_value6, _result_value7, _result_value8, _result_value9, _result_value10,   
 				_result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16,   
-				_result_value17 ) VALUES (51, '''',' + @AgeHeaderList + @EmptyList + ')'
+				_result_value17, _result_value18, _result_value19, _result_value20, _result_value21, _result_value22) VALUES (51, '''',' + 
+				@AgeHeaderList + @EmptyList + ')'
 	EXEC (@sql)
 	
 	---- Dose Header
 	SET @sql = 'INSERT INTO #Subresult_table (	_display_seq, _result_value1, _result_value2, _result_value3, _result_value4,   
 				_result_value5, _result_value6, _result_value7, _result_value8, _result_value9, _result_value10,   
 				_result_value11, _result_value12, _result_value13, _result_value14, _result_value15, _result_value16,   
-				_result_value17 ) VALUES (52, '''',' + @DoseHeaderList + @EmptyList + ')'
+				_result_value17, _result_value18, _result_value19, _result_value20, _result_value21, _result_value22) VALUES (52, '''',' + 
+				@DoseHeaderList + @EmptyList + ')'
 	EXEC (@sql)	
 
 	
@@ -2466,3 +2897,4 @@ GO
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSD0028_02_03_PrepareData] TO HCVU
 
 GO
+

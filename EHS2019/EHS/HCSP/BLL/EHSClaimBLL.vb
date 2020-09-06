@@ -3295,8 +3295,6 @@ Namespace BLL
             ' Auto Selected If only 1 Entry found
             Dim intEntryCount As Integer = 0
 
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             If udtInputPicker Is Nothing Then
                 udtInputPicker = New InputPickerModel
                 udtInputPicker.CategoryCode = String.Empty
@@ -3431,23 +3429,38 @@ Namespace BLL
                 arrCheckDateList.Add(dtmServiceDate)
 
                 Dim dicDoseRuleResult As Dictionary(Of String, ClaimRulesBLL.DoseRuleResult) = Nothing
+                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtEHSClaimSubsidizeModel.SubsidizeItemCode)
+                Dim udtSubsidizeGroupClaimItemDetailsList As SubsidizeGroupClaimItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeGroupClaimItemDetails(udtEHSClaimSubsidizeModel.SchemeCode, udtEHSClaimSubsidizeModel.SchemeSeq, udtEHSClaimSubsidizeModel.SubsidizeCode, udtEHSClaimSubsidizeModel.SubsidizeItemCode)
 
-                ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                ' -----------------------------------------------------------------------------------------
-                blnNoVaccineAvailable = Me._udtClaimRulesBLL.chkVaccineAvailableBenefitBySubsidize(udtSubsidizeGroupClaim, udtSubsidizeItemDetailList, _
+                Dim udtResSubsidizeItemDetailList As New SubsidizeItemDetailsModelCollection
+
+                For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtSubsidizeItemDetailList
+                    For Each udtSubsidizeGroupClaimItemDetail As SubsidizeGroupClaimItemDetailsModel In udtSubsidizeGroupClaimItemDetailsList
+                        If udtSubsidizeItemDetail.SubsidizeItemCode = udtSubsidizeGroupClaimItemDetail.SubsidizeItemCode And _
+                            udtSubsidizeItemDetail.AvailableItemCode = udtSubsidizeGroupClaimItemDetail.AvailableItemCode Then
+
+                            udtResSubsidizeItemDetailList.Add(New SubsidizeItemDetailsModel(udtSubsidizeItemDetail))
+
+                            Continue For
+
+                        End If
+                    Next
+                Next
+
+                blnNoVaccineAvailable = Me._udtClaimRulesBLL.chkVaccineAvailableBenefitBySubsidize(udtSubsidizeGroupClaim, udtResSubsidizeItemDetailList, _
                                                                                 udtAllTransactionVaccineBenefit, _
                                                                                 udtEHSAccountModel.getPersonalInformation(strDocCode), _
                                                                                 dtmServiceDate, _
                                                                                 dicDoseRuleResult, _
                                                                                 udtInputPicker)
-                ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
                 ' Checking For Each SubsidizeItemCode: Eg. HSIV->1STDOSE, 2NDDOSE, ONLYDOSE
                 '--------------------------------------------------------
                 ' Vaccine -> Subsidze -> SubsidizeDetail
                 '--------------------------------------------------------
-                For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtSubsidizeItemDetailList
+                For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In udtResSubsidizeItemDetailList
 
                     Dim udtDoseRuleResult As ClaimRulesBLL.DoseRuleResult = Nothing
                     If Not dicDoseRuleResult Is Nothing AndAlso dicDoseRuleResult.ContainsKey(udtSubsidizeItemDetail.AvailableItemCode) Then
@@ -3495,7 +3508,7 @@ Namespace BLL
                 End If
 
             Next
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             If intEntryCount = 1 Then
                 udtEHSClaimVaccineModel.SubsidizeList(0).Selected = True

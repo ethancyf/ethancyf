@@ -58,8 +58,8 @@
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div style="height: 4px"></div>
-            <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Width="950px" />
-            <cc2:MessageBox ID="udcMessageBox" runat="server" Width="950px" />
+            <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" style="width:950px;display:block" />
+            <cc2:MessageBox ID="udcMessageBox" runat="server"  style="width:950px;display:block" />
             <asp:MultiView ID="mvCore" runat="server">
                 <asp:View ID="vGrid" runat="server">
                     <table>
@@ -91,7 +91,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SchoolRCHCode %>" SortExpression="School_Code" ItemStyle-Width="80">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblGSchoolCode" runat="server" Text='<%# Eval("School_Code") %>'></asp:Label>
+                                    <asp:Label ID="lblGSchoolCode" runat="server"></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SPID %>" SortExpression="SP_ID" ItemStyle-Width="80">
@@ -148,12 +148,24 @@
                     </table>
                 </asp:View>
                 <asp:View ID="vFinish" runat="server">
-                    <asp:ImageButton ID="ibtnFReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
-                        AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnFReturn_Click" />
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:ImageButton ID="ibtnFReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnFReturn_Click" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:View>
                 <asp:View ID="vConcurrentUpdate" runat="server">
-                    <asp:ImageButton ID="ibtnCUReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
-                        AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnCUReturn_Click" />
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:ImageButton ID="ibtnCUReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnCUReturn_Click" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:View>
             </asp:MultiView>
             <%-- Pop up for Detail Popup (Confirm/Reject) --%>

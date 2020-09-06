@@ -17,6 +17,10 @@ Namespace Component.SchemeDetails
             Public Const FirstDOSE = "1STDOSE"
             Public Const SecondDOSE = "2NDDOSE"
             Public Const ONLYDOSE = "ONLYDOSE"
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Const ThirdDOSE = "3RDDOSE"
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         End Class
 

@@ -1050,17 +1050,30 @@ Namespace Component.EHSTransaction
                 Me.InsertTransactionAdditionalFields(udtDB, udtEHSTransactionModel.TransactionID, udtEHSTransactionModel)
             End If
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtEHSTransactionModel.ManualReimburse Then
+                If Not udtEHSTransactionModel.OverrideReason.Trim.Equals(String.Empty) AndAlso Not IsNothing(udtEHSTransactionModel.WarningMessage) Then
+                    Me.InsertTransactionWarningResults(udtEHSTransactionModel)
+                End If
+            End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             Dim udtSubsidizeWriteOffBLL As New SubsidizeWriteOffBLL()
 
-            'CRE14-016 (To introduce "Deceased" status into eHS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             udtSubsidizeWriteOffBLL.UpdateWriteOff(udtEHSTransactionModel.ServiceDate, _
                                                     udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, _
                                                     udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, _
                                                     udtEHSPersonalInfo.DOD, udtEHSPersonalInfo.ExactDOD, _
                                                     udtSchemeClaimModel.SchemeCode, udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeCode, _
                                                     eHASubsidizeWriteOff_CreateReason.TxCreation, udtDB)
-            'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtEHSTransactionModel.ManualReimburse Then
+                Me.InsertManaulReimburseWithApproval(udtEHSTransactionModel, udtDB)
+            End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             If drTSMPRow Is Nothing Then
                 Me.insertEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtEHSTransactionModel.ServiceProviderID)
@@ -2423,6 +2436,51 @@ Namespace Component.EHSTransaction
                 Return False
             End Try
         End Function
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Sub InsertManaulReimburseWithApproval(ByVal udtEHSTransactionModel As EHSTransactionModel, ByRef udtDB As Database)
+
+            Dim objCreationReason As Object = DBNull.Value
+            Dim objCreationRemarks As Object = DBNull.Value
+            Dim objOverrideReason As Object = DBNull.Value
+            Dim objPaymentMethod As Object = DBNull.Value
+            Dim objPaymentRemarks As Object = DBNull.Value
+            Dim objApprovalBy As Object = DBNull.Value
+            Dim objApprovalDtm As Object = DBNull.Value
+            Dim objRejectBy As Object = DBNull.Value
+            Dim objRejectDtm As Object = DBNull.Value
+
+            With udtEHSTransactionModel
+                If Not .CreationReason.Trim.Equals(String.Empty) Then objCreationReason = .CreationReason
+                If Not .CreationRemarks.Trim.Equals(String.Empty) Then objCreationRemarks = .CreationRemarks
+                If Not .OverrideReason.Trim.Equals(String.Empty) Then objOverrideReason = .OverrideReason
+                If Not .PaymentMethod.Trim.Equals(String.Empty) Then objPaymentMethod = .PaymentMethod
+                If Not .PaymentRemarks.Trim.Equals(String.Empty) Then objPaymentRemarks = .PaymentRemarks
+                If Not .ApprovalBy.Trim.Equals(String.Empty) Then objApprovalBy = .ApprovalBy
+                If .ApprovalDate.HasValue Then objApprovalDtm = .ApprovalDate.Value
+                If Not .RejectBy.Trim.Equals(String.Empty) Then objRejectBy = .RejectBy
+                If .RejectDate.HasValue Then objRejectDtm = .RejectDate.Value
+            End With
+
+            Dim prams() As SqlParameter = { _
+                                              udtDB.MakeInParam("@Transaction_ID", SqlDbType.Char, 20, udtEHSTransactionModel.TransactionID), _
+                                              udtDB.MakeInParam("@Creation_Reason", SqlDbType.Char, 5, objCreationReason), _
+                                              udtDB.MakeInParam("@Creation_Remark", SqlDbType.VarChar, 255, objCreationRemarks), _
+                                              udtDB.MakeInParam("@Override_Reason", SqlDbType.VarChar, 255, objOverrideReason), _
+                                              udtDB.MakeInParam("@Payment_Method", SqlDbType.Char, 5, objPaymentMethod), _
+                                              udtDB.MakeInParam("@Payment_Remark", SqlDbType.VarChar, 255, objPaymentRemarks), _
+                                              udtDB.MakeInParam("@Approval_By", SqlDbType.VarChar, 20, objApprovalBy), _
+                                              udtDB.MakeInParam("@Approval_Dtm", SqlDbType.DateTime, 8, objApprovalDtm), _
+                                              udtDB.MakeInParam("@Reject_By", SqlDbType.VarChar, 20, objRejectBy), _
+                                              udtDB.MakeInParam("@Reject_Dtm", SqlDbType.DateTime, 8, objRejectDtm) _
+                                          }
+
+            udtDB.RunProc("proc_ManualReimbursement_add_With_Approval", prams)
+
+        End Sub
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
 
 #End Region
 

@@ -81,8 +81,8 @@
         <ContentTemplate>
             <div style="height: 4px"></div>
             <asp:HiddenField ID="hfIFile" runat="server" />
-            <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Width="950px" />
-            <cc2:MessageBox ID="udcMessageBox" runat="server" Width="950px" />
+            <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" style="width:950px;display:block" />
+            <cc2:MessageBox ID="udcMessageBox" runat="server" style="width:950px;display:block" />
             <asp:MultiView ID="mvCore" runat="server">
                 <asp:View ID="vSearch" runat="server">
                     <table style="width: 100%" class="tblS">
@@ -195,7 +195,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SchoolRCHCode %>" SortExpression="School_Code" ItemStyle-Width="100">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblGSchoolCode" runat="server" Text='<%# Eval("School_Code") %>'></asp:Label>
+                                    <asp:Label ID="lblGSchoolCode" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SPID %>" SortExpression="SP_ID" ItemStyle-Width="80">
@@ -289,22 +289,24 @@
                                 <asp:Label ID="lblIScheme" runat="server" class="tableText"></asp:Label>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <asp:Label ID="lblISchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblISchoolCode" runat="server" class="tableText"></asp:Label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:Label ID="lblISchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblISchoolName" runat="server" class="tableText"></asp:Label>
-                            </td>
-                        </tr>
+                        <asp:Panel ID="panISchoolRCH" runat="server">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblISchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblISchoolCode" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblISchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblISchoolName" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                        </asp:Panel>
                         <tr>
                             <td>
                                 <asp:Label ID="lblIServiceProviderIDText" runat="server" Text="<%$ Resources: Text, SPID %>"></asp:Label>
@@ -438,6 +440,40 @@
                                 </td>
                             </tr>
                         </asp:Panel>
+                        <asp:Panel ID="panIMMR" runat="server">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblIGenerationDateMMR" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtIVaccinationReportGenerateDateMMR" runat="server" Width="100" MaxLength="10" Style="position:relative;top:-3px" />
+                                    <asp:ImageButton ID="ibtnIVaccinationReportGenerateDateMMR" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                        AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" />
+                                    <asp:Image ID="imgErrorIVaccinationReportGenerationDateMMR" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                        AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
+                                    <cc1:CalendarExtender ID="calIVaccinationReportGenerateDateMMR" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnIVaccinationReportGenerateDateMMR"
+                                        TargetControlID="txtIVaccinationReportGenerateDateMMR" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy"></cc1:CalendarExtender>
+                                    <cc1:FilteredTextBoxExtender ID="fteVaccinationReportGenerateDateMMR" runat="server" FilterType="Custom, Numbers"
+                                        TargetControlID="txtIVaccinationReportGenerateDateMMR" ValidChars="-"></cc1:FilteredTextBoxExtender>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblISubsidyMMRText" runat="server" Text="<%$ Resources: Text, Subsidy %>" />
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblISubsidyMMR" runat="server" class="tableText" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblIDoseOfMMRText" runat="server" Text="<%$ Resources: Text, DoseToInject %>" />
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblIDoseOfMMR" runat="server" CssClass="tableText" />
+                                </td>
+                            </tr>
+                        </asp:Panel>
                         <tr id="trIStudentFile" runat="server">
                             <td style="padding-top: 7px">
                                 <asp:Label ID="lblIStudentFileText" runat="server" Text="<%$ Resources: Text, VaccinationFile %>"></asp:Label>
@@ -540,22 +576,24 @@
                                 <asp:Label ID="lblCScheme" runat="server" class="tableText"></asp:Label>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <asp:Label ID="lblCSchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblCSchoolCode" runat="server" class="tableText"></asp:Label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:Label ID="lblCSchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblCSchoolName" runat="server" class="tableText"></asp:Label>
-                            </td>
-                        </tr>
+                        <asp:Panel ID="panCSchoolRCH" runat="server">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblCSchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCSchoolCode" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblCSchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCSchoolName" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                        </asp:Panel>
                         <tr>
                             <td>
                                 <asp:Label ID="lblCServiceProviderIDText" runat="server" Text="<%$ Resources: Text, SPID %>">
@@ -646,6 +684,33 @@
                                     <asp:Label ID="lblCDoseToInject" runat="server" CssClass="tableText"></asp:Label>
                                 </td>
                             </tr>
+                        </asp:Panel>
+                        <asp:Panel ID="panCMMR" runat="server">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblCGenerationDateMMRText" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>" />
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCGenerationDateMMR" runat="server" CssClass="tableText" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblCSubsidyMMRText" runat="server" Text="<%$ Resources: Text, Subsidy %>" />
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCSubsidyMMR" runat="server" class="tableText" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblCDoseOfMMRText" runat="server" Text="<%$ Resources: Text, DoseToInject %>" />
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCDoseOfMMR" runat="server" CssClass="tableText" />
+                                </td>
+                            </tr>
+                            <asp:HiddenField ID="hfCGenerationDateMMR" runat="server" />
                         </asp:Panel>
                         <tr>
                             <td>
@@ -851,12 +916,24 @@
                     </table>
                 </asp:View>
                 <asp:View ID="vFinish" runat="server">
-                    <asp:ImageButton ID="ibtnFReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
-                        AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnFReturn_Click" />
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:ImageButton ID="ibtnFReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnFReturn_Click" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:View>
                 <asp:View ID="vConcurrentUpdate" runat="server">
-                    <asp:ImageButton ID="ibtnCUReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
-                        AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnCUReturn_Click" />
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:ImageButton ID="ibtnCUReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnCUReturn_Click" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:View>
             </asp:MultiView>
             <%-- Pop up for Remove File --%>

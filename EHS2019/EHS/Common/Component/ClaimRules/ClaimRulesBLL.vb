@@ -1968,6 +1968,12 @@ Namespace Component.ClaimRules
             Select Case udtEligibilityExceptionRule.RuleType.Trim().ToUpper()
                 Case "DOSE"
                     Return CheckEligibleExceptionRuleSingleEntryByDose(udtTransactionDetailList, udtEligibilityExceptionRule)
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case "WARN"
+                    Return True
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             End Select
         End Function
 
@@ -3777,6 +3783,22 @@ Namespace Component.ClaimRules
                         Return False
                     End If
 
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case ClaimRuleModel.RuleTypeClass.DOSESEQEXIST
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+
+                        If udtClaimRule.Dependence.Trim().ToUpper() <> strDBDoseCode.Trim().ToUpper() OrElse Not dtmDBDoseDate.HasValue Then
+                            Return True
+                        Else
+                            Return CheckClaimRuleSingleEntryByInnerDose(dtmServiceDate, dtmDBDoseDate.Value, udtClaimRule, dicResultParam)
+                        End If
+
+                    Else
+                        Return False
+                    End If
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                 Case ClaimRuleModel.RuleTypeClass.DOSEPERIOD
                     If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
                         Return CheckClaimRuleSingleEntryByDosePeriod(dtmServiceDate, strDoseCode, udtClaimRule)
@@ -3936,6 +3958,24 @@ Namespace Component.ClaimRules
 
                     End Select
 
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case ClaimRuleModel.RuleTypeClass.SERVICEDATE
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then
+                        Return False
+                    End If
+
+                    If Not udtClaimRule.CompareValue Is Nothing Then
+                        Dim dtmCompareDate As Date = Convert.ToDateTime(udtClaimRule.CompareValue)
+
+                        Return RuleComparatorDate(udtClaimRule.Operator, dtmServiceDate, dtmCompareDate)
+
+                    Else
+                        Return False
+
+                    End If
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             End Select
 
         End Function
@@ -4011,8 +4051,6 @@ Namespace Component.ClaimRules
             Dim strOperator As String = udtClaimRule.Operator.Trim().ToUpper()
             Dim intPassValue As Integer = ConvertPassValueByCalUnit(udtClaimRule.CompareUnit, dtmDBDoseDate, dtmServiceDate)
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-
             ' Assign ResultParam (e.g. expected service date after 28 days of 1st dose)
             ' ----------------------------------------------
             
@@ -4036,7 +4074,13 @@ Namespace Component.ClaimRules
                 dicResultParam.Add("%ExpectedDate", dtmExpectedServiceDate)
 
             End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not dicResultParam.ContainsKey("%DoseInterval") Then
+                dicResultParam.Add("%DoseInterval", intPassValue)
+            End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ' Return claim rule result
             ' ----------------------------------------------
@@ -5125,7 +5169,7 @@ Namespace Component.ClaimRules
                 udtFullTransactionDetailList)
 
             For Each udtTransactionDetailModel As TransactionDetailModel In udtSubsidizeTransactionDetailList
-                If udtSubsidizeItemDetailRuleModel.Dependence.Trim() = udtTransactionDetailModel.AvailableItemCode Then
+                If udtSubsidizeItemDetailRuleModel.Dependence.Trim() = udtTransactionDetailModel.AvailableItemCode.Trim() Then
                     blnIn = True
                     Exit For
                 End If

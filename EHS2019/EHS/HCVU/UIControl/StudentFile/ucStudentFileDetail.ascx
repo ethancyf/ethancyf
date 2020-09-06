@@ -19,22 +19,24 @@
             <asp:Label ID="lblDScheme" runat="server" class="tableText"></asp:Label>
         </td>
     </tr>
-    <tr>
-        <td>
-            <asp:Label ID="lblDSchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
-        </td>
-        <td>
-            <asp:Label ID="lblDSchoolCode" runat="server" class="tableText"></asp:Label>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <asp:Label ID="lblDSchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
-        </td>
-        <td>
-            <asp:Label ID="lblDSchoolName" runat="server" class="tableText"></asp:Label>
-        </td>
-    </tr>
+    <asp:Panel ID="panDSchoolRCH" runat="server">
+        <tr>
+            <td>
+                <asp:Label ID="lblDSchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
+            </td>
+            <td>
+                <asp:Label ID="lblDSchoolCode" runat="server" class="tableText"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <asp:Label ID="lblDSchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
+            </td>
+            <td>
+                <asp:Label ID="lblDSchoolName" runat="server" class="tableText"></asp:Label>
+            </td>
+        </tr>
+    </asp:Panel>
     <tr>
         <td>
             <asp:Label ID="lblDServiceProviderIDText" runat="server" Text="<%$ Resources: Text, SPID %>"></asp:Label>
@@ -115,6 +117,33 @@
             </td>
         </tr>
     </asp:Panel>    
+    <asp:Panel ID="panDMMR" runat="server">
+        <tr>
+            <td style="width: 264px">
+                <asp:Label ID="lblDVaccinationDateMMRText" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>" />
+            </td>
+            <td>
+                <asp:Label ID="lblDVaccinationDateMMR" runat="server" class="tableText" />
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 264px">
+                <asp:Label ID="lblDSubsidyMMRText" runat="server" Text="<%$ Resources: Text, Subsidy %>" />
+            </td>
+            <td>
+                <asp:Label ID="lblDSubsidyMMR" runat="server" class="tableText" />
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 264px">
+                <asp:Label ID="lblDDoseOfMMRText" runat="server" Text="<%$ Resources: Text, DoseOfMMR %>" />
+            </td>
+            <td>
+                <asp:Label ID="lblDDoseOfMMR" runat="server" class="tableText" />
+            </td>
+        </tr>
+
+    </asp:Panel>
     <tr>
         <td>
             <asp:Label ID="lblDUploadedByText" runat="server" Text="<%$ Resources: Text, UploadedBy %>"></asp:Label>
@@ -501,6 +530,11 @@
                     <asp:TemplateField HeaderText="<%$ Resources: Text, OtherField %>" ItemStyle-Width="150">
                         <ItemTemplate>
                             <asp:Label ID="lblGOtherField" runat="server" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="<%$ Resources: Text, ServiceDate %>" ItemStyle-Width="70">
+                        <ItemTemplate>
+                            <asp:Label ID="lblGServiceDate" runat="server" />
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="<%$ Resources: Text, ConfirmToInject %>" SortExpression="Reject_Injection" ItemStyle-Width="50">

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	17 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN	
 -- Modified date:	04 Sep 2019
 -- CR No.			CRE19-001 (VSS 2019 - Claim Creation)
@@ -95,6 +102,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		Ext_Ref_Status,
@@ -112,7 +120,9 @@ AS BEGIN
 		TSMP,
 
 		Original_Student_File_ID,
-		Original_Student_Seq
+		Original_Student_Seq,
+		HKIC_Symbol,
+		Service_Receive_Dtm
 	FROM
 		StudentFileEntryStaging
 	WHERE

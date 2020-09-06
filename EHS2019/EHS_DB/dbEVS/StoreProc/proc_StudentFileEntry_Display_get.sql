@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	17 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -103,8 +110,8 @@ AS BEGIN
 	--
 
 	SELECT 
-		Student_File_ID,
-		Student_Seq,
+		SFE.Student_File_ID,
+		SFE.Student_Seq,
 		Class_Name,
 		Class_No,
 		RIGHT('0000000000' + ISNULL(Class_No,''), 10) AS [Class_No_Sort],
@@ -349,6 +356,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		SFE.Ext_Ref_Status,
@@ -450,12 +458,22 @@ AS BEGIN
 					'N'
 			END,
 
-			Original_Student_File_ID,
-			Original_Student_Seq
+		Original_Student_File_ID,
+		Original_Student_Seq,
+		SFE.HKIC_Symbol,
+		SFE.Service_Receive_Dtm,
+
+		SFEMMR.Non_immune_to_measles,
+		SFEMMR.Ethnicity,
+		SFEMMR.Category1,
+		SFEMMR.Category2,
+		SFEMMR.Lot_Number
 	FROM
 		StudentFileEntry SFE
 			INNER JOIN #tblAcc ACC
 				ON SFE.Student_Seq = ACC.SeqNo
+			LEFT OUTER JOIN StudentFileEntryMMRField SFEMMR
+				ON SFE.Student_File_ID = SFEMMR.Student_File_ID AND SFE.Student_Seq = SFEMMR.Student_Seq
 			LEFT OUTER JOIN VoucherAccount VA
 				ON ACC.Real_Voucher_Acc_ID = VA.Voucher_Acc_ID 
 					AND ACC.Real_Acc_Type = 'V'
@@ -475,7 +493,7 @@ AS BEGIN
 			LEFT OUTER JOIN StatusData SD_VT 
 				ON VT.Record_Status = SD_VT.Status_Value AND Enum_Class = 'ClaimTransStatus'
 	WHERE
-		Student_File_ID = @Student_File_ID
+		SFE.Student_File_ID = @Student_File_ID
 	ORDER BY
 		SFE.Student_Seq
 	

@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeaderStaging_move]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeaderStaging_move]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StudentFileHeaderStaging_move]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	20 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG	
@@ -82,6 +89,16 @@ AS BEGIN
 		Student_File_ID = @Student_File_ID
 			AND Student_Seq IN (
 				SELECT Student_Seq FROM StudentFileEntrySubsidizePrecheckStaging WHERE Student_File_ID = @Student_File_ID
+			)
+
+	--
+
+	DELETE
+		StudentFileEntryMMRField
+	WHERE
+		Student_File_ID = @Student_File_ID
+			AND Student_Seq IN (
+				SELECT Student_Seq FROM StudentFileEntryMMRFieldStaging WHERE Student_File_ID = @Student_File_ID
 			)
 
 	--
@@ -219,6 +236,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		Ext_Ref_Status,
@@ -232,7 +250,9 @@ AS BEGIN
 		Last_Rectify_By,
 		Last_Rectify_Dtm,
 		Original_Student_File_ID,
-		Original_Student_Seq
+		Original_Student_Seq,
+		HKIC_Symbol,
+		Service_Receive_Dtm
 	)
 	SELECT
 		Student_File_ID,
@@ -275,6 +295,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		Ext_Ref_Status,
@@ -288,7 +309,9 @@ AS BEGIN
 		Last_Rectify_By,
 		Last_Rectify_Dtm,
 		Original_Student_File_ID,
-		Original_Student_Seq
+		Original_Student_Seq,
+		HKIC_Symbol,
+		Service_Receive_Dtm
 	FROM
 		StudentFileEntryStaging
 	WHERE
@@ -389,10 +412,35 @@ AS BEGIN
 
 	--
 
+	INSERT INTO StudentFileEntryMMRField (
+		Student_File_ID,
+		Student_Seq,
+		Non_immune_to_measles,
+		Ethnicity,
+		Category1,
+		Category2,
+		Lot_Number
+	)
+	SELECT
+		Student_File_ID,
+		Student_Seq,
+		Non_immune_to_measles,
+		Ethnicity,
+		Category1,
+		Category2,
+		Lot_Number
+	FROM
+		StudentFileEntryMMRFieldStaging
+	WHERE
+		Student_File_ID = @Student_File_ID
+
+	--
+
 	DELETE StudentFileHeaderStaging WHERE Student_File_ID = @Student_File_ID
 	DELETE StudentFileEntryStaging WHERE Student_File_ID = @Student_File_ID
 	DELETE StudentFileEntryVaccineStaging WHERE Student_File_ID = @Student_File_ID
 	DELETE StudentFileEntrySubsidizePrecheckStaging WHERE Student_File_ID = @Student_File_ID
+	DELETE StudentFileEntryMMRFieldStaging WHERE Student_File_ID = @Student_File_ID
 	
 
 END
@@ -400,3 +448,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileHeaderStaging_move] TO HCVU
 GO
+

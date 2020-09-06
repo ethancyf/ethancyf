@@ -1,16 +1,17 @@
-Imports System.Data.SqlClient
+Imports Common.ComFunction
+Imports Common.ComObject
+Imports Common.Component
+Imports Common.Component.ClaimRules
 Imports Common.Component.DocType
 Imports Common.Component.StudentFile
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Component.EHSAccount
-Imports Common.Component
-Imports Common.Validation
-Imports Common.ComFunction
-Imports Common.DataAccess
-Imports Common.ComObject
-Imports Common.Component.ClaimRules
-Imports Common.Format
+Imports Common.Component.Scheme
 Imports Common.Component.StudentFile.StudentFileBLL
+Imports System.Data.SqlClient
+Imports Common.DataAccess
+Imports Common.Format
+Imports Common.Validation
 Imports System.Web.Script.Serialization
 
 Public Class AccountMatchingBLL
@@ -656,14 +657,27 @@ Public Class AccountMatchingBLL
 
             ' Create new voucher account id 
             udtEHSAccount.VoucherAccID = udtGF.generateSystemNum("C")
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'udtEHSAccount.CreateBy = udtStudent.CreateBy    'upload back office user
-            udtEHSAccount.CreateBy = udtStudentFileHeader.SPID    'SP            
-            udtEHSAccount.CreateSPID = udtStudentFileHeader.SPID
-            udtEHSAccount.CreateSPPracticeDisplaySeq = udtStudentFileHeader.PracticeDisplaySeq
-            udtEHSAccount.SchemeCode = udtStudentFileHeader.SchemeCode
-            ' CRE19-001 (VSS 2019) [End][Winnie]
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                udtEHSAccount.CreateByBO = True
+
+                udtEHSAccount.SchemeCode = String.Empty
+                udtEHSAccount.CreateSPID = String.Empty
+                udtEHSAccount.CreateSPPracticeDisplaySeq = 0
+                udtEHSAccount.CreateBy = udtStudent.CreateBy    'upload back office user
+
+            Else
+                udtEHSAccount.CreateByBO = False
+
+                udtEHSAccount.SchemeCode = udtStudentFileHeader.SchemeCode
+                udtEHSAccount.CreateSPID = udtStudentFileHeader.SPID
+                udtEHSAccount.CreateSPPracticeDisplaySeq = udtStudentFileHeader.PracticeDisplaySeq
+                udtEHSAccount.CreateBy = udtStudentFileHeader.SPID    'SP  
+
+            End If
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ' Fill in account information 
             FillEHSAccountInfo(udtEHSAccount)
@@ -850,8 +864,6 @@ Public Class AccountMatchingBLL
             udtEHSAccount.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
         End If
 
-        'udtEHSAccount.CreateSPID = String.Empty
-        'udtEHSAccount.CreateSPPracticeDisplaySeq = 0
         udtEHSAccount.AccountPurpose = EHSAccountModel.AccountPurposeClass.ForClaim
 
         udtEHSAccount.DataEntryBy = String.Empty
@@ -877,11 +889,6 @@ Public Class AccountMatchingBLL
         ' ----------------------------------------------------------------------------------------
         udtEHSAccount.EHSPersonalInformationList(0).SmartIDVer = String.Empty
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
-
-        ' CRE19-001 (VSS 2019) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
-        udtEHSAccount.CreateByBO = False
-        ' CRE19-001 (VSS 2019) [End][Winnie]
 
         udtEHSAccount.SubsidizeWriteOff_CreateReason = eHASubsidizeWriteOff_CreateReason.PersonalInfoCreation
 
@@ -1078,7 +1085,7 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
-                    
+
                 Case DocTypeModel.DocTypeCode.OTHER
                     blnFillAll = True
                     ' CRE19-001 (VSS 2019) [End][Winnie]

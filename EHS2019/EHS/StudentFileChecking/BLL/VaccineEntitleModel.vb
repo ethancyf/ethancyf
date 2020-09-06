@@ -2,16 +2,21 @@ Imports Common.Component.EHSTransaction
 Namespace BLL
 
     Public Class VaccineEntitleModel
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Private _blnEntitleOnlyDose As Boolean = False
         Private _blnEntitle1stDose As Boolean = False
         Private _blnEntitle2ndDose As Boolean = False
+        Private _blnEntitle3rdDose As Nullable(Of Boolean) = False
         Private _blnEntitleInject As Boolean = False
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
         Private _strRemarkOnlyDose As String = String.Empty
         Private _strRemark1stDose As String = String.Empty
         Private _strRemark2ndDose As String = String.Empty
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+        Private _strRemark3rdDose As String = String.Empty
         Private _strEntitleInjectFailReason As String = String.Empty
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
         Private _udtEHSTransaction As EHSTransactionModel = Nothing
 
         Public Property EntitleOnlyDose As Boolean
@@ -40,6 +45,18 @@ Namespace BLL
                 _blnEntitle2ndDose = value
             End Set
         End Property
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property Entitle3rdDose As Nullable(Of Boolean)
+            Get
+                Return _blnEntitle3rdDose
+            End Get
+            Set(value As Nullable(Of Boolean))
+                _blnEntitle3rdDose = value
+            End Set
+        End Property
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         Public Property EntitleInject As Boolean
             Get
@@ -80,6 +97,18 @@ Namespace BLL
         End Property
 
         ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property Remark3rdDose As String
+            Get
+                Return _strRemark3rdDose
+            End Get
+            Set(value As String)
+                _strRemark3rdDose = value
+            End Set
+        End Property
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         Public Property EntitleInjectFailReason As String
             Get

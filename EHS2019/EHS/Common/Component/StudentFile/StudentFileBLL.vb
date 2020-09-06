@@ -5,6 +5,7 @@ Imports Common.ComFunction
 Imports Common.ComFunction.ParameterFunction
 Imports Common.DataAccess
 Imports Common.Format
+Imports Common.Component.Scheme
 Imports Common.Component.SchemeDetails
 
 Namespace Component.StudentFile
@@ -78,6 +79,11 @@ Namespace Component.StudentFile
 
         Public Class StudentFileSetting
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Upload_Record_Limit As Integer
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             Public Upload_ContentSheetName As String
             Public Upload_ClassName As String
             Public Upload_DoseMinDayInternal As Integer
@@ -102,6 +108,11 @@ Namespace Component.StudentFile
 
             'Public Upload_LimitProcessRecordStatus As String
             'Public Upload_LimitProcessCount As Integer
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Upload_LotNumberLengthLimit As Integer
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             Public Rectify_DisallowDayBeforeReport As Integer
             Public Rectify_StudentFileIDSheetName As String
@@ -165,9 +176,7 @@ Namespace Component.StudentFile
             Public Sex_Invalid As String
             Public DOB_Empty As String
             Public DOB_Invalid As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             Public DOB_DataType_Invalid As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
             Public DOB_Future As String
             Public DOB_AgeUpperWarning As String
             Public DOB_ExceedAgeUpper As String
@@ -178,11 +187,7 @@ Namespace Component.StudentFile
             Public DocNo_Empty As String
             Public DocNo_ExceedMaxLength As String
             Public DocNo_Invalid As String
-            ' CRE18-006 Updating the Acceptance of Format in Student File for Upload under PPP [Start][Koala]
             Public ContactNo_TooLongTrim As String
-            'Public ContactNo_Empty As String
-            'Public ContactNo_ExceedMaxLength As String
-            ' CRE18-006 Updating the Acceptance of Format in Student File for Upload under PPP [End][Koala]
             Public DOI_Empty As String
             Public DOI_Invalid As String
             Public DOI_Future As String
@@ -197,23 +202,26 @@ Namespace Component.StudentFile
             Public ECReferenceNo_TooLongTrim As String
             Public ECReferenceNo_Empty As String
             Public ECReferenceNo_Invalid As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-            'Public ConfirmNotToInject_Invalid As String
             Public TobeInjected_Invalid As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
             Public Inject_Invalid As String
             Public ClassNo_Duplicate As String
             Public SeqNo_Invalid As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             Public RectifiedFlag_Invalid As String
             Public Exist_DocNo_Invalid As String
             Public Exist_DOB_Invalid As String
             Public RefNo_Empty As String
             Public RefNo_Duplicate As String
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
-            ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
             Public FullWidthChar As String
-            ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public DocNo_Duplicate As String
+            Public Common_Empty As String
+            Public Common_Invalid As String
+            Public Common_DataType_Invalid As String
+            Public Common_Future As String
+            Public Common_TooLongTrim As String
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
         End Class
 
         Public Class CheckLimitResult
@@ -274,8 +282,6 @@ Namespace Component.StudentFile
 
         End Class
 #End Region
-
-
 
         ' C
         Public Sub InsertBatchStudentFile(udtStudentFileHeader As StudentFileHeaderModel, Optional ByVal udtDB As Database = Nothing)
@@ -400,6 +406,8 @@ Namespace Component.StudentFile
         Public Sub InsertStudentFileStaging(udtStudentFileHeader As StudentFileHeaderModel, dt As DataTable, Optional ByVal udtDB As Database = Nothing)
             If IsNothing(udtDB) Then udtDB = New Database
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Dim dtmLastRectifyDtm As Object = DBNull.Value
             Dim dtmClaimUploadDtm As Object = DBNull.Value
             Dim dtmFileConfirmDtm As Object = DBNull.Value
@@ -411,6 +419,7 @@ Namespace Component.StudentFile
             Dim dtmFinalCheckingReportGenerationDate2ndDose As Object = DBNull.Value
             Dim dtmRequestClaimReactivateDtm As Object = DBNull.Value
             Dim dtmConfirmClaimReactivateDtm As Object = DBNull.Value
+            Dim intSchemeSeq As Object = DBNull.Value
 
             If udtStudentFileHeader.LastRectifyDtm.HasValue Then
                 dtmLastRectifyDtm = udtStudentFileHeader.LastRectifyDtm.Value
@@ -440,8 +449,6 @@ Namespace Component.StudentFile
                 dtmFinalCheckingReportGenerationDate = udtStudentFileHeader.FinalCheckingReportGenerationDate.Value
             End If
 
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             If udtStudentFileHeader.ServiceReceiveDtm2ndDose.HasValue Then
                 dtmServiceReceiveDtm2ndDose = udtStudentFileHeader.ServiceReceiveDtm2ndDose.Value
             End If
@@ -457,7 +464,10 @@ Namespace Component.StudentFile
             If udtStudentFileHeader.ConfirmClaimReactivateDtm.HasValue Then
                 dtmConfirmClaimReactivateDtm = udtStudentFileHeader.ConfirmClaimReactivateDtm.Value
             End If
-            ' CRE19-001 (VSS 2019) [End][Winnie]
+
+            If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                intSchemeSeq = udtStudentFileHeader.SchemeSeq
+            End If
 
             Dim prams1() As SqlParameter = { _
                 udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentFileHeader.StudentFileID), _
@@ -498,7 +508,8 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@Confirm_Claim_Reactivate_By", SqlDbType.VarChar, 20, IIf(udtStudentFileHeader.ConfirmClaimReactivateBy = String.Empty, DBNull.Value, udtStudentFileHeader.ConfirmClaimReactivateBy)), _
                 udtDB.MakeInParam("@Confirm_Claim_Reactivate_Dtm", SqlDbType.DateTime, 8, dtmConfirmClaimReactivateDtm), _
                 udtDB.MakeInParam("@Original_Student_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OriginalStudentFileID = String.Empty, DBNull.Value, udtStudentFileHeader.OriginalStudentFileID)), _
-                udtDB.MakeInParam("@Request_Rectify_Status", SqlDbType.VarChar, 2, IIf(udtStudentFileHeader.RequestRectifyStatus = String.Empty, DBNull.Value, udtStudentFileHeader.RequestRectifyStatus)) _
+                udtDB.MakeInParam("@Request_Rectify_Status", SqlDbType.VarChar, 2, IIf(udtStudentFileHeader.RequestRectifyStatus = String.Empty, DBNull.Value, udtStudentFileHeader.RequestRectifyStatus)), _
+                udtDB.MakeInParam("@Scheme_Seq", SqlDbType.SmallInt, 2, intSchemeSeq) _
             }
 
             udtDB.RunProc("proc_StudentFileHeaderStaging_add", prams1)
@@ -508,7 +519,7 @@ Namespace Component.StudentFile
                 Dim prams2() As SqlParameter = { _
                     udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentFileHeader.StudentFileID), _
                     udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, dr("Student_Seq")), _
-                    udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 20, dr("Class_Name")), _
+                    udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 40, dr("Class_Name")), _
                     udtDB.MakeInParam("@Class_No", SqlDbType.NVarChar, 10, dr("Class_No")), _
                     udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, dr("Contact_No")), _
                     udtDB.MakeInParam("@Doc_No", SqlDbType.VarChar, 20, dr("Doc_No")), _
@@ -546,6 +557,7 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Entitle_ONLYDOSE", SqlDbType.Char, 1, dr("Entitle_ONLYDOSE")), _
                     udtDB.MakeInParam("@Entitle_1STDOSE", SqlDbType.Char, 1, dr("Entitle_1STDOSE")), _
                     udtDB.MakeInParam("@Entitle_2NDDOSE", SqlDbType.Char, 1, dr("Entitle_2NDDOSE")), _
+                    udtDB.MakeInParam("@Entitle_3RDDOSE", SqlDbType.Char, 1, dr("Entitle_3RDDOSE")), _
                     udtDB.MakeInParam("@Entitle_Inject", SqlDbType.Char, 1, dr("Entitle_Inject")), _
                     udtDB.MakeInParam("@Entitle_Inject_Fail_Reason", SqlDbType.VarChar, 1000, dr("Entitle_Inject_Fail_Reason")), _
                     udtDB.MakeInParam("@Ext_Ref_Status", SqlDbType.VarChar, 10, dr("Ext_Ref_Status")), _
@@ -559,12 +571,29 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Last_Rectify_By", SqlDbType.VarChar, 20, dr("Last_Rectify_By")), _
                     udtDB.MakeInParam("@Last_Rectify_Dtm", SqlDbType.DateTime, 8, dr("Last_Rectify_Dtm")), _
                     udtDB.MakeInParam("@Original_Student_File_ID", SqlDbType.VarChar, 15, dr("Original_Student_File_ID")), _
-                    udtDB.MakeInParam("@Original_Student_Seq", SqlDbType.Int, 4, dr("Original_Student_Seq")) _
+                    udtDB.MakeInParam("@Original_Student_Seq", SqlDbType.Int, 4, dr("Original_Student_Seq")), _
+                    udtDB.MakeInParam("@HKIC_Symbol", SqlDbType.Char, 1, dr("HKIC_Symbol")), _
+                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, dr("Service_Receive_Dtm")) _
                 }
 
                 udtDB.RunProc("proc_StudentFileEntryStaging_add", prams2)
 
+                If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    Dim prams3() As SqlParameter = { _
+                        udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentFileHeader.StudentFileID), _
+                        udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, dr("Student_Seq")), _
+                        udtDB.MakeInParam("@Non_immune_to_measles", SqlDbType.VarChar, 2, dr("Non_Immune_to_measles")), _
+                        udtDB.MakeInParam("@Ethnicity", SqlDbType.VarChar, 100, dr("Ethnicity")), _
+                        udtDB.MakeInParam("@Category1", SqlDbType.VarChar, 100, dr("Category1")), _
+                        udtDB.MakeInParam("@Category2", SqlDbType.VarChar, 100, dr("Category2")), _
+                        udtDB.MakeInParam("@Lot_Number", SqlDbType.VarChar, 15, dr("Lot_Number"))
+                    }
+
+                    udtDB.RunProc("proc_StudentFileEntryMMRFieldStaging_add", prams3)
+                End If
+
             Next
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         End Sub
 
@@ -610,7 +639,7 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@Scheme_Seq", SqlDbType.SmallInt, 2, intSchemeSeq), _
                 udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, strSubsidizeCode), _
                 udtDB.MakeInParam("@Subsidize_Item_Code", SqlDbType.Char, 10, strSubsidizeItemCode), _
-                udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 10, strClassName), _
+                udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 40, strClassName), _
                 udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, objServiceReceiveDtm), _
                 udtDB.MakeInParam("@Final_Checking_Report_Generation_Date", SqlDbType.DateTime, 8, objFinalCheckingReportGenerationDate), _
                 udtDB.MakeInParam("@Service_Receive_Dtm_2ndDose", SqlDbType.DateTime, 8, objServiceReceiveDtm2ndDose), _
@@ -651,7 +680,7 @@ Namespace Component.StudentFile
             Dim prams() As SqlParameter = { _
                 udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentFileHeader.StudentFileID), _
                 udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, intStudentSeq), _
-                udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 10, strClassName), _
+                udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 40, strClassName), _
                 udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, udtStudentFileHeader.SchemeCode), _
                 udtDB.MakeInParam("@Scheme_Seq", SqlDbType.SmallInt, 2, intSchemeSeq), _
                 udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, strSubsidizeCode), _
@@ -977,7 +1006,7 @@ Namespace Component.StudentFile
             Dim prams() As SqlParameter = { _
                 udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, IIf(strStudentFileID = String.Empty, DBNull.Value, strStudentFileID)), _
                 udtDB.MakeInParam("@School_Code", SqlDbType.VarChar, 30, IIf(strSchoolCode = String.Empty, DBNull.Value, strSchoolCode)), _
-                udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode)), _
+                udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 5000, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode)), _
                 udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, IIf(strSubsidizeCode = String.Empty, DBNull.Value, strSubsidizeCode)), _
                 udtDB.MakeInParam("@SPID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
                 udtDB.MakeInParam("@DataEntryAccount", SqlDbType.VarChar, 20, IIf(strDataEntryAccount = String.Empty, DBNull.Value, strDataEntryAccount)), _
@@ -986,7 +1015,7 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@VaccinationDateTo", SqlDbType.DateTime, 8, objVaccDateTo), _
                 udtDB.MakeInParam("@CurrentSeason", SqlDbType.Bit, 1, objCurrentSeason), _
                 udtDB.MakeInParam("@PreCheck", SqlDbType.Bit, 1, objPreCheck), _
-                udtDB.MakeInParam("@Record_Status", SqlDbType.VarChar, 2, IIf(strStatus = String.Empty, DBNull.Value, strStatus)) _
+                udtDB.MakeInParam("@Record_Status", SqlDbType.VarChar, 5000, IIf(strStatus = String.Empty, DBNull.Value, strStatus)) _
             }
 
             udtDB.RunProc("proc_StudentFileHeader_search", prams, dt)
@@ -1812,8 +1841,6 @@ Namespace Component.StudentFile
             End If
 
         End Function
-
-
         ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
         Public Shared Function GenerateStudentFileEntryDT() As DataTable
@@ -1822,9 +1849,7 @@ Namespace Component.StudentFile
             dt.Columns.Add("Student_File_ID", GetType(String))
             dt.Columns.Add("Student_Seq", GetType(Integer))
             dt.Columns.Add("Class_Name", GetType(String))
-            ' INT19-0020 (Fix batch upload with full width chars) [Start][Winnie]
             dt.Columns.Add("Class_Name_Excel", GetType(String))
-            ' INT19-0020 (Fix batch upload with full width chars) [End][Winnie]
             dt.Columns.Add("Class_No", GetType(String))
             dt.Columns.Add("Contact_No", GetType(String))
             dt.Columns.Add("Doc_Code", GetType(String))
@@ -1834,35 +1859,22 @@ Namespace Component.StudentFile
             dt.Columns.Add("Surname_EN", GetType(String))
             dt.Columns.Add("Given_Name_EN", GetType(String))
             dt.Columns.Add("Name_CH", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             dt.Columns.Add("Name_CH_Excel", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
             dt.Columns.Add("DOB", GetType(DateTime))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             dt.Columns.Add("Exact_DOB", GetType(String))
             dt.Columns.Add("DOB_Excel", GetType(Object))
             dt.Columns.Add("Exact_DOB_Excel", GetType(String))
-            'dt.Columns.Add("DOB_Excel", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
             dt.Columns.Add("Sex", GetType(String))
             dt.Columns.Add("Date_of_Issue", GetType(DateTime))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             dt.Columns.Add("Date_of_Issue_Excel", GetType(Object))
-            'dt.Columns.Add("Date_of_Issue_Excel", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
             dt.Columns.Add("Permit_To_Remain_Until", GetType(DateTime))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             dt.Columns.Add("Permit_To_Remain_Until_Excel", GetType(Object))
-            'dt.Columns.Add("Permit_To_Remain_Until_Excel", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
             dt.Columns.Add("Foreign_Passport_No", GetType(String))
             dt.Columns.Add("EC_Serial_No", GetType(String))
             dt.Columns.Add("EC_Reference_No", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-            dt.Columns.Add("EC_Reference_No_Other_Format", GetType(String))            
+            dt.Columns.Add("EC_Reference_No_Other_Format", GetType(String))
             dt.Columns.Add("Reject_Injection", GetType(String))
             dt.Columns.Add("To_be_Injected", GetType(String))
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
             dt.Columns.Add("Injected", GetType(String))
             dt.Columns.Add("Rectified", GetType(String))
             dt.Columns.Add("Upload_Error", GetType(String))
@@ -1885,6 +1897,7 @@ Namespace Component.StudentFile
             dt.Columns.Add("Entitle_ONLYDOSE", GetType(String))
             dt.Columns.Add("Entitle_1STDOSE", GetType(String))
             dt.Columns.Add("Entitle_2NDDOSE", GetType(String))
+            dt.Columns.Add("Entitle_3RDDOSE", GetType(String))
             dt.Columns.Add("Entitle_Inject", GetType(String))
             dt.Columns.Add("Entitle_Inject_Fail_Reason", GetType(String))
             dt.Columns.Add("Ext_Ref_Status", GetType(String))
@@ -1902,6 +1915,24 @@ Namespace Component.StudentFile
 
             dt.Columns.Add("Original_Student_File_ID", GetType(String))
             dt.Columns.Add("Original_Student_Seq", GetType(Integer))
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            dt.Columns.Add("HKIC_Symbol", GetType(String))
+            dt.Columns.Add("HKIC_Symbol_Excel", GetType(String))
+            dt.Columns.Add("Service_Receive_Dtm", GetType(DateTime))
+            dt.Columns.Add("Service_Receive_Dtm_Excel", GetType(Object))
+
+            dt.Columns.Add("Non_Immune_to_measles", GetType(String))
+            dt.Columns.Add("Non_Immune_to_measles_Excel", GetType(String))
+            dt.Columns.Add("Ethnicity", GetType(String))
+            dt.Columns.Add("Ethnicity_Excel", GetType(String))
+            dt.Columns.Add("Category1", GetType(String))
+            dt.Columns.Add("Category1_Excel", GetType(String))
+            dt.Columns.Add("Category2", GetType(String))
+            dt.Columns.Add("Category2_Excel", GetType(String))
+            dt.Columns.Add("Lot_Number", GetType(String))
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             Return dt
 
@@ -2231,17 +2262,39 @@ Namespace Component.StudentFile
             End If
             ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Dim descParamFileName As New ParameterCollection
-            descParamFileName.Add(New ParameterObject("SchoolCode", udtStudentFileHeader.SchoolCode))
+
+            Select udtStudentFileHeader.SchemeCode
+                Case Common.Component.Scheme.SchemeClaimModel.PPP, Common.Component.Scheme.SchemeClaimModel.PPPKG, Common.Component.Scheme.SchemeClaimModel.RVP
+                    descParamFileName.Add(New ParameterObject("SchoolCodeOrFileID", String.Format("-{0}", udtStudentFileHeader.SchoolCode)))
+
+                Case Common.Component.Scheme.SchemeClaimModel.VSS
+                    If udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                        descParamFileName.Add(New ParameterObject("SchoolCodeOrFileID", String.Format("-{0}", udtStudentFileHeader.StudentFileID)))
+                    Else
+                        descParamFileName.Add(New ParameterObject("SchoolCodeOrFileID", ""))
+                    End If
+
+                Case Else
+                    descParamFileName.Add(New ParameterObject("SchoolCodeOrFileID", ""))
+
+            End Select
 
             Dim descParam As New ParameterCollection
-            If udtStudentFileHeader.SchemeCode = Common.Component.Scheme.SchemeClaimModel.RVP Then
-                descParam.Add(New ParameterObject("RCHCode", udtStudentFileHeader.SchoolCode))
-            Else
-                descParam.Add(New ParameterObject("SchoolCode", udtStudentFileHeader.SchoolCode))
+
+            If udtStudentFileHeader.SchoolCode <> String.Empty Then
+                If udtStudentFileHeader.SchemeCode = Common.Component.Scheme.SchemeClaimModel.RVP Then
+                    descParam.Add(New ParameterObject("RCHCode", udtStudentFileHeader.SchoolCode))
+                Else
+                    descParam.Add(New ParameterObject("SchoolCode", udtStudentFileHeader.SchoolCode))
+                End If
             End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+
 
             Dim blnSuccess As Boolean = False
 

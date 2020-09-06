@@ -1,13 +1,14 @@
+Imports Common.ComFunction
 Imports Common.Component
-Imports Common.Component.StudentFile
-Imports Common.Format
+Imports Common.Component.DocType
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSAccount.EHSAccountModel
-Imports Common.ComFunction
+Imports Common.Component.Scheme
+Imports Common.Component.StudentFile
 Imports Common.DataAccess
-Imports System.Data.SqlClient
-Imports Common.Component.DocType
+Imports Common.Format
 Imports StudentAccountMatching.AccountMatchingBLL
+Imports System.Data.SqlClient
 
 Module Core
     Sub Main(ByVal args() As String)
@@ -482,6 +483,15 @@ Public Class ScheduleJob
                         strCurrentAction = "Rectify Temp Account"
 
                         udtNewEHSAccount = New EHSAccountModel(udtExistingTempAccount)
+
+                        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                            udtNewEHSAccount.CreateByBO = True
+                        Else
+                            udtNewEHSAccount.CreateByBO = False
+                        End If
+                        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                         If udtAccountMatchingBLL.RectifyTemporaryEHSAccount(udtExistingTempAccount, udtNewEHSAccount, udtStudentAmend, udtDB) Then
                             udtAccountMatchingBLL.convertTempAccountInfo(udtNewEHSAccount, udtStudentAmend)

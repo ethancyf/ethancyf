@@ -581,6 +581,96 @@ Partial Public Class VaccinationFileUpload
     Protected WithEvents fteIVaccinationReportGenerateDate2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
+    '''panIMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panIMMR As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblIDoseOfMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIDoseOfMMR As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlIDoseOfMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlIDoseOfMMR As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgIddlIDoseOfMMRError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgIddlIDoseOfMMRError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblIGenerationDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIGenerationDateMMR As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationReportGenerateDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationReportGenerateDateMMR As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationReportGenerateDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationReportGenerateDateMMR As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgIVaccinationReportGenerationDateMMRError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgIVaccinationReportGenerationDateMMRError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationReportGenerateDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationReportGenerateDateMMR As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteVaccinationReportGenerateDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteVaccinationReportGenerateDateMMR As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''lblIVaccinationFileText control.
     '''</summary>
     '''<remarks>
@@ -671,13 +761,13 @@ Partial Public Class VaccinationFileUpload
     Protected WithEvents lblCUploadVaccinationFile As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''Label1 control.
+    '''lblCIDHeading control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Label1 As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblCIDHeading As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblCSchemeText control.
@@ -696,6 +786,51 @@ Partial Public Class VaccinationFileUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCScheme As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panCMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCMMR As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCDoseOfMMRText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDoseOfMMRText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDoseOfMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDoseOfMMR As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDateMMRText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDateMMRText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDateMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDateMMR As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''panCVaccinationInfo control.
@@ -950,6 +1085,15 @@ Partial Public Class VaccinationFileUpload
     Protected WithEvents imgCPracticeError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''panCSchoolRCH control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCSchoolRCH As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''lblCSchoolRCHCodeText control.
     '''</summary>
     '''<remarks>
@@ -1175,6 +1319,51 @@ Partial Public Class VaccinationFileUpload
     Protected WithEvents hfCFDSubsidizeCode As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''trCFDDose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trCFDDose As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCFDDoseOfMMRText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCFDDoseOfMMRText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCFDDoseOfMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCFDDoseOfMMR As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgCFDDoseOfMMRError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCFDDoseOfMMRError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''hfCFDDoseOfMMR control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCFDDoseOfMMR As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''trCFDSchoolCode control.
     '''</summary>
     '''<remarks>
@@ -1218,6 +1407,15 @@ Partial Public Class VaccinationFileUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgCFDSchoolCodeError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trCFDSchoolName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trCFDSchoolName As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''lblCFDSchoolNameText control.

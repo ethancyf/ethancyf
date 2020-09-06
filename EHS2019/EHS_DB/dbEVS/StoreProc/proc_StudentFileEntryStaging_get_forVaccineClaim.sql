@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileEntryStaging_get_forVaccineClaim]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileEntryStaging_get_forVaccineClaim]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StudentFileEntryStaging_get_forVaccineClaim]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	20 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -52,7 +59,7 @@ AS BEGIN
 		RTRIM(H.School_Code) AS [School_Code],
 		H.SP_ID,
 		H.Practice_Display_Seq,
-		H.Service_Receive_Dtm,
+		H.Service_Receive_Dtm AS [Service_Receive_Dtm_Header],
 		H.Scheme_Code,
 		H.Scheme_Seq,
 		H.Dose,
@@ -68,8 +75,11 @@ AS BEGIN
 		E.Entitle_ONLYDOSE,
 		E.Entitle_1STDOSE,
 		E.Entitle_2NDDOSE,
+		E.Entitle_3RDDOSE,
 		E.Entitle_Inject,
 		E.Injected,
+		E.Service_Receive_Dtm,
+		E.HKIC_Symbol,
 		VA.Record_Status AS [Acc_Record_Status],
 		PI.Voucher_Acc_ID,
 		PI.Doc_Code,
@@ -102,7 +112,7 @@ AS BEGIN
 		RTRIM(H.School_Code) AS [School_Code],
 		H.SP_ID,
 		H.Practice_Display_Seq,
-		H.Service_Receive_Dtm,
+		H.Service_Receive_Dtm AS [Service_Receive_Dtm_Header],
 		H.Scheme_Code,
 		H.Scheme_Seq,
 		H.Dose,
@@ -118,8 +128,11 @@ AS BEGIN
 		E.Entitle_ONLYDOSE,
 		E.Entitle_1STDOSE,
 		E.Entitle_2NDDOSE,
+		E.Entitle_3RDDOSE,
 		E.Entitle_Inject,
 		E.Injected,
+		E.Service_Receive_Dtm,
+		E.HKIC_Symbol,
 		VA.Record_Status AS [Acc_Record_Status],
 		PI.Voucher_Acc_ID,
 		PI.Doc_Code,
@@ -152,7 +165,7 @@ AS BEGIN
 		RTRIM(H.School_Code) AS [School_Code],
 		H.SP_ID,
 		H.Practice_Display_Seq,
-		H.Service_Receive_Dtm,
+		H.Service_Receive_Dtm AS [Service_Receive_Dtm_Header],
 		H.Scheme_Code,
 		H.Scheme_Seq,
 		H.Dose,
@@ -168,8 +181,11 @@ AS BEGIN
 		E.Entitle_ONLYDOSE,
 		E.Entitle_1STDOSE,
 		E.Entitle_2NDDOSE,
+		E.Entitle_3RDDOSE,
 		E.Entitle_Inject,
 		E.Injected,
+		E.Service_Receive_Dtm,
+		E.HKIC_Symbol,
 		NULL AS [Acc_Record_Status],
 		NULL AS [Voucher_Acc_ID],
 		NULL AS [Doc_Code],
@@ -207,3 +223,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileEntryStaging_get_forVaccineClaim] TO HCVU
 GO
+

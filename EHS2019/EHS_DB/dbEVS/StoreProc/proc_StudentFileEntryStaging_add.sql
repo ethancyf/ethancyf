@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	15 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified DATE:	18 Sep 2019
 -- CR No.			CRE19-001
@@ -38,7 +45,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_add]
 	@Student_File_ID				VARCHAR(15),
 	@Student_Seq					INT,
-	@Class_Name						NVARCHAR(20),
+	@Class_Name						NVARCHAR(40),
 	@Class_No						NVARCHAR(10),
 	@Contact_No						VARCHAR(20),
 	@Doc_Code						CHAR(20),
@@ -78,6 +85,7 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_add]
 	@Entitle_ONLYDOSE				CHAR(1),
 	@Entitle_1STDOSE				CHAR(1),
 	@Entitle_2NDDOSE				CHAR(1),
+	@Entitle_3RDDOSE				CHAR(1),
 	@Entitle_Inject					CHAR(1),
 	@Entitle_Inject_Fail_Reason		VARCHAR(1000),
 	@Ext_Ref_Status					VARCHAR(10),
@@ -94,7 +102,9 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_add]
 	@Last_Rectify_Dtm				DATETIME,
 	
 	@Original_Student_File_ID		VARCHAR(15),
-	@Original_Student_Seq			INT
+	@Original_Student_Seq			INT,
+	@HKIC_Symbol					CHAR(1),
+	@Service_Receive_Dtm			DATETIME
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -156,6 +166,7 @@ AS BEGIN
 		Entitle_ONLYDOSE,
 		Entitle_1STDOSE,
 		Entitle_2NDDOSE,
+		Entitle_3RDDOSE,
 		Entitle_Inject,
 		Entitle_Inject_Fail_Reason,
 		Ext_Ref_Status,
@@ -169,7 +180,9 @@ AS BEGIN
 		Last_Rectify_By,
 		Last_Rectify_Dtm,
 		Original_Student_File_ID,
-		Original_Student_Seq
+		Original_Student_Seq,
+		HKIC_Symbol,
+		Service_Receive_Dtm
 
 	) VALUES (
 		@Student_File_ID,
@@ -212,6 +225,7 @@ AS BEGIN
 		@Entitle_ONLYDOSE,
 		@Entitle_1STDOSE,
 		@Entitle_2NDDOSE,
+		@Entitle_3RDDOSE,
 		@Entitle_Inject,
 		@Entitle_Inject_Fail_Reason,
 		@Ext_Ref_Status,
@@ -225,7 +239,9 @@ AS BEGIN
 		@Last_Rectify_By,
 		@Last_Rectify_Dtm,
 		@Original_Student_File_ID,
-		@Original_Student_Seq
+		@Original_Student_Seq,
+		@HKIC_Symbol,
+		@Service_Receive_Dtm
 	)
 	
 	CLOSE SYMMETRIC KEY sym_Key
@@ -239,3 +255,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileEntryStaging_add] TO HCSP
 GO
+

@@ -14,6 +14,7 @@ Imports CustomControls
 Imports Common.Component.Scheme
 Imports Common.Component.UserRole
 Imports System.Web.Script.Serialization
+Imports Common.Component.SchemeDetails
 
 Partial Public Class VaccinationFileEnquiry ' 010417
     Inherits BasePageWithControl
@@ -431,7 +432,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
         'Get available Scheme
         Dim udtSchemeClaimModelListFilter As New SchemeClaimModelCollection
         Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllDistinctSchemeClaim()
-        Dim strSchemeCode() As String = Split((New GeneralFunction).getSystemParameter("Batch_Upload_Scheme"), ";")
+        Dim strSchemeCode() As String = Split((New GeneralFunction).getSystemParameter("Batch_Upload_Scheme_BO"), ";")
 
         Dim udtUserRoleBLL As New UserRoleBLL
         Dim udtHCVUUserBLL As New HCVUUserBLL
@@ -815,17 +816,47 @@ Partial Public Class VaccinationFileEnquiry ' 010417
 
             ' Code
             Dim lblRCode As Label = e.Row.FindControl("lblRCode")
-            lblRCode.Text = String.Format("<div style='width:150px;overflow-wrap:break-word;word-break:break-all'>[ {0} ]</div><br />{1}", _
-                                          CStr(dr("School_Code")).Trim, _
-                                          dr("Name_Eng"))
+
+            If CStr(dr("School_Code")).Trim <> String.Empty Then
+                lblRCode.Text = String.Format("<div style='width:150px;overflow-wrap:break-word;word-break:break-all'>[ {0} ]</div><br />{1}", _
+                                              CStr(dr("School_Code")).Trim, _
+                                              dr("Name_Eng"))
+            Else
+                lblRCode.Text = GetGlobalResourceObject("Text", "NA")
+
+            End If
 
             ' Dose to Inject
             Dim lblRDoseToInject As Label = e.Row.FindControl("lblRDoseToInject")
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strDose As String = String.Empty
+
+            If dr("Scheme_Code").ToString.Trim = SchemeClaimModel.VSS And dr("Subsidize_Code").ToString.Trim = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+
+                If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                    strDose = GetGlobalResourceObject("Text", "1stDose2")
+                End If
+
+                If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+                    strDose = GetGlobalResourceObject("Text", "2ndDose")
+                End If
+
+                If dr("Dose").ToString.Trim = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                    strDose = GetGlobalResourceObject("Text", "3rdDose")
+                End If
+
+            Else
+                strDose = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("StudentFileDoseToInject", dr("Dose")).DataValue
+
+            End If
+
             lblRDoseToInject.Text = String.Format("{0}<br><br>{1}<br><br>{2}", _
                                                   dr("Scheme_Display_Code"), _
                                                   dr("SubsidizeDisplayName"), _
-                                                  (New StaticDataBLL).GetStaticDataByColumnNameItemNo("StudentFileDoseToInject", dr("Dose")).DataValue)
+                                                  strDose)
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             '' Upload Date
             '' Last Rectify Date
@@ -932,6 +963,13 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             '2nd Row
             tr = New TableRow
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim blnImage1Complete As Boolean = False
+            Dim blnImage2Complete As Boolean = False
+            Dim blnImage3Complete As Boolean = False
+            Dim blnImage4Complete As Boolean = False
+
             'Cell 1
             tc = New TableCell
             tc.Width = Unit.Pixel(550)
@@ -967,7 +1005,6 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 ibtn.Style.Add("top", "0px")
                 ibtn.Style.Add("z-index", "2")
                 div.Controls.Add(ibtn)
-
             Else
                 img = New Image
                 img.ID = String.Format("imgRUploadDate{0}", e.Row.RowIndex)
@@ -977,15 +1014,17 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 img.Style.Add("top", "0px")
                 img.Style.Add("z-index", "2")
                 div.Controls.Add(img)
-            End If
 
+                blnImage1Complete = True
+
+            End If
 
             'Image 2
             If Not (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload) Or _
                     strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload)
                     ) Then
 
-                Select Case strRecordStatus
+                Select strRecordStatus
                     Case Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration)
 
                         Dim ibtn As ImageButton = New ImageButton
@@ -1014,6 +1053,8 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                             img.Style.Add("z-index", "2")
                             div.Controls.Add(img)
 
+                            blnImage2Complete = True
+
                         Else
                             Dim ibtn As ImageButton = New ImageButton
                             ibtn.ID = String.Format("ibtnRRectify{0}", e.Row.RowIndex)
@@ -1035,7 +1076,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             End If
 
             'Image 3
-            If dtmCurrent >= (dr("Final_Checking_Report_Generation_Date")) And _
+            If Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Final_Checking_Report_Generation_Date")) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -1048,7 +1089,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) _
                 ) Then
 
-                If dtmCurrent < (dr("Service_Receive_Dtm")) Then
+                If Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent < (dr("Service_Receive_Dtm")) Then
                     Dim ibtn As ImageButton = New ImageButton
                     ibtn.ID = String.Format("ibtnRRectify{0}", e.Row.RowIndex)
                     ibtn.CommandArgument = dr("Student_File_ID")
@@ -1069,7 +1110,87 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                     img.Style.Add("top", "0px")
                     img.Style.Add("z-index", "2")
                     div.Controls.Add(img)
+
+                    blnImage3Complete = True
+
                 End If
+
+            ElseIf blnImage2Complete And
+                ((strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) And _
+                    (Not IsDBNull(dr("Request_Rectify_Status")) AndAlso _
+                        dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration))) Or _
+                (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) And _
+                    (Not IsDBNull(dr("Request_Rectify_Status")) AndAlso _
+                        dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration))) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove) Or _
+                    strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) _
+                ) Then
+
+                Select Case strRecordStatus
+                    Case Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify), _
+                        Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify)
+
+                        Dim ibtn As ImageButton = New ImageButton
+                        ibtn.ID = String.Format("ibtnRRectify{0}", e.Row.RowIndex)
+                        ibtn.CommandArgument = dr("Student_File_ID")
+                        ibtn.CommandName = Action.Review
+                        ibtn.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressReviewBtn")
+                        ibtn.AlternateText = GetGlobalResourceObject("ImageUrl", "ProgressReview")
+                        ibtn.Style.Add("position", "absolute")
+                        ibtn.Style.Add("left", "235px")
+                        ibtn.Style.Add("top", "1px")
+                        ibtn.Style.Add("z-index", "2")
+                        div.Controls.Add(ibtn)
+
+                    Case Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove)
+
+                        If dr("Request_Remove_Function") = "CLAIMCREATION" Then
+                            img = New Image
+                            img.ID = String.Format("imgRVaccinationReportGenerationDate{0}", e.Row.RowIndex)
+                            img.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressCompletePoint")
+                            img.Style.Add("position", "absolute")
+                            img.Style.Add("left", "252px")
+                            img.Style.Add("top", "0px")
+                            img.Style.Add("z-index", "2")
+                            div.Controls.Add(img)
+
+                            blnImage3Complete = True
+                        End If
+
+                        If dr("Request_Remove_Function") = "RECTIFICATION" Then
+                            Dim ibtn As ImageButton = New ImageButton
+                            ibtn.ID = String.Format("ibtnRRectify{0}", e.Row.RowIndex)
+                            ibtn.CommandArgument = dr("Student_File_ID")
+                            ibtn.CommandName = Action.Review
+                            ibtn.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressReviewBtn")
+                            ibtn.AlternateText = GetGlobalResourceObject("ImageUrl", "ProgressReview")
+                            ibtn.Style.Add("position", "absolute")
+                            ibtn.Style.Add("left", "235px")
+                            ibtn.Style.Add("top", "1px")
+                            ibtn.Style.Add("z-index", "2")
+                            div.Controls.Add(ibtn)
+
+                        End If
+
+                    Case Else
+                        img = New Image
+                        img.ID = String.Format("imgRVaccinationReportGenerationDate{0}", e.Row.RowIndex)
+                        img.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressCompletePoint")
+                        img.Style.Add("position", "absolute")
+                        img.Style.Add("left", "252px")
+                        img.Style.Add("top", "0px")
+                        img.Style.Add("z-index", "2")
+                        div.Controls.Add(img)
+
+                        blnImage3Complete = True
+
+                End Select
 
             Else
                 'Default empty image
@@ -1083,9 +1204,8 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 div.Controls.Add(img)
             End If
 
-
             'Image 4
-            If dtmCurrent >= (dr("Service_Receive_Dtm")) And _
+            If Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso (dtmCurrent >= (dr("Service_Receive_Dtm")) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -1096,7 +1216,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) _
-                ) Then
+                )) Then
 
                 img = New Image
                 img.ID = String.Format("imgRVaccinationDate{0}", e.Row.RowIndex)
@@ -1106,6 +1226,37 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 img.Style.Add("top", "0px")
                 img.Style.Add("z-index", "2")
                 div.Controls.Add(img)
+
+                blnImage4Complete = True
+
+            ElseIf blnImage3Complete And
+                    ((strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) And _
+                        (Not IsDBNull(dr("Request_Rectify_Status")) AndAlso _
+                            dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim))) Or _
+                    (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) And _
+                        (Not IsDBNull(dr("Request_Rectify_Status")) AndAlso _
+                            dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim))) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed)) _
+                 Then
+
+                img = New Image
+                img.ID = String.Format("imgRVaccinationDate{0}", e.Row.RowIndex)
+                img.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressCompletePoint")
+                img.Style.Add("position", "absolute")
+                img.Style.Add("left", "362px")
+                img.Style.Add("top", "0px")
+                img.Style.Add("z-index", "2")
+                div.Controls.Add(img)
+
+                blnImage4Complete = True
+
             Else
                 'Default empty image
                 img = New Image
@@ -1121,7 +1272,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
 
             'Image 5
 
-            If dtmCurrent >= (dr("Service_Receive_Dtm")) And _
+            If Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso (dtmCurrent >= (dr("Service_Receive_Dtm")) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -1132,7 +1283,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) _
-                ) Then
+                )) Then
 
                 Dim ibtn As ImageButton = New ImageButton
 
@@ -1146,6 +1297,37 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 ibtn.Style.Add("top", "1px")
                 ibtn.Style.Add("z-index", "2")
                 div.Controls.Add(ibtn)
+
+            ElseIf blnImage4Complete And
+                    ((strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) And _
+                        (Not IsDBNull(dr("Request_Rectify_Status")) AndAlso _
+                            dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim))) Or _
+                    (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) And _
+                        (Not IsDBNull(dr("Request_Rectify_Status")) AndAlso _
+                            dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim))) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove) Or _
+                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed)) _
+                 Then
+
+                Dim ibtn As ImageButton = New ImageButton
+
+                ibtn.ID = String.Format("ibtnRCreateClaimDate{0}", e.Row.RowIndex)
+                ibtn.CommandArgument = dr("Student_File_ID")
+                ibtn.CommandName = Action.Review
+                ibtn.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressReviewBtn")
+                ibtn.AlternateText = GetGlobalResourceObject("ImageUrl", "ProgressReview")
+                ibtn.Style.Add("position", "absolute")
+                ibtn.Style.Add("left", "456px")
+                ibtn.Style.Add("top", "1px")
+                ibtn.Style.Add("z-index", "2")
+                div.Controls.Add(ibtn)
+
             Else
                 'Default empty image
                 img = New Image
@@ -1166,6 +1348,8 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             tbl.Rows.Add(tr)
 
             e.Row.Cells(3).Controls.Add(tbl)
+
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ' Status
             Dim lblRStatus As Label = e.Row.FindControl("lblRStatus")
@@ -1194,26 +1378,56 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove) _
                 ) Then
 
-                If dtmCurrent >= (dr("Final_Checking_Report_Generation_Date")) Then
-                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
-                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+
+                If Not IsDBNull(dr("Request_Rectify_Status")) Then
+
+                    If dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Then
+                        If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                        End If
+
+                        If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
+                        ElseIf Not IsDBNull(dr("Name_List_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.NameList)
+                        End If
                     End If
 
-                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
-                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
-                    ElseIf Not IsDBNull(dr("Name_List_File_ID")) Then
-                        lstResourceName.Add(ReportNameResource.NameList)
+                    If dr("Request_Rectify_Status") = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration) Then
+                        If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                        End If
+
+                        If Not IsDBNull(dr("Name_List_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.NameList)
+                        End If
                     End If
+
                 Else
-                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
-                        lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+
+                    If dr("Request_Remove_Function") = "CLAIMCREATION" Then
+                        If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                        End If
+
+                        If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
+                        ElseIf Not IsDBNull(dr("Name_List_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.NameList)
+                        End If
                     End If
 
-                    If Not IsDBNull(dr("Name_List_File_ID")) Then
-                        lstResourceName.Add(ReportNameResource.NameList)
+                    If dr("Request_Remove_Function") = "RECTIFICATION" Then
+                        If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                        End If
+
+                        If Not IsDBNull(dr("Name_List_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.NameList)
+                        End If
                     End If
+
                 End If
-
 
             End If
 

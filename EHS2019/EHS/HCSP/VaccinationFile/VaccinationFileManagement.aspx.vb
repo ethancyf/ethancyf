@@ -1,29 +1,31 @@
 ﻿Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
+Imports Common.Component.DataEntryUser
+Imports Common.Component.DocType
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSTransaction
 Imports Common.Component.FileGeneration
 Imports Common.Component.HCVUUser
-Imports Common.Component.ServiceProvider
-Imports Common.Component.StaticData
-Imports Common.Component.StudentFile
-Imports Common.DataAccess
-Imports Common.Format
-Imports CustomControls
-Imports Common.Component.UserAC
-Imports Common.Component.DataEntryUser
 Imports Common.Component.PracticeSchemeInfo
 Imports Common.Component.Practice
 Imports Common.Component.Scheme
-Imports Common.Resource
-Imports HCSP.BLL
-Imports Common.Validation
-Imports Common.Encryption
-Imports Common.Component.DocType
-Imports System.Data.SqlClient
 Imports Common.Component.School
+Imports Common.Component.ServiceProvider
+Imports Common.Component.StaticData
+Imports Common.Component.StudentFile
+Imports Common.Component.UserAC
+Imports Common.DataAccess
+Imports Common.Encryption
+Imports Common.Format
+Imports Common.Resource
+Imports Common.Validation
+Imports Common.WebService.Interface
+Imports CustomControls
+Imports HCSP.BLL
+Imports System.Data.SqlClient
 Imports System.Web.Script.Serialization
+
 
 Partial Public Class VaccinationFileManagement ' 020901
     Inherits BasePageWithGridView
@@ -1011,56 +1013,105 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         ' --- End of Validation ---
 
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
+        Dim strInputSchemeCode As String = String.Empty
+        Dim strInputRecordStatus As String = String.Empty
+
+        ' Scheme Code
+        If ddlSScheme.SelectedIndex = 0 Then
+            If ddlSScheme.Items.Count > 1 Then
+                For idx As Integer = 1 To ddlSScheme.Items.Count - 1
+                    If strInputSchemeCode = String.Empty Then
+                        strInputSchemeCode = ddlSScheme.Items(idx).Value.Trim()
+                    Else
+                        strInputSchemeCode += ";" + ddlSScheme.Items(idx).Value.Trim()
+                    End If
+                Next
+            End If
+        Else
+            strInputSchemeCode = ddlSScheme.SelectedValue.Trim
+        End If
+
+        ' Record Status
+        If rblFileType.SelectedValue = VaccinationFileType.PreCheck Then
+            Select Case ddlSStatus.SelectedValue.Trim()
+                Case VaccinationFileHeaderStatus.PendingRectification
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingPreCheckGeneration)
+
+                Case VaccinationFileHeaderStatus.Completed
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed)
+
+                Case Else
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingPreCheckGeneration) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed)
+
+            End Select
+
+        Else
+            Select Case ddlSStatus.SelectedValue.Trim()
+                Case VaccinationFileHeaderStatus.PendingRectification
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration) 
+
+                Case VaccinationFileHeaderStatus.PendingClaimCreation
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim)
+
+                Case VaccinationFileHeaderStatus.Completed
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx)
+
+                Case Else
+                    strInputRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended) + ";" + _
+                                           Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx)
+
+            End Select
+
+        End If
+
         ' Search
         Dim dt As DataTable = (New StudentFileBLL).SearchStudentFile(txtSVaccinationFileID.Text.Trim, _
                                                                      txtSCode.Text.Trim, _
                                                                      udtSP.SPID, _
                                                                      strDataEntryAccount, _
-                                                                     ddlSScheme.SelectedValue.Trim, _
+                                                                     strInputSchemeCode, _
                                                                      dtmVaccDateFrom, _
                                                                      dtmVaccDateTo, _
-                                                                     String.Empty, _
-                                                                     IIf(rblFileType.SelectedValue = VaccinationFileType.PreCheck, True, Nothing))
+                                                                     strInputRecordStatus, _
+                                                                     IIf(rblFileType.SelectedValue = VaccinationFileType.PreCheck, True, False))
 
         udtAuditLog.AddDescripton("No of record", dt.Rows.Count)
         udtAuditLog.AddDescripton("File Type", IIf(rblFileType.SelectedValue = VaccinationFileType.PreCheck, "Pre-Check", "Vaccination File"))
         udtAuditLog.WriteEndLog(LogID.LOG00002, AuditLogDesc.Msg00002)
 
+        If dt.Rows.Count = 0 Then
+            ' No records found.
+            udcInfoMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)
+            udcInfoMessageBox.Type = InfoMessageBoxType.Information
+            udcInfoMessageBox.BuildMessageBox()
+
+            Return
+
+        End If
+
         If rblFileType.SelectedValue = VaccinationFileType.PreCheck Then
-            ' Filter Status
-            Dim drFiltered() As DataRow = Nothing
-
-            Select ddlSStatus.SelectedValue.Trim()
-                Case VaccinationFileHeaderStatus.PendingRectification
-                    drFiltered = dt.Select("Record_Status = 'CR' OR Record_Status = 'PR' OR Record_Status = 'PC'")
-                Case VaccinationFileHeaderStatus.Completed
-                    drFiltered = dt.Select("Record_Status = 'C'")
-                Case Else
-                    drFiltered = dt.Select("Record_Status = 'CR' OR Record_Status = 'PR' OR Record_Status = 'PC' OR " & _
-                                           "Record_Status = 'C'")
-            End Select
-
-            ' Overrides original one to the filtered one
-            If Not drFiltered Is Nothing Then
-                If drFiltered.Length > 0 Then
-                    dt = drFiltered.CopyToDataTable
-                Else
-                    dt.Rows.Clear()
-                End If
-            End If
-
-            If dt.Rows.Count = 0 Then
-                ' No records found.
-                udcInfoMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)
-                udcInfoMessageBox.Type = InfoMessageBoxType.Information
-                udcInfoMessageBox.BuildMessageBox()
-
-                Return
-
-            End If
-
             'Add custom column for pre-check use
             dt = AddColumnForDisplay(dt)
 
@@ -1085,41 +1136,6 @@ Partial Public Class VaccinationFileManagement ' 020901
             mvCore.SetActiveView(vPreCheck)
 
         Else
-            ' Filter Status
-            Dim drFiltered() As DataRow = Nothing
-
-            Select Case ddlSStatus.SelectedValue.Trim()
-                Case VaccinationFileHeaderStatus.PendingRectification
-                    drFiltered = dt.Select("(Record_Status = 'CR' OR Record_Status = 'PR' OR Record_Status = 'FR') AND Upload_PreCheck = 'N'")
-                Case VaccinationFileHeaderStatus.PendingClaimCreation
-                    drFiltered = dt.Select("(Record_Status = 'UT' OR Record_Status = 'CT' OR Record_Status = 'PT' OR Record_Status = 'ST') AND Upload_PreCheck = 'N'")
-                Case VaccinationFileHeaderStatus.Completed
-                    drFiltered = dt.Select("(Record_Status = 'C' OR Record_Status = 'CS' OR Record_Status = 'CA') AND Upload_PreCheck = 'N'")
-                Case Else
-                    drFiltered = dt.Select("(Record_Status = 'CR' OR Record_Status = 'PR' OR Record_Status = 'FR' OR " & _
-                                           "Record_Status = 'UT' OR Record_Status = 'CT' OR Record_Status = 'PT' OR Record_Status = 'ST' OR " & _
-                                           "Record_Status = 'C' OR Record_Status = 'CS' OR Record_Status = 'CA') AND Upload_PreCheck = 'N'")
-            End Select
-
-            ' Overrides original one to the filtered one
-            If Not drFiltered Is Nothing Then
-                If drFiltered.Length > 0 Then
-                    dt = drFiltered.CopyToDataTable
-                Else
-                    dt.Rows.Clear()
-                End If
-            End If
-
-            If dt.Rows.Count = 0 Then
-                ' No records found.
-                udcInfoMessageBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)
-                udcInfoMessageBox.Type = InfoMessageBoxType.Information
-                udcInfoMessageBox.BuildMessageBox()
-
-                Return
-
-            End If
-
             'Set Sort Column
             dt.DefaultView.Sort = "Service_Receive_Dtm DESC"
 
@@ -1142,7 +1158,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         End If
 
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
     End Sub
 
@@ -5156,9 +5172,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 strSchoolName = CStr(dr("Name_Eng")).Trim
             End If
 
-            lblRCode.Text = String.Format("<div style='width:150px;overflow-wrap:break-word;word-break:break-all'>[ {0} ]</div><br />{1}", _
-                                          CStr(dr("School_Code")).Trim, _
-                                          strSchoolName)
+            If CStr(dr("School_Code")).Trim <> String.Empty Then
+                lblRCode.Text = String.Format("<div style='width:150px;overflow-wrap:break-word;word-break:break-all'>[ {0} ]</div><br />{1}", _
+                                              CStr(dr("School_Code")).Trim, _
+                                              strSchoolName)
+            Else
+                lblRCode.Text = GetGlobalResourceObject("Text", "NA")
+
+            End If
 
             ' Dose to Inject
             Dim lblRDoseToInject As Label = e.Row.FindControl("lblRDoseToInject")
@@ -5395,7 +5416,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.Completed) _
                 ) Then
 
-                If dtmCurrent >= (dr("Final_Checking_Report_Generation_Date")) And dtmCurrent < (dr("Service_Receive_Dtm")) Then
+                If dtmCurrent >= (dr("Final_Checking_Report_Generation_Date")) And (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent < (dr("Service_Receive_Dtm"))) Then
                     Dim ibtn As ImageButton = New ImageButton
                     ibtn.ID = String.Format("ibtnRRectify{0}", e.Row.RowIndex)
                     ibtn.CommandArgument = dr("Student_File_ID")
@@ -5408,7 +5429,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                     ibtn.Style.Add("z-index", "2")
                     div.Controls.Add(ibtn)
 
-                ElseIf dtmCurrent >= (dr("Service_Receive_Dtm")) Then
+                ElseIf (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) Then
                     img = New Image
                     img.ID = String.Format("imgRVaccinationReportGenerationDate{0}", e.Row.RowIndex)
                     img.ImageUrl = GetGlobalResourceObject("ImageUrl", "ProgressCompletePoint")
@@ -5444,7 +5465,7 @@ Partial Public Class VaccinationFileManagement ' 020901
             End If
 
             'Image 4
-            If dtmCurrent >= (dr("Service_Receive_Dtm")) And _
+            If (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -5478,7 +5499,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
             'Image 5
 
-            If dtmCurrent >= (dr("Service_Receive_Dtm")) And _
+            If (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _

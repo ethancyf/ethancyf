@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSSF_Report_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSSF_Report_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_EHS_eHSSF_Report_get]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	20 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -67,12 +74,14 @@ AS BEGIN
 	DECLARE @SchoolOrRCH AS VARCHAR(10)
 	DECLARE @ClassOrCategory AS VARCHAR(10)
 	DECLARE @Upload_Precheck AS VARCHAR(1)
+	DECLARE @SubsidizeCode AS VARCHAR(10)
 	DECLARE @Subsidize_Item_Code AS VARCHAR(10)
 	DECLARE @Dose AS VARCHAR(20)
 
 	DECLARE @OnlyDose AS VARCHAR(20)
 	DECLARE @1stDose AS VARCHAR(20)
 	DECLARE @2ndDose AS VARCHAR(20)
+	DECLARE @3rdDose AS VARCHAR(20)
 
 	DECLARE @AvailableDose_Item1 AS VARCHAR(20)
 	DECLARE @AvailableDose_Item2 AS VARCHAR(20)
@@ -126,6 +135,13 @@ AS BEGIN
 		Result02 NVARCHAR(100),    
 		DisplaySeq INT       
 	)
+
+	CREATE TABLE #Summary (
+		ColIndex INT,
+		Col1 NVARCHAR(MAX),
+		Col2 NVARCHAR(MAX),
+		Col3 NVARCHAR(MAX)
+	)
 		
 	DECLARE @wsRemark_ct INT 
 	SET @wsRemark_ct = 1   
@@ -138,7 +154,8 @@ AS BEGIN
 	
 	SET @SchoolOrRCH = 'School'
 	SET @ClassOrCategory = 'Class'
-	IF @scheme_code = 'RVP' 
+
+	IF @scheme_code = 'RVP' OR @scheme_code = 'VSS'
 	BEGIN
 		SET @SchoolOrRCH = 'RCH'
 		SET @ClassOrCategory = 'Category'
@@ -147,7 +164,8 @@ AS BEGIN
 	SELECT 
 		@Upload_Precheck = H.Upload_Precheck, 
 		@Dose = H.Dose,
-		@Subsidize_Item_Code = S.Subsidize_Item_Code
+		@Subsidize_Item_Code = S.Subsidize_Item_Code,
+		@SubsidizeCode = H.Subsidize_Code
 	FROM 
 		StudentFileHeader H
 		LEFT JOIN Subsidize S ON H.Subsidize_Code = S.Subsidize_Code
@@ -157,6 +175,8 @@ AS BEGIN
 	SET @OnlyDose = 'Only Dose'
 	SET @1stDose = '1st Dose'
 	SET @2ndDose = '2nd Dose'
+	SET @3rdDose = '3rd Dose'
+
 	
 	IF @Subsidize_Item_Code = 'SIV'
 	BEGIN
@@ -176,11 +196,25 @@ AS BEGIN
 	END
 	ELSE IF @Subsidize_Item_Code = 'MMR'
 	BEGIN
-		SET @AvailableDose_Item1 = @1stDose
-		SET @AvailableDose_Item2 = @2ndDose
-		SET @AvailableDose_Item3 = ''
+		IF @SubsidizeCode = 'VNIAMMR' 
+			BEGIN
+				SET @AvailableDose_Item1 = @1stDose
+				SET @AvailableDose_Item2 = @2ndDose
+				SET @AvailableDose_Item3 = @3rdDose
 
-		SET @DoseRemark = (SELECT CASE WHEN @Dose = '1STDOSE' THEN '* No. of clients for 1st dose' ELSE '' END)
+				SET @DoseRemark = (SELECT CASE 
+											WHEN @Dose = '1STDOSE' THEN '* No. of clients for 1st dose' 
+											WHEN @Dose = '2NDDOSE' THEN '* No. of clients for 2nd dose' 
+											ELSE '' END)
+			END
+		ELSE
+			BEGIN
+				SET @AvailableDose_Item1 = @1stDose
+				SET @AvailableDose_Item2 = @2ndDose
+				SET @AvailableDose_Item3 = ''
+
+				SET @DoseRemark = (SELECT CASE WHEN @Dose = '1STDOSE' THEN '* No. of clients for 1st dose' ELSE '' END)
+			END
 	END
 
 	--
@@ -216,7 +250,7 @@ AS BEGIN
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
 			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, 
-			Col26, Col27, Col28, Col29, Col30, Col31, Col32, Col33,Col34
+			Col26, Col27, Col28, Col29, Col30, Col31, Col32, Col33, Col34
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
@@ -457,7 +491,11 @@ AS BEGIN
 		SELECT  DISTINCT
 			2,
 			E.Student_File_ID,
-			H.School_Code,
+			[School_Code] =	
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
+					ELSE H.School_Code
+				END,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
@@ -469,22 +507,41 @@ AS BEGIN
 			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
 			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
 			'',
-			CASE WHEN H.Dose = '2NDDOSE' THEN 
-					(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
-				ELSE
-					(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
-				END AS [Dose],
-			FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') AS Service_Receive_Dtm, 
-			FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') AS Final_Checking_Report_Generation_Date,
-			RTRIM(SC.Display_Code),
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					WHEN H.Dose = '2NDDOSE' THEN 
+						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
+					ELSE
+						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
+				END,
+			[Service_Receive_Dtm] = 
+				CASE
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date] = FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy'),
+			[Scheme] = RTRIM(SC.Display_Code),
 
 			-- If RVP + QIV THEN display 'QIV 20XX/XX' Else display 'QIV-C 2018/19','23vPPV'
-			CASE WHEN H.Scheme_Code = 'RVP' AND SUB.vaccine_Type = 'QIV' THEN
-					RTRIM(SUB.vaccine_Type) + ' ' +  RTRIM(VS.Season_Desc)
-				ELSE
-					sgc.Display_Code_For_Claim
-				END AS SubsidizeDisplayName,
-			SD.Data_Value AS Dose,
+			[Subsidy] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' AND SUB.vaccine_Type = 'QIV' THEN
+						RTRIM(SUB.vaccine_Type) + ' ' +  RTRIM(VS.Season_Desc)
+					ELSE
+						sgc.Display_Code_For_Claim
+					END,
+			[DOSE] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN 
+						CASE 
+							WHEN H.DOSE = '1STDOSE' THEN @1stDose
+							WHEN H.DOSE = '2NDDOSE' THEN @2ndDose
+							WHEN H.DOSE = '3RDDOSE' THEN @3rdDose
+							ELSE '' 
+						END
+					ELSE SD.Data_Value 
+				END,
 			ET.ClassCount,
 			ET.StudentCount,
 			'',
@@ -518,6 +575,8 @@ AS BEGIN
 				CASE
 					WHEN @AvailableDose_Item3 = @2ndDose THEN 
 						CAST(AvailableToInjectCount_2ndDose AS VARCHAR(10))
+					WHEN @AvailableDose_Item3 = @3rdDose THEN 
+						CAST(AvailableToInjectCount_3rdDose AS VARCHAR(10))
 					ELSE
 						''
 				END,
@@ -555,6 +614,10 @@ AS BEGIN
 					CASE WHEN ISNULL(Entitle_Inject, '') = 'Y' AND
 							  ISNULL(Entitle_2NDDOSE, '') = 'Y' THEN 1 ELSE 0 END
 				) AS AvailableToInjectCount_2ndDose,
+				SUM(
+					CASE WHEN ISNULL(Entitle_Inject, '') = 'Y' AND
+							  ISNULL(Entitle_3RDDOSE, '') = 'Y' THEN 1 ELSE 0 END
+				) AS AvailableToInjectCount_3rdDose,
 				SUM(
 					CASE WHEN ISNULL(Reject_Injection, '') = 'Y' THEN 1 ELSE 0 END
 				) AS NotInjectCount,
@@ -623,11 +686,32 @@ AS BEGIN
 			'' AS Practice_Name,
 			'' AS Practice_Name_Chi,
 			'',
-			CASE WHEN Dose = '2NDDOSE' THEN '' ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') END AS Dose,
-			CASE WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') ELSE 
-				CASE WHEN Dose = '2NDDOSE' THEN '' ELSE 'N/A' END END AS Service_Receive_Dtm, 
-			CASE WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') ELSE
-				 CASE WHEN Dose = '2NDDOSE' THEN '' ELSE 'N/A' END END AS Final_Checking_Report_Generation_Date, 
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN '' 
+					WHEN Dose = '2NDDOSE' THEN '' 
+					ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') 
+				END,
+			[Service_Receive_Dtm] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') 
+					ELSE 
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A' 
+						END
+				END, 
+			[Final_Checking_Report_Generation_Date] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') 
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END, 
 			'',
 			'',
 			'',
@@ -642,7 +726,7 @@ AS BEGIN
 			'',
 			'', '', '',
 			'', '', ''
-		FROM StudentFileHeader
+		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
 			
 
@@ -660,7 +744,11 @@ AS BEGIN
 		SELECT  DISTINCT
 			2,
 			E.Student_File_ID,
-			H.School_Code,
+			[School_Code] =	
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
+					ELSE H.School_Code
+				END,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
@@ -672,22 +760,41 @@ AS BEGIN
 			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
 			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
 			'',
-			CASE WHEN H.Dose = '2NDDOSE' THEN 
-					(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
-				ELSE
-					(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
-				END AS [Dose],
-			FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') AS Service_Receive_Dtm, 
-			FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') AS Final_Checking_Report_Generation_Date,
-			RTRIM(SC.Display_Code),
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					WHEN H.Dose = '2NDDOSE' THEN 
+						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
+					ELSE
+						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
+				END,
+			[Service_Receive_Dtm] = 
+				CASE
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date] = FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy'),
+			[Scheme] = RTRIM(SC.Display_Code),
 
 			-- If RVP + QIV THEN display 'QIV 20XX/XX' Else display 'QIV-C 2018/19','23vPPV'
-			CASE WHEN H.Scheme_Code = 'RVP' AND SUB.vaccine_Type = 'QIV' THEN
-					RTRIM(SUB.vaccine_Type) + ' ' +  RTRIM(VS.Season_Desc)
-				ELSE
-					sgc.Display_Code_For_Claim
-				END AS SubsidizeDisplayName,
-			SD.Data_Value AS Dose,
+			[Subsidy] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' AND SUB.vaccine_Type = 'QIV' THEN
+						RTRIM(SUB.vaccine_Type) + ' ' +  RTRIM(VS.Season_Desc)
+					ELSE
+						sgc.Display_Code_For_Claim
+					END,
+			[DOSE] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN 
+						CASE 
+							WHEN H.DOSE = '1STDOSE' THEN @1stDose
+							WHEN H.DOSE = '2NDDOSE' THEN @2ndDose
+							WHEN H.DOSE = '3RDDOSE' THEN @3rdDose
+							ELSE '' 
+						END
+					ELSE SD.Data_Value 
+				END,
 			ET.ClassCount,
 			ET.StudentCount,
 			--'',
@@ -795,11 +902,32 @@ AS BEGIN
 			'' AS Practice_Name,
 			'' AS Practice_Name_Chi,
 			'',
-			CASE WHEN Dose = '2NDDOSE' THEN '' ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') END AS Dose,
-			CASE WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') ELSE 
-				CASE WHEN Dose = '2NDDOSE' THEN '' ELSE 'N/A' END END AS Service_Receive_Dtm, 
-			CASE WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') ELSE
-				 CASE WHEN Dose = '2NDDOSE' THEN '' ELSE 'N/A' END END AS Final_Checking_Report_Generation_Date, 
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN '' 
+					WHEN Dose = '2NDDOSE' THEN '' 
+					ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') 
+				END,
+			[Service_Receive_Dtm] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') 
+					ELSE 
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A' 
+						END
+				END, 
+			[Final_Checking_Report_Generation_Date] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') 
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END, 
 			'',
 			'',
 			'',
@@ -813,7 +941,7 @@ AS BEGIN
 			'',
 			'',
 			'', '', ''
-		FROM StudentFileHeader
+		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
 	END	
 	ELSE IF @File_ID = 'EHSVF003'
@@ -832,7 +960,11 @@ AS BEGIN
 		SELECT  DISTINCT
 			2,
 			E.Student_File_ID,
-			H.School_Code,
+			[School_Code] =	
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
+					ELSE H.School_Code
+				END,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
@@ -844,22 +976,41 @@ AS BEGIN
 			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
 			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
 			'',
-			CASE WHEN H.Dose = '2NDDOSE' THEN 
-					(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
-				ELSE
-					(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
-				END AS [Dose],
-			FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') AS Service_Receive_Dtm, 
-			FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') AS Final_Checking_Report_Generation_Date,
-			RTRIM(SC.Display_Code),
-			
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					WHEN H.Dose = '2NDDOSE' THEN 
+						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
+					ELSE
+						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
+				END,
+			[Service_Receive_Dtm] = 
+				CASE
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date] = FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy'),
+			[Scheme] = RTRIM(SC.Display_Code),
+
 			-- If RVP + QIV THEN display 'QIV 20XX/XX' Else display 'QIV-C 2018/19','23vPPV'
-			CASE WHEN H.Scheme_Code = 'RVP' AND SUB.vaccine_Type = 'QIV' THEN
-					RTRIM(SUB.vaccine_Type) + ' ' +  RTRIM(VS.Season_Desc)
-				ELSE
-					sgc.Display_Code_For_Claim
-				END AS SubsidizeDisplayName,
-			SD.Data_Value AS Dose,
+			[Subsidy] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' AND SUB.vaccine_Type = 'QIV' THEN
+						RTRIM(SUB.vaccine_Type) + ' ' +  RTRIM(VS.Season_Desc)
+					ELSE
+						sgc.Display_Code_For_Claim
+					END,
+			[DOSE] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN 
+						CASE 
+							WHEN H.DOSE = '1STDOSE' THEN @1stDose
+							WHEN H.DOSE = '2NDDOSE' THEN @2ndDose
+							WHEN H.DOSE = '3RDDOSE' THEN @3rdDose
+							ELSE '' 
+						END
+					ELSE SD.Data_Value 
+				END,
 			ET.ClassCount,
 			ET.StudentCount,
 			'',
@@ -975,11 +1126,32 @@ AS BEGIN
 			'' AS Practice_Name_Chi,
 			'',
 			'',
-			CASE WHEN Dose = '2NDDOSE' THEN '' ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') END AS Dose,
-			CASE WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') ELSE 
-				CASE WHEN Dose = '2NDDOSE' THEN '' ELSE 'N/A' END END AS Service_Receive_Dtm, 
-			CASE WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') ELSE
-				 CASE WHEN Dose = '2NDDOSE' THEN '' ELSE 'N/A' END END AS Final_Checking_Report_Generation_Date, 
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN '' 
+					WHEN Dose = '2NDDOSE' THEN '' 
+					ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') 
+				END,
+			[Service_Receive_Dtm] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') 
+					ELSE 
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A' 
+						END
+				END, 
+			[Final_Checking_Report_Generation_Date] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') 
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END, 
 			'',
 			'',
 			'',
@@ -996,7 +1168,7 @@ AS BEGIN
 			'',
 			'',
 			'', '', ''
-		FROM StudentFileHeader
+		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
 	END
 
@@ -1013,7 +1185,11 @@ AS BEGIN
 		SELECT  DISTINCT
 			2,
 			E.Student_File_ID,
-			H.School_Code,
+			[School_Code] =	
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
+					ELSE H.School_Code
+				END,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
@@ -1091,7 +1267,11 @@ AS BEGIN
 		SELECT  DISTINCT
 			2,
 			E.Student_File_ID,
-			H.School_Code,
+			[School_Code] =	
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
+					ELSE H.School_Code
+				END,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
 			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
@@ -1103,18 +1283,39 @@ AS BEGIN
 			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
 			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
 			'',
-			CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE 
-				CASE WHEN H.Dose = '2NDDOSE' THEN 
-						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
-					ELSE
-						(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
-					END 
-				END	AS [Dose],
-			CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') END AS Service_Receive_Dtm, 
-			CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') END AS Final_Checking_Report_Generation_Date, 			
-			RTRIM(SC.Display_Code),
-			CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE sgc.Display_Code_For_Claim END,
-			CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE SD.Data_Value END AS Dose,
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					WHEN H.Upload_Precheck = 'Y' THEN '' 
+					ELSE 
+						CASE 
+							WHEN H.Dose = '2NDDOSE' THEN 
+								(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE')
+							ELSE
+								(SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '1STDOSE')
+						END
+				END,
+			[Service_Receive_Dtm] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL
+					WHEN H.Upload_Precheck = 'Y' THEN '' 
+					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
+				END, 
+			[Final_Checking_Report_Generation_Date] = CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') END, 			
+			[Scheme] = RTRIM(SC.Display_Code),
+			[Subsidy] = CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE sgc.Display_Code_For_Claim END,
+			[DOSE] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN 
+						CASE 
+							WHEN H.DOSE = '1STDOSE' THEN @1stDose
+							WHEN H.DOSE = '2NDDOSE' THEN @2ndDose
+							WHEN H.DOSE = '3RDDOSE' THEN @3rdDose
+							ELSE '' 
+						END
+					WHEN H.Upload_Precheck = 'Y' THEN '' 
+					ELSE SD.Data_Value 
+				END,
 			ET.ClassCount,
 			ET.StudentCount,
 			'',
@@ -1209,11 +1410,40 @@ AS BEGIN
 			'' AS Practice_Name,
 			'' AS Practice_Name_Chi,
 			'',
-			CASE WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') END,
-			CASE WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') ELSE 
-				CASE WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' ELSE CASE WHEN Dose = '2NDDOSE' THEN FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') ELSE 'N/A' END END END AS Service_Receive_Dtm, 
-			CASE WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') ELSE
-				CASE WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' ELSE  CASE WHEN Dose = '2NDDOSE' THEN FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') ELSE 'N/A' END END END AS Final_Checking_Report_Generation_Date, 
+			[Headings] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN '' 
+					WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
+					ELSE (SELECT Data_value FROM StaticData WITH (NOLOCK) WHERE Column_Name = 'StudentFileDoseToInject' AND Item_No = '2NDDOSE') 
+				END,
+			[Service_Receive_Dtm] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Service_Receive_Dtm_2ndDose IS NOT NULL THEN FORMAT(Service_Receive_Dtm_2ndDose, 'dd MMM yyyy') 
+					ELSE 
+						CASE 
+							WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
+							ELSE 
+								CASE 
+									WHEN Dose = '2NDDOSE' THEN FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') 
+									ELSE 'N/A' 
+								END 
+						END
+				END, 
+			[Final_Checking_Report_Generation_Date] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN Final_Checking_Report_Generation_Date_2ndDose IS NOT NULL THEN FORMAT(Final_Checking_Report_Generation_Date_2ndDose, 'dd MMM yyyy') 
+					ELSE
+						CASE 
+							WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
+							ELSE  
+								CASE 
+									WHEN Dose = '2NDDOSE' THEN FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') 
+									ELSE 'N/A' 
+								END 
+						END 
+				END, 
 			'',
 			'',
 			'',
@@ -1221,18 +1451,21 @@ AS BEGIN
 			'',
 			'',
 			'', '', ''
-		FROM StudentFileHeader
+		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
 
 	END
 
 	CLOSE SYMMETRIC KEY sym_Key
+
 -- =============================================
 -- Return results
 -- =============================================
 	
 	--Batch sheet
-	SELECT T1.C2, T2.C2, T3.C2
+	INSERT #Summary(ColIndex,Col1,Col2,Col3)
+		
+	SELECT CAST(REPLACE(T1.C1,'Col','') AS INT), T1.C2, T2.C2, T3.C2 
 	FROM (
 		SELECT C1, C2 
 		FROM (
@@ -1256,7 +1489,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35
-		   )
+			)
 		)AS unpvt1
 	) T1
 	INNER JOIN	
@@ -1283,7 +1516,7 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35
-		   )
+			)
 		)AS unpvt2
 	) T2
 	ON T1.C1 = T2.C1
@@ -1311,12 +1544,37 @@ AS BEGIN
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
 				Col31, Col32, Col33, Col34, Col35
-		   )
+			)
 		)AS unpvt3
 	) T3
 	ON T1.C1 = T3.C1
-	
+
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+	INSERT #Summary(ColIndex,Col1,Col2,Col3) VALUES (50,'','','')
+
+	SELECT Col1,Col2,Col3 FROM #Summary ORDER BY ColIndex
+
 	--
+
 	IF @File_ID <> 'EHSVF000'
 		EXEC [proc_EHS_eHSSF_Class_Report_get] @Input_Student_File_ID, @File_ID
 	ELSE
@@ -1348,9 +1606,11 @@ AS BEGIN
 	
 	DROP TABLE #BatchTT
 	DROP TABLE #RemarkTT
+	DROP TABLE #Summary
 	
 END
 GO
 
 GRANT EXECUTE ON [dbo].[proc_EHS_eHSSF_Report_get] TO HCVU
 GO
+

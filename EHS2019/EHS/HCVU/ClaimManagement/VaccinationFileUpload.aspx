@@ -91,8 +91,8 @@
         <ContentTemplate>
             <div style="height: 4px"></div>
             <asp:HiddenField ID="hfIFile" runat="server" />
-            <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Width="950px" />
-            <cc2:MessageBox ID="udcMessageBox" runat="server" Width="950px" />
+            <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" style="width:950px;display:block" />
+            <cc2:MessageBox ID="udcMessageBox" runat="server" style="width:950px;display:block" />
             <asp:MultiView ID="mvCore" runat="server">
                 <asp:View ID="vGrid" runat="server">
                     <asp:GridView ID="gvStudentFile" runat="server" CssClass="gvTable" AutoGenerateColumns="False" AllowPaging="True"
@@ -102,7 +102,7 @@
                         <Columns>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationFileID %>" SortExpression="Student_File_ID" ItemStyle-Width="130"><ItemTemplate><asp:LinkButton ID="lbtnGStudentFileID" runat="server" Text='<%# Eval("Student_File_ID") %>'></asp:LinkButton></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, Scheme %>" SortExpression="Scheme_Code" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGSchemeCode" runat="server" Text='<%# Eval("Scheme_Display_Code") %>'></asp:Label></ItemTemplate></asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources: Text, SchoolRCHCode %>" SortExpression="School_Code" ItemStyle-Width="100"><ItemTemplate><asp:Label ID="lblGSchoolCode" runat="server" Text='<%# Eval("School_Code") %>'></asp:Label></ItemTemplate></asp:TemplateField>
+                            <asp:TemplateField HeaderText="<%$ Resources: Text, SchoolRCHCode %>" SortExpression="School_Code" ItemStyle-Width="100"><ItemTemplate><asp:Label ID="lblGSchoolCode" runat="server"></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SPID %>" SortExpression="SP_ID" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGSPID" runat="server" Text='<%# Eval("SP_ID") %>'></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationDate %>" SortExpression="Service_Receive_Dtm" ItemStyle-Width="120"><ItemTemplate><asp:Label ID="lblGVaccinationDate" runat="server"></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationReportGenerationDate %>" SortExpression="Final_Checking_Report_Generation_Date"
@@ -228,9 +228,9 @@
                                 <asp:Label ID="lblIPracticeText" runat="server" Text="<%$ Resources: Text, Practice %>"></asp:Label>
                             </td>
                             <td>
-                                <asp:DropDownList ID="ddlIPractice" runat="server" Width="400"></asp:DropDownList>
+                                <asp:DropDownList ID="ddlIPractice" runat="server" Width="400" style="position:relative;top:-2px" />
                                 <asp:Image ID="imgIPracticeError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
-                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
+                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:2px"  />
                             </td>
                         </tr>
                         <asp:Panel ID="panISchoolRCH" runat="server">
@@ -348,22 +348,55 @@
                                 </td>
                             </tr>--%>
                         </asp:Panel>
+                        <asp:Panel ID="panIMMR" runat="server">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblIDoseOfMMR" runat="server" Text="<%$ Resources: Text, DoseOfMMR %>" />
+                                </td>
+                                <td>
+                                    <asp:dropdownlist ID="ddlIDoseOfMMR" runat="server" Width="150px" MaxLength="30" AutoPostBack="true">
+                                        <asp:ListItem runat="server" Selected="True" Text="<%$ Resources: Text, PleaseSelect %>" Value ="" />
+                                        <asp:ListItem Text="<%$ Resources: Text, 1stDose2 %>" Value ="1" />
+                                        <asp:ListItem Text="<%$ Resources: Text, 2ndDose %>" Value ="2" />
+                                        <asp:ListItem Text="<%$ Resources: Text, 3rdDose %>" Value ="3" />
+                                    </asp:dropdownlist>
+                                    <asp:Image ID="imgIddlIDoseOfMMRError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                        AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" ImageAlign="Top" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblIGenerationDateMMR" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtIVaccinationReportGenerateDateMMR" runat="server" Width="100" MaxLength="10" Style="position:relative;top:-3px" />
+                                    <asp:ImageButton ID="ibtnIVaccinationReportGenerateDateMMR" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                        AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" />
+                                    <asp:Image ID="imgIVaccinationReportGenerationDateMMRError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                        AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
+                                    <cc1:CalendarExtender ID="calIVaccinationReportGenerateDateMMR" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnIVaccinationReportGenerateDateMMR"
+                                        TargetControlID="txtIVaccinationReportGenerateDateMMR" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy"></cc1:CalendarExtender>
+                                    <cc1:FilteredTextBoxExtender ID="fteVaccinationReportGenerateDateMMR" runat="server" FilterType="Custom, Numbers"
+                                        TargetControlID="txtIVaccinationReportGenerateDateMMR" ValidChars="-"></cc1:FilteredTextBoxExtender>
+                                </td>
+                            </tr>
+                        </asp:Panel>
                         <tr>
                             <td>
                                 <asp:Label ID="lblIVaccinationFileText" runat="server" Text="<%$ Resources: Text, VaccinationFile %>"></asp:Label>
                             </td>
                             <td>
-                                <asp:FileUpload ID="flIVaccinationFile" runat="server" Width="460px" />
+                                <asp:FileUpload ID="flIVaccinationFile" runat="server" Width="460px" style="position:relative;top:-2px" />
                                 <asp:Image ID="imgIVaccinationFileError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
-                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
+                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:1px" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <asp:Label ID="lblIVaccineFilePwdText" runat="server" Text="<%$ Resources: Text, VaccinationFilePassword %>"></asp:Label>
+                                <asp:Label ID="lblIVaccineFilePwdText" runat="server" Text="<%$ Resources: Text, VaccinationFilePassword %>" />
                             </td>
                             <td>
-                                <asp:TextBox ID="txtIPassword" runat="server" Width="150px" TextMode="Password"></asp:TextBox>
+                                <asp:TextBox ID="txtIPassword" runat="server" Width="150px" TextMode="Password" style="position:relative;top:-2px" />
                                 <asp:Image ID="imgIPasswordError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
                                     AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
                             </td>
@@ -374,7 +407,7 @@
                                     <tr>
                                         <td style="width: 300px">
                                             <asp:ImageButton ID="ibtnIBack" runat="server" ImageUrl="<%$ Resources: ImageUrl, BackBtn %>"
-                                                AlternateText="<%$ Resources: AlternateText, BackBtn %>" OnClick="ibtnIBack_Click" />
+                                                AlternateText="<%$ Resources: AlternateText, BackBtn %>" OnClick="ibtnIBack_Click" Style="position:relative;left:-3px" />
                                         </td>
                                         <td>
                                             <asp:ImageButton ID="ibtnINext" runat="server" ImageUrl="<%$ Resources: ImageUrl, NextBtn %>"
@@ -394,7 +427,7 @@
                     <table class="tblSFD">
                         <tr>
                             <td style="vertical-align: top;padding-top:18px;" colspan="2">
-                                <asp:Label ID="Label1" runat="server" Font-Underline="True"
+                                <asp:Label ID="lblCIDHeading" runat="server" Font-Underline="True"
                                     Text="<%$ Resources: Text, InputDetail %>" CssClass="tableText" />
                             </td>
                         </tr>
@@ -406,6 +439,24 @@
                                 <asp:Label ID="lblCScheme" runat="server" class="tableText"></asp:Label>
                             </td>
                         </tr>
+                        <asp:Panel ID="panCMMR" runat="server">
+                            <tr>
+                                <td style="width: 260px">
+                                    <asp:Label ID="lblCDoseOfMMRText" runat="server" Text="<%$ Resources: Text, DoseOfMMR %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCDoseOfMMR" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 260px">
+                                    <asp:Label ID="lblCVaccinationDateMMRText" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCVaccinationDateMMR" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                        </asp:Panel>
                         <asp:Panel ID="panCVaccinationInfo" runat="server">
                             <tr style="height:10px"></tr>
                             <tr>
@@ -455,15 +506,6 @@
                                 </td>
                             </tr>
                         </asp:Panel>
-<%--                        <tr>
-                            <td>
-                                <asp:Label ID="lblCDoseToInjectText" runat="server" Text="<%$ Resources: Text, DoseToInject %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblCDoseToInject" runat="server" CssClass="tableText"></asp:Label>
-                                <asp:HiddenField ID="hfCDoseToInject" runat="server" />
-                            </td>
-                        </tr>--%>
                         <tr>
                             <td>
                                 <asp:Label ID="lblCVaccinationFileText" runat="server" Text="<%$ Resources: Text, VaccinationFile %>"></asp:Label>
@@ -506,25 +548,24 @@
                                     AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
                             </td>
                         </tr>
-                        <tr>
-                            <td>                                
-                                <asp:Label ID="lblCSchoolRCHCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblCSchoolRCHCode" runat="server" class="tableText"></asp:Label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:Label ID="lblCSchoolRCHNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblCSchoolRCHName" runat="server" class="tableText"></asp:Label>
-                            </td>
-                        </tr>
-
-
-                        <!--- Upload File Details --->
+                        <asp:Panel ID="panCSchoolRCH" runat="server">
+                            <tr>
+                                <td>                                
+                                    <asp:Label ID="lblCSchoolRCHCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCSchoolRCHCode" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="lblCSchoolRCHNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblCSchoolRCHName" runat="server" class="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                        </asp:Panel>
                         <tr>
                             <td style="vertical-align: top;padding-top:18px;" colspan="2">
                                 <asp:Label ID="lblCFDHeading" runat="server" Font-Underline="True"
@@ -585,6 +626,18 @@
                                 <asp:HiddenField ID="hfCFDSubsidizeCode" runat="server" />
                             </td>
                         </tr>
+                        <tr id="trCFDDose" runat="server">
+                            <td>
+                                <asp:Label ID="lblCFDDoseOfMMRText" runat="server" Text="<%$ Resources: Text, DoseOfMMR %>" />
+                            </td>
+                            <td>
+                                <asp:Label ID="lblCFDDoseOfMMR" runat="server" class="tableText" />
+                                <asp:Image ID="imgCFDDoseOfMMRError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" ImageAlign="Top" />
+                                <asp:HiddenField ID="hfCFDDoseOfMMR" runat="server" />
+                            </td>
+                        </tr>
+
                         <tr id="trCFDSchoolCode" runat="server">
                             <td>
                                 <asp:Label ID="lblCFDSchoolCodeText" runat="server" Text="<%$ Resources: Text, SchoolCode %>"></asp:Label>
@@ -596,7 +649,7 @@
                                         AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" ImageAlign="Top" />
                             </td>
                         </tr>
-                        <tr>
+                        <tr id="trCFDSchoolName" runat="server">
                             <td>
                                 <asp:Label ID="lblCFDSchoolNameText" runat="server" Text="<%$ Resources: Text, SchoolName %>"></asp:Label>
                             </td>
@@ -628,7 +681,7 @@
                                 <asp:Label ID="lblCFDClass" runat="server" Text="<%$ Resources: Text, Class %>"></asp:Label>
                             </td>
                             <td>
-                                <asp:GridView ID="gvCFDClassDetail" runat="server" CssClass="gvTable" Width="300px" AutoGenerateColumns="False" AllowPaging="False"
+                                <asp:GridView ID="gvCFDClassDetail" runat="server" CssClass="gvTable" Width="330px" AutoGenerateColumns="False" AllowPaging="False"
                                     AllowSorting="False" OnRowDataBound="gvCFDClassDetail_RowDataBound">
                                 <Columns>
                                     <asp:TemplateField HeaderText="<%$ Resources: Text, ClassName %>" ItemStyle-Width="180"><ItemTemplate><asp:Label ID="lblGClassName" runat="server" Text='<%# Eval("Class_Name") %>'></asp:Label><asp:Image ID="imgGClassNameError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
@@ -721,7 +774,8 @@
                             <asp:TemplateField HeaderText="<%$ Resources: Text, EnglishGivenName %>" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGGivenNameEN" runat="server" Text='<%# Eval("Given_Name_EN") %>'></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, Sex %>" ItemStyle-Width="30"><ItemTemplate><asp:Label ID="lblGSex" runat="server" Text='<%# Eval("Sex") %>'></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, DOB %>" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGDOB" runat="server"></asp:Label></ItemTemplate></asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources: Text, OtherField %>" ItemStyle-Width="120"><ItemTemplate><asp:Label ID="lblGOtherField" runat="server"></asp:Label></ItemTemplate></asp:TemplateField>
+                            <asp:TemplateField HeaderText="<%$ Resources: Text, OtherField %>" ItemStyle-Width="140"><ItemTemplate><asp:Label ID="lblGOtherField" runat="server"></asp:Label></ItemTemplate></asp:TemplateField>
+                            <asp:TemplateField HeaderText="<%$ Resources: Text, ServiceDate %>" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGServiceDate" runat="server"></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, ErrorMessage %>" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGErrorMessage" runat="server" Text='<%# Eval("Upload_Error") %>'></asp:Label></ItemTemplate></asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, WarningMessage %>" ItemStyle-Width="80"><ItemTemplate><asp:Label ID="lblGWarningMessage" runat="server" Text='<%# Eval("Upload_Warning") %>'></asp:Label></ItemTemplate></asp:TemplateField>
                         </Columns>
@@ -742,12 +796,24 @@
                     </table>
                 </asp:View>
                 <asp:View ID="vFinish" runat="server">
-                    <asp:ImageButton ID="ibtnFReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
-                        AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnFReturn_Click" />
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:ImageButton ID="ibtnFReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnFReturn_Click" style="display:block" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:View>
                 <asp:View ID="vConcurrentUpdate" runat="server">
-                    <asp:ImageButton ID="ibtnCUReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
-                        AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnCUReturn_Click" />
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <asp:ImageButton ID="ibtnCUReturn" runat="server" ImageUrl="<%$ Resources: ImageUrl, ReturnBtn %>"
+                                    AlternateText="<%$ Resources: AlternateText, ReturnBtn %>" OnClick="ibtnCUReturn_Click" style="display:block" />
+                            </td>
+                        </tr>
+                    </table>
                 </asp:View>
             </asp:MultiView>
             <%-- Pop up for Remove File --%>

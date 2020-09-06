@@ -238,6 +238,11 @@ Namespace Component.EHSClaim.EHSClaimBLL
             'Private _alMessageVariableValueChi As ArrayList
             ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Private _udtClaimRuleResult As ClaimRuleResult
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             ReadOnly Property ValidationRuleID() As String
                 Get
                     Return Me._strValidationRuleID
@@ -366,6 +371,18 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     Me._strWarnIndicatorCode = value
                 End Set
             End Property
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Property ClaimRuleResult() As ClaimRuleResult
+                Get
+                    Return Me._udtClaimRuleResult
+                End Get
+                Set(ByVal value As ClaimRuleResult)
+                    Me._udtClaimRuleResult = value
+                End Set
+            End Property
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
 
 
@@ -546,42 +563,30 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             Dim htDuplicateCheck As New Hashtable
 
-            ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
-
             ' Check the checking result
             Dim udtRuleResultList As RuleResultList = Me.ValidateClaimCreationCore(udtEHSTransaction, udtHAVaccineResult, udtDHVaccineResult, udtAuditLogEntry, udtCurrentTransactionModelCollection, udtTransactionBenefitDetailList)
-            'Dim udtRuleResultList As RuleResultList = Me.ValidateClaimCreationCore(udtEHSTransaction, udtHAVaccineResult, udtDHVaccineResult, udtAuditLogEntry, udtCurrentTransactionModelCollection)
-            ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim arrRuleMessage As New ArrayList
+
+            ' Get the system message against to rule result
             For Each udtRuleResult As RuleResult In udtRuleResultList.RuleResults
 
-                'Dim strDuplicateCheckKey As String = udtRuleResult.ErrorMessage.FunctionCode.ToString() + udtRuleResult.ErrorMessage.SeverityCode.ToString() + udtRuleResult.ErrorMessage.MessageCode.ToString()
-
-                'CRE16-025 (Lowering voucher eligibility age) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 Dim udtClaimValidationRule As EHSClaimValidationRuleModel
-                'If udtRuleResult.SchemeCode = Nothing Then
-                '    udtClaimValidationRule = Me.GetValidationRule(enumClaimAction, udtRuleResult.RuleID)
+
                 If udtRuleResult.RuleGroup1 = Nothing Then
                     udtClaimValidationRule = Me.GetValidationRule(enumClaimAction, udtRuleResult.RuleID, udtRuleResult.SchemeCode)
                 Else
                     udtClaimValidationRule = Me.GetValidationRule(enumClaimAction, udtRuleResult.RuleID, udtRuleResult.SchemeCode, udtRuleResult.SchemeSeq, udtRuleResult.SubsidizeCode, udtRuleResult.RuleGroup1, udtRuleResult.RuleGroup2)
                 End If
-                'CRE16-025 (Lowering voucher eligibility age) [End][Chris YIM]
 
                 If Not udtClaimValidationRule Is Nothing Then
                     udtRuleResult.ErrorMessage = New SystemMessage(udtClaimValidationRule.Function_Code.Trim(), udtClaimValidationRule.Severity_Code.Trim(), udtClaimValidationRule.Message_Code.Trim())
                     Dim strDuplicateCheckKey As String = ""
-                    'If Not udtClaimValidationRule.Scheme_Code = Nothing And Not udtClaimValidationRule.Scheme_Seq = Nothing And Not udtClaimValidationRule.Subsidize_Code = Nothing Then
-                    '    strDuplicateCheckKey = udtRuleResult.RuleID.ToString().Trim() + "-" + udtClaimValidationRule.Scheme_Code + udtClaimValidationRule.Scheme_Seq + udtClaimValidationRule.Subsidize_Code
-                    'Else
-                    '    strDuplicateCheckKey = udtRuleResult.RuleID.ToString().Trim()
-                    'End If
 
-                    'strDuplicateCheckKey = udtClaimValidationRule.Function_Code.ToString().Trim() + udtClaimValidationRule.Severity_Code.ToString().Trim() + udtClaimValidationRule.Message_Code.ToString().Trim()
                     strDuplicateCheckKey = udtClaimValidationRule.HandlingMethod.Trim() + udtClaimValidationRule.Function_Code.ToString().Trim() + udtClaimValidationRule.Severity_Code.ToString().Trim() + udtClaimValidationRule.Message_Code.ToString().Trim()
-                    'CRE15-004 (TIV and QIV) [Start][Chris YIM]
-                    '-----------------------------------------------------------------------------------------
+
                     If Not udtRuleResult.MessageVariableNameArrayList Is Nothing Then
                         If udtRuleResult.MessageVariableNameArrayList.Count > 0 Then
                             strDuplicateCheckKey = strDuplicateCheckKey + "_" + udtRuleResult.MessageVariableValue
@@ -593,58 +598,41 @@ Namespace Component.EHSClaim.EHSClaimBLL
                             strDuplicateCheckKey = strDuplicateCheckKey + "_" + udtRuleResult.MessageVariableValueChi
                         End If
                     End If
-                    'CRE15-004 (TIV and QIV) [End][Chris YIM]
 
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                     udtRuleResult.MessageDescription = ReturnVariableFeedMessage(udtRuleResult.ErrorMessage, udtRuleResult.MessageVariableNameArrayList, udtRuleResult.MessageVariableValueArrayList, udtRuleResult.MessageVariableNameChiArrayList, udtRuleResult.MessageVariableValueChiArrayList, EnumLanguage.EN)
                     udtRuleResult.MessageDescriptionChi = ReturnVariableFeedMessage(udtRuleResult.ErrorMessage, udtRuleResult.MessageVariableNameArrayList, udtRuleResult.MessageVariableValueArrayList, udtRuleResult.MessageVariableNameChiArrayList, udtRuleResult.MessageVariableValueChiArrayList, EnumLanguage.TC)
-                    'udtRuleResult.MessageDescription = ReturnVariableFeedMessage(udtRuleResult.ErrorMessage, udtRuleResult.MessageVariableNameArrayList, udtRuleResult.MessageVariableValueArrayList, udtRuleResult.MessageVariableNameChiArrayList, udtRuleResult.MessageVariableValueChiArrayList)
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
-                    If Not htDuplicateCheck.ContainsKey(strDuplicateCheckKey) Then
-                        If Not udtClaimValidationRule.WarnIndicator_Code Is Nothing Then
-                            udtRuleResult.WarnIndicatorCode = udtClaimValidationRule.WarnIndicator_Code.Trim()
+                    ' Remove duplicate rule result
+                    Dim strRuleMessage As String = Replace(udtRuleResult.ErrorMessage.GetMessage, udtRuleResult.MessageVariableName, udtRuleResult.MessageVariableValue)
+
+                    If Not arrRuleMessage.Contains(strRuleMessage) Then
+                        arrRuleMessage.Add(strRuleMessage)
+
+                        If Not htDuplicateCheck.ContainsKey(strDuplicateCheckKey) Then
+
+                            If Not udtClaimValidationRule.WarnIndicator_Code Is Nothing Then
+                                udtRuleResult.WarnIndicatorCode = udtClaimValidationRule.WarnIndicator_Code.Trim()
+                            End If
+
+                            Select Case udtClaimValidationRule.HandlingMethod.Trim()
+                                Case HandleMethodClass.Block
+                                    udtValidationResults.BlockResults.RuleResults.Add(udtRuleResult)
+                                Case HandleMethodClass.Warning
+                                    udtValidationResults.WarningResults.RuleResults.Add(udtRuleResult)
+                                Case HandleMethodClass.Declaration
+                                    udtValidationResults.DeclarationResults.RuleResults.Add(udtRuleResult)
+                            End Select
+
+                            htDuplicateCheck.Add(strDuplicateCheckKey, "")
                         End If
-                        Select Case udtClaimValidationRule.HandlingMethod.Trim()
-                            Case HandleMethodClass.Block
-                                udtValidationResults.BlockResults.RuleResults.Add(udtRuleResult)
-                            Case HandleMethodClass.Warning
-                                udtValidationResults.WarningResults.RuleResults.Add(udtRuleResult)
-                            Case HandleMethodClass.Declaration
-                                udtValidationResults.DeclarationResults.RuleResults.Add(udtRuleResult)
-                        End Select
-
-                        'Select Case enumClaimAction
-                        '    Case ClaimAction.HCSPClaim
-
-                        '    Case ClaimAction.HCSPRectification
-                        '    Case ClaimAction.HCVUClaim
-
-                        '        Select Case udtRuleResult.RuleID
-
-                        '            Case RuleID.DoseSeq, RuleID.DosePeriod, RuleID.ServiceDateClaimPeriodChecking, RuleID.DoseSeqBlock, _
-                        '                RuleID.DoseSeqWarning, RuleID.DocumentAcceptedAge
-                        '                udtValidationResults.BlockResults.RuleResults.Add(udtRuleResult)
-
-                        '            Case RuleID.AccountStatusChecking, RuleID.InnerDoseBlock, _
-                        '                    RuleID.InnerDoseWarning, RuleID.PreprimarySchoolCertificate, RuleID.ServiceDateID235BChecking, _
-                        '                    RuleID.SPStatusChecking, RuleID.TSWChecking, _
-                        '                    RuleID.DosePeriodBlock, RuleID.DosePeriodWarning, RuleID.Eligibility, RuleID.ServiceDateSPChecking, _
-                        '                    RuleID.DayBackLimitChecking, RuleID.AvailableSubsidyChecking, RuleID.CategoryElibility
-                        '                udtValidationResults.WarningResults.RuleResults.Add(udtRuleResult)
-
-                        '        End Select
-
-                        '    Case ClaimAction.UploadClaim
-
-                        'End Select
-
-                        htDuplicateCheck.Add(strDuplicateCheckKey, "")
                     End If
+
 
                 End If
 
             Next
+
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             Return udtValidationResults
 
@@ -2245,8 +2233,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             Dim lstClaimRuleResult As New List(Of ClaimRuleResult)
 
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             ' ------------------------------------------------------------------------------- 
             ' Loop for each Vaccine taken and check with Matched ClaimRuleResult
             ' ------------------------------------------------------------------------------- 
@@ -2310,27 +2296,16 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 'Classify type of system message
                 '-----------------------------------
                 'Case 1
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                 If Not udtClaimRuleResult.RelatedClaimRule Is Nothing Then
                     If udtClaimRuleResult.ResultParam.Count > 0 Then
                         intCaseNo = 1
                     End If
                 End If
-                'If Not udtClaimRuleResult.RelatedClaimRule Is Nothing Then
-                '    If udtClaimRuleResult.dtmDoseDate.HasValue Then
-                '        intCaseNo = 1
-                '        strReplaceTextEng = "%date"
-                '        strReplaceTextTC = "%date"
-                '        strMessageEng = Formatter.formatDisplayDate(udtClaimRuleResult.dtmDoseDate.Value, CultureLanguage.English)
-                '        strMessageTC = Formatter.formatDisplayDate(udtClaimRuleResult.dtmDoseDate.Value, CultureLanguage.TradChinese)
-                '    End If
-                'End If
-                ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
                 'Case 2
                 If Not udtSystemMessage.FunctionCode Is Nothing AndAlso Not udtSystemMessage.SeverityCode Is Nothing AndAlso Not udtSystemMessage.MessageCode Is Nothing Then
                     Select Case (udtSystemMessage.FunctionCode.ToString + "-" + udtSystemMessage.SeverityCode.ToString + "-" + udtSystemMessage.MessageCode.ToString)
-                        Case "990000-E-00242"
+                        Case "990000-E-00242" ' %en cannot be claimed at the same time. (e.g. 1st dose and 2nd dose cannot be claimed at the same time. )
                             intCaseNo = 2
                             strReplaceTextEng = "%en"
                             strReplaceTextTC = "%tc"
@@ -2353,20 +2328,36 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                             strMessageEng = lstStrResSystemMessage(0) + " " + HttpContext.GetGlobalResourceObject("Text", "ConjunctionAnd", New System.Globalization.CultureInfo(CultureLanguage.English)) + " " + lstStrResSystemMessage(1)
                             strMessageTC = lstStrResSystemMessage(0) + " " + HttpContext.GetGlobalResourceObject("Text", "ConjunctionAnd", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) + " " + lstStrResSystemMessage(1)
+
+                            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                        Case "990000-E-00443" ' Exceed the claim period "%en" (e.g. Exceed the claim period "18 Sep 2020")
+                            intCaseNo = 2
+                            strReplaceTextEng = "%en"
+                            strReplaceTextTC = "%tc"
+
+                            strMessageEng = Formatter.formatDisplayDate(Convert.ToDateTime(udtClaimRuleResult.RelatedClaimRule.CompareValue), CultureLanguage.English)
+                            strMessageTC = Formatter.formatDisplayDate(Convert.ToDateTime(udtClaimRuleResult.RelatedClaimRule.CompareValue), CultureLanguage.TradChinese)
+
+                            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                     End Select
                 End If
 
-                '-----------------------------------
-                'Create system message (By Case No.)
-                '-----------------------------------
+                ' -----------------------------------
+                ' Create system message (By Case No.)
+                ' -----------------------------------
+                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 Select Case intCaseNo
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                     Case 1
                         Dim udtRuleResult As RuleResult = New RuleResult(ReturnRuleID(udtClaimRuleResult.RuleType, udtClaimRuleResult.HandleMethod), _
                                            Nothing, Nothing, _
                                            Nothing, Nothing, _
                                            udtClaimRuleResult.RelatedClaimRule.SchemeCode, udtClaimRuleResult.RelatedClaimRule.SchemeSeq, _
                                            udtClaimRuleResult.RelatedClaimRule.SubsidizeCode, udtClaimRuleResult.RelatedClaimRule.RuleGroup)
+
+                        udtRuleResult.ClaimRuleResult = udtClaimRuleResult
 
 
                         For Each strKey As String In udtClaimRuleResult.ResultParam.Keys
@@ -2388,35 +2379,36 @@ Namespace Component.EHSClaim.EHSClaimBLL
                             udtRuleResult.MessageVariableValueChiArrayList.Add(strMessageTC)
                         Next
                         udtRuleResultList.RuleResults.Add(udtRuleResult)
-                    Case 2
-                        udtRuleResultList.RuleResults.Add( _
-                            New RuleResult(ReturnRuleID(udtClaimRuleResult.RuleType, udtClaimRuleResult.HandleMethod), _
-                                           strReplaceTextEng, strMessageEng, _
-                                           strReplaceTextTC, strMessageTC, _
-                                           udtClaimRuleResult.RelatedClaimRule.SchemeCode, udtClaimRuleResult.RelatedClaimRule.SchemeSeq, _
-                                           udtClaimRuleResult.RelatedClaimRule.SubsidizeCode, udtClaimRuleResult.RelatedClaimRule.RuleGroup))
-                        'Case 1, 2
-                        '    udtRuleResultList.RuleResults.Add( _
-                        '        New RuleResult(ReturnRuleID(udtClaimRuleResult.RuleType, udtClaimRuleResult.HandleMethod), _
-                        '                       strReplaceTextEng, strMessageEng, _
-                        '                       strReplaceTextTC, strMessageTC, _
-                        '                       udtClaimRuleResult.RelatedClaimRule.SchemeCode, udtClaimRuleResult.RelatedClaimRule.SchemeSeq, _
-                        '                       udtClaimRuleResult.RelatedClaimRule.SubsidizeCode, udtClaimRuleResult.RelatedClaimRule.RuleGroup))
 
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
+                    Case 2
+                        Dim udtRuleResult As RuleResult = New RuleResult(ReturnRuleID(udtClaimRuleResult.RuleType, udtClaimRuleResult.HandleMethod), _
+                                                                         strReplaceTextEng, strMessageEng, _
+                                                                         strReplaceTextTC, strMessageTC, _
+                                                                         udtClaimRuleResult.RelatedClaimRule.SchemeCode, udtClaimRuleResult.RelatedClaimRule.SchemeSeq, _
+                                                                         udtClaimRuleResult.RelatedClaimRule.SubsidizeCode, udtClaimRuleResult.RelatedClaimRule.RuleGroup)
+
+                        udtRuleResult.ClaimRuleResult = udtClaimRuleResult
+
+                        udtRuleResultList.RuleResults.Add(udtRuleResult)
+
                     Case Else
-                        udtRuleResultList.RuleResults.Add( _
-                            New RuleResult(ReturnRuleID(udtClaimRuleResult.RuleType, udtClaimRuleResult.HandleMethod), _
-                                           Nothing, Nothing, _
-                                           Nothing, Nothing, _
-                                           udtClaimRuleResult.RelatedClaimRule.SchemeCode, udtClaimRuleResult.RelatedClaimRule.SchemeSeq, _
-                                           udtClaimRuleResult.RelatedClaimRule.SubsidizeCode, udtClaimRuleResult.RelatedClaimRule.RuleGroup))
+                        Dim udtRuleResult As RuleResult = New RuleResult(ReturnRuleID(udtClaimRuleResult.RuleType, udtClaimRuleResult.HandleMethod), _
+                                                                         Nothing, Nothing, _
+                                                                         Nothing, Nothing, _
+                                                                         udtClaimRuleResult.RelatedClaimRule.SchemeCode, udtClaimRuleResult.RelatedClaimRule.SchemeSeq, _
+                                                                         udtClaimRuleResult.RelatedClaimRule.SubsidizeCode, udtClaimRuleResult.RelatedClaimRule.RuleGroup)
+
+                        udtRuleResult.ClaimRuleResult = udtClaimRuleResult
+
+                        udtRuleResultList.RuleResults.Add(udtRuleResult)
 
                 End Select
+                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
             Next
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
 
             Return udtRuleResultList
+
         End Function
         Private Function ReturnRuleID(ByVal strRuleType As String, ByVal intHandleMethod As Integer) As Integer
 
@@ -2824,7 +2816,12 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                     strMessageEng = udtSchemeClaimModel.SubsidizeGroupClaimList.Filter(udtEHSTransaction.SchemeCode, lstIntSchemeSeq(idx), lstStrSubsidizeCode(idx)).DisplayCodeForClaim
 
-                    udtRuleResultlist.RuleResults.Add(New RuleResult(RuleID.SubsidyNotProvideService, "%en", strMessageEng))
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    'udtRuleResultlist.RuleResults.Add(New RuleResult(RuleID.SubsidyNotProvideService, "%en", strMessageEng))
+                    udtRuleResultlist.RuleResults.Add(New RuleResult(RuleID.SubsidyNotProvideService, "%en", strMessageEng, Nothing, Nothing, udtEHSTransaction.SchemeCode, lstIntSchemeSeq(idx), lstStrSubsidizeCode(idx)))
+                    'udtRuleResultlist.RuleResults.Add(New RuleResult(RuleID.SubsidyNotProvideService, "%en", strMessageEng, Nothing, Nothing, udtEHSTransaction.SchemeCode))
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
                 End If
 
             Next

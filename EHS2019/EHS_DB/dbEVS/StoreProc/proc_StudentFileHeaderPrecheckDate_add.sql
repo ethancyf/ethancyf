@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:			
--- Modified date:	
--- CR No.			
--- Description:		
+-- Modified by:		Chris YIM
+-- Modified date:	27 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		Enlarge column size (Class_Name)
 -- =============================================
 -- =============================================
 -- Modification History
@@ -27,7 +27,7 @@ CREATE PROCEDURE [dbo].[proc_StudentFileHeaderPrecheckDate_add]
 	@Scheme_Seq									SMALLINT,
 	@Subsidize_Code								CHAR(10),
 	@Subsidize_Item_Code						CHAR(10),
-	@Class_Name									NVARCHAR(10),
+	@Class_Name									NVARCHAR(40),
 	@Service_Receive_Dtm						DATETIME,
 	@Final_Checking_Report_Generation_Date		DATETIME,
 	@Service_Receive_Dtm_2ndDose				DATETIME,

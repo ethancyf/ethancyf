@@ -15,6 +15,7 @@ Imports Common.Component.InputPicker
 Imports Common.Component.EHSClaim.EHSClaimBLL.EHSClaimBLL
 Imports Common.ComFunction
 Imports Common.Component.StudentFile
+Imports Common.Component.EHSClaim.EHSClaimBLL
 
 
 Module Core
@@ -1078,14 +1079,21 @@ Public Class ScheduleJob
                 MyBase.AuditLog.AddDescripton("No. of student", cllnStudent.Count)
                 objStartKey = MyBase.AuditLog.WriteStartLog(AuditLogDesc.CREATECLAIM_Start_ID, AuditLogDesc.CREATECLAIM_Start)
 
-                ' CRE19-001 (VSS 2019 - Claim Creation) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                Dim blnlExceedClaimPeriod As Boolean = BLL.StudentFileBLL.isExceedClaimPeriod(udtStudentHeader)
+                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Dim blnlExceedClaimPeriod As Boolean = False
+
+                If udtStudentHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                    'skip to check "Claim Period"
+                Else
+                    blnlExceedClaimPeriod = BLL.StudentFileBLL.isExceedClaimPeriod(udtStudentHeader)
+                End If
+                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
 
                 Dim blnSuccess As Boolean = StudentFile_CheckVaccineEntitlementAndCreateClaim(BLL.StudentFileBLL.StudentFileLocation.Staging, _
                                                                   udtStudentHeader, _
                                                                   cllnStudent, False, True, blnUpdateStatusAndInsertReportQueue, blnlExceedClaimPeriod)
-                ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
 
 
                 If blnSuccess And blnUpdateStatusAndInsertReportQueue Then
@@ -1196,10 +1204,39 @@ Public Class ScheduleJob
             Dim udtClaimCategory As ClaimCategory.ClaimCategoryModel = udtClaimCategoryBLL.getAllSubsidizeGroupCategory().Filter(udtSubsidizeGroupClaim.SchemeCode, _
                                                                       udtSubsidizeGroupClaim.SubsidizeCode)
 
-
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             ' Prepare SubsidizeItemDetial (Dose: 1STDOSE, 2NDDOSE, ONLYDOSE)
             Dim cllnSubsidizeItemDetail As SubsidizeItemDetailsModelCollection
-            cllnSubsidizeItemDetail = (New SchemeDetailBLL).getSubsidizeItemDetails(udtSubsidizeGroupClaim.SubsidizeItemCode)
+            Dim cllnRawSubsidizeItemDetail As SubsidizeItemDetailsModelCollection
+            Dim cllnSubsidizeGroupClaimItemDetailsList As SubsidizeGroupClaimItemDetailsModelCollection
+
+            'E.g. MMR (Dose: 1STDOSE, 2NDDOSE, 3RDDOSE)
+            cllnRawSubsidizeItemDetail = (New SchemeDetailBLL).getSubsidizeItemDetails(udtSubsidizeGroupClaim.SubsidizeItemCode)
+
+            'E.g. RVP Health Care Worker MMR (Dose: 1STDOSE, 2NDDOSE)
+            cllnSubsidizeGroupClaimItemDetailsList = (New SchemeDetailBLL).getSubsidizeGroupClaimItemDetails(udtSubsidizeGroupClaim.SchemeCode, _
+                                                                                                             udtSubsidizeGroupClaim.SchemeSeq, _
+                                                                                                             udtSubsidizeGroupClaim.SubsidizeCode, _
+                                                                                                             udtSubsidizeGroupClaim.SubsidizeItemCode)
+
+            cllnSubsidizeItemDetail = New SubsidizeItemDetailsModelCollection
+
+            'Filter SubsidizeItemDetial (Dose: 1STDOSE, 2NDDOSE, 3RDDOSE, ONLYDOSE) By SubsidizeGroupClaim
+            'E.g. After filtering, RVP Health Care Worker MMR (Dose: 1STDOSE, 2NDDOSE) in cllnSubsidizeItemDetail, instead of MMR (Dose: 1STDOSE, 2NDDOSE, 3RDDOSE)
+            For Each udtSubsidizeItemDetail As SubsidizeItemDetailsModel In cllnRawSubsidizeItemDetail
+                For Each udtSubsidizeGroupClaimItemDetail As SubsidizeGroupClaimItemDetailsModel In cllnSubsidizeGroupClaimItemDetailsList
+                    If udtSubsidizeItemDetail.SubsidizeItemCode = udtSubsidizeGroupClaimItemDetail.SubsidizeItemCode And _
+                        udtSubsidizeItemDetail.AvailableItemCode = udtSubsidizeGroupClaimItemDetail.AvailableItemCode Then
+
+                        cllnSubsidizeItemDetail.Add(New SubsidizeItemDetailsModel(udtSubsidizeItemDetail))
+
+                        Continue For
+
+                    End If
+                Next
+            Next
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ' Get Practice
             Dim udtPractice As Practice.PracticeModel = Nothing
@@ -1259,13 +1296,28 @@ Public Class ScheduleJob
                 ' Not account assigned to the student
                 ' Skip the student
                 If udtStudent.PersonalInformation Is Nothing Then
+                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Dim udtMsg As New SystemMessage("990000", "E", "00437") ' No eHealth (Subsidies) Account found
+
                     ' Update dose entitlement (no entitlement) to StudentFileEntryStaging
                     udtVaccineEntitle = New BLL.VaccineEntitleModel
-                    udtVaccineEntitle.EntitleInjectFailReason = "No eHealth (Subsidies) Account found"
+                    udtVaccineEntitle.EntitleInjectFailReason = udtMsg.GetMessage(EnumLanguage.EN) + "|||" + udtMsg.GetMessage(EnumLanguage.TC)
+                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                     BLL.StudentFileBLL.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
                                                                                      udtStudentHeader, _
                                                                                      udtStudent, _
                                                                                      udtVaccineEntitle)
+
+                    If blnCreateClaim Then
+                        ' Update claim validation fail result to StudentFileEntryStaging 
+                        BLL.StudentFileBLL.UpdateStudentFileEntryStaging_VaccineClaim(udtStudent, _
+                                                                                      String.Empty, _
+                                                                                      udtVaccineEntitle.EntitleInjectFailReason)
+
+                    End If
+
                     Continue For
                 End If
 
@@ -1302,15 +1354,61 @@ Public Class ScheduleJob
                                                                                          udtStudent, _
                                                                                          udtVaccineEntitle, udtDB)
 
+                        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+                        ' -------------------------------------------------------------------------------------------------------------
+                        ' If the recipient has entitlement without validated account, the entitlement will change to false in VSS MMR.
+                        If udtVaccineEntitle.EntitleInject Then
+                            If udtStudentHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                                udtVaccineEntitle.EHSTransaction.ManualReimburse = True
+
+                                'Hard code for VSS MMR
+                                udtVaccineEntitle.EHSTransaction.CreationReason = "O"
+                                udtVaccineEntitle.EHSTransaction.CreationRemarks = "MMR"
+                                udtVaccineEntitle.EHSTransaction.PaymentMethod = "CHE"
+                                udtVaccineEntitle.EHSTransaction.PaymentRemarks = ""
+                                udtVaccineEntitle.EHSTransaction.OverrideReason = "MMR-NIA created for record purpose"
+
+                            End If
+
+                            If udtVaccineEntitle.EHSTransaction.ManualReimburse Then
+                                If udtVaccineEntitle.EHSTransaction.EHSAcct.AccountSource <> SysAccountSource.ValidateAccount Then
+                                    udtVaccineEntitle.EntitleInject = False
+
+                                    udtVaccineEntitle.EntitleInjectFailReason = ConcatEntitleInjectFailReason(udtVaccineEntitle.EntitleInjectFailReason, "Only Validated eHealth (Subsidies) Account can create manual reimbursement claim.")
+
+                                End If
+                            End If
+                        End If
+
                         ' Create transaction
                         ' Update transaction ID to StudentFileEntryStaging
                         If udtVaccineEntitle.EntitleInject Then
 
-                            Dim strTransactionID As String = (New GeneralFunction).generateTransactionNumber(udtVaccineEntitle.EHSTransaction.SchemeCode, False)
-                            udtVaccineEntitle.EHSTransaction.TransactionID = strTransactionID
+                            Dim strTransactionID As String = String.Empty
 
-                            ' CRE19-001 (VSS 2019 - Claim Creation) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
+                            If udtVaccineEntitle.EHSTransaction.ManualReimburse Then
+                                ' Transaction created by BO
+                                strTransactionID = (New GeneralFunction).generateTransactionNumber(udtVaccineEntitle.EHSTransaction.SchemeCode, True)
+
+                                udtVaccineEntitle.EHSTransaction.RecordStatus = EHSTransactionModel.TransRecordStatusClass.Reimbursed
+
+                                udtVaccineEntitle.EHSTransaction.CreateBy = udtStudentHeader.ClaimUploadBy
+                                udtVaccineEntitle.EHSTransaction.UpdateBy = udtStudentHeader.ClaimUploadBy
+
+                                udtVaccineEntitle.EHSTransaction.ApprovalBy = udtStudentHeader.FileConfirmBy
+                                udtVaccineEntitle.EHSTransaction.ApprovalDate = Now()
+                                udtVaccineEntitle.EHSTransaction.RejectBy = String.Empty
+                                udtVaccineEntitle.EHSTransaction.RejectDate = Nothing
+
+                            Else
+                                ' Transaction created by SP
+                                strTransactionID = (New GeneralFunction).generateTransactionNumber(udtVaccineEntitle.EHSTransaction.SchemeCode, False)
+
+                            End If
+
+                            udtVaccineEntitle.EHSTransaction.TransactionID = strTransactionID
+                            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
                             ' === Create X account ===
                             Dim strOrignalEHSAccountID As String = Nothing
                             Dim udtAccount As EHSAccount.EHSAccountModel = udtVaccineEntitle.EHSTransaction.EHSAcct
@@ -1352,22 +1450,11 @@ Public Class ScheduleJob
 
                                 udtVaccineEntitle.EHSTransaction.RecordStatus = ClaimTransStatus.Suspended
                             End If
-                            ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
-
 
                             ' === Create Claim ===
-
-                            'Dim udtSystemMessage As Common.ComObject.SystemMessage = (New EHSTransactionBLL).InsertEHSTransactionWithoutChecking(udtVaccineEntitle.EHSTransaction, _
-                            '                                            udtVaccineEntitle.EHSTransaction.EHSAcct, _
-                            '                                            udtVaccineEntitle.EHSTransaction.EHSAcct.getPersonalInformation(udtStudent.PersonalInformation.DocCode), udtSchemeClaim, _
-                            '                                             EHSTransactionModel.AppSourceEnum.SFUpload)
-
                             Call (New EHSTransactionBLL).InsertEHSTransactionWithoutChecking(udtDB, udtVaccineEntitle.EHSTransaction, udtVaccineEntitle.EHSTransaction.EHSAcct, _
                                                                                              udtVaccineEntitle.EHSTransaction.EHSAcct.getPersonalInformation(udtStudent.PersonalInformation.DocCode), udtSchemeClaim, _
                                                                                              EHSTransactionModel.AppSourceEnum.SFUpload)
-
-                            ' CRE19-001 (VSS 2019) [End][Winnie]
-
 
                             ' Update claim transaction ID to StudentFileEntryStaging 
                             BLL.StudentFileBLL.UpdateStudentFileEntryStaging_VaccineClaim(udtStudent, _
@@ -1416,6 +1503,7 @@ Public Class ScheduleJob
                                             ByVal udtClaimCategory As ClaimCategory.ClaimCategoryModel, _
                                             ByVal udtPractice As Practice.PracticeModel, _
                                             ByVal udtStudent As BLL.StudentModel) As BLL.VaccineEntitleModel
+
         Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(ScheduleJobFunctionCode.StudentFileChecking, "DBFlag")
         Dim udtClaimRuleBLL As New ClaimRules.ClaimRulesBLL
 
@@ -1500,55 +1588,162 @@ Public Class ScheduleJob
             End If
         End If
 
-        If udtStudent.Dose = SubsidizeItemDetailsModel.DoseCode.ONLYDOSE Or _
-            udtStudent.Dose = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
-            If udtVaccineEntitle.EntitleOnlyDose Or udtVaccineEntitle.Entitle1stDose Then
-                udtVaccineEntitle.EntitleInject = True
+        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        If dicResDoseRuleResult.ContainsKey(SubsidizeItemDetailsModel.DoseCode.ThirdDOSE) Then
+            If dicResDoseRuleResult(SubsidizeItemDetailsModel.DoseCode.ThirdDOSE).HandlingMethod = DoseRuleHandlingMethod.ALL Then
+                udtVaccineEntitle.Entitle3rdDose = True
             End If
-        ElseIf udtStudent.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
-            If udtVaccineEntitle.Entitle2ndDose Then
-                udtVaccineEntitle.EntitleInject = True
-            End If
-        Else
-            Throw New Exception(String.Format("Invalid [StudentFileHeader].[Dose] ({0})", udtStudent.Dose))
         End If
+
+        Select Case udtStudent.Dose
+            Case SubsidizeItemDetailsModel.DoseCode.ONLYDOSE, SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+                If udtVaccineEntitle.EntitleOnlyDose Or udtVaccineEntitle.Entitle1stDose Then
+                    udtVaccineEntitle.EntitleInject = True
+                End If
+
+            Case SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+                If udtVaccineEntitle.Entitle2ndDose Then
+                    udtVaccineEntitle.EntitleInject = True
+                End If
+
+            Case SubsidizeItemDetailsModel.DoseCode.ThirdDOSE
+                If udtVaccineEntitle.Entitle3rdDose Then
+                    udtVaccineEntitle.EntitleInject = True
+                End If
+
+            Case Else
+                Throw New Exception(String.Format("Invalid [StudentFileHeader].[Dose] ({0})", udtStudent.Dose))
+
+        End Select
+
 
         If udtVaccineEntitle.EntitleInject = False Then
-            udtVaccineEntitle.EntitleInjectFailReason = "No available subsidies"
+            Dim udtMsg As New SystemMessage("990000", "E", "00435") ' No available subsidies
+            udtVaccineEntitle.EntitleInjectFailReason = udtMsg.GetMessage(EnumLanguage.EN) + "|||" + udtMsg.GetMessage(EnumLanguage.TC)
+        Else
+
+            ' Build Transaction Model
+            Dim udtTran As EHSTransactionModel = BLL.StudentFileTranBLL.ConstructNewEHSTransaction(udtSchemeClaim, _
+                                                            udtSubsidizeGroupClaim, _
+                                                            udtClaimCategory, _
+                                                            udtPractice, _
+                                                            udtStudent, _
+                                                            udtStudent.ServiceReceviceDate, _
+                                                            udtStudent.Dose, _
+                                                            udtAccount, _
+                                                            cllnTranDetailVaccine, _
+                                                            udtVaccineEntitle)
+
+            ' Check claim
+            Dim udtClaimBLL As New EHSClaim.EHSClaimBLL.EHSClaimBLL
+            Dim udtValidationResults As ValidationResults = udtClaimBLL.ValidateClaimCreation(EHSClaim.EHSClaimBLL.EHSClaimBLL.ClaimAction.UploadStudent, _
+                                                udtTran, _
+                                                Nothing, _
+                                                Nothing, _
+                                                udtAuditLogEntry, _
+                                                Nothing, _
+                                                cllnTranDetailVaccine)
+
+            If udtValidationResults.BlockResults.RuleResults.Count > 0 Then
+                udtVaccineEntitle.EntitleInject = False
+                udtVaccineEntitle.EntitleInjectFailReason = udtValidationResults.BlockResults.RuleResults(0).MessageDescription + "|||" + udtValidationResults.BlockResults.RuleResults(0).MessageDescriptionChi
+
+                'For Each udtRuleResult As EHSClaimBLL.RuleResult In udtValidationResults.BlockResults.RuleResults
+                '    If udtVaccineEntitle.EntitleInjectFailReason = String.Empty Then
+                '        udtVaccineEntitle.EntitleInjectFailReason = udtRuleResult.MessageDescription + "|||" + udtRuleResult.MessageDescriptionChi
+                '    Else
+                '        udtVaccineEntitle.EntitleInjectFailReason = ConcatEntitleInjectFailReason(udtVaccineEntitle.EntitleInjectFailReason, _
+                '                                                                                  udtRuleResult.MessageDescription, _
+                '                                                                                  udtRuleResult.MessageDescriptionChi)
+                '    End If
+                'Next
+
+            End If
+
+            udtVaccineEntitle.EHSTransaction = udtTran
+
+            udtVaccineEntitle.EHSTransaction.WarningMessage = udtValidationResults.WarningResults
+
+            '----------------------------
+            ' Special handle for VSS MMR
+            '----------------------------
+            If udtSubsidizeGroupClaim.SchemeCode = SchemeClaimModel.VSS And udtSubsidizeGroupClaim.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
+                Dim lstWarningMessage As New List(Of String)
+                Dim lstWarningMessageChi As New List(Of String)
+
+                For Each udtRuleResult As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtVaccineEntitle.EHSTransaction.WarningMessage.RuleResults
+
+                    Dim strMessageCode As String = (udtRuleResult.ErrorMessage.FunctionCode.ToString + "-" + _
+                                                    udtRuleResult.ErrorMessage.SeverityCode.ToString + "-" + _
+                                                    udtRuleResult.ErrorMessage.MessageCode.ToString)
+
+                    Select Case strMessageCode
+                        Case "990000-E-00106" 'The service recipient is not eligible for the selected scheme.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+
+                        Case "990000-E-00200" 'Sorry, your claim is not accepted. 2 dose vaccination should be at least 4 weeks apart.
+                            'Dim strDesc As String = String.Empty
+
+                            'If udtStudent.Dose = SubsidizeItemDetailsModel.DoseCode.ThirdDOSE Then
+                            '    strDesc = "The interval of 1st and 3rd dose vaccination is not enough ({0} day{1} apart)"
+                            'Else
+                            '    strDesc = "The interval of 1st and 2nd dose vaccination is not enough ({0} day{1} apart)"
+                            'End If
+
+                            'Dim intDoseInterval As Integer = udtRuleResult.ClaimRuleResult.ResultParam("%DoseInterval")
+
+                            'lstWarningMessage.Add(String.Format(strDesc, intDoseInterval, IIf(intDoseInterval > 1, "s", "")))
+                            lstWarningMessage.Add("Two dose vaccination should be at least 4 weeks apart.")
+                            lstWarningMessageChi.Add("兩次疫苗接種應最少相隔四星期。")
+
+                        Case "990000-E-00295" 'The selected dose was already claimed.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+
+                        Case "990000-E-00442" 'The 1st and 2nd dose vaccination should be injected before the 3rd dose vaccination.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+
+                        Case "990000-E-00443" 'Exceed the claim period "18 Sep 2020"
+                            lstWarningMessage.Add(Replace(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN), udtRuleResult.MessageVariableName, udtRuleResult.MessageVariableValue))
+                            lstWarningMessageChi.Add(Replace(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC), udtRuleResult.MessageVariableNameChi, udtRuleResult.MessageVariableValueChi))
+
+                        Case "990000-E-00217" 'The 2nd dose vaccination should not be earlier than the 1st dose vaccination.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+
+                        Case "990000-E-00440" 'The 3rd dose vaccination should not be earlier than the 1st dose vaccination.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+
+                        Case "990000-E-00441" 'The 3rd dose vaccination should not be earlier than the 2nd dose vaccination.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+
+                        Case "990000-E-00452" 'Should not inject 1st /2nd dose if 3rd dose has been injected.
+                            lstWarningMessage.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.EN))
+                            lstWarningMessageChi.Add(udtRuleResult.ErrorMessage.GetMessage(EnumLanguage.TC))
+                    End Select
+
+                Next
+
+                If lstWarningMessage.Count > 0 Then
+                    Dim strWarningMessage As String = String.Join(" / ", lstWarningMessage.ToArray)
+                    Dim strWarningMessageChi As String = String.Join(" / ", lstWarningMessageChi.ToArray)
+
+                    udtVaccineEntitle.EntitleInjectFailReason = ConcatEntitleInjectFailReason(udtVaccineEntitle.EntitleInjectFailReason, _
+                                                                                              strWarningMessage, _
+                                                                                              strWarningMessageChi)
+
+                End If
+
+            End If
+
         End If
+        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
-
-        ' Build Transaction Model
-        Dim udtTran As EHSTransactionModel = BLL.StudentFileTranBLL.ConstructNewEHSTransaction(udtSchemeClaim, _
-                                                        udtSubsidizeGroupClaim, _
-                                                        udtClaimCategory, _
-                                                        udtPractice, _
-                                                        udtStudent, _
-                                                        udtStudent.ServiceReceviceDate, _
-                                                        udtStudent.Dose, _
-                                                        udtAccount, _
-                                                        cllnTranDetailVaccine, _
-                                                        udtVaccineEntitle)
-
-
-        ' Check claim
-        Dim udtClaimBLL As New EHSClaim.EHSClaimBLL.EHSClaimBLL
-        Dim udtValidationResults As ValidationResults = udtClaimBLL.ValidateClaimCreation(EHSClaim.EHSClaimBLL.EHSClaimBLL.ClaimAction.UploadStudent, _
-                                            udtTran, _
-                                            Nothing, _
-                                            Nothing, _
-                                            udtAuditLogEntry, _
-                                            Nothing, _
-                                            cllnTranDetailVaccine)
-
-
-
-        If udtValidationResults.BlockResults.RuleResults.Count > 0 Then
-            udtVaccineEntitle.EntitleInject = False
-            udtVaccineEntitle.EntitleInjectFailReason = udtValidationResults.BlockResults.RuleResults(0).MessageDescription
-        End If
-
-        udtVaccineEntitle.EHSTransaction = udtTran
         Return udtVaccineEntitle
     End Function
 
@@ -2090,6 +2285,43 @@ Public Class ScheduleJob
         End If
 
         Return strSubsidizeCode
+
+    End Function
+
+    Private Function ConcatEntitleInjectFailReason(strFailReason As String, strConcat As String, Optional ByVal strConcatChi As String = "") As String
+        Dim strResult As String = String.Empty
+
+        If strFailReason = String.Empty Then
+            If strConcatChi <> String.Empty Then
+                strResult = strConcat + "|||" + strConcatChi
+            Else
+                strResult = strConcat + "|||"
+            End If
+
+        Else
+            Dim strEntitleInjectFailReason() As String = Split(strFailReason, "|||")
+
+            Dim strEntitleInjectFailReasonEN As String = String.Empty
+            Dim strEntitleInjectFailReasonTC As String = String.Empty
+
+            strEntitleInjectFailReasonEN = strEntitleInjectFailReason(0)
+
+            If strEntitleInjectFailReason.Length > 1 Then
+                strEntitleInjectFailReasonTC = strEntitleInjectFailReason(1)
+            Else
+                strEntitleInjectFailReasonTC = String.Empty
+            End If
+
+            strResult = strEntitleInjectFailReasonEN + " / " + strConcat + "|||" + strEntitleInjectFailReasonTC
+
+            If strConcatChi <> String.Empty Then
+                strResult = strEntitleInjectFailReasonEN + " / " + strConcat + "|||" + strEntitleInjectFailReasonTC + " / " + strConcatChi
+            Else
+                strResult = strEntitleInjectFailReasonEN + " / " + strConcat + "|||" + strEntitleInjectFailReasonTC
+            End If
+        End If
+
+        Return strResult
 
     End Function
 
