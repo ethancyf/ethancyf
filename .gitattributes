@@ -8383,6 +8383,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0005_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0006_Stat_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0007_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0008_Report_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0010_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0012_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0002.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0003_01_Report.sql -text
