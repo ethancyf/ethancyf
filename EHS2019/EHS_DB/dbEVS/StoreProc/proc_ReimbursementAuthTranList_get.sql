@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	18 Sep 2018
+-- CR No.:			CRE17-018 (New initiatives for VSS and RVP in 2018-19)
+-- Description:		Support reimbursed transaction with temp voucher account
+-- =============================================    
 -- =============================================  
 -- Modification History  
 -- Modified by:		Koala CHENG
@@ -233,6 +240,48 @@ AS BEGIN
 		
 	WHERE VT.Voucher_Acc_ID <> ''
 	
+	-- Temp Account
+	Insert into @TranList
+	(
+		Transaction_ID,
+		Transaction_Dtm,
+		Service_Receive_Dtm,
+		Scheme_Code,
+		Doc_Code,
+		Encrypt_Field1,
+		Encrypt_Field2,
+		Encrypt_Field3,
+		Encrypt_Field11,
+		TotalUnit,
+		TotalAmount,
+		Invalidation
+	)
+	SELECT
+		T.Transaction_ID,
+		VT.Transaction_Dtm,
+		VT.Service_Receive_Dtm,
+		VT.Scheme_Code,
+		P.Doc_Code,
+		P.Encrypt_Field1,
+		P.Encrypt_Field2,
+		P.Encrypt_Field3,
+		P.Encrypt_Field11,
+		T.TotalUnit AS [Total_Unit],
+		T.TotalAmount AS [Total_Amount],
+		VT.Invalidation
+		
+	FROM
+		@TransactionGroupByTransactionID T
+			INNER JOIN VoucherTransaction VT WITH (NOLOCK)
+				ON T.Transaction_ID = VT.Transaction_ID
+			INNER JOIN TempVoucherAccount VA WITH (NOLOCK)
+				ON VT.Temp_Voucher_Acc_ID = VA.Voucher_Acc_ID
+			INNER JOIN TempPersonalInformation P WITH (NOLOCK)
+				ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID
+					AND VT.Doc_Code = P.Doc_Code
+		
+	WHERE VT.Voucher_Acc_ID = '' AND ISNULL(VT.Special_Acc_ID,'')='' AND VT.Invalid_Acc_ID is NULL
+
 	-- Special Account
 	Insert into @TranList
 	(
