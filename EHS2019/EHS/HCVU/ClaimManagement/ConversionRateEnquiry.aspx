@@ -447,7 +447,7 @@
                                                                 <asp:TableCell style ="text-align:center;vertical-align:middle" Height="24px">
                                                                     <asp:Label ID="lblCalendarMonthYear" runat="server"></asp:Label>
                                                                     <span>
-                                                                        <asp:Textbox ID="txtEffectiveDatePeriod" runat="server" Width="0" Height="0" MaxLength="10" style="display:inline;z-index:-1;position:relative;left:5px;top:2px;"></asp:Textbox>
+                                                                        <asp:Textbox ID="txtEffectiveDatePeriod" runat="server" Width="0" Height="0" MaxLength="20" style="display:inline;z-index:-1;position:relative;left:5px;top:2px;"></asp:Textbox>
                                                                         <asp:ImageButton ID="ibtnCalender" runat="server" ImageUrl="<%$ Resources: ImageUrl, CalenderBtn %>"
                                                                             AlternateText="<%$ Resources: AlternateText, CalenderBtn %>" style="vertical-align:top"/>
                                                                         <cc1:CalendarExtender ID="calEffectiveDatePeriod" BehaviorID="calEffectiveDatePeriod" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnCalender"

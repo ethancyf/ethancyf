@@ -9,6 +9,18 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	01 Sep 2020
+-- CR No.:			INT20-0028 (Fix eVaccination result)
+-- Description:		
+--					Issue:
+--						If a validated account contains HKIC and HKBC but the demographics are not matched (e.g. name, DOB)
+--						Then no vaccine will be returned
+--					Solution:
+--						If either HKIC or HKBC is demogprahics matched, return all vaccine
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	28 Oct 2019
 -- CR No.:			CRE19-005-02 (Share MMR between DH CIMS and eHS(S) - Phase 2 - Interface)
@@ -676,8 +688,10 @@ FROM
   END  
  
  -- Remove Vaccine if the account is not matched
- DELETE FROM #tempVaccine WHERE EXISTS (SELECT a.Acc_Type, a.Voucher_Acc_ID 
-										FROM @temptable a WHERE DemographicUnmatched = 1 
+ DELETE FROM #tempVaccine WHERE EXISTS (SELECT a.Acc_Type, a.Voucher_Acc_ID  
+										FROM @temptable a 
+										GROUP BY a.Acc_Type, a.Voucher_Acc_ID
+										HAVING MIN(CAST(DemographicUnmatched AS INT)) = 1 
 												AND #tempVaccine.Acc_Type = a.Acc_Type
 												AND #tempVaccine.Voucher_Acc_ID = a.Voucher_Acc_ID)
 

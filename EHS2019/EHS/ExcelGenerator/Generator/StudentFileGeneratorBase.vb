@@ -94,12 +94,12 @@ Namespace Generator
             ' Get Subsidize Item Code (e.g. SIV, PV, PV13)
             Dim bllSubsidize As New Common.Component.Scheme.SubsidizeBLL
 
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strTemplateName As String = Me.m_udtFileGeneration.ReportTemplate
+
             If udtStudentHeader.SubsidizeCode <> String.Empty Then
                 Dim strSubsidizeItemCode As String = bllSubsidize.GetSubsidizeItemBySubsidize(udtStudentHeader.SubsidizeCode)
-
-                ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
-                Dim strTemplateName As String = Me.m_udtFileGeneration.ReportTemplate
 
                 If udtStudentHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
                     strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Format("-{0}-{1}", udtStudentHeader.SchemeCode, strSubsidizeItemCode))
@@ -109,11 +109,14 @@ Namespace Generator
                     strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Empty)
                 End If
 
-                Return strTemplateName
-                ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+            Else
+                strTemplateName = strTemplateName.Replace("[%Subsidize%]", String.Empty)
+                strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Empty)
+
             End If
 
-            Return Me.m_udtFileGeneration.ReportTemplate
+            Return strTemplateName
+            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End Function
 
         Protected Function GetStudentFileHeader() As Common.Component.StudentFile.StudentFileHeaderModel
