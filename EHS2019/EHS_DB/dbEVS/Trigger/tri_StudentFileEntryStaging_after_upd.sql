@@ -9,6 +9,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
+-- Modified date:	20 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns (Manual Add)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
 -- Modified date:	15 Jul 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
 -- Description:		Add columns
@@ -113,7 +120,8 @@ AS BEGIN
 		Original_Student_File_ID,
 		Original_Student_Seq,
 		HKIC_Symbol,
-		Service_Receive_Dtm
+		Service_Receive_Dtm,
+		Manual_Add
 	)
 	SELECT
 		GETDATE(),
@@ -173,7 +181,8 @@ AS BEGIN
 		Original_Student_File_ID,
 		Original_Student_Seq,
 		HKIC_Symbol,
-		Service_Receive_Dtm
+		Service_Receive_Dtm,
+		Manual_Add
 	FROM
 		inserted
 

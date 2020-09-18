@@ -1,55 +1,26 @@
-﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileEntryStaging_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	DROP PROCEDURE [dbo].[proc_StudentFileEntryStaging_add]
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileEntry_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_StudentFileEntry_add]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
 -- =============================================
 -- Modification History
--- Modified by:		Chris YIM
--- Modified date:	20 Aug 2020
+-- Modified by:		
+-- Modified date:	
+-- CR No.			
+-- Description:		
+-- =============================================
+-- =============================================
+-- Modification History
+-- Created by:		Chris YIM
+-- Created date:	03 Sep 2020
 -- CR No.			CRE20-003 (Batch Upload)
--- Description:		Add columns (Manual Add)
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		Chris YIM
--- Modified date:	15 Jul 2020
--- CR No.			CRE19-031 (VSS MMR Upload)
--- Description:		Add columns
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		Chris YIM		
--- Modified DATE:	18 Sep 2019
--- CR No.			CRE19-001
--- Description:		Change length of class name
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		Winnie SUEN	
--- Modified DATE:	04 Sep 2019
--- CR No.			CRE19-001 (VSS 2019 - Claim Creation)
--- Description:		Retrieve new column
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		Chris YIM		
--- Modified DATE:	28 Aug 2019
--- CR No.			CRE19-001
--- Description:		Grant EXECUTE right for role HCSP
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		Lawrence TSANG
--- Modified DATE:	10 August 2018
--- CR No.:			CRE17-018 (New initiatives for VSS and RVP in 2018-19)
--- Description:		Add StudentFileEntryStaging
+-- Description:		Add new entry
 -- =============================================
 
-CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_add]
+CREATE PROCEDURE [dbo].[proc_StudentFileEntry_add]
 	@Student_File_ID				VARCHAR(15),
 	@Student_Seq					INT,
 	@Class_Name						NVARCHAR(40),
@@ -133,7 +104,7 @@ AS BEGIN
 	OPEN SYMMETRIC KEY sym_Key
 	DECRYPTION BY ASYMMETRIC KEY asym_Key
 
-	INSERT INTO StudentFileEntryStaging (
+	INSERT INTO StudentFileEntry (
 		Student_File_ID,
 		Student_Seq,
 		Class_Name,
@@ -260,9 +231,9 @@ AS BEGIN
 END
 GO
 
-GRANT EXECUTE ON [dbo].[proc_StudentFileEntryStaging_add] TO HCVU
+GRANT EXECUTE ON [dbo].[proc_StudentFileEntry_add] TO HCSP
 GO
 
-GRANT EXECUTE ON [dbo].[proc_StudentFileEntryStaging_add] TO HCSP
+GRANT EXECUTE ON [dbo].[proc_StudentFileEntry_add] TO HCVU
 GO
 

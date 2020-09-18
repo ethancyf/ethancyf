@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	17 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns (Second Vaccination Date)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -60,10 +66,11 @@ GO
 -- =============================================    
 
 CREATE PROCEDURE [dbo].[proc_EHS_eHSSF_Report_get]
-	@Input_Student_File_ID	varchar(15),
-	@File_ID				varchar(9),
-	@scheme_code			char(10),
-	@scheme_code_display	varchar(25)
+	@Input_Student_File_ID		VARCHAR(15),
+	@File_ID					VARCHAR(9),
+	@scheme_code				CHAR(10),
+	@scheme_code_display		VARCHAR(25),
+	@Visit						INT = 0
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -127,7 +134,12 @@ AS BEGIN
 		Col32 NVARCHAR(MAX),
 		Col33 NVARCHAR(MAX),
 		Col34 NVARCHAR(MAX),
-		Col35 NVARCHAR(MAX)
+		Col35 NVARCHAR(MAX),
+		Col36 NVARCHAR(MAX),
+		Col37 NVARCHAR(MAX),
+		Col38 NVARCHAR(MAX),
+		Col39 NVARCHAR(MAX),
+		Col40 NVARCHAR(MAX)
 	)
 	
 	CREATE TABLE #RemarkTT (			
@@ -249,19 +261,26 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, 
-			Col26, Col27, Col28, Col29, Col30, Col31, Col32, Col33, Col34
+			Col18, Col19, Col20, Col21, Col22, 
+			Col23, Col24, Col25, Col26, Col27, 
+			Col28, Col29, Col30, Col31, Col32, 
+			Col33, Col34, Col35, Col36, Col37, Col38, Col39
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
 				'Service Provider ID', 'Service Provider Name', '', 'Practice Name (Practice No.)', '', 
-				'', '', 'Vaccination Date', 'Vaccination Report Generation Date','Scheme' ,'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 
+				'', '', 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Date' ELSE '1st Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Report Generation Date' ELSE '1st Vaccination Report Generation Date' END,
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Report Generation Date' END,
+				'Scheme' ,'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 
 				'No. of Clients', '','No. of Clients failed to connect HA CMS/DH CIMS on vaccination checking','No. of Clients found in HA CMS/DH CIMS but demographics not match','',				
 				'No. of Clients available to inject' + CASE WHEN @DoseRemark <> '' THEN ' *' ELSE '' END,
 				CASE WHEN @AvailableDose_Item1 <> '' THEN ' - ' + @AvailableDose_Item1 ELSE '' END,
 				CASE WHEN @AvailableDose_Item2 <> '' THEN ' - ' + @AvailableDose_Item2 ELSE '' END,
 				CASE WHEN @AvailableDose_Item3 <> '' THEN ' - ' + @AvailableDose_Item3 ELSE '' END,
-				'No. of Clients confirmed NOT to inject','', 'Report Generation Time', '', @DoseRemark
+				'No. of Clients confirmed NOT to inject', '', '', 'Checking Date', '', 'Report Generation Time', '', @DoseRemark
 
 	END
 	ELSE IF @File_ID = 'EHSVF002'
@@ -272,13 +291,20 @@ AS BEGIN
 				Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 				Col8, Col9, Col10, Col11, Col12,
 				Col13, Col14, Col15, Col16, Col17,	
-				Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27
+				Col18, Col19, Col20, Col21, Col22, 
+				Col23, Col24, Col25, Col26, Col27, 
+				Col28, Col29, Col30, col31, Col32
 			)
 			SELECT 1, 
-					'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
-					'Service Provider ID', 'Service Provider Name', '', 'Practice Name (Practice No.)', '', 
-					'', '', 'Vaccination Date', 'Vaccination Report Generation Date','Scheme' ,'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 
-					'No. of Clients', '','No. of Clients available to inject', 'No. of Clients confirmed NOT to inject', '', 'Report Generation Time', ''	
+				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
+				'Service Provider ID', 'Service Provider Name', '', 'Practice Name (Practice No.)', '', 
+				'', '', 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Date' ELSE '1st Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Report Generation Date' ELSE '1st Vaccination Report Generation Date' END,
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Report Generation Date' END,
+				'Scheme' ,'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 
+				'No. of Clients', '','No. of Clients available to inject', 'No. of Clients confirmed NOT to inject', '', '', 'Checking Date', '', 'Report Generation Time', ''	
 	END
 	ELSE IF @File_ID = 'EHSVF003'
 	BEGIN
@@ -291,13 +317,18 @@ AS BEGIN
 			Col16, Col17, Col18, Col19, Col20,
 			Col21, Col22, Col23, Col24, Col25,	
 			Col26, Col27, Col28, Col29, Col30,
-			Col31, Col32, Col33, Col34
+			Col31, Col32, Col33, Col34, Col35,
+			Col36
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', 
 				'', '', 'Service Provider ID', 'Service Provider Name',
-				'', 'Practice Name (Practice No.)', '', '', '', 'Vaccination Date', 
-				'Vaccination Report Generation Date', 'Scheme', 'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 'No. of Clients', '',
+				'', 'Practice Name (Practice No.)', '', '', '', 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Date' ELSE '1st Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Report Generation Date' ELSE '1st Vaccination Report Generation Date' END,
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Report Generation Date' END,
+				'Scheme', 'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 'No. of Clients', '',
 				'No. of Clients failed to connect HA CMS/DH CIMS on vaccination checking','No. of Clients found in HA CMS/DH CIMS but demographics not match', '',
 				'No. of Clients available to inject', 'No. of Clients confirmed NOT to inject', '', 'Date to upload the injection record', 'No. of Clients uploaded with injection record', 
 				'No. of Clients created claims', 'No. of Clients failed to create claim',	'', 'Report Generation Time'	
@@ -325,12 +356,17 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24
+			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
 				'Service Provider ID', 'Service Provider Name', '', 'Practice Name (Practice No.)', '', 
-				'', '', 'Vaccination Date', 'Vaccination Report Generation Date','Scheme' ,'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 
+				'', '', 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Date' ELSE '1st Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN 'Vaccination Report Generation Date' ELSE '1st Vaccination Report Generation Date' END,
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Date' END, 
+				CASE WHEN @scheme_code = 'RVP' OR @scheme_code = 'VSS' THEN '' ELSE '2nd Vaccination Report Generation Date' END,
+				'Scheme' ,'Subsidy', 'Dose to inject', 'No. of ' + @ClassOrCategory, 
 				'No. of Clients', '', 'Report Generation Time', ''	
 	END	
 	ELSE IF @File_ID IN ('EHSVF006') AND @Upload_Precheck = 'Y' -- Name list (Precheck)
@@ -341,12 +377,14 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24
+			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26
 		)
 		SELECT 1, 
 				'Vaccination File ID', @SchoolOrRCH + ' Code', @SchoolOrRCH + ' Name', '', @SchoolOrRCH +' Address', '', '', 
 				'Service Provider ID', 'Service Provider Name', '', 'Practice Name (Practice No.)', '', 
-				'', '', '', '','Scheme' ,'', '', 'No. of ' + @ClassOrCategory, 
+				'', '', 
+				'', '','', '',
+				'Scheme' ,'', '', 'No. of ' + @ClassOrCategory, 
 				'No. of Clients', '', 'Report Generation Time', ''	
 	END	
 	--
@@ -367,10 +405,10 @@ AS BEGIN
 			2,
 			E.Student_File_ID,
 			H.School_Code,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
 			'',
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
@@ -390,52 +428,53 @@ AS BEGIN
 			'',
 			CONVERT(varchar, GETDATE(), 111) + ' ' + CONVERT(VARCHAR(5), GETDATE(), 108), '', ''
 		FROM StudentFileEntry E
-		INNER JOIN StudentFileHeader H
-		ON E.Student_File_ID = H.Student_File_ID
-		LEFT JOIN School S
-		ON S.School_Code = H.School_Code
-			AND S.Scheme_Code = H.Scheme_Code
-		LEFT JOIN RVPHomeList RCH
-		ON RCH.RCH_code = H.School_Code
-		INNER JOIN ServiceProvider SP
-		ON SP.SP_ID = H.SP_ID
-		INNER JOIN (
-			SELECT Student_File_ID, 
-				MAX(Student_Seq) AS StudentCount,
-				COUNT(DISTINCT Class_Name) AS ClassCount,
-				(SELECT COUNT(DISTINCT Student_Seq) FROM StudentFileEntrySubsidizePrecheck 
-					WHERE  student_file_ID = @Input_Student_File_ID
-					AND (Entitle_ONLYDOSE = 'Y' OR Entitle_1STDOSE = 'Y' OR Entitle_2NDDOSE = 'Y')
-				) AS AvailbleToInjectCount,
-				SUM(
-					CASE WHEN ISNULL(Reject_Injection, '') = 'Y' THEN 1 ELSE 0 END
-				) AS NotInjectCount,
-				SUM(
-					CASE WHEN ISNULL(Injected, '') = 'Y' THEN 1 ELSE 0 END
-				) AS WithInjectRecordCount,
-				SUM(
-					CASE WHEN ISNULL(Transaction_ID, '') <> '' THEN 1 ELSE 0 END
-				) AS CreatedClaimCount,
-				SUM(
-					CASE WHEN ISNULL(Transaction_ID, '') = '' THEN 1 ELSE 0 END
-				) AS NotCreatedClaimCount,
-				SUM(
-					CASE WHEN Ext_Ref_Status LIKE '_C_' OR Ext_Ref_Status LIKE '_S_' OR DH_Vaccine_Ref_Status LIKE '_C_'OR DH_Vaccine_Ref_Status LIKE '_S_' THEN 1 ELSE 0 END
-				) AS VaccineConnectionFail,
-				SUM(
-					CASE WHEN Ext_Ref_Status LIKE '_P_' OR DH_Vaccine_Ref_Status LIKE '_P_' THEN 1 ELSE 0 END
-				) AS VaccineDemographicsNotMatch
-			FROM StudentFileEntry
-			WHERE Student_File_ID= @Input_Student_File_ID
-			GROUP BY Student_File_ID
-		) AS ET
-		ON ET.Student_File_ID = E.Student_File_ID
-		INNER JOIN Practice P
-		ON P.SP_ID = H.SP_ID
-		AND P.Display_Seq = H.Practice_Display_Seq
-		INNER JOIN SchemeClaim SC
-		ON SC.Scheme_Code = H.Scheme_Code
-		WHERE E.Student_File_ID = @Input_Student_File_ID
+			INNER JOIN StudentFileHeader H
+				ON E.Student_File_ID = H.Student_File_ID
+			LEFT JOIN School S
+				ON S.School_Code = H.School_Code
+					AND S.Scheme_Code = H.Scheme_Code
+			LEFT JOIN RVPHomeList RCH
+				ON RCH.RCH_code = H.School_Code
+			INNER JOIN ServiceProvider SP
+				ON SP.SP_ID = H.SP_ID
+			INNER JOIN (
+				SELECT Student_File_ID, 
+						MAX(Student_Seq) AS StudentCount,
+						COUNT(DISTINCT Class_Name) AS ClassCount,
+						(SELECT COUNT(DISTINCT Student_Seq) FROM StudentFileEntrySubsidizePrecheck 
+							WHERE  student_file_ID = @Input_Student_File_ID
+							AND (Entitle_ONLYDOSE = 'Y' OR Entitle_1STDOSE = 'Y' OR Entitle_2NDDOSE = 'Y')
+						) AS AvailbleToInjectCount,
+						SUM(
+							CASE WHEN ISNULL(Reject_Injection, '') = 'Y' THEN 1 ELSE 0 END
+						) AS NotInjectCount,
+						SUM(
+							CASE WHEN ISNULL(Injected, '') = 'Y' THEN 1 ELSE 0 END
+						) AS WithInjectRecordCount,
+						SUM(
+							CASE WHEN ISNULL(Transaction_ID, '') <> '' THEN 1 ELSE 0 END
+						) AS CreatedClaimCount,
+						SUM(
+							CASE WHEN ISNULL(Transaction_ID, '') = '' THEN 1 ELSE 0 END
+						) AS NotCreatedClaimCount,
+						SUM(
+							CASE WHEN Ext_Ref_Status LIKE '_C_' OR Ext_Ref_Status LIKE '_S_' OR DH_Vaccine_Ref_Status LIKE '_C_'OR DH_Vaccine_Ref_Status LIKE '_S_' THEN 1 ELSE 0 END
+						) AS VaccineConnectionFail,
+						SUM(
+							CASE WHEN Ext_Ref_Status LIKE '_P_' OR DH_Vaccine_Ref_Status LIKE '_P_' THEN 1 ELSE 0 END
+						) AS VaccineDemographicsNotMatch
+					FROM StudentFileEntry
+					WHERE Student_File_ID= @Input_Student_File_ID
+					GROUP BY Student_File_ID
+				) AS ET
+				ON ET.Student_File_ID = E.Student_File_ID
+			INNER JOIN Practice P
+				ON P.SP_ID = H.SP_ID
+					AND P.Display_Seq = H.Practice_Display_Seq
+			INNER JOIN SchemeClaim SC
+				ON SC.Scheme_Code = H.Scheme_Code
+		WHERE 
+			E.Student_File_ID = @Input_Student_File_ID
 
 		-- 2nd Dose Column
 		INSERT INTO #BatchTT
@@ -485,8 +524,10 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28, Col29, col30, col31,
-			Col32, Col33, Col34
+			Col18, Col19, Col20, Col21, Col22, 
+			Col23, Col24, Col25, Col26, Col27, 
+			Col28, Col29, col30, col31,	Col32, 
+			Col33, Col34, Col35, Col36, col37, Col38, Col39
 		)
 		SELECT  DISTINCT
 			2,
@@ -496,16 +537,21 @@ AS BEGIN
 					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
 					ELSE H.School_Code
 				END,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
 			'',
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
 			CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)) AS SPName_Chi,
-			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
-			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
+			[Practice_Name] = P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')',
+			[Practice_Name_Chi] =
+				CASE 
+					WHEN P.Practice_Name_Chi IS NULL THEN '' 
+					WHEN P.Practice_Name_Chi = '' THEN '' 
+					ELSE P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')'
+				END,
 			'',
 			[Headings] = 
 				CASE 
@@ -521,6 +567,20 @@ AS BEGIN
 					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
 				END,
 			[Final_Checking_Report_Generation_Date] = FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy'),
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Service_Receive_Dtm_2, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Final_Checking_Report_Generation_Date_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Final_Checking_Report_Generation_Date_2, 'dd MMM yyyy')
+				END,
 			[Scheme] = RTRIM(SC.Display_Code),
 
 			-- If RVP + QIV THEN display 'QIV 20XX/XX' Else display 'QIV-C 2018/19','23vPPV'
@@ -582,6 +642,29 @@ AS BEGIN
 				END,
 
 			NotInjectCount,
+			[Checking Date_1] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					ELSE ''
+				END,
+			[Checking Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN NULL
+					WHEN @Visit = 1 THEN NULL
+					WHEN @Visit = 2 THEN NULL
+					ELSE NULL
+				END,
+			[Checking Date_3] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN NULL
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN '1st Vaccination Date'
+					WHEN @Visit = 1 THEN '1st Vaccination Date'
+					WHEN @Visit = 2 THEN '2nd Vaccination Date'
+					ELSE NULL
+				END,
 			'',
 			CONVERT(varchar, GETDATE(), 111) + ' ' + CONVERT(VARCHAR(5), GETDATE(), 108), '', ''
 		FROM StudentFileEntry E
@@ -668,8 +751,11 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28, Col29, col30, col31,
-			col32, col33, col34
+			Col18, Col19, Col20, Col21, Col22, 
+			Col23, Col24, Col25, Col26, Col27, 
+			Col28, Col29, col30, col31,	Col32, 
+			Col33, Col34, Col35, Col36, Col37, 
+			Col38, Col39
 		)
 		SELECT  DISTINCT
 			3,
@@ -712,6 +798,28 @@ AS BEGIN
 							ELSE 'N/A'
 						END 
 				END, 
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Service_Receive_Dtm_2ndDose_2 IS NOT NULL THEN FORMAT(H.Service_Receive_Dtm_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Final_Checking_Report_Generation_Date_2ndDose_2 IS NOT NULL THEN FORMAT(H.Final_Checking_Report_Generation_Date_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
 			'',
 			'',
 			'',
@@ -725,7 +833,7 @@ AS BEGIN
 			'',
 			'',
 			'', '', '',
-			'', '', ''
+			'', '', '', '', '', ''
 		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
 			
@@ -739,7 +847,9 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28--, Col29, col30, col31
+			Col18, Col19, Col20, Col21, Col22, 
+			Col23, Col24, Col25, Col26, Col27, 
+			Col28, Col29, col30, col31, col32, Col33
 		)
 		SELECT  DISTINCT
 			2,
@@ -749,16 +859,21 @@ AS BEGIN
 					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
 					ELSE H.School_Code
 				END,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
 			'',
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
 			CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)) AS SPName_Chi,
-			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
-			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
+			[Practice_Name] = P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')',
+			[Practice_Name_Chi] =
+				CASE 
+					WHEN P.Practice_Name_Chi IS NULL THEN '' 
+					WHEN P.Practice_Name_Chi = '' THEN '' 
+					ELSE P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')'
+				END,
 			'',
 			[Headings] = 
 				CASE 
@@ -774,6 +889,20 @@ AS BEGIN
 					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
 				END,
 			[Final_Checking_Report_Generation_Date] = FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy'),
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Service_Receive_Dtm_2, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Final_Checking_Report_Generation_Date_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Final_Checking_Report_Generation_Date_2, 'dd MMM yyyy')
+				END,
 			[Scheme] = RTRIM(SC.Display_Code),
 
 			-- If RVP + QIV THEN display 'QIV 20XX/XX' Else display 'QIV-C 2018/19','23vPPV'
@@ -803,6 +932,29 @@ AS BEGIN
 			'',
 			AvailbleToInjectCount,
 			NotInjectCount,
+			[Checking Date_1] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					ELSE ''
+				END,
+			[Checking Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN NULL
+					WHEN @Visit = 1 THEN NULL
+					WHEN @Visit = 2 THEN NULL
+					ELSE NULL
+				END,
+			[Checking Date_3] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN NULL
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN '1st Vaccination Date'
+					WHEN @Visit = 1 THEN '1st Vaccination Date'
+					WHEN @Visit = 2 THEN '2nd Vaccination Date'
+					ELSE NULL
+				END,
 			'',
 			CONVERT(varchar, GETDATE(), 111) + ' ' + CONVERT(VARCHAR(5), GETDATE(), 108), '', ''
 		FROM StudentFileEntry E
@@ -885,7 +1037,9 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28--, Col29, col30, col31
+			Col18, Col19, Col20, Col21, Col22, 
+			Col23, Col24, Col25, Col26, Col27, 
+			Col28, Col29, col30, col31, col32, col33
 		)
 		SELECT  DISTINCT
 			3,
@@ -928,6 +1082,28 @@ AS BEGIN
 							ELSE 'N/A'
 						END 
 				END, 
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Service_Receive_Dtm_2ndDose_2 IS NOT NULL THEN FORMAT(H.Service_Receive_Dtm_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Final_Checking_Report_Generation_Date_2ndDose_2 IS NOT NULL THEN FORMAT(H.Final_Checking_Report_Generation_Date_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
 			'',
 			'',
 			'',
@@ -940,7 +1116,7 @@ AS BEGIN
 			'',
 			'',
 			'',
-			'', '', ''
+			'', '', '', '', '', ''
 		FROM StudentFileHeader H
 		WHERE Student_File_ID= @Input_Student_File_ID
 	END	
@@ -955,7 +1131,8 @@ AS BEGIN
 			Col16, Col17, Col18, Col19, Col20,
 			Col21, Col22, Col23, Col24, Col25,	
 			Col26, Col27, Col28, Col29, Col30,
-			Col31, Col32, Col33, Col34
+			Col31, Col32, Col33, Col34, Col35,
+			Col36
 		)
 		SELECT  DISTINCT
 			2,
@@ -965,16 +1142,21 @@ AS BEGIN
 					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
 					ELSE H.School_Code
 				END,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
 			'', 
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
 			CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)) AS SPName_Chi,
-			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
-			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
+			[Practice_Name] = P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')',
+			[Practice_Name_Chi] =
+				CASE 
+					WHEN P.Practice_Name_Chi IS NULL THEN '' 
+					WHEN P.Practice_Name_Chi = '' THEN '' 
+					ELSE P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')'
+				END,
 			'',
 			[Headings] = 
 				CASE 
@@ -990,6 +1172,20 @@ AS BEGIN
 					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
 				END,
 			[Final_Checking_Report_Generation_Date] = FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy'),
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Service_Receive_Dtm_2, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Final_Checking_Report_Generation_Date_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Final_Checking_Report_Generation_Date_2, 'dd MMM yyyy')
+				END,
 			[Scheme] = RTRIM(SC.Display_Code),
 
 			-- If RVP + QIV THEN display 'QIV 20XX/XX' Else display 'QIV-C 2018/19','23vPPV'
@@ -1109,7 +1305,8 @@ AS BEGIN
 			Col16, Col17, Col18, Col19, Col20,
 			Col21, Col22, Col23, Col24, Col25,	
 			Col26, Col27, Col28, Col29, Col30,
-			Col31, Col32, Col33, Col34
+			Col31, Col32, Col33, Col34, Col35,
+			Col36
 		)
 		SELECT  DISTINCT
 			3,
@@ -1152,6 +1349,28 @@ AS BEGIN
 							ELSE 'N/A'
 						END 
 				END, 
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Service_Receive_Dtm_2ndDose_2 IS NOT NULL THEN FORMAT(H.Service_Receive_Dtm_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Final_Checking_Report_Generation_Date_2ndDose_2 IS NOT NULL THEN FORMAT(H.Final_Checking_Report_Generation_Date_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
 			'',
 			'',
 			'',
@@ -1190,16 +1409,21 @@ AS BEGIN
 					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
 					ELSE H.School_Code
 				END,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
 			'',
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
 			CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)) AS SPName_Chi,
-			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
-			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
+			[Practice_Name] = P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')',
+			[Practice_Name_Chi] =
+				CASE 
+					WHEN P.Practice_Name_Chi IS NULL THEN '' 
+					WHEN P.Practice_Name_Chi = '' THEN '' 
+					ELSE P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')'
+				END,
 			'',
 			RTRIM(SC.Display_Code),
 			'',
@@ -1262,7 +1486,7 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25
+			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27
 		)
 		SELECT  DISTINCT
 			2,
@@ -1272,16 +1496,21 @@ AS BEGIN
 					WHEN H.Scheme_Code = 'VSS' AND H.Subsidize_Code = 'VNIAMMR' THEN NULL 
 					ELSE H.School_Code
 				END,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
-			CASE WHEN @scheme_code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Eng ELSE S.Name_Eng END AS SchoolName_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Homename_Chi ELSE S.Name_Chi END AS SchoolName_TC,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Eng ELSE S.Address_Eng END AS SchoolAddr_EN,
+			CASE WHEN H.Scheme_Code = 'RVP' THEN RCH.Address_Chi ELSE S.Address_Chi END AS SchoolAddr_TC,
 			'',
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
 			CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)) AS SPName_Chi,
-			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
-			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
+			[Practice_Name] = P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')',
+			[Practice_Name_Chi] =
+				CASE 
+					WHEN P.Practice_Name_Chi IS NULL THEN '' 
+					WHEN P.Practice_Name_Chi = '' THEN '' 
+					ELSE P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')'
+				END,
 			'',
 			[Headings] = 
 				CASE 
@@ -1301,7 +1530,23 @@ AS BEGIN
 					WHEN H.Upload_Precheck = 'Y' THEN '' 
 					ELSE FORMAT(H.Service_Receive_Dtm, 'dd MMM yyyy')
 				END, 
-			[Final_Checking_Report_Generation_Date] = CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') END, 			
+			[Final_Checking_Report_Generation_Date] = CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') END, 
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Upload_Precheck = 'Y' THEN '' 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Service_Receive_Dtm_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Service_Receive_Dtm_2, 'dd MMM yyyy')
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Upload_Precheck = 'Y' THEN '' 
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Scheme_Code = 'VSS' THEN NULL
+					WHEN H.Final_Checking_Report_Generation_Date_2 IS NULL THEN 'N/A'
+					ELSE FORMAT(H.Final_Checking_Report_Generation_Date_2, 'dd MMM yyyy')
+				END,			
 			[Scheme] = RTRIM(SC.Display_Code),
 			[Subsidy] = CASE WHEN H.Upload_Precheck = 'Y' THEN '' ELSE sgc.Display_Code_For_Claim END,
 			[DOSE] = 
@@ -1393,7 +1638,7 @@ AS BEGIN
 			Col1, Col2, Col3, Col4, Col5, Col6, Col7,
 			Col8, Col9, Col10, Col11, Col12,
 			Col13, Col14, Col15, Col16, Col17,	
-			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25
+			Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26, Col27
 		)
 		SELECT  DISTINCT
 			3,
@@ -1423,11 +1668,7 @@ AS BEGIN
 					ELSE 
 						CASE 
 							WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
-							ELSE 
-								CASE 
-									WHEN Dose = '2NDDOSE' THEN FORMAT(Service_Receive_Dtm, 'dd MMM yyyy') 
-									ELSE 'N/A' 
-								END 
+							ELSE 'N/A' 
 						END
 				END, 
 			[Final_Checking_Report_Generation_Date] =
@@ -1437,13 +1678,31 @@ AS BEGIN
 					ELSE
 						CASE 
 							WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
-							ELSE  
-								CASE 
-									WHEN Dose = '2NDDOSE' THEN FORMAT(Final_Checking_Report_Generation_Date, 'dd MMM yyyy') 
-									ELSE 'N/A' 
-								END 
+							ELSE 'N/A' 
 						END 
 				END, 
+			[Service_Receive_Dtm_2] = 
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Service_Receive_Dtm_2ndDose_2 IS NOT NULL THEN FORMAT(H.Service_Receive_Dtm_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
+			[Final_Checking_Report_Generation_Date_2] =
+				CASE 
+					WHEN H.Scheme_Code = 'VSS' AND RTRIM(H.Subsidize_Code) = 'VNIAMMR' THEN ''
+					WHEN H.Scheme_Code = 'RVP' THEN '' 
+					WHEN H.Final_Checking_Report_Generation_Date_2ndDose_2 IS NOT NULL THEN FORMAT(H.Final_Checking_Report_Generation_Date_2ndDose_2, 'dd MMM yyyy')
+					ELSE
+						CASE 
+							WHEN Upload_Precheck = 'Y' OR Dose = '2NDDOSE' THEN '' 
+							ELSE 'N/A'
+						END 
+				END,
 			'',
 			'',
 			'',
@@ -1476,7 +1735,8 @@ AS BEGIN
 				Col16, Col17, Col18, Col19, Col20,
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
-				Col31, Col32, Col33, Col34, Col35
+				Col31, Col32, Col33, Col34, Col35, 
+				Col36, Col37, Col38
 			FROM #BatchTT
 			WHERE R1 = 1
 		)p
@@ -1488,7 +1748,8 @@ AS BEGIN
 				Col16, Col17, Col18, Col19, Col20,
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
-				Col31, Col32, Col33, Col34, Col35
+				Col31, Col32, Col33, Col34, Col35,
+				Col36, Col37, Col38
 			)
 		)AS unpvt1
 	) T1
@@ -1503,7 +1764,8 @@ AS BEGIN
 				Col16, Col17, Col18, Col19, Col20,
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
-				Col31, Col32, Col33, Col34, Col35
+				Col31, Col32, Col33, Col34, Col35,
+				Col36, Col37, Col38
 			FROM #BatchTT
 			WHERE R1 = 2
 		)p
@@ -1515,7 +1777,8 @@ AS BEGIN
 				Col16, Col17, Col18, Col19, Col20,
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
-				Col31, Col32, Col33, Col34, Col35
+				Col31, Col32, Col33, Col34, Col35,
+				Col36, Col37, Col38
 			)
 		)AS unpvt2
 	) T2
@@ -1531,7 +1794,8 @@ AS BEGIN
 				Col16, Col17, Col18, Col19, Col20,
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
-				Col31, Col32, Col33, Col34, Col35
+				Col31, Col32, Col33, Col34, Col35,
+				Col36, Col37, Col38
 			FROM #BatchTT
 			WHERE R1 = 3
 		)p
@@ -1543,7 +1807,8 @@ AS BEGIN
 				Col16, Col17, Col18, Col19, Col20,
 				Col21, Col22, Col23, Col24, Col25,	
 				Col26, Col27, Col28, Col29, Col30,
-				Col31, Col32, Col33, Col34, Col35
+				Col31, Col32, Col33, Col34, Col35,
+				Col36, Col37, Col38
 			)
 		)AS unpvt3
 	) T3

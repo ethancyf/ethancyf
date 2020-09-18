@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- Modified by:		Winnie SUEN
+-- Modified date:	2 Sep 2020
+-- CR No.			CRE20-003 (Enhancement on Programme or Scheme using batch upload)
+-- Description:		Update [Service_Receive_Dtm]
 -- =============================================   
 -- =============================================
 -- Modification History
@@ -25,6 +25,7 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_upd_Injected]
 	@Student_File_ID		VARCHAR(15),
 	@Student_Seq			INT,
 	@Injected				CHAR(1),
+	@Service_Receive_Dtm	DATETIME,
 	@Update_By				VARCHAR(20),
 	@Update_Dtm				DATETIME,
 	@TSMP					BINARY(8)
@@ -58,6 +59,7 @@ AS BEGIN
 		StudentFileEntryStaging
 	SET	
 		Injected = @Injected,
+		Service_Receive_Dtm = @Service_Receive_Dtm,
 		Update_By = @Update_By,
 		Update_Dtm = @Update_Dtm
 	WHERE

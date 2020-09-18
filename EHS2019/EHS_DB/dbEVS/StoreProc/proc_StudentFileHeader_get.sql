@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	13 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN	
 -- Modified date:	16 Jul 2019
 -- CR No.			CRE19-001 (PPP)
@@ -85,6 +92,10 @@ AS BEGIN
 		S.Final_Checking_Report_Generation_Date,
 		S.Service_Receive_Dtm_2ndDose,
 		S.Final_Checking_Report_Generation_Date_2ndDose,
+		S.Service_Receive_Dtm_2,
+		S.Final_Checking_Report_Generation_Date_2,
+		S.Service_Receive_Dtm_2ndDose_2,
+		S.Final_Checking_Report_Generation_Date_2ndDose_2,
 		S.Remark,
 		S.Record_Status,
 		S.Upload_By,
@@ -107,6 +118,8 @@ AS BEGIN
 		S.Name_List_File_ID,
 		S.Vaccination_Report_File_ID,
 		S.Onsite_Vaccination_File_ID,
+		S.Vaccination_Report_File_ID_2,
+		S.Onsite_Vaccination_File_ID_2,
 		S.Claim_Creation_Report_File_ID,
 		FGQ.Generation_ID AS [Rectification_File_ID],
 		S.Original_Student_File_ID,

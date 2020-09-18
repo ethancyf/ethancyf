@@ -9,6 +9,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
+-- Modified date:	13 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
 -- Modified date:	17 Jul 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
 -- Description:		Add optional input parameter (Scheme_Seq)
@@ -45,8 +52,10 @@ CREATE PROCEDURE [dbo].[proc_StudentFileHeaderStaging_add]
 	@SP_ID										CHAR(8),
 	@Practice_Display_Seq						SMALLINT,
 	@Service_Receive_Dtm						DATETIME,
+	@Service_Receive_Dtm_2						DATETIME,
 	@Dose										VARCHAR(20),
 	@Final_Checking_Report_Generation_Date		DATETIME,
+	@Final_Checking_Report_Generation_Date_2	DATETIME,
 	@Record_Status								VARCHAR(2),
 	@Upload_By									VARCHAR(20),
 	@Upload_Dtm									DATETIME,
@@ -67,7 +76,9 @@ CREATE PROCEDURE [dbo].[proc_StudentFileHeaderStaging_add]
 	@Confirm_Claim_Reactivate_Dtm				DATETIME,
 	@Name_List_File_ID							VARCHAR(15),		
 	@Vaccination_Report_File_ID					VARCHAR(15),		
+	@Vaccination_Report_File_ID_2				VARCHAR(15),		
 	@Onsite_Vaccination_File_ID					VARCHAR(15),
+	@Onsite_Vaccination_File_ID_2				VARCHAR(15),
 	@Claim_Creation_Report_File_ID				VARCHAR(15),
 	@Rectification_File_ID						VARCHAR(15),
 	@Update_By									VARCHAR(20),
@@ -75,7 +86,9 @@ CREATE PROCEDURE [dbo].[proc_StudentFileHeaderStaging_add]
 	@Scheme_Code								CHAR(10),
 	@Subsidize_Code								CHAR(10),
 	@Service_Receive_Dtm_2ndDose				DATETIME,
+	@Service_Receive_Dtm_2ndDose_2				DATETIME,
 	@Final_Checking_Report_Generation_Date_2ndDose		DATETIME,
+	@Final_Checking_Report_Generation_Date_2ndDose_2	DATETIME,
 	@Upload_Precheck							CHAR(1),
 	@Original_Student_File_ID					VARCHAR(15),
 	@Request_Rectify_Status						VARCHAR(2),
@@ -126,11 +139,13 @@ AS BEGIN
 		SP_ID,
 		Practice_Display_Seq,
 		Service_Receive_Dtm,
+		Service_Receive_Dtm_2,
 		Scheme_Code,
 		Scheme_Seq,
 		Subsidize_Code,
 		Dose,
 		Final_Checking_Report_Generation_Date,
+		Final_Checking_Report_Generation_Date_2,
 		Remark,
 		Record_Status,
 		Upload_By,
@@ -152,13 +167,17 @@ AS BEGIN
 		Confirm_Claim_Reactivate_Dtm,
 		Name_List_File_ID,
 		Vaccination_Report_File_ID,
+		Vaccination_Report_File_ID_2,
 		Onsite_Vaccination_File_ID,
+		Onsite_Vaccination_File_ID_2,
 		Claim_Creation_Report_File_ID,
 		Rectification_File_ID,
 		Update_By,
 		Update_Dtm,
 		Service_Receive_Dtm_2ndDose,
+		Service_Receive_Dtm_2ndDose_2,
 		Final_Checking_Report_Generation_Date_2ndDose,
+		Final_Checking_Report_Generation_Date_2ndDose_2,
 		Upload_Precheck,
 		Original_Student_File_ID,
 		Request_Rectify_Status
@@ -168,11 +187,13 @@ AS BEGIN
 		@SP_ID,
 		@Practice_Display_Seq,
 		@Service_Receive_Dtm,
+		@Service_Receive_Dtm_2,
 		@Scheme_Code,
 		@IN_Scheme_Seq,
 		@Subsidize_Code,
 		@Dose,
 		@Final_Checking_Report_Generation_Date,
+		@Final_Checking_Report_Generation_Date_2,
 		NULL,
 		@Record_Status,
 		@Upload_By,
@@ -194,13 +215,17 @@ AS BEGIN
 		@Confirm_Claim_Reactivate_Dtm,
 		@Name_List_File_ID,
 		@Vaccination_Report_File_ID,
+		@Vaccination_Report_File_ID_2,
 		@Onsite_Vaccination_File_ID,
+		@Onsite_Vaccination_File_ID_2,
 		@Claim_Creation_Report_File_ID,
 		@Rectification_File_ID,
 		@Update_By,
 		@Update_Dtm,
 		@Service_Receive_Dtm_2ndDose,
+		@Service_Receive_Dtm_2ndDose_2,
 		@Final_Checking_Report_Generation_Date_2ndDose,
+		@Final_Checking_Report_Generation_Date_2ndDose_2,
 		@Upload_Precheck,
 		@Original_Student_File_ID,
 		@Request_Rectify_Status

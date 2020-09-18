@@ -9,6 +9,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
+-- Modified date:	02 Sep 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add Injected values to include 1,2 
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
 -- Modified date:	20 Jul 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
 -- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
@@ -101,7 +108,7 @@ AS BEGIN
 		H.Student_File_ID = @StudentFileID
 		AND H.Record_Status = 'PT' -- Processing Vaccination Claim
 		--AND E.Vaccination_Checking_Status = 'C' -- << Checked HA, DH vaccine and Dose entitlement
-		AND E.Injected = 'Y' -- << student is vaccinated actually
+		AND (E.Injected = 'Y' OR E.Injected = '1' OR E.Injected = '2' ) -- << student is vaccinated actually
 		AND (E.Transaction_ID IS NULL AND E.Transaction_Result IS  NULL) -- << Not yet created claim
 	UNION ALL
 	-- ====================================
@@ -154,7 +161,7 @@ AS BEGIN
 		H.Student_File_ID = @StudentFileID
 		AND H.Record_Status = 'PT' -- Processing Vaccination Claim
 		--AND E.Vaccination_Checking_Status = 'C' -- << Checked HA, DH vaccine and Dose entitlement
-		AND E.Injected = 'Y' -- << student is vaccinated actually
+		AND (E.Injected = 'Y' OR E.Injected = '1' OR E.Injected = '2' ) -- << student is vaccinated actually
 		AND (E.Transaction_ID IS NULL AND E.Transaction_Result IS  NULL) -- << Not yet created claim
 	UNION ALL
 	-- ====================================
@@ -208,7 +215,7 @@ AS BEGIN
 		AND E.Acc_Type IS NULL
 		AND H.Record_Status = 'PT' -- Processing Vaccination Claim
 		--AND E.Vaccination_Checking_Status = 'C' -- << Checked HA, DH vaccine and Dose entitlement
-		AND E.Injected = 'Y' -- << student is vaccinated actually
+		AND (E.Injected = 'Y' OR E.Injected = '1' OR E.Injected = '2' ) -- << student is vaccinated actually
 		AND (E.Transaction_ID IS NULL AND E.Transaction_Result IS  NULL) -- << Not yet created claim
 	ORDER BY
 		H.Student_File_ID, E.Student_Seq

@@ -1,5 +1,5 @@
-﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileEntry_upd_PersonalParticulars]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	DROP PROCEDURE [dbo].[proc_StudentFileEntry_upd_PersonalParticulars]
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileEntryStaging_upd_PersonalParticulars]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[proc_StudentFileEntryStaging_upd_PersonalParticulars]
 GO
 
 SET ANSI_NULLS ON
@@ -8,20 +8,20 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by		Chris YIM
--- Modified date	27 Aug 2020
--- CR No.			CRE20-003 (Batch Upload)
--- Description		Update class no.
+-- Modified by		
+-- Modified date	
+-- CR No.			
+-- Description		
 -- =============================================
 -- =============================================
 -- Modification History
 -- Create by		Chris YIM		
--- Create date		29 Jul 2019
--- CR No.			CRE19-001
--- Description		Update Personal Particulars From SP platform
+-- Create date		27 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description		Update Personal Particulars to staging
 -- =============================================
 
-CREATE PROCEDURE [dbo].[proc_StudentFileEntry_upd_PersonalParticulars]
+CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_upd_PersonalParticulars]
 	@Student_File_ID		VARCHAR(15)	,
 	@Student_Seq			INT,
 	@Class_No				NVARCHAR(10),
@@ -49,7 +49,7 @@ AS BEGIN
 -- =============================================
 
 	UPDATE 
-		StudentFileEntry 
+		StudentFileEntryStaging
 	SET 
 		Class_No = @Class_No,
 		Contact_No = @Contact_No,
@@ -65,9 +65,9 @@ AS BEGIN
 END
 GO
 
-GRANT EXECUTE ON [dbo].[proc_StudentFileEntry_upd_PersonalParticulars] TO HCSP
+GRANT EXECUTE ON [dbo].[proc_StudentFileEntryStaging_upd_PersonalParticulars] TO HCSP
 
-GRANT EXECUTE ON [dbo].[proc_StudentFileEntry_upd_PersonalParticulars] TO HCVU
+GRANT EXECUTE ON [dbo].[proc_StudentFileEntryStaging_upd_PersonalParticulars] TO HCVU
 
 GO
 

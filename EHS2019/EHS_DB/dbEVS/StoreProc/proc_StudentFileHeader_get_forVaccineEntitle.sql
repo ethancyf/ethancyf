@@ -9,6 +9,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
+-- Modified date:	24 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Retrieve student file of 2nd Vaccination date for generate report
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
 -- Modified date:	20 Jul 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
 -- Description:		Add columns (HKICSymbol, Service_Receive_Dtm)
@@ -46,7 +53,7 @@ AS BEGIN
 	-- 1st Priority
 	--		Reach the date for final report generation
 	--		Process earliest service date first
-	SELECT DISTINCT H.Student_File_ID, 1 AS [Priority], H.Service_Receive_Dtm AS [Priority_Date]
+	SELECT DISTINCT H.Student_File_ID, 1 AS [Priority], H.Service_Receive_Dtm AS [Priority_Date], 1 AS [Visit]
 	FROM StudentFileheader H
 		INNER JOIN StudentFileEntry E
 		ON H.Student_File_ID = E.Student_File_ID
@@ -54,7 +61,28 @@ AS BEGIN
 		AND H.Final_Checking_Report_Generation_Date <= @Check_Dtm
 		--AND E.Vaccination_Checking_Status = 'P'
 		--AND E.Acc_Type IS NOT NULL
-	ORDER BY [Priority], [Priority_Date]
+	UNION
+	-- 1st Priority
+	--		Reach the date for 2nd final report generation
+	--		Process earliest service date first
+	SELECT DISTINCT 
+		H.Student_File_ID, 
+		1 AS [Priority], 
+		H.Service_Receive_Dtm_2 AS [Priority_Date],
+		2 AS Visit
+	FROM 
+		StudentFileheader H
+			LEFT OUTER JOIN FileGenerationQueue FGQ
+				ON H.Onsite_Vaccination_File_ID_2 = FGQ.[Generation_ID]
+	WHERE 
+		(H.Record_Status = 'UT' OR	--Pending Upload Vaccination Claim 
+		H.Record_Status = 'ST')		--Pending SP Confirmation Claim
+		AND H.Final_Checking_Report_Generation_Date_2 IS NOT NULL
+		AND H.Final_Checking_Report_Generation_Date_2 <= @Check_Dtm
+		AND (H.Onsite_Vaccination_File_ID_2 IS NULL OR H.Final_Checking_Report_Generation_Date_2 > CAST(CONVERT(VARCHAR(10), FGQ.Request_Dtm, 121) AS DATETIME))
+
+	ORDER BY 
+		[Priority], [Priority_Date]
 
 END
 GO

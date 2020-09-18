@@ -1,4 +1,4 @@
-﻿IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_StudentFileHeader_after_upd')
+IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_StudentFileHeader_after_upd')
 	DROP TRIGGER [dbo].[tri_StudentFileHeader_after_upd]
 GO
 
@@ -83,7 +83,13 @@ AS BEGIN
 		Confirm_Claim_Reactivate_By,
 		Confirm_Claim_Reactivate_Dtm,
 		Original_Student_File_ID,
-		Request_Rectify_Status
+		Request_Rectify_Status,
+		Service_Receive_Dtm_2,
+		Final_Checking_Report_Generation_Date_2,
+		Service_Receive_Dtm_2ndDose_2,
+		Final_Checking_Report_Generation_Date_2ndDose_2,
+		Vaccination_Report_File_ID_2,
+		Onsite_Vaccination_File_ID_2
 	)
 	SELECT
 		GETDATE(),
@@ -127,7 +133,13 @@ AS BEGIN
 		Confirm_Claim_Reactivate_By,
 		Confirm_Claim_Reactivate_Dtm,
 		Original_Student_File_ID,
-		Request_Rectify_Status
+		Request_Rectify_Status,
+		Service_Receive_Dtm_2,
+		Final_Checking_Report_Generation_Date_2,
+		Service_Receive_Dtm_2ndDose_2,
+		Final_Checking_Report_Generation_Date_2ndDose_2,
+		Vaccination_Report_File_ID_2,
+		Onsite_Vaccination_File_ID_2
 	FROM
 		inserted
 

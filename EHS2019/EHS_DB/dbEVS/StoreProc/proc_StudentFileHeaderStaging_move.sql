@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	13 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -110,10 +116,12 @@ AS BEGIN
 		SP_ID,
 		Practice_Display_Seq,
 		Service_Receive_Dtm,
+		Service_Receive_Dtm_2,
 		Scheme_Code,
 		Scheme_Seq,
 		Dose,
 		Final_Checking_Report_Generation_Date,
+		Final_Checking_Report_Generation_Date_2,
 		Remark,
 		Record_Status,
 		Upload_By,
@@ -135,13 +143,17 @@ AS BEGIN
 		Confirm_Claim_Reactivate_Dtm,
 		Name_List_File_ID,
 		Vaccination_Report_File_ID,
+		Vaccination_Report_File_ID_2,
 		Onsite_Vaccination_File_ID,
+		Onsite_Vaccination_File_ID_2,
 		Claim_Creation_Report_File_ID,
 		Rectification_File_ID,
 		Update_By,
 		Update_Dtm,
 		Service_Receive_Dtm_2ndDose,
+		Service_Receive_Dtm_2ndDose_2,
 		Final_Checking_Report_Generation_Date_2ndDose,
+		Final_Checking_Report_Generation_Date_2ndDose_2,
 		Subsidize_Code,
 		Original_Student_File_ID,
 		Request_Rectify_Status
@@ -153,10 +165,12 @@ AS BEGIN
 		SP_ID,
 		Practice_Display_Seq,
 		Service_Receive_Dtm,
+		Service_Receive_Dtm_2,
 		Scheme_Code,
 		Scheme_Seq,
 		Dose,
 		Final_Checking_Report_Generation_Date,
+		Final_Checking_Report_Generation_Date_2,
 		Remark,
 		Record_Status,
 		Upload_By,
@@ -178,13 +192,17 @@ AS BEGIN
 		Confirm_Claim_Reactivate_Dtm,
 		Name_List_File_ID,
 		Vaccination_Report_File_ID,
+		Vaccination_Report_File_ID_2,
 		Onsite_Vaccination_File_ID,
+		Onsite_Vaccination_File_ID_2,
 		Claim_Creation_Report_File_ID,
 		Rectification_File_ID,
 		@Update_By,
 		@Now AS [Update_Dtm],
 		Service_Receive_Dtm_2ndDose,
+		Service_Receive_Dtm_2ndDose_2,
 		Final_Checking_Report_Generation_Date_2ndDose,
+		Final_Checking_Report_Generation_Date_2ndDose_2,
 		Subsidize_Code,
 		Original_Student_File_ID,
 		Request_Rectify_Status

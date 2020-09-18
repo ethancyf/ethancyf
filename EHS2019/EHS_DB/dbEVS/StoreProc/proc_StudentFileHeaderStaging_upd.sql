@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeaderStaging_upd]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StudentFileHeaderStaging_upd]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StudentFileHeaderStaging_upd]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	24 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns (Second Vaccination Date)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM		
@@ -30,32 +37,34 @@ GO
 -- =============================================  
 
 CREATE PROCEDURE [dbo].[proc_StudentFileHeaderStaging_upd]
-	@Student_File_ID			varchar(15),
-	@Record_Status				varchar(2),
-	@Last_Rectify_By			varchar(20),
-	@Last_Rectify_Dtm			datetime,
-	@Claim_Upload_By			varchar(20),
-	@Claim_Upload_Dtm			datetime,
-	@File_Confirm_By			varchar(20),
-	@File_Confirm_Dtm			datetime,
-	@Request_Remove_By			varchar(20),
-	@Request_Remove_Dtm			datetime,
-	@Request_Remove_Function	varchar(20),
-	@Confirm_Remove_By			varchar(20),
-	@Confirm_Remove_Dtm			datetime,
-	@Request_Claim_Reactivate_By				varchar(20),
-	@Request_Claim_Reactivate_Dtm				datetime,
-	@Confirm_Claim_Reactivate_By				varchar(20),
-	@Confirm_Claim_Reactivate_Dtm				datetime,
-	@Name_List_File_ID							VARCHAR(15),		
-	@Vaccination_Report_File_ID					varchar(15),		
-	@Onsite_Vaccination_File_ID					varchar(15),
-	@Claim_Creation_Report_File_ID				varchar(15),
-	@Rectification_File_ID						varchar(15),
-	@Request_Rectify_Status						varchar(2),
-	@Update_By					varchar(20),
-	@Update_Dtm					datetime,
-	@TSMP						binary(8)
+	@Student_File_ID				VARCHAR(15),
+	@Record_Status					VARCHAR(2),
+	@Last_Rectify_By				VARCHAR(20),
+	@Last_Rectify_Dtm				DATETIME,
+	@Claim_Upload_By				VARCHAR(20),
+	@Claim_Upload_Dtm				DATETIME,
+	@File_Confirm_By				VARCHAR(20),
+	@File_Confirm_Dtm				DATETIME,
+	@Request_Remove_By				VARCHAR(20),
+	@Request_Remove_Dtm				DATETIME,
+	@Request_Remove_Function		VARCHAR(20),
+	@Confirm_Remove_By				VARCHAR(20),
+	@Confirm_Remove_Dtm				DATETIME,
+	@Request_Claim_Reactivate_By	VARCHAR(20),
+	@Request_Claim_Reactivate_Dtm	DATETIME,
+	@Confirm_Claim_Reactivate_By	VARCHAR(20),
+	@Confirm_Claim_Reactivate_Dtm	DATETIME,
+	@Name_List_File_ID				VARCHAR(15),		
+	@Vaccination_Report_File_ID		VARCHAR(15),		
+	@Vaccination_Report_File_ID_2	VARCHAR(15),		
+	@Onsite_Vaccination_File_ID		VARCHAR(15),
+	@Onsite_Vaccination_File_ID_2	VARCHAR(15),
+	@Claim_Creation_Report_File_ID	VARCHAR(15),
+	@Rectification_File_ID			VARCHAR(15),
+	@Request_Rectify_Status			VARCHAR(2),
+	@Update_By						VARCHAR(20),
+	@Update_Dtm						DATETIME,
+	@TSMP							BINARY(8)
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -106,7 +115,9 @@ AS BEGIN
 		Confirm_Claim_Reactivate_Dtm = @Confirm_Claim_Reactivate_Dtm,
 		Name_List_File_ID = @Name_List_File_ID,
 		Vaccination_Report_File_ID = @Vaccination_Report_File_ID,
+		Vaccination_Report_File_ID_2 = @Vaccination_Report_File_ID_2,
 		Onsite_Vaccination_File_ID = @Onsite_Vaccination_File_ID,
+		Onsite_Vaccination_File_ID_2 = @Onsite_Vaccination_File_ID_2,
 		Claim_Creation_Report_File_ID = @Claim_Creation_Report_File_ID,
 		Rectification_File_ID = @Rectification_File_ID,
 		Request_Rectify_Status = @Request_Rectify_Status,
@@ -124,3 +135,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileHeaderStaging_upd] TO HCSP
 GO
+

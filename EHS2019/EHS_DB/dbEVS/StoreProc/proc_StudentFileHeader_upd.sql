@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	24 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns (Second Vaccination Date)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	28 Aug 2019
 -- CR No.			CRE19-001
@@ -37,41 +44,47 @@ GO
 -- =============================================    
 
 CREATE PROCEDURE [dbo].[proc_StudentFileHeader_upd]
-	@Student_File_ID							varchar(15),
-	@School_Code								varchar(30),
-	@SP_ID										char(8),
-	@Practice_Display_Seq						smallint,
-	@Service_Receive_Dtm						datetime,
-	@Dose										varchar(20),
-	@Final_Checking_Report_Generation_Date		datetime,
-	@Record_Status								varchar(2),
-	@Last_Rectify_By							varchar(20),
-	@Last_Rectify_Dtm							datetime,
-	@Claim_Upload_By							varchar(20),
-	@Claim_Upload_Dtm							datetime,
-	@File_Confirm_By							varchar(20),
-	@File_Confirm_Dtm							datetime,
-	@Request_Remove_By							varchar(20),
-	@Request_Remove_Dtm							datetime,
-	@Request_Remove_Function					varchar(20),
-	@Confirm_Remove_By							varchar(20),
-	@Confirm_Remove_Dtm							datetime,
-	@Request_Claim_Reactivate_By				varchar(20),
-	@Request_Claim_Reactivate_Dtm				datetime,
-	@Confirm_Claim_Reactivate_By				varchar(20),
-	@Confirm_Claim_Reactivate_Dtm				datetime,
+	@Student_File_ID							VARCHAR(15),
+	@School_Code								VARCHAR(30),
+	@SP_ID										CHAR(8),
+	@Practice_Display_Seq						SMALLINT,
+	@Service_Receive_Dtm						DATETIME,
+	@Service_Receive_Dtm_2						DATETIME,
+	@Dose										VARCHAR(20),
+	@Final_Checking_Report_Generation_Date		DATETIME,
+	@Final_Checking_Report_Generation_Date_2	DATETIME,
+	@Record_Status								VARCHAR(2),
+	@Last_Rectify_By							VARCHAR(20),
+	@Last_Rectify_Dtm							DATETIME,
+	@Claim_Upload_By							VARCHAR(20),
+	@Claim_Upload_Dtm							DATETIME,
+	@File_Confirm_By							VARCHAR(20),
+	@File_Confirm_Dtm							DATETIME,
+	@Request_Remove_By							VARCHAR(20),
+	@Request_Remove_Dtm							DATETIME,
+	@Request_Remove_Function					VARCHAR(20),
+	@Confirm_Remove_By							VARCHAR(20),
+	@Confirm_Remove_Dtm							DATETIME,
+	@Request_Claim_Reactivate_By				VARCHAR(20),
+	@Request_Claim_Reactivate_Dtm				DATETIME,
+	@Confirm_Claim_Reactivate_By				VARCHAR(20),
+	@Confirm_Claim_Reactivate_Dtm				DATETIME,
 	@Name_List_File_ID							VARCHAR(15),
-	@Vaccination_Report_File_ID					varchar(15),		
-	@Onsite_Vaccination_File_ID					varchar(15),
-	@Claim_Creation_Report_File_ID				varchar(15),
-	@Rectification_File_ID						varchar(15),
-	@Request_Rectify_Status						varchar(2),
-	@Update_By									varchar(20),
-	@Update_Dtm									datetime,
-	@Service_Receive_Dtm_2ndDose				datetime,
-	@Final_Checking_Report_Generation_Date_2ndDose		datetime,
-	@Subsidize_Code								char(10),
-	@TSMP										binary(8)
+	@Vaccination_Report_File_ID					VARCHAR(15),		
+	@Vaccination_Report_File_ID_2				VARCHAR(15),		
+	@Onsite_Vaccination_File_ID					VARCHAR(15),
+	@Onsite_Vaccination_File_ID_2				VARCHAR(15),
+	@Claim_Creation_Report_File_ID				VARCHAR(15),
+	@Rectification_File_ID						VARCHAR(15),
+	@Request_Rectify_Status						VARCHAR(2),
+	@Update_By									VARCHAR(20),
+	@Update_Dtm									DATETIME,
+	@Service_Receive_Dtm_2ndDose				DATETIME,
+	@Service_Receive_Dtm_2ndDose_2				DATETIME,
+	@Final_Checking_Report_Generation_Date_2ndDose		DATETIME,
+	@Final_Checking_Report_Generation_Date_2ndDose_2	DATETIME,
+	@Subsidize_Code								CHAR(10),
+	@TSMP										BINARY(8)
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -106,8 +119,10 @@ AS BEGIN
 		SP_ID = @SP_ID,
 		Practice_Display_Seq = @Practice_Display_Seq,
 		Service_Receive_Dtm = @Service_Receive_Dtm,
+		Service_Receive_Dtm_2 = @Service_Receive_Dtm_2,
 		Dose = @Dose,
 		Final_Checking_Report_Generation_Date = @Final_Checking_Report_Generation_Date,
+		Final_Checking_Report_Generation_Date_2 = @Final_Checking_Report_Generation_Date_2,
 		Record_Status = @Record_Status,
 		Last_Rectify_By = @Last_Rectify_By,
 		Last_Rectify_Dtm = @Last_Rectify_Dtm,
@@ -126,13 +141,17 @@ AS BEGIN
 		Confirm_Claim_Reactivate_Dtm = @Confirm_Claim_Reactivate_Dtm,
 		Name_List_File_ID = @Name_List_File_ID,
 		Vaccination_Report_File_ID = @Vaccination_Report_File_ID,
+		Vaccination_Report_File_ID_2 = @Vaccination_Report_File_ID_2,
 		Onsite_Vaccination_File_ID = @Onsite_Vaccination_File_ID,
+		Onsite_Vaccination_File_ID_2 = @Onsite_Vaccination_File_ID_2,
 		Claim_Creation_Report_File_ID = @Claim_Creation_Report_File_ID,
 		Rectification_File_ID = @Rectification_File_ID,
 		Update_By = @Update_By,
 		Update_Dtm = @Update_Dtm,
 		Service_Receive_Dtm_2ndDose = @Service_Receive_Dtm_2ndDose,
+		Service_Receive_Dtm_2ndDose_2 = @Service_Receive_Dtm_2ndDose_2,
 		Final_Checking_Report_Generation_Date_2ndDose = @Final_Checking_Report_Generation_Date_2ndDose,
+		Final_Checking_Report_Generation_Date_2ndDose_2 = @Final_Checking_Report_Generation_Date_2ndDose_2,
 		Subsidize_Code = @Subsidize_Code,
 		Request_Rectify_Status = @Request_Rectify_Status
 	WHERE
@@ -147,3 +166,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_StudentFileHeader_upd] TO HCSP
 GO
+

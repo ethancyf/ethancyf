@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	13 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -41,6 +47,7 @@ CREATE PROCEDURE [dbo].[proc_StudentFileHeader_search]
 	@VaccinationDateTo		DATETIME,
 	@CurrentSeason			BIT,
 	@PreCheck				BIT,
+	@PreCheckCompleted		BIT,
 	@Record_Status			VARCHAR(5000)
 AS BEGIN
 
@@ -60,6 +67,7 @@ AS BEGIN
 	DECLARE @IN_VaccinationDateTo		DATETIME
 	DECLARE @IN_CurrentSeason			BIT
 	DECLARE @IN_PreCheck				BIT
+	DECLARE @IN_PreCheckCompleted		BIT
 	DECLARE @IN_Record_Status			VARCHAR(5000)
 
 	DECLARE @MinDate					DATETIME
@@ -68,6 +76,7 @@ AS BEGIN
 	DECLARE @StartDate					DATETIME
 	DECLARE @EndDate					DATETIME
 	DECLARE @IsPreCheck					CHAR(1)
+	DECLARE @IsIncludePreCheckCompleted CHAR(1)
 
 	DECLARE @delimiter					VARCHAR(5)
 	DECLARE @chrIsAllRecordStatus		CHAR(1)
@@ -98,6 +107,7 @@ AS BEGIN
 	SET @IN_VaccinationDateTo		= @VaccinationDateTo
 	SET @IN_CurrentSeason			= @CurrentSeason
 	SET @IN_PreCheck				= @PreCheck
+	SET @IN_PreCheckCompleted		= @PreCheckCompleted
 	SET @IN_Record_Status			= @Record_Status
 
 	SET @MinDate					= NULL		
@@ -257,6 +267,22 @@ AS BEGIN
 		END
 
 	-- ---------------------------------------------
+	-- Pre-Check Completed
+	-- ---------------------------------------------
+		IF @IN_PreCheckCompleted IS NOT NULL
+		BEGIN
+			IF @IN_PreCheckCompleted = 1
+				BEGIN
+					SET @IsIncludePreCheckCompleted = 'Y'
+				END
+
+			IF @IN_PreCheckCompleted = 0
+				BEGIN
+					SET @IsIncludePreCheckCompleted = 'N'
+				END
+		END
+
+	-- ---------------------------------------------
 	-- Scheme Code
 	-- ---------------------------------------------
 	IF @IN_Scheme_Code IS NOT NULL
@@ -271,7 +297,7 @@ AS BEGIN
 		SET @chrIsAllSchemeCode = 'Y'
 
 	-- ---------------------------------------------
-	-- Scheme Code
+	-- Record Status
 	-- ---------------------------------------------
 	IF @IN_Record_Status IS NOT NULL
 	BEGIN
@@ -332,8 +358,12 @@ AS BEGIN
 												END) + ' ' + 
 												SD.Data_Value,
 		S.Final_Checking_Report_Generation_Date,
+		S.Service_Receive_Dtm_2,
+		S.Final_Checking_Report_Generation_Date_2,
 		S.Service_Receive_Dtm_2ndDose,
 		S.Final_Checking_Report_Generation_Date_2ndDose,
+		S.Service_Receive_Dtm_2ndDose_2,
+		S.Final_Checking_Report_Generation_Date_2ndDose_2,
 		S.Remark,
 		S.Record_Status,
 		S.Upload_By,
@@ -355,7 +385,9 @@ AS BEGIN
 		S.Confirm_Claim_Reactivate_Dtm,
 		S.Name_List_File_ID,
 		S.Vaccination_Report_File_ID,
+		S.Vaccination_Report_File_ID_2,
 		S.Onsite_Vaccination_File_ID,
+		S.Onsite_Vaccination_File_ID_2,
 		S.Claim_Creation_Report_File_ID,
 		S.Rectification_File_ID,
 		FG4.[File_Name] as [Name_List_File_Name],
@@ -367,6 +399,12 @@ AS BEGIN
 		FG2.[File_Name] as [Onsite_Vaccination_File_Name],
 		FGQ2.Output_File AS [Onsite_Vaccination_File_Output_Name],
 		CONVERT(VARCHAR(MAX), DecryptByKey(FGQ2.File_Password)) AS [Onsite_Vaccination_File_Default_Password],
+		FG5.[File_Name] as [Vaccination_Report_File_Name_2],
+		FGQ5.Output_File AS [Vaccination_Report_File_Output_Name_2],
+		CONVERT(VARCHAR(MAX), DecryptByKey(FGQ5.File_Password)) AS [Vaccination_Report_File_Default_Password_2],
+		FG6.[File_Name] as [Onsite_Vaccination_File_Name_2],
+		FGQ6.Output_File AS [Onsite_Vaccination_File_Output_Name_2],
+		CONVERT(VARCHAR(MAX), DecryptByKey(FGQ6.File_Password)) AS [Onsite_Vaccination_File_Default_Password_2],
 		FG3.[File_Name] as [Claim_Creation_Report_File_Name],
 		FGQ3.Output_File AS [Claim_Creation_Report_File_Output_Name],
 		CONVERT(VARCHAR(MAX), DecryptByKey(FGQ3.File_Password)) AS [Claim_Creation_Report_File_Default_Password],
@@ -394,8 +432,12 @@ AS BEGIN
 				S.Subsidize_Code,
 				S.Dose,
 				S.Final_Checking_Report_Generation_Date,
+				S.Service_Receive_Dtm_2,
+				S.Final_Checking_Report_Generation_Date_2,
 				S.Service_Receive_Dtm_2ndDose,
 				S.Final_Checking_Report_Generation_Date_2ndDose,
+				S.Service_Receive_Dtm_2ndDose_2,
+				S.Final_Checking_Report_Generation_Date_2ndDose_2,
 				S.Remark,
 				S.Record_Status,
 				S.Upload_By,
@@ -417,7 +459,9 @@ AS BEGIN
 				S.Confirm_Claim_Reactivate_Dtm,
 				S.Name_List_File_ID,
 				S.Vaccination_Report_File_ID,
+				S.Vaccination_Report_File_ID_2,
 				S.Onsite_Vaccination_File_ID,
+				S.Onsite_Vaccination_File_ID_2,
 				S.Claim_Creation_Report_File_ID,
 				S.Rectification_File_ID,
 				S.Update_By,
@@ -442,8 +486,17 @@ AS BEGIN
 				AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
 				AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
 				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
-				AND (@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm)
-				AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo)
+				AND (
+						(
+							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo) 
+						)
+						OR
+						(
+							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm_2 IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo) 
+						)
+					)
 				AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
 				AND S.Record_Status <> 'R'
 				AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)		
@@ -464,8 +517,12 @@ AS BEGIN
 				S.Subsidize_Code,
 				S.Dose,
 				S.Final_Checking_Report_Generation_Date,
+				S.Service_Receive_Dtm_2,
+				S.Final_Checking_Report_Generation_Date_2,
 				S.Service_Receive_Dtm_2ndDose,
 				S.Final_Checking_Report_Generation_Date_2ndDose,
+				S.Service_Receive_Dtm_2ndDose_2,
+				S.Final_Checking_Report_Generation_Date_2ndDose_2,
 				S.Remark,
 				S.Record_Status,
 				S.Upload_By,
@@ -487,7 +544,9 @@ AS BEGIN
 				S.Confirm_Claim_Reactivate_Dtm,
 				S.Name_List_File_ID,
 				S.Vaccination_Report_File_ID,
+				S.Vaccination_Report_File_ID_2,
 				S.Onsite_Vaccination_File_ID,
+				S.Onsite_Vaccination_File_ID_2,
 				S.Claim_Creation_Report_File_ID,
 				S.Rectification_File_ID,
 				S.Update_By,
@@ -512,8 +571,17 @@ AS BEGIN
 				AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
 				AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
 				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
-				AND (@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm)
-				AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo)
+				AND (
+						(
+							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo) 
+						)
+						OR
+						(
+							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm_2 IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo) 
+						)
+					)
 				AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
 				AND S.Record_Status <> 'R'
 				AND S.Student_File_ID NOT IN (
@@ -541,6 +609,10 @@ AS BEGIN
 			S.Claim_Creation_Report_File_ID = FGQ3.Generation_ID AND FGQ3.[Status] = 'C'
 		LEFT OUTER JOIN FileGenerationQueue FGQ4 ON
 			S.Name_List_File_ID = FGQ4.Generation_ID AND FGQ4.[Status] = 'C'
+		LEFT OUTER JOIN FileGenerationQueue FGQ5 ON
+			S.Vaccination_Report_File_ID_2 = FGQ5.Generation_ID AND FGQ5.[Status] = 'C'
+		LEFT OUTER JOIN FileGenerationQueue FGQ6 ON
+			S.Onsite_Vaccination_File_ID_2 = FGQ6.Generation_ID AND FGQ6.[Status] = 'C'
 		LEFT OUTER JOIN FileGeneration FG ON
 			FGQ.[File_ID] = FG.[File_ID]
 		LEFT OUTER JOIN FileGeneration FG2 ON
@@ -549,6 +621,10 @@ AS BEGIN
 			FGQ3.[File_ID] = FG3.[File_ID]
 		LEFT OUTER JOIN FileGeneration FG4 ON
 			FGQ4.[File_ID] = FG4.[File_ID]
+		LEFT OUTER JOIN FileGeneration FG5 ON
+			FGQ5.[File_ID] = FG5.[File_ID]
+		LEFT OUTER JOIN FileGeneration FG6 ON
+			FGQ6.[File_ID] = FG6.[File_ID]
 		LEFT OUTER JOIN School Sch ON
 			S.School_Code = Sch.School_Code
 		LEFT OUTER JOIN RVPHomeList RCH ON
@@ -576,6 +652,17 @@ AS BEGIN
 		WHERE
 			(@IN_DataEntryAccount IS NULL OR DEPM.Data_Entry_Account IS NOT NULL)
 			AND (@IN_USERID IS NULL OR EXISTS (SELECT DISTINCT Scheme_Code from UserRole where [User_ID] = @IN_USERID AND Scheme_Code = S.Scheme_Code))
+			AND (@IN_PreCheckCompleted IS NULL 
+				OR (@IsIncludePreCheckCompleted = 'Y' 
+					OR NOT EXISTS (SELECT 
+										Student_File_ID 
+									FROM 
+										StudentFileHeader 
+									WHERE 
+										Student_File_ID = S.Student_File_ID
+										AND Upload_Precheck = 'Y' 
+										AND Record_Status = 'C' )
+										))
 		ORDER BY
 			S.Upload_Dtm
 	

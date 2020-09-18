@@ -8,6 +8,20 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	1 Sep 2020
+-- CR No.			CRE20-003 (Enhancement on Programme or Scheme using batch upload)
+-- Description:		Handle Field Diff for Temp Account (Compare TA & VA)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	20 Aug 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description:		Add columns (Manual Add)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	17 Jul 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
@@ -363,6 +377,8 @@ AS BEGIN
 		SFE.DH_Vaccine_Ref_Status,
 		
 		SFE.Transaction_ID,
+		[Transaction_Voucher_Acc_ID] = VT.Voucher_Acc_ID,
+		[Transaction_Temp_Voucher_Acc_ID] = VT.Temp_Voucher_Acc_ID,
 		[Transaction_Record_Status] = VT.Record_Status,
 		[Transaction_Record_Status_Desc_EN] = SD_VT.Status_Description,
 		[Transaction_Record_Status_Desc_CHI] = SD_VT.Status_Description_Chi,
@@ -421,7 +437,7 @@ AS BEGIN
 						WHEN 
 							(CONVERT(VARCHAR(MAX), DecryptByKey(SFE.Encrypt_Field2)) <> CONVERT(VARCHAR(MAX), DecryptByKey(PInfo.Encrypt_Field2))) OR
 							((CONVERT(VARCHAR(MAX), DecryptByKey(PInfo.Encrypt_Field3)) <> '') AND 
-								(CONVERT(VARCHAR(MAX), DecryptByKey(SFE.Encrypt_Field3)) <> CONVERT(VARCHAR(MAX), DecryptByKey(PInfo.Encrypt_Field3)))) OR
+								(CONVERT(NVARCHAR(MAX), DecryptByKey(SFE.Encrypt_Field3)) <> CONVERT(NVARCHAR(MAX), DecryptByKey(PInfo.Encrypt_Field3)))) OR
 							(SFE.DOB <> PInfo.DOB) OR
 							(SFE.Exact_DOB <> PInfo.Exact_DOB) OR
 							(SFE.SEX <> PInfo.SEX) OR
@@ -447,6 +463,45 @@ AS BEGIN
 						ELSE 
 							'N'
 					END
+
+				WHEN ACC.Real_Acc_Type = 'T' AND DocNoPInfo.Voucher_Acc_ID IS NOT NULL THEN
+					CASE
+						WHEN 
+							(CONVERT(VARCHAR(MAX), DecryptByKey(TPInfo.Encrypt_Field2)) <> CONVERT(VARCHAR(MAX), DecryptByKey(DocNoPInfo.Encrypt_Field2))) OR
+							((CONVERT(VARCHAR(MAX), DecryptByKey(TPInfo.Encrypt_Field3)) <> '') AND 
+								(CONVERT(NVARCHAR(MAX), DecryptByKey(TPInfo.Encrypt_Field3)) <> CONVERT(NVARCHAR(MAX), DecryptByKey(DocNoPInfo.Encrypt_Field3)))) OR
+							(TPInfo.DOB <> DocNoPInfo.DOB) OR
+							(TPInfo.SEX <> DocNoPInfo.SEX) OR
+							(TPInfo.Exact_DOB <> DocNoPInfo.Exact_DOB) OR
+							(TPInfo.Date_of_Issue IS NOT NULL AND (TPInfo.Date_of_Issue <> DocNoPInfo.Date_of_Issue) 
+								AND (LTRIM(RTRIM(DocNoPInfo.Doc_Code)) IN ('HKIC','Doc/I','EC','REPMT'))) OR
+							(TPInfo.Permit_To_Remain_Until IS NOT NULL AND (TPInfo.Permit_To_Remain_Until <> DocNoPInfo.Permit_To_Remain_Until) 
+								AND (LTRIM(RTRIM(DocNoPInfo.Doc_Code)) = 'ID235B')) OR
+							(TPInfo.Foreign_Passport_No IS NOT NULL 
+								AND TPInfo.Foreign_Passport_No <> ''
+								AND (TPInfo.Foreign_Passport_No <> DocNoPInfo.Foreign_Passport_No) 
+								AND (LTRIM(RTRIM(DocNoPInfo.Doc_Code)) = 'VISA')) OR
+							(TPInfo.EC_Serial_No IS NOT NULL 
+								AND TPInfo.EC_Serial_No <> ''
+								AND (TPInfo.EC_Serial_No <> DocNoPInfo.EC_Serial_No) 
+								AND (LTRIM(RTRIM(DocNoPInfo.Doc_Code)) = 'EC')) OR
+							(TPInfo.EC_Reference_No IS NOT NULL 
+								AND TPInfo.EC_Reference_No <> ''
+								AND (
+										(TPInfo.EC_Reference_No_Other_Format IS NULL AND DocNoPInfo.EC_Reference_No_Other_Format = 'Y')
+									OR
+										(TPInfo.EC_Reference_No_Other_Format = 'Y' AND DocNoPInfo.EC_Reference_No_Other_Format IS NULL)
+									OR
+										(TPInfo.EC_Reference_No_Other_Format = 'Y' AND TPInfo.EC_Reference_No <> DocNoPInfo.EC_Reference_No) 
+									OR 
+										(TPInfo.EC_Reference_No_Other_Format IS NULL AND TPInfo.EC_Reference_No <> DocNoPInfo.EC_Reference_No)
+									)
+								AND (LTRIM(RTRIM(DocNoPInfo.Doc_Code)) = 'EC'))
+						THEN 
+							'Y'
+						ELSE 
+							'N'
+					END
 				ELSE 
 					'N'
 			END,
@@ -456,6 +511,7 @@ AS BEGIN
 		SFE.Original_Student_Seq,
 		SFE.HKIC_Symbol,
 		SFE.Service_Receive_Dtm,
+		SFE.Manual_Add,
 
 		SFEMMR.Non_immune_to_measles,
 		SFEMMR.Ethnicity,
@@ -490,6 +546,10 @@ AS BEGIN
 				ON SFE.Transaction_ID = VT.Transaction_ID
 			LEFT OUTER JOIN StatusData SD_VT 
 				ON VT.Record_Status = SD_VT.Status_Value AND Enum_Class = 'ClaimTransStatus'
+			LEFT OUTER JOIN [PersonalInformation] DocNoPInfo -- Retrieve VoucherAccount By Identity of Temp Account
+				ON TPInfo.Encrypt_Field1 = DocNoPInfo.Encrypt_Field1 AND   
+					TPInfo.Doc_Code = DocNoPInfo.Doc_Code
+
 	WHERE
 		SFE.Student_File_ID = @Student_File_ID
 	ORDER BY

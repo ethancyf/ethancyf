@@ -8,16 +8,16 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:	
--- Modified date: 
--- CR No.:
--- Description:	
+-- Modified by		Chris YIM
+-- Modified date	09 Sep 2020
+-- CR No.			CRE20-003 (Batch Upload)
+-- Description		Grant HCSP Permission
 -- =============================================
 -- =============================================
--- Author:			Chris YIM
--- Create date:		26 Aug 2018
--- CR No.:			CRE17-018
--- Description:		Get TransactionAdditionalField by School Code
+-- Author			Chris YIM
+-- Create date		26 Aug 2018
+-- CR No.			CRE17-018
+-- Description		Get TransactionAdditionalField by School Code
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_TransactionAdditionalField_get_SchoolCode_ByTranID]
@@ -58,5 +58,8 @@ END
 GO
 
 GRANT EXECUTE ON [dbo].[proc_TransactionAdditionalField_get_SchoolCode_ByTranID] TO HCVU
+GO
+
+GRANT EXECUTE ON [dbo].[proc_TransactionAdditionalField_get_SchoolCode_ByTranID] TO HCSP
 GO
 
