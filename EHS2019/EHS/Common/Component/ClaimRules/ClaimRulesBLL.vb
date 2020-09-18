@@ -34,6 +34,11 @@ Namespace Component.ClaimRules
             NotCheck
         End Enum
 
+        Public Enum Unique
+            Include_Self_EHSAccount
+            Exclude_Self_EHSAccount
+        End Enum
+
 #End Region
 
 #Region "Private Member"
@@ -2162,7 +2167,9 @@ Namespace Component.ClaimRules
                                                ByVal udtEHSAccount As EHSAccountModel, _
                                                ByRef udtEligibleResult As EligibleResult, _
                                                ByVal udtTranDetailVaccineList As TransactionDetailVaccineModelCollection, _
-                                               ByVal enumCheckEligiblity As Eligiblity) As Common.ComObject.SystemMessage
+                                               ByVal enumCheckEligiblity As Eligiblity, _
+                                               ByVal enumCheckUniqueDocNo As Unique
+                                               ) As Common.ComObject.SystemMessage
 
             Dim strFunctCode As String = "990000"
             Dim strSeverity As String = "E"
@@ -2272,25 +2279,55 @@ Namespace Component.ClaimRules
             End If
 
             If strMsgCode.Trim() = "" Then
-                Dim udtValidatedEHSAccount As EHSAccountModel = Me._udtEHSAccountBLL.LoadEHSAccountByIdentity(udtEHSAccount.EHSPersonalInformationList(0).IdentityNum, udtEHSAccount.EHSPersonalInformationList(0).DocCode)
+                Dim udtValidatedEHSAccount As EHSAccountModel = Me._udtEHSAccountBLL.LoadEHSAccountByIdentity(udtEHSAccount.EHSPersonalInformationList(0).IdentityNum, _
+                                                                                                              udtEHSAccount.EHSPersonalInformationList(0).DocCode)
                 If udtValidatedEHSAccount Is Nothing Then
 
-                    ' Checking For HKIC VS EC (From ValidateAccount)
-                    strMsgCode = Me.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.ValidateAccount, strDocCode, udtEHSAccount.EHSPersonalInformationList(0).IdentityNum)
+                    If enumCheckUniqueDocNo = Unique.Include_Self_EHSAccount Then
+                        'Check with self EHSAccount
 
-                    ' Checking For HKIC VS EC (From Temporary Account)
-                    If strMsgCode = "" Then
-                        strMsgCode = Me.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.TemporaryAccount, strDocCode, udtEHSAccount.EHSPersonalInformationList(0).IdentityNum)
+                        ' Checking For HKIC VS EC (From ValidateAccount)
+                        strMsgCode = Me.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.ValidateAccount, _
+                                                              strDocCode, _
+                                                              udtEHSAccount.EHSPersonalInformationList(0).IdentityNum)
+
+                        ' Checking For HKIC VS EC (From Temporary Account)
+                        If strMsgCode = "" Then
+                            strMsgCode = Me.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.TemporaryAccount, _
+                                                                  strDocCode, _
+                                                                  udtEHSAccount.EHSPersonalInformationList(0).IdentityNum)
+                        End If
+
+                    Else
+                        'Check without self EHSAccount
+
+                        ' Checking For HKIC VS EC (From ValidateAccount)
+                        strMsgCode = Me.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.ValidateAccount, _
+                                                              strDocCode, _
+                                                              udtEHSAccount.EHSPersonalInformationList(0).IdentityNum, _
+                                                              udtEHSAccount.EHSPersonalInformationList(0).VoucherAccID)
+
+                        ' Checking For HKIC VS EC (From Temporary Account)
+                        If strMsgCode = "" Then
+                            strMsgCode = Me.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.TemporaryAccount, _
+                                                                  strDocCode, _
+                                                                  udtEHSAccount.EHSPersonalInformationList(0).IdentityNum, _
+                                                                  udtEHSAccount.EHSPersonalInformationList(0).VoucherAccID)
+                        End If
+
                     End If
 
                     ' Check Unique Key Field
                     If strMsgCode = "" Then
-                        strMsgCode = Me.chkEHSAccountUniqueField(udtEHSAccount.EHSPersonalInformationList(0), udtEHSAccount.EHSPersonalInformationList(0).VoucherAccID, udtEHSAccount.AccountSource)
+                        strMsgCode = Me.chkEHSAccountUniqueField(udtEHSAccount.EHSPersonalInformationList(0), _
+                                                                 udtEHSAccount.EHSPersonalInformationList(0).VoucherAccID, _
+                                                                 udtEHSAccount.AccountSource)
                     End If
 
                 Else
                     ' When Rectify account, some account may already turned to Validated Account, still allow to rectify.
                 End If
+
             End If
 
             ' -------------------------------------------------------------------------------
@@ -2448,13 +2485,19 @@ Namespace Component.ClaimRules
                         Dim blnInvalidScheme As Boolean
 
                         Dim strRCHCode As String = String.Empty
+                        Dim strSchoolCode As String = String.Empty
 
                         If Not IsNothing(udtEHSTransaction.TransactionAdditionFields) AndAlso Not IsNothing(udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode")) Then
                             strRCHCode = udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode").AdditionalFieldValueCode
                         End If
 
+                        If Not IsNothing(udtEHSTransaction.TransactionAdditionFields) AndAlso Not IsNothing(udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("SchoolCode")) Then
+                            strSchoolCode = udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("SchoolCode").AdditionalFieldValueCode
+                        End If
+
                         udtInputPicker.RCHCode = strRCHCode
                         udtInputPicker.HighRisk = udtEHSTransaction.HighRisk
+                        udtInputPicker.SchoolCode = strSchoolCode
 
                         ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
                         ' -----------------------------------------------------------------------------------------
@@ -2572,7 +2615,7 @@ Namespace Component.ClaimRules
         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
         ''' <summary>
-        ''' Check HKIC VS EC By Document Type, Document Identity
+        ''' Check HKIC VS EC By Document Type, Document Identity (Include self EHSAccount)
         ''' </summary>
         ''' <param name="enumSysAccountType"></param>
         ''' <param name="strDocCode"></param>
@@ -2628,6 +2671,60 @@ Namespace Component.ClaimRules
             Return strMsgCode
 
         End Function
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Check HKIC VS EC By Document Type, Document Identity (Exclude self EHSAccount)
+        ''' </summary>
+        ''' <param name="enumSysAccountType"></param>
+        ''' <param name="strDocCode"></param>
+        ''' <param name="strIdentityNum"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function chkEHSAccountHKICVsEC(ByVal enumSysAccountType As EHSAccountModel.SysAccountSource, ByVal strDocCode As String, ByVal strIdentityNum As String, ByVal strExcludeVoucherAccID As String) As String
+
+            Dim strMsgCode As String = String.Empty
+
+            Select Case enumSysAccountType
+                Case EHSAccountModel.SysAccountSource.ValidateAccount
+                    ' Checking Voucher Account For HKIC VS EC
+                    If strDocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
+                        If Me._udtEHSAccountBLL.CheckEHSAccountExist(strIdentityNum, DocType.DocTypeModel.DocTypeCode.EC, strExcludeVoucherAccID) Then
+                            strMsgCode = "00141"
+                        End If
+                    End If
+
+                    If strDocCode = DocType.DocTypeModel.DocTypeCode.EC Then
+                        If Me._udtEHSAccountBLL.CheckEHSAccountExist(strIdentityNum, DocType.DocTypeModel.DocTypeCode.HKIC, strExcludeVoucherAccID) Then
+                            strMsgCode = "00142"
+                        End If
+                    End If
+                Case EHSAccountModel.SysAccountSource.TemporaryAccount
+                    ' Checking Tempoary Voucher Account For HKIC VS EC
+                    If strDocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
+                        If Me._udtEHSAccountBLL.CheckTempEHSAccountExist(strIdentityNum, DocType.DocTypeModel.DocTypeCode.EC, strExcludeVoucherAccID) Then
+                            strMsgCode = "00141"
+                        End If
+                    End If
+
+                    If strDocCode = DocType.DocTypeModel.DocTypeCode.EC Then
+                        If Me._udtEHSAccountBLL.CheckTempEHSAccountExist(strIdentityNum, DocType.DocTypeModel.DocTypeCode.HKIC, strExcludeVoucherAccID) Then
+                            strMsgCode = "00142"
+                        End If
+                    End If
+                Case EHSAccountModel.SysAccountSource.SpecialAccount
+                    'Throw exception if checking Special Voucher Account For HKIC VS EC
+
+                    Throw New Exception("Not support to check speaical account for HKIC VS EC in function:[chkEHSAccountHKICVsEC].")
+
+            End Select
+
+            Return strMsgCode
+
+        End Function
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
 
         ''' <summary>
         ''' Check EC / Adoption Detail for Uniqueness 
@@ -4053,7 +4150,7 @@ Namespace Component.ClaimRules
 
             ' Assign ResultParam (e.g. expected service date after 28 days of 1st dose)
             ' ----------------------------------------------
-            
+
             ' Calculate expected service date after 28 days of 1st dose
             Dim dtmExpectedServiceDate As Date = Nothing
 

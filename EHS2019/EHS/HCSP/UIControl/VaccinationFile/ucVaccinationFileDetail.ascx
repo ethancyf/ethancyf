@@ -105,6 +105,30 @@
                        <asp:Label ID="lblDVaccinationReportGenerationDate2" runat="server" class="tableText" />
                     </td> 
                 </tr>
+                <asp:Panel ID="panD2ndVaccinationDate" runat="server"> 
+                    <tr>
+                        <td style="width: 260px;height:22px">
+                            <asp:Label ID="lblDVaccinationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationDate %>" />
+                        </td>
+                        <td style="width: 200px">
+                            <asp:Label ID="lblDVaccinationDate1_2" runat="server" CssClass="tableText" />
+                        </td>
+                        <td style="width: 200px">
+                            <asp:Label ID="lblDVaccinationDate2_2" runat="server" CssClass="tableText" />                                                
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 260px;height:22px">
+                            <asp:Label ID="lblDVaccinationReportGenerationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>" />
+                        </td>
+                        <td style="width: 200px">
+                            <asp:Label ID="lblDVaccinationReportGenerationDate1_2" runat="server" CssClass="tableText" />
+                        </td>
+                        <td style="width: 200px">
+                            <asp:Label ID="lblDVaccinationReportGenerationDate2_2" runat="server" CssClass="tableText" />
+                        </td>
+                    </tr>
+                </asp:Panel>
             </table>
         </td>
     </tr>
@@ -219,13 +243,17 @@
                     <%--<th style="width:120px;height:22px;vertical-align:middle">
                         <asp:Label ID="tblHeaderConfirmedNotToInject" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ConfirmedNotToInject %>"/>
                     </th>--%>
-                    <th style="width:160px;height:22px;vertical-align:middle">
-                        <asp:Label ID="tblHeaderActualInjectedYes" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ActualInjected %>"/>&nbsp;-&nbsp;
-                        <asp:Label ID="tblHeaderYes" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, Yes %>" />
+                    <th style="width:240px;height:22px;vertical-align:middle">
+                        <asp:Label ID="lblNoOfInjectedFirstVisit0" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ActualInjected1stVisit %>"/>
+                    </th>
+                    <th style="width:240px;height:22px;vertical-align:middle">
+                        <asp:Label ID="lblNoOfInjectedSecondVisit0" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ActualInjected2ndVisit %>"/>
                     </th>
                     <th style="width:160px;height:22px;vertical-align:middle">
-                        <asp:Label ID="tblHeaderActualInjectedNo" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ActualInjected %>"/>&nbsp;-&nbsp;
-                        <asp:Label ID="tblHeaderNo" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, No %>" />
+                        <asp:Label ID="lblNoOfInjectedYes0" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ActualInjectedYes %>"/>
+                    </th>
+                    <th style="width:160px;height:22px;vertical-align:middle">
+                        <asp:Label ID="lblNoOfInjectedNo0" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, ActualInjectedNo %>"/>
                     </th>
                     <th style="width:128px;height:22px;vertical-align:middle">
                         <asp:Label ID="tblHeaderMatch" runat="server" class="tableText" Font-Size="14px" Text="<%$ Resources: Text, Match %>"/>
@@ -343,20 +371,30 @@
                     <ItemStyle BackColor="White" />
                 </asp:TemplateField>
 
-                <asp:TemplateField ItemStyle-Width="90">
+                <asp:TemplateField ItemStyle-Width="200">
                     <HeaderTemplate>
-                        <asp:Label ID="lblGMarkInjected" runat="server" Text="<%$ Resources: Text, ActualInjected %>" style="position:relative;top:-6px" />
+                        <asp:Label ID="lblGMarkInjected" runat="server" Text="<%$ Resources: Text, ActualInjected %>" />
                         <br />
                         <table style="border-collapse:collapse;border-spacing:0px;position:relative;left:3px">
                             <tr>
-                                <td style="width:50px">
+<%--                                <td style="width:50px">
                                     <asp:Checkbox ID="chkGMarkAllY" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:-6px" />
                                     <asp:Label ID="lblGMarkAllY" runat="server" Text="<%$ Resources: Text, Yes %>" style="position:relative;top:-8px" />
                                 </td>
                                 <td style="width:50px">
                                     <asp:Checkbox ID="chkGMarkAllN" runat="server" AutoPostBack="false" style="position:relative;top:-6px" />
                                     <asp:Label ID="lblGMarkAllN" runat="server" Text="<%$ Resources: Text, No %>" style="position:relative;top:-8px" />
+                                </td>--%>
+                                <td>
+                                    <asp:CheckBoxList ID="cblActualInject" runat="server" AutoPostBack="false" style="position:relative;left:2px;" RepeatDirection="Horizontal">
+                                    </asp:CheckBoxList>
+                                    <%--<asp:Checkbox ID="chkGMarkAllY" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:-6px" />
+                                    <asp:Label ID="lblGMarkAllY" runat="server" Text="<%$ Resources: Text, Yes %>" style="position:relative;top:-8px" />--%>
                                 </td>
+                                <%--<td style="width:50px">
+                                    <asp:Checkbox ID="chkGMarkAllN" runat="server" AutoPostBack="false" style="position:relative;top:-6px" />
+                                    <asp:Label ID="lblGMarkAllN" runat="server" Text="<%$ Resources: Text, No %>" style="position:relative;top:-8px" />
+                                </td>--%>
                             </tr>
                         </table>
                     </HeaderTemplate>
@@ -364,16 +402,15 @@
                         <table style="border-collapse:collapse;border-spacing:0px">
                             <tr>
                                 <td>
-                                    <asp:RadioButtonList ID="rblGMarkInjected" runat="server" CellSpacing="0" Width ="100" 
-                                        RepeatDirection="Horizontal" RepeatColumns="2" style="position:relative;left:3px">
-                                        <asp:ListItem Text="<%$ Resources: Text, SimpleYes %>" Value="Y" />
-                                        <asp:ListItem Text="<%$ Resources: Text, SimpleNo %>" Value="N" />
-                                    </asp:RadioButtonList>
+                                    <div id="divMarkInjectedMultiple" runat="server">
+                                        <asp:RadioButtonList ID="rblGMarkInjected" runat="server" CellSpacing="0" RepeatDirection="Horizontal" style="position:relative;left:3px; min-width:80px;">
+                                        </asp:RadioButtonList>
+                                    </div>
+                                    <div id="divMarkInjectedSingle" runat="server">
+                                        <input type="checkbox" id="chkGMark1stVisit" runat="server" value="1" style="position:relative;top:-6px">
+                                        <asp:Label ID="lblGMark1stVisit" runat="server" Text="<%$ Resources: Text, 1stVisit %>" style="position:relative;top:-8px" />
+                                    </div>
                                 </td>
-<%--                                <td>
-                                    <asp:Image ID="imgGMarkInjectedError" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
-                                                AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" Visible = "false" />
-                                </td>--%>
                             </tr>
                         </table>
                     </ItemTemplate>

@@ -1807,7 +1807,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim udtVoucherInfo As New VoucherInfoModel()
 
             Dim udtVoucherQuota As VoucherQuotaModel = udtVoucherInfo.GetVoucherQuota(udtEHSTransaction.ServiceDate, udtSchemeClaimModel, udtEHSPersonalInfo, udtEHSTransaction.ServiceType)
-            
+
             If Not udtVoucherQuota Is Nothing Then
                 Dim intAvailableVoucherQuota As Integer = udtVoucherQuota.AvailableQuota
 

@@ -159,6 +159,8 @@
     <Content Include="Images\banner\ReportAndDownload\banner_PostPaymentCheck.png" />
     <Content Include="Images\banner\Surveillance\banner_InspectionRecordApproval.png" />
     <Content Include="Images\banner\Surveillance\banner_InspectionRecordManagement.png" />
+    <Content Include="Images\button\btn_AddAccount.png" />
+    <Content Include="Images\button\btn_AddAccount_D.png" />
     <Content Include="Images\button\btn_Approve_D.png" />
     <Content Include="Images\button\btn_CloseCase.png" />
     <Content Include="Images\button\btn_CloseCase_D.png" />
@@ -171,6 +173,7 @@
     <Content Include="Images\button\btn_DownloadRectificationReport.png" />
     <Content Include="Images\button\btn_DownloadRectificationReport_D.png" />
     <Content Include="Images\button\btn_EditInformation.png" />
+    <Content Include="Images\button\btn_EditInformation_D.png" />
     <Content Include="Images\button\btn_EditResult.png" />
     <Content Include="Images\button\btn_EditResult_D.png" />
     <Content Include="Images\button\btn_EditVisitDetail.png" />
@@ -211,15 +214,23 @@
     <Content Include="Images\button\icon_button\btn_Download.png" />
     <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationSecondReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingNameList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationSecondReport.png" />
@@ -256,10 +267,55 @@
     <Content Include="Surveillance\InspectionRecordApproval.aspx" />
     <Content Include="Surveillance\InspectionRecordManagement.aspx" />
     <Content Include="Surveillance\irmInspectionPrintOutViewer.aspx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputAdoption.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputDI.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputDocumentType.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputEC.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputHKBC.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputHKID.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputID235B.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputOTHER.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputOW.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputReentryPermit.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputRFNo8.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputTW.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucInputVISA.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyAdoption.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyDI.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyDocumnetType.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyEC.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyHKBC.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyHKIC.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyID235B.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyOTHER.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyOW.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyReentryPermit.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyRFNo8.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyTW.ascx" />
+    <Content Include="UIControl\DocTypeHCSP\ucReadOnlyVISA.ascx" />
+    <Content Include="UIControl\DocType\ucInputAdoption.ascx" />
+    <Content Include="UIControl\DocType\ucInputDI.ascx" />
+    <Content Include="UIControl\DocType\ucInputDocumentType.ascx" />
+    <Content Include="UIControl\DocType\ucInputEC.ascx" />
+    <Content Include="UIControl\DocType\ucInputHKBC.ascx" />
+    <Content Include="UIControl\DocType\ucInputHKID.ascx" />
+    <Content Include="UIControl\DocType\ucInputID235B.ascx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
+    <Content Include="UIControl\DocType\ucInputReentryPermit.ascx" />
+    <Content Include="UIControl\DocType\ucInputVISA.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyADOPC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyCommon.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyDI.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyEC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyHKBC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyHKIC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyID235B.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOW.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputPIDVSS.ascx" />
@@ -274,6 +330,7 @@
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx" />
     <Content Include="UIControl\PCDIntegration\ucPCDWarningPopup.ascx" />
+    <Content Include="UIControl\SchemeDocTypeLegend.ascx" />
     <Content Include="UIControl\SchoolListSearch.ascx" />
     <Content Include="UIControl\Statistics\udcNumericComparison.ascx" />
     <Content Include="UIControl\Statistics\udcDateFormatMonthAndYear.ascx" />
@@ -661,6 +718,51 @@
       <DependentUpon>irmInspectionPrintOutViewer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputAdoption.ascx.designer.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputAdoption.ascx.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputDI.ascx.designer.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputDI.ascx.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputDocTypeBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputDocumentType.ascx.designer.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputDocumentType.ascx.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputEC.ascx.designer.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputEC.ascx.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputHKBC.ascx.designer.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputHKBC.ascx.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputHKID.ascx.designer.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputHKID.ascx.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\Assessories\ucNoticePopUp.ascx.designer.vb">
       <DependentUpon>ucNoticePopUp.ascx</DependentUpon>
     </Compile>
@@ -673,6 +775,201 @@
     </Compile>
     <Compile Include="UIControl\DistrictLegend.ascx.vb">
       <DependentUpon>DistrictLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputID235B.ascx.designer.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputID235B.ascx.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputOTHER.ascx.designer.vb">
+      <DependentUpon>ucInputOTHER.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputOTHER.ascx.vb">
+      <DependentUpon>ucInputOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputOW.ascx.designer.vb">
+      <DependentUpon>ucInputOW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputOW.ascx.vb">
+      <DependentUpon>ucInputOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputReentryPermit.ascx.designer.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputReentryPermit.ascx.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputRFNo8.ascx.designer.vb">
+      <DependentUpon>ucInputRFNo8.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputRFNo8.ascx.vb">
+      <DependentUpon>ucInputRFNo8.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputTW.ascx.designer.vb">
+      <DependentUpon>ucInputTW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputTW.ascx.vb">
+      <DependentUpon>ucInputTW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputVISA.ascx.designer.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucInputVISA.ascx.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyAdoption.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyAdoption.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyAdoption.ascx.vb">
+      <DependentUpon>ucReadOnlyAdoption.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyDI.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyDI.ascx.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyDocTypeBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyDocumnetType.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyDocumnetType.ascx.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyEC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyEC.ascx.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyHKBC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyHKBC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyHKIC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyHKIC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyID235B.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyID235B.ascx.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyOTHER.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyOTHER.ascx.vb">
+      <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyOW.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyOW.ascx.vb">
+      <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyReentryPermit.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyReentryPermit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyReentryPermit.ascx.vb">
+      <DependentUpon>ucReadOnlyReentryPermit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyRFNo8.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyRFNo8.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyRFNo8.ascx.vb">
+      <DependentUpon>ucReadOnlyRFNo8.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyTW.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyTW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyTW.ascx.vb">
+      <DependentUpon>ucReadOnlyTW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyVISA.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeHCSP\ucReadOnlyVISA.ascx.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.designer.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.vb">
+      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDI.ascx.designer.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDI.ascx.vb">
+      <DependentUpon>ucInputDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocTypeBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.designer.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.vb">
+      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputEC.ascx.designer.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputEC.ascx.vb">
+      <DependentUpon>ucInputEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.designer.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.vb">
+      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKID.ascx.designer.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputHKID.ascx.vb">
+      <DependentUpon>ucInputHKID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputID235B.ascx.designer.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputID235B.ascx.vb">
+      <DependentUpon>ucInputID235B.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucInputOTHER.ascx.designer.vb">
@@ -689,11 +986,74 @@
       <DependentUpon>ucInputOW.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.designer.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.vb">
+      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputVISA.ascx.designer.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputVISA.ascx.vb">
+      <DependentUpon>ucInputVISA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyADOPC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyADOPC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyADOPC.ascx.vb">
+      <DependentUpon>ucReadOnlyADOPC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyCommon.ascx.designer.vb">
       <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyCommon.ascx.vb">
       <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.vb">
+      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.vb">
+      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.vb">
+      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.vb">
+      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.vb">
+      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyOTHER.ascx.designer.vb">
@@ -708,6 +1068,20 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyOW.ascx.vb">
       <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyREPMT.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyREPMT.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyREPMT.ascx.vb">
+      <DependentUpon>ucReadOnlyREPMT.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.vb">
+      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DropDownListNoValidation.vb" />
@@ -1100,135 +1474,6 @@
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>DocTypeLegend.ascx</DependentUpon>
     </Compile>
-    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.designer.vb">
-      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputAdoption.ascx.vb">
-      <DependentUpon>ucInputAdoption.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputDI.ascx.designer.vb">
-      <DependentUpon>ucInputDI.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputDI.ascx.vb">
-      <DependentUpon>ucInputDI.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputDocTypeBase.vb">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.designer.vb">
-      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputDocumentType.ascx.vb">
-      <DependentUpon>ucInputDocumentType.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputEC.ascx.designer.vb">
-      <DependentUpon>ucInputEC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputEC.ascx.vb">
-      <DependentUpon>ucInputEC.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.designer.vb">
-      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputHKBC.ascx.vb">
-      <DependentUpon>ucInputHKBC.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputHKID.ascx.designer.vb">
-      <DependentUpon>ucInputHKID.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputHKID.ascx.vb">
-      <DependentUpon>ucInputHKID.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputID235B.ascx.designer.vb">
-      <DependentUpon>ucInputID235B.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputID235B.ascx.vb">
-      <DependentUpon>ucInputID235B.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.designer.vb">
-      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputReentryPermit.ascx.vb">
-      <DependentUpon>ucInputReentryPermit.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputVISA.ascx.designer.vb">
-      <DependentUpon>ucInputVISA.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucInputVISA.ascx.vb">
-      <DependentUpon>ucInputVISA.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyADOPC.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyADOPC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyADOPC.ascx.vb">
-      <DependentUpon>ucReadOnlyADOPC.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.vb">
-      <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>ucReadOnlyDocumnetType.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyEC.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>ucReadOnlyEC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyHKBC.ascx.vb">
-      <DependentUpon>ucReadOnlyHKBC.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyHKIC.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>ucReadOnlyHKIC.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.vb">
-      <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyREPMT.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyREPMT.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyREPMT.ascx.vb">
-      <DependentUpon>ucReadOnlyREPMT.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.designer.vb">
-      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.vb">
-      <DependentUpon>ucReadOnlyVISA.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="UIControl\EHSClaim\ClaimVaccineReadOnly.vb" />
     <Compile Include="UIControl\EHSClaim\ucInputCIVSS.ascx.designer.vb">
       <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
@@ -1438,6 +1683,13 @@
     </Compile>
     <Compile Include="UIControl\ProfessionLegend.ascx.vb">
       <DependentUpon>ProfessionLegend.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\SchemeDocTypeLegend.ascx.designer.vb">
+      <DependentUpon>SchemeDocTypeLegend.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\SchemeDocTypeLegend.ascx.vb">
+      <DependentUpon>SchemeDocTypeLegend.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\SchoolListSearch.ascx.designer.vb">
@@ -1879,7 +2131,6 @@
     <Content Include="ServiceProvider\spTokenReplacementPrintOutViewer.aspx" />
     <Content Include="UIControl\Assessories\ucNoticePopUp.ascx" />
     <Content Include="UIControl\DistrictLegend.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyCommon.ascx" />
     <Content Include="UIControl\eHealthAccountDeathRecord\eHealthAccountDeathRecordMaint.ascx" />
     <Content Include="eHSAccount\eHealthAccountDeathRecordMatchingResult.aspx" />
     <Content Include="eHSAccount\eHSAccountEnquiry.aspx" />
@@ -2271,10 +2522,11 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <Content Include="PrintOut\InspectionReport\ConfirmationLetter.docx" />
     <Content Include="PrintOut\InspectionReport\InternalReference.docx" />
     <Content Include="PrintOut\InspectionReport\SummaryOfInspectionVisit.docx" />
     <Content Include="ReportAndDownload\Template\INSP0001-InspectionSearchResult_Template.xlsx" />
+    <Content Include="PrintOut\InspectionReport\ConfirmationLetter_chi.docx" />
+    <Content Include="PrintOut\InspectionReport\ConfirmationLetter_eng.docx" />
     <None Include="ReportAndDownload\Template\STAT00001_template.xlsx" />
     <None Include="ReportAndDownload\Template\STAT00002_template.xlsx" />
     <None Include="ReportAndDownload\Template\STAT00003_template.xlsx" />
@@ -2285,24 +2537,6 @@
     <Content Include="ServiceProvider\spPrintFunction.ascx" />
     <Content Include="UIControl\ChooseCCCode.ascx" />
     <Content Include="UIControl\DocTypeLegend.ascx" />
-    <Content Include="UIControl\DocType\ucInputAdoption.ascx" />
-    <Content Include="UIControl\DocType\ucInputDI.ascx" />
-    <Content Include="UIControl\DocType\ucInputDocumentType.ascx" />
-    <Content Include="UIControl\DocType\ucInputEC.ascx" />
-    <Content Include="UIControl\DocType\ucInputHKBC.ascx" />
-    <Content Include="UIControl\DocType\ucInputHKID.ascx" />
-    <Content Include="UIControl\DocType\ucInputID235B.ascx" />
-    <Content Include="UIControl\DocType\ucInputReentryPermit.ascx" />
-    <Content Include="UIControl\DocType\ucInputVISA.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyADOPC.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyDI.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyEC.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyHKBC.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyHKIC.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyID235B.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
-    <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCIVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputEHAPP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputEVSS.ascx" />
@@ -2411,7 +2645,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>1817</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/HCVU_Dev</IISUrl>
+          <IISUrl>http://localhost/HCVU</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

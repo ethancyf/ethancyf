@@ -19,6 +19,12 @@ Namespace Component.StudentFile
             Permanence
         End Enum
 
+        Public Enum VaccinationDate
+            NA = 0
+            First = 1
+            Second = 2
+        End Enum
+
         Public Class StudentFileDocTypeCode
             Public Const HKIC As String = "HKIC"
             Public Const EC As String = "EC"
@@ -141,6 +147,8 @@ Namespace Component.StudentFile
             Public SF_ResultPerPage As Integer
             'Public SF_LimitProcessMode As String
             'Public SF_LimitProcessCount As Integer
+
+
 
         End Class
 
@@ -403,20 +411,150 @@ Namespace Component.StudentFile
 
         End Sub
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Sub InsertStudentFileEntry(ByVal udtStudentFileEntry As StudentFileEntryModel, _
+                                          ByVal eStudentFileLocation As StudentFileLocation, _
+                                          Optional ByVal udtDB As Database = Nothing)
+
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim strNameCH As String = String.Empty
+            Dim objDateOfIssue As Object = DBNull.Value
+            Dim objPermitToRemainUntil As Object = DBNull.Value
+            Dim strForeignPassportNo As String = String.Empty
+            Dim strECSerialNo As String = String.Empty
+            Dim strECReferenceNo As String = String.Empty
+            Dim strECReferenceNoOtherFormat As String = String.Empty
+
+            If udtStudentFileEntry.NameCH IsNot Nothing Then
+                strNameCH = udtStudentFileEntry.NameCH
+            End If
+
+            If udtStudentFileEntry.DateOfIssue IsNot Nothing Then
+                objDateOfIssue = udtStudentFileEntry.DateOfIssue
+            End If
+
+            If udtStudentFileEntry.PermitToRemainUntil IsNot Nothing Then
+                objPermitToRemainUntil = udtStudentFileEntry.PermitToRemainUntil
+            End If
+
+            If udtStudentFileEntry.ForeignPassportNo IsNot Nothing Then
+                strForeignPassportNo = udtStudentFileEntry.ForeignPassportNo
+            End If
+
+            If udtStudentFileEntry.ECSerialNo IsNot Nothing Then
+                strECSerialNo = udtStudentFileEntry.ECSerialNo
+            End If
+
+            If udtStudentFileEntry.ECReferenceNo IsNot Nothing Then
+                strECReferenceNo = udtStudentFileEntry.ECReferenceNo
+
+                If udtStudentFileEntry.ECReferenceNoOtherFormat Then
+                    strECReferenceNoOtherFormat = YesNo.Yes
+                Else
+                    strECReferenceNoOtherFormat = YesNo.No
+                End If
+
+            End If
+
+            Dim prams() As SqlParameter
+
+            With udtStudentFileEntry
+                prams = { _
+                    udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
+                    udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, .StudentSeq), _
+                    udtDB.MakeInParam("@Class_Name", SqlDbType.NVarChar, 40, .ClassName), _
+                    udtDB.MakeInParam("@Class_No", SqlDbType.NVarChar, 10, .ClassNo), _
+                    udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, .ContactNo), _
+                    udtDB.MakeInParam("@Doc_No", SqlDbType.VarChar, 20, .DocNo), _
+                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, 40, .NameEN), _
+                    udtDB.MakeInParam("@Surname_EN_Original", SqlDbType.VarChar, 40, .SurnameENOriginal), _
+                    udtDB.MakeInParam("@Given_Name_EN_Original", SqlDbType.VarChar, 40, .GivenNameENOriginal), _
+                    udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 40, .NameCH), _
+                    udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 40, String.Empty), _
+                    udtDB.MakeInParam("@Doc_Code", SqlDbType.Char, 20, .DocCode), _
+                    udtDB.MakeInParam("@DOB", SqlDbType.DateTime, 8, .DOB), _
+                    udtDB.MakeInParam("@Exact_DOB", SqlDbType.Char, 1, .Exact_DOB), _
+                    udtDB.MakeInParam("@Sex", SqlDbType.Char, 1, .Sex), _
+                    udtDB.MakeInParam("@Date_of_Issue", SqlDbType.DateTime, 8, objDateOfIssue), _
+                    udtDB.MakeInParam("@Permit_To_Remain_Until", SqlDbType.DateTime, 8, objPermitToRemainUntil), _
+                    udtDB.MakeInParam("@Foreign_Passport_No", SqlDbType.VarChar, 20, IIf(strForeignPassportNo = String.Empty, DBNull.Value, strForeignPassportNo)), _
+                    udtDB.MakeInParam("@EC_Serial_No", SqlDbType.VarChar, 10, IIf(strECSerialNo = String.Empty, DBNull.Value, strECSerialNo)), _
+                    udtDB.MakeInParam("@EC_Reference_No", SqlDbType.VarChar, 40, IIf(strECReferenceNo = String.Empty, DBNull.Value, strECReferenceNo)), _
+                    udtDB.MakeInParam("@EC_Reference_No_Other_Format", SqlDbType.Char, 1, IIf(strECReferenceNoOtherFormat = String.Empty, DBNull.Value, strECReferenceNoOtherFormat)), _
+                    udtDB.MakeInParam("@Reject_Injection", SqlDbType.Char, 1, .RejectInjection), _
+                    udtDB.MakeInParam("@Injected", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Upload_Warning", SqlDbType.VarChar, 200, DBNull.Value), _
+                    udtDB.MakeInParam("@Acc_Process_Stage", SqlDbType.VarChar, 20, DBNull.Value), _
+                    udtDB.MakeInParam("@Acc_Process_Stage_Dtm", SqlDbType.Date, 3, DBNull.Value), _
+                    udtDB.MakeInParam("@Voucher_Acc_ID", SqlDbType.Char, 15, IIf(.VoucherAccID = String.Empty, DBNull.Value, .VoucherAccID)), _
+                    udtDB.MakeInParam("@Temp_Voucher_Acc_ID", SqlDbType.Char, 15, IIf(.TempVoucherAccID = String.Empty, DBNull.Value, .TempVoucherAccID)), _
+                    udtDB.MakeInParam("@Acc_Type", SqlDbType.Char, 1, .AccType), _
+                    udtDB.MakeInParam("@Acc_Doc_Code", SqlDbType.Char, 20, .AccDocCode), _
+                    udtDB.MakeInParam("@Temp_Acc_Record_Status", SqlDbType.Char, 1, IIf(.TempAccRecordStatus = String.Empty, DBNull.Value, .TempAccRecordStatus)), _
+                    udtDB.MakeInParam("@Temp_Acc_Validate_Dtm", SqlDbType.DateTime, 8, DBNull.Value), _
+                    udtDB.MakeInParam("@Acc_Validation_Result", SqlDbType.VarChar, 1000, DBNull.Value), _
+                    udtDB.MakeInParam("@Validated_Acc_Found", SqlDbType.Char, 1, "N"), _
+                    udtDB.MakeInParam("@Validated_Acc_Unmatch_Result", SqlDbType.VarChar, 1000, DBNull.Value), _
+                    udtDB.MakeInParam("@Vaccination_Process_Stage", SqlDbType.VarChar, 20, DBNull.Value), _
+                    udtDB.MakeInParam("@Vaccination_Process_Stage_Dtm", SqlDbType.Date, 3, DBNull.Value), _
+                    udtDB.MakeInParam("@Entitle_ONLYDOSE", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Entitle_1STDOSE", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Entitle_2NDDOSE", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Entitle_3RDDOSE", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Entitle_Inject", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Entitle_Inject_Fail_Reason", SqlDbType.VarChar, 1000, DBNull.Value), _
+                    udtDB.MakeInParam("@Ext_Ref_Status", SqlDbType.VarChar, 10, DBNull.Value), _
+                    udtDB.MakeInParam("@DH_Vaccine_Ref_Status", SqlDbType.VarChar, 10, DBNull.Value), _
+                    udtDB.MakeInParam("@Transaction_ID", SqlDbType.Char, 20, DBNull.Value), _
+                    udtDB.MakeInParam("@Transaction_Result", SqlDbType.VarChar, 1000, DBNull.Value), _
+                    udtDB.MakeInParam("@Create_By", SqlDbType.VarChar, 20, .CreateBy), _
+                    udtDB.MakeInParam("@Create_Dtm", SqlDbType.DateTime, 8, .CreateDtm), _
+                    udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .UpdateBy), _
+                    udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .UpdateDtm), _
+                    udtDB.MakeInParam("@Last_Rectify_By", SqlDbType.VarChar, 20, DBNull.Value), _
+                    udtDB.MakeInParam("@Last_Rectify_Dtm", SqlDbType.DateTime, 8, DBNull.Value), _
+                    udtDB.MakeInParam("@Original_Student_File_ID", SqlDbType.VarChar, 15, DBNull.Value), _
+                    udtDB.MakeInParam("@Original_Student_Seq", SqlDbType.Int, 4, DBNull.Value), _
+                    udtDB.MakeInParam("@HKIC_Symbol", SqlDbType.Char, 1, DBNull.Value), _
+                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, DBNull.Value), _
+                    udtDB.MakeInParam("@Manual_Add", SqlDbType.Char, 1, "Y") _
+                }
+
+            End With
+
+            Select Case eStudentFileLocation
+                Case StudentFileLocation.Staging
+                    udtDB.RunProc("proc_StudentFileEntryStaging_add", prams)
+                Case StudentFileLocation.Permanence
+                    udtDB.RunProc("proc_StudentFileEntry_add", prams)
+            End Select
+
+        End Sub
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         Public Sub InsertStudentFileStaging(udtStudentFileHeader As StudentFileHeaderModel, dt As DataTable, Optional ByVal udtDB As Database = Nothing)
             If IsNothing(udtDB) Then udtDB = New Database
 
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             Dim dtmLastRectifyDtm As Object = DBNull.Value
             Dim dtmClaimUploadDtm As Object = DBNull.Value
             Dim dtmFileConfirmDtm As Object = DBNull.Value
             Dim dtmRequestRemoveDtm As Object = DBNull.Value
             Dim dtmConfirmRemoveDtm As Object = DBNull.Value
+
             Dim dtmServiceReceiveDtm As Object = DBNull.Value
             Dim dtmFinalCheckingReportGenerationDate As Object = DBNull.Value
             Dim dtmServiceReceiveDtm2ndDose As Object = DBNull.Value
             Dim dtmFinalCheckingReportGenerationDate2ndDose As Object = DBNull.Value
+
+            Dim dtmServiceReceiveDtm_2 As Object = DBNull.Value
+            Dim dtmFinalCheckingReportGenerationDate_2 As Object = DBNull.Value
+            Dim dtmServiceReceiveDtm2ndDose_2 As Object = DBNull.Value
+            Dim dtmFinalCheckingReportGenerationDate2ndDose_2 As Object = DBNull.Value
+
             Dim dtmRequestClaimReactivateDtm As Object = DBNull.Value
             Dim dtmConfirmClaimReactivateDtm As Object = DBNull.Value
             Dim intSchemeSeq As Object = DBNull.Value
@@ -441,6 +579,7 @@ Namespace Component.StudentFile
                 dtmConfirmRemoveDtm = udtStudentFileHeader.ConfirmRemoveDtm.Value
             End If
 
+            'First Visit
             If udtStudentFileHeader.ServiceReceiveDtm.HasValue Then
                 dtmServiceReceiveDtm = udtStudentFileHeader.ServiceReceiveDtm.Value
             End If
@@ -455,6 +594,23 @@ Namespace Component.StudentFile
 
             If udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose.HasValue Then
                 dtmFinalCheckingReportGenerationDate2ndDose = udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose.Value
+            End If
+
+            'Second Visit
+            If udtStudentFileHeader.ServiceReceiveDtm_2.HasValue Then
+                dtmServiceReceiveDtm_2 = udtStudentFileHeader.ServiceReceiveDtm_2.Value
+            End If
+
+            If udtStudentFileHeader.FinalCheckingReportGenerationDate_2.HasValue Then
+                dtmFinalCheckingReportGenerationDate_2 = udtStudentFileHeader.FinalCheckingReportGenerationDate_2.Value
+            End If
+
+            If udtStudentFileHeader.ServiceReceiveDtm2ndDose_2.HasValue Then
+                dtmServiceReceiveDtm2ndDose_2 = udtStudentFileHeader.ServiceReceiveDtm2ndDose_2.Value
+            End If
+
+            If udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose_2.HasValue Then
+                dtmFinalCheckingReportGenerationDate2ndDose_2 = udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose_2.Value
             End If
 
             If udtStudentFileHeader.RequestClaimReactivateDtm.HasValue Then
@@ -475,8 +631,10 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@SP_ID", SqlDbType.Char, 8, udtStudentFileHeader.SPID), _
                 udtDB.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, udtStudentFileHeader.PracticeDisplaySeq), _
                 udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, dtmServiceReceiveDtm), _
+                udtDB.MakeInParam("@Service_Receive_Dtm_2", SqlDbType.DateTime, 8, dtmServiceReceiveDtm_2), _
                 udtDB.MakeInParam("@Dose", SqlDbType.VarChar, 20, udtStudentFileHeader.Dose), _
                 udtDB.MakeInParam("@Final_Checking_Report_Generation_Date", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate), _
+                udtDB.MakeInParam("@Final_Checking_Report_Generation_Date_2", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate_2), _
                 udtDB.MakeInParam("@Record_Status", SqlDbType.VarChar, 2, udtStudentFileHeader.RecordStatus), _
                 udtDB.MakeInParam("@Upload_By", SqlDbType.VarChar, 20, udtStudentFileHeader.UploadBy), _
                 udtDB.MakeInParam("@Upload_Dtm", SqlDbType.DateTime, 8, udtStudentFileHeader.UploadDtm), _
@@ -493,7 +651,9 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@Confirm_Remove_Dtm", SqlDbType.DateTime, 8, dtmConfirmRemoveDtm), _
                 udtDB.MakeInParam("@Name_List_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.NameListFileID = String.Empty, DBNull.Value, udtStudentFileHeader.NameListFileID)), _
                 udtDB.MakeInParam("@Vaccination_Report_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.VaccinationReportFileID = String.Empty, DBNull.Value, udtStudentFileHeader.VaccinationReportFileID)), _
+                udtDB.MakeInParam("@Vaccination_Report_File_ID_2", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.VaccinationReportFileID_2 = String.Empty, DBNull.Value, udtStudentFileHeader.VaccinationReportFileID_2)), _
                 udtDB.MakeInParam("@Onsite_Vaccination_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OnsiteVaccinationFileID = String.Empty, DBNull.Value, udtStudentFileHeader.OnsiteVaccinationFileID)), _
+                udtDB.MakeInParam("@Onsite_Vaccination_File_ID_2", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OnsiteVaccinationFileID_2 = String.Empty, DBNull.Value, udtStudentFileHeader.OnsiteVaccinationFileID_2)), _
                 udtDB.MakeInParam("@Claim_Creation_Report_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.ClaimCreationReportFileID = String.Empty, DBNull.Value, udtStudentFileHeader.ClaimCreationReportFileID)), _
                 udtDB.MakeInParam("@Rectification_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.RectificationFileID = String.Empty, DBNull.Value, udtStudentFileHeader.RectificationFileID)), _
                 udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, udtStudentFileHeader.UpdateBy), _
@@ -501,7 +661,9 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, udtStudentFileHeader.SchemeCode), _
                 udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, udtStudentFileHeader.SubsidizeCode), _
                 udtDB.MakeInParam("@Service_Receive_Dtm_2ndDose", SqlDbType.DateTime, 8, dtmServiceReceiveDtm2ndDose), _
+                udtDB.MakeInParam("@Service_Receive_Dtm_2ndDose_2", SqlDbType.DateTime, 8, dtmServiceReceiveDtm2ndDose_2), _
                 udtDB.MakeInParam("@Final_Checking_Report_Generation_Date_2ndDose", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate2ndDose), _
+                udtDB.MakeInParam("@Final_Checking_Report_Generation_Date_2ndDose_2", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate2ndDose_2), _
                 udtDB.MakeInParam("@Upload_Precheck", SqlDbType.Char, 1, IIf(udtStudentFileHeader.Precheck, YesNo.Yes, YesNo.No)), _
                 udtDB.MakeInParam("@Request_Claim_Reactivate_By", SqlDbType.VarChar, 20, IIf(udtStudentFileHeader.RequestClaimReactivateBy = String.Empty, DBNull.Value, udtStudentFileHeader.RequestClaimReactivateBy)), _
                 udtDB.MakeInParam("@Request_Claim_Reactivate_Dtm", SqlDbType.DateTime, 8, dtmRequestClaimReactivateDtm), _
@@ -573,7 +735,8 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Original_Student_File_ID", SqlDbType.VarChar, 15, dr("Original_Student_File_ID")), _
                     udtDB.MakeInParam("@Original_Student_Seq", SqlDbType.Int, 4, dr("Original_Student_Seq")), _
                     udtDB.MakeInParam("@HKIC_Symbol", SqlDbType.Char, 1, dr("HKIC_Symbol")), _
-                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, dr("Service_Receive_Dtm")) _
+                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, dr("Service_Receive_Dtm")), _
+                    udtDB.MakeInParam("@Manual_Add", SqlDbType.Char, 1, dr("Manual_Add")) _
                 }
 
                 udtDB.RunProc("proc_StudentFileEntryStaging_add", prams2)
@@ -593,7 +756,7 @@ Namespace Component.StudentFile
                 End If
 
             Next
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         End Sub
 
@@ -967,6 +1130,7 @@ Namespace Component.StudentFile
                                         dtmVaccDateTo, _
                                         Nothing, _
                                         blnPreCheck, _
+                                        Nothing, _
                                         strStatus)
         End Function
 
@@ -981,6 +1145,7 @@ Namespace Component.StudentFile
                                           dtmVaccDateTo As Nullable(Of DateTime), _
                                           blnCurrentSeason As Nullable(Of Boolean), _
                                           blnPreCheck As Nullable(Of Boolean), _
+                                          blnPreCheckCompleted As Nullable(Of Boolean), _
                                           strStatus As String, _
                                           Optional udtDB As Database = Nothing) As DataTable
 
@@ -1002,6 +1167,11 @@ Namespace Component.StudentFile
                 objPreCheck = IIf(blnPreCheck, 1, 0)
             End If
 
+            Dim objPreCheckCompleted As Object = DBNull.Value
+            If Not blnPreCheckCompleted Is Nothing Then
+                objPreCheckCompleted = IIf(blnPreCheckCompleted, 1, 0)
+            End If
+
             Dim dt As New DataTable
             Dim prams() As SqlParameter = { _
                 udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, IIf(strStudentFileID = String.Empty, DBNull.Value, strStudentFileID)), _
@@ -1015,6 +1185,7 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@VaccinationDateTo", SqlDbType.DateTime, 8, objVaccDateTo), _
                 udtDB.MakeInParam("@CurrentSeason", SqlDbType.Bit, 1, objCurrentSeason), _
                 udtDB.MakeInParam("@PreCheck", SqlDbType.Bit, 1, objPreCheck), _
+                udtDB.MakeInParam("@PreCheckCompleted", SqlDbType.Bit, 1, objPreCheckCompleted), _
                 udtDB.MakeInParam("@Record_Status", SqlDbType.VarChar, 5000, IIf(strStatus = String.Empty, DBNull.Value, strStatus)) _
             }
 
@@ -1051,6 +1222,10 @@ Namespace Component.StudentFile
             Dim dtmFinalCheckingReportGenerationDate As Object = DBNull.Value
             Dim dtmServiceReceiveDtm2ndDose As Object = DBNull.Value
             Dim dtmFinalCheckingReportGenerationDate2ndDose As Object = DBNull.Value
+            Dim dtmServiceReceiveDtm_2 As Object = DBNull.Value
+            Dim dtmFinalCheckingReportGenerationDate_2 As Object = DBNull.Value
+            Dim dtmServiceReceiveDtm2ndDose_2 As Object = DBNull.Value
+            Dim dtmFinalCheckingReportGenerationDate2ndDose_2 As Object = DBNull.Value
             Dim dtmRequestClaimReactivateDtm As Object = DBNull.Value
             Dim dtmConfirmClaimReactivateDtm As Object = DBNull.Value
 
@@ -1090,6 +1265,25 @@ Namespace Component.StudentFile
                 dtmFinalCheckingReportGenerationDate2ndDose = udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose.Value
             End If
 
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtStudentFileHeader.ServiceReceiveDtm_2.HasValue Then
+                dtmServiceReceiveDtm_2 = udtStudentFileHeader.ServiceReceiveDtm_2.Value
+            End If
+
+            If udtStudentFileHeader.FinalCheckingReportGenerationDate_2.HasValue Then
+                dtmFinalCheckingReportGenerationDate_2 = udtStudentFileHeader.FinalCheckingReportGenerationDate_2.Value
+            End If
+
+            If udtStudentFileHeader.ServiceReceiveDtm2ndDose_2.HasValue Then
+                dtmServiceReceiveDtm2ndDose_2 = udtStudentFileHeader.ServiceReceiveDtm2ndDose_2.Value
+            End If
+
+            If udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose_2.HasValue Then
+                dtmFinalCheckingReportGenerationDate2ndDose_2 = udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose_2.Value
+            End If
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
             If udtStudentFileHeader.RequestClaimReactivateDtm.HasValue Then
                 dtmRequestClaimReactivateDtm = udtStudentFileHeader.RequestClaimReactivateDtm.Value
             End If
@@ -1104,10 +1298,14 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@SP_ID", SqlDbType.Char, 8, udtStudentFileHeader.SPID), _
                 udtDB.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, udtStudentFileHeader.PracticeDisplaySeq), _
                 udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, dtmServiceReceiveDtm), _
+                udtDB.MakeInParam("@Service_Receive_Dtm_2", SqlDbType.DateTime, 8, dtmServiceReceiveDtm_2), _
                 udtDB.MakeInParam("@Service_Receive_Dtm_2ndDose", SqlDbType.DateTime, 8, dtmServiceReceiveDtm2ndDose), _
+                udtDB.MakeInParam("@Service_Receive_Dtm_2ndDose_2", SqlDbType.DateTime, 8, dtmServiceReceiveDtm2ndDose_2), _
                 udtDB.MakeInParam("@Dose", SqlDbType.VarChar, 20, udtStudentFileHeader.Dose), _
                 udtDB.MakeInParam("@Final_Checking_Report_Generation_Date", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate), _
+                udtDB.MakeInParam("@Final_Checking_Report_Generation_Date_2", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate_2), _
                 udtDB.MakeInParam("@Final_Checking_Report_Generation_Date_2ndDose", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate2ndDose), _
+                udtDB.MakeInParam("@Final_Checking_Report_Generation_Date_2ndDose_2", SqlDbType.DateTime, 8, dtmFinalCheckingReportGenerationDate2ndDose_2), _
                 udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, udtStudentFileHeader.SubsidizeCode), _
                 udtDB.MakeInParam("@Record_Status", SqlDbType.VarChar, 2, udtStudentFileHeader.RecordStatus), _
                 udtDB.MakeInParam("@Last_Rectify_By", SqlDbType.VarChar, 20, IIf(udtStudentFileHeader.LastRectifyBy = String.Empty, DBNull.Value, udtStudentFileHeader.LastRectifyBy)), _
@@ -1127,7 +1325,9 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@Confirm_Claim_Reactivate_Dtm", SqlDbType.DateTime, 8, dtmConfirmClaimReactivateDtm), _
                 udtDB.MakeInParam("@Name_List_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.NameListFileID = String.Empty, DBNull.Value, udtStudentFileHeader.NameListFileID)), _
                 udtDB.MakeInParam("@Vaccination_Report_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.VaccinationReportFileID = String.Empty, DBNull.Value, udtStudentFileHeader.VaccinationReportFileID)), _
+                udtDB.MakeInParam("@Vaccination_Report_File_ID_2", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.VaccinationReportFileID_2 = String.Empty, DBNull.Value, udtStudentFileHeader.VaccinationReportFileID_2)), _
                 udtDB.MakeInParam("@Onsite_Vaccination_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OnsiteVaccinationFileID = String.Empty, DBNull.Value, udtStudentFileHeader.OnsiteVaccinationFileID)), _
+                udtDB.MakeInParam("@Onsite_Vaccination_File_ID_2", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OnsiteVaccinationFileID_2 = String.Empty, DBNull.Value, udtStudentFileHeader.OnsiteVaccinationFileID_2)), _
                 udtDB.MakeInParam("@Claim_Creation_Report_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.ClaimCreationReportFileID = String.Empty, DBNull.Value, udtStudentFileHeader.ClaimCreationReportFileID)), _
                 udtDB.MakeInParam("@Rectification_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.RectificationFileID = String.Empty, DBNull.Value, udtStudentFileHeader.RectificationFileID)), _
                 udtDB.MakeInParam("@Request_Rectify_Status", SqlDbType.VarChar, 2, IIf(udtStudentFileHeader.RequestRectifyStatus = String.Empty, DBNull.Value, udtStudentFileHeader.RequestRectifyStatus)), _
@@ -1171,8 +1371,6 @@ Namespace Component.StudentFile
                 dtmConfirmRemoveDtm = udtStudentFileHeader.ConfirmRemoveDtm.Value
             End If
 
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             If udtStudentFileHeader.RequestClaimReactivateDtm.HasValue Then
                 dtmRequestClaimReactivateDtm = udtStudentFileHeader.RequestClaimReactivateDtm.Value
             End If
@@ -1180,7 +1378,6 @@ Namespace Component.StudentFile
             If udtStudentFileHeader.ConfirmClaimReactivateDtm.HasValue Then
                 dtmConfirmClaimReactivateDtm = udtStudentFileHeader.ConfirmClaimReactivateDtm.Value
             End If
-            ' CRE19-001 (VSS 2019) [End][Winnie]
 
             Dim prams() As SqlParameter = { _
                 udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentFileHeader.StudentFileID), _
@@ -1202,7 +1399,9 @@ Namespace Component.StudentFile
                 udtDB.MakeInParam("@Confirm_Claim_Reactivate_Dtm", SqlDbType.DateTime, 8, dtmConfirmClaimReactivateDtm), _
                 udtDB.MakeInParam("@Name_List_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.NameListFileID = String.Empty, DBNull.Value, udtStudentFileHeader.NameListFileID)), _
                 udtDB.MakeInParam("@Vaccination_Report_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.VaccinationReportFileID = String.Empty, DBNull.Value, udtStudentFileHeader.VaccinationReportFileID)), _
+                udtDB.MakeInParam("@Vaccination_Report_File_ID_2", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.VaccinationReportFileID_2 = String.Empty, DBNull.Value, udtStudentFileHeader.VaccinationReportFileID_2)), _
                 udtDB.MakeInParam("@Onsite_Vaccination_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OnsiteVaccinationFileID = String.Empty, DBNull.Value, udtStudentFileHeader.OnsiteVaccinationFileID)), _
+                udtDB.MakeInParam("@Onsite_Vaccination_File_ID_2", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.OnsiteVaccinationFileID_2 = String.Empty, DBNull.Value, udtStudentFileHeader.OnsiteVaccinationFileID_2)), _
                 udtDB.MakeInParam("@Claim_Creation_Report_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.ClaimCreationReportFileID = String.Empty, DBNull.Value, udtStudentFileHeader.ClaimCreationReportFileID)), _
                 udtDB.MakeInParam("@Rectification_File_ID", SqlDbType.VarChar, 15, IIf(udtStudentFileHeader.RectificationFileID = String.Empty, DBNull.Value, udtStudentFileHeader.RectificationFileID)), _
                 udtDB.MakeInParam("@Request_Rectify_Status", SqlDbType.VarChar, 2, IIf(udtStudentFileHeader.RequestRectifyStatus = String.Empty, DBNull.Value, udtStudentFileHeader.RequestRectifyStatus)), _
@@ -1348,10 +1547,13 @@ Namespace Component.StudentFile
         ''' <summary>
         ''' Update StudentFileEntry Temp Voucher Account Data
         ''' </summary>
-        ''' <param name="udtStudent"></param>    
+        ''' <param name="udtStudent"></param>
+        ''' <param name="eStudentFileLocation"></param>   
         ''' <param name="udtDB"></param>
         ''' <remarks></remarks>
-        Public Sub UpdateStudentTempVoucherAccount(ByVal udtStudent As StudentFileEntryModel, Optional udtDB As Database = Nothing)
+        Public Sub UpdateStudentTempVoucherAccount(ByVal udtStudent As StudentFileEntryModel, _
+                                                   ByVal eStudentFileLocation As StudentFileLocation, _
+                                                   Optional udtDB As Database = Nothing)
 
             If IsNothing(udtDB) Then udtDB = New Database
 
@@ -1369,8 +1571,15 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
                 }
 
-                udtDB.RunProc("proc_StudentFileEntry_upd_TempVoucherAcc", prams)
-
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                Select Case eStudentFileLocation
+                    Case StudentFileLocation.Staging
+                        udtDB.RunProc("proc_StudentFileEntryStaging_upd_TempVoucherAcc", prams)
+                    Case StudentFileLocation.Permanence
+                        udtDB.RunProc("proc_StudentFileEntry_upd_TempVoucherAcc", prams)
+                End Select
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End With
 
         End Sub
@@ -1379,9 +1588,12 @@ Namespace Component.StudentFile
         ''' Update StudentFileEntry Validated Voucher Account Data
         ''' </summary>
         ''' <param name="udtStudent"></param>    
+        ''' <param name="eStudentFileLocation"></param>
         ''' <param name="udtDB"></param>
         ''' <remarks></remarks>
-        Public Sub UpdateStudentValidatedVoucherAccount(ByVal udtStudent As StudentFileEntryModel, Optional udtDB As Database = Nothing)
+        Public Sub UpdateStudentValidatedVoucherAccount(ByVal udtStudent As StudentFileEntryModel, _
+                                                        ByVal eStudentFileLocation As StudentFileLocation, _
+                                                        Optional udtDB As Database = Nothing)
 
             If IsNothing(udtDB) Then udtDB = New Database
 
@@ -1399,7 +1611,15 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
                 }
 
-                udtDB.RunProc("proc_StudentFileEntry_upd_ValidatedVoucherAcc", prams)
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                Select Case eStudentFileLocation
+                    Case StudentFileLocation.Staging
+                        udtDB.RunProc("proc_StudentFileEntryStaging_upd_ValidatedVoucherAcc", prams)
+                    Case StudentFileLocation.Permanence
+                        udtDB.RunProc("proc_StudentFileEntry_upd_ValidatedVoucherAcc", prams)
+                End Select
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             End With
 
@@ -1409,10 +1629,13 @@ Namespace Component.StudentFile
         ''' Update StudentFileEntry By Validated Voucher Account
         ''' </summary>
         ''' <param name="udtStudent"></param>    
-        ''' <param name="blnUpdateExcelChiName"></param>    
+        ''' <param name="blnUpdateExcelChiName"></param>  
+        ''' <param name="eStudentFileLocation"></param>
         ''' <param name="udtDB"></param>
         ''' <remarks></remarks>
-        Public Sub UpdateVaccinationFileEntryByValidatedAcct(ByVal udtStudent As StudentFileEntryModel, ByVal blnUpdateExcelChiName As Boolean, Optional udtDB As Database = Nothing)
+        Public Sub UpdateVaccinationFileEntryByValidatedAcct(ByVal udtStudent As StudentFileEntryModel, ByVal blnUpdateExcelChiName As Boolean, _
+                                                             ByVal eStudentFileLocation As StudentFileLocation, _
+                                                             Optional udtDB As Database = Nothing)
 
             If IsNothing(udtDB) Then udtDB = New Database
 
@@ -1438,8 +1661,15 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
                 }
 
-                udtDB.RunProc("proc_StudentFileEntry_upd_OverWriteByValidatedAcct", prams)
-
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                Select Case eStudentFileLocation
+                    Case StudentFileLocation.Staging
+                        udtDB.RunProc("proc_StudentFileEntryStaging_upd_OverWriteByValidatedAcct", prams)
+                    Case StudentFileLocation.Permanence
+                        udtDB.RunProc("proc_StudentFileEntry_upd_OverWriteByValidatedAcct", prams)
+                End Select
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End With
 
         End Sub
@@ -1450,11 +1680,13 @@ Namespace Component.StudentFile
         ''' <param name="strStudentFileID"></param>    
         ''' <param name="intStudentSeq"></param>    
         ''' <param name="strNameCHExcel"></param>    
+        ''' <param name="eStudentFileLocation"></param>
         ''' <param name="udtDB"></param>
         ''' <remarks></remarks>
         Public Sub UpdateVaccinationFileEntryChiNameExcel(ByVal strStudentFileID As String, _
                                                           ByVal intStudentSeq As Integer, _
                                                           ByVal strNameCHExcel As String, _
+                                                          ByVal eStudentFileLocation As StudentFileLocation, _
                                                           Optional udtDB As Database = Nothing)
 
             If IsNothing(udtDB) Then udtDB = New Database
@@ -1465,33 +1697,54 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 6, strNameCHExcel) _
                 }
 
-            udtDB.RunProc("proc_StudentFileEntry_upd_ChiName_Excel", prams)
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select Case eStudentFileLocation
+                Case StudentFileLocation.Staging
+                    udtDB.RunProc("proc_StudentFileEntryStaging_upd_ChiName_Excel", prams)
+                Case StudentFileLocation.Permanence
+                    udtDB.RunProc("proc_StudentFileEntry_upd_ChiName_Excel", prams)
+            End Select
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         End Sub
+
 
         ''' <summary>
         ''' Update StudentFileEntry Contact No.
         ''' </summary>
         ''' <param name="udtStudent"></param>     
+        ''' <param name="eStudentFileLocation"></param>
         ''' <param name="udtDB"></param>
         ''' <remarks></remarks>
-        Public Sub UpdateStudentContactNo(ByVal udtStudent As StudentFileEntryModel, Optional udtDB As Database = Nothing)
+        Public Sub UpdateStudentInformation(ByVal udtStudent As StudentFileEntryModel, ByVal eStudentFileLocation As StudentFileLocation, Optional udtDB As Database = Nothing)
 
             If IsNothing(udtDB) Then udtDB = New Database
 
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             With udtStudent
                 Dim prams() As SqlParameter = { _
                     udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
                     udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, .StudentSeq), _
+                    udtDB.MakeInParam("@Class_No", SqlDbType.NVarChar, 10, .ClassNo), _
                     udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, .ContactNo), _
                     udtDB.MakeInParam("@Reject_Injection", SqlDbType.Char, 1, .RejectInjection), _
                     udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .LastRectifyBy), _
-                    udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
+                    udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm), _
+                    udtDB.MakeInParam("@HKIC_Symbol", SqlDbType.Char, 1, IIf(.HKICSymbol Is Nothing, DBNull.Value, .HKICSymbol)), _
+                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, IIf(.ServiceDate Is Nothing, DBNull.Value, .ServiceDate)) _
                 }
 
-                udtDB.RunProc("proc_StudentFileEntry_upd_PersonalParticulars", prams)
+                Select Case eStudentFileLocation
+                    Case StudentFileLocation.Staging
+                        udtDB.RunProc("proc_StudentFileEntryStaging_upd_PersonalParticulars", prams)
+                    Case StudentFileLocation.Permanence
+                        udtDB.RunProc("proc_StudentFileEntry_upd_PersonalParticulars", prams)
+                End Select
 
             End With
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         End Sub
 
@@ -1510,6 +1763,7 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, dr("Student_File_ID")), _
                     udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, dr("Student_Seq")), _
                     udtDB.MakeInParam("@Injected", SqlDbType.Char, 1, IIf(IsDBNull(dr("Injected")), DBNull.Value, dr("Injected"))), _
+                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, IIf(IsDBNull(dr("Service_Receive_Dtm")), DBNull.Value, dr("Service_Receive_Dtm"))), _
                     udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, dr("Update_By")), _
                     udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, dr("Update_Dtm")), _
                     udtDB.MakeInParam("@TSMP", SqlDbType.Binary, 8, dr("TSMP")) _
@@ -1640,6 +1894,35 @@ Namespace Component.StudentFile
             udtDB.RunProc("proc_StudentFileEntryPrecheckSubsidizeInject_upd", prams)
 
         End Sub
+
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Update StudentFileEntry with new Doc Code (Target Student entry and all related entry using same account in Perm and Staging)
+        ''' </summary>
+        ''' <param name="udtStudent"></param>
+        ''' <param name="udtDB"></param>
+        ''' <remarks></remarks>
+        Public Sub UpdateVaccinationFileEntryDocCode(ByVal udtStudent As StudentFileEntryModel, _
+                                                     Optional udtDB As Database = Nothing)
+
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            With udtStudent
+                Dim prams() As SqlParameter = { _
+                        udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
+                        udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, .StudentSeq), _
+                        udtDB.MakeInParam("@Doc_Code", SqlDbType.Char, 20, IIf(.DocCode = String.Empty, DBNull.Value, .DocCode)), _
+                        udtDB.MakeInParam("@Acc_Doc_Code", SqlDbType.Char, 20, IIf(.AccDocCode = String.Empty, DBNull.Value, .AccDocCode)), _
+                        udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .LastRectifyBy), _
+                        udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
+                    }
+
+                udtDB.RunProc("proc_StudentFileEntry_upd_DocCode", prams)
+            End With
+
+        End Sub
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         ' Supporting
 
@@ -1933,6 +2216,11 @@ Namespace Component.StudentFile
             dt.Columns.Add("Category2_Excel", GetType(String))
             dt.Columns.Add("Lot_Number", GetType(String))
             ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            dt.Columns.Add("Manual_Add", GetType(String))
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             Return dt
 
@@ -2236,14 +2524,18 @@ Namespace Component.StudentFile
         End Function
 
 
-        Public Shared Function SubmitReport(ByVal strFileID As String, ByVal udtStudentFileHeader As StudentFile.StudentFileHeaderModel,
-                                      ByVal strRequestedBy As String, ByVal udtDB As Database) As FileGeneration.FileGenerationQueueModel
+        Public Shared Function SubmitReport(ByVal strFileID As String, _
+                                            ByVal udtStudentFileHeader As StudentFile.StudentFileHeaderModel, _
+                                            ByVal strRequestedBy As String, _
+                                            ByVal intVisit As VaccinationDate, _
+                                            ByVal udtDB As Database) As FileGeneration.FileGenerationQueueModel
 
             Dim inputParam As New StoreProcParamCollection
             inputParam.AddParam("@Input_Student_File_ID", SqlDbType.VarChar, 15, udtStudentFileHeader.StudentFileID)
             inputParam.AddParam("@File_ID", SqlDbType.VarChar, 30, strFileID)
             inputParam.AddParam("@Scheme_Code", SqlDbType.VarChar, 10, udtStudentFileHeader.SchemeCode)
             inputParam.AddParam("@Scheme_Code_Display", SqlDbType.VarChar, 10, udtStudentFileHeader.SchemeCodeDisplay)
+            inputParam.AddParam("@Visit", SqlDbType.Int, 4, intVisit)
 
             ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
             Dim inputParamFileName As New StoreProcParamCollection
@@ -2251,6 +2543,8 @@ Namespace Component.StudentFile
             inputParamFileName.AddParam("@File_ID", SqlDbType.VarChar, 30, strFileID)
             inputParamFileName.AddParam("@Scheme_Code", SqlDbType.VarChar, 10, udtStudentFileHeader.SchemeCode)
             inputParamFileName.AddParam("@Scheme_Code_Display", SqlDbType.VarChar, 10, udtStudentFileHeader.SchemeCodeDisplay)
+            inputParamFileName.AddParam("@Visit", SqlDbType.Int, 4, intVisit)
+
             If udtStudentFileHeader.Precheck Then
                 ' RVP --> VaccineType is empty
                 inputParamFileName.AddParam("@VT", SqlDbType.VarChar, 10, String.Empty)
@@ -2262,14 +2556,31 @@ Namespace Component.StudentFile
             End If
             ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
-
             ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             Dim descParamFileName As New ParameterCollection
 
-            Select udtStudentFileHeader.SchemeCode
-                Case Common.Component.Scheme.SchemeClaimModel.PPP, Common.Component.Scheme.SchemeClaimModel.PPPKG, Common.Component.Scheme.SchemeClaimModel.RVP
+            Select Case udtStudentFileHeader.SchemeCode
+                Case Common.Component.Scheme.SchemeClaimModel.RVP
                     descParamFileName.Add(New ParameterObject("SchoolCodeOrFileID", String.Format("-{0}", udtStudentFileHeader.SchoolCode)))
+
+                Case Common.Component.Scheme.SchemeClaimModel.PPP, Common.Component.Scheme.SchemeClaimModel.PPPKG
+                    Dim strVisit As String = String.Empty
+
+                    If udtStudentFileHeader.ServiceReceiveDtm_2 IsNot Nothing Then
+                        If strFileID = DataDownloadFileID.eHSVF001 Or strFileID = DataDownloadFileID.eHSVF002 Then
+                            If intVisit = VaccinationDate.First Then
+                                strVisit = "-1st"
+                            End If
+
+                            If intVisit = VaccinationDate.Second Then
+                                strVisit = "-2nd"
+                            End If
+
+                        End If
+                    End If
+
+                    descParamFileName.Add(New ParameterObject("SchoolCodeOrFileID", String.Format("-{0}{1}", udtStudentFileHeader.SchoolCode, strVisit)))
 
                 Case Common.Component.Scheme.SchemeClaimModel.VSS
                     If udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then

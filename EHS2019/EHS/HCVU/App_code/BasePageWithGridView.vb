@@ -81,6 +81,23 @@ Public MustInherit Class BasePageWithGridView
         gvSort.DataBind()
     End Sub
 
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Sub GridViewDataBind(ByRef gvSort As GridView, ByRef dt As Object, ByVal intPageSize As Integer)
+        Dim intPageIndex As Integer = 0
+        intPageIndex = gvSort.PageIndex
+        Dim gvFunction As Common.ComFunction.GridviewFunction = New Common.ComFunction.GridviewFunction(ViewState("SortDirection_" & gvSort.ID), ViewState("SortExpression_" & gvSort.ID))
+
+        gvFunction.GridViewSortDirection = ViewState("SortDirection_" & gvSort.ID)
+        gvFunction.GridViewSortExpression = ViewState("SortExpression_" & gvSort.ID)
+
+        gvSort.PageSize = intPageSize
+        gvSort.PageIndex = intPageIndex
+        gvSort.DataSource = gvFunction.SortDataTable(dt, True)
+        gvSort.DataBind()
+    End Sub
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
     Public Sub GridViewPreRenderHandler(ByVal sender As Object, ByVal e As System.EventArgs, ByVal strDataSource As String)
         Dim gvSort As GridView = CType(sender, GridView)
         SetSortImg(gvSort)

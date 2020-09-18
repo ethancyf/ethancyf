@@ -115,12 +115,25 @@
 }
 
 /***** Table Style*****/
+.tableTitle
+{
+     font-size: 16px;
+     color: #666666;
+     font-family: Arial;
+}
+
 .tableText {
     font-size: 16px;
     color: #4D4D4D;
     font-family: Arial;
     font-weight: bold;
 }
+
+.tableCellStyle
+{
+	padding: 0px 0px 5px 0px;
+}
+
 
 /***** News Message Style in Login Page*****/
 .messageText {
@@ -401,4 +414,21 @@ td.SubsidizeCategoryHeader {
 	font-weight: bold;
     position:relative;
     left:-3px;
+}
+
+/***** Rectify Account Popup *****/
+
+.checkboxStyle
+{
+	text-align: justify;
+	border-right: #6495ed 2px solid;
+	padding-right: 5px;
+	border-top: #6495ed 2px solid;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	border-left: #6495ed 2px solid;
+	padding-top: 3px;
+	border-bottom: #6495ed 2px solid;
+	color: #000000;
+	background-color: #ffff99;
 }

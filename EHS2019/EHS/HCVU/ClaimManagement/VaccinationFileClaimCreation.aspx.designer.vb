@@ -284,6 +284,24 @@ Partial Public Class VaccinationFileClaimCreation
     Protected WithEvents ddlSStatus As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''lblSVaccinationSeasonText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSVaccinationSeasonText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblSVaccinationSeason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblSVaccinationSeason As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
     '''ibtnSSearch control.
     '''</summary>
     '''<remarks>
@@ -770,6 +788,213 @@ Partial Public Class VaccinationFileClaimCreation
     Protected WithEvents fteIVaccinationReportGenerationDate2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
+    '''tr2ndVaccinationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndVaccinationDate As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblVaccinationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccinationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationDate1_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationDate1_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationDate1_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationDate1_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteIVaccinationDate1_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationDate2_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationDate2_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationDate2_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationDate2_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteIVaccinationDate2_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''tr2ndReportGenerationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndReportGenerationDate As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblVaccinationReportGenerationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccinationReportGenerationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationReportGenerationDate2_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteIVaccinationReportGenerationDate2_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''panIMMR control.
     '''</summary>
     '''<remarks>
@@ -1193,6 +1418,78 @@ Partial Public Class VaccinationFileClaimCreation
     Protected WithEvents lblCVaccinationReportGenerationDate2 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''tr2ndVaccinationDateConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndVaccinationDateConfirm As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCVaccinationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tr2ndReportGenerationDateConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndReportGenerationDateConfirm As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCVaccinationReportGenerationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationReportGenerationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''hfCVaccinationDate1 control.
     '''</summary>
     '''<remarks>
@@ -1218,6 +1515,33 @@ Partial Public Class VaccinationFileClaimCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents hfCVaccinationReportGenerationDate2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationDate1_2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationDate2_2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
     '''panCMMR control.

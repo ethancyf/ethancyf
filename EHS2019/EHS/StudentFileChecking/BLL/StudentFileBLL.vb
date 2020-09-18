@@ -44,7 +44,8 @@ Namespace BLL
         ''' </summary>
         ''' <returns>Collection of Student_File_ID</returns>
         ''' <remarks></remarks>
-        Public Shared Function GetStudentFileHeaderVaccineCheck(ByVal eStudentFileLocation As StudentFileLocation) As List(Of StudentFile.StudentFileHeaderModel)
+        Public Shared Function GetStudentFileHeaderVaccineCheck(ByVal eStudentFileLocation As StudentFileLocation, _
+                                                                ByRef lstVaccinationDateSeq As List(Of Integer)) As List(Of StudentFile.StudentFileHeaderModel)
             Dim udtDB As New Database
             Dim dt As New DataTable
 
@@ -58,6 +59,7 @@ Namespace BLL
                     If dt.Rows.Count > 0 Then
                         For Each dr As DataRow In dt.Rows
                             lstStudentHeader.Add(udtStudentBLL.GetStudentFileHeaderStaging(dr("Student_File_ID").ToString, False))
+                            'lstVaccinationDateSeq.Add(dr("Visit"))
                         Next
                     End If
                 Case StudentFileLocation.Permanence
@@ -66,6 +68,7 @@ Namespace BLL
                     If dt.Rows.Count > 0 Then
                         For Each dr As DataRow In dt.Rows
                             lstStudentHeader.Add(udtStudentBLL.GetStudentFileHeader(dr("Student_File_ID").ToString, False))
+                            lstVaccinationDateSeq.Add(dr("Visit"))
                         Next
                     End If
             End Select
@@ -79,7 +82,8 @@ Namespace BLL
         ''' </summary>
         ''' <returns>Collection of Student_File_ID</returns>
         ''' <remarks></remarks>
-        Public Shared Function GetStudentFileHeaderVaccineEntitle(ByVal eStudentFileLocation As StudentFileLocation) As List(Of StudentFile.StudentFileHeaderModel)
+        Public Shared Function GetStudentFileHeaderVaccineEntitle(ByVal eStudentFileLocation As StudentFileLocation, _
+                                                                  ByRef lstVaccinationDateSeq As List(Of Integer)) As List(Of StudentFile.StudentFileHeaderModel)
             Dim udtDB As New Database
             Dim dt As New DataTable
 
@@ -93,6 +97,7 @@ Namespace BLL
                     If dt.Rows.Count > 0 Then
                         For Each dr As DataRow In dt.Rows
                             lstStudentHeader.Add(udtStudentBLL.GetStudentFileHeaderStaging(dr("Student_File_ID").ToString, False))
+                            'lstVaccinationDateSeq.Add(dr("Visit"))
                         Next
                     End If
                 Case StudentFileLocation.Permanence
@@ -101,6 +106,7 @@ Namespace BLL
                     If dt.Rows.Count > 0 Then
                         For Each dr As DataRow In dt.Rows
                             lstStudentHeader.Add(udtStudentBLL.GetStudentFileHeader(dr("Student_File_ID").ToString, False))
+                            lstVaccinationDateSeq.Add(dr("Visit"))
                         Next
                     End If
             End Select
@@ -117,7 +123,8 @@ Namespace BLL
         ''' <remarks></remarks>
         Public Shared Function GetStudentFileEntryVaccineCheck(ByVal eStudentFileLocation As StudentFileLocation, _
                                                                ByVal strStudentFileID As String, _
-                                                               ByVal ProviderConnectionFailOnly As String) As StudentModelCollection
+                                                               ByVal ProviderConnectionFailOnly As String, _
+                                                               ByVal blnExist2ndVaccinationDate As Boolean) As StudentModelCollection
             Dim cllnStudentModel As New StudentModelCollection
 
             Dim udtDB As New Database
@@ -141,7 +148,12 @@ Namespace BLL
                     ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
                     ' ---------------------------------------------------------------------------------------------------------
                     If IsDBNull(dr("Service_Receive_Dtm")) Then
-                        dr("Service_Receive_Dtm") = dr("Service_Receive_Dtm_Header")
+                        If blnExist2ndVaccinationDate Then
+                            dr("Service_Receive_Dtm") = dr("Service_Receive_Dtm_2_Header")
+                        Else
+                            dr("Service_Receive_Dtm") = dr("Service_Receive_Dtm_Header")
+                        End If
+
                     End If
                     ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
@@ -297,19 +309,38 @@ Namespace BLL
 
 
         Public Shared Sub UpdateStudentFileEntryVaccineStaging(ByVal eStudentFileLocation As StudentFileLocation, _
-                                                               ByVal strProvider As String, ByRef udtStudentModel As StudentModel, ByRef cllnTranVaccine As EHSTransaction.TransactionDetailVaccineModelCollection, ByVal strVaccineRefStatus As String)
+                                                               ByVal strProvider As String, _
+                                                               ByRef udtStudentModel As StudentModel, _
+                                                               ByRef cllnTranVaccine As EHSTransaction.TransactionDetailVaccineModelCollection, _
+                                                               ByVal strVaccineRefStatus As String, _
+                                                               ByVal blnWithStaging As Boolean)
             Dim udtDB As New Database
             Try
                 udtDB.BeginTransaction()
-                ' CRE19-001-04 (PPP 2019-20) [Start][Koala]
+
+                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 If strProvider <> TransactionDetailVaccineModel.ProviderClass.Private Then
                     ' Update Vaccine Ref Status of HA and DH only
                     UpdateStudentFileEntry_VaccineRefStatus(eStudentFileLocation, strProvider, udtStudentModel, strVaccineRefStatus, udtDB)
+
+                    If blnWithStaging And eStudentFileLocation = StudentFileLocation.Permanence Then
+                        UpdateStudentFileEntry_VaccineRefStatus(StudentFileLocation.Staging, strProvider, udtStudentModel, strVaccineRefStatus, udtDB)
+                    End If
+
+                    ' Clear the vaccine record which is provided by RVP
                     DeleteStudentFileEntryVaccine(eStudentFileLocation, TransactionDetailVaccineModel.ProviderClass.RVP, udtStudentModel, udtDB)
+
                 End If
-                ' CRE19-001-04 (PPP 2019-20) [End][Koala]
+                ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
                 DeleteStudentFileEntryVaccine(eStudentFileLocation, strProvider, udtStudentModel, udtDB)
                 InsertStudentFileEntryVaccine(eStudentFileLocation, udtStudentModel, cllnTranVaccine, udtDB)
+
+                'If blnWithStaging And eStudentFileLocation = StudentFileLocation.Permanence Then
+                '    DeleteStudentFileEntryVaccine(StudentFileLocation.Staging, strProvider, udtStudentModel, udtDB)
+                '    InsertStudentFileEntryVaccine(StudentFileLocation.Staging, udtStudentModel, cllnTranVaccine, udtDB)
+                'End If
 
                 udtDB.CommitTransaction()
             Catch ex As Exception
@@ -407,6 +438,18 @@ Namespace BLL
 
         End Sub
 
+        Public Shared Sub UpdateStudentFileEntryStaging_TempAccountAccID(ByRef udtStudentModel As StudentModel, _
+                                                                         ByVal strAccountID As String, _
+                                                                         Optional ByVal udtDB As Database = Nothing)
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim prams() As SqlParameter = { _
+                        udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, udtStudentModel.StudentFileID), _
+                        udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 2, udtStudentModel.StudentSeq), _
+                        udtDB.MakeInParam("@Temp_Voucher_Acc_ID", SqlDbType.Char, 15, IIf(strAccountID = String.Empty, DBNull.Value, strAccountID))}
+            udtDB.RunProc("proc_StudentFileEntryStaging_upd_TempVoucherAccID", prams)
+
+        End Sub
+
         Public Shared Sub DeleteStudentFileEntryVaccine(ByVal eStudentFileLocation As StudentFileLocation, _
                                                                 ByVal strProvider As String, ByRef udtStudentModel As StudentModel, Optional ByVal udtDB As Database = Nothing)
             If udtDB Is Nothing Then udtDB = New Database()
@@ -463,7 +506,9 @@ Namespace BLL
             End If
         End Sub
 
-        Public Shared Sub UpdateStudentFileHeaderStatus(ByVal strStudentFileID As String, ByVal eRecordStatus As StudentFile.StudentFileHeaderModel.RecordStatusEnumClass)
+        Public Shared Sub UpdateStudentFileHeaderStatus(ByVal strStudentFileID As String, _
+                                                        ByVal eRecordStatus As StudentFile.StudentFileHeaderModel.RecordStatusEnumClass, _
+                                                        Optional ByVal blnExist2ndVaccinationDate As Boolean = False)
             Dim udtBLL As New StudentFile.StudentFileBLL
             Dim udtStudentFileHeader As StudentFile.StudentFileHeaderModel = Nothing
             Select Case eRecordStatus
@@ -473,7 +518,10 @@ Namespace BLL
                     ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
                     udtStudentFileHeader = udtBLL.GetStudentFileHeaderStaging(strStudentFileID, False)
                     udtStudentFileHeader.RecordStatusEnum = eRecordStatus
-                Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim
+
+                Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim, _
+                     StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim
+
                     udtStudentFileHeader = udtBLL.GetStudentFileHeader(strStudentFileID, False)
                     udtStudentFileHeader.RecordStatusEnum = eRecordStatus
 
@@ -490,13 +538,20 @@ Namespace BLL
                 udtDB.BeginTransaction()
 
                 Select Case eRecordStatus
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                     Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingPreCheckGeneration
 
                         ' eHSVF000 Report (RVP Precheck)
-                        udtStudentFileHeader.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF000, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
+                        udtStudentFileHeader.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF000, _
+                                                                                                               udtStudentFileHeader, _
+                                                                                                               udtStudentFileHeader.UploadBy, _
+                                                                                                               StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                               udtDB).GenerationID
                         ' eHSVF006 Name list
-                        udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
+                        udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, _
+                                                                                                      udtStudentFileHeader, _
+                                                                                                      udtStudentFileHeader.UploadBy, _
+                                                                                                      StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                      udtDB).GenerationID
                         ' eHSVF002 Report (clear old report)
                         udtStudentFileHeader.OnsiteVaccinationFileID = String.Empty
 
@@ -504,65 +559,108 @@ Namespace BLL
                         udtBLL.UpdateStudentFileHeaderStaging(udtStudentFileHeader, udtDB)
                         ' [Staging to Permanent ] Update header staging (and trigger loggging)
                         udtBLL.MoveStudentFileHeaderStaging(udtStudentFileHeader, udtDB)
-                        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
+
 
                     Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
-                        ' CRE19-001-04 (PPP 2019-20) [Start][Koala]
-                        ' CRE18-010 (Adding one short form of student vaccination file upon the first upload) [Start][Koala]
                         ' eHSVF001 Report
-                        udtStudentFileHeader.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
+                        udtStudentFileHeader.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, _
+                                                                                                               udtStudentFileHeader, _
+                                                                                                               udtStudentFileHeader.UploadBy, _
+                                                                                                               StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                               udtDB).GenerationID
                         ' eHSVF006 Name list
-                        udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
+                        udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, _
+                                                                                                      udtStudentFileHeader, _
+                                                                                                      udtStudentFileHeader.UploadBy, _
+                                                                                                      StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                      udtDB).GenerationID
                         ' eHSVF002 Report (clear old report)
                         udtStudentFileHeader.OnsiteVaccinationFileID = String.Empty
-                        '' eHSSF001 Report for back office 
-                        ''udtStudentFileHeader.StudentReportFileID = SubmitReport("eHSSF001", udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
-                        '' eHSSF001B Report for SP
-                        'SubmitReport("eHSSF001B", udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB)
-                        ' CRE19-001-04 (PPP 2019-20) [End][Koala]
 
-                        ' CRE18-010 (Adding one short form of student vaccination file upon the first upload) [End][Koala]
                         udtBLL.UpdateStudentFileHeaderStaging(udtStudentFileHeader, udtDB)
                         udtBLL.MoveStudentFileHeaderStaging(udtStudentFileHeader, udtDB)
 
-                    Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim
+                    Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim, _
+                         StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim
                         ' No need move student file from staging to parmenance
 
-                        ' CRE19-001-04 (PPP 2019-20) [Start][Koala]
-                        ' eHSVF001 Report
-                        udtStudentFileHeader.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
-                        ' eHSVF002 Report
-                        udtStudentFileHeader.OnsiteVaccinationFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF002, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
-
-                        '' eHSSF002A Report for back office 
-                        'udtStudentFileHeader.StudentReportFileID = SubmitReport("eHSSF002A", udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
-                        '' eHSSF002B Report for SP
-                        'SubmitReport("eHSSF002B", udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB)
-                        ' CRE19-001-04 (PPP 2019-20) [End][Koala]
+                        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If blnExist2ndVaccinationDate Then
+                            ' eHSVF001 Report
+                            udtStudentFileHeader.VaccinationReportFileID_2 = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, _
+                                                                                                                     udtStudentFileHeader, _
+                                                                                                                     udtStudentFileHeader.UploadBy, _
+                                                                                                                     StudentFile.StudentFileBLL.VaccinationDate.Second, _
+                                                                                                                     udtDB).GenerationID
+                            ' eHSVF002 Report
+                            udtStudentFileHeader.OnsiteVaccinationFileID_2 = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF002, _
+                                                                                                                     udtStudentFileHeader, _
+                                                                                                                     udtStudentFileHeader.UploadBy, _
+                                                                                                                     StudentFile.StudentFileBLL.VaccinationDate.Second, _
+                                                                                                                     udtDB).GenerationID
+                        Else
+                            ' eHSVF001 Report
+                            udtStudentFileHeader.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, _
+                                                                                                                   udtStudentFileHeader, _
+                                                                                                                   udtStudentFileHeader.UploadBy, _
+                                                                                                                   StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                                   udtDB).GenerationID
+                            ' eHSVF002 Report
+                            udtStudentFileHeader.OnsiteVaccinationFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF002, _
+                                                                                                                   udtStudentFileHeader, _
+                                                                                                                   udtStudentFileHeader.UploadBy, _
+                                                                                                                   StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                                   udtDB).GenerationID
+                        End If
 
                         udtBLL.UpdateStudentFileHeader(udtStudentFileHeader, udtDB)
 
-                        ' CRE19-001 (VSS 2019) [Start][Winnie]
+
+                        Dim udtStudentFileHeaderStaging As StudentFile.StudentFileHeaderModel = udtBLL.GetStudentFileHeaderStaging(strStudentFileID, blnWithEntry:=False)
+
+                        If udtStudentFileHeaderStaging IsNot Nothing AndAlso blnExist2ndVaccinationDate Then
+                            udtStudentFileHeaderStaging.RecordStatusEnum = udtStudentFileHeader.RecordStatusEnum
+                            udtStudentFileHeaderStaging.VaccinationReportFileID_2 = udtStudentFileHeader.VaccinationReportFileID_2
+                            udtStudentFileHeaderStaging.OnsiteVaccinationFileID_2 = udtStudentFileHeader.OnsiteVaccinationFileID_2
+
+                            udtBLL.UpdateStudentFileHeaderStaging(udtStudentFileHeaderStaging, udtDB)
+                        End If
+
+                        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
                     Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended, _
                         StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.Completed
-                        ' CRE19-001 (VSS 2019) [End][Winnie]
 
-                        ' CRE19-001-04 (PPP 2019-20) [Start][Koala]
                         Dim udtHCVUUserBLL As New HCVUUser.HCVUUserBLL
+
                         If udtHCVUUserBLL.IsExist(udtStudentFileHeader.ClaimUploadBy) Then
-							' eHSVF003 Vaccination claim report
-                            udtStudentFileHeader.ClaimCreationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF003, udtStudentFileHeader, udtStudentFileHeader.ClaimUploadBy, udtDB).GenerationID
-	                        ' eHSVF006 Name list
-	                        udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, udtStudentFileHeader, udtStudentFileHeader.ClaimUploadBy, udtDB).GenerationID
+                            ' eHSVF003 Vaccination claim report
+                            udtStudentFileHeader.ClaimCreationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF003, _
+                                                                                                                     udtStudentFileHeader, _
+                                                                                                                     udtStudentFileHeader.ClaimUploadBy, _
+                                                                                                                     StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                                     udtDB).GenerationID
+                            ' eHSVF006 Name list
+                            udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, _
+                                                                                                          udtStudentFileHeader, _
+                                                                                                          udtStudentFileHeader.ClaimUploadBy, _
+                                                                                                          StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                          udtDB).GenerationID
                         Else
-							' eHSVF003 Vaccination claim report
-                            udtStudentFileHeader.ClaimCreationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF003, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
-	                        ' eHSVF006 Name list
-	                        udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, udtStudentFileHeader, udtStudentFileHeader.UploadBy, udtDB).GenerationID
+                            ' eHSVF003 Vaccination claim report
+                            udtStudentFileHeader.ClaimCreationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF003, _
+                                                                                                                     udtStudentFileHeader, _
+                                                                                                                     udtStudentFileHeader.UploadBy, _
+                                                                                                                     StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                                     udtDB).GenerationID
+                            ' eHSVF006 Name list
+                            udtStudentFileHeader.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, _
+                                                                                                          udtStudentFileHeader, _
+                                                                                                          udtStudentFileHeader.UploadBy, _
+                                                                                                          StudentFile.StudentFileBLL.VaccinationDate.First, _
+                                                                                                          udtDB).GenerationID
                         End If
-                        '' INT18-0022 (Fix users to download student claim file) [Start][Winnie]
-                        'udtStudentFileHeader.StudentReportFileID = SubmitReport("eHSSF003", udtStudentFileHeader, udtStudentFileHeader.ClaimUploadBy, udtDB).GenerationID
-                        ' CRE19-001-04 (PPP 2019-20) [End][Koala]
 
                         ' INT18-0022 (Fix users to download student claim file) [End][Winnie]
                         udtBLL.UpdateStudentFileHeaderStaging(udtStudentFileHeader, udtDB)
@@ -674,7 +772,16 @@ Namespace BLL
             udtGenFunct.getSystemParameter("DateBackClaimDayLimit", strClaimDayLimit, String.Empty, udtStudentFile.SchemeCode)
 
             Dim intDayLimit As Integer = CInt(strClaimDayLimit)
+
             Dim dtmServiceDate As Date = CDate(udtStudentFile.ServiceReceiveDtm.Value).Date
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
+            ' Use 2nd Vaccine Date if exist to reduce chance to exceed date back claim period
+            If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+                dtmServiceDate = CDate(udtStudentFile.ServiceReceiveDtm_2.Value).Date
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             ' SP: The date SP press "Confirm"; VU: The date upload claim file
             Dim dtmConfirmClaimDate As Date = CDate(udtStudentFile.ClaimUploadDtm.Value).Date
@@ -692,21 +799,31 @@ Namespace BLL
         ''' Create X EHSAccount
         ''' </summary>
         ''' <param name="udtDB"></param>
-        ''' <param name="strOrignalEHSAccountID"></param>
         ''' <param name="udtAccount"></param>
         ''' <param name="udtStudent"></param>
         ''' <param name="udtVaccineEntitle"></param>
         ''' <remarks></remarks>
-        Public Sub CreateXEHSAccount(ByRef udtDB As Database, _
-                                     ByVal strOrignalEHSAccountID As String, _
+        Public Sub CreateEHSAccount(ByRef udtDB As Database, _
                                      ByRef udtAccount As EHSAccount.EHSAccountModel, _
                                      ByVal udtStudent As StudentModel, _
                                      ByVal udtVaccineEntitle As BLL.VaccineEntitleModel)
 
-            ' Construct X EHS Account
+            'Public Sub CreateXEHSAccount(ByRef udtDB As Database, _
+            '                             ByVal strOrignalEHSAccountID As String, _
+            '                             ByRef udtAccount As EHSAccount.EHSAccountModel, _
+            '                             ByVal udtStudent As StudentModel, _
+            '                             ByVal udtVaccineEntitle As BLL.VaccineEntitleModel)
+
+            ' Construct "C" EHS Account
             udtAccount = udtAccount.CloneData()
-            udtAccount.OriginalAccID = strOrignalEHSAccountID
-            udtAccount.VoucherAccID = (New GeneralFunction).generateSystemNum("X")
+
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'udtAccount.OriginalAccID = strOrignalEHSAccountID
+            'udtAccount.VoucherAccID = (New GeneralFunction).generateSystemNum("X")
+            udtAccount.VoucherAccID = (New GeneralFunction).generateSystemNum("C")
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
             udtAccount.DataEntryBy = String.Empty
 
             ' Record Status
@@ -842,6 +959,11 @@ Namespace BLL
                 udtNewStudentFile.Dose = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.SecondDOSE
                 udtNewStudentFile.ServiceReceiveDtm = udtOriStudentFile.ServiceReceiveDtm2ndDose
                 udtNewStudentFile.FinalCheckingReportGenerationDate = udtOriStudentFile.FinalCheckingReportGenerationDate2ndDose
+                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                udtNewStudentFile.ServiceReceiveDtm_2 = udtOriStudentFile.ServiceReceiveDtm2ndDose_2
+                udtNewStudentFile.FinalCheckingReportGenerationDate_2 = udtOriStudentFile.FinalCheckingReportGenerationDate2ndDose_2
+                ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
                 ' Consider new file is upload confirmed and pending for checking
                 udtNewStudentFile.RecordStatusEnum = StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload

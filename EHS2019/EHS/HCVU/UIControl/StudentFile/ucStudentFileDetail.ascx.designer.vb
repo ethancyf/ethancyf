@@ -239,6 +239,69 @@ Partial Public Class ucStudentFileDetail
     Protected WithEvents lblDVaccinationReportGenerationDate2 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panD2ndVaccinationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panD2ndVaccinationDate As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDVaccinationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationReportGenerationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationReportGenerationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblDSubsidyText control.
     '''</summary>
     '''<remarks>
@@ -1263,6 +1326,15 @@ Partial Public Class ucStudentFileDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlDClassName As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''ibtnDAddAccount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnDAddAccount As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''gvD control.

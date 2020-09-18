@@ -9,7 +9,7 @@ Imports Common.Component.RedirectParameter
 Imports Common.Format
 Imports CustomControls
 Imports HCVU.BLL
-
+Imports Common.Component.EHSAccount
 
 Partial Public Class ucReadOnlyDocumnetType
     Inherits System.Web.UI.UserControl
@@ -39,6 +39,13 @@ Partial Public Class ucReadOnlyDocumnetType
     Private _blnShowAccountTypeAndStatus As Boolean = False
     Private _blnEnableToShowHKICSymbol As Boolean = False
     Private _blnShowCreationMethod As Boolean = True ' CRE19-026 (HCVS hotline service)
+
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private _udtEHSAccount As EHSAccountModel
+    Private _mode As ucInputDocTypeBase.BuildMode = ucInputDocTypeBase.BuildMode.Creation
+    Private _intTableTitleWidth As Integer
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
 #End Region
 
@@ -91,12 +98,12 @@ Partial Public Class ucReadOnlyDocumnetType
             ' INT20-0014 (Fix unable to open invalidated PPP transaction) [Start][Winnie]
             ' ---------------------------------------------------------------------------
             Select Case _strOriginalAccType.Trim
-                Case EHSAccount.EHSAccountModel.OriginalAccTypeClass.ValidateAccount
+                Case Common.Component.EHSAccount.EHSAccountModel.OriginalAccTypeClass.ValidateAccount
                     lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "AccountID")
                     lblOriginalAccID.Text = udtFormatter.formatValidatedEHSAccountNumber(_strOriginalAccID)
 
-                Case EHSAccount.EHSAccountModel.OriginalAccTypeClass.TemporaryAccount,
-                    EHSAccount.EHSAccountModel.OriginalAccTypeClass.SpecialAccount
+                Case Common.Component.EHSAccount.EHSAccountModel.OriginalAccTypeClass.TemporaryAccount,
+                    Common.Component.EHSAccount.EHSAccountModel.OriginalAccTypeClass.SpecialAccount
                     lblOriginalAccIDText.Text = Me.GetGlobalResourceObject("Text", "RefNo")
                     lblOriginalAccID.Text = udtFormatter.formatSystemNumber(_strOriginalAccID)
             End Select
@@ -641,6 +648,39 @@ Partial Public Class ucReadOnlyDocumnetType
         End Set
     End Property
     ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property EHSAccount() As EHSAccountModel
+        Get
+            Return Me._udtEHSAccount
+
+        End Get
+        Set(ByVal value As EHSAccountModel)
+            Me._udtEHSAccount = value
+        End Set
+    End Property
+
+    Public Property Mode() As ucInputDocTypeBase.BuildMode
+        Get
+            Return Me._mode
+        End Get
+        Set(ByVal value As ucInputDocTypeBase.BuildMode)
+            _mode = value
+        End Set
+    End Property
+
+    Public Property TableTitleWidth() As Integer
+        Get
+            Return Me._intTableTitleWidth
+        End Get
+        Set(ByVal value As Integer)
+            _intTableTitleWidth = value
+        End Set
+    End Property
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+
 #End Region
 
 #Region "Events"

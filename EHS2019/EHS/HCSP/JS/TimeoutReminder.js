@@ -70,12 +70,19 @@ function ShowReminder() {
     var elmMsg = document.getElementById(reminderMessageID);
     elmMsg.innerHTML = elmMsg.innerHTML.replace("[TIME_OUT]", displayTime);
     elmMsg.innerHTML = elmMsg.innerHTML.replace("[MESSAGE_ALERT_TIME]", Clock.SystemTime);
-    $find(reminderID).show();
+
+    // CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    //$find(reminderID).show();
+    document.getElementById(reminderID).style.visibility = 'visible';
+    // CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 }
 
 function ReminderOK_Click() {
     KeepSessionAlive();
     ResetRemainTime();
+    // CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    document.getElementById(reminderID).style.visibility = 'hidden';
+    // CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 }
 
 function ResetRemainTime() {

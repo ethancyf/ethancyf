@@ -14,6 +14,7 @@ Imports Common.Component.School
 Imports Common.Component.ServiceProvider
 Imports Common.Component.StaticData
 Imports Common.Component.StudentFile
+Imports Common.Component.StudentFile.StudentFileBLL
 Imports Common.Component.UserAC
 Imports Common.DataAccess
 Imports Common.Encryption
@@ -25,6 +26,7 @@ Imports CustomControls
 Imports HCSP.BLL
 Imports System.Data.SqlClient
 Imports System.Web.Script.Serialization
+
 
 
 Partial Public Class VaccinationFileManagement ' 020901
@@ -173,6 +175,13 @@ Partial Public Class VaccinationFileManagement ' 020901
         Public Const VaccinationFinalReport As String = "VaccinationFinalReport"
         Public Const OnsiteVaccinationList As String = "OnsiteVaccinationList"
         Public Const VaccinationClaimCreationReport As String = "VaccinationClaimCreationReport"
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const VaccinationFinalReport_1st As String = "1stVaccinationFinalReport"
+        Public Const VaccinationFinalReport_2nd As String = "2ndVaccinationFinalReport"
+        Public Const OnsiteVaccinationList_1st As String = "1stOnsiteVaccinationList"
+        Public Const OnsiteVaccinationList_2nd As String = "2ndOnsiteVaccinationList"
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
     End Class
 
     Private Enum FieldDifference
@@ -412,7 +421,18 @@ Partial Public Class VaccinationFileManagement ' 020901
                     'Doc Type Selection Popup Show
                     If blnDocTypeSelectionPopup Then
                         Dim udtStudentFileHeader As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
+                        Dim udtDocTypeBLL As New DocTypeBLL
 
+                        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtStudentFileHeader.SchemeCode.Trim)
+                        Dim udtFilteredSchemeDocTypeList As New SchemeDocTypeModelCollection
+
+                        For Each udtSchemeDoctype As SchemeDocTypeModel In udtSchemeDocTypeList
+                            If udtSchemeDoctype.DocCode <> DocTypeModel.DocTypeCode.OTHER Then
+                                udtFilteredSchemeDocTypeList.Add(udtSchemeDoctype)
+                            End If
+                        Next
+
+                        udcDocumentTypeRadioButtonGroup.SchemeDocTypeList = udtFilteredSchemeDocTypeList
                         udcDocumentTypeRadioButtonGroup.Scheme = udtStudentFileHeader.SchemeCode
                         udcDocumentTypeRadioButtonGroup.HCSPSubPlatform = Me.SubPlatform
 
@@ -481,11 +501,21 @@ Partial Public Class VaccinationFileManagement ' 020901
                     Dim strRealAccType As String = Session(SESS.AcctEditAccType)
                     Dim strCustomDocType As String = Session(SESS.AcctEditCustomDocType)
 
-
                     'Doc Type Selection Popup Show
                     If blnDocTypeSelectionPopup Then
                         Dim udtStudentFileHeader As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
+                        Dim udtDocTypeBLL As New DocTypeBLL
 
+                        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtStudentFileHeader.SchemeCode.Trim)
+                        Dim udtFilteredSchemeDocTypeList As New SchemeDocTypeModelCollection
+
+                        For Each udtSchemeDoctype As SchemeDocTypeModel In udtSchemeDocTypeList
+                            If udtSchemeDoctype.DocCode <> DocTypeModel.DocTypeCode.OTHER Then
+                                udtFilteredSchemeDocTypeList.Add(udtSchemeDoctype)
+                            End If
+                        Next
+
+                        udcDocumentTypeRadioButtonGroup.SchemeDocTypeList = udtFilteredSchemeDocTypeList
                         udcDocumentTypeRadioButtonGroup.Scheme = udtStudentFileHeader.SchemeCode
                         udcDocumentTypeRadioButtonGroup.HCSPSubPlatform = Me.SubPlatform
 
@@ -2025,7 +2055,11 @@ Partial Public Class VaccinationFileManagement ' 020901
                                 'Under rectification by back-office, it is not allow confirm
                                 Dim udtStudentFile As StudentFileHeaderModel = GetDetailClassModel()
 
-                                If udtStudentFile.RecordStatus <> Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingPreCheckGeneration) Then
+                                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                                ' ---------------------------------------------------------------------------------------------------------
+                                If udtStudentFile.RecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
+                                   udtStudentFile.RecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Then
+
                                     Me.ibtnPDConfirmBatch.Enabled = False
                                     Me.ibtnPDConfirmBatch.ImageUrl = GetGlobalResourceObject("ImageURL", "ConfirmDisableBtn")
 
@@ -2034,6 +2068,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                                     udcInfoMessageBox.Type = InfoMessageBoxType.Information
                                     udcInfoMessageBox.BuildMessageBox()
                                 End If
+                                ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
                             Case Action.Submitted
 
@@ -3975,8 +4010,8 @@ Partial Public Class VaccinationFileManagement ' 020901
                         .OnsiteVaccinationFileID = String.Empty
                     End With
 
-                    udtStudentFileBatch.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, udtStudentFileBatch, udtStudentFileBatch.UploadBy, udtDB).GenerationID
-                    udtStudentFileBatch.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, udtStudentFileBatch, udtStudentFileBatch.UploadBy, udtDB).GenerationID
+                    udtStudentFileBatch.VaccinationReportFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF001, udtStudentFileBatch, udtStudentFileBatch.UploadBy, StudentFile.StudentFileBLL.VaccinationDate.NA, udtDB).GenerationID
+                    udtStudentFileBatch.NameListFileID = StudentFile.StudentFileBLL.SubmitReport(DataDownloadFileID.eHSVF006, udtStudentFileBatch, udtStudentFileBatch.UploadBy, StudentFile.StudentFileBLL.VaccinationDate.NA, udtDB).GenerationID
 
                     'Insert Student File Header
                     udtStudentFileBLL.InsertBatchStudentFile(udtStudentFileBatch, udtDB)
@@ -4119,12 +4154,18 @@ Partial Public Class VaccinationFileManagement ' 020901
             'Under rectification by back-office, it is not allow confirm
             Dim udtStudentFile As StudentFileHeaderModel = GetDetailClassModel()
 
-            If udtStudentFile.RecordStatus <> Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingPreCheckGeneration) Then
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtStudentFile.RecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
+               udtStudentFile.RecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Then
+
                 'The record is under rectification. Please confirm later.
                 udcInfoMessageBox.AddMessage(FunctCode.FUNT020901, SeverityCode.SEVI, MsgCode.MSG00008)
                 udcInfoMessageBox.Type = InfoMessageBoxType.Information
                 udcInfoMessageBox.BuildMessageBox()
             End If
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         End If
 
     End Sub
@@ -5183,6 +5224,8 @@ Partial Public Class VaccinationFileManagement ' 020901
 
             ' Dose to Inject
             Dim lblRDoseToInject As Label = e.Row.FindControl("lblRDoseToInject")
+            Dim strSchemeCode As String = dr("Scheme_Code").ToString
+            Dim strSubsidizeCode As String = dr("Subsidize_Code").ToString
 
             If Session("language") = TradChinese Then
                 lblRDoseToInject.Text = String.Format("{0}<br><br>{1}<br><br>{2}", _
@@ -5264,6 +5307,10 @@ Partial Public Class VaccinationFileManagement ' 020901
             lbl.ID = String.Format("lblRVaccinationReportGenerationDate{0}", e.Row.RowIndex)
             lbl.Text = String.Empty
             If Not IsDBNull(dr("Final_Checking_Report_Generation_Date")) Then lbl.Text = CDate(dr("Final_Checking_Report_Generation_Date")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Final_Checking_Report_Generation_Date_2")) Then lbl.Text += "<br/>" + CDate(dr("Final_Checking_Report_Generation_Date_2")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             tc.Controls.Add(lbl)
             tr.Cells.Add(tc)
@@ -5279,6 +5326,10 @@ Partial Public Class VaccinationFileManagement ' 020901
             lbl.ID = String.Format("lblRVaccinationDate{0}", e.Row.RowIndex)
             lbl.Text = String.Empty
             If Not IsDBNull(dr("Service_Receive_Dtm")) Then lbl.Text = CDate(dr("Service_Receive_Dtm")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then lbl.Text += "<br/>" + CDate(dr("Service_Receive_Dtm_2")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             tc.Controls.Add(lbl)
             tr.Cells.Add(tc)
@@ -5306,6 +5357,13 @@ Partial Public Class VaccinationFileManagement ' 020901
 
             '2nd Row
             tr = New TableRow
+
+            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim blnImage1Complete As Boolean = False
+            Dim blnImage2Complete As Boolean = False
+            Dim blnImage3Complete As Boolean = False
+            Dim blnImage4Complete As Boolean = False
 
             'Cell 1
             tc = New TableCell
@@ -5337,6 +5395,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                 img.Style.Add("top", "0px")
                 img.Style.Add("z-index", "2")
                 div.Controls.Add(img)
+
             End If
 
             'Image 2
@@ -5372,6 +5431,9 @@ Partial Public Class VaccinationFileManagement ' 020901
                             img.Style.Add("top", "0px")
                             img.Style.Add("z-index", "2")
                             div.Controls.Add(img)
+
+                            blnImage2Complete = True
+
                         Else
                             Dim ibtn As ImageButton = New ImageButton
                             ibtn.ID = String.Format("ibtnRRectify{0}", e.Row.RowIndex)
@@ -5401,11 +5463,15 @@ Partial Public Class VaccinationFileManagement ' 020901
                     img.Style.Add("top", "0px")
                     img.Style.Add("z-index", "2")
                     div.Controls.Add(img)
+
+                    blnImage2Complete = True
+
                 End If
             End If
 
             'Image 3
-            If (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
+            If blnImage2Complete And _
+                (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim) Or _
@@ -5439,6 +5505,8 @@ Partial Public Class VaccinationFileManagement ' 020901
                     img.Style.Add("z-index", "2")
                     div.Controls.Add(img)
 
+                    blnImage3Complete = True
+
                 Else
                     'Default empty image
                     img = New Image
@@ -5465,7 +5533,8 @@ Partial Public Class VaccinationFileManagement ' 020901
             End If
 
             'Image 4
-            If (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) And _
+            If blnImage3Complete And _
+                (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -5485,6 +5554,9 @@ Partial Public Class VaccinationFileManagement ' 020901
                 img.Style.Add("top", "0px")
                 img.Style.Add("z-index", "2")
                 div.Controls.Add(img)
+
+                blnImage4Complete = True
+
             Else
                 'Default empty image
                 img = New Image
@@ -5499,7 +5571,8 @@ Partial Public Class VaccinationFileManagement ' 020901
 
             'Image 5
 
-            If (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) And _
+            If blnImage4Complete And _
+                (Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso dtmCurrent >= (dr("Service_Receive_Dtm"))) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -5642,13 +5715,47 @@ Partial Public Class VaccinationFileManagement ' 020901
 
             If strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration) Then
 
-                If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFinalReport_1st)
+                        Else
+                            lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                        End If
+                    End If
+
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID_2")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport_2nd)
+                    End If
+                Else
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                        Else
+                            lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                        End If
+                    End If
                 End If
 
+                'If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                '    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                '        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_1st)
+                '    End If
+
+                '    If Not IsDBNull(dr("Onsite_Vaccination_File_ID_2")) Then
+                '        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_2nd)
+                '    End If
+                'Else
+                '    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                '        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
+                '    End If
+                'End If
+
+                'If IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
                 If Not IsDBNull(dr("Name_List_File_ID")) Then
                     lstResourceName.Add(ReportNameResource.NameList)
                 End If
+                'End If
 
             End If
 
@@ -5686,14 +5793,39 @@ Partial Public Class VaccinationFileManagement ' 020901
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) _
                 ) Then
 
-                If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+
+                If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport_1st)
+                    End If
+
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID_2")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport_2nd)
+                    End If
+                Else
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                    End If
                 End If
 
-                If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
-                ElseIf Not IsDBNull(dr("Name_List_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.NameList)
+                If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_1st)
+                    End If
+
+                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID_2")) Then
+                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_2nd)
+                    End If
+                Else
+                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
+                    End If
+                End If
+
+                If IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                    If Not IsDBNull(dr("Name_List_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.NameList)
+                    End If
                 End If
 
             End If
@@ -5718,38 +5850,59 @@ Partial Public Class VaccinationFileManagement ' 020901
                 tbl.Style.Add("border-collapse", "collapse")
 
                 Dim blnReportGenerated As Boolean = False
+                Dim blnSkip As Boolean = False
                 Dim strImageResource As String = String.Empty
 
                 For i As Integer = 0 To lstResourceName.Count - 1
                     blnReportGenerated = False
-
-                    'Row
-                    tr = New TableRow
-
-                    'Cell 1
-                    tc = New TableCell
-                    tc.Width = Unit.Pixel(116)
-                    tc.HorizontalAlign = HorizontalAlign.Center
-                    tc.VerticalAlign = VerticalAlign.Top
+                    blnSkip = False
 
                     Select Case lstResourceName(i)
                         Case ReportNameResource.NameList
                             If Not IsDBNull(dr("Name_List_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
-                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport
+                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport, ReportNameResource.VaccinationFinalReport_1st
                             If Not IsDBNull(dr("Vaccination_Report_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
-                        Case ReportNameResource.OnsiteVaccinationList
+                        Case ReportNameResource.VaccinationFinalReport_2nd
+                            If Not IsDBNull(dr("Vaccination_Report_File_Output_Name_2")) Then
+                                blnReportGenerated = True
+                            End If
+                            blnSkip = True
+                        Case ReportNameResource.OnsiteVaccinationList, ReportNameResource.OnsiteVaccinationList_1st
                             If Not IsDBNull(dr("Onsite_Vaccination_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
+                        Case ReportNameResource.OnsiteVaccinationList_2nd
+                            If Not IsDBNull(dr("Onsite_Vaccination_File_Output_Name_2")) Then
+                                blnReportGenerated = True
+                            End If
+                            blnSkip = True
                         Case ReportNameResource.VaccinationClaimCreationReport
                             If Not IsDBNull(dr("Claim_Creation_Report_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
                     End Select
+
+                    'Row
+                    If Not blnSkip Then
+                        tr = New TableRow
+                    End If
+
+                    'Cell 1
+                    If Not blnSkip Then
+                        tc = New TableCell
+                        'tc.Width = Unit.Pixel(20)
+                        'tc.HorizontalAlign = HorizontalAlign.Center
+                        tc.VerticalAlign = VerticalAlign.Top
+                        tc.Style.Add("padding-bottom", "2px")
+                    Else
+                        Dim lcSpan As New HtmlGenericControl("span")
+                        lcSpan.Style.Add("padding-right", "2px")
+                        tc.Controls.Add(lcSpan)
+                    End If
 
                     'Image "Download"
                     If blnReportGenerated Then
@@ -5776,9 +5929,12 @@ Partial Public Class VaccinationFileManagement ' 020901
                         tc.Controls.Add(imgPending)
                     End If
 
-                    tr.Cells.Add(tc)
+                    If Not blnSkip Then
+                        tr.Cells.Add(tc)
 
-                    tbl.Rows.Add(tr)
+                        tbl.Rows.Add(tr)
+                    End If
+
                 Next
 
                 e.Row.Cells(9).Controls.Add(tbl)
@@ -5951,13 +6107,21 @@ Partial Public Class VaccinationFileManagement ' 020901
                                 strOutputFileType = CStr(drSelected("Name_List_File_Name")).Trim
                                 strOutputFileName = CStr(drSelected("Name_List_File_Output_Name")).Trim
 
-                            Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport
+                            Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport, ReportNameResource.VaccinationFinalReport_1st
                                 strOutputFileType = CStr(drSelected("Vaccination_Report_File_Name")).Trim
                                 strOutputFileName = CStr(drSelected("Vaccination_Report_File_Output_Name")).Trim
 
-                            Case ReportNameResource.OnsiteVaccinationList
+                            Case ReportNameResource.VaccinationFinalReport_2nd
+                                strOutputFileType = CStr(drSelected("Vaccination_Report_File_Name_2")).Trim
+                                strOutputFileName = CStr(drSelected("Vaccination_Report_File_Output_Name_2")).Trim
+
+                            Case ReportNameResource.OnsiteVaccinationList, ReportNameResource.OnsiteVaccinationList_1st
                                 strOutputFileType = CStr(drSelected("Onsite_Vaccination_File_Name")).Trim
                                 strOutputFileName = CStr(drSelected("Onsite_Vaccination_File_Output_Name")).Trim
+
+                            Case ReportNameResource.OnsiteVaccinationList_2nd
+                                strOutputFileType = CStr(drSelected("Onsite_Vaccination_File_Name_2")).Trim
+                                strOutputFileName = CStr(drSelected("Onsite_Vaccination_File_Output_Name_2")).Trim
 
                             Case ReportNameResource.VaccinationClaimCreationReport
                                 strOutputFileType = CStr(drSelected("Claim_Creation_Report_File_Name")).Trim
@@ -6145,15 +6309,25 @@ Partial Public Class VaccinationFileManagement ' 020901
                             strOutputFileName = CStr(drSelected("Name_List_File_Output_Name")).Trim
                             strDefaultPassword = CStr(drSelected("Name_List_File_Default_Password")).Trim
 
-                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport
+                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport, ReportNameResource.VaccinationFinalReport_1st
                             strFileID = CStr(drSelected("Vaccination_Report_File_ID")).Trim
                             strOutputFileName = CStr(drSelected("Vaccination_Report_File_Output_Name")).Trim
                             strDefaultPassword = CStr(drSelected("Vaccination_Report_File_Default_Password")).Trim
 
-                        Case ReportNameResource.OnsiteVaccinationList
+                        Case ReportNameResource.VaccinationFinalReport_2nd
+                            strFileID = CStr(drSelected("Vaccination_Report_File_ID_2")).Trim
+                            strOutputFileName = CStr(drSelected("Vaccination_Report_File_Output_Name_2")).Trim
+                            strDefaultPassword = CStr(drSelected("Vaccination_Report_File_Default_Password_2")).Trim
+
+                        Case ReportNameResource.OnsiteVaccinationList, ReportNameResource.OnsiteVaccinationList_1st
                             strFileID = CStr(drSelected("Onsite_Vaccination_File_ID")).Trim
                             strOutputFileName = CStr(drSelected("Onsite_Vaccination_File_Output_Name")).Trim
                             strDefaultPassword = CStr(drSelected("Onsite_Vaccination_File_Default_Password")).Trim
+
+                        Case ReportNameResource.OnsiteVaccinationList_2nd
+                            strFileID = CStr(drSelected("Onsite_Vaccination_File_ID_2")).Trim
+                            strOutputFileName = CStr(drSelected("Onsite_Vaccination_File_Output_Name_2")).Trim
+                            strDefaultPassword = CStr(drSelected("Onsite_Vaccination_File_Default_Password_2")).Trim
 
                         Case ReportNameResource.VaccinationClaimCreationReport
                             strFileID = CStr(drSelected("Claim_Creation_Report_File_ID")).Trim
@@ -6469,8 +6643,19 @@ Partial Public Class VaccinationFileManagement ' 020901
                 Session(SESS.DocTypeSelectionPanelShow) = True
 
                 Dim udtStudentFileHeader As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
+                Dim udtDocTypeBLL As New DocTypeBLL
+
+                Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtStudentFileHeader.SchemeCode.Trim)
+                Dim udtFilteredSchemeDocTypeList As New SchemeDocTypeModelCollection
+
+                For Each udtSchemeDoctype As SchemeDocTypeModel In udtSchemeDocTypeList
+                    If udtSchemeDoctype.DocCode <> DocTypeModel.DocTypeCode.OTHER Then
+                        udtFilteredSchemeDocTypeList.Add(udtSchemeDoctype)
+                    End If
+                Next
 
                 ' Build Document Type 
+                udcDocumentTypeRadioButtonGroup.SchemeDocTypeList = udtFilteredSchemeDocTypeList
                 udcDocumentTypeRadioButtonGroup.Scheme = udtStudentFileHeader.SchemeCode
                 udcDocumentTypeRadioButtonGroup.HCSPSubPlatform = Me.SubPlatform
                 'If Me.SubPlatform = EnumHCSPSubPlatform.CN Then
@@ -6627,14 +6812,24 @@ Partial Public Class VaccinationFileManagement ' 020901
                 Session(SESS.AcctEditPanelShow) = True
                 Session(SESS.DefaultSetCCCode) = True
 
-                Session(SESS.AcctEditVoucherAccID) = String.Empty
-                Session(SESS.AcctEditAccType) = String.Empty
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                'Session(SESS.AcctEditVoucherAccID) = String.Empty
+                'Session(SESS.AcctEditAccType) = String.Empty
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                 Session(SESS.AcctEditCustomDocType) = udcDocumentTypeRadioButtonGroup.SelectedValue
 
                 Me.udcRectifyAccount.Clear()
                 Me.udcReadOnlyAccount.Clear()
 
-                Me.SetupRectifyDetailScreen(strVaccinationFileID, strSeqNo, String.Empty, String.Empty, udcDocumentTypeRadioButtonGroup.SelectedValue, True)
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                Dim strRealVoucherAccID As String = Session(SESS.AcctEditVoucherAccID)
+                Dim strRealAccType As String = Session(SESS.AcctEditAccType)
+
+                Me.SetupRectifyDetailScreen(strVaccinationFileID, strSeqNo, strRealVoucherAccID, strRealAccType, udcDocumentTypeRadioButtonGroup.SelectedValue, True)
+                'Me.SetupRectifyDetailScreen(strVaccinationFileID, strSeqNo, String.Empty, String.Empty, udcDocumentTypeRadioButtonGroup.SelectedValue, True)
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
                 Me.udcAcctEditErrorMessage.Clear()
                 Me.udcAcctEditInfoMessage.Clear()
@@ -6742,6 +6937,9 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         udcAcctEditInfoMessage.Clear()
         udcAcctEditErrorMessage.Clear()
+
+        Me._udtSessionHandler.CMSVaccineResultRemoveFromSession(FunctionCode)
+        Me._udtSessionHandler.CIMSVaccineResultRemoveFromSession(FunctionCode)
 
         If Not sender Is Nothing Then
             Dim lstArgument() As String = Split(DirectCast(sender, ImageButton).CommandArgument.ToString.Trim, "|||")
@@ -6885,6 +7083,7 @@ Partial Public Class VaccinationFileManagement ' 020901
         Dim dt As DataTable = GetDetailClassDataTable(DetailClassDataTable.Selected)
         Dim drVaccFile() As DataRow = dt.Select(String.Format("Student_Seq='{0}'", strSeqNo))
         Dim drVaccFileRecord As DataRow = Nothing
+        Dim blnDocTypeChange As Boolean = False
 
         If drVaccFile.Length <> 1 Then
             Throw New Exception(String.Format("VaccinationFileManagement.lbtnEditAcct_Click: No available result is found by Student_Seq({0})", strSeqNo))
@@ -6900,6 +7099,9 @@ Partial Public Class VaccinationFileManagement ' 020901
         'If doc. type = "OTHER", overrides it by regular doc. type (i.e. HKIC, HKBC,...)
         If strDocCode = DocTypeModel.DocTypeCode.OTHER And strCustomDocCode <> String.Empty Then
             strDocCode = strCustomDocCode
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            blnDocTypeChange = True
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
         End If
 
         'Get Documnet type full name
@@ -6914,6 +7116,116 @@ Partial Public Class VaccinationFileManagement ' 020901
             If strRealVoucherAccID <> String.Empty Then
                 udtEHSAccount = GeteHSAccount(strRealVoucherAccID, strRealAccType)
                 udtEHSAccount.SetSearchDocCode(strDocCode)
+
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                ' Set Personal Info with new Doc Code
+                If blnDocTypeChange Then
+                    Dim udtStudentFile As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
+                    Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = New EHSAccountModel.EHSPersonalInformationModel
+
+                    Dim strCName As String = String.Empty
+                    Dim strDocumentNo As String = String.Empty
+                    Dim strPrefix As String = String.Empty
+                    Dim strECSerialNo As String = String.Empty
+                    Dim strECReferenceNo As String = String.Empty
+                    Dim strForeignPassportNo As String = String.Empty
+                    Dim blnECOtherFormat As Boolean = False
+
+                    Dim strRawDocumentNo As String = String.Empty
+                    Dim strRawDOI As Nullable(Of Date) = Nothing
+                    Dim strRawECSerialNo As String = String.Empty
+                    Dim strRawECReferenceNo As String = String.Empty
+                    Dim strRawForeignPassportNo As String = String.Empty
+
+                    With udtEHSAccount.EHSPersonalInformationList(0)
+                        strRawDocumentNo = .IdentityNum
+                        strRawDOI = .DateofIssue
+                        strRawECSerialNo = IIf(IsNothing(.ECSerialNo), String.Empty, .ECSerialNo)
+                        strRawECReferenceNo = IIf(IsNothing(.ECReferenceNo), String.Empty, .ECReferenceNo)
+                        strRawForeignPassportNo = IIf(IsNothing(.Foreign_Passport_No), String.Empty, .Foreign_Passport_No)
+                    End With
+
+                    ' ---------------------------------------------------------------
+                    ' Clear format
+                    ' ---------------------------------------------------------------
+                    strDocumentNo = strRawDocumentNo.Trim.Replace("(", "").Replace(")", "").Replace("-", "")
+                    strECSerialNo = strRawECSerialNo.Trim
+                    strECReferenceNo = strRawECReferenceNo.Trim.Replace("(", "").Replace(")", "").Replace("-", "")
+                    strForeignPassportNo = strRawForeignPassportNo.Trim
+
+                    ' ---------------------------------------------------------------
+                    ' Prepare data field
+                    ' ---------------------------------------------------------------
+                    ' Document No. & Prefix
+                    If strDocCode = DocTypeModel.DocTypeCode.ADOPC Then
+                        Dim strFeild() As String = Split(strDocumentNo, "/")
+                        If strFeild.Length = 2 Then
+                            strDocumentNo = strFeild(1)
+                            strPrefix = strFeild(0)
+                        End If
+                    End If
+
+                    ' Chinese name
+                    strCName = udtEHSAccount.EHSPersonalInformationList(0).CName
+
+                    ' EC Reference No. & Other Format
+                    If strDocCode = DocTypeModel.DocTypeCode.EC Then
+                        Dim blnValid As Boolean = True
+
+                        If Not _udtValidator.chkReferenceNo(strECReferenceNo, False) Is Nothing Then
+                            blnValid = False
+                        End If
+
+                        If blnValid Then
+                            Dim dtmECDOI As Date = CDate(_udtGeneralFunction.getSystemParameter("EC_DOI"))
+
+                            If strRawDOI Is Nothing OrElse strRawDOI < dtmECDOI Then
+                                blnECOtherFormat = True
+                            End If
+
+                        Else
+                            blnECOtherFormat = True
+                        End If
+
+                        If blnECOtherFormat Then
+                            strECReferenceNo = strRawECReferenceNo
+                        End If
+
+                    End If
+
+                    ' VISA Foreign Passport No.
+                    strForeignPassportNo = strRawForeignPassportNo
+
+                    ' ---------------------------------------------------------------
+                    ' Build EHSAccount model
+                    ' ---------------------------------------------------------------
+
+                    With udtEHSAccount.EHSPersonalInformationList(0)
+                        .DocCode = strDocCode
+                        .IdentityNum = strDocumentNo
+                        .ENameSurName = .ENameSurName.Trim
+                        .ENameFirstName = .ENameFirstName.Trim
+                        .CName = strCName
+                        .CCCode1 = getCCCode(strCName, 1)
+                        .CCCode2 = getCCCode(strCName, 2)
+                        .CCCode3 = getCCCode(strCName, 3)
+                        .CCCode4 = getCCCode(strCName, 4)
+                        .CCCode5 = getCCCode(strCName, 5)
+                        .CCCode6 = getCCCode(strCName, 6)
+                        '.DOB = .DOB
+                        '.ExactDOB = .ExactDOB
+                        '.Gender = .Gender
+                        '.DateofIssue = .DateofIssue
+                        '.PermitToRemainUntil = .PermitToRemainUntil
+                        .Foreign_Passport_No = strForeignPassportNo
+                        .ECSerialNo = strECSerialNo
+                        .ECReferenceNo = strECReferenceNo
+                        .ECReferenceNoOtherFormat = blnECOtherFormat
+                        .AdoptionPrefixNum = strPrefix
+                    End With
+                End If
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             Else
                 Dim udtStudentFile As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
                 Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = New EHSAccountModel.EHSPersonalInformationModel
@@ -7023,7 +7335,7 @@ Partial Public Class VaccinationFileManagement ' 020901
         End If
 
         '1. Bulid document input/readonly UI
-        BindPersonalInfo(udtEHSAccount, blnActiveViewChanged)
+        BindPersonalInfo(udtEHSAccount, blnActiveViewChanged, blnDocTypeChange)
 
         '2. Set Information Values
         If blnActiveViewChanged Then
@@ -7180,17 +7492,9 @@ Partial Public Class VaccinationFileManagement ' 020901
         '3. Store EHSAccount object to session 
         _udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
 
-        If Not udtEHSAccount Is Nothing Then
-
-            If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
-                Me.udcRectifyAccount.Mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly
-            End If
-
-        End If
-
     End Sub
 
-    Private Function BindPersonalInfo(ByVal udtEHSAccount As EHSAccountModel, ByVal activeViewChanged As Boolean) As Boolean
+    Private Function BindPersonalInfo(ByVal udtEHSAccount As EHSAccountModel, ByVal activeViewChanged As Boolean, ByVal blnDocTypeChange As Boolean) As Boolean
         Dim blnRes As Boolean = False
 
         Me.pnlModifyAcct.Visible = False
@@ -7249,15 +7553,19 @@ Partial Public Class VaccinationFileManagement ' 020901
                         Me.udcRectifyAccount.DocType = udtEHSAccount.EHSPersonalInformationList(0).DocCode.Trim
                         Me.udcRectifyAccount.EHSAccount = udtEHSAccount
                         Me.udcRectifyAccount.ActiveViewChanged = activeViewChanged
-                        'If IsNothing(Session(SESS.InputMode)) Then
-                        Me.udcRectifyAccount.Mode = ucInputDocTypeBase.BuildMode.Modification
-                        'Else
-                        'Dim mode As ucInputDocTypeBase.BuildMode
-                        'mode = CType(Session(SESS.InputMode), ucInputDocTypeBase.BuildMode)
-                        'Me.udcRectifyAccount.Mode = mode
-                        'End If
+
+                        'if validating, the input fields change to read-only status
+                        If IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
+                            Me.udcRectifyAccount.Mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly
+                        Else
+                            Me.udcRectifyAccount.Mode = ucInputDocTypeBase.BuildMode.Modification
+                        End If
 
                         Me.udcRectifyAccount.FillValue = True
+
+                        If blnDocTypeChange Then
+                            Me.udcRectifyAccount.EditDocumentNo = True
+                        End If
 
                         Dim udtOrgEHSAccount As EHSAccountModel = CType(Me.Session(SESS.OrgEHSAccount), EHSAccountModel)
                         Me.udcRectifyAccount.OrgEHSAccount = udtOrgEHSAccount
@@ -7357,7 +7665,7 @@ Partial Public Class VaccinationFileManagement ' 020901
         If Not IsNothing(udtEHSAccount) Then
             Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
 
-            Me.Session(SESS.OrgEHSAccount) = udtEHSAccount
+            Me.Session(SESS.OrgEHSAccount) = New EHSAccountModel(udtEHSAccount)
         End If
 
         Return udtEHSAccount
@@ -7644,429 +7952,428 @@ Partial Public Class VaccinationFileManagement ' 020901
                 End If
 
             Case DocTypeModel.DocTypeCode.DI
-                    tdAcctInfo.Width = "480px"
-                    tdFieldDiff.Width = "320px"
+                tdAcctInfo.Width = "480px"
+                tdFieldDiff.Width = "320px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff4.Style.Add("top", "88px")
+
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
+                    Else
+                        strGender = "GenderFemale"
+                    End If
+
+                    lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    divFieldDiff2.Style.Add("top", "76px")
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
                     divFieldDiff3.Style.Add("top", "82px")
-                    divFieldDiff4.Style.Add("top", "88px")
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff1.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
-
-                        lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        divFieldDiff2.Style.Add("top", "76px")
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        divFieldDiff3.Style.Add("top", "82px")
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.DOI) Then
-                        Dim dtmDOI As Date = drUploadInfo("Original_DateOfIssue")
-                        lblFieldDiff4.Text = _udtFormatter.formatDOI(DocTypeModel.DocTypeCode.DI, dtmDOI)
-                        divFieldDiff4.Style.Add("top", "86px")
-                        lblFieldDiff4.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff4.Controls.Add(span)
-                    End If
+                If lstFieldDiff.Contains(FieldDifference.DOI) Then
+                    Dim dtmDOI As Date = drUploadInfo("Original_DateOfIssue")
+                    lblFieldDiff4.Text = _udtFormatter.formatDOI(DocTypeModel.DocTypeCode.DI, dtmDOI)
+                    divFieldDiff4.Style.Add("top", "86px")
+                    lblFieldDiff4.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff4.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.REPMT
-                    tdAcctInfo.Width = "480px"
-                    tdFieldDiff.Width = "320px"
+                tdAcctInfo.Width = "480px"
+                tdFieldDiff.Width = "320px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
-                    divFieldDiff3.Style.Add("top", "82px")
-                    divFieldDiff4.Style.Add("top", "87px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff4.Style.Add("top", "87px")
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        'English Name
-                        lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff1.Visible = True
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    'English Name
+                    lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
+                    lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
 
-                        lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.DOI) Then
-                        Dim dtmDOI As Date = drUploadInfo("Original_DateOfIssue")
-                        lblFieldDiff4.Text = _udtFormatter.formatDOI(DocTypeModel.DocTypeCode.REPMT, dtmDOI)
-                        lblFieldDiff4.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff4.Controls.Add(span)
-                    End If
+                If lstFieldDiff.Contains(FieldDifference.DOI) Then
+                    Dim dtmDOI As Date = drUploadInfo("Original_DateOfIssue")
+                    lblFieldDiff4.Text = _udtFormatter.formatDOI(DocTypeModel.DocTypeCode.REPMT, dtmDOI)
+                    lblFieldDiff4.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff4.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.ID235B
-                    tdAcctInfo.Width = "510px"
-                    tdFieldDiff.Width = "290px"
+                tdAcctInfo.Width = "510px"
+                tdFieldDiff.Width = "290px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
-                    divFieldDiff3.Style.Add("top", "82px")
-                    divFieldDiff4.Style.Add("top", "87px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff4.Style.Add("top", "87px")
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        'English Name
-                        lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff1.Visible = True
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    'English Name
+                    lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
+                    lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
 
-                        lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.PermitToRemainUntil) Then
-                        Dim dtmPermitToRemainUntil As Date = drUploadInfo("Original_PermitToRemainUntil")
-                        lblFieldDiff4.Text = _udtFormatter.formatID235BPermittedToRemainUntil(dtmPermitToRemainUntil)
-                        lblFieldDiff4.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff4.Controls.Add(span)
-                    End If
+                If lstFieldDiff.Contains(FieldDifference.PermitToRemainUntil) Then
+                    Dim dtmPermitToRemainUntil As Date = drUploadInfo("Original_PermitToRemainUntil")
+                    lblFieldDiff4.Text = _udtFormatter.formatID235BPermittedToRemainUntil(dtmPermitToRemainUntil)
+                    lblFieldDiff4.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff4.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.VISA
-                    tdAcctInfo.Width = "510px"
-                    tdFieldDiff.Width = "290px"
+                tdAcctInfo.Width = "510px"
+                tdFieldDiff.Width = "290px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
-                    divFieldDiff3.Style.Add("top", "82px")
-                    divFieldDiff4.Style.Add("top", "87px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff4.Style.Add("top", "87px")
 
-                    If lstFieldDiff.Contains(FieldDifference.ForeignPassportNo) Then
-                        lblFieldDiff1.Text = CStr(drUploadInfo("Original_ForeignPassportNo")).Trim
-                        lblFieldDiff1.Visible = True
+                If lstFieldDiff.Contains(FieldDifference.ForeignPassportNo) Then
+                    lblFieldDiff1.Text = CStr(drUploadInfo("Original_ForeignPassportNo")).Trim
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    'English Name
+                    lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        'English Name
-                        lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
+                    lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
-
-                        lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff4.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff4.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff4.Controls.Add(span)
-                    End If
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff4.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff4.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff4.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.ADOPC
-                    tdAcctInfo.Width = "480px"
-                    tdFieldDiff.Width = "320px"
+                tdAcctInfo.Width = "480px"
+                tdFieldDiff.Width = "320px"
 
-                    If Session("language") = TradChinese Or Session("language") = SimpChinese Then
-                        divFieldDiff2.Style.Add("top", "77px")
-                        divFieldDiff3.Style.Add("top", "82px")
+                If Session("language") = TradChinese Or Session("language") = SimpChinese Then
+                    divFieldDiff2.Style.Add("top", "77px")
+                    divFieldDiff3.Style.Add("top", "82px")
+                Else
+                    divFieldDiff1.Style.Add("top", "90px")
+                    divFieldDiff2.Style.Add("top", "95px")
+                    divFieldDiff3.Style.Add("top", "100px")
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        divFieldDiff1.Style.Add("top", "90px")
-                        divFieldDiff2.Style.Add("top", "95px")
-                        divFieldDiff3.Style.Add("top", "100px")
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        lblFieldDiff1.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff1.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
-
-                        lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
+                    lblFieldDiff2.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff3.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.OW
-                    tdAcctInfo.Width = "480px"
-                    tdFieldDiff.Width = "320px"
+                tdAcctInfo.Width = "480px"
+                tdFieldDiff.Width = "320px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
-                    divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
 
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff1.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff1.Visible = True
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff1.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    'English Name
+                    lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        'English Name
-                        lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
-
-                        lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
+                    lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.TW
-                    tdAcctInfo.Width = "480px"
-                    tdFieldDiff.Width = "320px"
+                tdAcctInfo.Width = "480px"
+                tdFieldDiff.Width = "320px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
-                    divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
 
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff1.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff1.Visible = True
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff1.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    'English Name
+                    lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        'English Name
-                        lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
-
-                        lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
+                    lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
             Case DocTypeModel.DocTypeCode.RFNo8
-                    tdAcctInfo.Width = "480px"
-                    tdFieldDiff.Width = "320px"
+                tdAcctInfo.Width = "480px"
+                tdFieldDiff.Width = "320px"
 
-                    divFieldDiff2.Style.Add("top", "77px")
-                    divFieldDiff3.Style.Add("top", "82px")
+                divFieldDiff2.Style.Add("top", "77px")
+                divFieldDiff3.Style.Add("top", "82px")
 
-                    If lstFieldDiff.Contains(FieldDifference.DOB) Then
-                        Dim dtmDOB As Date = drUploadInfo("Original_DOB")
-                        lblFieldDiff1.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
-                        lblFieldDiff1.Visible = True
+                If lstFieldDiff.Contains(FieldDifference.DOB) Then
+                    Dim dtmDOB As Date = drUploadInfo("Original_DOB")
+                    lblFieldDiff1.Text = _udtFormatter.formatDOB(dtmDOB, CStr(drUploadInfo("Original_Exact_DOB")), Session("language"), Nothing, Nothing)
+                    lblFieldDiff1.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff1.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.EngName) Then
+                    'English Name
+                    lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
+                    lblFieldDiff2.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff2.Controls.Add(span)
+                End If
+
+                If lstFieldDiff.Contains(FieldDifference.Sex) Then
+                    Dim strGender As String = String.Empty
+                    If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
+                        strGender = "GenderMale"
                     Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff1.Controls.Add(span)
+                        strGender = "GenderFemale"
                     End If
 
-                    If lstFieldDiff.Contains(FieldDifference.EngName) Then
-                        'English Name
-                        lblFieldDiff2.Text = String.Format("{0}", drUploadInfo("Original_NameEN"))
-                        lblFieldDiff2.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff2.Controls.Add(span)
-                    End If
-
-                    If lstFieldDiff.Contains(FieldDifference.Sex) Then
-                        Dim strGender As String = String.Empty
-                        If CStr(drUploadInfo("Original_SEX")).Trim = "M" Then
-                            strGender = "GenderMale"
-                        Else
-                            strGender = "GenderFemale"
-                        End If
-
-                        lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
-                        lblFieldDiff3.Visible = True
-                    Else
-                        span = New HtmlGenericControl("span")
-                        span.InnerHtml = "&nbsp;"
-                        span.Style.Add("font-size", "16px")
-                        divFieldDiff3.Controls.Add(span)
-                    End If
+                    lblFieldDiff3.Text = Me.GetGlobalResourceObject("Text", strGender)
+                    lblFieldDiff3.Visible = True
+                Else
+                    span = New HtmlGenericControl("span")
+                    span.InnerHtml = "&nbsp;"
+                    span.Style.Add("font-size", "16px")
+                    divFieldDiff3.Controls.Add(span)
+                End If
 
             Case Else
-                    Throw New Exception(String.Format("Unhandled document type({0})", udtPersonalInfo.DocCode))
+                Throw New Exception(String.Format("Unhandled document type({0})", udtPersonalInfo.DocCode))
 
         End Select
 
@@ -8414,6 +8721,109 @@ Partial Public Class VaccinationFileManagement ' 020901
 
     End Function
 
+    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    ' -------------------------------------------------------------------------------
+    ''' <summary>
+    ''' Check personal information field difference on provided field
+    ''' </summary>
+    ''' <param name="udtTempPersonalInfo"></param>
+    ''' <param name="udtEHSPersonalInfo"></param>
+    ''' <returns></returns>
+    ''' <remarks>Compare Temp Account Info and Validated Account Info</remarks>
+    Private Function CheckPersonalInfoFieldDiff(ByVal udtTempPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel) As List(Of FieldDifference)
+
+        Dim lstFieldDiff As New List(Of FieldDifference)
+
+        If udtTempPersonalInfo.DOB <> udtEHSPersonalInfo.DOB OrElse udtTempPersonalInfo.ExactDOB <> udtEHSPersonalInfo.ExactDOB Then
+            lstFieldDiff.Add(FieldDifference.DOB)
+        End If
+
+        If udtTempPersonalInfo.EName.Trim <> udtEHSPersonalInfo.EName.Trim Then
+            lstFieldDiff.Add(FieldDifference.EngName)
+        End If
+
+        If udtTempPersonalInfo.Gender.Trim <> udtEHSPersonalInfo.Gender.Trim Then
+            lstFieldDiff.Add(FieldDifference.Sex)
+        End If
+
+        Select Case udtEHSPersonalInfo.DocCode
+            Case DocTypeModel.DocTypeCode.ID235B
+                If Not IsNothing(udtTempPersonalInfo.PermitToRemainUntil) Then
+                    If Not udtTempPersonalInfo.PermitToRemainUntil.Equals(udtEHSPersonalInfo.PermitToRemainUntil) Then
+                        lstFieldDiff.Add(FieldDifference.PermitToRemainUntil)
+                    End If
+                End If
+
+            Case DocTypeModel.DocTypeCode.DI
+                If Not IsNothing(udtTempPersonalInfo.DateofIssue) Then
+                    If Not udtTempPersonalInfo.DateofIssue.Equals(udtEHSPersonalInfo.DateofIssue) Then
+                        lstFieldDiff.Add(FieldDifference.DOI)
+                    End If
+                End If
+
+            Case DocTypeModel.DocTypeCode.EC
+                If udtTempPersonalInfo.CName <> String.Empty Then
+                    If udtTempPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
+                        lstFieldDiff.Add(FieldDifference.ChineseName)
+                    End If
+                End If
+
+                If udtTempPersonalInfo.ECSerialNo <> String.Empty Then
+                    If udtTempPersonalInfo.ECSerialNo.Trim <> udtEHSPersonalInfo.ECSerialNo.Trim Then
+                        lstFieldDiff.Add(FieldDifference.ECSerialNo)
+                    End If
+                End If
+
+                If udtTempPersonalInfo.ECReferenceNo <> String.Empty Then
+                    If udtEHSPersonalInfo.ECReferenceNo Is Nothing OrElse _
+                        udtTempPersonalInfo.ECReferenceNo.Trim <> udtEHSPersonalInfo.ECReferenceNo.Trim OrElse _
+                        udtTempPersonalInfo.ECReferenceNoOtherFormat <> udtEHSPersonalInfo.ECReferenceNoOtherFormat Then
+
+                        lstFieldDiff.Add(FieldDifference.ECReferenceNo)
+                    End If
+                End If
+
+                If Not IsNothing(udtTempPersonalInfo.DateofIssue) Then
+                    If Not udtTempPersonalInfo.DateofIssue.Equals(udtEHSPersonalInfo.DateofIssue) Then
+                        lstFieldDiff.Add(FieldDifference.DOI)
+                    End If
+                End If
+
+            Case DocTypeModel.DocTypeCode.HKIC
+                If udtTempPersonalInfo.CName <> String.Empty Then
+                    If udtTempPersonalInfo.CName.Trim <> udtEHSPersonalInfo.CName.Trim Then
+                        lstFieldDiff.Add(FieldDifference.ChineseName)
+                    End If
+                End If
+
+                If Not IsNothing(udtTempPersonalInfo.DateofIssue) Then
+                    If Not udtTempPersonalInfo.DateofIssue.Equals(udtEHSPersonalInfo.DateofIssue) Then
+                        lstFieldDiff.Add(FieldDifference.DOI)
+                    End If
+                End If
+
+            Case DocTypeModel.DocTypeCode.REPMT
+                If Not IsNothing(udtTempPersonalInfo.DateofIssue) Then
+                    If Not udtTempPersonalInfo.DateofIssue.Equals(udtEHSPersonalInfo.DateofIssue) Then
+                        lstFieldDiff.Add(FieldDifference.DOI)
+                    End If
+                End If
+
+            Case DocTypeModel.DocTypeCode.VISA
+                If udtTempPersonalInfo.Foreign_Passport_No <> String.Empty Then
+                    If udtTempPersonalInfo.Foreign_Passport_No.Trim <> udtEHSPersonalInfo.Foreign_Passport_No.Trim Then
+                        lstFieldDiff.Add(FieldDifference.ForeignPassportNo)
+                    End If
+                End If
+
+        End Select
+
+        Return lstFieldDiff
+
+    End Function
+    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
 #Region "CCCode"
 
     Private Sub BuildCCCode(ByVal strCCCode1 As String, ByVal strCCCode2 As String, ByVal strCCCode3 As String, ByVal strCCCode4 As String, ByVal strCCCode5 As String, ByVal strCCCode6 As String)
@@ -8605,9 +9015,18 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
 
-        If udtEHSAccount.VoucherAccID = String.Empty Then
-            RemoveUnnecessaryField(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim))
+        If IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
+            Return blnProceed
         End If
+
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' Remove unused fields according to Doc Code
+        RemoveUnnecessaryField(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim))
+
+        'If udtEHSAccount.VoucherAccID = String.Empty Then
+        '    RemoveUnnecessaryField(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim))
+        'End If
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         Select Case udtEHSAccount.SearchDocCode.Trim
 
@@ -8687,6 +9106,101 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         If blnProceed Then
             Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
+
+            'Check Claim Rules   
+            Dim udtClaimRulesBLL As New ClaimRules.ClaimRulesBLL
+            Dim sm As SystemMessage = Nothing
+            Dim udtEligibleResult As ClaimRules.ClaimRulesBLL.EligibleResult = Nothing
+            Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
+            Dim enumCheckEligiblity As ClaimRules.ClaimRulesBLL.Eligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.Check
+
+            If udtEHSAccount.TransactionID <> "" Then
+                udtTranDetailVaccineList = Me.GetVaccinationRecord(udtEHSAccount, sm)
+            Else
+                enumCheckEligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.NotCheck
+            End If
+
+            If IsNothing(sm) Then
+                If udtEHSAccount.VoucherAccID <> String.Empty Then
+                    sm = udtClaimRulesBLL.CheckRectifyEHSAccount(udtEHSAccount.SchemeCode, udtEHSAccount.SearchDocCode.Trim, _
+                                                                 udtEHSAccount, udtEligibleResult, udtTranDetailVaccineList, _
+                                                                 enumCheckEligiblity, ClaimRules.ClaimRulesBLL.Unique.Exclude_Self_EHSAccount)
+                End If
+            End If
+
+            Dim blnShowDeclaration As Boolean = False
+
+            If IsNothing(sm) Then
+                'If Not IsNothing(udtEligibleResult) Then
+                '    If udtEligibleResult.HandleMethod = ClaimRules.ClaimRulesBLL.HandleMethodENum.Declaration Then
+
+                '        Dim strText As String = String.Empty
+                '        If Not udtEligibleResult.RelatedEligibleRule Is Nothing AndAlso Not String.IsNullOrEmpty(udtEligibleResult.RelatedEligibleRule.ObjectName3) Then
+                '            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleRule.ObjectName3.Trim())
+                '        ElseIf Not udtEligibleResult.RelatedEligibleExceptionRule Is Nothing AndAlso Not String.IsNullOrEmpty(udtEligibleResult.RelatedEligibleExceptionRule.ObjectName3) Then
+                '            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleExceptionRule.ObjectName3.Trim())
+                '        ElseIf Not udtEligibleResult.RelatedClaimCategoryEligibilityModel Is Nothing AndAlso Not String.IsNullOrEmpty(udtEligibleResult.RelatedClaimCategoryEligibilityModel.ObjectName3) Then
+                '            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedClaimCategoryEligibilityModel.ObjectName3.Trim())
+                '        End If
+
+                '        If Not String.IsNullOrEmpty(strText) Then
+                '            Me.lblClamDeclaration.Text = strText
+                '            ModalPopupExtenderClaimDEclaration.Show()
+                '            blnShowDeclaration = True
+                '        Else
+                '            blnShowDeclaration = False
+                '        End If
+                '    Else
+                '        blnShowDeclaration = False
+                '    End If
+                'Else
+                '    blnShowDeclaration = False
+                'End If
+
+                Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
+
+                'If Not blnShowDeclaration Then
+                '    'SetupConfirmRectifyAcc(udtEHSAccount)
+                '    'Me.mvRectify.ActiveViewIndex = intConfirmAccount
+
+                '    'Dim blnModify As Boolean = False
+
+                '    'If Not IsNothing(Session(SESS_ModifyAcc)) Then
+                '    '    If CBool(Session(SESS_ModifyAcc)) = True Then
+                '    '        pnlCreateAccDeclaration.Visible = True
+                '    '    Else
+                '    '        pnlCreateAccDeclaration.Visible = False
+                '    '    End If
+                '    'Else
+                '    '    pnlCreateAccDeclaration.Visible = False
+                '    'End If
+
+                '    udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
+                '    udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
+                '    udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
+                '    udtAuditLog.WriteEndLog(LogID.LOG00015, AuditLogDesc.ValidateRectifiedAccountComplete)
+                'Else
+                '    udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
+                '    udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
+                '    udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
+                '    udtAuditLog.WriteEndLog(LogID.LOG00017, AuditLogDesc.ShowDeclarationWithValidationComplete)
+                'End If
+            Else
+                'Me.udcMsgBoxErr.Clear()
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+                'udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
+                'udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
+                'udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
+                'Me.udcMsgBoxErr.BuildMessageBox(strValidationFail, udtAuditLog, LogID.LOG00016, AuditLogDesc.ValidateRectifiedAccountFail)
+
+                blnProceed = False
+
+            End If
+            'Else
+            '    udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
+            '    udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
+            '    udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
+            'Me.udcMsgBoxErr.BuildMessageBox(strValidationFail, udtAuditLog, LogID.LOG00016, AuditLogDesc.ValidateRectifiedAccountFail)
         End If
 
         Return blnProceed
@@ -8730,6 +9244,72 @@ Partial Public Class VaccinationFileManagement ' 020901
 
     End Function
 
+    ''' <summary>
+    ''' Get EHS Vaccination record and CMS Vaccination record, and Join together by current claiming scheme
+    ''' </summary>
+    ''' <param name="udtEHSAccount"></param>
+    ''' <param name="SystemMessage"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function GetVaccinationRecord(ByVal udtEHSAccount As EHSAccountModel, ByRef SystemMessage As SystemMessage) As TransactionDetailVaccineModelCollection
+        Dim udtEHSClaimBLL As New EHSClaimBLL
+        Dim udtVaccinationBLL As New VaccinationBLL
+        Dim udtEHSTransaction As EHSTransactionModel = Nothing
+        Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
+        Dim strSchemeCode As String
+
+        If udtEHSAccount.TransactionID Is Nothing OrElse udtEHSAccount.TransactionID.Trim() = "" Then
+            ' without tx
+            Return Nothing
+        End If
+
+        Dim udtTransactionBLL As New EHSTransactionBLL()
+        udtEHSTransaction = udtTransactionBLL.LoadEHSTransaction(udtEHSAccount.TransactionID)
+
+        ' EHSAccount Scheme Code Different with Transaction SchemeCode.
+        ' Eg. Re-use DataEntry create EHS Account Or Re-use self created EHS Account (without Transaction), Combine transaction with EHS Account
+
+        strSchemeCode = udtEHSTransaction.SchemeCode.Trim
+
+        ' Check for vaccine only
+        Dim udtSchemeClaimModel As SchemeClaimModel = (New SchemeClaimBLL).getAllSchemeClaim_WithSubsidizeGroup().Filter(strSchemeCode)
+        If udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType <> SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
+            Return Nothing
+        End If
+
+        ' Retrieve Vaccination Record from third party
+        Dim udtVaccineResultBag As New VaccineResultCollection
+        udtVaccineResultBag = udtEHSClaimBLL.GetVaccinationRecord(udtEHSAccount, udtTranDetailVaccineList, FunctionCode, _
+                                                                  New AuditLogEntry(FunctionCode, Me), strSchemeCode)
+
+        ' Handle result from third party
+        Dim blnErrorHA As Boolean = False
+        Dim blnErrorDH As Boolean = False
+
+        If udtVaccineResultBag.HAReturnStatus = VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail Then
+            ' if fail to enquiry latest record, then show error
+            If VaccinationBLL.CheckTurnOnVaccinationRecord(VaccinationBLL.VaccineRecordSystem.CMS) <> VaccinationBLL.EnumTurnOnVaccinationRecord.N Then
+                SystemMessage = New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00012)
+                blnErrorHA = True
+            End If
+        End If
+
+        If udtVaccineResultBag.DHReturnStatus = VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail Then
+            ' if fail to enquiry latest record, then show error
+            If VaccinationBLL.CheckTurnOnVaccinationRecord(VaccinationBLL.VaccineRecordSystem.CIMS) <> VaccinationBLL.EnumTurnOnVaccinationRecord.N Then
+                SystemMessage = New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013)
+                blnErrorDH = True
+            End If
+        End If
+
+        If blnErrorHA And blnErrorDH Then
+            SystemMessage = New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00014)
+        End If
+
+        Return udtTranDetailVaccineList
+
+    End Function
+
     Private Function SaveAcct(ByRef OutputSystemMessage As SystemMessage) As Boolean
         Dim blnRes As Boolean = True
         Dim sm As SystemMessage = Nothing
@@ -8744,12 +9324,20 @@ Partial Public Class VaccinationFileManagement ' 020901
         'Dim blnChkDeclare As Boolean = False
         Dim strUpdateBy As String = String.Empty
 
+        Dim strCustomDocType As String = Session(SESS.AcctEditCustomDocType)
+
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
         Dim strDocCode As String = udtEHSAccount.SearchDocCode.Trim
 
         Dim udtOrgEHSAccount As EHSAccountModel = CType(Me.Session(SESS.OrgEHSAccount), EHSAccountModel)
 
         Dim udtInputStudentFile As StudentFileEntryModel = Nothing
+
+        Dim udtStudentFileStaging As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeaderStaging(Session(SESS.AcctEditFileID), blnWithEntry:=False)
+
+        If IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
+            Return blnRes
+        End If
 
         'If Me.IsReusedAcc(udtEHSAccount.OriginalAccID) Then
         '    blnChkDeclare = Me.chkDeclaration.Checked
@@ -8831,11 +9419,14 @@ Partial Public Class VaccinationFileManagement ' 020901
             Dim intPracticeID As Integer = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel).PracticeDisplaySeq
             Dim udtCheckEHSAccount As EHSAccountModel = Nothing
             Dim blnHKBCtoHKIC As Boolean = False
-
+            Dim enumCheckEligiblity As ClaimRules.ClaimRulesBLL.Eligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.Check
             Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
-            'If udtEHSAccount.TransactionID <> "" Then
-            '    udtTranDetailVaccineList = Me.GetVaccinationRecord(udtEHSAccount, sm)
-            'End If
+
+            If udtEHSAccount.TransactionID <> "" Then
+                udtTranDetailVaccineList = Me.GetVaccinationRecord(udtEHSAccount, sm)
+            Else
+                enumCheckEligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.NotCheck
+            End If
 
             If blnCreateAcc Then
                 ' -------------------------------------------------------------------------------
@@ -8877,7 +9468,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                     sm = udtClaimRulesBLL.CheckCreateEHSAccount(udtEHSAccount.SchemeCode, _
                                                                 strDocCode, _
                                                                 udtEHSAccount, _
-                                                                ClaimRules.ClaimRulesBLL.Eligiblity.NotCheck)
+                                                                enumCheckEligiblity)
                 End If
 
 
@@ -8887,7 +9478,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                 ' -------------------------------------------------------------------------------
                 sm = udtClaimRulesBLL.CheckRectifyEHSAccount(udtEHSAccount.SchemeCode, strDocCode.Trim, _
                                                              udtEHSAccount, udtEligibleResult, udtTranDetailVaccineList, _
-                                                             ClaimRules.ClaimRulesBLL.Eligiblity.NotCheck)
+                                                             enumCheckEligiblity, ClaimRules.ClaimRulesBLL.Unique.Exclude_Self_EHSAccount)
             End If
 
             'Special handling for no account record to match validated account
@@ -9009,7 +9600,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                             udtStudent.LastRectifyBy = strUpdateBy
                             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
-                            udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName)
+                            ' Perm
+                            udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Permanence)
+
+                            'Staging
+                            If udtStudentFileStaging IsNot Nothing Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging)
+                            End If
+
 
                             udtInputStudentFile = udtStudent
 
@@ -9070,18 +9668,35 @@ Partial Public Class VaccinationFileManagement ' 020901
                             udtAuditLog.AddDescripton("DirectUpdateExistingAccount", "True")
                             udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID)
 
+                            ' Update Status to PendingVerify (Missing Info case will not happen since all fields must be inputted in UI)
                             If udtEHSAccount.RecordStatus.Trim.Equals(VRAcctValidatedStatus.Invalid) Or _
                                 udtEHSAccount.RecordStatus.Trim.Equals(VRAcctValidatedStatus.Restricted) Then
                                 udtEHSAccount.RecordStatus = VRAcctValidatedStatus.PendingForVerify
                             End If
 
+                            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                            If Not (New DocTypeBLL).getAllDocType.Filter(strDocCode).IMMDorManualValidationAvailable Then
+                                udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.NotForImmDValidation
+                            End If
+                            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
                             udtEHSAccountBLL.UpdateEHSAccountRectify(udtOrgEHSAccount, udtEHSAccount, strUpdateBy, dtmCurrentDate)
 
                             If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
                                 If udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
+                                    'Permanence
                                     udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                              Session(SESS.AcctEditSeqNo), _
-                                                                                             udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName)
+                                                                                             udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                             StudentFileBLL.StudentFileLocation.Permanence)
+                                    'Staging
+                                    If udtStudentFileStaging IsNot Nothing Then
+                                        udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
+                                                                                                 Session(SESS.AcctEditSeqNo), _
+                                                                                                 udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                                 StudentFileBLL.StudentFileLocation.Staging)
+                                    End If
+
                                 End If
                             End If
 
@@ -9103,10 +9718,18 @@ Partial Public Class VaccinationFileManagement ' 020901
 
                             If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
                                 If IsNothing(sm) AndAlso udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
+                                    'Permanent
                                     udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                              Session(SESS.AcctEditSeqNo), _
-                                                                                             udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName)
-
+                                                                                             udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName,
+                                                                                             StudentFileBLL.StudentFileLocation.Permanence)
+                                    'Staging
+                                    If udtStudentFileStaging IsNot Nothing Then
+                                        udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
+                                                                                                 Session(SESS.AcctEditSeqNo), _
+                                                                                                 udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                                 StudentFileBLL.StudentFileLocation.Staging)
+                                    End If
                                 End If
                             End If
 
@@ -9131,10 +9754,18 @@ Partial Public Class VaccinationFileManagement ' 020901
 
                     If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
                         If IsNothing(sm) AndAlso udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
+                            'Permanence
                             udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                      Session(SESS.AcctEditSeqNo), _
-                                                                                     udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName)
-
+                                                                                     udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                     StudentFileBLL.StudentFileLocation.Permanence)
+                            'Staging
+                            If udtStudentFileStaging IsNot Nothing Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
+                                                                                         Session(SESS.AcctEditSeqNo), _
+                                                                                         udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                         StudentFileBLL.StudentFileLocation.Staging)
+                            End If
                         End If
                     End If
 
@@ -9172,8 +9803,13 @@ Partial Public Class VaccinationFileManagement ' 020901
                             udtStudent.LastRectifyBy = strUpdateBy
                             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
-                            udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent)
+                            'Perm
+                            udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence)
 
+                            'Staging
+                            If udtStudentFileStaging IsNot Nothing Then
+                                udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging)
+                            End If
                         Else
                             'Temporary Account
                             'Re-take eHS account from DB
@@ -9213,18 +9849,35 @@ Partial Public Class VaccinationFileManagement ' 020901
                             udtStudent.LastRectifyBy = strUpdateBy
                             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
-                            udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent)
+                            'Perm
+                            udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence)
 
-                            'strMsgCode = MsgCode.MSG00002 '"00002"
-                            'Dim strOld As String() = {"%s"}
-                            'Dim strNew As String() = {""}
-                            'strNew(0) = Me._udtFormatter.formatSystemNumber(udtNewAcc.VoucherAccID.Trim)
-                            'sm = New SystemMessage(FunctionCode, SeverityCode.SEVI, strMsgCode)
-                            'Me.udcInfoMessageBox.AddMessage(sm, strOld, strNew)
+                            'Staging
+                            If udtStudentFileStaging IsNot Nothing Then
+                                udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging)
+                            End If
 
                         End If
 
                     Else
+
+                        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                        ' -------------------------------------------------------------------------------
+                        ' Document Type Changed                        
+                        If strCustomDocType <> String.Empty Then
+                            Dim udtStudent As StudentFileEntryModel = New StudentFileEntryModel
+                            'Update Vaccination File Entry - Doc Code
+                            udtStudent.StudentFileID = Session(SESS.AcctEditFileID)
+                            udtStudent.StudentSeq = Session(SESS.AcctEditSeqNo)
+                            udtStudent.DocCode = strCustomDocType
+                            udtStudent.AccDocCode = strCustomDocType
+                            udtStudent.LastRectifyBy = strUpdateBy
+                            udtStudent.LastRectifyDtm = dtmCurrentDate
+
+                            udtStudentFileBLL.UpdateVaccinationFileEntryDocCode(udtStudent)
+                        End If
+                        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
                         If Me.IsReusedAcc(udtEHSAccount.OriginalAccID) And Not udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.SpecialAccount Then
                             'retake eHS account from DB and save it to session
                             GeteHSAccount(strNewAccountID, udtEHSAccount.AccountSourceString)
@@ -9241,6 +9894,22 @@ Partial Public Class VaccinationFileManagement ' 020901
                             '    Me.udcInfoMessageBox.AddMessage(sm)
                         End If
                     End If
+
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]                    
+                    ' -------------------------------------------------------------------------
+                    ' 3. Update Voucher Transaction for Doc Change
+                    ' -------------------------------------------------------------------------
+                    If IsNothing(sm) Then
+                        'Success          
+                        ' Document Type Changed                        
+                        If udtEHSAccount.TransactionID <> "" Then
+                            If strCustomDocType <> String.Empty Then
+                                Dim udtEHSTransactionBLL As New EHSTransactionBLL
+                                udtEHSTransactionBLL.UpdateTransactionDocCode(udtEHSAccount.TransactionID, strCustomDocType, strUpdateBy, dtmCurrentDate)
+                            End If
+                        End If
+                    End If
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
                     OutputSystemMessage = sm
 
@@ -9275,6 +9944,8 @@ Partial Public Class VaccinationFileManagement ' 020901
 
                     Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(strDocCode)
 
+                    drFull.Item("Doc_Code") = udtPersonalInfo.DocCode
+                    drFull.Item("Doc_No") = udtPersonalInfo.IdentityNum
                     drFull.Item("Name_EN") = udtPersonalInfo.EName
                     drFull.Item("Surname_EN") = udtPersonalInfo.ENameSurName
                     drFull.Item("Given_Name_EN") = udtPersonalInfo.ENameFirstName
@@ -9299,9 +9970,13 @@ Partial Public Class VaccinationFileManagement ' 020901
                     drFull.Item("EC_Serial_No") = IIf(udtPersonalInfo.ECSerialNo = String.Empty, DBNull.Value, udtPersonalInfo.ECSerialNo)
                     drFull.Item("EC_Reference_No") = IIf(udtPersonalInfo.ECReferenceNo Is Nothing, DBNull.Value, udtPersonalInfo.ECReferenceNo)
                     drFull.Item("EC_Reference_No_Other_Format") = IIf(udtPersonalInfo.ECReferenceNoOtherFormat, YesNo.Yes, DBNull.Value)
+                    drFull.Item("EC_Age") = IIf(udtPersonalInfo.ECAge Is Nothing, DBNull.Value, udtPersonalInfo.ECAge)
+                    drFull.Item("EC_Date_of_Registration") = IIf(udtPersonalInfo.ECDateOfRegistration Is Nothing, DBNull.Value, udtPersonalInfo.ECDateOfRegistration)
                     drFull.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
                     drFull.Item("Rectified") = YesNo.Yes
 
+                    dr.Item("Doc_Code") = udtPersonalInfo.DocCode
+                    dr.Item("Doc_No") = udtPersonalInfo.IdentityNum
                     dr.Item("Name_EN") = udtPersonalInfo.EName
                     dr.Item("Surname_EN") = udtPersonalInfo.ENameSurName
                     dr.Item("Given_Name_EN") = udtPersonalInfo.ENameFirstName
@@ -9326,6 +10001,8 @@ Partial Public Class VaccinationFileManagement ' 020901
                     dr.Item("EC_Serial_No") = IIf(udtPersonalInfo.ECSerialNo = String.Empty, DBNull.Value, udtPersonalInfo.ECSerialNo)
                     dr.Item("EC_Reference_No") = IIf(udtPersonalInfo.ECReferenceNo Is Nothing, DBNull.Value, udtPersonalInfo.ECReferenceNo)
                     dr.Item("EC_Reference_No_Other_Format") = IIf(udtPersonalInfo.ECReferenceNoOtherFormat, YesNo.Yes, DBNull.Value)
+                    dr.Item("EC_Age") = IIf(udtPersonalInfo.ECAge Is Nothing, DBNull.Value, udtPersonalInfo.ECAge)
+                    dr.Item("EC_Date_of_Registration") = IIf(udtPersonalInfo.ECDateOfRegistration Is Nothing, DBNull.Value, udtPersonalInfo.ECDateOfRegistration)
                     dr.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
                     dr.Item("Rectified") = YesNo.Yes
 
@@ -9446,6 +10123,29 @@ Partial Public Class VaccinationFileManagement ' 020901
 
                     End If
 
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                    ' -------------------------------------------------------------------------------
+                    ' Check Field Diff for Temp Account Info and Validated Account Info if using a temp account
+                    Select Case udtEHSAccount.AccountSource
+                        Case EHSAccountModel.SysAccountSource.TemporaryAccount
+                            Dim udtCheckValidatedEHSAccount As EHSAccountModel = Nothing
+                            udtCheckValidatedEHSAccount = udtEHSAccountBLL.LoadEHSAccountByIdentity(udtPersonalInfo.IdentityNum, _
+                                                                                                    udtPersonalInfo.DocCode)
+                            If udtCheckValidatedEHSAccount IsNot Nothing Then
+                                If CheckPersonalInfoFieldDiff(udtPersonalInfo, udtCheckValidatedEHSAccount.EHSPersonalInformationList.Filter(udtPersonalInfo.DocCode)).Count > 0 Then
+                                    drFull.Item("Field_Diff") = "Y"
+                                    dr.Item("Field_Diff") = "Y"
+                                Else
+                                    drFull.Item("Field_Diff") = "N"
+                                    dr.Item("Field_Diff") = "N"
+                                End If
+                            Else
+                                drFull.Item("Field_Diff") = "N"
+                                dr.Item("Field_Diff") = "N"
+                            End If
+                    End Select
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
                     dtFull.AcceptChanges()
                     dt.AcceptChanges()
 
@@ -9523,24 +10223,32 @@ Partial Public Class VaccinationFileManagement ' 020901
         End If
 
         Try
-
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             '1. Save to DB
             Dim udtStudentFileBLL As New StudentFileBLL
+            Dim udtStudentFileStaging As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeaderStaging(strFileID, blnWithEntry:=False)
             Dim udtStudent As StudentFileEntryModel = New StudentFileEntryModel
 
             udtStudent.StudentFileID = strFileID
             udtStudent.StudentSeq = strSeqNo
+            udtStudent.ClassNo = lblClassNo.Text.Trim
             udtStudent.ContactNo = txtRectifyContactNo.Text.Trim
             udtStudent.RejectInjection = IIf(chkRectifyConfirmNotToInject.Checked, YesNo.No, YesNo.Yes)
             udtStudent.LastRectifyBy = strUpdateBy
             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
-            udtStudentFileBLL.UpdateStudentContactNo(udtStudent)
+            udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileBLL.StudentFileLocation.Permanence)
+
+            If udtStudentFileStaging IsNot Nothing Then
+                udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileBLL.StudentFileLocation.Staging)
+            End If
 
             '2. Update Account Info Gridview 
             Dim dtFull As DataTable = GetDetailClassDataTable(DetailClassDataTable.Full)
             Dim drFull As DataRow = dtFull.Select(String.Format("Student_Seq={0}", strSeqNo))(0)
 
+            drFull.Item("Class_No") = lblClassNo.Text.Trim
             drFull.Item("Contact_No") = txtRectifyContactNo.Text.Trim
             drFull.Item("Reject_Injection") = IIf(chkRectifyConfirmNotToInject.Checked, YesNo.No, YesNo.Yes)
             drFull.Item("Rectified") = YesNo.Yes
@@ -9550,6 +10258,7 @@ Partial Public Class VaccinationFileManagement ' 020901
             Dim dt As DataTable = GetDetailClassDataTable(DetailClassDataTable.Selected)
             Dim dr As DataRow = dt.Select(String.Format("Student_Seq={0}", strSeqNo))(0)
 
+            dr.Item("Class_No") = lblClassNo.Text.Trim
             dr.Item("Contact_No") = txtRectifyContactNo.Text.Trim
             dr.Item("Reject_Injection") = IIf(chkRectifyConfirmNotToInject.Checked, YesNo.No, YesNo.Yes)
             dr.Item("Rectified") = YesNo.Yes
@@ -9560,6 +10269,8 @@ Partial Public Class VaccinationFileManagement ' 020901
                 sm = New SystemMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001)
                 Me.udcInfoMessageBox.AddMessage(sm)
             End If
+
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         Catch eSQL As SqlException
             If eSQL.Number = 50000 Then
@@ -9634,6 +10345,8 @@ Partial Public Class VaccinationFileManagement ' 020901
             Dim udtStudent As StudentFileEntryModel = New StudentFileEntryModel
             Dim blnUpdateExcelChiName As Boolean = False
 
+            Dim udtStudentFileStaging As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeaderStaging(Session(SESS.AcctEditFileID), blnWithEntry:=False)
+
             Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode)
 
             'Validated Account 
@@ -9665,7 +10378,14 @@ Partial Public Class VaccinationFileManagement ' 020901
             udtStudent.LastRectifyBy = strUpdateBy
             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
-            udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName)
+            'Perm
+            udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Permanence)
+
+            'Staging
+            If udtStudentFileStaging IsNot Nothing Then
+                udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging)
+            End If
+
 
             'Audit log
             udtAuditLog.WriteEndLog(LogID.LOG00042, AuditLogDesc.Msg00042)
@@ -10149,6 +10869,7 @@ Partial Public Class VaccinationFileManagement ' 020901
             sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.HKIC, udcInputHKIC.HKID, String.Empty)
             If Not IsNothing(sm) Then
                 isValid = False
+                udcInputHKIC.SetHKICNoModificationError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
         End If
@@ -10293,6 +11014,7 @@ Partial Public Class VaccinationFileManagement ' 020901
             sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.EC, udcInputEC.HKID, String.Empty)
             If Not IsNothing(sm) Then
                 isValid = False
+                udcInputEC.SetECHKICModificationError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
         End If
@@ -10576,6 +11298,7 @@ Partial Public Class VaccinationFileManagement ' 020901
             sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.HKBC, udcInputHKBC.RegistrationNo, String.Empty)
             If Not IsNothing(sm) Then
                 isValid = False
+                udcInputHKBC.SetRegistrationNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
         End If
@@ -10690,6 +11413,14 @@ Partial Public Class VaccinationFileManagement ' 020901
         ' If create new account, check document no. and whether is deceased
         If _udtEHSAccount.VoucherAccID = String.Empty Then
             sm = AccountCreationValdiation(DocType.DocTypeModel.DocTypeCode.ADOPC, udcInputAdopt.IdentityNo, udcInputAdopt.PerfixNo, udcInputAdopt.DOB)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputAdopt.SetEntryNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.ADOPC, udcInputAdopt.IdentityNo, udcInputAdopt.PerfixNo)
             If Not IsNothing(sm) Then
                 isValid = False
                 udcInputAdopt.SetEntryNoError(True)
@@ -10810,6 +11541,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputDI.SetTDError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.DI, udcInputDI.TravelDocNo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputDI.SetTDError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'English Name
@@ -10900,6 +11639,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputID235B.SetBirthEntryNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.ID235B, udcInputID235B.BirthEntryNo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputID235B.SetBirthEntryNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'English Name
@@ -10980,6 +11727,14 @@ Partial Public Class VaccinationFileManagement ' 020901
         ' If create new account, check document no. and whether is deceased
         If _udtEHSAccount.VoucherAccID = String.Empty Then
             sm = AccountCreationValdiation(DocType.DocTypeModel.DocTypeCode.REPMT, udcInputReentryPermit.REPMTNo, String.Empty, udcInputReentryPermit.DateOfBirth)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputReentryPermit.SetREPMTNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.REPMT, udcInputReentryPermit.REPMTNo, String.Empty)
             If Not IsNothing(sm) Then
                 isValid = False
                 udcInputReentryPermit.SetREPMTNoError(True)
@@ -11074,6 +11829,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputVisa.SetVISANoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.VISA, udcInputVisa.VISANo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputVisa.SetVISANoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'PassportNo
@@ -11151,6 +11914,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputOW.SetDocumentNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.OW, udcInputOW.DocumentNo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputOW.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'DOB
@@ -11160,6 +11931,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         sm = Me._udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.OW, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(sm) Then
+            udcInputOW.SetDOBError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
             isValid = False
         End If
@@ -11218,6 +11990,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputTW.SetDocumentNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.TW, udcInputTW.DocumentNo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputTW.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'DOB
@@ -11227,6 +12007,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         sm = Me._udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.TW, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(sm) Then
+            udcInputTW.SetDOBError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
             isValid = False
         End If
@@ -11285,6 +12066,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputRFNo8.SetDocumentNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.RFNo8, udcInputRFNo8.DocumentNo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputRFNo8.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'DOB
@@ -11294,6 +12083,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         sm = Me._udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.RFNo8, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(sm) Then
+            udcInputRFNo8.SetDOBError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
             isValid = False
         End If
@@ -11352,6 +12142,14 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcInputOTHER.SetDocumentNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
             End If
+        Else
+            'Check document no. only
+            sm = Me._udtValidator.chkIdentityNumber(DocType.DocTypeModel.DocTypeCode.OTHER, udcInputOTHER.DocumentNo, String.Empty)
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputOTHER.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
         End If
 
         'DOB
@@ -11361,6 +12159,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         sm = Me._udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.OTHER, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(sm) Then
+            udcInputOTHER.SetDOBError(True)
             Me.udcAcctEditErrorMessage.AddMessage(sm)
             isValid = False
         End If
@@ -11658,6 +12457,9 @@ Partial Public Class VaccinationFileManagement ' 020901
 
                     drVaccFileRecord("Injected") = drSelectedVaccFile("Injected")
 
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                    drVaccFileRecord("Service_Receive_Dtm") = drSelectedVaccFile("Service_Receive_Dtm")
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                 Next
 
                 dtFullVaccFile = MassageData(dtFullVaccFile, strUserID, dtmNow)
@@ -11931,7 +12733,18 @@ Partial Public Class VaccinationFileManagement ' 020901
         Dim intDateBackClaimDayLimit As Integer = CInt(_udtGeneralFunction.GetSystemParameterParmValue1("DateBackClaimDayLimit"))
         Dim udtStudentFile As StudentFileHeaderModel = GetDetailClassModel()
 
-        Dim dtmLastDayForClaim As DateTime = DateAdd(DateInterval.Day, intDateBackClaimDayLimit - 1, CDate(udtStudentFile.ServiceReceiveDtm))
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        Dim dtmServiceDate As Date = CDate(udtStudentFile.ServiceReceiveDtm).Date
+
+        ' Use 2nd Vaccine Date if exist to reduce chance to exceed date back claim period
+        If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+            dtmServiceDate = CDate(udtStudentFile.ServiceReceiveDtm_2.Value).Date
+        End If
+
+        'Dim dtmLastDayForClaim As DateTime = DateAdd(DateInterval.Day, intDateBackClaimDayLimit - 1, CDate(udtStudentFile.ServiceReceiveDtm))
+        Dim dtmLastDayForClaim As DateTime = DateAdd(DateInterval.Day, intDateBackClaimDayLimit - 1, dtmServiceDate)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         If dtmNow > dtmLastDayForClaim Then
             blnRes = False
@@ -12055,11 +12868,21 @@ Partial Public Class VaccinationFileManagement ' 020901
             ' Injected
             Dim lblClassSummaryInjected As Label = e.Row.FindControl("lblClassSummaryInjected")
             If Not IsDBNull(dr("Injected")) Then
-                If CStr(dr("Injected")) = YesNo.Yes Then
-                    lblClassSummaryInjected.Text = GetGlobalResourceObject("Text", "Yes")
-                Else
-                    lblClassSummaryInjected.Text = GetGlobalResourceObject("Text", "No")
-                End If
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                Select Case CStr(dr("Injected"))
+                    Case YesNo.Yes
+                        lblClassSummaryInjected.Text = GetGlobalResourceObject("Text", "Yes")
+                    Case YesNo.No
+                        lblClassSummaryInjected.Text = GetGlobalResourceObject("Text", "No")
+                    Case "1"
+                        lblClassSummaryInjected.Text = String.Format("{0}<br>({1})", GetGlobalResourceObject("Text", "Yes"), GetGlobalResourceObject("Text", "1stVisit"))
+                    Case "2"
+                        lblClassSummaryInjected.Text = String.Format("{0}<br>({1})", GetGlobalResourceObject("Text", "Yes"), GetGlobalResourceObject("Text", "2ndVisit"))
+                    Case Else
+                        lblClassSummaryInjected.Text = CStr(dr("Injected")).ToString.Trim()
+                End Select
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End If
 
         End If
@@ -12124,7 +12947,9 @@ Partial Public Class VaccinationFileManagement ' 020901
             Me.lblClassSummaryClassName.Text = strClassName
             Me.lblClassSummaryNoOfStudent.Text = intPageSize
             Me.lblClassSummaryNoOfStudentNotToInject.Text = dt.Select(String.Format("Class_Name = '{0}' AND Reject_Injection = 'Y'", strClassName)).Length
-            Me.lblClassSummaryNoOfStudentActualInjected.Text = dt.Select(String.Format("Class_Name = '{0}' AND Injected = 'Y'", strClassName)).Length
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            Me.lblClassSummaryNoOfStudentActualInjected.Text = dt.Select(String.Format("Class_Name = '{0}' AND Injected IN ('Y', '1', '2')", strClassName)).Length
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             DirectCast(Me.Page, BasePageWithGridView).GridViewDataBind(gvClassSummary, dtClass, "Student_Seq", "ASC", False, intPageSize)
         Else

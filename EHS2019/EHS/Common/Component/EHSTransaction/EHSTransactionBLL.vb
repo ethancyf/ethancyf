@@ -1281,6 +1281,29 @@ Namespace Component.EHSTransaction
 #Region "[Public] Update EHS Transaction"
 
         ''' <summary>
+        ''' Update the Transaction Doc Code
+        ''' </summary>        
+        ''' <param name="strTransactionID"></param>
+        ''' <param name="strDocCode"></param>
+        ''' <param name="strUpdateBy"></param>
+        ''' <param name="dtmUpdateDtm"></param>
+        ''' <param name="udtDB"></param>
+        ''' <remarks></remarks>  ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        Public Sub UpdateTransactionDocCode(ByVal strTransactionID As String, ByVal strDocCode As String, ByVal strUpdateBy As String, ByVal dtmUpdateDtm As DateTime, Optional ByRef udtDB As Database = Nothing)
+            If udtDB Is Nothing Then udtDB = New Database()
+
+            Dim prams() As SqlParameter = {udtDB.MakeInParam("@transaction_id", SqlDbType.Char, 20, strTransactionID), _
+                                                udtDB.MakeInParam("@Doc_Code", SqlDbType.Char, 20, strDocCode), _
+                                                udtDB.MakeInParam("@update_by", SqlDbType.VarChar, 20, strUpdateBy), _
+                                                udtDB.MakeInParam("@update_dtm", SqlDbType.DateTime, 8, dtmUpdateDtm) _
+            }
+
+            udtDB.RunProc("proc_VoucherTransaction_upd_DocCode", prams)
+
+        End Sub
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+        ''' <summary>
         ''' Update The Transaction related Temporary Account for Rectify case
         ''' Checking is added to ensure the transaction with X account Exist
         ''' </summary>

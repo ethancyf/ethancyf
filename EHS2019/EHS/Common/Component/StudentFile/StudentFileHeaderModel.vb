@@ -58,9 +58,16 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("Subsidize_Code")) Then _strSubsidizeCode = dr("Subsidize_Code").ToString.Trim
 
             If Not IsDBNull(dr("Service_Receive_Dtm")) Then _dtmServiceReceiveDtm = dr("Service_Receive_Dtm")
-            If Not IsDBNull(dr("Service_Receive_Dtm_2ndDose")) Then _dtmServiceReceiveDtm2ndDose = dr("Service_Receive_Dtm_2ndDose")
             If Not IsDBNull(dr("Final_Checking_Report_Generation_Date")) Then _dtmFinalCheckingReportGenerationDate = dr("Final_Checking_Report_Generation_Date")
+            If Not IsDBNull(dr("Service_Receive_Dtm_2ndDose")) Then _dtmServiceReceiveDtm2ndDose = dr("Service_Receive_Dtm_2ndDose")
             If Not IsDBNull(dr("Final_Checking_Report_Generation_Date_2ndDose")) Then _dtmFinalCheckingReportGenerationDate2ndDose = dr("Final_Checking_Report_Generation_Date_2ndDose")
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then _dtmServiceReceiveDtm_2 = dr("Service_Receive_Dtm_2")
+            If Not IsDBNull(dr("Final_Checking_Report_Generation_Date_2")) Then _dtmFinalCheckingReportGenerationDate_2 = dr("Final_Checking_Report_Generation_Date_2")
+            If Not IsDBNull(dr("Service_Receive_Dtm_2ndDose_2")) Then _dtmServiceReceiveDtm2ndDose_2 = dr("Service_Receive_Dtm_2ndDose_2")
+            If Not IsDBNull(dr("Final_Checking_Report_Generation_Date_2ndDose_2")) Then _dtmFinalCheckingReportGenerationDate2ndDose_2 = dr("Final_Checking_Report_Generation_Date_2ndDose_2")
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             If Not IsDBNull(dr("Remark")) Then _strRemark = dr("Remark").ToString.Trim
             _strRecordStatus = dr("Record_Status").ToString.Trim
@@ -77,16 +84,17 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("Request_Remove_Function")) Then _strRequestRemoveFunction = dr("Request_Remove_Function").ToString.Trim
             If Not IsDBNull(dr("Confirm_Remove_By")) Then _strConfirmRemoveBy = dr("Confirm_Remove_By").ToString.Trim
             If Not IsDBNull(dr("Confirm_Remove_Dtm")) Then _dtmConfirmRemoveDtm = dr("Confirm_Remove_Dtm")
-            ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
-            If Not IsDBNull(dr("Name_List_File_ID")) Then _strNameListFileID = dr("Name_List_File_ID").ToString.Trim
-            ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
+
             If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then _strVaccinationReportFileID = dr("Vaccination_Report_File_ID").ToString.Trim
             If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then _strOnsiteVaccinationFileID = dr("Onsite_Vaccination_File_ID").ToString.Trim
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Vaccination_Report_File_ID_2")) Then _strVaccinationReportFileID_2 = dr("Vaccination_Report_File_ID_2").ToString.Trim
+            If Not IsDBNull(dr("Onsite_Vaccination_File_ID_2")) Then _strOnsiteVaccinationFileID_2 = dr("Onsite_Vaccination_File_ID_2").ToString.Trim
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
             If Not IsDBNull(dr("Claim_Creation_Report_File_ID")) Then _strClaimCreationReportFileID = dr("Claim_Creation_Report_File_ID").ToString.Trim
             If Not IsDBNull(dr("Rectification_File_ID")) Then _strRectificationFileID = dr("Rectification_File_ID").ToString.Trim
+            If Not IsDBNull(dr("Name_List_File_ID")) Then _strNameListFileID = dr("Name_List_File_ID").ToString.Trim
 
             If Not IsDBNull(dr("Request_Claim_Reactivate_By")) Then _strRequestClaimReactivateBy = dr("Request_Claim_Reactivate_By").ToString.Trim
             If Not IsDBNull(dr("Request_Claim_Reactivate_Dtm")) Then _dtmRequestClaimReactivateDtm = dr("Request_Claim_Reactivate_Dtm")
@@ -97,7 +105,6 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("Original_Student_File_ID")) Then _strOriginalStudentFileID = dr("Original_Student_File_ID").ToString.Trim
 
             If Not IsDBNull(dr("Request_Rectify_Status")) Then _strRequestRectifyStatus = dr("Request_Rectify_Status").ToString.Trim
-            ' CRE19-001 (VSS 2019) [End][Winnie]
 
             _strUpdateBy = dr("Update_By").ToString.Trim
             _dtmUpdateDtm = dr("Update_Dtm")
@@ -131,13 +138,20 @@ Namespace Component.StudentFile
             _strSPID = String.Empty
             _intPracticeDisplaySeq = -1
             _dtmServiceReceiveDtm = Nothing
+            _dtmFinalCheckingReportGenerationDate = Nothing
             _dtmServiceReceiveDtm2ndDose = Nothing
+            _dtmFinalCheckingReportGenerationDate2ndDose = Nothing
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            _dtmServiceReceiveDtm_2 = Nothing
+            _dtmFinalCheckingReportGenerationDate_2 = Nothing
+            _dtmServiceReceiveDtm2ndDose_2 = Nothing
+            _dtmFinalCheckingReportGenerationDate2ndDose_2 = Nothing
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
             _strSchemeCode = String.Empty
             _intSchemeSeq = -1
             _strDose = String.Empty
             _strSubsidizeCode = String.Empty
-            _dtmFinalCheckingReportGenerationDate = Nothing
-            _dtmFinalCheckingReportGenerationDate2ndDose = Nothing
             _strRemark = String.Empty
             _strRecordStatus = String.Empty
             _strUploadBy = String.Empty
@@ -153,12 +167,6 @@ Namespace Component.StudentFile
             _strRequestRemoveFunction = String.Empty
             _strConfirmRemoveBy = String.Empty
             _dtmConfirmRemoveDtm = Nothing
-            ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
-            _strNameListFileID = String.Empty
-            ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             _strRequestClaimReactivateBy = String.Empty
             _dtmRequestClaimReactivateDtm = Nothing
             _strConfirmClaimReactivateBy = String.Empty
@@ -166,13 +174,17 @@ Namespace Component.StudentFile
 
             _strVaccinationReportFileID = String.Empty
             _strOnsiteVaccinationFileID = String.Empty
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            _strVaccinationReportFileID_2 = String.Empty
+            _strOnsiteVaccinationFileID_2 = String.Empty
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
             _strClaimCreationReportFileID = String.Empty
             _strRectificationFileID = String.Empty
+            _strNameListFileID = String.Empty
 
             _strUploadPrecheck = String.Empty
             _strOriginalStudentFileID = String.Empty
-            ' CRE19-001 (VSS 2019) [End][Winnie]
-
             _strUpdateBy = String.Empty
             _dtmUpdateDtm = DateTime.MinValue
             _bytTSMP = Nothing
@@ -185,9 +197,7 @@ Namespace Component.StudentFile
             _strSPNameCH = String.Empty
             _strPracticeNameEN = String.Empty
             _strPracticeNameCH = String.Empty
-            ' CRE19-001 (VSS 2019 - Pre-check) [Start][Winnie]
             _strSubsidizeDisplay = String.Empty
-            ' CRE19-001 (VSS 2019 - Pre-check) [End][Winnie]
 
             _udtStudentFileEntryList = Nothing
 
@@ -203,14 +213,22 @@ Namespace Component.StudentFile
             udtStudentFileHeader.SchoolCode = Me.SchoolCode
             udtStudentFileHeader.SPID = Me.SPID
             udtStudentFileHeader.PracticeDisplaySeq = Me.PracticeDisplaySeq
+
             udtStudentFileHeader.ServiceReceiveDtm = Me.ServiceReceiveDtm
             udtStudentFileHeader.ServiceReceiveDtm2ndDose = Me.ServiceReceiveDtm2ndDose
+            udtStudentFileHeader.FinalCheckingReportGenerationDate = Me.FinalCheckingReportGenerationDate
+            udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose = Me.FinalCheckingReportGenerationDate2ndDose
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtStudentFileHeader.ServiceReceiveDtm_2 = Me.ServiceReceiveDtm_2
+            udtStudentFileHeader.ServiceReceiveDtm2ndDose_2 = Me.ServiceReceiveDtm2ndDose_2
+            udtStudentFileHeader.FinalCheckingReportGenerationDate_2 = Me.FinalCheckingReportGenerationDate_2
+            udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose_2 = Me.FinalCheckingReportGenerationDate2ndDose_2
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
             udtStudentFileHeader.SchemeCode = Me.SchemeCode
             udtStudentFileHeader.SchemeSeq = Me.SchemeSeq
             udtStudentFileHeader.Dose = Me.Dose
             udtStudentFileHeader.SubsidizeCode = Me.SubsidizeCode
-            udtStudentFileHeader.FinalCheckingReportGenerationDate = Me.FinalCheckingReportGenerationDate
-            udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose = Me.FinalCheckingReportGenerationDate2ndDose
             udtStudentFileHeader.Remark = Me.Remark
             udtStudentFileHeader.RecordStatus = Me.RecordStatus
             udtStudentFileHeader.UploadBy = Me.UploadBy
@@ -226,14 +244,6 @@ Namespace Component.StudentFile
             udtStudentFileHeader.RequestRemoveFunction = Me.RequestRemoveFunction
             udtStudentFileHeader.ConfirmRemoveBy = Me.ConfirmRemoveBy
             udtStudentFileHeader.ConfirmRemoveDtm = Me.ConfirmRemoveDtm
-
-            ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
-            udtStudentFileHeader.NameListFileID = Me.NameListFileID
-            ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-
-            ' CRE19-001 (VSS 2019) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
             udtStudentFileHeader.RequestClaimReactivateBy = Me.RequestClaimReactivateBy
             udtStudentFileHeader.RequestClaimReactivateDtm = Me.RequestClaimReactivateDtm
             udtStudentFileHeader.ConfirmClaimReactivateBy = Me.ConfirmClaimReactivateBy
@@ -241,15 +251,18 @@ Namespace Component.StudentFile
 
             udtStudentFileHeader.VaccinationReportFileID = Me.VaccinationReportFileID
             udtStudentFileHeader.OnsiteVaccinationFileID = Me.OnsiteVaccinationFileID
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtStudentFileHeader.VaccinationReportFileID_2 = Me.VaccinationReportFileID_2
+            udtStudentFileHeader.OnsiteVaccinationFileID_2 = Me.OnsiteVaccinationFileID_2
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
             udtStudentFileHeader.ClaimCreationReportFileID = Me.ClaimCreationReportFileID
             udtStudentFileHeader.RectificationFileID = Me.RectificationFileID
+            udtStudentFileHeader.NameListFileID = Me.NameListFileID
 
             udtStudentFileHeader.Precheck = Me.Precheck
             udtStudentFileHeader.OriginalStudentFileID = Me.OriginalStudentFileID
-
             udtStudentFileHeader.RequestRectifyStatus = Me.RequestRectifyStatus
-            ' CRE19-001 (VSS 2019) [End][Winnie]
-
             udtStudentFileHeader.UpdateBy = Me.UpdateBy
             udtStudentFileHeader.UpdateDtm = Me.UpdateDtm
             udtStudentFileHeader.TSMP = Me.TSMP
@@ -262,9 +275,7 @@ Namespace Component.StudentFile
             udtStudentFileHeader.SPNameCH = Me.SPNameCH
             udtStudentFileHeader.PracticeNameEN = Me.PracticeNameEN
             udtStudentFileHeader.PracticeNameCH = Me.PracticeNameCH
-            ' CRE19-001 (VSS 2019 - Pre-check) [Start][Winnie]
             udtStudentFileHeader.SubsidizeDisplay = Me.SubsidizeDisplay
-            ' CRE19-001 (VSS 2019 - Pre-check) [End][Winnie]
 
             Return udtStudentFileHeader
 
@@ -272,7 +283,7 @@ Namespace Component.StudentFile
 
 #End Region
 
-#Region "Fields and Properties"
+#Region "Private Member"
 
         Private _strTableLocation As String
         Private _strStudentFileID As String
@@ -287,6 +298,13 @@ Namespace Component.StudentFile
         Private _dtmFinalCheckingReportGenerationDate As Nullable(Of DateTime)
         Private _dtmServiceReceiveDtm2ndDose As Nullable(Of DateTime)
         Private _dtmFinalCheckingReportGenerationDate2ndDose As Nullable(Of DateTime)
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _dtmServiceReceiveDtm_2 As Nullable(Of DateTime)
+        Private _dtmFinalCheckingReportGenerationDate_2 As Nullable(Of DateTime)
+        Private _dtmServiceReceiveDtm2ndDose_2 As Nullable(Of DateTime)
+        Private _dtmFinalCheckingReportGenerationDate2ndDose_2 As Nullable(Of DateTime)
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
         Private _strRemark As String
         Private _strRecordStatus As String
         Private _strUploadBy As String
@@ -303,33 +321,26 @@ Namespace Component.StudentFile
         Private _strConfirmRemoveBy As String
         Private _dtmConfirmRemoveDtm As Nullable(Of DateTime)
         Private _strStudentReportFileID As String
-
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
-        Private _strNameListFileID As String
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-
-        ' CRE19-001 (VSS 2019) [Start][Winnie]
         Private _strVaccinationReportFileID As String
         Private _strOnsiteVaccinationFileID As String
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strVaccinationReportFileID_2 As String
+        Private _strOnsiteVaccinationFileID_2 As String
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
         Private _strClaimCreationReportFileID As String
         Private _strRectificationFileID As String
-
+        Private _strNameListFileID As String
         Private _strRequestClaimReactivateBy As String
         Private _dtmRequestClaimReactivateDtm As Nullable(Of DateTime)
         Private _strConfirmClaimReactivateBy As String
         Private _dtmConfirmClaimReactivateDtm As Nullable(Of DateTime)
-
         Private _strUploadPrecheck As String
         Private _strOriginalStudentFileID As String
-
         Private _strRequestRectifyStatus As String
-        ' CRE19-001 (VSS 2019) [End][Winnie]
-
         Private _strUpdateBy As String
         Private _dtmUpdateDtm As DateTime
         Private _bytTSMP As Byte()
-
         Private _strSchoolNameEN As String
         Private _strSchoolNameCH As String
         Private _strSchoolAddressEN As String
@@ -338,15 +349,13 @@ Namespace Component.StudentFile
         Private _strSPNameCH As String
         Private _strPracticeNameEN As String
         Private _strPracticeNameCH As String
-
-        ' CRE19-001 (VSS 2019 - Pre-check) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         Private _strSubsidizeDisplay As String
-        ' CRE19-001 (VSS 2019 - Pre-check) [End][Winnie]
 
         Private _udtStudentFileEntryList As StudentFileEntryModelCollection
 
-        '
+#End Region
+
+#Region "Property"
 
         Public Property TableLocation() As String
             Get
@@ -411,6 +420,15 @@ Namespace Component.StudentFile
             End Set
         End Property
 
+        Public Property FinalCheckingReportGenerationDate() As Nullable(Of DateTime)
+            Get
+                Return _dtmFinalCheckingReportGenerationDate
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmFinalCheckingReportGenerationDate = value
+            End Set
+        End Property
+
         Public Property ServiceReceiveDtm2ndDose() As Nullable(Of DateTime)
             Get
                 Return _dtmServiceReceiveDtm2ndDose
@@ -419,6 +437,54 @@ Namespace Component.StudentFile
                 _dtmServiceReceiveDtm2ndDose = value
             End Set
         End Property
+
+        Public Property FinalCheckingReportGenerationDate2ndDose() As Nullable(Of DateTime)
+            Get
+                Return _dtmFinalCheckingReportGenerationDate2ndDose
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmFinalCheckingReportGenerationDate2ndDose = value
+            End Set
+        End Property
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property ServiceReceiveDtm_2() As Nullable(Of DateTime)
+            Get
+                Return _dtmServiceReceiveDtm_2
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmServiceReceiveDtm_2 = value
+            End Set
+        End Property
+
+        Public Property FinalCheckingReportGenerationDate_2() As Nullable(Of DateTime)
+            Get
+                Return _dtmFinalCheckingReportGenerationDate_2
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmFinalCheckingReportGenerationDate_2 = value
+            End Set
+        End Property
+
+        Public Property ServiceReceiveDtm2ndDose_2() As Nullable(Of DateTime)
+            Get
+                Return _dtmServiceReceiveDtm2ndDose_2
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmServiceReceiveDtm2ndDose_2 = value
+            End Set
+        End Property
+
+        Public Property FinalCheckingReportGenerationDate2ndDose_2() As Nullable(Of DateTime)
+            Get
+                Return _dtmFinalCheckingReportGenerationDate2ndDose_2
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _dtmFinalCheckingReportGenerationDate2ndDose_2 = value
+            End Set
+        End Property
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         Public Property SchemeCode() As String
             Get
@@ -429,14 +495,12 @@ Namespace Component.StudentFile
             End Set
         End Property
 
-        ' CRE19-001-04 (PPP 2019-20) [Start][Koala]
         Public ReadOnly Property SchemeCodeDisplay() As String
             Get
                 Dim udtSchemeClaim As SchemeClaimModel = (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(_strSchemeCode)
                 Return udtSchemeClaim.DisplayCode
             End Get
         End Property
-        ' CRE19-001-04 (PPP 2019-20) [End][Koala]
 
         Public Property SchemeSeq() As Integer
             Get
@@ -488,32 +552,12 @@ Namespace Component.StudentFile
             End Set
         End Property
 
-        ' CRE19-001 (VSS 2019 - Pre-check) [Start][Winnie]
         Public Property SubsidizeDisplay() As String
             Get
                 Return _strSubsidizeDisplay
             End Get
             Set(ByVal value As String)
                 _strSubsidizeDisplay = value
-            End Set
-        End Property
-        ' CRE19-001 (VSS 2019 - Pre-check) [End][Winnie]
-
-        Public Property FinalCheckingReportGenerationDate() As Nullable(Of DateTime)
-            Get
-                Return _dtmFinalCheckingReportGenerationDate
-            End Get
-            Set(ByVal value As Nullable(Of DateTime))
-                _dtmFinalCheckingReportGenerationDate = value
-            End Set
-        End Property
-
-        Public Property FinalCheckingReportGenerationDate2ndDose() As Nullable(Of DateTime)
-            Get
-                Return _dtmFinalCheckingReportGenerationDate2ndDose
-            End Get
-            Set(ByVal value As Nullable(Of DateTime))
-                _dtmFinalCheckingReportGenerationDate2ndDose = value
             End Set
         End Property
 
@@ -689,20 +733,6 @@ Namespace Component.StudentFile
             End Set
         End Property
 
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
-        Public Property NameListFileID() As String
-            Get
-                Return _strNameListFileID
-            End Get
-            Set(ByVal value As String)
-                _strNameListFileID = value
-            End Set
-        End Property
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-
-        ' CRE19-001 (VSS 2019) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         Public Property RequestClaimReactivateBy() As String
             Get
                 Return _strRequestClaimReactivateBy
@@ -757,6 +787,27 @@ Namespace Component.StudentFile
             End Set
         End Property
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property VaccinationReportFileID_2() As String
+            Get
+                Return _strVaccinationReportFileID_2
+            End Get
+            Set(ByVal value As String)
+                _strVaccinationReportFileID_2 = value
+            End Set
+        End Property
+
+        Public Property OnsiteVaccinationFileID_2() As String
+            Get
+                Return _strOnsiteVaccinationFileID_2
+            End Get
+            Set(ByVal value As String)
+                _strOnsiteVaccinationFileID_2 = value
+            End Set
+        End Property
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         Public Property ClaimCreationReportFileID() As String
             Get
                 Return _strClaimCreationReportFileID
@@ -772,6 +823,15 @@ Namespace Component.StudentFile
             End Get
             Set(ByVal value As String)
                 _strRectificationFileID = value
+            End Set
+        End Property
+
+        Public Property NameListFileID() As String
+            Get
+                Return _strNameListFileID
+            End Get
+            Set(ByVal value As String)
+                _strNameListFileID = value
             End Set
         End Property
 

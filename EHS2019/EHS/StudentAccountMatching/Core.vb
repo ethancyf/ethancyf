@@ -330,13 +330,13 @@ Public Class ScheduleJob
                     Dim udtExistingTempAccount As EHSAccountModel = Nothing
                     Dim udtExistingTempPersonalInfo As EHSPersonalInformationModel = Nothing
                     Dim udtNewEHSAccount As New EHSAccountModel
-                    Dim udtNewEHSPersonalInfo As New EHSPersonalInformationModel
+                    Dim udtStudentPersonalInfo As New EHSPersonalInformationModel
 
                     strCurrentAction = "Matching Student Account"
 
                     ' Fill Personal Info from StudentFileEntry
                     udtAccountMatchingBLL.SetPersonalInfo(udtStudent, udtStudentAmend, udtNewEHSAccount)
-                    udtNewEHSPersonalInfo = udtNewEHSAccount.EHSPersonalInformationList(0)
+                    udtStudentPersonalInfo = udtNewEHSAccount.EHSPersonalInformationList(0)
 
 
                     If udtStudent.AccProcessStage = String.Empty Then
@@ -348,7 +348,7 @@ Public Class ScheduleJob
                         ' -------------------------------------------------------------
 
                         ' 1. Find Validated Account
-                        eVASearchResult = udtAccountMatchingBLL.IsVAcctExisted(udtStudentAmend, udtNewEHSPersonalInfo)
+                        eVASearchResult = udtAccountMatchingBLL.IsVAcctExisted(udtStudentAmend, udtStudentPersonalInfo)
 
                         Select Case eVASearchResult
                             Case enumVAcctSearchResult.Exist
@@ -387,13 +387,16 @@ Public Class ScheduleJob
                                 AndAlso Not udtExistingTempPersonalInfo.Validating _
                                 AndAlso udtExistingTempAccount.TransactionID = String.Empty Then
 
-                                If eVASearchResult = enumVAcctSearchResult.Exist OrElse _
-                                    eVASearchResult = enumVAcctSearchResult.DOB_Not_Match Then
+                                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                                'If eVASearchResult = enumVAcctSearchResult.Exist OrElse _
+                                '    eVASearchResult = enumVAcctSearchResult.DOB_Not_Match Then
+                                If eVASearchResult = enumVAcctSearchResult.Exist Then
+                                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                                     blnRemoveExistTempAccount = True
 
                                 Else
                                     blnDirectUpdateExistingAccount = True
-                                    udtNewEHSPersonalInfo.TSMP = udtExistingTempPersonalInfo.TSMP
+                                    udtStudentPersonalInfo.TSMP = udtExistingTempPersonalInfo.TSMP
                                     blnCreateNewAcct = False
                                 End If
                             End If
@@ -404,7 +407,7 @@ Public Class ScheduleJob
                         udtStudentAmend = udtStudent
 
                         ' Check temp acct created previously is converted to validated account
-                        If udtStudent.VoucherAccID = String.Empty AndAlso udtStudent.TempVoucherAccID <> String.Empty Then
+                        If udtStudentAmend.VoucherAccID = String.Empty AndAlso udtStudent.TempVoucherAccID <> String.Empty Then
 
                             ' Get existing temp acct directly
                             udtExistingTempAccount = udtEHSAccountBLL.LoadTempEHSAccountByVRID(udtStudent.TempVoucherAccID)
@@ -417,6 +420,7 @@ Public Class ScheduleJob
 
                         ' Check matching field if the Validated acct existed
                         If udtStudentAmend.VoucherAccID <> String.Empty Then
+                            ' Find Validated Account By Account ID
 
                             ' Get existing Validated Account with specific doc code
                             Dim udtValidatedAccount As EHSAccountModel = Nothing
@@ -429,24 +433,40 @@ Public Class ScheduleJob
                             Dim strUnmatchField As String = String.Empty
                             Dim blnCheckDocType As Boolean = False
 
-                            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
-                            ' No checking on Doc Type
+                            ' Compare VA info and Student Entry Info
+                            strUnmatchField = udtAccountMatchingBLL.CheckPersonalInfoMatch(blnCheckDocType, udtStudentPersonalInfo, udtValidAccPersonalInfo)
 
-                            'Select Case udtStudent.DocCode
-                            '    Case StudentFileBLL.StudentFileDocTypeCode.HKBC, StudentFileBLL.StudentFileDocTypeCode.HKIC
-                            '        blnCheckDocType = True
-                            '    Case Else
-                            '        blnCheckDocType = False
-                            'End Select
-                            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
-
-                            strUnmatchField = udtAccountMatchingBLL.CheckPersonalInfoMatch(blnCheckDocType, udtNewEHSPersonalInfo, udtValidAccPersonalInfo)
-
+                            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                            ' -------------------------------------------------------------------------------
                             ' convert student account matching result
-                            udtAccountMatchingBLL.convertValidatedAccountInfo(udtValidatedAccount, udtStudentAmend.AccDocCode, strUnmatchField, udtStudentAmend)
-                        End If
+                            udtAccountMatchingBLL.convertValidatedAccountInfo(udtValidatedAccount, udtStudentAmend.AccDocCode, udtStudentAmend)
 
+                            udtStudentAmend.ValidatedAccFound = YesNo.Yes
+                            udtStudentAmend.ValidatedAccUnmatchResult = strUnmatchField
+                            udtAccountMatchingBLL.setAccValidationResult(udtValidatedAccount, udtStudentAmend.AccDocCode, udtStudentAmend)
+                            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+                            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                            ' -------------------------------------------------------------------------------
+                        ElseIf udtExistingTempAccount IsNot Nothing Then
+                            ' Find Validated Account by Doc No. 
+                            Dim udtStudentCopy As New StudentFileEntryModel
+                            Dim udtEHSAccountCopy As New EHSAccountModel
+                            Dim eVASearchResultRecheck As enumVAcctSearchResult
+                            udtAccountMatchingBLL.SetPersonalInfo(udtStudentAmend, udtStudentCopy, udtEHSAccountCopy)
+
+                            ' Check field different between TA Info and VA Info
+                            eVASearchResultRecheck = udtAccountMatchingBLL.IsVAcctExisted(udtStudentCopy, udtExistingTempAccount.EHSPersonalInformationList(0))
+
+                            If Not eVASearchResultRecheck = enumVAcctSearchResult.Not_Found Then                                
+                                udtStudentAmend.ValidatedAccFound = udtStudentCopy.ValidatedAccFound
+                                udtStudentAmend.ValidatedAccUnmatchResult = udtStudentCopy.ValidatedAccUnmatchResult
+
+                                udtAccountMatchingBLL.setAccValidationResult(udtExistingTempAccount, udtStudentAmend.AccDocCode, udtStudentAmend)
+                            End If
+
+                        End If
+                        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                     End If
                     ' ----- End Matching ------- '
 

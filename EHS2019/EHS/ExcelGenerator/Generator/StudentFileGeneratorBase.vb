@@ -102,14 +102,31 @@ Namespace Generator
                 Dim strSubsidizeItemCode As String = bllSubsidize.GetSubsidizeItemBySubsidize(udtStudentHeader.SubsidizeCode)
 
                 If udtStudentHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
-                    strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Format("-{0}-{1}", udtStudentHeader.SchemeCode, strSubsidizeItemCode))
+                    strTemplateName = strTemplateName.Replace("[%Scheme%]", String.Empty)
                     strTemplateName = strTemplateName.Replace("[%Subsidize%]", String.Empty)
+                    strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Format("-{0}-{1}", udtStudentHeader.SchemeCode, strSubsidizeItemCode))
+
                 Else
-                    strTemplateName = strTemplateName.Replace("[%Subsidize%]", String.Format("-{0}", strSubsidizeItemCode))
-                    strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Empty)
+                    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Select Case udtStudentHeader.SchemeCode
+                        Case SchemeClaimModel.RVP
+                            strTemplateName = strTemplateName.Replace("[%Scheme%]", String.Format("-{0}", udtStudentHeader.SchemeCode))
+                            strTemplateName = strTemplateName.Replace("[%Subsidize%]", String.Format("-{0}", strSubsidizeItemCode))
+                            strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Empty)
+
+                        Case Else
+                            strTemplateName = strTemplateName.Replace("[%Scheme%]", String.Empty)
+                            strTemplateName = strTemplateName.Replace("[%Subsidize%]", String.Format("-{0}", strSubsidizeItemCode))
+                            strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Empty)
+
+                    End Select
+                    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
                 End If
 
             Else
+                strTemplateName = strTemplateName.Replace("[%Scheme%]", String.Empty)
                 strTemplateName = strTemplateName.Replace("[%Subsidize%]", String.Empty)
                 strTemplateName = strTemplateName.Replace("[%Scheme_Subsidize%]", String.Empty)
 

@@ -1,5 +1,6 @@
 Imports Common.ComFunction
 Imports Common.ComFunction.ParameterFunction
+Imports Common.ComObject
 Imports Common.Component
 Imports Common.Component.ClaimRules
 Imports Common.Component.DataEntryUser
@@ -12,10 +13,11 @@ Imports Common.Component.Practice
 Imports Common.Component.Scheme
 Imports Common.Component.SchemeDetails
 Imports Common.Component.ServiceProvider
+Imports Common.Component.VoucherInfo
 Imports Common.DataAccess
 Imports Common.Format
+Imports Common.WebService.Interface
 Imports System.Data.SqlClient
-Imports Common.Component.VoucherInfo
 
 Namespace BLL
     Public Class EHSClaimBLL
@@ -32,6 +34,136 @@ Namespace BLL
 #End Region
 
 #Region "Insert / Update EHS Account / EHSTransaction"
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Create Temporary EHS Account, Save to Database
+        ''' </summary>
+        ''' <param name="strSPID"></param>
+        ''' <param name="udtEHSAccount"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function CreateTemporaryEHSAccount(ByVal strSPID As String, ByVal udtEHSAccount As EHSAccountModel) As Common.ComObject.SystemMessage
+            Dim udtEHSAccountBLL As New EHSAccountBLL
+            Dim udtErrorMsg As Common.ComObject.SystemMessage = Nothing
+
+            udtEHSAccount.AccountPurpose = EHSAccountModel.AccountPurposeClass.ForClaim
+
+            udtEHSAccount.DataEntryBy = String.Empty
+            udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingVerify
+            udtEHSAccount.EHSPersonalInformationList(0).DataEntryBy = String.Empty
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSAccount.EHSPersonalInformationList(0).DocCode).IMMDorManualValidationAvailable Then
+                udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.NotForImmDValidation
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+            udtEHSAccount.CreateSPID = strSPID
+            udtEHSAccount.CreateBy = strSPID
+            udtEHSAccount.EHSPersonalInformationList(0).RecordStatus = "N"
+            udtEHSAccount.EHSPersonalInformationList(0).CreateBy = strSPID
+            udtEHSAccount.SubsidizeWriteOff_CreateReason = eHASubsidizeWriteOff_CreateReason.PersonalInfoCreation
+
+            Dim udtDB As New Database()
+
+            Try
+                udtDB.BeginTransaction()
+
+                udtErrorMsg = udtEHSAccountBLL.InsertEHSAccount(udtDB, udtEHSAccount)
+
+                If udtErrorMsg Is Nothing Then
+                    udtDB.CommitTransaction()
+                Else
+                    udtDB.RollBackTranscation()
+                End If
+                Return udtErrorMsg
+
+            Catch eSQL As SqlException
+                udtDB.RollBackTranscation()
+                Throw eSQL
+            Catch ex As Exception
+                udtDB.RollBackTranscation()
+                Throw
+            End Try
+
+            Return udtErrorMsg
+        End Function
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function CreateRectifyAccount(ByVal strSPID As String, _
+                                             ByVal udtEHSXAccount As EHSAccountModel, _
+                                             ByVal udtEHSNewAccount As EHSAccountModel) As Common.ComObject.SystemMessage
+
+            Dim udtEHSAccountBLL As New EHSAccountBLL
+            Dim udtEHSTransactionBLL As New EHSTransactionBLL
+            Dim udtSubsidizeWriteOffBLL As New SubsidizeWriteOffBLL
+
+            ' Rectify X Account, remove X Account and make a new EHSAccount
+            udtEHSNewAccount.DataEntryBy = String.Empty
+            udtEHSNewAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingVerify
+            udtEHSNewAccount.EHSPersonalInformationList(0).DataEntryBy = String.Empty
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSNewAccount.EHSPersonalInformationList(0).DocCode).IMMDorManualValidationAvailable Then
+                udtEHSNewAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.NotForImmDValidation
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+            udtEHSNewAccount.CreateBy = strSPID
+            udtEHSNewAccount.EHSPersonalInformationList(0).CreateBy = strSPID
+            udtEHSNewAccount.CreateSPID = strSPID
+
+            Dim udtDB As New Database()
+            Dim udtErrorMsg As Common.ComObject.SystemMessage = Nothing
+
+            Try
+                udtDB.BeginTransaction()
+
+                ' Since X Account removed, checking will ignore X Account
+                udtEHSAccountBLL.UpdateTempEHSAccountRecordStatus(udtDB, udtEHSXAccount, strSPID, EHSAccountModel.TempAccountRecordStatusClass.Removed, DateTime.Now)
+
+
+                udtEHSTransactionBLL.UpdateTransactionWithNewTemporaryAccount(udtDB, _
+                                                                              udtEHSXAccount.TransactionID, _
+                                                                              udtEHSXAccount.VoucherAccID, _
+                                                                              udtEHSNewAccount.VoucherAccID, _
+                                                                              udtEHSNewAccount.EHSPersonalInformationList(0).DocCode, _
+                                                                              udtEHSNewAccount.EHSPersonalInformationList(0).IdentityNum, _
+                                                                              udtEHSNewAccount.CreateBy)
+
+
+                udtErrorMsg = udtEHSAccountBLL.InsertEHSAccount(udtDB, udtEHSNewAccount)
+
+                If udtErrorMsg Is Nothing Then
+                    'Handle write-off
+                    Call udtSubsidizeWriteOffBLL.DeleteAccountWriteOff(udtEHSXAccount.EHSPersonalInformationList, eHASubsidizeWriteOff_CreateReason.PersonalInfoAmend, udtDB)
+                End If
+
+                If udtErrorMsg Is Nothing Then
+                    udtDB.CommitTransaction()
+                Else
+                    udtDB.RollBackTranscation()
+                End If
+
+                Return udtErrorMsg
+
+            Catch eSQL As SqlException
+                udtDB.RollBackTranscation()
+                Throw eSQL
+
+            Catch ex As Exception
+                udtDB.RollBackTranscation()
+                Throw
+
+            End Try
+
+        End Function
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         ''' <summary>
         ''' Claim with Validated Account
@@ -612,6 +744,61 @@ Namespace BLL
         End Function
 
 #End Region
+
+#Region "Get Vaccine"
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function GetVaccinationRecord(ByVal udtEHSAccount As EHSAccountModel, ByRef udtTranDetailVaccineList As TransactionDetailVaccineModelCollection, _
+                                             ByVal strFunctionCode As String, ByVal udtAuditLogEntry As AuditLogEntry, _
+                                             Optional ByVal strSchemeCode As String = "") As VaccineResultCollection
+
+            Dim udtVaccinationBLL As New VaccinationBLL
+            Dim udtEHSTransactionBLL As New EHSTransactionBLL
+            Dim udtSession As New HCVU.BLL.SessionHandlerBLL
+
+            Dim htRecordSummary As Hashtable = Nothing
+            'HA CMS
+            Dim udtHAVaccineResult As Common.WebService.Interface.HAVaccineResult = New HAVaccineResult(HAVaccineResult.enumReturnCode.Error)
+            Dim udtHAVaccineResultSession As Common.WebService.Interface.HAVaccineResult = Nothing
+
+            udtHAVaccineResultSession = udtSession.CMSVaccineResultGetFromSession(strFunctionCode)
+            If udtHAVaccineResultSession IsNot Nothing Then
+                If udtHAVaccineResultSession.ReturnCode <> Common.WebService.Interface.HAVaccineResult.enumReturnCode.SuccessWithData Then
+                    udtHAVaccineResultSession = Nothing
+                End If
+            End If
+
+            'DH CIMS
+            Dim udtDHVaccineResult As Common.WebService.Interface.DHVaccineResult = New DHVaccineResult(DHVaccineResult.enumReturnCode.UnexpectedError)
+            Dim udtDHVaccineResultSession As Common.WebService.Interface.DHVaccineResult = Nothing
+
+            udtDHVaccineResultSession = udtSession.CIMSVaccineResultGetFromSession(strFunctionCode)
+            If udtDHVaccineResultSession IsNot Nothing Then
+                If udtDHVaccineResultSession.ReturnCode <> DHVaccineResult.enumReturnCode.Success Then
+                    udtDHVaccineResultSession = Nothing
+                End If
+            End If
+
+            Dim udtVaccineResultBag As New VaccineResultCollection
+            udtVaccineResultBag.DHVaccineResult = udtDHVaccineResult
+            udtVaccineResultBag.HAVaccineResult = udtHAVaccineResult
+
+            Dim udtVaccineResultBagSession As New VaccineResultCollection
+            udtVaccineResultBagSession.DHVaccineResult = udtDHVaccineResultSession
+            udtVaccineResultBagSession.HAVaccineResult = udtHAVaccineResultSession
+
+            ' Try to enquiry CMS latest record and eHS record 
+            udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount, udtTranDetailVaccineList, udtVaccineResultBag, htRecordSummary, udtAuditLogEntry, strSchemeCode, udtVaccineResultBagSession)
+
+            udtSession.CMSVaccineResultSaveToSession(udtVaccineResultBag.HAVaccineResult, strFunctionCode)
+            udtSession.CIMSVaccineResultSaveToSession(udtVaccineResultBag.DHVaccineResult, strFunctionCode)
+
+            Return udtVaccineResultBag
+        End Function
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+#End Region
+
 
     End Class
 End Namespace

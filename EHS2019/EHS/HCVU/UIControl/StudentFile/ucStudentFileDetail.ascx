@@ -97,6 +97,31 @@
 
                         </td>
                     </tr>
+                    <asp:Panel ID="panD2ndVaccinationDate" runat="server"> 
+                        <tr>
+                            <td>
+                                <asp:Label ID="lblDVaccinationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationDate %>"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:Label ID="lblDVaccinationDate1_2" runat="server" CssClass="tableText"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:Label ID="lblDVaccinationDate2_2" runat="server" CssClass="tableText"></asp:Label>                                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <asp:Label ID="lblDVaccinationReportGenerationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:Label ID="lblDVaccinationReportGenerationDate1_2" runat="server" CssClass="tableText"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:Label ID="lblDVaccinationReportGenerationDate2_2" runat="server" CssClass="tableText"></asp:Label>
+
+                            </td>
+                        </tr>
+                    </asp:Panel>
                     <tr>
                         <td>
                             <asp:Label ID="lblDSubsidyText" runat="server" Text="<%$ Resources: Text, Subsidy %>"></asp:Label>
@@ -475,11 +500,15 @@
                         OnSelectedIndexChanged="ddlDClassName_SelectedIndexChanged">
                     </asp:DropDownList>
                 </td>
+                <td style="padding-left:56px">
+                    <asp:imagebutton ID="ibtnDAddAccount" runat="server" ImageUrl="<%$ Resources: ImageUrl, AddAccountBtn %>" 
+                                    AlternateText="<%$ Resources: AlternateText, AddAccountBtn %>" OnClick="ibtnDAddAccount_Click" />
+                </td>
             </tr>
         </table>
         <div style="min-height: 80px">
             <br />
-            <asp:GridView ID="gvD" runat="server" CssClass="gvTable" Width="1100px" AutoGenerateColumns="False" AllowPaging="True"
+            <asp:GridView ID="gvD" runat="server" CssClass="gvTable" Width="1110" AutoGenerateColumns="False" AllowPaging="True"
                 AllowSorting="True" OnRowDataBound="gvD_RowDataBound" OnPreRender="gvD_PreRender" OnSorting="gvD_Sorting"
                 OnPageIndexChanging="gvD_PageIndexChanging">
                 <Columns>
@@ -492,6 +521,12 @@
                         <ItemTemplate>
                             <asp:Label ID="lblGClassNo" runat="server" Text='<%# Eval("Class_No") %>'></asp:Label>
                         </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="<%$ Resources: Text, Action %>" ItemStyle-Width="40">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lbtnGEdit" runat="server" />
+                        </ItemTemplate>
+                        <ItemStyle BackColor="White" />
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="<%$ Resources: Text, RectifiedFlag %>" SortExpression="Rectified" ItemStyle-Width="40">
                         <ItemTemplate>
@@ -542,7 +577,7 @@
                             <asp:Label ID="lblGConfirmNotToInject" runat="server" Text='<%# Eval("Reject_Injection")%>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="<%$ Resources: Text, Injected %>" SortExpression="Injected" ItemStyle-Width="50">
+                    <asp:TemplateField HeaderText="<%$ Resources: Text, Injected %>" SortExpression="Injected" ItemStyle-Width="60">
                         <ItemTemplate>
                             <asp:Label ID="lblGInjected" runat="server" Text='<%# Eval("Injected")%>'></asp:Label>
                         </ItemTemplate>
@@ -585,6 +620,16 @@
                     <asp:TemplateField HeaderText="<%$ Resources: Text, FieldDiff %>" SortExpression="Field_Diff" ItemStyle-Width="40">
                         <ItemTemplate>
                             <asp:Label ID="lblGFieldDiff" runat="server" Text='<%# Eval("Field_Diff")%>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="<%$ Resources: Text, CreateBy %>" SortExpression="Create_By" ItemStyle-Width="50">
+                        <ItemTemplate>
+                            <asp:Label ID="lblGCreateBy" runat="server" Text='<%# Eval("Create_By")%>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="<%$ Resources: Text, CreationTime %>" SortExpression="Create_Dtm" ItemStyle-Width="84">
+                        <ItemTemplate>
+                            <asp:Label ID="lblGCreateDtm" runat="server" Text='<%# Eval("Create_Dtm")%>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

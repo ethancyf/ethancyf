@@ -192,7 +192,7 @@
                     </table>
                 </asp:View>
                 <asp:View ID="vResult" runat="server">
-                    <asp:GridView ID="gvR" runat="server" CssClass="gvTable" AutoGenerateColumns="False" AllowPaging="True" Width="1210px"
+                    <asp:GridView ID="gvR" runat="server" CssClass="gvTable" AutoGenerateColumns="False" AllowPaging="True" Width="1330px"
                         AllowSorting="True" OnRowDataBound="gvR_RowDataBound" OnPreRender="gvR_PreRender"
                         OnRowCommand="gvR_RowCommand" OnSorting="gvR_Sorting" OnPageIndexChanging="gvR_PageIndexChanging">
                         <Columns>
@@ -241,7 +241,7 @@
                                     <asp:Label ID="lblRStatus" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources: Text, DownloadLatestReport %>" ItemStyle-Width="120"  ItemStyle-Height="80">
+                            <asp:TemplateField HeaderText="<%$ Resources: Text, DownloadLatestReport %>" ItemStyle-Width="230"  ItemStyle-Height="80">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRDownloadLatestReport" runat="server" />
                                 </ItemTemplate>

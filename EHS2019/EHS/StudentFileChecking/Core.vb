@@ -358,19 +358,33 @@ Public Class ScheduleJob
         Dim objStartKey As AuditLogStartKey = Nothing
 
         Try
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim lstVaccinationDateSeq As New List(Of Integer)
 
             ' Get all student file header that need to enquire vaccination record
-            Dim lstStudentHeader As List(Of StudentFile.StudentFileHeaderModel) = BLL.StudentFileBLL.GetStudentFileHeaderVaccineCheck(eStudentFileLocation)
+            Dim lstStudentHeader As List(Of StudentFile.StudentFileHeaderModel) = BLL.StudentFileBLL.GetStudentFileHeaderVaccineCheck(eStudentFileLocation, lstVaccinationDateSeq)
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             MyBase.AuditLog.AddDescripton("Location", eStudentFileLocation.ToString)
             MyBase.AuditLog.AddDescripton("No. of student file", lstStudentHeader.Count)
             MyBase.AuditLog.WriteLog(AuditLogDesc.GOTVACCINE_Queue_ID, AuditLogDesc.GOTVACCINE_Queue)
 
             ' 1st round, process all student
-            For Each udtStudentHeader As StudentFile.StudentFileHeaderModel In lstStudentHeader
+            For intCount = 0 To lstStudentHeader.Count - 1
+                Dim udtStudentHeader As StudentFile.StudentFileHeaderModel = lstStudentHeader(intCount)
+                Dim blnExist2ndVaccinationDate As Boolean = False
+
+                ' If processes in permanence, check it whether contains the staging 
+                Dim blnWithStaging As Boolean = IsWithStaging(eStudentFileLocation, udtStudentHeader)
+
+                ' Check it whether contains the 2nd vaccination date 
+                If eStudentFileLocation = BLL.StudentFileBLL.StudentFileLocation.Permanence And lstVaccinationDateSeq.Count > 0 Then
+                    blnExist2ndVaccinationDate = IIf(lstVaccinationDateSeq(intCount) = 2, True, False)
+                End If
 
                 Dim udtStudentModelCollection As BLL.StudentModelCollection = Nothing
-                udtStudentModelCollection = BLL.StudentFileBLL.GetStudentFileEntryVaccineCheck(eStudentFileLocation, udtStudentHeader.StudentFileID, String.Empty)
+                udtStudentModelCollection = BLL.StudentFileBLL.GetStudentFileEntryVaccineCheck(eStudentFileLocation, udtStudentHeader.StudentFileID, String.Empty, blnExist2ndVaccinationDate)
 
                 If strProvider.Contains(EHSTransactionModel.VaccineRefType.HA) Then
                     MyBase.AuditLog.AddDescripton("Student File ID", udtStudentHeader.StudentFileID)
@@ -383,7 +397,7 @@ Public Class ScheduleJob
                        AuditLogDesc.GOTVACCINE_Start, udtStudentHeader.StudentFileID, udtStudentHeader.RecordStatus, _
                                                     udtStudentModelCollection.Count, EHSTransactionModel.VaccineRefType.HA))
 
-                    GetHACMSVaccine(eStudentFileLocation, udtStudentHeader, udtStudentModelCollection)
+                    GetHACMSVaccine(eStudentFileLocation, udtStudentHeader, udtStudentModelCollection, blnWithStaging)
 
                     MyBase.AuditLog.AddDescripton("Student File ID", udtStudentHeader.StudentFileID)
                     MyBase.AuditLog.AddDescripton("Status", udtStudentHeader.RecordStatus)
@@ -408,7 +422,7 @@ Public Class ScheduleJob
                        AuditLogDesc.GOTVACCINE_Start, udtStudentHeader.StudentFileID, udtStudentHeader.RecordStatus, _
                                                     udtStudentModelCollection.Count, EHSTransactionModel.VaccineRefType.DH))
 
-                    GetDHCIMSVaccine(eStudentFileLocation, udtStudentHeader, udtStudentModelCollection)
+                    GetDHCIMSVaccine(eStudentFileLocation, udtStudentHeader, udtStudentModelCollection, blnWithStaging)
 
                     MyBase.AuditLog.AddDescripton("Student File ID", udtStudentHeader.StudentFileID)
                     MyBase.AuditLog.AddDescripton("Status", udtStudentHeader.RecordStatus)
@@ -455,7 +469,8 @@ Public Class ScheduleJob
     ''' <remarks></remarks>
     Private Sub GetDHCIMSVaccine(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
                                  ByVal udtStudentHeader As StudentFile.StudentFileHeaderModel, _
-                                 ByVal cllnStudentModel As BLL.StudentModelCollection)
+                                 ByVal cllnStudentModel As BLL.StudentModelCollection,
+                                 ByVal blnWithStaging As Boolean)
         Try
             Dim udtAuditLogEntry As BLL.AuditLogEntryDummy = New BLL.AuditLogEntryDummy(ScheduleJobFunctionCode.StudentFileChecking)
             Dim udtWSProxyDHCIMS As New WSProxyDHCIMS(udtAuditLogEntry)
@@ -488,7 +503,8 @@ Public Class ScheduleJob
                                                                             EHSTransactionModel.VaccineRefType.DH, _
                                                                             cllnStudentModel(iStudentModelIndex), _
                                                                             New EHSTransaction.TransactionDetailVaccineModelCollection, _
-                                                                            String.Empty)
+                                                                            String.Empty, _
+                                                                            blnWithStaging)
                     Continue For
                 End If
 
@@ -503,7 +519,8 @@ Public Class ScheduleJob
                                                                                 EHSTransactionModel.VaccineRefType.DH, _
                                                                                 cllnStudentModel(iStudentModelIndex), _
                                                                                 New EHSTransaction.TransactionDetailVaccineModelCollection, _
-                                                                                EHSTransactionModel.ExtRefStatusClass.GenerateCode(DHVaccineResult.CustomDHVaccineResultForDocNumException))
+                                                                                EHSTransactionModel.ExtRefStatusClass.GenerateCode(DHVaccineResult.CustomDHVaccineResultForDocNumException), _
+                                                                                blnWithStaging)
                         Continue For
                     End If
                 End If
@@ -511,14 +528,19 @@ Public Class ScheduleJob
                 ' Check document support in DH
                 If Not CheckVaccinationRecordAvailalbe(EHSTransactionModel.VaccineRefType.DH, cllnStudentModel(iStudentModelIndex).PersonalInformation) Then
                     UpdateStudentExtRefStatus2YDN(eStudentFileLocation, _
-                                                  EHSTransactionModel.VaccineRefType.DH, cllnStudentModel(iStudentModelIndex))
+                                                  EHSTransactionModel.VaccineRefType.DH, _
+                                                  cllnStudentModel(iStudentModelIndex), _
+                                                  blnWithStaging)
                     Continue For
                 End If
 
                 ' EC case, check student one by one (May need to enquire DH CIMS two times for HKIC and Serial No.)
                 If cllnStudentModel(iStudentModelIndex).PersonalInformation.DocCode = DocType.DocTypeModel.DocTypeCode.EC Then
                     GetDHCIMSVaccine_Single(eStudentFileLocation, _
-                                            cllnStudentModel(iStudentModelIndex), udtWSProxyDHCIMS, udtAuditLogEntry)
+                                            cllnStudentModel(iStudentModelIndex), _
+                                            udtWSProxyDHCIMS, _
+                                            udtAuditLogEntry, _
+                                            blnWithStaging)
                     Continue For
                 End If
 
@@ -531,7 +553,7 @@ Public Class ScheduleJob
                 If cllnPersonalInfoTemp.Count = intDHCIMSPatientLimit Or _
                     iStudentModelIndex = cllnStudentModel.Count - 1 Then
 
-                    GetDHCIMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyDHCIMS, udtAuditLogEntry)
+                    GetDHCIMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyDHCIMS, udtAuditLogEntry, blnWithStaging)
 
                     cllnPersonalInfoTemp.Clear()
                     cllnStudentModelTemp.Clear()
@@ -539,7 +561,7 @@ Public Class ScheduleJob
             Next
 
             If cllnPersonalInfoTemp.Count > 0 Then
-                GetDHCIMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyDHCIMS, udtAuditLogEntry)
+                GetDHCIMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyDHCIMS, udtAuditLogEntry, blnWithStaging)
                 cllnPersonalInfoTemp.Clear()
                 cllnStudentModelTemp.Clear()
             End If
@@ -555,7 +577,9 @@ Public Class ScheduleJob
                                 ByVal cllnPersonalInfoTemp As EHSPersonalInformationModelCollection, _
                                 ByVal cllnStudentModelTemp As BLL.StudentModelCollection, _
                                 ByVal udtWSProxyDHCIMS As WSProxyDHCIMS, _
-                                ByVal udtAuditLogEntry As AuditLogEntry)
+                                ByVal udtAuditLogEntry As AuditLogEntry, _
+                                ByVal blnWithStaging As Boolean)
+
         Dim udtDHVaccineResult As DHVaccineResult
         udtDHVaccineResult = udtWSProxyDHCIMS.GetVaccine(cllnPersonalInfoTemp)
 
@@ -571,14 +595,22 @@ Public Class ScheduleJob
                 ' CRE19-025 (Display of unmatched PV for batch upload under RVP) [End][Winnie]
 
                 BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
-                                                                        EHSTransactionModel.VaccineRefType.DH, cllnStudentModelTemp(i), cllnTranVaccine, strExtRefStatus)
+                                                                        EHSTransactionModel.VaccineRefType.DH, _
+                                                                        cllnStudentModelTemp(i), _
+                                                                        cllnTranVaccine, _
+                                                                        strExtRefStatus, _
+                                                                        blnWithStaging)
             Next
         Else
             ' Batch enquiry fail, update vaccine ref status for each student
             Dim strExtRefStatus As String = EHSTransaction.EHSTransactionModel.ExtRefStatusClass.GenerateCode(udtDHVaccineResult)
             For i As Integer = 0 To cllnStudentModelTemp.Count - 1
                 BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
-                                                                        EHSTransactionModel.VaccineRefType.DH, cllnStudentModelTemp(i), Nothing, strExtRefStatus)
+                                                                        EHSTransactionModel.VaccineRefType.DH, _
+                                                                        cllnStudentModelTemp(i), _
+                                                                        Nothing, _
+                                                                        strExtRefStatus, _
+                                                                        blnWithStaging)
             Next
         End If
     End Sub
@@ -591,7 +623,11 @@ Public Class ScheduleJob
     ''' <param name="udtAuditLogEntry"></param>
     ''' <remarks></remarks>
     Private Sub GetDHCIMSVaccine_Single(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
-                                        ByVal udtStudentModel As BLL.StudentModel, ByVal udtWSProxyDHCIMS As WSProxyDHCIMS, ByVal udtAuditLogEntry As AuditLogEntry)
+                                        ByVal udtStudentModel As BLL.StudentModel, _
+                                        ByVal udtWSProxyDHCIMS As WSProxyDHCIMS, _
+                                        ByVal udtAuditLogEntry As AuditLogEntry, _
+                                        ByVal blnWithStaying As Boolean)
+
         Dim udtDHVaccineResult As DHVaccineResult
         udtDHVaccineResult = udtWSProxyDHCIMS.GetVaccine(udtStudentModel.PersonalInformation)
 
@@ -606,7 +642,8 @@ Public Class ScheduleJob
                                                                 EHSTransactionModel.VaccineRefType.DH, _
                                                                udtStudentModel, _
                                                                cllnTranVaccine, _
-                                                               strExtRefStatus)
+                                                               strExtRefStatus,
+                                                               blnWithStaying)
     End Sub
 
     ''' <summary>
@@ -616,7 +653,8 @@ Public Class ScheduleJob
     ''' <remarks></remarks>
     Private Sub GetHACMSVaccine(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
                                 ByVal udtStudentHeader As StudentFile.StudentFileHeaderModel, _
-                                ByVal cllnStudentModel As BLL.StudentModelCollection)
+                                ByVal cllnStudentModel As BLL.StudentModelCollection,
+                                ByVal blnWithStaging As Boolean)
         Try
             Dim udtAuditLogEntry As BLL.AuditLogEntryDummy = New BLL.AuditLogEntryDummy(ScheduleJobFunctionCode.StudentFileChecking)
             Dim udtWSProxyHACMS As New WSProxyCMS(udtAuditLogEntry)
@@ -649,7 +687,8 @@ Public Class ScheduleJob
                                                                             EHSTransactionModel.VaccineRefType.HA, _
                                                                             cllnStudentModel(iStudentModelIndex), _
                                                                             New EHSTransaction.TransactionDetailVaccineModelCollection, _
-                                                                            String.Empty)
+                                                                            String.Empty, _
+                                                                            blnWithStaging)
                     Continue For
                 End If
 
@@ -660,14 +699,17 @@ Public Class ScheduleJob
                                                                             EHSTransactionModel.VaccineRefType.HA, _
                                                                             cllnStudentModel(iStudentModelIndex), _
                                                                             New EHSTransaction.TransactionDetailVaccineModelCollection, _
-                                                                            EHSTransactionModel.ExtRefStatusClass.GenerateCode(HAVaccineResult.CustomHAVaccineResultForDocNoException))
+                                                                            EHSTransactionModel.ExtRefStatusClass.GenerateCode(HAVaccineResult.CustomHAVaccineResultForDocNoException), _
+                                                                            blnWithStaging)
                     Continue For
                 End If
 
                 ' Check document support in HA
                 If Not CheckVaccinationRecordAvailalbe(EHSTransactionModel.VaccineRefType.HA, cllnStudentModel(iStudentModelIndex).PersonalInformation) Then
                     UpdateStudentExtRefStatus2YDN(eStudentFileLocation, _
-                                                  EHSTransactionModel.VaccineRefType.HA, cllnStudentModel(iStudentModelIndex))
+                                                  EHSTransactionModel.VaccineRefType.HA, _
+                                                  cllnStudentModel(iStudentModelIndex), _
+                                                  blnWithStaging)
                     Continue For
                 End If
 
@@ -681,7 +723,7 @@ Public Class ScheduleJob
                     iStudentModelIndex = cllnStudentModel.Count - 1 Then
 
                     ' Start batch enquiry
-                    GetHACMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyHACMS, udtAuditLogEntry)
+                    GetHACMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyHACMS, udtAuditLogEntry, blnWithStaging)
                     '' Start batch enquiry
 
                     cllnPersonalInfoTemp.Clear()
@@ -691,7 +733,7 @@ Public Class ScheduleJob
 
             If cllnPersonalInfoTemp.Count > 0 Then
                 ' Start batch enquiry
-                GetHACMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyHACMS, udtAuditLogEntry)
+                GetHACMSVaccine(eStudentFileLocation, cllnPersonalInfoTemp, cllnStudentModelTemp, udtWSProxyHACMS, udtAuditLogEntry, blnWithStaging)
                 cllnPersonalInfoTemp.Clear()
                 cllnStudentModelTemp.Clear()
             End If
@@ -706,7 +748,8 @@ Public Class ScheduleJob
                                 ByVal cllnPersonalInfoTemp As EHSPersonalInformationModelCollection, _
                                 ByVal cllnStudentModelTemp As BLL.StudentModelCollection, _
                                 ByVal udtWSProxyHACMS As WSProxyCMS, _
-                                ByVal udtAuditLogEntry As AuditLogEntry)
+                                ByVal udtAuditLogEntry As AuditLogEntry, _
+                                ByVal blnWithStaging As Boolean)
 
         ' Start batch enquiry
         Dim udtHAVaccineResult As HAVaccineResult
@@ -724,14 +767,22 @@ Public Class ScheduleJob
                 ' CRE19-025 (Display of unmatched PV for batch upload under RVP) [End][Winnie]
 
                 BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
-                                                                        EHSTransactionModel.VaccineRefType.HA, cllnStudentModelTemp(i), cllnTranVaccine, strExtRefStatus)
+                                                                        EHSTransactionModel.VaccineRefType.HA, _
+                                                                        cllnStudentModelTemp(i), _
+                                                                        cllnTranVaccine, _
+                                                                        strExtRefStatus, _
+                                                                        blnWithStaging)
             Next
         Else
             ' Batch enquiry fail, update vaccine ref status for each student
             Dim strExtRefStatus As String = EHSTransaction.EHSTransactionModel.ExtRefStatusClass.GenerateCode(udtHAVaccineResult)
             For i As Integer = 0 To cllnStudentModelTemp.Count - 1
                 BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
-                                                                        EHSTransactionModel.VaccineRefType.HA, cllnStudentModelTemp(i), Nothing, strExtRefStatus)
+                                                                        EHSTransactionModel.VaccineRefType.HA, _
+                                                                        cllnStudentModelTemp(i), _
+                                                                        Nothing, _
+                                                                        strExtRefStatus, _
+                                                                        blnWithStaging)
             Next
         End If
     End Sub
@@ -743,39 +794,44 @@ Public Class ScheduleJob
     ''' <param name="udtStudnet"></param>
     ''' <remarks></remarks>
     Private Sub UpdateStudentExtRefStatus2YDN(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
-                                              ByVal strProvider As String, ByVal udtStudnet As BLL.StudentModel)
+                                              ByVal strProvider As String, _
+                                              ByVal udtStudnet As BLL.StudentModel, _
+                                              ByVal blnWithStagin As Boolean)
 
         Dim udtExtRefStatus As New EHSTransactionModel.ExtRefStatusClass(EHSTransactionModel.ExtRefStatusClass.ResultShownEnum.Yes, _
                                                     EHSTransactionModel.ExtRefStatusClass.ExtSourceMatchEnum.DocumentNotAvailable, _
                                                     EHSTransactionModel.ExtRefStatusClass.RecordReturnEnum.No)
+
         BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
                                                                 strProvider, _
-                                                               udtStudnet, _
-                                                               New EHSTransaction.TransactionDetailVaccineModelCollection, _
-                                                               EHSTransactionModel.ExtRefStatusClass.GenerateCode(udtExtRefStatus))
+                                                                udtStudnet, _
+                                                                New EHSTransaction.TransactionDetailVaccineModelCollection, _
+                                                                EHSTransactionModel.ExtRefStatusClass.GenerateCode(udtExtRefStatus), _
+                                                                blnWithStagin)
 
     End Sub
 
-    ' CRE18-011 (Check vaccination record of students with rectified information in rectification file) [Start][Koala]
     Private Sub BatchCheckStudentVaccineEntitlement(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
                                                    ByVal eStudetnFileStatus As StudentFile.StudentFileHeaderModel.RecordStatusEnumClass, _
                                                    ByVal blnUpdateStatusAndInsertReportQueue As Boolean)
-        'Private Sub BatchCheckStudentVaccineEntitlement(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
-        '                                                ByVal blnUpdateStatusAndInsertReportQueue As Boolean)
-        ' CRE18-011 (Check vaccination record of students with rectified information in rectification file) [End][Koala]
+
         Dim objStartKey As AuditLogStartKey = Nothing
 
         Try
-            ' INT19-0016 (Enhance Student File Preformance) [Start][Koala]
-            Dim enumProcessFileID As ProcessFileIDType = GetProcessOddStudentFileID()
-            ' INT19-0016 (Enhance Student File Preformance) [End][Koala]
 
-            Dim lstStudentHeader As List(Of StudentFile.StudentFileHeaderModel) = BLL.StudentFileBLL.GetStudentFileHeaderVaccineEntitle(eStudentFileLocation)
+            Dim enumProcessFileID As ProcessFileIDType = GetProcessOddStudentFileID()
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim lstVaccinationDateSeq As New List(Of Integer)
+
+            Dim lstStudentHeader As List(Of StudentFile.StudentFileHeaderModel) = BLL.StudentFileBLL.GetStudentFileHeaderVaccineEntitle(eStudentFileLocation, lstVaccinationDateSeq)
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             MyBase.AuditLog.AddDescripton("Location", eStudentFileLocation.ToString)
             MyBase.AuditLog.AddDescripton("No. of student file", lstStudentHeader.Count)
-            ' INT19-0016 (Enhance Student File Preformance) [Start][Koala]
+
             Dim strProcessFileID As String = String.Empty
+
             Select Case enumProcessFileID
                 Case ProcessFileIDType.ALL
                     strProcessFileID = "ALL"
@@ -784,15 +840,22 @@ Public Class ScheduleJob
                 Case ProcessFileIDType.EVEN
                     strProcessFileID = "EVEN"
             End Select
+
             MyBase.AuditLog.AddDescripton("Process student file id", strProcessFileID)
-            ' INT19-0016 (Enhance Student File Preformance) [End][Koala]
+
             MyBase.AuditLog.WriteLog(AuditLogDesc.CALENTITLE_Queue_ID, AuditLogDesc.CALENTITLE_Queue)
 
             MyBase.Log(String.Format("{0}: <Location: {1}><No. of student file: {2}>", _
                        AuditLogDesc.CALENTITLE_Queue, eStudentFileLocation.ToString, lstStudentHeader.Count))
 
-            For Each udtStudentHeader As StudentFile.StudentFileHeaderModel In lstStudentHeader
-                ' INT19-0016 (Enhance Student File Preformance) [Start][Koala]
+            For intCount As Integer = 0 To lstStudentHeader.Count - 1
+                Dim udtStudentHeader As StudentFile.StudentFileHeaderModel = lstStudentHeader(intCount)
+                Dim blnExist2ndVaccinationDate As Boolean = False
+
+                If eStudentFileLocation = BLL.StudentFileBLL.StudentFileLocation.Permanence And lstVaccinationDateSeq.Count > 0 Then
+                    blnExist2ndVaccinationDate = IIf(lstVaccinationDateSeq(intCount) = 2, True, False)
+                End If
+
                 If enumProcessFileID <> ProcessFileIDType.ALL Then
                     If GetStudentFileIDType(udtStudentHeader.StudentFileID) <> enumProcessFileID Then
                         MyBase.AuditLog.AddDescripton("Student file ID", udtStudentHeader.StudentFileID)
@@ -803,17 +866,47 @@ Public Class ScheduleJob
                         Continue For
                     End If
                 End If
-                ' INT19-0016 (Enhance Student File Preformance) [End][Koala]
 
-
-                ' CRE18-011 (Check vaccination record of students with rectified information in rectification file) [Start][Koala]
+                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 ' Skip this file if status is not target status
-                If udtStudentHeader.RecordStatusEnum <> eStudetnFileStatus Then Continue For
-                ' CRE18-011 (Check vaccination record of students with rectified information in rectification file) [End][Koala]
+                Select Case eStudetnFileStatus
+                    Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
+                        If udtStudentHeader.RecordStatusEnum = StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration Or _
+                            udtStudentHeader.RecordStatusEnum = StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim Or _
+                            udtStudentHeader.RecordStatusEnum = StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim Then
+                            ' Pass
+                        Else
+                            MyBase.AuditLog.AddDescripton("Student file ID", udtStudentHeader.StudentFileID)
+                            MyBase.AuditLog.AddDescripton("Status", udtStudentHeader.RecordStatus)
+                            MyBase.AuditLog.AddDescripton("Process Status", Formatter.EnumToString(eStudetnFileStatus))
+                            MyBase.AuditLog.WriteLog(LogID.LOG00031, "Skip to Process")
+
+                            MyBase.Log(String.Format("{0}: <Student file ID: {1}><Status: {2} <> {3} >", _
+                              "Not Match Status", udtStudentHeader.StudentFileID, udtStudentHeader.RecordStatus, Formatter.EnumToString(eStudetnFileStatus)))
+
+                            Continue For
+                        End If
+
+                    Case Else
+
+                        If udtStudentHeader.RecordStatusEnum <> eStudetnFileStatus Then
+                            MyBase.AuditLog.AddDescripton("Student file ID", udtStudentHeader.StudentFileID)
+                            MyBase.AuditLog.AddDescripton("Status", udtStudentHeader.RecordStatus)
+                            MyBase.AuditLog.AddDescripton("Process Status", Formatter.EnumToString(eStudetnFileStatus))
+                            MyBase.AuditLog.WriteLog(LogID.LOG00031, "Skip to Process")
+
+                            MyBase.Log(String.Format("{0}: <Student file ID: {1}><Status: {2} <> {3} >", _
+                              "Not Match Status", udtStudentHeader.StudentFileID, udtStudentHeader.RecordStatus, Formatter.EnumToString(eStudetnFileStatus)))
+
+                            Continue For
+                        End If
+
+                End Select
 
                 Dim cllnStudentModel As BLL.StudentModelCollection = Nothing
-                cllnStudentModel = BLL.StudentFileBLL.GetStudentFileEntryVaccineCheck(eStudentFileLocation, udtStudentHeader.StudentFileID, String.Empty)
-
+                cllnStudentModel = BLL.StudentFileBLL.GetStudentFileEntryVaccineCheck(eStudentFileLocation, udtStudentHeader.StudentFileID, String.Empty, blnExist2ndVaccinationDate)
+                ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
                 MyBase.AuditLog.AddDescripton("Student File ID", udtStudentHeader.StudentFileID)
                 MyBase.AuditLog.AddDescripton("Status", udtStudentHeader.RecordStatus)
@@ -878,7 +971,11 @@ Public Class ScheduleJob
                             ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
                         Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
-                            BLL.StudentFileBLL.UpdateStudentFileHeaderStatus(udtStudentHeader.StudentFileID, StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim)
+                            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            BLL.StudentFileBLL.UpdateStudentFileHeaderStatus(udtStudentHeader.StudentFileID, _
+                                                                             StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim, _
+                                                                             blnExist2ndVaccinationDate)
 
                             MyBase.AuditLog.AddDescripton("Student File ID", udtStudentHeader.StudentFileID)
                             MyBase.AuditLog.AddDescripton("Status", Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim))
@@ -890,6 +987,27 @@ Public Class ScheduleJob
                                 AuditLogDesc.CALENTITLE_End, udtStudentHeader.StudentFileID, _
                                                             Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim), _
                                                             cllnStudentModel.Count, IIf(blnSuccess, "Success", "Fail")))
+
+
+                        Case StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim, _
+                             StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim
+
+                            BLL.StudentFileBLL.UpdateStudentFileHeaderStatus(udtStudentHeader.StudentFileID, _
+                                                                             udtStudentHeader.RecordStatusEnum, _
+                                                                             blnExist2ndVaccinationDate)
+
+                            MyBase.AuditLog.AddDescripton("Student File ID", udtStudentHeader.StudentFileID)
+                            MyBase.AuditLog.AddDescripton("Status", Formatter.EnumToString(udtStudentHeader.RecordStatusEnum))
+                            MyBase.AuditLog.AddDescripton("No. of student", cllnStudentModel.Count)
+                            MyBase.AuditLog.AddDescripton("Result", IIf(blnSuccess, "Success", "Fail"))
+                            MyBase.AuditLog.WriteEndLog(objStartKey, AuditLogDesc.CALENTITLE_End_ID, AuditLogDesc.CALENTITLE_End)
+
+                            MyBase.Log(String.Format("{0}: <Student File ID: {1}><Status: {2}><No. of student: {3}><Result: {4}>", _
+                                AuditLogDesc.CALENTITLE_End, udtStudentHeader.StudentFileID, _
+                                                            Formatter.EnumToString(udtStudentHeader.RecordStatusEnum), _
+                                                            cllnStudentModel.Count, IIf(blnSuccess, "Success", "Fail")))
+
+                            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
                         Case Else
 
@@ -917,7 +1035,6 @@ Public Class ScheduleJob
                                                            cllnStudentModel.Count, IIf(blnSuccess, "Success", "Fail")))
                 End If
 
-
             Next
         Catch ex As Exception
             MyBase.AuditLog.AddDescripton("Message", ex.ToString)
@@ -942,102 +1059,6 @@ Public Class ScheduleJob
         Dim udtDocTypeBLL As New DocType.DocTypeBLL
         Return udtDocTypeBLL.CheckVaccinationRecordAvailable(udtPersonalInfo.DocCode, strProvider)
     End Function
-
-    ' CRE18-011 (Check vaccination record of students with rectified information in rectification file) [Start][Koala]
-    ' Obsolete specify rectify file workflow
-    'Private Sub BatchCompleteRectify(ByVal blnUpdateStatusAndInsertReportQueue As Boolean)
-    '    If Not blnUpdateStatusAndInsertReportQueue Then Exit Sub
-
-    '    Dim objStartKey As AuditLogStartKey = Nothing
-
-    '    Try
-    '        Dim udtStudentBLL As New StudentFile.StudentFileBLL
-    '        Dim dtStudent As DataTable = udtStudentBLL.SearchStudentFile(String.Empty, String.Empty, String.Empty, Nothing, Nothing, Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify))
-
-    '        MyBase.AuditLog.AddDescripton("Location", BLL.StudentFileBLL.StudentFileLocation.Staging.ToString)
-    '        MyBase.AuditLog.AddDescripton("No. of student file", dtStudent.Rows.Count)
-    '        MyBase.AuditLog.WriteLog(AuditLogDesc.RECTIFY_Queue_ID, AuditLogDesc.RECTIFY_Queue)
-
-    '        MyBase.Log(String.Format("{0}: <Location: {1}><No. of student file: {2}>", _
-    '                           AuditLogDesc.RECTIFY_End, BLL.StudentFileBLL.StudentFileLocation.Staging.ToString, _
-    '                                                       dtStudent.Rows.Count))
-
-    '        For i As Integer = 0 To dtStudent.Rows.Count - 1
-    '            Try
-
-    '                Dim cllnStudent As StudentFile.StudentFileEntryModelCollection = udtStudentBLL.GetStudentFileEntryStaging(dtStudent.Rows(i)("Student_File_ID"))
-
-
-    '                MyBase.AuditLog.AddDescripton("Student File ID", dtStudent.Rows(i)("Student_File_ID"))
-    '                MyBase.AuditLog.AddDescripton("Status", dtStudent.Rows(i)("Record_Status"))
-    '                MyBase.AuditLog.AddDescripton("No. of student", cllnStudent.Count)
-    '                objStartKey = MyBase.AuditLog.WriteStartLog(AuditLogDesc.RECTIFY_Start_ID, AuditLogDesc.RECTIFY_Start)
-
-    '                MyBase.Log(String.Format("{0}: <Student File ID: {1}><Status: {2}><No. of student: {3}>", _
-    '                           AuditLogDesc.RECTIFY_Start, dtStudent.Rows(i)("Student_File_ID"), _
-    '                                                       dtStudent.Rows(i)("Record_Status"), _
-    '                                                       cllnStudent.Count))
-
-    '                Dim blnAllSuccess As Boolean = True
-    '                For Each udtStudent As StudentFile.StudentFileEntryModel In cllnStudent
-    '                    If udtStudent.AccProcessStage <> "INITIAL" And udtStudent.AccProcessStage <> "RECHECK" Then
-    '                        blnAllSuccess = False
-    '                        Exit For
-    '                    End If
-    '                Next
-
-    '                If blnAllSuccess And blnUpdateStatusAndInsertReportQueue Then
-    '                    ' Update student file header status to "Pending Final Report Generation"
-    '                    ' Move student file from staging to permanence
-    '                    BLL.StudentFileBLL.UpdateStudentFileHeaderStatus(dtStudent.Rows(i)("Student_File_ID"), StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration)
-
-    '                    MyBase.AuditLog.AddDescripton("Student File ID", dtStudent.Rows(i)("Student_File_ID"))
-    '                    MyBase.AuditLog.AddDescripton("Status", Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration))
-    '                    MyBase.AuditLog.AddDescripton("No. of student", cllnStudent.Count)
-    '                    MyBase.AuditLog.AddDescripton("Result", IIf(blnAllSuccess, "Success", "Fail"))
-    '                    MyBase.AuditLog.WriteEndLog(objStartKey, AuditLogDesc.RECTIFY_End_ID, AuditLogDesc.RECTIFY_End)
-
-    '                    MyBase.Log(String.Format("{0}: <Student File ID: {1}><Status: {2}><No. of student: {3}><Result: {4}>", _
-    '                           AuditLogDesc.RECTIFY_End, dtStudent.Rows(i)("Student_File_ID"), _
-    '                                                       Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration), _
-    '                                                       cllnStudent.Count, IIf(blnAllSuccess, "Success", "Fail")))
-
-    '                Else
-
-    '                    MyBase.AuditLog.AddDescripton("Student File ID", dtStudent.Rows(i)("Student_File_ID"))
-    '                    MyBase.AuditLog.AddDescripton("Status", dtStudent.Rows(i)("Record_Status"))
-    '                    MyBase.AuditLog.AddDescripton("No. of student", cllnStudent.Count)
-    '                    MyBase.AuditLog.AddDescripton("Result", IIf(blnAllSuccess, "Success", "Fail"))
-    '                    MyBase.AuditLog.WriteEndLog(objStartKey, AuditLogDesc.RECTIFY_End_ID, AuditLogDesc.RECTIFY_End)
-
-    '                    MyBase.Log(String.Format("{0}: <Student File ID: {1}><Status: {2}><No. of student: {3}><Result: {4}>", _
-    '                           AuditLogDesc.RECTIFY_End, dtStudent.Rows(i)("Student_File_ID"), _
-    '                                                       dtStudent.Rows(i)("Record_Status"), _
-    '                                                       cllnStudent.Count, IIf(blnAllSuccess, "Success", "Fail")))
-    '                End If
-    '            Catch ex As Exception
-    '                MyBase.AuditLog.AddDescripton("Message", ex.ToString)
-    '                If objStartKey Is Nothing Then
-    '                    MyBase.AuditLog.WriteLog(AuditLogDesc.Exception_ID, AuditLogDesc.Exception)
-    '                Else
-    '                    MyBase.AuditLog.WriteEndLog(objStartKey, AuditLogDesc.Exception_ID, AuditLogDesc.Exception)
-    '                End If
-    '                MyBase.LogError(ex)
-    '            End Try
-    '        Next
-
-    '    Catch ex As Exception
-    '        MyBase.AuditLog.AddDescripton("Message", ex.ToString)
-    '        If objStartKey Is Nothing Then
-    '            MyBase.AuditLog.WriteLog(AuditLogDesc.Exception_ID, AuditLogDesc.Exception)
-    '        Else
-    '            MyBase.AuditLog.WriteEndLog(objStartKey, AuditLogDesc.Exception_ID, AuditLogDesc.Exception)
-    '        End If
-    '        Throw
-    '    End Try
-    'End Sub
-    ' CRE18-011 (Check vaccination record of students with rectified information in rectification file) [End][Koala]
-
 
     Private Sub BatchClaimCreation(ByVal blnUpdateStatusAndInsertReportQueue As Boolean)
         Dim objStartKey As AuditLogStartKey = Nothing
@@ -1161,6 +1182,9 @@ Public Class ScheduleJob
         ' Prepare SubsidizeGroupClaim (PPP, 1, PCQIV)
         Dim udtSchemeClaim As Scheme.SchemeClaimModel
         udtSchemeClaim = (New Scheme.SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(udtStudentHeader.SchemeCode)
+
+        ' If processes in permanence, check it whether contains the staging 
+        Dim blnWithStaging As Boolean = IsWithStaging(eStudentFileLocation, udtStudentHeader)
 
         ' Loop all student
         For Each udtStudent As BLL.StudentModel In cllnStudentModel
@@ -1305,10 +1329,11 @@ Public Class ScheduleJob
                     udtVaccineEntitle.EntitleInjectFailReason = udtMsg.GetMessage(EnumLanguage.EN) + "|||" + udtMsg.GetMessage(EnumLanguage.TC)
                     ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
-                    BLL.StudentFileBLL.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
-                                                                                     udtStudentHeader, _
-                                                                                     udtStudent, _
-                                                                                     udtVaccineEntitle)
+                    Me.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
+                                                            udtStudentHeader, _
+                                                            udtStudent, _
+                                                            udtVaccineEntitle, _
+                                                            blnWithStaging)
 
                     If blnCreateClaim Then
                         ' Update claim validation fail result to StudentFileEntryStaging 
@@ -1327,19 +1352,21 @@ Public Class ScheduleJob
                 End If
 
                 udtVaccineEntitle = StudentEntry_ValidationClaim(eStudentFileLocation, udtSchemeClaim, _
-                                            udtSubsidizeGroupClaim, _
-                                            cllnSubsidizeItemDetail, _
-                                            udtClaimCategory, _
-                                            udtPractice, _
-                                            udtStudent)
+                                                                 udtSubsidizeGroupClaim, _
+                                                                 cllnSubsidizeItemDetail, _
+                                                                 udtClaimCategory, _
+                                                                 udtPractice, _
+                                                                 udtStudent, _
+                                                                 blnWithStaging)
 
 
                 If blnCheckVaccineEntitlement Then
                     ' Update dose entitlement to StudentFileEntryStaging
-                    BLL.StudentFileBLL.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
-                                                                                     udtStudentHeader, _
-                                                                                     udtStudent, _
-                                                                                     udtVaccineEntitle)
+                    Me.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
+                                                            udtStudentHeader, _
+                                                            udtStudent, _
+                                                            udtVaccineEntitle, _
+                                                            blnWithStaging)
                 End If
 
                 If blnCreateClaim Then
@@ -1349,10 +1376,16 @@ Public Class ScheduleJob
                         udtDB.BeginTransaction()
 
                         ' Update dose entitlement to StudentFileEntryStaging
-                        BLL.StudentFileBLL.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
-                                                                                         udtStudentHeader, _
-                                                                                         udtStudent, _
-                                                                                         udtVaccineEntitle, udtDB)
+                        Me.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
+                                                                udtStudentHeader, _
+                                                                udtStudent, _
+                                                                udtVaccineEntitle, _
+                                                                blnWithStaging, _
+                                                                udtDB)
+
+                        If eStudentFileLocation = BLL.StudentFileBLL.StudentFileLocation.Permanence Then
+
+                        End If
 
                         ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
                         ' -------------------------------------------------------------------------------------------------------------
@@ -1409,26 +1442,28 @@ Public Class ScheduleJob
                             udtVaccineEntitle.EHSTransaction.TransactionID = strTransactionID
                             ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
-                            ' === Create X account ===
+                            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            ' === Create Temporary "C" account ===
                             Dim strOrignalEHSAccountID As String = Nothing
                             Dim udtAccount As EHSAccount.EHSAccountModel = udtVaccineEntitle.EHSTransaction.EHSAcct
-                            Dim blnCreateXEHSAccount As Boolean = False
+                            Dim blnCreateEHSAccount As Boolean = False
 
-                            ' Create X account for Temp Account already with transaction 
+                            ' Create "C" account for Temp Account already with transaction 
                             If Not udtAccount.AccountSource = SysAccountSource.ValidateAccount Then
                                 If (Not udtAccount.TransactionID Is Nothing AndAlso Not udtAccount.TransactionID.Equals(String.Empty)) Then
                                     strOrignalEHSAccountID = udtAccount.VoucherAccID
-                                    blnCreateXEHSAccount = True
+                                    blnCreateEHSAccount = True
                                 End If
                             End If
 
-                            If blnCreateXEHSAccount Then
-                                Call (New BLL.StudentFileBLL).CreateXEHSAccount(udtDB, strOrignalEHSAccountID, udtAccount, udtStudent, udtVaccineEntitle)
+                            If blnCreateEHSAccount Then
+                                Call (New BLL.StudentFileBLL).CreateEHSAccount(udtDB, udtAccount, udtStudent, udtVaccineEntitle)
 
                                 udtVaccineEntitle.EHSTransaction.TempVoucherAccID = udtAccount.VoucherAccID
                                 udtVaccineEntitle.EHSTransaction.EHSAcct = udtAccount
                             End If
-
+                            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
                             ' === Suspend Claim ===
 
@@ -1461,6 +1496,14 @@ Public Class ScheduleJob
                                                                                         strTransactionID, _
                                                                                         String.Empty, _
                                                                                         udtDB)
+
+                            ' Update temp account ID to StudentFileEntryStaging after claimed transaction 
+                            If blnCreateEHSAccount Then
+                                BLL.StudentFileBLL.UpdateStudentFileEntryStaging_TempAccountAccID(udtStudent, _
+                                                                                                  udtAccount.VoucherAccID,
+                                                                                                  udtDB)
+
+                            End If
 
                         Else
                             ' Update claim validation fail result to StudentFileEntryStaging 
@@ -1498,11 +1541,12 @@ Public Class ScheduleJob
 
     Private Function StudentEntry_ValidationClaim(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
                                                   ByVal udtSchemeClaim As Scheme.SchemeClaimModel, _
-                                            ByVal udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel, _
-                                            ByVal cllnSubsidizeItemDetail As SubsidizeItemDetailsModelCollection, _
-                                            ByVal udtClaimCategory As ClaimCategory.ClaimCategoryModel, _
-                                            ByVal udtPractice As Practice.PracticeModel, _
-                                            ByVal udtStudent As BLL.StudentModel) As BLL.VaccineEntitleModel
+                                                  ByVal udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel, _
+                                                  ByVal cllnSubsidizeItemDetail As SubsidizeItemDetailsModelCollection, _
+                                                  ByVal udtClaimCategory As ClaimCategory.ClaimCategoryModel, _
+                                                  ByVal udtPractice As Practice.PracticeModel, _
+                                                  ByVal udtStudent As BLL.StudentModel,
+                                                  ByVal blnWithStaging As Boolean) As BLL.VaccineEntitleModel
 
         Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(ScheduleJobFunctionCode.StudentFileChecking, "DBFlag")
         Dim udtClaimRuleBLL As New ClaimRules.ClaimRulesBLL
@@ -1530,7 +1574,11 @@ Public Class ScheduleJob
         ' Update eHS vaccination reocrd to [StudentFileEntryVaccine]
         ' --------------------------------------------------------------------------------------
         BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
-                                                                        TransactionDetailVaccineModel.ProviderClass.Private, udtStudent, cllnTranDetailVaccineEHS, String.Empty)
+                                                                TransactionDetailVaccineModel.ProviderClass.Private, _
+                                                                udtStudent, _
+                                                                cllnTranDetailVaccineEHS, _
+                                                                String.Empty, _
+                                                                blnWithStaging)
         ' CRE19-001-04 (PPP 2019-20) [End][Koala]
 
 
@@ -1625,25 +1673,25 @@ Public Class ScheduleJob
 
             ' Build Transaction Model
             Dim udtTran As EHSTransactionModel = BLL.StudentFileTranBLL.ConstructNewEHSTransaction(udtSchemeClaim, _
-                                                            udtSubsidizeGroupClaim, _
-                                                            udtClaimCategory, _
-                                                            udtPractice, _
-                                                            udtStudent, _
-                                                            udtStudent.ServiceReceviceDate, _
-                                                            udtStudent.Dose, _
-                                                            udtAccount, _
-                                                            cllnTranDetailVaccine, _
-                                                            udtVaccineEntitle)
+                                                                                                    udtSubsidizeGroupClaim, _
+                                                                                                    udtClaimCategory, _
+                                                                                                    udtPractice, _
+                                                                                                    udtStudent, _
+                                                                                                    udtStudent.ServiceReceviceDate, _
+                                                                                                    udtStudent.Dose, _
+                                                                                                    udtAccount, _
+                                                                                                    cllnTranDetailVaccine, _
+                                                                                                    udtVaccineEntitle)
 
             ' Check claim
             Dim udtClaimBLL As New EHSClaim.EHSClaimBLL.EHSClaimBLL
             Dim udtValidationResults As ValidationResults = udtClaimBLL.ValidateClaimCreation(EHSClaim.EHSClaimBLL.EHSClaimBLL.ClaimAction.UploadStudent, _
-                                                udtTran, _
-                                                Nothing, _
-                                                Nothing, _
-                                                udtAuditLogEntry, _
-                                                Nothing, _
-                                                cllnTranDetailVaccine)
+                                                                                                udtTran, _
+                                                                                                Nothing, _
+                                                                                                Nothing, _
+                                                                                                udtAuditLogEntry, _
+                                                                                                Nothing, _
+                                                                                                cllnTranDetailVaccine)
 
             If udtValidationResults.BlockResults.RuleResults.Count > 0 Then
                 udtVaccineEntitle.EntitleInject = False
@@ -1753,11 +1801,11 @@ Public Class ScheduleJob
     ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
 
     Private Function StudentFile_CheckVaccineEntitlementAndCreateClaim_Precheck(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
-                                                                    ByVal udtStudentHeader As StudentFile.StudentFileHeaderModel, _
-                                                                    ByVal cllnStudentModel As BLL.StudentModelCollection, _
-                                                                    ByVal blnCheckVaccineEntitlement As Boolean, _
-                                                                    ByVal blnCreateClaim As Boolean, _
-                                                                    ByVal blnUpdateStudentFileStatusOnly As Boolean) As Boolean
+                                                                                ByVal udtStudentHeader As StudentFile.StudentFileHeaderModel, _
+                                                                                ByVal cllnStudentModel As BLL.StudentModelCollection, _
+                                                                                ByVal blnCheckVaccineEntitlement As Boolean, _
+                                                                                ByVal blnCreateClaim As Boolean, _
+                                                                                ByVal blnUpdateStudentFileStatusOnly As Boolean) As Boolean
         Dim blnAllStudentProcessed As Boolean = True
 
         If cllnStudentModel.Count = 0 Then Return blnAllStudentProcessed
@@ -1768,12 +1816,10 @@ Public Class ScheduleJob
         Dim udtSchemeClaim As Scheme.SchemeClaimModel
         udtSchemeClaim = (New Scheme.SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(udtStudentHeader.SchemeCode)
 
-
         ' Prepare SubsidizeGroupClaim (RVP, 1, PCQIV)
         Dim udtClaimCategoryBLL As New ClaimCategory.ClaimCategoryBLL
         Dim cllnClaimCategory As ClaimCategory.ClaimCategoryModelCollection = Nothing
         Dim udtClaimCategory As ClaimCategory.ClaimCategoryModel = Nothing
-
 
         ' Get Practice
         Dim udtPractice As Practice.PracticeModel = Nothing
@@ -1789,7 +1835,6 @@ Public Class ScheduleJob
                 End If
             Next
         End If
-
 
         ' Get SubsidizeGroupClaim available on today, if season ended then get coming season start date (RVP, 11, RQIV)
         Dim cllnSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModelCollection
@@ -1821,6 +1866,8 @@ Public Class ScheduleJob
         ' Get all subsidy by the check date
         cllnSubsidizeGroupClaim = udtSchemeClaim.SubsidizeGroupClaimList.FilterLastServiceDtm(udtSchemeClaim.SchemeCode, dtmCheckDate)
 
+        ' If processes in permanence, check it whether contains the staging 
+        Dim blnWithStaging As Boolean = IsWithStaging(eStudentFileLocation, udtStudentHeader)
 
         ' Loop all student
         For Each udtStudent As BLL.StudentModel In cllnStudentModel
@@ -1945,8 +1992,8 @@ Public Class ScheduleJob
                                                 udtClaimCategory, _
                                                 udtPractice, _
                                                 udtStudent, _
-                                                dtmCheckDate)
-
+                                                dtmCheckDate, _
+                                                blnWithStaging)
 
                     ' ========================================================================================
                     ' Insert precheck result to [StudentFileEntrySubsidizePrecheckStaging]
@@ -1980,13 +2027,15 @@ Public Class ScheduleJob
     End Function
 
     Private Function StudentEntry_ValidationClaim_Precheck(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
-                                                  ByVal udtSchemeClaim As Scheme.SchemeClaimModel, _
-                                            ByVal udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel, _
-                                            ByVal cllnSubsidizeItemDetail As SubsidizeItemDetailsModelCollection, _
-                                            ByVal udtClaimCategory As ClaimCategory.ClaimCategoryModel, _
-                                            ByVal udtPractice As Practice.PracticeModel, _
-                                            ByVal udtStudent As BLL.StudentModel, _
-                                            ByVal dtmPrecheck As Date) As BLL.VaccineEntitleModel
+                                                           ByVal udtSchemeClaim As Scheme.SchemeClaimModel, _
+                                                           ByVal udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel, _
+                                                           ByVal cllnSubsidizeItemDetail As SubsidizeItemDetailsModelCollection, _
+                                                           ByVal udtClaimCategory As ClaimCategory.ClaimCategoryModel, _
+                                                           ByVal udtPractice As Practice.PracticeModel, _
+                                                           ByVal udtStudent As BLL.StudentModel, _
+                                                           ByVal dtmPrecheck As Date, _
+                                                           ByVal blnWithStaging As Boolean) As BLL.VaccineEntitleModel
+
         Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(ScheduleJobFunctionCode.StudentFileChecking, "DBFlag")
         Dim udtClaimRuleBLL As New ClaimRules.ClaimRulesBLL
         Dim udtVaccineEntitle As New BLL.VaccineEntitleModel
@@ -2033,7 +2082,11 @@ Public Class ScheduleJob
         ' Update eHS vaccination reocrd to [StudentFileEntryVaccine]
         ' --------------------------------------------------------------------------------------
         BLL.StudentFileBLL.UpdateStudentFileEntryVaccineStaging(eStudentFileLocation, _
-                                                                        TransactionDetailVaccineModel.ProviderClass.Private, udtStudent, cllnTranDetailVaccineEHS, String.Empty)
+                                                                TransactionDetailVaccineModel.ProviderClass.Private, _
+                                                                udtStudent, _
+                                                                cllnTranDetailVaccineEHS, _
+                                                                String.Empty, _
+                                                                blnWithStaging)
         ' CRE19-001-04 (PPP 2019-20) [End][Koala]
 
         ' Get account
@@ -2325,4 +2378,42 @@ Public Class ScheduleJob
 
     End Function
 
+    Private Sub UpdateStudentFileEntry_VaccineCheck(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
+                                                    ByVal udtStudentHeader As StudentFile.StudentFileHeaderModel, _
+                                                    ByVal udtStudent As BLL.StudentModel, _
+                                                    ByVal udtVaccineEntitle As BLL.VaccineEntitleModel,
+                                                    ByVal blnWithStaging As Boolean,
+                                                    Optional ByVal udtDB As Database = Nothing)
+
+        BLL.StudentFileBLL.UpdateStudentFileEntry_VaccineCheck(eStudentFileLocation, _
+                                                                 udtStudentHeader, _
+                                                                 udtStudent, _
+                                                                 udtVaccineEntitle, udtDB)
+
+        'If has staging, update the vaccine checking result.
+        If blnWithStaging And eStudentFileLocation = BLL.StudentFileBLL.StudentFileLocation.Permanence Then
+            BLL.StudentFileBLL.UpdateStudentFileEntry_VaccineCheck(BLL.StudentFileBLL.StudentFileLocation.Staging, _
+                                                                     udtStudentHeader, _
+                                                                     udtStudent, _
+                                                                     udtVaccineEntitle, udtDB)
+        End If
+    End Sub
+
+    Private Function IsWithStaging(ByVal eStudentFileLocation As BLL.StudentFileBLL.StudentFileLocation, _
+                                   ByVal udtStudentHeader As StudentFile.StudentFileHeaderModel) As Boolean
+
+        Dim blnRes As Boolean = False
+
+        If eStudentFileLocation = BLL.StudentFileBLL.StudentFileLocation.Permanence Then
+            Dim udtStudentFileHeaderStaging As StudentFileHeaderModel = (New StudentFile.StudentFileBLL).GetStudentFileHeaderStaging(udtStudentHeader.StudentFileID, blnWithEntry:=False)
+
+            If udtStudentFileHeaderStaging IsNot Nothing Then
+                blnRes = True
+            End If
+
+        End If
+
+        Return blnRes
+
+    End Function
 End Class

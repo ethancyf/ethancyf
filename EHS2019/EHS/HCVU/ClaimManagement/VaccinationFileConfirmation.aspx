@@ -101,13 +101,17 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationDate %>" SortExpression="Service_Receive_Dtm" ItemStyle-Width="120">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblGVaccinationDate" runat="server"></asp:Label>
+                                    <asp:Label ID="lblGVaccinationDate" runat="server" />
+                                    <br />
+                                    <asp:Label ID="lblGVaccinationDate_2" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationReportGenerationDate %>" SortExpression="Final_Checking_Report_Generation_Date"
                                 ItemStyle-Width="120">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblGVaccinationReportGenerationDate" runat="server"></asp:Label>
+                                    <asp:Label ID="lblGVaccinationReportGenerationDate" runat="server" />
+                                    <br />
+                                    <asp:Label ID="lblGVaccinationReportGenerationDate_2" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SubsidyDoseToInject %>" SortExpression="Dose" ItemStyle-Width="100">

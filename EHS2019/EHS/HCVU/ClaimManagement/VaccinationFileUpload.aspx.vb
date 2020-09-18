@@ -167,7 +167,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         'Dim dt As DataTable = (New StudentFileBLL).GetStudentFileHeaderStagingDT(String.Empty, StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload)
         Dim strUserID As String = (New HCVUUserBLL).GetHCVUUser.UserID
         Dim dt As DataTable = (New StudentFileBLL).SearchStudentFile(String.Empty, String.Empty, String.Empty, String.Empty, _
-                                                             strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, _
+                                                             strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, _
                                                              Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload))
 
         Session(SESS.ResultDT) = dt
@@ -206,6 +206,8 @@ Partial Public Class VaccinationFileUpload ' 010413
                 lblGSchoolCode.Text = dr("School_Code").ToString.Trim
             End If
 
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             ' Vaccination Date
             Dim lblGVaccinationDate As Label = e.Row.FindControl("lblGVaccinationDate")
 
@@ -213,6 +215,16 @@ Partial Public Class VaccinationFileUpload ' 010413
                 lblGVaccinationDate.Text = Me.GetGlobalResourceObject("Text", "N/A")
             Else
                 lblGVaccinationDate.Text = udtFormatter.formatDisplayDate(dr("Service_Receive_Dtm"))
+            End If
+
+            Dim lblGVaccinationDate_2 As Label = e.Row.FindControl("lblGVaccinationDate_2")
+
+            If IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                lblGVaccinationDate_2.Text = String.Empty
+                lblGVaccinationDate_2.Visible = False
+            Else
+                lblGVaccinationDate_2.Text = udtFormatter.formatDisplayDate(dr("Service_Receive_Dtm_2"))
+                lblGVaccinationDate_2.Visible = True
             End If
 
             ' Vaccination Report Generation Date
@@ -223,6 +235,18 @@ Partial Public Class VaccinationFileUpload ' 010413
             Else
                 lblGVaccinationReportGenerationDate.Text = udtFormatter.formatDisplayDate(dr("Final_Checking_Report_Generation_Date"))
             End If
+
+            Dim lblGVaccinationReportGenerationDate_2 As Label = e.Row.FindControl("lblGVaccinationReportGenerationDate_2")
+
+            If IsDBNull(dr("Final_Checking_Report_Generation_Date_2")) Then
+                lblGVaccinationReportGenerationDate_2.Text = String.Empty
+                lblGVaccinationReportGenerationDate_2.Visible = False
+            Else
+                lblGVaccinationReportGenerationDate_2.Text = udtFormatter.formatDisplayDate(dr("Final_Checking_Report_Generation_Date_2"))
+                lblGVaccinationReportGenerationDate_2.Visible = True
+            End If
+
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             ' Subsidy / Dose to Inject
             Dim lblGDoseToInject As Label = e.Row.FindControl("lblGDoseToInject")
@@ -356,6 +380,14 @@ Partial Public Class VaccinationFileUpload ' 010413
         txtIVaccinationReportGenerateDate1.Text = String.Empty
         txtIVaccinationReportGenerateDate2.Text = String.Empty
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        txtIVaccinationDate1_2.Text = String.Empty
+        txtIVaccinationDate2_2.Text = String.Empty
+        txtIVaccinationReportGenerateDate1_2.Text = String.Empty
+        txtIVaccinationReportGenerateDate2_2.Text = String.Empty
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         udtAuditLog.WriteEndLog(LogID.LOG00004, "[StdFileUpload] List - Upload File click success")
 
     End Sub
@@ -423,6 +455,13 @@ Partial Public Class VaccinationFileUpload ' 010413
         imgIVaccinationDate2Error.Visible = False
         imgIVaccinationReportGenerationDate1Error.Visible = False
         imgIVaccinationReportGenerationDate2Error.Visible = False
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        imgIVaccinationDate1Error_2.Visible = False
+        imgIVaccinationDate2Error_2.Visible = False
+        imgIVaccinationReportGenerationDate1Error_2.Visible = False
+        imgIVaccinationReportGenerationDate2Error_2.Visible = False
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
         imgIVaccinationFileError.Visible = False
         imgIPasswordError.Visible = False
         ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
@@ -535,6 +574,12 @@ Partial Public Class VaccinationFileUpload ' 010413
 
                 panIVaccinationInfo.Visible = True
 
+                lblVaccinationDateText.Text = GetGlobalResourceObject("Text", "VaccinationDate_1stVisit")
+                lblVaccinationReportGenerationDateText.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate_1stVisit")
+
+                lblVaccinationDateText_2.Text = GetGlobalResourceObject("Text", "VaccinationDate_2ndVisit")
+                lblVaccinationReportGenerationDateText_2.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate_2ndVisit")
+
             Case SchemeClaimModel.RVP
                 panISchoolRCH.Visible = True
                 lblISchoolRCHCodeText.Text = GetGlobalResourceObject("Text", "RCHCode")
@@ -548,24 +593,20 @@ Partial Public Class VaccinationFileUpload ' 010413
                 txtIVaccinationReportGenerateDate1.Text = String.Empty
                 txtIVaccinationReportGenerateDate2.Text = String.Empty
 
+                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                txtIVaccinationDate1_2.Text = String.Empty
+                txtIVaccinationDate2_2.Text = String.Empty
+                txtIVaccinationReportGenerateDate1_2.Text = String.Empty
+                txtIVaccinationReportGenerateDate2_2.Text = String.Empty
+
+                ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
             Case SchemeClaimModel.VSS
                 panIMMR.Visible = True
 
         End Select
 
-        'If strSchemeCode <> String.Empty Then
-
-        '    If blnIsPreCheck Then
-        '        panIVaccinationInfo.Visible = False
-        '        txtIVaccinationDate1.Text = String.Empty
-        '        txtIVaccinationDate2.Text = String.Empty
-        '        txtIVaccinationReportGenerateDate1.Text = String.Empty
-        '        txtIVaccinationReportGenerateDate2.Text = String.Empty
-        '    Else
-        '        panIVaccinationInfo.Visible = True
-        '    End If
-
-        'End If
         ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
         Session(SESS.UploadPrecheck) = blnIsPreCheck
@@ -869,10 +910,24 @@ Partial Public Class VaccinationFileUpload ' 010413
         udtAuditLog.AddDescripton("SPID", txtIServiceProviderID.Text)
         udtAuditLog.AddDescripton("Practice", ddlIPractice.SelectedValue)
         udtAuditLog.AddDescripton("School Code", txtISchoolRCHCode.Text)
-        udtAuditLog.AddDescripton("Vaccination Date (Only/1st Dose)", txtIVaccinationDate1.Text)
-        udtAuditLog.AddDescripton("Vaccination Date (2nd Dose)", txtIVaccinationDate2.Text)
-        udtAuditLog.AddDescripton("Vaccination Report Generation Date (Only/1st Dose)", txtIVaccinationReportGenerateDate1.Text)
-        udtAuditLog.AddDescripton("Vaccination Report Generation Date (2nd Dose)", txtIVaccinationReportGenerateDate2.Text)
+
+        Select Case ddlIScheme.SelectedValue
+            Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
+                udtAuditLog.AddDescripton("Vaccination Date (1st Dose - 1st Visit)", txtIVaccinationDate1.Text)
+                udtAuditLog.AddDescripton("Vaccination Report Generation Date (1st Dose - 1st Visit)", txtIVaccinationReportGenerateDate1.Text)
+                udtAuditLog.AddDescripton("Vaccination Date (1st Dose - 2nd Visit)", txtIVaccinationDate1_2.Text)
+                udtAuditLog.AddDescripton("Vaccination Report Generation Date (1st Dose - 2nd Visit)", txtIVaccinationReportGenerateDate1_2.Text)
+                udtAuditLog.AddDescripton("Vaccination Date (2nd Dose - 1st Visit)", txtIVaccinationDate2.Text)
+                udtAuditLog.AddDescripton("Vaccination Report Generation Date (2nd Dose - 1st Visit)", txtIVaccinationReportGenerateDate2.Text)
+                udtAuditLog.AddDescripton("Vaccination Date (2nd Dose - 2nd Visit)", txtIVaccinationDate2_2.Text)
+                udtAuditLog.AddDescripton("Vaccination Report Generation Date (2nd Dose - 2nd Visit)", txtIVaccinationReportGenerateDate2_2.Text)
+
+            Case SchemeClaimModel.VSS
+                udtAuditLog.AddDescripton("Dose of MMR", ddlIDoseOfMMR.SelectedValue)
+                udtAuditLog.AddDescripton("Vaccination Report Generation Date", txtIVaccinationReportGenerateDateMMR.Text)
+
+        End Select
+
         udtAuditLog.AddDescripton("Student File", IIf(flIVaccinationFile.HasFile, "Y", "N"))
 
         udtAuditLog.WriteStartLog(LogID.LOG00013, "[StdFileUpload] UploadFile - Next click")
@@ -1609,11 +1664,17 @@ Partial Public Class VaccinationFileUpload ' 010413
         ' -------------------------------------
         ' Vaccination Date
         ' -------------------------------------
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         lblCVaccinationDate1.Text = udtFormatter.convertDate(txtIVaccinationDate1.Text.Trim, String.Empty)
         lblCVaccinationDate2.Text = udtFormatter.convertDate(txtIVaccinationDate2.Text.Trim, String.Empty)
+        lblCVaccinationDate1_2.Text = udtFormatter.convertDate(txtIVaccinationDate1_2.Text.Trim, String.Empty)
+        lblCVaccinationDate2_2.Text = udtFormatter.convertDate(txtIVaccinationDate2_2.Text.Trim, String.Empty)
 
         lblCVaccinationReportGenerationDate1.Text = udtFormatter.convertDate(txtIVaccinationReportGenerateDate1.Text.Trim, String.Empty)
         lblCVaccinationReportGenerationDate2.Text = udtFormatter.convertDate(txtIVaccinationReportGenerateDate2.Text.Trim, String.Empty)
+        lblCVaccinationReportGenerationDate1_2.Text = udtFormatter.convertDate(txtIVaccinationReportGenerateDate1_2.Text.Trim, String.Empty)
+        lblCVaccinationReportGenerationDate2_2.Text = udtFormatter.convertDate(txtIVaccinationReportGenerateDate2_2.Text.Trim, String.Empty)
 
         Dim strNA As String = Me.GetGlobalResourceObject("Text", "N/A")
         If lblCVaccinationDate1.Text = String.Empty Then lblCVaccinationDate1.Text = strNA
@@ -1621,33 +1682,74 @@ Partial Public Class VaccinationFileUpload ' 010413
         If lblCVaccinationReportGenerationDate1.Text = String.Empty Then lblCVaccinationReportGenerationDate1.Text = strNA
         If lblCVaccinationReportGenerationDate2.Text = String.Empty Then lblCVaccinationReportGenerationDate2.Text = strNA
 
+        If lblCVaccinationDate1_2.Text = String.Empty Then lblCVaccinationDate1_2.Text = strNA
+        If lblCVaccinationDate2_2.Text = String.Empty Then lblCVaccinationDate2_2.Text = strNA
+        If lblCVaccinationReportGenerationDate1_2.Text = String.Empty Then lblCVaccinationReportGenerationDate1_2.Text = strNA
+        If lblCVaccinationReportGenerationDate2_2.Text = String.Empty Then lblCVaccinationReportGenerationDate2_2.Text = strNA
 
         hfCVaccinationDate1.Value = String.Empty
         hfCVaccinationReportGenerationDate1.Value = String.Empty
         hfCVaccinationDate2.Value = String.Empty
         hfCVaccinationReportGenerationDate2.Value = String.Empty
+        hfCVaccinationDate1_2.Value = String.Empty
+        hfCVaccinationReportGenerationDate1_2.Value = String.Empty
+        hfCVaccinationDate2_2.Value = String.Empty
+        hfCVaccinationReportGenerationDate2_2.Value = String.Empty
         hfCDoseToInject.Value = String.Empty
 
         'PPP-PS / PPP-KG
         If txtIVaccinationDate1.Text.Trim <> String.Empty Then
+            ' ----------------
             ' Only Dose / 1st Dose
+            ' ----------------
+            ' First Visit
             hfCVaccinationDate1.Value = txtIVaccinationDate1.Text.Trim
             hfCVaccinationReportGenerationDate1.Value = txtIVaccinationReportGenerateDate1.Text.Trim
             hfCDoseToInject.Value = SubsidizeItemDetailsModel.DoseCode.FirstDOSE
 
+            ' Second Visit
+            If txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+                hfCVaccinationDate1_2.Value = txtIVaccinationDate1_2.Text.Trim
+                hfCVaccinationReportGenerationDate1_2.Value = txtIVaccinationReportGenerateDate1_2.Text.Trim
+
+            End If
+
+            ' ---------------------
+            ' 1st Dose + 2nd Dose
+            ' ---------------------
+            ' First Visit
             If txtIVaccinationDate2.Text.Trim <> String.Empty Then
-                ' 1st Dose + 2nd Dose
                 hfCVaccinationDate2.Value = txtIVaccinationDate2.Text.Trim
                 hfCVaccinationReportGenerationDate2.Value = txtIVaccinationReportGenerateDate2.Text.Trim
 
             End If
 
+            ' Second Visit
+            If txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+                hfCVaccinationDate2_2.Value = txtIVaccinationDate2_2.Text.Trim
+                hfCVaccinationReportGenerationDate2_2.Value = txtIVaccinationReportGenerateDate2_2.Text.Trim
+
+            End If
+
         ElseIf txtIVaccinationDate2.Text.Trim <> String.Empty Then
+            ' ---------------------
             ' 2nd Dose
+            ' ---------------------
+            ' First Visit
             hfCVaccinationDate1.Value = txtIVaccinationDate2.Text.Trim
             hfCVaccinationReportGenerationDate1.Value = txtIVaccinationReportGenerateDate2.Text.Trim
             hfCDoseToInject.Value = SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+
+            ' Second Visit
+            If txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+                hfCVaccinationDate1_2.Value = txtIVaccinationDate2_2.Text.Trim
+                hfCVaccinationReportGenerationDate1_2.Value = txtIVaccinationReportGenerateDate2_2.Text.Trim
+
+            End If
+
         End If
+
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
@@ -1674,20 +1776,30 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
-        ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
-        ' ------------------------------------------------------------------------        
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
         Dim dtmVaccineDate1 As DateTime = DateTime.MinValue
         Dim dtmReportGenerationDate1 As DateTime = DateTime.MinValue
         Dim dtmVaccineDate2 As DateTime = DateTime.MinValue
         Dim dtmReportGenerationDate2 As DateTime = DateTime.MinValue
 
+        Dim dtmVaccineDate1_2 As DateTime = DateTime.MinValue
+        Dim dtmReportGenerationDate1_2 As DateTime = DateTime.MinValue
+        Dim dtmVaccineDate2_2 As DateTime = DateTime.MinValue
+        Dim dtmReportGenerationDate2_2 As DateTime = DateTime.MinValue
+
         lblCVaccinationDate1.Style.Remove("color")
         lblCVaccinationDate2.Style.Remove("color")
         lblCVaccinationDate1Remark.Visible = False
         lblCVaccinationDate2Remark.Visible = False
 
-        ' 1st Dose
+        lblCVaccinationDate1_2.Style.Remove("color")
+        lblCVaccinationDate2_2.Style.Remove("color")
+        lblCVaccinationDate1_2Remark.Visible = False
+        lblCVaccinationDate2_2Remark.Visible = False
+
+        ' 1st Dose - First Visit
         If txtIVaccinationDate1.Text.Trim <> String.Empty Then
             If DateTime.TryParseExact(txtIVaccinationDate1.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccineDate1) Then
 
@@ -1712,7 +1824,32 @@ Partial Public Class VaccinationFileUpload ' 010413
             End If
         End If
 
-        ' 2nd Dose
+        ' 1st Dose - Second Visit
+        If txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+            If DateTime.TryParseExact(txtIVaccinationDate1_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccineDate1_2) Then
+
+                ' Remark (Past date/Today)
+                If dtmVaccineDate1_2 < dtmCurrentDate Then
+                    lblCVaccinationDate1_2Remark.Visible = True
+                    lblCVaccinationDate1_2Remark.Text = Me.GetGlobalResourceObject("Text", "PastDate")
+                ElseIf dtmVaccineDate1_2 = dtmCurrentDate Then
+                    lblCVaccinationDate1_2Remark.Visible = True
+                    lblCVaccinationDate1_2Remark.Text = Me.GetGlobalResourceObject("Text", "Today")
+                Else
+                    lblCVaccinationDate1_2Remark.Visible = False
+                    lblCVaccinationDate1_2Remark.Text = ""
+                End If
+
+                ' Highlight Abnormal Vaccine Date
+                If DateTime.TryParseExact(txtIVaccinationReportGenerateDate1_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmReportGenerationDate1_2) Then
+                    If IsAbnormalVaccineDate(hfScheme.Value, dtmVaccineDate1_2, dtmReportGenerationDate1_2) Then
+                        lblCVaccinationDate1_2.Style.Add("color", "red")
+                    End If
+                End If
+            End If
+        End If
+
+        ' 2nd Dose - First Visit
         If txtIVaccinationDate2.Text.Trim <> String.Empty Then
             If DateTime.TryParseExact(txtIVaccinationDate2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccineDate2) Then
 
@@ -1736,7 +1873,32 @@ Partial Public Class VaccinationFileUpload ' 010413
                 End If
             End If
         End If
-        ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
+
+        ' 2nd Dose - Second Visit
+        If txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+            If DateTime.TryParseExact(txtIVaccinationDate2_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccineDate2_2) Then
+
+                ' Remark (Past date/Today)
+                If dtmVaccineDate2_2 < dtmCurrentDate Then
+                    lblCVaccinationDate2_2Remark.Visible = True
+                    lblCVaccinationDate2_2Remark.Text = Me.GetGlobalResourceObject("Text", "PastDate")
+                ElseIf dtmVaccineDate2_2 = dtmCurrentDate Then
+                    lblCVaccinationDate2_2Remark.Visible = True
+                    lblCVaccinationDate2_2Remark.Text = Me.GetGlobalResourceObject("Text", "Today")
+                Else
+                    lblCVaccinationDate2_2Remark.Visible = False
+                    lblCVaccinationDate2_2Remark.Text = ""
+                End If
+
+                ' Highlight Abnormal Vaccine Date
+                If DateTime.TryParseExact(txtIVaccinationReportGenerateDate2_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmReportGenerationDate2_2) Then
+                    If IsAbnormalVaccineDate(hfScheme.Value, dtmVaccineDate2_2, dtmReportGenerationDate2_2) Then
+                        lblCVaccinationDate2_2.Style.Add("color", "red")
+                    End If
+                End If
+            End If
+        End If
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         hfCFDSubsidizeCode.Value = strSubsidizeCode
 
@@ -1886,20 +2048,48 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
 
-        ' -------------------------------------
-        ' Vaccination Date
-        ' -------------------------------------
+        '1st Visit
         Dim dtmVaccinationDate1 As DateTime = DateTime.MinValue
         Dim dtmVaccinationDate2 As DateTime = DateTime.MinValue
 
+        Dim dtmGenerateReportDate1 As DateTime = DateTime.MinValue
+        Dim dtmGenerateReportDate2 As DateTime = DateTime.MinValue
+
         Dim blnValidOnlyDoseVaccineDate As Boolean = False
         Dim blnValid2ndDoseVaccineDate As Boolean = False
+
+        Dim blnValidOnlyDoseGenerateReportDate As Boolean = False
+        Dim blnValid2ndDoseGenerateReportDate As Boolean = False
+
         Dim blnPastSeason As Boolean = False
         Dim int1stDoseSchemeSeq As Integer = 0
         Dim int2ndDoseSchemeSeq As Integer = 0
 
+        '2nd Visit
+        Dim dtmVaccinationDate1_2 As DateTime = DateTime.MinValue
+        Dim dtmVaccinationDate2_2 As DateTime = DateTime.MinValue
+
+        Dim dtmGenerateReportDate1_2 As DateTime = DateTime.MinValue
+        Dim dtmGenerateReportDate2_2 As DateTime = DateTime.MinValue
+
+        Dim blnValidOnlyDoseVaccineDate_2 As Boolean = False
+        Dim blnValid2ndDoseVaccineDate_2 As Boolean = False
+
+        Dim blnValidOnlyDoseGenerateReportDate_2 As Boolean = False
+        Dim blnValid2ndDoseGenerateReportDate_2 As Boolean = False
+
+        Dim blnPastSeason_2 As Boolean = False
+        Dim int1stDoseSchemeSeq_2 As Integer = 0
+        Dim int2ndDoseSchemeSeq_2 As Integer = 0
+
+        Dim blnAvailableInterval As Boolean = True
+        Dim blnVaccDateDoseSeq As Boolean = True
+
         hfCSchemeSeq.Value = String.Empty
 
+        ' -------------------------------------
+        ' Vaccination Date - 1st Visit
+        ' -------------------------------------
         If txtIVaccinationDate1.Text.Trim = String.Empty AndAlso txtIVaccinationDate2.Text.Trim = String.Empty Then
             ' Please input "Vaccination Date" ({Dose}).
             udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00010, "{Dose}", lblIOnlyDoseText.Text)
@@ -2005,13 +2195,13 @@ Partial Public Class VaccinationFileUpload ' 010413
 
                 If dtmVaccinationDate1 > dtmVaccinationDate2 Then
                     ' The 2nd dose vaccination should not be earlier than the 1st dose vaccination.
-                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00046)
+                    blnVaccDateDoseSeq = False
                     imgIVaccinationDate1Error.Visible = True
                     imgIVaccinationDate2Error.Visible = True
 
                 ElseIf dtmVaccinationDate1 > DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_DoseMinDayInternal, dtmVaccinationDate2) Then
                     ' The 1st and 2nd dose vaccination must be at least {interval} days apart.
-                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00047, "{interval}", udtStudentFileSetting.Upload_DoseMinDayInternal.ToString)
+                    blnAvailableInterval = False
                     imgIVaccinationDate1Error.Visible = True
                     imgIVaccinationDate2Error.Visible = True
 
@@ -2050,9 +2240,9 @@ Partial Public Class VaccinationFileUpload ' 010413
             ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
         End If
 
-        ' -------------------------------------
-        ' Vaccination Report Generation Date
-        ' -------------------------------------
+        ' ------------------------------------------------
+        ' Vaccination Report Generation Date - 1st visit
+        ' ------------------------------------------------
         If txtIVaccinationReportGenerateDate1.Text.Trim = String.Empty AndAlso txtIVaccinationReportGenerateDate2.Text.Trim = String.Empty Then
             ' Please input "Vaccination Report Generation Date" ({Dose}).
             udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00014, "{Dose}", lblIOnlyDoseText.Text)
@@ -2072,12 +2262,16 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Else
                     Dim dtm As DateTime = DateTime.MinValue
 
+                    blnValidOnlyDoseGenerateReportDate = True
+
                     If DateTime.TryParseExact(txtIVaccinationReportGenerateDate1.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtm) = False Then
                         ' "Vaccination Report Generation Date" is invalid ({Dose}).
                         udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00015, "{Dose}", lblIOnlyDoseText.Text)
                         imgIVaccinationReportGenerationDate1Error.Visible = True
 
                     Else
+                        dtmGenerateReportDate1 = dtm
+
                         If dtm <= dtmCurrentDate Then
                             ' "Vaccination Report Generation Date" ({Dose}) should be future date.
                             udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00016, "{Dose}", lblIOnlyDoseText.Text)
@@ -2096,7 +2290,7 @@ Partial Public Class VaccinationFileUpload ' 010413
                             ' Show warning for abnormal vaccine date
                             If Not dtm <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccinationDate1) Then
                                 ' Warning: "Vaccination Report Generation Date" ({Dose}) should be at least {day} day(s) before "Vaccination Date".
-                                udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00017, New String() {"{Dose}", "{day}"}, New String() {lblIOnlyDoseText.Text, udtStudentFileSetting.Upload_ReportGenerationDateBefore})                                
+                                udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00017, New String() {"{Dose}", "{day}"}, New String() {lblIOnlyDoseText.Text, udtStudentFileSetting.Upload_ReportGenerationDateBefore})
                             End If
                             ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
                         End If
@@ -2115,12 +2309,16 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Else
                     Dim dtm As DateTime = DateTime.MinValue
 
+                    blnValid2ndDoseGenerateReportDate = True
+
                     If DateTime.TryParseExact(txtIVaccinationReportGenerateDate2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtm) = False Then
                         ' "Vaccination Report Generation Date" ({Dose}) is invalid.
                         udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00015, "{Dose}", lblI2ndDoseText.Text)
                         imgIVaccinationReportGenerationDate2Error.Visible = True
 
                     Else
+                        dtmGenerateReportDate2 = dtm
+
                         If dtm <= dtmCurrentDate Then
                             ' "Vaccination Report Generation Date" ("{Dose}") should be future date.
                             udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00016, "{Dose}", lblI2ndDoseText.Text)
@@ -2149,6 +2347,364 @@ Partial Public Class VaccinationFileUpload ' 010413
             End If
 
         End If
+
+        ' -------------------------------------
+        ' Vaccination Date - 2nd Visit
+        ' -------------------------------------
+        ' Only Dose / 1st Dose
+        If txtIVaccinationDate1.Text.Trim = String.Empty And txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+            ' Please input "Vaccination Date" ({Dose}).
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00010, "{Dose}", lblIOnlyDoseText.Text)
+
+            imgIVaccinationDate1Error.Visible = True
+
+        Else
+            If txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+                If DateTime.TryParseExact(txtIVaccinationDate1_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccinationDate1_2) = False Then
+                    ' "Vaccination Date" ({Dose}) is invalid.
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00011, "{Dose}", lblIOnlyDoseText.Text)
+                    imgIVaccinationDate1Error_2.Visible = True
+
+                Else
+                    blnValidOnlyDoseVaccineDate_2 = True
+
+                    ' Claim Period
+                    Dim blnWithinPeriod As Boolean = False
+                    For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
+                        If dtmVaccinationDate1_2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate1_2 <= udtSGClaim.LastServiceDtm Then
+                            int1stDoseSchemeSeq_2 = udtSGClaim.SchemeSeq
+                            hfCSchemeSeq.Value = int1stDoseSchemeSeq_2
+                            blnWithinPeriod = True
+
+                            ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
+                            If udtSGClaim.LastServiceDtm < dtmCurrentDate Then
+                                blnPastSeason_2 = True
+                            End If
+                            ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
+
+                            Exit For
+
+                        End If
+                    Next
+
+                    If Not blnWithinPeriod Then
+                        ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblIOnlyDoseText.Text, ddlIScheme.SelectedItem.Text})
+                        imgIVaccinationDate1Error_2.Visible = True
+                    End If
+
+                End If
+            Else
+                If txtIVaccinationReportGenerateDate1_2.Text.Trim <> String.Empty Then
+                    ' Please input "Vaccination Date" ({Dose}).
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00010, "{Dose}", lblIOnlyDoseText.Text)
+                    imgIVaccinationDate1Error_2.Visible = True
+
+                End If
+            End If
+
+            ' Check 1st Dose interval between 1st Visit and 2nd Visit
+            If blnValidOnlyDoseVaccineDate AndAlso blnValidOnlyDoseVaccineDate_2 Then
+
+                If dtmVaccinationDate1 >= dtmVaccinationDate1_2 Then
+                    ' The 2nd vaccination date should not be equal or earlier than the 1st vaccination date ({Dose}).
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00072, "{Dose}", lblIOnlyDoseText.Text)
+                    imgIVaccinationDate1Error.Visible = True
+                    imgIVaccinationDate1Error_2.Visible = True
+
+                ElseIf int1stDoseSchemeSeq <> 0 AndAlso int1stDoseSchemeSeq_2 <> 0 Then
+                    If int1stDoseSchemeSeq <> int1stDoseSchemeSeq_2 Then
+                        ' The 1st and 2nd vaccination date ({Dose}) is not at the same scheme sequence.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00073, "{Dose}", lblIOnlyDoseText.Text)
+                        imgIVaccinationDate1Error.Visible = True
+                        imgIVaccinationDate1Error_2.Visible = True
+
+                    End If
+
+                End If
+
+            End If
+
+        End If
+
+        ' 2nd Dose
+        If txtIVaccinationDate2.Text.Trim = String.Empty And txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+            ' Please input "Vaccination Date" ({Dose}).
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00010, "{Dose}", lblI2ndDoseText.Text)
+
+            imgIVaccinationDate2Error.Visible = True
+
+        Else
+
+            If txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+                If DateTime.TryParseExact(txtIVaccinationDate2_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccinationDate2_2) = False Then
+                    ' "Vaccination Date" ({Dose}) is invalid.
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00011, "{Dose}", lblI2ndDoseText.Text)
+                    imgIVaccinationDate2Error_2.Visible = True
+
+                Else
+                    blnValid2ndDoseVaccineDate_2 = True
+
+                    Dim blnWithinPeriod As Boolean = False
+                    For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
+                        If dtmVaccinationDate2_2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate2_2 <= udtSGClaim.LastServiceDtm Then
+                            int2ndDoseSchemeSeq_2 = udtSGClaim.SchemeSeq
+                            hfCSchemeSeq.Value = int2ndDoseSchemeSeq_2
+                            blnWithinPeriod = True
+
+                            If udtSGClaim.LastServiceDtm < dtmCurrentDate Then
+                                blnPastSeason_2 = True
+                            End If
+
+                            Exit For
+
+                        End If
+                    Next
+
+                    If Not blnWithinPeriod Then
+                        ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblI2ndDoseText.Text, ddlIScheme.SelectedItem.Text})
+                        imgIVaccinationDate2Error_2.Visible = True
+                    End If
+
+                End If
+
+            Else
+                If txtIVaccinationReportGenerateDate2_2.Text.Trim <> String.Empty Then
+                    ' Please input "Vaccination Date" ({Dose}).
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00010, "{Dose}", lblI2ndDoseText.Text)
+                    imgIVaccinationDate2Error_2.Visible = True
+
+                End If
+            End If
+
+            ' Check 2nd Dose interval between 1st Visit and 2nd Visit
+            If blnValid2ndDoseVaccineDate AndAlso blnValid2ndDoseVaccineDate_2 Then
+
+                If dtmVaccinationDate2 >= dtmVaccinationDate2_2 Then
+                    ' The 2nd vaccination date should not be equal or earlier than the 1st vaccination date ({Dose}).
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00072, "{Dose}", lblI2ndDoseText.Text)
+                    imgIVaccinationDate2Error.Visible = True
+                    imgIVaccinationDate2Error_2.Visible = True
+
+                ElseIf int2ndDoseSchemeSeq <> 0 AndAlso int2ndDoseSchemeSeq_2 <> 0 Then
+                    If int2ndDoseSchemeSeq <> int2ndDoseSchemeSeq_2 Then
+                        ' The 1st and 2nd vaccination date ({Dose}) is not at the same scheme sequence.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00073, "{Dose}", lblI2ndDoseText.Text)
+                        imgIVaccinationDate2Error.Visible = True
+                        imgIVaccinationDate2Error_2.Visible = True
+
+                    End If
+
+                End If
+
+            End If
+        End If
+
+        ' Check interval between 1st Dose (1st Visit)  and 2nd Dose (2nd Visit)
+        If blnValidOnlyDoseVaccineDate AndAlso blnValid2ndDoseVaccineDate_2 Then
+
+            If dtmVaccinationDate1 > dtmVaccinationDate2_2 Then
+                ' The 2nd dose vaccination should not be earlier than the 1st dose vaccination.
+                blnVaccDateDoseSeq = False
+                imgIVaccinationDate1Error.Visible = True
+                imgIVaccinationDate2Error_2.Visible = True
+
+            ElseIf dtmVaccinationDate1 > DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_DoseMinDayInternal, dtmVaccinationDate2_2) Then
+                ' The 1st and 2nd dose vaccination must be at least {interval} days apart.
+                blnAvailableInterval = False
+                imgIVaccinationDate1Error.Visible = True
+                imgIVaccinationDate2Error_2.Visible = True
+
+            End If
+
+        End If
+
+        ' Check interval between 1st Dose (2nd Visit)  and 2nd Dose (1st Visit)
+        If blnValidOnlyDoseVaccineDate_2 AndAlso blnValid2ndDoseVaccineDate Then
+
+            If dtmVaccinationDate1_2 > dtmVaccinationDate2 Then
+                ' The 2nd dose vaccination should not be earlier than the 1st dose vaccination.
+                blnVaccDateDoseSeq = False
+                imgIVaccinationDate1Error_2.Visible = True
+                imgIVaccinationDate2Error.Visible = True
+
+            ElseIf dtmVaccinationDate1_2 > DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_DoseMinDayInternal, dtmVaccinationDate2) Then
+                ' The 1st and 2nd dose vaccination must be at least {interval} days apart.
+                blnAvailableInterval = False
+                imgIVaccinationDate1Error_2.Visible = True
+                imgIVaccinationDate2Error.Visible = True
+
+            End If
+
+        End If
+
+        ' Check interval between 1st Dose (2nd Visit)  and 2nd Dose (2st Visit)
+        If blnValidOnlyDoseVaccineDate_2 AndAlso blnValid2ndDoseVaccineDate_2 Then
+
+            If dtmVaccinationDate1_2 > dtmVaccinationDate2_2 Then
+                ' The 2nd dose vaccination should not be earlier than the 1st dose vaccination.
+                blnVaccDateDoseSeq = False
+                imgIVaccinationDate1Error_2.Visible = True
+                imgIVaccinationDate2Error_2.Visible = True
+
+            ElseIf dtmVaccinationDate1_2 > DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_DoseMinDayInternal, dtmVaccinationDate2_2) Then
+                ' The 1st and 2nd dose vaccination must be at least {interval} days apart.
+                blnAvailableInterval = False
+                imgIVaccinationDate1Error_2.Visible = True
+                imgIVaccinationDate2Error_2.Visible = True
+
+            End If
+
+        End If
+
+        If blnValidOnlyDoseVaccineDate_2 OrElse blnValid2ndDoseVaccineDate_2 Then
+            ' Past Season
+            If blnPastSeason_2 Then
+                ' Warning: The vaccination date is not belong to current season.
+                udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00068)
+            End If
+
+            ' Past Date/Today
+            If blnValidOnlyDoseVaccineDate_2 AndAlso dtmVaccinationDate1_2 <= dtmCurrentDate Then
+                ' Warning: "Vaccination Date" ({Dose}) had been set as past date or today.
+                udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00069, "{Dose}", lblIOnlyDoseText.Text)
+            End If
+
+            If blnValid2ndDoseVaccineDate_2 AndAlso dtmVaccinationDate2_2 <= dtmCurrentDate Then
+                ' Warning: "Vaccination Date" ({Dose}) had been set as past date or today.
+                udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00069, "{Dose}", lblI2ndDoseText.Text)
+            End If
+        End If
+
+        ' ------------------------------------------------
+        ' Vaccination Report Generation Date - 2nd Visit
+        ' ------------------------------------------------
+
+        ' Only Dose / 1st Dose
+        If txtIVaccinationReportGenerateDate1.Text.Trim = String.Empty And txtIVaccinationReportGenerateDate1_2.Text.Trim <> String.Empty Then
+            ' Please input "Vaccination Report Generation Date" ({Dose}).
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00014, "{Dose}", lblIOnlyDoseText.Text)
+            imgIVaccinationReportGenerationDate1Error.Visible = True
+
+        Else
+            If txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+
+                Dim dtm As DateTime = DateTime.MinValue
+
+                blnValidOnlyDoseGenerateReportDate_2 = True
+
+                If DateTime.TryParseExact(txtIVaccinationReportGenerateDate1_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtm) = False Then
+                    ' "Vaccination Report Generation Date" is invalid ({Dose}).
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00015, "{Dose}", lblIOnlyDoseText.Text)
+                    imgIVaccinationReportGenerationDate1Error_2.Visible = True
+
+                Else
+                    dtmGenerateReportDate1_2 = dtm
+
+                    If dtm <= dtmCurrentDate Then
+                        ' "Vaccination Report Generation Date" ({Dose}) should be future date.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00016, "{Dose}", lblIOnlyDoseText.Text)
+                        imgIVaccinationReportGenerationDate1Error_2.Visible = True
+
+                        ' Check limit
+                    ElseIf (New StudentFileBLL).IsPendingRecordExceedLimit(Me.FunctionCode, dtm) Then
+                        ' The number of pending processing files with the Vaccination Report Generate Date {date} has reached the limit, please select another date.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00032, "{date}", udtFormatter.convertDate(txtIVaccinationReportGenerateDate1_2.Text.Trim, String.Empty))
+                        imgIVaccinationReportGenerationDate1Error_2.Visible = True
+
+                    ElseIf blnValidOnlyDoseVaccineDate_2 Then
+                        ' Show warning for abnormal vaccine date
+                        If Not dtm <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccinationDate1_2) Then
+                            ' Warning: "Vaccination Report Generation Date" ({Dose}) should be at least {day} day(s) before "Vaccination Date".
+                            udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00017, New String() {"{Dose}", "{day}"}, New String() {lblIOnlyDoseText.Text, udtStudentFileSetting.Upload_ReportGenerationDateBefore})
+                        End If
+
+                    End If
+                End If
+            End If
+        End If
+
+        ' 2nd Dose
+        If txtIVaccinationReportGenerateDate2.Text.Trim = String.Empty And txtIVaccinationReportGenerateDate2_2.Text.Trim <> String.Empty Then
+            ' Please input "Vaccination Report Generation Date" ({Dose}).
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00014, "{Dose}", lblI2ndDoseText.Text)
+            imgIVaccinationReportGenerationDate2Error.Visible = True
+
+        Else
+            If txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+
+                Dim dtm As DateTime = DateTime.MinValue
+
+                blnValid2ndDoseGenerateReportDate_2 = True
+
+                If DateTime.TryParseExact(txtIVaccinationReportGenerateDate2_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtm) = False Then
+                    ' "Vaccination Report Generation Date" ({Dose}) is invalid.
+                    udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00015, "{Dose}", lblI2ndDoseText.Text)
+                    imgIVaccinationReportGenerationDate2Error_2.Visible = True
+
+                Else
+                    dtmGenerateReportDate2_2 = dtm
+
+                    If dtm <= dtmCurrentDate Then
+                        ' "Vaccination Report Generation Date" ("{Dose}") should be future date.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00016, "{Dose}", lblI2ndDoseText.Text)
+                        imgIVaccinationReportGenerationDate2Error_2.Visible = True
+
+                        ' Check limit
+                    ElseIf (New StudentFileBLL).IsPendingRecordExceedLimit(Me.FunctionCode, dtm) Then
+                        ' The number of pending processing files with the Vaccination Report Generate Date {date} has reached the limit, please select another date.
+                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00032, "{date}", lblI2ndDoseText.Text, udtFormatter.convertDate(txtIVaccinationReportGenerateDate2.Text.Trim, String.Empty))
+                        imgIVaccinationReportGenerationDate2Error_2.Visible = True
+
+                    ElseIf blnValid2ndDoseVaccineDate_2 Then
+                        ' Show warning for abnormal vaccine date
+                        If Not dtm <= DateAdd(DateInterval.Day, -1 * udtStudentFileSetting.Upload_ReportGenerationDateBefore, dtmVaccinationDate2_2) Then
+                            ' Warning: "Vaccination Report Generation Date" ({Dose}) should be at least {day} day(s) before "Vaccination Date".
+                            udcWarningMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00017, New String() {"Vaccination", "{Dose}", "{day}"}, New String() {"2nd Vaccination", lblI2ndDoseText.Text, udtStudentFileSetting.Upload_ReportGenerationDateBefore})
+                        End If
+
+                    End If
+
+                End If
+
+            End If
+        End If
+
+        ' Check interval between 1st Dose (2nd Visit)  and 2nd Dose (2st Visit)
+        If blnValidOnlyDoseGenerateReportDate AndAlso blnValidOnlyDoseGenerateReportDate_2 Then
+
+            If dtmGenerateReportDate1 >= dtmGenerateReportDate1_2 Then
+                ' The "2nd Vaccination Report Generation Date" should not be equal or earlier than the "1st Vaccination Report Generation Date" ({Dose}). 
+                udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00075, "{Dose}", lblIOnlyDoseText.Text)
+                imgIVaccinationReportGenerationDate1Error.Visible = True
+                imgIVaccinationReportGenerationDate1Error_2.Visible = True
+
+            End If
+
+        End If
+
+        ' Check interval between 1st Dose (2nd Visit)  and 2nd Dose (2st Visit)
+        If blnValid2ndDoseGenerateReportDate AndAlso blnValid2ndDoseGenerateReportDate_2 Then
+
+            If dtmGenerateReportDate2 >= dtmGenerateReportDate2_2 Then
+                ' The "2nd Vaccination Report Generation Date" should not be equal or earlier than the "1st Vaccination Report Generation Date" ({Dose}). 
+                udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00075, "{Dose}", lblI2ndDoseText.Text)
+                imgIVaccinationReportGenerationDate2Error.Visible = True
+                imgIVaccinationReportGenerationDate2Error_2.Visible = True
+
+            End If
+
+        End If
+
+        If Not blnVaccDateDoseSeq Then
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00046)
+        End If
+
+        If Not blnAvailableInterval Then
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00047, "{interval}", udtStudentFileSetting.Upload_DoseMinDayInternal.ToString)
+        End If
+
     End Sub
 
     ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
@@ -2560,6 +3116,7 @@ Partial Public Class VaccinationFileUpload ' 010413
         udtStudentFileHeader.PracticeDisplaySeq = CInt(ddlIPractice.SelectedValue)
 
         If udtStudentFileHeader.Precheck = False Then
+            ' First Visit
             If hfCVaccinationDate1.Value <> String.Empty Then
                 udtStudentFileHeader.ServiceReceiveDtm = DateTime.ParseExact(hfCVaccinationDate1.Value, udtFormatter.EnterDateFormat, Nothing)
                 udtStudentFileHeader.FinalCheckingReportGenerationDate = DateTime.ParseExact(hfCVaccinationReportGenerationDate1.Value, udtFormatter.EnterDateFormat, Nothing)
@@ -2571,6 +3128,22 @@ Partial Public Class VaccinationFileUpload ' 010413
                 udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose = DateTime.ParseExact(hfCVaccinationReportGenerationDate2.Value, udtFormatter.EnterDateFormat, Nothing)
 
             End If
+
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' Second Visit
+            If hfCVaccinationDate1_2.Value <> String.Empty Then
+                udtStudentFileHeader.ServiceReceiveDtm_2 = DateTime.ParseExact(hfCVaccinationDate1_2.Value, udtFormatter.EnterDateFormat, Nothing)
+                udtStudentFileHeader.FinalCheckingReportGenerationDate_2 = DateTime.ParseExact(hfCVaccinationReportGenerationDate1_2.Value, udtFormatter.EnterDateFormat, Nothing)
+
+            End If
+
+            If hfCVaccinationDate2_2.Value <> String.Empty Then
+                udtStudentFileHeader.ServiceReceiveDtm2ndDose_2 = DateTime.ParseExact(hfCVaccinationDate2_2.Value, udtFormatter.EnterDateFormat, Nothing)
+                udtStudentFileHeader.FinalCheckingReportGenerationDate2ndDose_2 = DateTime.ParseExact(hfCVaccinationReportGenerationDate2_2.Value, udtFormatter.EnterDateFormat, Nothing)
+
+            End If
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
@@ -2855,7 +3428,18 @@ Partial Public Class VaccinationFileUpload ' 010413
         Dim udtStudentFileUploadErrorDesc As StudentFileUploadErrorDesc = StudentFileBLL.GetUploadErrorDesc
         Dim udtDocTypeList As DocTypeModelCollection = (New DocTypeBLL).getAllDocType
         Dim dicClassNameNoCount As New Dictionary(Of String, Integer)
-        Dim dicDocumentTypeNoCount As New Dictionary(Of String, Integer)
+
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        Dim dicDocNoSeqNoList As New Dictionary(Of String, List(Of String))
+        Dim dtClassDocNo As New DataTable
+        dtClassDocNo.Columns.Add("Student_Seq", GetType(String))
+        dtClassDocNo.Columns.Add("Class_Name", GetType(String))
+        dtClassDocNo.Columns.Add("Class_No", GetType(String))
+        dtClassDocNo.Columns.Add("Doc_No", GetType(String))
+        dtClassDocNo.Columns.Add("Doc_No_plain", GetType(String))
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
         Dim udtValidator As New Common.Validation.Validator
         Dim dtmNow As Date = (New GeneralFunction).GetSystemDateTime.Date
 
@@ -2941,23 +3525,42 @@ Partial Public Class VaccinationFileUpload ' 010413
             ElseIf (New Regex("^[A-Z0-9()\/-]+$")).IsMatch(dr("Doc_No")) = False Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_Invalid)
 
-            ElseIf Not IsDBNull(dr("Doc_Code")) Then
-
-                If Not checkDocNoFormat(dr("Doc_Code").ToString.Trim, dr("Doc_No").ToString.Trim) Then
-                    lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_Invalid)
-                End If
-
-                Dim strDocumentTypeNo As String = String.Format("{0}|||{1}", dr("Doc_Code").ToString.Trim, dr("Doc_No").ToString.Trim)
-
-                If dicDocumentTypeNoCount.ContainsKey(strDocumentTypeNo) = False Then
-                    dicDocumentTypeNoCount.Add(strDocumentTypeNo, 0)
-                End If
-
-                dicDocumentTypeNoCount(strDocumentTypeNo) += 1
-
             ElseIf dr("Doc_No").ToString.Trim.Length > udtStudentFileSetting.Upload_DocNoLengthLimit Then
                 lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_ExceedMaxLength)
 
+            Else
+                If Not IsDBNull(dr("Doc_Code")) Then
+
+                    If Not checkDocNoFormat(dr("Doc_Code").ToString.Trim, dr("Doc_No").ToString.Trim) Then
+                        lstUploadError.Add(udtStudentFileUploadErrorDesc.DocNo_Invalid)
+                    End If
+                End If
+
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                ' For doc. no. duplicating checking after replacement 
+                Dim strDocumentNo As String = Regex.Replace(dr("Doc_No").ToString.Trim, "[^a-zA-Z0-9]", String.Empty)
+
+                If strDocumentNo <> String.Empty Then
+                    Dim drClassDocNo As DataRow = dtClassDocNo.NewRow
+                    drClassDocNo("Student_Seq") = dr("Student_Seq")
+                    drClassDocNo("Class_Name") = dr("Class_Name")
+                    drClassDocNo("Class_No") = dr("Class_No")
+                    drClassDocNo("Doc_No") = dr("Doc_No")
+                    drClassDocNo("Doc_No_plain") = strDocumentNo
+                    dtClassDocNo.Rows.Add(drClassDocNo)
+
+                    If dicDocNoSeqNoList.ContainsKey(strDocumentNo) = False Then
+                        Dim lstStudentSeqNo As New List(Of String)
+                        lstStudentSeqNo.Add(dr("Student_Seq"))
+                        dicDocNoSeqNoList.Add(strDocumentNo, lstStudentSeqNo)
+                    Else
+                        Dim lstStudentSeqNo As List(Of String) = dicDocNoSeqNoList(strDocumentNo)
+                        lstStudentSeqNo.Add(dr("Student_Seq"))
+                        dicDocNoSeqNoList(strDocumentNo) = lstStudentSeqNo
+                    End If
+                End If
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End If
 
             '-------------------
@@ -3401,28 +4004,40 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Next
 
-        '------------------------
-        ' Duplicate Document No.
-        '------------------------
-        For Each kvpDocNo As KeyValuePair(Of String, Integer) In dicDocumentTypeNoCount
-            If kvpDocNo.Value > 1 Then
-                Dim strDocumentType As String = kvpDocNo.Key.Split(New String() {"|||"}, StringSplitOptions.None)(0)
-                Dim strDocumentNo As String = kvpDocNo.Key.Split(New String() {"|||"}, StringSplitOptions.None)(1)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        '------------------------------------------------
+        ' Duplicate Document No. (regardless Doc Type)
+        '------------------------------------------------
+        For Each kvpDocNo As KeyValuePair(Of String, List(Of String)) In dicDocNoSeqNoList
+            If kvpDocNo.Value.Count > 1 Then
+                Dim strDuplicateDocumentNo As String = kvpDocNo.Key
+                Dim lstStudentSeq As List(Of String) = kvpDocNo.Value
+                Dim lstDuplicateClassNameNo As List(Of String)
 
-                For Each dr As DataRow In dt.Select(String.Format("Doc_Code = '{0}' AND Doc_No = '{1}'", strDocumentType, strDocumentNo))
-                    Dim strDocumentNo_Duplicate As String = udtStudentFileUploadErrorDesc.DocNo_Duplicate
+                For Each strStudentSeq As String In lstStudentSeq
+                    lstDuplicateClassNameNo = New List(Of String)
 
-                    If dr("Upload_Error") = String.Empty Then
-                        dr("Upload_Error") = strDocumentNo_Duplicate
-                    Else
-                        dr("Upload_Error") += "|||" + strDocumentNo_Duplicate
-                    End If
+                    For Each dr As DataRow In dtClassDocNo.Select(String.Format("Doc_No_plain = '{0}' and Student_Seq <> '{1}'", strDuplicateDocumentNo, strStudentSeq))
+                        lstDuplicateClassNameNo.Add(String.Format("{0} ({1})", dr("Class_Name"), dr("Class_No")))
+                    Next
+
+                    For Each dr As DataRow In dt.Select(String.Format("Student_Seq = '{0}'", strStudentSeq))
+                        Dim strDocumentNo_Duplicate As String = udtStudentFileUploadErrorDesc.DocNo_Duplicate
+                        Dim strDuplicateDocNoError As String = String.Format(strDocumentNo_Duplicate, String.Join(", ", lstDuplicateClassNameNo.ToArray))
+
+                        If dr("Upload_Error") = String.Empty Then
+                            dr("Upload_Error") = strDuplicateDocNoError
+                        Else
+                            dr("Upload_Error") += "|||" + strDuplicateDocNoError
+                        End If
+                    Next
 
                 Next
 
             End If
-
         Next
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
@@ -4737,4 +5352,5 @@ Partial Public Class VaccinationFileUpload ' 010413
     End Function
     ' CRE19-001-03 (VSS 2019) [End][Winnie]
 #End Region
+
 End Class

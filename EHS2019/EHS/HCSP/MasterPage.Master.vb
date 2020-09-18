@@ -776,16 +776,23 @@ Partial Public Class MasterPage
         strPleaseWaitScript.Append("upd._startDelegate = Function.createDelegate(upd, ModalUpdProgStartRequest);")
         strPleaseWaitScript.Append("upd._pageRequestManager.add_endRequest(upd._endRequestHandlerDelegate);}")
         strPleaseWaitScript.Append("function ModalUpdProgStartRequest() {")
-        strPleaseWaitScript.Append("document.getElementById('" + Me.pnlPleaseWait.ClientID + "').style.visibility='hidden';")
+        'strPleaseWaitScript.Append("$('#" + Me.pnlPleaseWait.ClientID + "').show();")
+
+        ' Bring "Please Wait" Image to foreground and block click action in background
         strPleaseWaitScript.Append("if (this._pageRequestManager.get_isInAsyncPostBack()) {")
-        strPleaseWaitScript.Append("$find('" & Me.ModalPopupExtender1.ClientID & "').show();")
-        strPleaseWaitScript.Append("document.getElementById('" & Me.ModalPopupExtender1.ClientID & "_backgroundElement').style.height = document.documentElement.clientHeight + document.documentElement.scrollTop;")
-        strPleaseWaitScript.Append("setTimeout(""document.getElementById('" + Me.pnlPleaseWait.ClientID + "').style.visibility='visible'"", 2000);}")
-        strPleaseWaitScript.Append("this._timerCookie = null;}")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
+        strPleaseWaitScript.Append("this._timerCookie = setTimeout(ShowPleaseWait, 2000);}}")
+        strPleaseWaitScript.Append("function ShowPleaseWait() {")
+
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='visible';")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.height = document.documentElement.clientHeight + document.documentElement.scrollTop;")
+        strPleaseWaitScript.Append("}")
         strPleaseWaitScript.Append("function ModalUpdProgEndRequest(sender, arg) {")
-        strPleaseWaitScript.Append("document.getElementById('" + Me.pnlPleaseWait.ClientID + "').style.visibility='hidden';")
-        strPleaseWaitScript.Append(" $find('" & ModalPopupExtender1.ClientID & "').hide();")
+
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
+        strPleaseWaitScript.Append("window.clearTimeout(this._timerCookie);")
         strPleaseWaitScript.Append("if (this._timerCookie) {")
+        strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
         strPleaseWaitScript.Append("window.clearTimeout(this._timerCookie);")
         strPleaseWaitScript.Append("this._timerCookie = null;}}")
         strPleaseWaitScript.Append("Sys.Application.add_load(ModalUpdProgInitialize);")
@@ -1331,16 +1338,28 @@ Partial Public Class MasterPage
     End Function
 
     Private Sub SetupTimeoutReminder()
-        Me.Page.ClientScript.RegisterStartupScript(Me.GetType, "SetupTimeoutReminder", String.Format("javascript: StartTimeoutReminder('{0}','{1}','{2}','{3}','{4}');", _
-                                                       New String() {(Session.Timeout * 60).ToString, _
-                                                                    Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
-                                                                    GetLanguageFolderName(), _
-                                                                    Me.ModalPopupExtenderTimeoutReminder.BehaviorID, _
-                                                                    Me.ucNoticePopUpTimeoutReminder.MessageLabel.ClientID}), True)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        'Me.Page.ClientScript.RegisterStartupScript(Me.GetType, "SetupTimeoutReminder", String.Format("javascript: StartTimeoutReminder('{0}','{1}','{2}','{3}','{4}');", _
+        '                                        New String() {(Session.Timeout * 60).ToString, _
+        '                                                    Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
+        '                                                    GetLanguageFolderName(), _
+        '                                                    Me.ModalPopupExtenderTimeoutReminder.BehaviorID, _
+        '                                                    Me.ucNoticePopUpTimeoutReminder.MessageLabel.ClientID}), True)
 
-        Me.ucNoticePopUpTimeoutReminder.ButtonOK.Attributes.Add("onclick", "ReminderOK_Click();")
-        Me.ModalPopupExtenderTimeoutReminder.OkControlID = Me.ucNoticePopUpTimeoutReminder.ButtonOK.ClientID
-        Me.ModalPopupExtenderTimeoutReminder.PopupDragHandleControlID = Me.ucNoticePopUpTimeoutReminder.Header.ClientID
+        Me.Page.ClientScript.RegisterStartupScript(Me.GetType, "SetupTimeoutReminder", String.Format("javascript: StartTimeoutReminder('{0}','{1}','{2}','{3}','{4}');", _
+                                                New String() {(Session.Timeout * 60).ToString, _
+                                                              Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
+                                                              GetLanguageFolderName(), _
+                                                              Me.panTimeoutReminder.ClientID, _
+                                                              Me.ucNoticePopUpTimeoutReminder.MessageLabel.ClientID}), True)
+
+        Me.ucNoticePopUpTimeoutReminder.ButtonOK.Attributes.Add("onclick", "ReminderOK_Click();return false;")
+
+        'Me.ModalPopupExtenderTimeoutReminder.OkControlID = Me.ucNoticePopUpTimeoutReminder.ButtonOK.ClientID
+        'Me.ModalPopupExtenderTimeoutReminder.PopupDragHandleControlID = Me.ucNoticePopUpTimeoutReminder.Header.ClientID
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
         ' INT20-0012 (Fix double postback on claim) [Start][Koala]
         ' ----------------------------------------------------------
         ucNoticePopUpTimeoutReminder.MessageText = HttpContext.GetGlobalResourceObject("Text", "TimeoutReminderMessage")

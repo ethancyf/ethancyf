@@ -1088,6 +1088,18 @@ Namespace Component.EHSAccount
             End Try
         End Function
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function CheckEHSAccountExist(ByVal strIdentityNum As String, ByVal strDocType As String, ByVal strExcludeVoucherAccID As String) As Boolean
+            Dim udtDB As New Database()
+            Try
+                Return Me.CheckEHSAccountExist(udtDB, strIdentityNum, strDocType, strExcludeVoucherAccID)
+            Catch ex As Exception
+                Throw
+            End Try
+        End Function
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         ' -------------------------------------------
 
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [Start][Winnie]
@@ -1142,6 +1154,19 @@ Namespace Component.EHSAccount
                 Throw
             End Try
         End Function
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function CheckTempEHSAccountExist(ByVal strIdentityNum As String, ByVal strDocType As String, ByVal strExcludeVoucherAccID As String) As Boolean
+            Dim udtDB As New Database()
+            Try
+                Return Me.CheckTempEHSAccountExist(udtDB, strIdentityNum, strDocType, strExcludeVoucherAccID)
+
+            Catch ex As Exception
+                Throw
+            End Try
+        End Function
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         Public Function CheckSpecialEHSAccountExist(ByRef udtDB As Database, ByVal strIdentityNum As String, ByVal strDocType As String) As Boolean
             strIdentityNum = Me._udtFormatter.formatDocumentIdentityNumber(strDocType, strIdentityNum)

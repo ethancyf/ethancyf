@@ -176,15 +176,6 @@ Partial Public Class MasterPage
     Protected WithEvents UpdateProgress1 As Global.System.Web.UI.UpdateProgress
 
     '''<summary>
-    '''ModalPopupExtender1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ModalPopupExtender1 As Global.AjaxControlToolkit.ModalPopupExtender
-
-    '''<summary>
     '''UpdatePanelHomeRow control.
     '''</summary>
     '''<remarks>
@@ -338,15 +329,6 @@ Partial Public Class MasterPage
     Protected WithEvents ContentPlaceHolder1 As Global.System.Web.UI.WebControls.ContentPlaceHolder
 
     '''<summary>
-    '''UpdatePanel1Footer control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents UpdatePanel1Footer As Global.System.Web.UI.UpdatePanel
-
-    '''<summary>
     '''lnkBtnPrivacyPolicy control.
     '''</summary>
     '''<remarks>
@@ -399,15 +381,6 @@ Partial Public Class MasterPage
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblFooterCopyright As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''UpdatePanelPopup control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents UpdatePanelPopup As Global.System.Web.UI.UpdatePanel
 
     '''<summary>
     '''panSSOConfirmMsg control.
@@ -507,22 +480,4 @@ Partial Public Class MasterPage
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ucNoticePopUpTimeoutReminder As Global.HCSP.ucNoticePopUp
-
-    '''<summary>
-    '''btnHiddenTimeoutReminder control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnHiddenTimeoutReminder As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''ModalPopupExtenderTimeoutReminder control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ModalPopupExtenderTimeoutReminder As Global.AjaxControlToolkit.ModalPopupExtender
 End Class

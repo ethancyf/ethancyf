@@ -59,13 +59,13 @@ Partial Public Class MasterPage
     Protected WithEvents pnlPleaseWait As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''Image1 control.
+    '''imgLoading control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Image1 As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents imgLoading As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''UpdateProgress1 control.
@@ -291,22 +291,4 @@ Partial Public Class MasterPage
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ucNoticePopUpTimeoutReminder As Global.HCVU.ucNoticePopUp
-
-    '''<summary>
-    '''btnHiddenTimeoutReminder control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnHiddenTimeoutReminder As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''ModalPopupExtenderTimeoutReminder control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ModalPopupExtenderTimeoutReminder As Global.AjaxControlToolkit.ModalPopupExtender
 End Class

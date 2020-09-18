@@ -22,6 +22,7 @@ Public Class DocumentTypeRadioButtonGroup
         Scheme
         Scheme_WithDisabled
         VaccinationRecordEnquriySearch
+        VSS_NIA_MMR
     End Enum
 
 #End Region
@@ -208,6 +209,20 @@ Public Class DocumentTypeRadioButtonGroup
 
                 udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
 
+                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case FilterDocCode.VSS_NIA_MMR
+                Dim udtDocTypeHKIC As DocTypeModel = udtDocTypeModelList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
+                Dim udtDocTypeEC As DocTypeModel = udtDocTypeModelList.Filter(DocType.DocTypeModel.DocTypeCode.EC)
+
+                Dim udtDocTypeList As New DocTypeModelCollection
+
+                udtDocTypeList.Add(udtDocTypeHKIC)
+                udtDocTypeList.Add(udtDocTypeEC)
+
+                udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
+                ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
             Case FilterDocCode.None
                 'Nothing to do
 
@@ -298,13 +313,19 @@ Public Class DocumentTypeRadioButtonGroup
 
         ' Enable Document Type Status, according to Scheme Doc Type
         For Each udtSchemeDocTypeModel As DocType.SchemeDocTypeModel In udtSchemeDocTypeList
-            documentInfo = Me._strDocumentTypes.Item(udtSchemeDocTypeModel.DocCode.Trim())
-            If Not documentInfo Is Nothing Then
-                documentInfo.IsEnable = True
-                If udtSchemeDocTypeModel.IsMajorDoc Then
-                    strPopularDoc = udtSchemeDocTypeModel.DocCode
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Me._strDocumentTypes.ContainsKey(udtSchemeDocTypeModel.DocCode.Trim()) Then
+                documentInfo = Me._strDocumentTypes.Item(udtSchemeDocTypeModel.DocCode.Trim())
+                If Not documentInfo Is Nothing Then
+                    documentInfo.IsEnable = True
+                    If udtSchemeDocTypeModel.IsMajorDoc Then
+                        strPopularDoc = udtSchemeDocTypeModel.DocCode
+                    End If
                 End If
             End If
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         Next
 
         If Me._strSelectedValue Is Nothing OrElse Me._strSelectedValue.Trim() = "" Then

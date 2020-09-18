@@ -39,6 +39,14 @@ Partial Public Class ucInputDocumentType
     Private _activeViewChanged As Boolean
     Private _udtAuditLogEntry As AuditLogEntry
     Private _blnShowCreationMethod As Boolean = True ' CRE19-026 (HCVS hotline service)
+
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private _udtEHSAccount As EHSAccountModel
+    Private _udtOrgEHSAccount As EHSAccountModel
+    Private _blnEditDocumentNo As Boolean = False
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
 #End Region
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -548,6 +556,44 @@ Partial Public Class ucInputDocumentType
         End Set
     End Property
     ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property EHSAccount() As EHSAccountModel
+        Get
+            Return Me._udtEHSAccount
+        End Get
+        Set(ByVal value As EHSAccountModel)
+            Me._udtEHSAccount = value
+        End Set
+    End Property
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property OrgEHSAccount() As EHSAccountModel
+        Get
+            Return Me._udtOrgEHSAccount
+        End Get
+        Set(ByVal value As EHSAccountModel)
+            Me._udtOrgEHSAccount = value
+        End Set
+    End Property
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+    ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property EditDocumentNo() As Boolean
+        Get
+            Return _blnEditDocumentNo
+        End Get
+        Set(ByVal value As Boolean)
+            _blnEditDocumentNo = value
+        End Set
+    End Property
+    ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+
 #End Region
 
 End Class

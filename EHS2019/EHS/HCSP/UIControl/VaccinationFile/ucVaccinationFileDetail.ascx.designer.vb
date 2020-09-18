@@ -239,6 +239,69 @@ Partial Public Class ucVaccinationFileDetail
     Protected WithEvents lblDVaccinationReportGenerationDate2 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panD2ndVaccinationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panD2ndVaccinationDate As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDVaccinationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationReportGenerationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationReportGenerationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''trDClaimUploadedBy control.
     '''</summary>
     '''<remarks>
@@ -500,40 +563,40 @@ Partial Public Class ucVaccinationFileDetail
     Protected WithEvents tblHeaderNoOfStudent As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tblHeaderActualInjectedYes control.
+    '''lblNoOfInjectedFirstVisit0 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tblHeaderActualInjectedYes As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblNoOfInjectedFirstVisit0 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tblHeaderYes control.
+    '''lblNoOfInjectedSecondVisit0 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tblHeaderYes As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblNoOfInjectedSecondVisit0 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tblHeaderActualInjectedNo control.
+    '''lblNoOfInjectedYes0 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tblHeaderActualInjectedNo As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblNoOfInjectedYes0 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tblHeaderNo control.
+    '''lblNoOfInjectedNo0 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tblHeaderNo As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblNoOfInjectedNo0 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''tblHeaderMatch control.

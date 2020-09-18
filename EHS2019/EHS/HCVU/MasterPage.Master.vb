@@ -297,14 +297,12 @@ Partial Public Class MasterPage
         strPleaseWaitScript.Append("function ModalUpdProgStartRequest() {")
         strPleaseWaitScript.Append("$('#" + Me.pnlPleaseWait.ClientID + "').show();")
 
+        ' Bring "Please Wait" Image to foreground and block click action in background
         strPleaseWaitScript.Append("if (this._pageRequestManager.get_isInAsyncPostBack()) {")
         strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='hidden';")
         strPleaseWaitScript.Append("this._timerCookie = setTimeout(ShowPleaseWait, 2000);}}")
         strPleaseWaitScript.Append("function ShowPleaseWait() {")
-        ' CRE19-003 (Opt voucher capping) [End][Koala]
-        ' ----------------------------------------------------------------------------------------
-        ' Bring "Please Wait" Image to foreground and block click action in background
-        ' CRE19-003 (Opt voucher capping) [End][Koala]
+
         strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.visibility='visible';")
         strPleaseWaitScript.Append("document.getElementById('" & Me.pnlPleaseWait.ClientID & "').style.height = document.documentElement.clientHeight + document.documentElement.scrollTop;")
         strPleaseWaitScript.Append("}")
@@ -339,17 +337,27 @@ Partial Public Class MasterPage
 
     Private Sub SetupTimeoutReminder()
 
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        'Me.Page.ClientScript.RegisterStartupScript(Me.GetType, "SetupTimeoutReminder", String.Format("javascript: StartTimeoutReminder('{0}','{1}','{2}','{3}','{4}');", _
+        '                                               New String() {(Session.Timeout * 60).ToString, _
+        '                                                            Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
+        '                                                            String.Empty, _
+        '                                                            Me.ModalPopupExtenderTimeoutReminder.BehaviorID, _
+        '                                                            Me.ucNoticePopUpTimeoutReminder.MessageLabel.ClientID}), True)
 
         Me.Page.ClientScript.RegisterStartupScript(Me.GetType, "SetupTimeoutReminder", String.Format("javascript: StartTimeoutReminder('{0}','{1}','{2}','{3}','{4}');", _
-                                                       New String() {(Session.Timeout * 60).ToString, _
-                                                                    Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
-                                                                    String.Empty, _
-                                                                    Me.ModalPopupExtenderTimeoutReminder.BehaviorID, _
-                                                                    Me.ucNoticePopUpTimeoutReminder.MessageLabel.ClientID}), True)
+                                                New String() {(Session.Timeout * 60).ToString, _
+                                                              Me.udcGeneralF.GetTimeoutReminderDisplayTime(), _
+                                                              String.Empty, _
+                                                              Me.panTimeoutReminder.ClientID, _
+                                                              Me.ucNoticePopUpTimeoutReminder.MessageLabel.ClientID}), True)
 
-        Me.ucNoticePopUpTimeoutReminder.ButtonOK.Attributes.Add("onclick", "ReminderOK_Click();")
-        Me.ModalPopupExtenderTimeoutReminder.OkControlID = Me.ucNoticePopUpTimeoutReminder.ButtonOK.ClientID
-        Me.ModalPopupExtenderTimeoutReminder.PopupDragHandleControlID = Me.ucNoticePopUpTimeoutReminder.Header.ClientID
+
+        Me.ucNoticePopUpTimeoutReminder.ButtonOK.Attributes.Add("onclick", "ReminderOK_Click();return false;")
+        'Me.ModalPopupExtenderTimeoutReminder.OkControlID = Me.ucNoticePopUpTimeoutReminder.ButtonOK.ClientID
+        'Me.ModalPopupExtenderTimeoutReminder.PopupDragHandleControlID = Me.ucNoticePopUpTimeoutReminder.Header.ClientID
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
     End Sub
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]

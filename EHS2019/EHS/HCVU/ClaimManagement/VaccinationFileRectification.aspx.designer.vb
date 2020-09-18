@@ -284,6 +284,24 @@ Partial Public Class VaccinationFileRectification
     Protected WithEvents ddlSStatus As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''lblSVaccinationSeasonText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSVaccinationSeasonText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblSVaccinationSeason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblSVaccinationSeason As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
     '''ibtnSSearch control.
     '''</summary>
     '''<remarks>
@@ -356,22 +374,13 @@ Partial Public Class VaccinationFileRectification
     Protected WithEvents ibtnDBack As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
-    '''ibtnDDownloadRectifyReport control.
+    '''ibtnDEditInformation control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ibtnDDownloadRectifyReport As Global.System.Web.UI.WebControls.ImageButton
-
-    '''<summary>
-    '''ibtnDUploadRectifiedFile control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ibtnDUploadRectifiedFile As Global.System.Web.UI.WebControls.ImageButton
+    Protected WithEvents ibtnDEditInformation As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''ibtnDRemoveRectifiedFile control.
@@ -390,15 +399,6 @@ Partial Public Class VaccinationFileRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnDRemoveVaccinationFile As Global.System.Web.UI.WebControls.ImageButton
-
-    '''<summary>
-    '''ibtnDEditInformation control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ibtnDEditInformation As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''vImport control.
@@ -824,6 +824,258 @@ Partial Public Class VaccinationFileRectification
     Protected WithEvents fteIVaccinationReportGenerateDate2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
+    '''tr2ndVaccinationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndVaccinationDate As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblVaccinationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccinationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationDate1_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationDate1_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationDate1_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationDate1_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteIVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteIVaccinationDate1_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationDate2_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationDate2_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationDate2_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationDate2_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteIVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteIVaccinationDate2_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''tr2ndReportGenerationDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndReportGenerationDate As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblVaccinationReportGenerationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccinationReportGenerationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIVaccinationReportGenerateDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationReportGenerateDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationReportGenerateDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationReportGenerateDate1_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationReportGenerateDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationReportGenerateDate1_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationReportGenerateDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationReportGenerateDate1_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteVaccinationReportGenerateDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteVaccinationReportGenerateDate1_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblIVaccinationReportGenerateDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIVaccinationReportGenerateDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtIVaccinationReportGenerateDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIVaccinationReportGenerateDate2_2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnIVaccinationReportGenerateDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnIVaccinationReportGenerateDate2_2 As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrorIVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrorIVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calIVaccinationReportGenerateDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calIVaccinationReportGenerateDate2_2 As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteIVaccinationReportGenerateDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteIVaccinationReportGenerateDate2_2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''lblISubsidyText control.
     '''</summary>
     '''<remarks>
@@ -975,96 +1227,6 @@ Partial Public Class VaccinationFileRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblIDoseOfMMR As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''trIStudentFile control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trIStudentFile As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''lblIStudentFileText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblIStudentFileText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''rblIStudentFile control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rblIStudentFile As Global.System.Web.UI.WebControls.RadioButtonList
-
-    '''<summary>
-    '''imgErrorIStudentFileChoice control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgErrorIStudentFileChoice As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''flIStudentFile control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents flIStudentFile As Global.System.Web.UI.WebControls.FileUpload
-
-    '''<summary>
-    '''imgErrorIStudentFile control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgErrorIStudentFile As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''trIVaccinationFilePassword control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trIVaccinationFilePassword As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''lblIVaccineFilePwdText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblIVaccineFilePwdText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''txtIStudentFilePassword control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtIStudentFilePassword As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''imgErrorIStudentFilePassword control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgErrorIStudentFilePassword As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''trINoOfClass control.
@@ -1409,6 +1571,96 @@ Partial Public Class VaccinationFileRectification
     Protected WithEvents lblCVaccinationReportGenerationDate2 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''tr2ndVaccinationDateConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndVaccinationDateConfirm As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCVaccinationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDate1_2Remark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDate1_2Remark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationDate2_2Remark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationDate2_2Remark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tr2ndReportGenerationDateConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tr2ndReportGenerationDateConfirm As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCVaccinationReportGenerationDateText_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationReportGenerationDateText_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''hfCVaccinationDate1 control.
     '''</summary>
     '''<remarks>
@@ -1443,6 +1695,42 @@ Partial Public Class VaccinationFileRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents hfCVaccinationReportGenerationDate2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationDate1_2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationReportGenerationDate1_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationReportGenerationDate1_2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationDate2_2 As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''hfCVaccinationReportGenerationDate2_2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfCVaccinationReportGenerationDate2_2 As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
     '''trCSubsidiy control.
@@ -2316,4 +2604,895 @@ Partial Public Class VaccinationFileRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnWarningMessageCancel As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''pnlAcctEdit control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAcctEdit As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''pnlAcctEditHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAcctEditHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblAcctEditTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAcctEditTitle As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcAcctEditErrorMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcAcctEditErrorMessage As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''udcAcctEditInfoMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcAcctEditInfoMessage As Global.CustomControls.InfoMessageBox
+
+    '''<summary>
+    '''lblRectifyRecipientDetail control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyRecipientDetail As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyClassNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyClassNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblClassName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblClassName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyClassNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyClassNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtRectifyClassNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtRectifyClassNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgErrRectifyClassNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrRectifyClassNo As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trRectifyChiName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRectifyChiName As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRectifyChiNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyChiNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyUploadText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyUploadText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyChiName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyChiName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtRectifyContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtRectifyContactNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgErrRectifyContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrRectifyContactNo As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trConfirmNotToInject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConfirmNotToInject As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRectifyConfirmNotToInjectText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyConfirmNotToInjectText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkRectifyConfirmNotToInject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkRectifyConfirmNotToInject As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''tdAcctInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdAcctInfo As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblRectifyAcct control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyAcct As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnChangeDocumentType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnChangeDocumentType As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''pnlModifyAcct control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlModifyAcct As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''pnlRefNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlRefNo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRectifyRefNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyRefNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyRefNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyRefNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCreateByOtherSPText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCreateByOtherSPText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyDocTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyDocTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyDocType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyDocType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcRectifyAccount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcRectifyAccount As Global.HCVU.UIControl.DocTypeHCSP.ucInputDocumentType
+
+    '''<summary>
+    '''pnlReadOnlyAcct control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlReadOnlyAcct As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRectifyAccountIDText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyAccountIDText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyAccountID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyAccountID As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcReadOnlyAccount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcReadOnlyAccount As Global.HCVU.UIControl.DocTypeHCSP.ucReadOnlyDocumnetType
+
+    '''<summary>
+    '''pnlRecordStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlRecordStatus As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblRecordStatusText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecordStatusText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRecordStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecordStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tdFieldDiff control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdFieldDiff As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''pnlDiffUploadInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDiffUploadInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDiffUploadInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDiffUploadInfo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFieldDiff1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFieldDiff1 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFieldDiff1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFieldDiff1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFieldDiff2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFieldDiff2 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFieldDiff2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFieldDiff2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFieldDiff3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFieldDiff3 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFieldDiff3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFieldDiff3 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFieldDiff4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFieldDiff4 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFieldDiff4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFieldDiff4 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFieldDiff5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFieldDiff5 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFieldDiff5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFieldDiff5 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''divFieldDiff6 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divFieldDiff6 As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblFieldDiff6 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFieldDiff6 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''pnlMMRClientInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlMMRClientInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trRectifyHKICSymbol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRectifyHKICSymbol As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRectifyHKICSymbolText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyHKICSymbolText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblRectifyHKICSymbol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblRectifyHKICSymbol As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''imgErrRectifyHKICSymbol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrRectifyHKICSymbol As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblRectifyHKICSymbol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyHKICSymbol As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRectifyServiceDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyServiceDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtRectifyServiceDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtRectifyServiceDate As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblRectifyServiceDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRectifyServiceDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnRectifyServiceDateCalender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnRectifyServiceDateCalender As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgErrRectifyServiceDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrRectifyServiceDate As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calRectifyServiceDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calRectifyServiceDate As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''fteRectifyServiceDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteRectifyServiceDate As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''trConfirmEHSAccount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConfirmEHSAccount As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''chkConfirmEHSAccount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkConfirmEHSAccount As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblConfirmStatement1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmStatement1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConfirmStatement2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConfirmStatement2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnEditAcctCancel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnEditAcctCancel As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ibtnEditAcctSave control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnEditAcctSave As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenAcctEdit control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenAcctEdit As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''mpeAcctEdit control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mpeAcctEdit As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''panChooseCCCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panChooseCCCode As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panChooseCCCodeHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panChooseCCCodeHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCCCodeHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCCCodeHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcCCCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcCCCode As Global.HCVU.ChooseCCCode
+
+    '''<summary>
+    '''btnHiddenCCCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenCCCode As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExtenderChooseCCCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderChooseCCCode As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''pnlDocTypeSelection control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDocTypeSelection As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''pnlDocTypeSelectionHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDocTypeSelectionHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDocumentType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDocumentType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcDocTypeSelectionErrorMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcDocTypeSelectionErrorMessage As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''udcDocTypeSelectionInfoMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcDocTypeSelectionInfoMessage As Global.CustomControls.InfoMessageBox
+
+    '''<summary>
+    '''udcDocumentTypeRadioButtonGroup control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcDocumentTypeRadioButtonGroup As Global.CustomControls.DocumentTypeRadioButtonGroup
+
+    '''<summary>
+    '''ibtnDocTypeSelectionCancel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnDocTypeSelectionCancel As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ibtnDocTypeSelectionNext control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnDocTypeSelectionNext As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenDocTypeSelection control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenDocTypeSelection As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''mpeDocTypeSelection control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mpeDocTypeSelection As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''panSchemeDocTypeLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panSchemeDocTypeLegend As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panSchemeDocTypeLegendHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panSchemeDocTypeLegendHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblSchemeDocTypeLegnedHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSchemeDocTypeLegnedHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panSchemeDocTypeLegnedContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panSchemeDocTypeLegnedContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''udcSchemeDocTypeLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcSchemeDocTypeLegend As Global.HCVU.SchemeDocTypeLegend
+
+    '''<summary>
+    '''btnSchemeDocTypeLegnedClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSchemeDocTypeLegnedClose As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenSchemeDocTypeLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenSchemeDocTypeLegend As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''mpeSchemeDocTypeLegend control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mpeSchemeDocTypeLegend As Global.AjaxControlToolkit.ModalPopupExtender
 End Class

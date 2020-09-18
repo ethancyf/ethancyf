@@ -171,6 +171,17 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                <asp:Label ID="lblSVaccinationSeasonText" runat="server" CssClass="tableTitle" Text='<%$ Resources:Text, VaccinationSeason %>'></asp:Label>
+                            </td>
+                            <td>
+                                <asp:RadioButtonList ID="rblSVaccinationSeason" runat="server" Width="300" RepeatDirection="Horizontal" AutoPostBack="true" CssClass="RadioButtonList" RepeatColumns ="2" Style="position:relative;left:-3px;top:-4px">
+                                    <asp:ListItem Text='<%$ Resources:Text, CurrentSeason %>' Selected="True" Value="C"></asp:ListItem>
+                                    <asp:ListItem Text='<%$ Resources:Text, PastSeason %>' Value="P"></asp:ListItem>
+                                </asp:RadioButtonList>
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="2" style="text-align: center">
                                 <asp:ImageButton ID="ibtnSSearch" runat="server" ImageUrl="<%$ Resources: ImageUrl, SearchBtn %>"
                                     AlternateText="<%$ Resources: AlternateText, SearchBtn %>" OnClick="ibtnSSearch_Click" />
@@ -200,13 +211,17 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationDate %>" SortExpression="Service_Receive_Dtm" ItemStyle-Width="120">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblGVaccinationDate" runat="server"></asp:Label>
+                                    <asp:Label ID="lblGVaccinationDate" runat="server" />
+                                    <br />
+                                    <asp:Label ID="lblGVaccinationDate_2" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, VaccinationReportGenerationDate %>" SortExpression="Final_Checking_Report_Generation_Date"
                                 ItemStyle-Width="120">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblGVaccinationReportGenerationDate" runat="server"></asp:Label>
+                                    <asp:Label ID="lblGVaccinationReportGenerationDate" runat="server" />
+                                    <br />
+                                    <asp:Label ID="lblGVaccinationReportGenerationDate_2" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources: Text, SubsidyDoseToInject %>" SortExpression="Dose" ItemStyle-Width="100">
@@ -395,6 +410,64 @@
                                                 </cc1:FilteredTextBoxExtender>
                                             </td>
                                         </tr>
+                                        <tr id="tr2ndVaccinationDate" runat="server">
+                                            <td>
+                                                <asp:Label ID="lblVaccinationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationDate %>"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblIVaccinationDate1_2" runat="server" CssClass="tableText" />
+                                                <asp:TextBox ID="txtIVaccinationDate1_2" runat="server" Width="100" MaxLength="10" style="position:relative;top:-1px" />
+                                                <asp:ImageButton ID="ibtnIVaccinationDate1_2" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                                    AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" Style="position:relative;top:2px" />
+                                                <asp:Image ID="imgErrorIVaccinationDate1_2" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:3px" />
+                                                <cc1:CalendarExtender ID="calIVaccinationDate1_2" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnIVaccinationDate1_2"
+                                                    TargetControlID="txtIVaccinationDate1_2" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy"></cc1:CalendarExtender>
+                                                <cc1:FilteredTextBoxExtender ID="fteIVaccinationDate1_2" runat="server" FilterType="Custom, Numbers"
+                                                    TargetControlID="txtIVaccinationDate1_2" ValidChars="-"></cc1:FilteredTextBoxExtender>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblIVaccinationDate2_2" runat="server" CssClass="tableText" />
+                                                <asp:TextBox ID="txtIVaccinationDate2_2" runat="server" Width="100" MaxLength="10" style="position:relative;top:-1px" />
+                                                <asp:ImageButton ID="ibtnIVaccinationDate2_2" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                                    AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" Style="position:relative;top:2px" />
+                                                <asp:Image ID="imgErrorIVaccinationDate2_2" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:3px" />
+                                                <cc1:CalendarExtender ID="calIVaccinationDate2_2" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnIVaccinationDate2_2"
+                                                    TargetControlID="txtIVaccinationDate2_2" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy"></cc1:CalendarExtender>
+                                                <cc1:FilteredTextBoxExtender ID="fteIVaccinationDate2_2" runat="server" FilterType="Custom, Numbers"
+                                                    TargetControlID="txtIVaccinationDate2_2" ValidChars="-"></cc1:FilteredTextBoxExtender>
+                                            </td>
+                                        </tr>
+                                        <tr id="tr2ndReportGenerationDate" runat="server">
+                                            <td>
+                                                <asp:Label ID="lblVaccinationReportGenerationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblIVaccinationReportGenerationDate1_2" runat="server" CssClass="tableText" />
+<%--                                                <asp:TextBox ID="txtIVaccinationReportGenerationDate1_2" runat="server" Width="100" MaxLength="10"></asp:TextBox>
+                                                <asp:ImageButton ID="ibtnIVaccinationReportGenerationDate1_2" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                                    AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" Style="position: relative; top: 3px" />
+                                                <asp:Image ID="imgErrorIVaccinationReportGenerationDate1_2" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:4px" />
+                                                <cc1:CalendarExtender ID="calIVaccinationReportGenerateDate1_2" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnIVaccinationReportGenerationDate1_2"
+                                                    TargetControlID="txtIVaccinationReportGenerationDate1_2" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy"></cc1:CalendarExtender>
+                                                <cc1:FilteredTextBoxExtender ID="fteVaccinationReportGenerationDate1_2" runat="server" FilterType="Custom, Numbers"
+                                                    TargetControlID="txtIVaccinationReportGenerationDate1_2" ValidChars="-"></cc1:FilteredTextBoxExtender>--%>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblIVaccinationReportGenerationDate2_2" runat="server" CssClass="tableText" />
+                                                <asp:TextBox ID="txtIVaccinationReportGenerationDate2_2" runat="server" Width="100" MaxLength="10" style="position:relative;top:-1px" />
+                                                <asp:ImageButton ID="ibtnIVaccinationReportGenerationDate2_2" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                                    AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" style="position:relative;top:2px" />
+                                                <asp:Image ID="imgErrorIVaccinationReportGenerationDate2_2" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
+                                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:3px" />
+                                                <cc1:CalendarExtender ID="calIVaccinationReportGenerationDate2_2" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnIVaccinationReportGenerationDate2_2"
+                                                    TargetControlID="txtIVaccinationReportGenerationDate2_2" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy"></cc1:CalendarExtender>
+                                                <cc1:FilteredTextBoxExtender ID="fteIVaccinationReportGenerationDate2_2" runat="server" FilterType="Custom, Numbers"
+                                                    TargetControlID="txtIVaccinationReportGenerationDate2_2" ValidChars="-"></cc1:FilteredTextBoxExtender>
+                                            </td>
+                                        </tr>
                                     </table>
                                 </td>
                             </tr>
@@ -430,19 +503,19 @@
                                 <asp:Label ID="lblIStudentFileText" runat="server" Text="<%$ Resources: Text, VaccinationFile %>"></asp:Label>
                             </td>
                             <td>
-                                <asp:FileUpload ID="flIStudentFile" runat="server" Width="460px" />
+                                <asp:FileUpload ID="flIStudentFile" runat="server" Width="460px" style="position:relative;top:-1px" />
                                 <asp:Image ID="imgErrorIStudentFile" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
-                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
+                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:3px" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <asp:Label ID="lblIVaccineFilePwdText" runat="server" Text="<%$ Resources: Text, VaccinationFilePassword %>"></asp:Label>
+                                <asp:Label ID="lblIVaccineFilePwdText" runat="server" Text="<%$ Resources: Text, VaccinationFilePassword %>"/>
                             </td>
                             <td>
-                                <asp:TextBox ID="txtIStudentFilePassword" runat="server" Width="150px" TextMode="Password"></asp:TextBox>
+                                <asp:TextBox ID="txtIStudentFilePassword" runat="server" Width="150px" TextMode="Password" style="position:relative;top:-1px" />
                                 <asp:Image ID="imgErrorIStudentFilePassword" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
-                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" />
+                                    AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" style="position:relative;top:3px" />
                             </td>
                         </tr>
                         <tr>
@@ -586,9 +659,37 @@
 
                                             </td>
                                         </tr>
+                                        <tr id="tr2ndVaccinationDateConfirm" runat="server">
+                                            <td>
+                                                <asp:Label ID="lblCVaccinationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationDate %>"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblCVaccinationDate1_2" runat="server" CssClass="tableText"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblCVaccinationDate2_2" runat="server" CssClass="tableText"></asp:Label>                                                
+                                            </td>
+                                        </tr>
+                                        <tr id="tr2ndReportGenerationDateConfirm" runat="server">
+                                            <td>
+                                                <asp:Label ID="lblCVaccinationReportGenerationDateText_2" runat="server" Text="<%$ Resources: Text, VaccinationReportGenerationDate %>"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblCVaccinationReportGenerationDate1_2" runat="server" CssClass="tableText"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:Label ID="lblCVaccinationReportGenerationDate2_2" runat="server" CssClass="tableText"></asp:Label>
+
+                                            </td>
+                                        </tr>
+
                                         <asp:HiddenField ID="hfCVaccinationDate1" runat="server" />
                                         <asp:HiddenField ID="hfCVaccinationDate2" runat="server" />
                                         <asp:HiddenField ID="hfCVaccinationReportGenerationDate2" runat="server" />
+
+                                        <asp:HiddenField ID="hfCVaccinationDate1_2" runat="server" />
+                                        <asp:HiddenField ID="hfCVaccinationDate2_2" runat="server" />
+                                        <asp:HiddenField ID="hfCVaccinationReportGenerationDate2_2" runat="server" />
                                     </table>                                    
                                 </td>
                             </tr>

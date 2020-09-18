@@ -58,6 +58,13 @@ Partial Public Class VaccinationFileEnquiry ' 010417
         Public Const VaccinationFinalReport As String = "VaccinationFinalReport"
         Public Const OnsiteVaccinationList As String = "OnsiteVaccinationList"
         Public Const VaccinationClaimCreationReport As String = "VaccinationClaimCreationReport"
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const VaccinationFinalReport_1st As String = "1stVaccinationFinalReport"
+        Public Const VaccinationFinalReport_2nd As String = "2ndVaccinationFinalReport"
+        Public Const OnsiteVaccinationList_1st As String = "1stOnsiteVaccinationList"
+        Public Const OnsiteVaccinationList_2nd As String = "2ndOnsiteVaccinationList"
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
     End Class
 
     Private Enum FieldDifference
@@ -314,6 +321,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                                                                      dtmVaccDateTo, _
                                                                      blnCurrentSeason, _
                                                                      IIf(rblSFileType.SelectedValue = VaccinationFileType.PreCheck, True, False), _
+                                                                     Nothing,
                                                                      ddlSStatus.SelectedValue)
 
         udtAuditLog.AddDescripton("No of record", dt.Rows.Count)
@@ -449,9 +457,12 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                     End If
 
                     If strFileType = VaccinationFileType.PreCheck Then
-                        If udtSchemeClaim.SchemeCode.Trim() = SchemeClaimModel.PPP Or udtSchemeClaim.SchemeCode.Trim() = SchemeClaimModel.PPPKG Then
+                        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        If udtSchemeClaim.SchemeCode.Trim() <> SchemeClaimModel.RVP Then
                             Continue For
                         End If
+                        ' CRE20-003 (Batch Upload) [End][Chris YIM]
                     End If
 
                     For Each udtUserRoleModel As UserRoleModel In udtUserRoleCollection.Values
@@ -921,6 +932,10 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             lbl.ID = String.Format("lblRVaccinationReportGenerationDate{0}", e.Row.RowIndex)
             lbl.Text = String.Empty
             If Not IsDBNull(dr("Final_Checking_Report_Generation_Date")) Then lbl.Text = CDate(dr("Final_Checking_Report_Generation_Date")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Final_Checking_Report_Generation_Date_2")) Then lbl.Text += "<br/>" + CDate(dr("Final_Checking_Report_Generation_Date_2")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             tc.Controls.Add(lbl)
             tr.Cells.Add(tc)
@@ -936,6 +951,10 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             lbl.ID = String.Format("lblRVaccinationDate{0}", e.Row.RowIndex)
             lbl.Text = String.Empty
             If Not IsDBNull(dr("Service_Receive_Dtm")) Then lbl.Text = CDate(dr("Service_Receive_Dtm")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then lbl.Text += "<br/>" + CDate(dr("Service_Receive_Dtm_2")).ToString("yyyy-MM-dd")
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             tc.Controls.Add(lbl)
             tr.Cells.Add(tc)
@@ -1020,11 +1039,12 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             End If
 
             'Image 2
-            If Not (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload) Or _
+            If blnImage1Complete And _
+                Not (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload) Or _
                     strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload)
                     ) Then
 
-                Select strRecordStatus
+                Select Case strRecordStatus
                     Case Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration)
 
                         Dim ibtn As ImageButton = New ImageButton
@@ -1205,7 +1225,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
             End If
 
             'Image 4
-            If Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso (dtmCurrent >= (dr("Service_Receive_Dtm")) And _
+            If blnImage3Complete And Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso (dtmCurrent >= (dr("Service_Receive_Dtm")) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -1272,7 +1292,7 @@ Partial Public Class VaccinationFileEnquiry ' 010417
 
             'Image 5
 
-            If Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso (dtmCurrent >= (dr("Service_Receive_Dtm")) And _
+            If blnImage4Complete And Not IsDBNull(dr("Service_Receive_Dtm")) AndAlso (dtmCurrent >= (dr("Service_Receive_Dtm")) And _
                 (strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify) Or _
                  strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim) Or _
@@ -1363,13 +1383,47 @@ Partial Public Class VaccinationFileEnquiry ' 010417
 
             If strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration) Then
 
-                If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFinalReport_1st)
+                        Else
+                            lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                        End If
+                    End If
+
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID_2")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport_2nd)
+                    End If
+                Else
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                            lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                        Else
+                            lstResourceName.Add(ReportNameResource.VaccinationFirstReport)
+                        End If
+                    End If
                 End If
 
+                'If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                '    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                '        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_1st)
+                '    End If
+
+                '    If Not IsDBNull(dr("Onsite_Vaccination_File_ID_2")) Then
+                '        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_2nd)
+                '    End If
+                'Else
+                '    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                '        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
+                '    End If
+                'End If
+
+                'If IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
                 If Not IsDBNull(dr("Name_List_File_ID")) Then
                     lstResourceName.Add(ReportNameResource.NameList)
                 End If
+                'End If
 
             End If
 
@@ -1437,14 +1491,38 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 strRecordStatus = Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim) _
                 ) Then
 
-                If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport_1st)
+                    End If
+
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID_2")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport_2nd)
+                    End If
+                Else
+                    If Not IsDBNull(dr("Vaccination_Report_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.VaccinationFinalReport)
+                    End If
                 End If
 
-                If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
-                ElseIf Not IsDBNull(dr("Name_List_File_ID")) Then
-                    lstResourceName.Add(ReportNameResource.NameList)
+                If Not IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_1st)
+                    End If
+
+                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID_2")) Then
+                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList_2nd)
+                    End If
+                Else
+                    If Not IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.OnsiteVaccinationList)
+                    End If
+                End If
+
+                If IsDBNull(dr("Onsite_Vaccination_File_ID")) Then
+                    If Not IsDBNull(dr("Name_List_File_ID")) Then
+                        lstResourceName.Add(ReportNameResource.NameList)
+                    End If
                 End If
 
             End If
@@ -1469,39 +1547,61 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                 tbl.Style.Add("border-collapse", "collapse")
 
                 Dim blnReportGenerated As Boolean = False
+                Dim blnSkip As Boolean = False
 
                 For i As Integer = 0 To lstResourceName.Count - 1
                     blnReportGenerated = False
-
-                    'Row
-                    tr = New TableRow
-
-                    'Cell 1
-                    tc = New TableCell
-                    tc.Width = Unit.Pixel(20)
-                    tc.HorizontalAlign = HorizontalAlign.Center
-                    tc.VerticalAlign = VerticalAlign.Top
+                    blnSkip = False
 
                     Select Case lstResourceName(i)
                         Case ReportNameResource.NameList
                             If Not IsDBNull(dr("Name_List_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
-
-                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport
+                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport, ReportNameResource.VaccinationFinalReport_1st
                             If Not IsDBNull(dr("Vaccination_Report_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
-                        Case ReportNameResource.OnsiteVaccinationList
+                        Case ReportNameResource.VaccinationFinalReport_2nd
+                            If Not IsDBNull(dr("Vaccination_Report_File_Output_Name_2")) Then
+                                blnReportGenerated = True
+                            End If
+                            blnSkip = True
+                        Case ReportNameResource.OnsiteVaccinationList, ReportNameResource.OnsiteVaccinationList_1st
                             If Not IsDBNull(dr("Onsite_Vaccination_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
+                        Case ReportNameResource.OnsiteVaccinationList_2nd
+                            If Not IsDBNull(dr("Onsite_Vaccination_File_Output_Name_2")) Then
+                                blnReportGenerated = True
+
+                            End If
+                            blnSkip = True
                         Case ReportNameResource.VaccinationClaimCreationReport
                             If Not IsDBNull(dr("Claim_Creation_Report_File_Output_Name")) Then
                                 blnReportGenerated = True
                             End If
                     End Select
 
+                    'Row
+                    If Not blnSkip Then
+                        tr = New TableRow
+                    End If
+
+                    'Cell 1
+                    If Not blnSkip Then
+                        tc = New TableCell
+                        'tc.Width = Unit.Pixel(20)
+                        'tc.HorizontalAlign = HorizontalAlign.Center
+                        tc.VerticalAlign = VerticalAlign.Top
+                        tc.Style.Add("padding-bottom", "2px")
+                    Else
+                        Dim lcSpan As New HtmlGenericControl("span")
+                        lcSpan.Style.Add("padding-right", "2px")
+                        tc.Controls.Add(lcSpan)
+                    End If
+
+                    'Image "Download"
                     If blnReportGenerated Then
                         Dim ibtn As ImageButton = New ImageButton
                         ibtn.ID = String.Format("ibtnRDownload{0}_{1}", e.Row.RowIndex, i)
@@ -1522,9 +1622,12 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                         tc.Controls.Add(imgPending)
                     End If
 
-                    tr.Cells.Add(tc)
+                    If Not blnSkip Then
+                        tr.Cells.Add(tc)
 
-                    tbl.Rows.Add(tr)
+                        tbl.Rows.Add(tr)
+                    End If
+
                 Next
 
                 e.Row.Cells(9).Controls.Add(tbl)
@@ -1627,11 +1730,17 @@ Partial Public Class VaccinationFileEnquiry ' 010417
                         Case ReportNameResource.NameList
                             strFileID = CStr(drSelected("Name_List_File_ID")).Trim
 
-                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport
+                        Case ReportNameResource.VaccinationFirstReport, ReportNameResource.VaccinationFinalReport, ReportNameResource.VaccinationFinalReport_1st
                             strFileID = CStr(drSelected("Vaccination_Report_File_ID")).Trim
 
-                        Case ReportNameResource.OnsiteVaccinationList
+                        Case ReportNameResource.VaccinationFinalReport_2nd
+                            strFileID = CStr(drSelected("Vaccination_Report_File_ID_2")).Trim
+
+                        Case ReportNameResource.OnsiteVaccinationList, ReportNameResource.OnsiteVaccinationList_1st
                             strFileID = CStr(drSelected("Onsite_Vaccination_File_ID")).Trim
+
+                        Case ReportNameResource.OnsiteVaccinationList_2nd
+                            strFileID = CStr(drSelected("Onsite_Vaccination_File_ID_2")).Trim
 
                         Case ReportNameResource.VaccinationClaimCreationReport
                             strFileID = CStr(drSelected("Claim_Creation_Report_File_ID")).Trim

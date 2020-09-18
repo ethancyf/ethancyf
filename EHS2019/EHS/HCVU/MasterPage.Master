@@ -196,7 +196,7 @@
                     cellpadding="0" cellspacing="0">
                     <tr>
                         <td align="center" valign="middle">
-                            <asp:Image ID="Image1" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
+                            <asp:Image ID="imgLoading" runat="server" ImageUrl="<%$ Resources:ImageUrl, PleaseWait %>"
                                 AlternateText="<%$ Resources:AlternateText, PleaseWait %>" /></td>
                     </tr>
                 </table>
@@ -292,15 +292,21 @@
         <asp:Button runat="server" ID="btnHidden" Style="display: none" OnClientClick="return false;" />
         <!-- Timeout Reminder -->
         <script type="text/javascript" src="../JS/TimeoutReminder.js"></script>
-        <asp:Panel ID="panTimeoutReminder" runat="server" Style="display: none" Width="500px">
+<%--        <asp:Panel ID="panTimeoutReminder" runat="server" Style="display: none" Width="500px">
             <uc1:ucNoticePopUp ID="ucNoticePopUpTimeoutReminder" runat="server" NoticeMode="Timeout" ButtonMode="OK"
                 MessageText="<%$ Resources: Text, TimeoutReminderMessage %>" />
+        </asp:Panel>--%>
+        <asp:Panel ID="panTimeoutReminder" runat="server" Style="visibility: hidden; position: fixed; z-index: 29999;">
+                <div style="position: fixed; left: 50%; top: 50%; margin-top: -100px; margin-left: -235px; z-index: 30000; width: 500px;">
+                    <uc1:ucNoticePopUp ID="ucNoticePopUpTimeoutReminder" runat="server" NoticeMode="Timeout" 
+                        ButtonMode="OK" MessageText="<%$ Resources: Text, TimeoutReminderMessage %>" />
+                </div>
         </asp:Panel>
-        <asp:Button ID="btnHiddenTimeoutReminder" runat="server" Style="display: none" />
+<%--        <asp:Button ID="btnHiddenTimeoutReminder" runat="server" Style="display: none" />
         <cc2:ModalPopupExtender ID="ModalPopupExtenderTimeoutReminder" runat="server" BackgroundCssClass="modalBackgroundTransparent"
             TargetControlID="btnHiddenTimeoutReminder" PopupControlID="panTimeoutReminder" RepositionMode="None"
             PopupDragHandleControlID="">
-        </cc2:ModalPopupExtender>
+        </cc2:ModalPopupExtender>--%>
     </form>
     <script type="text/javascript">
         //alert(document.getElementById('ctl00_caMenu').innerHTML)

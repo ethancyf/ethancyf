@@ -113,7 +113,10 @@ Partial Public Class ucReadOnlyOTHER
     End Sub
 
     Protected Overrides Sub RenderLanguage()
-        Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(MyBase.EHSAccount.EHSPersonalInformationList.Filter(MyBase.EHSAccount.SearchDocCode).DocCode)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        'Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(MyBase.EHSAccount.EHSPersonalInformationList.Filter(MyBase.EHSAccount.SearchDocCode).DocCode)
+        Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.OTHER)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         If MyBase.IsVertical Then
             Me.lblReadonlyRefenceText.Text = Me.GetGlobalResourceObject("Text", "OTHERDocNo")

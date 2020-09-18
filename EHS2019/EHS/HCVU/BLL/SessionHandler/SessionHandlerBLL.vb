@@ -1,24 +1,19 @@
-Imports Common.Component.EHSTransaction
+Imports Common.Component.EHSAccount
 Imports Common.Component.EHSClaimVaccine
-Imports Common.Component.Scheme
+Imports Common.Component.EHSTransaction
 Imports Common.Component.Practice
+Imports Common.Component.Scheme
 
 Namespace BLL
     Public Class SessionHandlerBLL
 
-
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Public Class SessionName
             'Language
             Public Const SESS_LANGUAGE As String = "language"
 
             'EHSTransaction
             Public Const SESS_EHSTransaction As String = "SESS_EHSTRANSACTION"
-            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-            ' ----------------------------------------------------------
             Public Const SESS_EHSTransaction_Without_Transaction_Detail As String = "SESS_EHSTRANSACTION_WITHOUT_TRANSACTION_DETAIL"
-            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
             Public Const SESS_EHSClaimVaccine As String = "SESS_EHSCLAIMVACCINE"
 
             'Scheme
@@ -51,8 +46,13 @@ Namespace BLL
             'PPP
             Public Const SESS_SchoolCode As String = "SESS_SCHOOLCODE"
 
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' EHSAccount
+            Public Const SESS_EHSAccount As String = "SESS_EHSACCOUNT"
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         End Class
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
 #Region "Claim Transaction"
         Public Sub EHSTransactionSaveToSession(ByVal udtEHSClaimVaccine As EHSTransactionModel, ByVal strFunctionCode As String)
@@ -119,7 +119,6 @@ Namespace BLL
 
 #End Region
 
-
 #Region "Scheme Collection with Subsidize"
 
         Public Sub SchemeListSaveToSession(ByVal udtSchemeClaim As SchemeClaimModelCollection, ByVal strFunctionCode As String)
@@ -174,8 +173,6 @@ Namespace BLL
         End Sub
 #End Region
 
-        'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
 #Region "Non Clinic Setting"
 
         Public Sub NonClinicSettingSaveToSession(ByVal blnNonClinicSetting As Boolean, ByVal strFunctionCode As String)
@@ -255,10 +252,7 @@ Namespace BLL
         End Sub
 
 #End Region
-        'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
 #Region "HighRisk"
 
         Public Sub HighRiskSaveToSession(ByVal strHighRisk As String, ByVal strFunctionCode As String)
@@ -277,11 +271,7 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_HighRisk))
         End Sub
 #End Region
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
-
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
 #Region "School Code"
         Public Sub SchoolCodeSaveToSession(ByVal strSchoolCode As String, ByVal strFunctionCode As String)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SchoolCode)) = strSchoolCode
@@ -296,8 +286,6 @@ Namespace BLL
         End Sub
 
 #End Region
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
-
 
 #Region "Claim Category"
 
@@ -359,6 +347,23 @@ Namespace BLL
         'CRE18-004 [End]  [Marco CHOI]
 #End Region
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "eHealth Account"
+
+        Public Sub EHSAccountSaveToSession(ByVal udtEHSAccount As EHSAccountModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_EHSAccount)) = udtEHSAccount
+        End Sub
+
+        Public Function EHSAccountGetFromSession(ByVal strFunctionCode As String) As EHSAccountModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_EHSAccount)), EHSAccountModel)
+        End Function
+
+        Public Sub EHSAccountRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_EHSAccount))
+        End Sub
+#End Region
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
     End Class
 End Namespace

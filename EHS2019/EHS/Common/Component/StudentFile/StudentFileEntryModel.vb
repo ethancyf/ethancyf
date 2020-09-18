@@ -22,9 +22,7 @@ Namespace Component.StudentFile
             _strGivenNameENOriginal = dr("Given_Name_EN").ToString.Trim
 
             _strNameCH = dr("Name_CH").ToString.Trim
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             _strNameCHExcel = dr("Name_CH_Excel").ToString.Trim
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
             _strDocCode = dr("Doc_Code").ToString.Trim
             _dtmDOB = dr("DOB")
@@ -35,11 +33,11 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("Foreign_Passport_No")) Then _strForeignPassportNo = dr("Foreign_Passport_No").ToString.Trim
             If Not IsDBNull(dr("EC_Serial_No")) Then _strECSerialNo = dr("EC_Serial_No").ToString.Trim
             If Not IsDBNull(dr("EC_Reference_No")) Then _strECRReferenceNo = dr("EC_Reference_No").ToString.Trim
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
+
             If Not dr.IsNull("EC_Reference_No_Other_Format") AndAlso CStr(dr("EC_Reference_No_Other_Format")).Trim = "Y" Then
                 _blnECReferenceNoOtherFormat = True
             End If
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
+
             _strRejectInjection = dr("Reject_Injection").ToString.Trim
 
             If Not IsDBNull(dr("Acc_Process_Stage")) Then _strAccProcessStage = dr("Acc_Process_Stage").ToString.Trim
@@ -59,6 +57,10 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("Entitle_ONLYDOSE")) Then _strEntitleONLYDOSE = dr("Entitle_ONLYDOSE").ToString.Trim
             If Not IsDBNull(dr("Entitle_1STDOSE")) Then _strEntitle1STDOSE = dr("Entitle_1STDOSE").ToString.Trim
             If Not IsDBNull(dr("Entitle_2NDDOSE")) Then _strEntitle2NDDOSE = dr("Entitle_2NDDOSE").ToString.Trim
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Entitle_3RDDOSE")) Then _strEntitle3RDDOSE = dr("Entitle_3RDDOSE").ToString.Trim
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
             If Not IsDBNull(dr("Entitle_Inject")) Then _strEntitleInject = dr("Entitle_Inject").ToString.Trim
             If Not IsDBNull(dr("Entitle_Inject_Fail_Reason")) Then _strEntitleInjectFailReason = dr("Entitle_Inject_Fail_Reason").ToString.Trim
 
@@ -84,6 +86,12 @@ Namespace Component.StudentFile
             If Not IsDBNull(dr("HKIC_Symbol")) Then _strHKICSymbol = dr("HKIC_Symbol").ToString.Trim
             If Not IsDBNull(dr("Service_Receive_Dtm")) Then _dtmServiceDate = dr("Service_Receive_Dtm")
             ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Not IsDBNull(dr("Manual_Add")) Then _strManualAdd = dr("Manual_Add").ToString.Trim
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         End Sub
 
 #End Region
@@ -101,9 +109,7 @@ Namespace Component.StudentFile
             _strSurnameENOriginal = String.Empty
             _strGivenNameENOriginal = String.Empty
             _strNameCH = String.Empty
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             _strNameCHExcel = String.Empty
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
             _strDocCode = String.Empty
             _dtmDOB = DateTime.MinValue
             _strExactDOB = String.Empty
@@ -113,9 +119,7 @@ Namespace Component.StudentFile
             _strForeignPassportNo = String.Empty
             _strECSerialNo = String.Empty
             _strECRReferenceNo = String.Empty
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             _blnECReferenceNoOtherFormat = False
-            ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
             _strRejectInjection = String.Empty
 
             _strAccProcessStage = String.Empty
@@ -135,6 +139,7 @@ Namespace Component.StudentFile
             _strEntitleONLYDOSE = String.Empty
             _strEntitle1STDOSE = String.Empty
             _strEntitle2NDDOSE = String.Empty
+            _strEntitle3RDDOSE = String.Empty
             _strEntitleInject = String.Empty
             _strEntitleInjectFailReason = String.Empty
             _strTransactionID = String.Empty
@@ -146,11 +151,16 @@ Namespace Component.StudentFile
             _strLastRectifyBy = String.Empty
             _dtmLastRectifyDtm = Nothing
             _bytTSMP = Nothing
+
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            _strManualAdd = String.Empty
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
         End Sub
 
 #End Region
 
-#Region "Fields and Properties"
+#Region "Private Member"
 
         Private _strStudentFileID As String
         Private _intStudentSeq As Integer
@@ -162,9 +172,7 @@ Namespace Component.StudentFile
         Private _strSurnameENOriginal As String
         Private _strGivenNameENOriginal As String
         Private _strNameCH As String
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
         Private _strNameCHExcel As String
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
         Private _strDocCode As String
         Private _dtmDOB As DateTime
         Private _strSex As String
@@ -174,9 +182,7 @@ Namespace Component.StudentFile
         Private _strForeignPassportNo As String
         Private _strECSerialNo As String
         Private _strECRReferenceNo As String
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
         Private _blnECReferenceNoOtherFormat As Boolean
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
         Private _strRejectInjection As String
 
         Private _strAccProcessStage As String
@@ -198,6 +204,10 @@ Namespace Component.StudentFile
         Private _strEntitleONLYDOSE As String
         Private _strEntitle1STDOSE As String
         Private _strEntitle2NDDOSE As String
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strEntitle3RDDOSE As String
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
         Private _strEntitleInject As String
         Private _strEntitleInjectFailReason As String
 
@@ -212,11 +222,8 @@ Namespace Component.StudentFile
         Private _dtmLastRectifyDtm As Nullable(Of DateTime)
         Private _bytTSMP As Byte()
 
-        ' CRE19-001 (VSS 2019 - Claim Creation) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         Private _strOriginalStudentFileID As String
         Private _intOriginalStudentSeq As Integer
-        ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
 
         ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
@@ -224,9 +231,14 @@ Namespace Component.StudentFile
         Private _dtmServiceDate As Nullable(Of DateTime)
         ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
-#Region "Properties"
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strManualAdd As String
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
 #End Region
+
+#Region "Property"
         Public Property StudentFileID() As String
             Get
                 Return _strStudentFileID
@@ -317,7 +329,6 @@ Namespace Component.StudentFile
             End Set
         End Property
 
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
         Public Property NameCHExcel() As String
             Get
                 Return _strNameCHExcel
@@ -326,7 +337,6 @@ Namespace Component.StudentFile
                 _strNameCHExcel = value
             End Set
         End Property
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
         Public Property DocCode() As String
             Get
@@ -409,7 +419,6 @@ Namespace Component.StudentFile
             End Set
         End Property
 
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
         Public Property ECReferenceNoOtherFormat() As Boolean
             Get
                 Return _blnECReferenceNoOtherFormat
@@ -418,7 +427,6 @@ Namespace Component.StudentFile
                 _blnECReferenceNoOtherFormat = value
             End Set
         End Property
-        ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Winnie]
 
         Public Property RejectInjection() As String
             Get
@@ -582,6 +590,18 @@ Namespace Component.StudentFile
             End Set
         End Property
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property Entitle3RDDOSE() As String
+            Get
+                Return _strEntitle3RDDOSE
+            End Get
+            Set(ByVal value As String)
+                _strEntitle3RDDOSE = value
+            End Set
+        End Property
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
         Public Property EntitleInject() As String
             Get
                 Return _strEntitleInject
@@ -681,8 +701,6 @@ Namespace Component.StudentFile
             End Set
         End Property
 
-        ' CRE19-001 (VSS 2019 - Claim Creation) [Start][Winnie]
-        ' ----------------------------------------------------------------------------------------
         Public Property OriginalStudentFileID() As String
             Get
                 Return _strOriginalStudentFileID
@@ -700,7 +718,6 @@ Namespace Component.StudentFile
                 _intOriginalStudentSeq = value
             End Set
         End Property
-        ' CRE19-001 (VSS 2019 - Claim Creation) [End][Winnie]
 
         ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
@@ -722,6 +739,19 @@ Namespace Component.StudentFile
             End Set
         End Property
         ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property ManualAdd() As Nullable(Of DateTime)
+            Get
+                Return _strManualAdd
+            End Get
+            Set(ByVal value As Nullable(Of DateTime))
+                _strManualAdd = value
+            End Set
+        End Property
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
 #End Region
 
     End Class

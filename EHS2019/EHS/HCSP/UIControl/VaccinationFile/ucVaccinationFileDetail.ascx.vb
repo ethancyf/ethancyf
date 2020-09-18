@@ -97,6 +97,14 @@ Public Class ucVaccinationFileDetail
         NotMarked
     End Enum
 
+    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    Public Class ActualInjectedValue
+        Public Const Yes As String = "Y"
+        Public Const No As String = "N"
+        Public Const FirstVisit As String = "1"
+        Public Const SecondVisit As String = "2"
+    End Class
+    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 #End Region
 
 #Region "Property"
@@ -170,7 +178,10 @@ Public Class ucVaccinationFileDetail
                 Dim dt As DataTable = Session(SESS.DetailFullClassDT(Me.ID))
 
                 If Not dt Is Nothing Then
-                    BuildInjectionSummary(dt)
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                    Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
+                    BuildInjectionSummary(dt, udtStudentFile)
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                 End If
 
             End If
@@ -248,19 +259,29 @@ Public Class ucVaccinationFileDetail
             ' ------------------------------------------------------------------------------------------
             ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
-            Select udtStudentFile.SchemeCode
+            Select Case udtStudentFile.SchemeCode
                 Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
                     lblDSchoolCodeText.Text = GetGlobalResourceObject("Text", "RCHCode")
                     lblDSchoolNameText.Text = GetGlobalResourceObject("Text", "RCHName")
                     lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfCategory")
                     lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfClient")
                     lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
+
+                    lblDVaccinationDateText.Text = GetGlobalResourceObject("Text", "VaccinationDate")
+                    lblDVaccinationReportGenerationDateText.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate")
                 Case Else
                     lblDSchoolCodeText.Text = GetGlobalResourceObject("Text", "SchoolCode")
                     lblDSchoolNameText.Text = GetGlobalResourceObject("Text", "SchoolName")
                     lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfClass")
                     lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfStudent")
                     lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
+
+                    lblDVaccinationDateText.Text = GetGlobalResourceObject("Text", "VaccinationDate_1stVisit")
+                    lblDVaccinationReportGenerationDateText.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate_1stVisit")
+
+                    lblDVaccinationDateText_2.Text = GetGlobalResourceObject("Text", "VaccinationDate_2ndVisit")
+                    lblDVaccinationReportGenerationDateText_2.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate_2ndVisit")
+
             End Select
             ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
@@ -282,16 +303,38 @@ Public Class ucVaccinationFileDetail
                 Else
                     lblDVaccinationDate2.Text = GetGlobalResourceObject("Text", "NA")
                 End If
+
+                If Not udtStudentFile.ServiceReceiveDtm_2 Is Nothing Then
+                    Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm_2
+                    lblDVaccinationDate1_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                Else
+                    lblDVaccinationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
+                If Not udtStudentFile.ServiceReceiveDtm2ndDose_2 Is Nothing Then
+                    Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm2ndDose_2
+                    lblDVaccinationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                Else
+                    lblDVaccinationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
+                End If
             End If
 
             If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
                 lblDVaccinationDate1.Text = GetGlobalResourceObject("Text", "NA")
+                lblDVaccinationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
 
                 If Not udtStudentFile.ServiceReceiveDtm Is Nothing Then
                     Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm
                     lblDVaccinationDate2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
                 Else
                     lblDVaccinationDate2.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
+                If Not udtStudentFile.ServiceReceiveDtm_2 Is Nothing Then
+                    Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm_2
+                    lblDVaccinationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                Else
+                    lblDVaccinationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
                 End If
 
             End If
@@ -313,16 +356,38 @@ Public Class ucVaccinationFileDetail
                 Else
                     lblDVaccinationReportGenerationDate2.Text = GetGlobalResourceObject("Text", "NA")
                 End If
+
+                If Not udtStudentFile.FinalCheckingReportGenerationDate_2 Is Nothing Then
+                    Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate_2
+                    lblDVaccinationReportGenerationDate1_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                Else
+                    lblDVaccinationReportGenerationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
+                If Not udtStudentFile.FinalCheckingReportGenerationDate2ndDose_2 Is Nothing Then
+                    Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate2ndDose_2
+                    lblDVaccinationReportGenerationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                Else
+                    lblDVaccinationReportGenerationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
+                End If
             End If
 
             If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
                 lblDVaccinationReportGenerationDate1.Text = GetGlobalResourceObject("Text", "NA")
+                lblDVaccinationReportGenerationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
 
                 If Not udtStudentFile.FinalCheckingReportGenerationDate Is Nothing Then
                     Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate
                     lblDVaccinationReportGenerationDate2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
                 Else
                     lblDVaccinationReportGenerationDate2.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+
+                If Not udtStudentFile.FinalCheckingReportGenerationDate_2 Is Nothing Then
+                    Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate_2
+                    lblDVaccinationReportGenerationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                Else
+                    lblDVaccinationReportGenerationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
                 End If
 
             End If
@@ -332,7 +397,7 @@ Public Class ucVaccinationFileDetail
             ' -------------------------------------------------------------------
             ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
-            Select udtStudentFile.SchemeCode
+            Select Case udtStudentFile.SchemeCode
                 Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
                     lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClientInformation")
                     lblDClassNameText.Text = GetGlobalResourceObject("Text", "Category")
@@ -474,6 +539,9 @@ Public Class ucVaccinationFileDetail
         ' -------------------------------------
         ' Vaccination Date
         ' -------------------------------------
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Or udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.ONLYDOSE Then
             If Not udtStudentFile.ServiceReceiveDtm Is Nothing Then
                 Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm
@@ -488,19 +556,42 @@ Public Class ucVaccinationFileDetail
             Else
                 lblDVaccinationDate2.Text = GetGlobalResourceObject("Text", "NA")
             End If
+
+            If Not udtStudentFile.ServiceReceiveDtm_2 Is Nothing Then
+                Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm_2
+                lblDVaccinationDate1_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+            Else
+                lblDVaccinationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
+            End If
+
+            If Not udtStudentFile.ServiceReceiveDtm2ndDose_2 Is Nothing Then
+                Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm2ndDose_2
+                lblDVaccinationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+            Else
+                lblDVaccinationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
+            End If
         End If
 
         If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+
+            lblDVaccinationDate1.Text = GetGlobalResourceObject("Text", "NA")
+            lblDVaccinationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
+
             If Not udtStudentFile.ServiceReceiveDtm Is Nothing Then
                 Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm
-                lblDVaccinationDate1.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                lblDVaccinationDate2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
             Else
-                lblDVaccinationDate1.Text = GetGlobalResourceObject("Text", "NA")
+                lblDVaccinationDate2.Text = GetGlobalResourceObject("Text", "NA")
             End If
 
-            lblDVaccinationDate2.Text = GetGlobalResourceObject("Text", "NA")
-        End If
+            If Not udtStudentFile.ServiceReceiveDtm_2 Is Nothing Then
+                Dim dtmDate As Date = udtStudentFile.ServiceReceiveDtm_2
+                lblDVaccinationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+            Else
+                lblDVaccinationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
+            End If
 
+        End If
 
         ' -------------------------------------
         ' Vaccination Report Generation Date
@@ -519,17 +610,39 @@ Public Class ucVaccinationFileDetail
             Else
                 lblDVaccinationReportGenerationDate2.Text = GetGlobalResourceObject("Text", "NA")
             End If
+
+            If Not udtStudentFile.FinalCheckingReportGenerationDate_2 Is Nothing Then
+                Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate_2
+                lblDVaccinationReportGenerationDate1_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+            Else
+                lblDVaccinationReportGenerationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
+            End If
+
+            If Not udtStudentFile.FinalCheckingReportGenerationDate2ndDose_2 Is Nothing Then
+                Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate2ndDose_2
+                lblDVaccinationReportGenerationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+            Else
+                lblDVaccinationReportGenerationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
+            End If
         End If
 
         If udtStudentFile.Dose = SubsidizeItemDetailsModel.DoseCode.SecondDOSE Then
+            lblDVaccinationReportGenerationDate1.Text = GetGlobalResourceObject("Text", "NA")
+            lblDVaccinationReportGenerationDate1_2.Text = GetGlobalResourceObject("Text", "NA")
+
             If Not udtStudentFile.FinalCheckingReportGenerationDate Is Nothing Then
                 Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate
-                lblDVaccinationReportGenerationDate1.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+                lblDVaccinationReportGenerationDate2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
             Else
-                lblDVaccinationReportGenerationDate1.Text = GetGlobalResourceObject("Text", "NA")
+                lblDVaccinationReportGenerationDate2.Text = GetGlobalResourceObject("Text", "NA")
             End If
 
-            lblDVaccinationReportGenerationDate2.Text = GetGlobalResourceObject("Text", "NA")
+            If Not udtStudentFile.FinalCheckingReportGenerationDate_2 Is Nothing Then
+                Dim dtmDate As Date = udtStudentFile.FinalCheckingReportGenerationDate_2
+                lblDVaccinationReportGenerationDate2_2.Text = udtFormatter.formatDisplayDate(dtmDate, strSelectedLanguage)
+            Else
+                lblDVaccinationReportGenerationDate2_2.Text = GetGlobalResourceObject("Text", "NA")
+            End If
         End If
 
         ' -------------------------------------
@@ -572,27 +685,42 @@ Public Class ucVaccinationFileDetail
         lblDNoOfClass.Text = dt.DefaultView.ToTable(True, "Class_Name").Rows.Count
         lblDNoOfStudent.Text = dt.Rows.Count
         lblDNoOfWarningRecord.Text = dt.Select("Upload_Warning IS NOT NULL").Length
-        lblDNoOfStudentInjected.Text = dt.Select("Injected = 'Y'").Length
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        lblDNoOfStudentInjected.Text = dt.Select("Injected IN ('Y', '1', '2') ").Length
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         If Not udtStudentFile Is Nothing Then
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
-            Select udtStudentFile.SchemeCode
+            panD2ndVaccinationDate.Visible = False
+
+            Select Case udtStudentFile.SchemeCode
                 Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
                     lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfCategory")
                     lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfClient")
                     lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClientInformation")
                     lblDClassNameText.Text = GetGlobalResourceObject("Text", "Category")
                     lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfClientInjected")
+
+                    lblDVaccinationDateText.Text = GetGlobalResourceObject("Text", "VaccinationDate")
+                    lblDVaccinationReportGenerationDateText.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate")
                 Case Else
                     lblDNoOfClassText.Text = GetGlobalResourceObject("Text", "NoOfClass")
                     lblDNoOfStudentText.Text = GetGlobalResourceObject("Text", "NoOfStudent")
                     lblDClassAndStudentInformation.Text = GetGlobalResourceObject("Text", "ClassAndStudentInformation")
                     lblDClassNameText.Text = GetGlobalResourceObject("Text", "ClassName")
                     lblDNoOfStudentInjectedText.Text = GetGlobalResourceObject("Text", "NoOfStudentInjected")
+
+                    lblDVaccinationDateText.Text = GetGlobalResourceObject("Text", "VaccinationDate_1stVisit")
+                    lblDVaccinationReportGenerationDateText.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate_1stVisit")
+
+                    lblDVaccinationDateText_2.Text = GetGlobalResourceObject("Text", "VaccinationDate_2ndVisit")
+                    lblDVaccinationReportGenerationDateText_2.Text = GetGlobalResourceObject("Text", "VaccinationReportGenerationDate_2ndVisit")
+
+                    If udtStudentFile.ServiceReceiveDtm_2 IsNot Nothing Or udtStudentFile.ServiceReceiveDtm2ndDose_2 IsNot Nothing Then
+                        panD2ndVaccinationDate.Visible = True
+                    End If
             End Select
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
         End If
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         lblDNoOfClassText.Text = HttpContext.GetGlobalResourceObject("Text", "NoOfClass", New System.Globalization.CultureInfo(strSelectedLanguage))
         lblDNoOfStudentText.Text = HttpContext.GetGlobalResourceObject("Text", "NoOfStudent", New System.Globalization.CultureInfo(strSelectedLanguage))
@@ -618,8 +746,9 @@ Public Class ucVaccinationFileDetail
 
         If strAction = VaccinationFileManagement.Action.Confirm Or strAction = VaccinationFileManagement.Action.Summary Then
             Me.trDInjectionSummary.Visible = True
-
-            BuildInjectionSummary(dt)
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            BuildInjectionSummary(dt, udtStudentFile)
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             Session(SESS.DetailFullClassDT(Me.ID)) = AddColumnForDisplay(dt)
         End If
@@ -785,7 +914,7 @@ Public Class ucVaccinationFileDetail
 
     End Sub
 
-    Public Sub BuildInjectionSummary(ByVal dt As DataTable)
+    Public Sub BuildInjectionSummary(ByVal dt As DataTable, ByVal udtStudentFile As StudentFileHeaderModel)
         Dim tr As HtmlTableRow = Nothing
         Dim tc As HtmlTableCell = Nothing
         Dim lbtn As LinkButton = Nothing
@@ -793,16 +922,26 @@ Public Class ucVaccinationFileDetail
         Dim ct As Integer = 1
 
         Dim intNoOfStudent As Integer = 0
-        'Dim intNoOfNotToInject As Integer = 0
+
         Dim intNoOfActualInjectedYes As Integer = 0
         Dim intNoOfActualInjectedNo As Integer = 0
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        Dim intNoOfActualInjectedFirstVisit As Integer = 0
+        Dim intNoOfActualInjectedSecondVisit As Integer = 0
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         Dim intCumNoOfStudent As Integer = 0
         'Dim intCumNoOfNotToInject As Integer = 0
         Dim intCumNoOfActualInjectedYes As Integer = 0
         Dim intCumNoOfActualInjectedNo As Integer = 0
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        Dim intCumNoOfActualInjectedFirstVisit As Integer = 0
+        Dim intCumNoOfActualInjectedSecondVisit As Integer = 0
 
-        Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
+        Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+
         If Not udtStudentFile Is Nothing Then
             ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
@@ -824,6 +963,9 @@ Public Class ucVaccinationFileDetail
             'intNoOfNotToInject = 0
             intNoOfActualInjectedYes = 0
             intNoOfActualInjectedNo = 0
+
+            intNoOfActualInjectedFirstVisit = 0
+            intNoOfActualInjectedSecondVisit = 0
 
             'Row - Class Name
             tr = New HtmlTableRow
@@ -860,20 +1002,22 @@ Public Class ucVaccinationFileDetail
 
             tr.Cells.Add(tc)
 
-            ''Cell 3
-            'tc = New HtmlTableCell
-            'tc.Height = Unit.Pixel(22).ToString
-            'tc.Align = "Center"
 
-            'lbl = New Label
-            'lbl.ID = String.Format("lblNoOfNotToInject{0}", ct)
-            'intNoOfNotToInject = dt.Select(String.Format("Class_Name = '{0}' AND Reject_Injection = 'Y'", strClassName)).Length
-            'lbl.Text = intNoOfNotToInject
-            'lbl.Style.Add("color", "black")
+            'Cell 3
+            tc = New HtmlTableCell
+            tc.Height = Unit.Pixel(22).ToString
+            tc.Align = "Center"
 
-            'tc.Controls.Add(lbl)
+            lbl = New Label
+            lbl.ID = String.Format("lblNoOfInjectedFirstVisit{0}", ct)
+            intNoOfActualInjectedFirstVisit = dt.Select(String.Format("Class_Name = '{0}' AND Injected = '1'", strClassName)).Length
+            lbl.Text = intNoOfActualInjectedFirstVisit
+            lbl.Style.Add("color", "black")
 
-            'tr.Cells.Add(tc)
+            tc.Controls.Add(lbl)
+
+            tr.Cells.Add(tc)
+
 
             'Cell 4
             tc = New HtmlTableCell
@@ -881,8 +1025,24 @@ Public Class ucVaccinationFileDetail
             tc.Align = "Center"
 
             lbl = New Label
+            lbl.ID = String.Format("lblNoOfInjectedSecondVisit{0}", ct)
+            intNoOfActualInjectedSecondVisit = dt.Select(String.Format("Class_Name = '{0}' AND Injected = '2'", strClassName)).Length
+            lbl.Text = intNoOfActualInjectedSecondVisit
+            lbl.Style.Add("color", "black")
+
+            tc.Controls.Add(lbl)
+
+            tr.Cells.Add(tc)
+
+
+            'Cell 5
+            tc = New HtmlTableCell
+            tc.Height = Unit.Pixel(22).ToString
+            tc.Align = "Center"
+
+            lbl = New Label
             lbl.ID = String.Format("lblNoOfInjectedYes{0}", ct)
-            intNoOfActualInjectedYes = dt.Select(String.Format("Class_Name = '{0}' AND Injected = 'Y'", strClassName)).Length
+            intNoOfActualInjectedYes = dt.Select(String.Format("Class_Name = '{0}' AND Injected IN ('Y', '1', '2')", strClassName)).Length
             lbl.Text = intNoOfActualInjectedYes
             lbl.Style.Add("color", "black")
 
@@ -890,7 +1050,7 @@ Public Class ucVaccinationFileDetail
 
             tr.Cells.Add(tc)
 
-            'Cell 5
+            'Cell 6
             tc = New HtmlTableCell
             tc.Height = Unit.Pixel(22).ToString
             tc.Align = "Center"
@@ -905,7 +1065,7 @@ Public Class ucVaccinationFileDetail
 
             tr.Cells.Add(tc)
 
-            'Cell 6
+            'Cell 7
             tc = New HtmlTableCell
             tc.Height = Unit.Pixel(22).ToString
             tc.Align = "Center"
@@ -931,7 +1091,10 @@ Public Class ucVaccinationFileDetail
             'intCumNoOfNotToInject = intCumNoOfNotToInject + intNoOfNotToInject
             intCumNoOfActualInjectedYes = intCumNoOfActualInjectedYes + intNoOfActualInjectedYes
             intCumNoOfActualInjectedNo = intCumNoOfActualInjectedNo + intNoOfActualInjectedNo
-
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            intCumNoOfActualInjectedFirstVisit = intCumNoOfActualInjectedFirstVisit + intNoOfActualInjectedFirstVisit
+            intCumNoOfActualInjectedSecondVisit = intCumNoOfActualInjectedSecondVisit + intNoOfActualInjectedSecondVisit
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
         Next
 
         'Row - Total 
@@ -965,21 +1128,38 @@ Public Class ucVaccinationFileDetail
 
         tr.Cells.Add(tc)
 
-        ''Cell 3
-        'tc = New HtmlTableCell
-        'tc.Height = Unit.Pixel(22).ToString
-        'tc.Align = "Center"
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        'Cell 3
+        tc = New HtmlTableCell
+        tc.Height = Unit.Pixel(22).ToString
+        tc.Align = "Center"
 
-        'lbl = New Label
-        'lbl.ID = String.Format("lblNoOfNotToInject{0}", ct)
-        'lbl.Text = intCumNoOfNotToInject
-        'lbl.Style.Add("color", "black")
+        lbl = New Label
+        lbl.ID = String.Format("lblNoOfInjectedFirstVisit{0}", ct)
+        lbl.Text = intCumNoOfActualInjectedFirstVisit
+        lbl.Style.Add("color", "black")
 
-        'tc.Controls.Add(lbl)
+        tc.Controls.Add(lbl)
 
-        'tr.Cells.Add(tc)
+        tr.Cells.Add(tc)
 
         'Cell 4
+        tc = New HtmlTableCell
+        tc.Height = Unit.Pixel(22).ToString
+        tc.Align = "Center"
+
+        lbl = New Label
+        lbl.ID = String.Format("lblNoOfInjectedSecondVisit{0}", ct)
+        lbl.Text = intCumNoOfActualInjectedSecondVisit
+        lbl.Style.Add("color", "black")
+
+        tc.Controls.Add(lbl)
+
+        tr.Cells.Add(tc)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+        'Cell 5
         tc = New HtmlTableCell
         tc.Height = Unit.Pixel(22).ToString
         tc.Align = "Center"
@@ -993,7 +1173,7 @@ Public Class ucVaccinationFileDetail
 
         tr.Cells.Add(tc)
 
-        'Cell 5
+        'Cell 6
         tc = New HtmlTableCell
         tc.Height = Unit.Pixel(22).ToString
         tc.Align = "Center"
@@ -1007,7 +1187,7 @@ Public Class ucVaccinationFileDetail
 
         tr.Cells.Add(tc)
 
-        'Cell 6
+        'Cell 7
         tc = New HtmlTableCell
         tc.Height = Unit.Pixel(22).ToString
         tc.Align = "Center"
@@ -1028,6 +1208,72 @@ Public Class ucVaccinationFileDetail
 
         Me.tblInjectionSummary.Rows.Add(tr)
 
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        If Not udtStudentFile Is Nothing Then
+            For intRow As Integer = 0 To tblInjectionSummary.Rows.Count - 1
+                Dim trRow As HtmlTableRow = tblInjectionSummary.Rows(intRow)
+
+                Dim lbl2ndVisit As Label = trRow.Cells(3).FindControl(String.Format("lblNoOfInjectedSecondVisit{0}", intRow))
+                Dim lblNo As Label = trRow.Cells(3).FindControl(String.Format("lblNoOfInjectedNo{0}", intRow))
+
+                If intRow = 0 Then
+                    ' Header
+                    lbl2ndVisit.Style.Remove("color")
+                    lblNo.Style.Remove("color")
+                Else
+                    lbl2ndVisit.Style.Add("color", "black")
+                    lblNo.Style.Add("color", "black")
+                End If
+
+                Select Case udtStudentFile.SchemeCode
+                    Case SchemeClaimModel.RVP
+                        trRow.Cells(2).Style.Add("display", "none") ' 1st Visit
+                        trRow.Cells(3).Style.Add("display", "none") ' 2nd Visit
+                        trRow.Cells(4).Style.Remove("display") ' Yes
+                        trRow.Cells(5).Style.Remove("display") ' No
+
+                    Case Else
+                        Dim blnHas2ndVisit As Boolean = False
+                        Dim blnOnAfter2ndVisit As Boolean = False
+
+                        If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+                            blnHas2ndVisit = True
+
+                            If dtmCurrentDate >= udtStudentFile.ServiceReceiveDtm_2 Then
+                                blnOnAfter2ndVisit = True
+                            End If
+                        End If
+
+                        If blnHas2ndVisit Then
+                            If blnOnAfter2ndVisit Then
+                                trRow.Cells(2).Style.Remove("display") ' 1st Visit
+                                trRow.Cells(3).Style.Remove("display") ' 2nd Visit
+                                trRow.Cells(4).Style.Add("display", "none") ' Yes
+                                trRow.Cells(5).Style.Remove("display") ' No
+
+                            Else
+                                ' Show 1st Visit only
+                                trRow.Cells(2).Style.Remove("display") ' 1st Visit
+                                trRow.Cells(3).Style.Remove("display") ' 2nd Visit
+                                lbl2ndVisit.Style.Add("color", "grey")
+                                trRow.Cells(4).Style.Add("display", "none") ' Yes
+                                trRow.Cells(5).Style.Remove("display") ' No
+                                lblNo.Style.Add("color", "grey")
+                            End If
+
+                        Else
+                            trRow.Cells(2).Style.Add("display", "none") ' 1st Visit
+                            trRow.Cells(3).Style.Add("display", "none") ' 2nd Visit
+                            trRow.Cells(4).Style.Remove("display") ' Yes
+                            trRow.Cells(5).Style.Remove("display") ' No
+                        End If
+
+                End Select
+
+            Next
+        End If
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
     End Sub
 
     Public Sub RefreshDisplay()
@@ -1125,12 +1371,15 @@ Public Class ucVaccinationFileDetail
     End Sub
 
     Private Sub gvD_RowCreated(sender As Object, e As GridViewRowEventArgs) Handles gvD.RowCreated
+        Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
+        Dim dtmCurrentDate As Date = (New GeneralFunction).GetSystemDateTime.Date
+
         If e.Row.RowType = DataControlRowType.Header Then
-            Dim udtStudentFile As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
+
             If Not udtStudentFile Is Nothing Then
                 ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
                 ' ---------------------------------------------------------------------------------------------------------
-                Select udtStudentFile.SchemeCode
+                Select Case udtStudentFile.SchemeCode
                     Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
                         gvD.Columns(1).HeaderText = GetGlobalResourceObject("Text", "RefNoShort")
                     Case Else
@@ -1150,19 +1399,134 @@ Public Class ucVaccinationFileDetail
                 gvD.Columns(16).SortExpression = "Acc_Validation_Result_CHI"
             End If
 
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
+            If Not udtStudentFile Is Nothing Then
+
+                ' Mark Injected
+                Dim cblActualInject As CheckBoxList = DirectCast(e.Row.FindControl("cblActualInject"), CheckBoxList)
+                cblActualInject.Items.Clear()
+
+                Select Case udtStudentFile.SchemeCode
+                    Case SchemeClaimModel.RVP
+                        cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "Yes"), ActualInjectedValue.Yes))
+                        cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "No"), ActualInjectedValue.No))
+                        gvD.Columns(10).ItemStyle.Width = 90
+
+                    Case Else
+                        Dim blnHas2ndVisit As Boolean = False
+                        Dim blnOnAfter2ndVisit As Boolean = False
+
+                        If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+                            blnHas2ndVisit = True
+
+                            If dtmCurrentDate >= udtStudentFile.ServiceReceiveDtm_2 Then
+                                blnOnAfter2ndVisit = True
+                            End If
+                        End If
+
+                        If blnHas2ndVisit Then
+                            If blnOnAfter2ndVisit Then
+                                cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "1stVisit"), ActualInjectedValue.FirstVisit))
+                                cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "2ndVisit"), ActualInjectedValue.SecondVisit))
+                                cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleNo"), ActualInjectedValue.No))
+                                gvD.Columns(10).ItemStyle.Width = 200
+                            Else
+                                ' Show 1st Visit only
+                                cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "1stVisit"), ActualInjectedValue.FirstVisit))
+                                gvD.Columns(10).ItemStyle.Width = 90
+                            End If
+
+                        Else
+                            cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleYes"), ActualInjectedValue.Yes))
+                            cblActualInject.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleNo"), ActualInjectedValue.No))
+                            gvD.Columns(10).ItemStyle.Width = 90
+                        End If
+
+                End Select
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
         End If
 
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        If e.Row.RowType = DataControlRowType.DataRow Then
+
+            If Not udtStudentFile Is Nothing Then
+
+                ' Mark Injected
+                Dim divMarkInjectedMultiple As HtmlControl = e.Row.FindControl("divMarkInjectedMultiple")
+                Dim divMarkInjectedSingle As HtmlControl = e.Row.FindControl("divMarkInjectedSingle")
+
+                Dim rblGMarkInjected As RadioButtonList = e.Row.FindControl("rblGMarkInjected")
+                rblGMarkInjected.Items.Clear()
+
+                Select Case udtStudentFile.SchemeCode
+                    Case SchemeClaimModel.RVP
+                        rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleYes"), ActualInjectedValue.Yes))
+                        rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleNo"), ActualInjectedValue.No))
+
+                    Case Else
+                        Dim blnHas2ndVisit As Boolean = False
+                        Dim blnOnAfter2ndVisit As Boolean = False
+
+                        If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+                            blnHas2ndVisit = True
+
+                            If dtmCurrentDate >= udtStudentFile.ServiceReceiveDtm_2 Then
+                                blnOnAfter2ndVisit = True
+                            End If
+                        End If
+
+                        If blnHas2ndVisit Then
+                            If blnOnAfter2ndVisit Then
+                                rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "1stVisit"), ActualInjectedValue.FirstVisit))
+                                rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "2ndVisit"), ActualInjectedValue.SecondVisit))
+                                rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleNo"), ActualInjectedValue.No))
+                            Else
+                                ' Show 1st Visit only with Checkbox
+                            End If
+
+                        Else
+                            rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleYes"), ActualInjectedValue.Yes))
+                            rblGMarkInjected.Items.Add(New ListItem(GetGlobalResourceObject("Text", "SimpleNo"), ActualInjectedValue.No))
+                        End If
+                End Select
+
+                If rblGMarkInjected.Items.Count > 0 Then
+                    divMarkInjectedMultiple.Visible = True
+                    divMarkInjectedSingle.Visible = False
+                Else
+                    divMarkInjectedMultiple.Visible = False
+                    divMarkInjectedSingle.Visible = True
+                End If
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+        End If
     End Sub
 
     Protected Sub gvD_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+
+        Dim udtVaccinationFileHeader As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
+
         If e.Row.RowType = DataControlRowType.Header Then
             If gvD.Columns(10).Visible Then
                 ' Adding an attribute for onclick event on the check box in the header
-                Dim chkY As CheckBox = DirectCast(e.Row.FindControl("chkGMarkAllY"), CheckBox)
-                Dim chkN As CheckBox = DirectCast(e.Row.FindControl("chkGMarkAllN"), CheckBox)
 
-                chkY.Attributes.Add("onclick", "javascript:SelectAllYes('" & chkY.ClientID & "','" & chkN.ClientID & "')")
-                chkN.Attributes.Add("onclick", "javascript:SelectAllNo('" & chkY.ClientID & "','" & chkN.ClientID & "')")
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                'Dim chkY As CheckBox = DirectCast(e.Row.FindControl("chkGMarkAllY"), CheckBox)
+                'Dim chkN As CheckBox = DirectCast(e.Row.FindControl("chkGMarkAllN"), CheckBox)
+
+                'chkY.Attributes.Add("onclick", "javascript:SelectAllYes('" & chkY.ClientID & "','" & chkN.ClientID & "')")
+                'chkN.Attributes.Add("onclick", "javascript:SelectAllNo('" & chkY.ClientID & "','" & chkN.ClientID & "')")
+
+                Dim cblActualInject As CheckBoxList = DirectCast(e.Row.FindControl("cblActualInject"), CheckBoxList)
+
+                For i As Integer = 0 To cblActualInject.Items.Count - 1
+                    cblActualInject.Items(i).Attributes.Add("onclick", "SelectAll(this, '" & cblActualInject.Items(i).Value & "','" & gvD.ClientID & "')")
+                Next
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End If
         End If
 
@@ -1171,21 +1535,22 @@ Public Class ucVaccinationFileDetail
             Dim dr As DataRowView = e.Row.DataItem
             Dim udtFormatter As New Formatter
 
-            Dim udtVaccinationFileHeader As StudentFileHeaderModel = Session(SESS.DetailModel(Me.ID))
-
             If Not udtVaccinationFileHeader Is Nothing Then
                 Select Case udtVaccinationFileHeader.RecordStatusEnum
                     Case StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload,
                          StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload,
                          StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify,
                          StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify,
-                         StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim,
-                         StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim,
-                         StudentFileHeaderModel.RecordStatusEnumClass.Completed
+                         StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim
 
                         'Nothing to do
 
-                    Case StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
+                    Case StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration,
+                         StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim,
+                         StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim,
+                         StudentFileHeaderModel.RecordStatusEnumClass.PendingSPConfirmation_Claim,
+                         StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove
+
                         Dim strRealVoucherAccID As String = String.Empty
                         Dim strRealAccType As String = String.Empty
 
@@ -1204,15 +1569,48 @@ Public Class ucVaccinationFileDetail
                         lbtn.Text = String.Format("[{0}]", GetGlobalResourceObject("Text", "Edit"))
                         lbtn.Style.Add("text-decoration", "none")
 
-                    Case StudentFileHeaderModel.RecordStatusEnumClass.PendingToUploadVaccinationClaim
+                    Case StudentFileHeaderModel.RecordStatusEnumClass.Completed,
+                        StudentFileHeaderModel.RecordStatusEnumClass.ClaimSuspended,
+                        StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx
 
+                        Dim blnShowEdit As Boolean = True
+
+                        'Temporary account
+                        If Not IsDBNull(dr("Real_Acc_Type")) AndAlso CStr(dr("Real_Acc_Type")) = "T" Then
+                            If Not IsDBNull(dr("Transaction_ID")) AndAlso CStr(dr("Transaction_Temp_Voucher_Acc_ID")) <> String.Empty Then
+                                If CStr(dr("Transaction_Voucher_Acc_ID")).Trim <> String.Empty Or _
+                                    CStr(dr("Transaction_Temp_Voucher_Acc_ID")).Trim <> CStr(dr("Real_Voucher_Acc_ID")).Trim Then
+                                    blnShowEdit = False
+                                End If
+                            End If
+
+                        End If
+
+                        If blnShowEdit Then
+                            Dim strRealVoucherAccID As String = String.Empty
+                            Dim strRealAccType As String = String.Empty
+
+                            If Not IsDBNull(dr("Real_Voucher_Acc_ID")) And Not IsDBNull(dr("Real_Acc_Type")) Then
+                                strRealVoucherAccID = CStr(dr("Real_Voucher_Acc_ID"))
+                                strRealAccType = CStr(dr("Real_Acc_Type"))
+                            End If
+
+                            Dim lbtn As LinkButton = e.Row.FindControl("lbtnGEdit")
+                            lbtn.CommandName = Action.EditAcct
+                            lbtn.CommandArgument = String.Format("{0}|||{1}|||{2}|||{3}", _
+                                                                 CStr(dr("Student_File_ID")), _
+                                                                 CStr(dr("Student_Seq")), _
+                                                                 strRealVoucherAccID, _
+                                                                 strRealAccType)
+                            lbtn.Text = String.Format("[{0}]", GetGlobalResourceObject("Text", "Edit"))
+                            lbtn.Style.Add("text-decoration", "none")
+                        End If
 
                     Case Else
                         'Nothing to do
 
                 End Select
             End If
-
 
             ' Document Type
             Dim strDisplay As String = Me.GetGlobalResourceObject("Text", "StudentFileDocCodeDisplay")
@@ -1374,28 +1772,40 @@ Public Class ucVaccinationFileDetail
                 End If
             End If
 
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
+
             ' Mark Injected
-
             Dim rblGMarkInjected As RadioButtonList = e.Row.FindControl("rblGMarkInjected")
-
-            '' Adding an attribute for onclick event on the radio in the row
-            'rblGMarkInjected.Attributes.Add("onchecke", "javascript:SelectYesNo('" & rblGMarkInjected.ClientID & "')")
-
-            'If CStr(dr("Reject_Injection")) = YesNo.Yes Then
-            '    rblGMarkInjected.Enabled = False
-            'Else
-            '    rblGMarkInjected.Enabled = True
+            Dim chkGMark1stVisit As HtmlInputCheckBox = e.Row.FindControl("chkGMark1stVisit")
 
             'Mark Injected
             'From DB
             If Not IsDBNull(dr("Injected")) Then
-                If CStr(dr("Injected")) = YesNo.Yes Then
-                    rblGMarkInjected.SelectedValue = YesNo.Yes
-                Else
-                    rblGMarkInjected.SelectedValue = YesNo.No
+
+                If rblGMarkInjected IsNot Nothing Then
+                    If rblGMarkInjected.Items.FindByValue(CStr(dr("Injected"))) IsNot Nothing Then
+                        rblGMarkInjected.SelectedValue = CStr(dr("Injected"))
+                    Else
+                        ' Convert Injected from '1' to 'Y'
+                        If CStr(dr("Injected")) = ActualInjectedValue.FirstVisit AndAlso _
+                            rblGMarkInjected.Items.FindByValue(ActualInjectedValue.Yes) IsNot Nothing Then
+                            rblGMarkInjected.SelectedValue = ActualInjectedValue.Yes
+                        End If
+                    End If
                 End If
+
+                If chkGMark1stVisit IsNot Nothing Then
+                    If CStr(dr("Injected")) = ActualInjectedValue.FirstVisit Then
+                        chkGMark1stVisit.Checked = True
+                    Else
+                        chkGMark1stVisit.Checked = False
+                    End If
+                End If
+
             Else
-                rblGMarkInjected.SelectedIndex = -1
+                If rblGMarkInjected IsNot Nothing Then rblGMarkInjected.SelectedIndex = -1
+                If chkGMark1stVisit IsNot Nothing Then chkGMark1stVisit.Checked = False
             End If
 
             'End If
@@ -1404,25 +1814,49 @@ Public Class ucVaccinationFileDetail
             'From user selected (temporary save)
             If Not Session(SESS.DetailFullClassInjected(Me.ID)) Is Nothing Then
                 Dim dicInjected As Dictionary(Of Integer, String) = Session(SESS.DetailFullClassInjected(Me.ID))
-                If dicInjected(CInt(dr("Student_Seq"))) = YesNo.Yes Then
-                    rblGMarkInjected.SelectedValue = YesNo.Yes
+
+                If rblGMarkInjected IsNot Nothing Then
+                    If rblGMarkInjected.Items.FindByValue(dicInjected(CInt(dr("Student_Seq")))) IsNot Nothing Then
+                        rblGMarkInjected.SelectedValue = dicInjected(CInt(dr("Student_Seq")))
+                    Else
+                        ' Convert Injected from '1' to 'Y'
+                        If dicInjected(CInt(dr("Student_Seq"))) = ActualInjectedValue.FirstVisit AndAlso _
+                            rblGMarkInjected.Items.FindByValue(ActualInjectedValue.Yes) IsNot Nothing Then
+                            rblGMarkInjected.SelectedValue = ActualInjectedValue.Yes
+                        End If
+                    End If
                 End If
 
-                If dicInjected(CInt(dr("Student_Seq"))) = YesNo.No Then
-                    rblGMarkInjected.SelectedValue = YesNo.No
+                If chkGMark1stVisit IsNot Nothing Then
+                    If dicInjected(CInt(dr("Student_Seq"))) = ActualInjectedValue.FirstVisit Then
+                        chkGMark1stVisit.Checked = True
+                    Else
+                        chkGMark1stVisit.Checked = False
+                    End If
                 End If
 
             End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             ' Injected
             Dim lblGInjected As Label = e.Row.FindControl("lblGInjected")
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
             If Not IsDBNull(dr("Injected")) Then
-                If CStr(dr("Injected")) = YesNo.Yes Then
-                    lblGInjected.Text = GetGlobalResourceObject("Text", "Yes")
-                Else
-                    lblGInjected.Text = GetGlobalResourceObject("Text", "No")
-                End If
+                Select Case CStr(dr("Injected")).Trim
+                    Case ActualInjectedValue.Yes
+                        lblGInjected.Text = GetGlobalResourceObject("Text", "Yes")
+                    Case ActualInjectedValue.No
+                        lblGInjected.Text = GetGlobalResourceObject("Text", "No")
+                    Case ActualInjectedValue.FirstVisit
+                        lblGInjected.Text = String.Format("{0}<br>({1})", GetGlobalResourceObject("Text", "Yes"), GetGlobalResourceObject("Text", "1stVisit"))
+                    Case ActualInjectedValue.SecondVisit
+                        lblGInjected.Text = String.Format("{0}<br>({1})", GetGlobalResourceObject("Text", "Yes"), GetGlobalResourceObject("Text", "2ndVisit"))
+                    Case Else
+                        lblGInjected.Text = CStr(dr("Injected")).ToString.Trim()
+                End Select
             End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             ' Transaction Status
             Dim lblGTransactionRecordStatus As Label = e.Row.FindControl("lblGTransactionRecordStatus")
@@ -1574,7 +2008,8 @@ Public Class ucVaccinationFileDetail
                 End If
             End If
 
-            If dr("Field_Diff") = YesNo.Yes Then
+            'Field difference
+            If Not IsDBNull(dr("Field_Diff")) AndAlso CStr(dr("Field_Diff")) = YesNo.Yes Then
                 blnWarning = True
             End If
 
@@ -1733,6 +2168,7 @@ Public Class ucVaccinationFileDetail
         Dim lblGSeqNo As Label = Nothing
         Dim rblGMarkInjected As RadioButtonList = Nothing
         Dim drVaccFileRecord As DataRow = Nothing
+        Dim chkGMark1stVisit As HtmlInputCheckBox = Nothing
 
         Dim dicFullInjected As Dictionary(Of Integer, String) = Nothing
         Dim dicInjected As Dictionary(Of Integer, String) = New Dictionary(Of Integer, String)
@@ -1752,15 +2188,30 @@ Public Class ucVaccinationFileDetail
         For Each row As GridViewRow In Me.gvD.Rows
             lblGSeqNo = CType(row.Cells(0).FindControl("lblGSeqNo"), Label)
             rblGMarkInjected = CType(row.Cells(11).FindControl("rblGMarkInjected"), RadioButtonList)
+            chkGMark1stVisit = CType(row.Cells(11).FindControl("chkGMark1stVisit"), HtmlInputCheckBox)
 
-            If Not lblGSeqNo Is Nothing AndAlso Not rblGMarkInjected Is Nothing Then
-                If rblGMarkInjected.SelectedIndex = -1 Then
-                    dicFullInjected(CInt(lblGSeqNo.Text.Trim)) = String.Empty
-                    dicInjected.Add(CInt(lblGSeqNo.Text.Trim), String.Empty)
-                Else
-                    dicFullInjected(CInt(lblGSeqNo.Text.Trim)) = rblGMarkInjected.SelectedValue
-                    dicInjected.Add(CInt(lblGSeqNo.Text.Trim), rblGMarkInjected.SelectedValue)
+            If Not lblGSeqNo Is Nothing Then
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                If Not rblGMarkInjected Is Nothing AndAlso rblGMarkInjected.Items.Count > 0 Then
+                    If rblGMarkInjected.SelectedIndex = -1 Then
+                        dicFullInjected(CInt(lblGSeqNo.Text.Trim)) = String.Empty
+                        dicInjected.Add(CInt(lblGSeqNo.Text.Trim), String.Empty)
+                    Else
+                        dicFullInjected(CInt(lblGSeqNo.Text.Trim)) = rblGMarkInjected.SelectedValue
+                        dicInjected.Add(CInt(lblGSeqNo.Text.Trim), rblGMarkInjected.SelectedValue)
+                    End If
+
+                ElseIf Not chkGMark1stVisit Is Nothing Then
+                    If chkGMark1stVisit.Checked = False Then
+                        dicFullInjected(CInt(lblGSeqNo.Text.Trim)) = String.Empty
+                        dicInjected.Add(CInt(lblGSeqNo.Text.Trim), String.Empty)
+                    Else
+                        dicFullInjected(CInt(lblGSeqNo.Text.Trim)) = ActualInjectedValue.FirstVisit
+                        dicInjected.Add(CInt(lblGSeqNo.Text.Trim), ActualInjectedValue.FirstVisit)
+                    End If
                 End If
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End If
 
         Next
@@ -1779,6 +2230,8 @@ Public Class ucVaccinationFileDetail
         Dim dtFull As DataTable = Session(SESS.DetailFullClassDT(Me.ID))
         Dim dtClass As DataTable = Session(SESS.DetailSelectedClassDT(Me.ID))
         Dim dicInjected As Dictionary(Of Integer, String) = Session(SESS.DetailSelectedClassInjected(Me.ID))
+
+        Dim udtStudentFile As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel(Me.ID)), StudentFileHeaderModel)
 
         For Each row As GridViewRow In Me.gvD.Rows
             lblGSeqNo = CType(row.Cells(0).FindControl("lblGSeqNo"), Label)
@@ -1813,6 +2266,67 @@ Public Class ucVaccinationFileDetail
                     End If
                 End If
 
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                If IsDBNull(drVaccFileRecord("Injected")) Then
+                    drVaccFileRecord("Service_Receive_Dtm") = DBNull.Value
+
+                Else
+                    Select Case drVaccFileRecord("Injected")
+                        Case ActualInjectedValue.FirstVisit
+                            If udtStudentFile.ServiceReceiveDtm.HasValue Then
+                                drVaccFileRecord("Service_Receive_Dtm") = udtStudentFile.ServiceReceiveDtm
+                            End If
+
+                        Case ActualInjectedValue.SecondVisit
+                            If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+                                drVaccFileRecord("Service_Receive_Dtm") = udtStudentFile.ServiceReceiveDtm_2
+                            End If
+
+                        Case ActualInjectedValue.Yes
+                            If udtStudentFile.ServiceReceiveDtm.HasValue Then
+                                drVaccFileRecord("Service_Receive_Dtm") = udtStudentFile.ServiceReceiveDtm
+                            End If
+
+                            ' Convert Injected value from 'Y' to '1'
+                            If udtStudentFile.SchemeCode <> SchemeClaimModel.RVP Then
+                                drVaccFileRecord("Injected") = ActualInjectedValue.FirstVisit
+                            End If
+
+                        Case Else
+                            drVaccFileRecord("Service_Receive_Dtm") = DBNull.Value
+                    End Select
+                End If
+
+                If IsDBNull(drFullVaccFileRecord("Injected")) Then
+                    drFullVaccFileRecord("Service_Receive_Dtm") = DBNull.Value
+
+                Else
+                    Select Case drFullVaccFileRecord("Injected")
+                        Case ActualInjectedValue.FirstVisit
+                            If udtStudentFile.ServiceReceiveDtm.HasValue Then
+                                drFullVaccFileRecord("Service_Receive_Dtm") = udtStudentFile.ServiceReceiveDtm
+                            End If
+
+                        Case ActualInjectedValue.SecondVisit
+                            If udtStudentFile.ServiceReceiveDtm_2.HasValue Then
+                                drFullVaccFileRecord("Service_Receive_Dtm") = udtStudentFile.ServiceReceiveDtm_2
+                            End If
+
+                        Case ActualInjectedValue.Yes
+                            If udtStudentFile.ServiceReceiveDtm.HasValue Then
+                                drFullVaccFileRecord("Service_Receive_Dtm") = udtStudentFile.ServiceReceiveDtm
+                            End If
+
+                            ' Convert Injected value from 'Y' to '1'
+                            If udtStudentFile.SchemeCode <> SchemeClaimModel.RVP Then
+                                drFullVaccFileRecord("Injected") = ActualInjectedValue.FirstVisit
+                            End If
+
+                        Case Else
+                            drFullVaccFileRecord("Service_Receive_Dtm") = DBNull.Value
+                    End Select
+                End If
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End If
 
         Next

@@ -90,37 +90,38 @@ Partial Public Class VaccinationFileConfirmation ' 010416
     Private Sub BindGrid()
         Dim dt As DataTable = Nothing
         Dim strUserID As String = (New HCVUUserBLL).GetHCVUUser.UserID
-
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Select Case ddlGAction.SelectedValue
             Case String.Empty
                 gvStudentFile.Visible = False
 
             Case ConfirmAction.Upload
                 dt = (New StudentFileBLL).SearchStudentFile(String.Empty, String.Empty, String.Empty, String.Empty, _
-                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, _
+                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, _
                                                                      Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload))
-
 
             Case ConfirmAction.Rectify
                 dt = (New StudentFileBLL).SearchStudentFile(String.Empty, String.Empty, String.Empty, String.Empty, _
-                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, _
+                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, _
                                                                      Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify))
 
             Case ConfirmAction.Claim
                 dt = (New StudentFileBLL).SearchStudentFile(String.Empty, String.Empty, String.Empty, String.Empty, _
-                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, _
+                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, _
                                                                      Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Claim))
 
             Case ConfirmAction.ClaimReactivate
                 dt = (New StudentFileBLL).SearchStudentFile(String.Empty, String.Empty, String.Empty, String.Empty, _
-                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, _
+                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, _
                                                                      Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_ActivateTx))
 
             Case ConfirmAction.Remove
                 dt = (New StudentFileBLL).SearchStudentFile(String.Empty, String.Empty, String.Empty, String.Empty, _
-                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, _
+                                                                     strUserID, String.Empty, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, _
                                                                      Formatter.EnumToString(StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Remove))
         End Select
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         If Not IsNothing(dt) Then
             Session(SESS.SearchResultDT) = dt
@@ -161,6 +162,8 @@ Partial Public Class VaccinationFileConfirmation ' 010416
                 lblGSchoolCode.Text = dr("School_Code").ToString.Trim
             End If
 
+            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             ' Vaccination Date
             Dim lblGVaccinationDate As Label = e.Row.FindControl("lblGVaccinationDate")
 
@@ -168,6 +171,16 @@ Partial Public Class VaccinationFileConfirmation ' 010416
                 lblGVaccinationDate.Text = Me.GetGlobalResourceObject("Text", "N/A")
             Else
                 lblGVaccinationDate.Text = udtFormatter.formatDisplayDate(dr("Service_Receive_Dtm"))
+            End If
+
+            Dim lblGVaccinationDate_2 As Label = e.Row.FindControl("lblGVaccinationDate_2")
+
+            If IsDBNull(dr("Service_Receive_Dtm_2")) Then
+                lblGVaccinationDate_2.Text = String.Empty
+                lblGVaccinationDate_2.Visible = False
+            Else
+                lblGVaccinationDate_2.Text = udtFormatter.formatDisplayDate(dr("Service_Receive_Dtm_2"))
+                lblGVaccinationDate_2.Visible = True
             End If
 
             ' Vaccination Report Generation Date
@@ -178,6 +191,18 @@ Partial Public Class VaccinationFileConfirmation ' 010416
             Else
                 lblGVaccinationReportGenerationDate.Text = udtFormatter.formatDisplayDate(dr("Final_Checking_Report_Generation_Date"))
             End If
+
+            Dim lblGVaccinationReportGenerationDate_2 As Label = e.Row.FindControl("lblGVaccinationReportGenerationDate_2")
+
+            If IsDBNull(dr("Final_Checking_Report_Generation_Date_2")) Then
+                lblGVaccinationReportGenerationDate_2.Text = String.Empty
+                lblGVaccinationReportGenerationDate_2.Visible = False
+            Else
+                lblGVaccinationReportGenerationDate_2.Text = udtFormatter.formatDisplayDate(dr("Final_Checking_Report_Generation_Date_2"))
+                lblGVaccinationReportGenerationDate_2.Visible = True
+            End If
+
+            ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
             ' Subsidy / Dose to Inject
             Dim lblGDoseToInject As Label = e.Row.FindControl("lblGDoseToInject")

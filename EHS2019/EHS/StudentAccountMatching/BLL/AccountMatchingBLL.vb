@@ -49,10 +49,10 @@ Public Class AccountMatchingBLL
         Public Validated_PartialMatch As String ' Validated account found, some fields not match
         Public Pending_Manual_Validation As String ' Pending manual validation
         Public Pending_ImmD_Validation As String ' Pending ImmD validation
-        Public Doc_Type_Not_ImmD As String ' Doc. types not for ImmD validation
+        Public Doc_Type_Not_ImmD As String ' Doc. types not for ImmD validation     (Obosoleted)
         Public Removed As String ' Removed
         Public Immd_Validation_Fail As String ' ImmD validation fail
-        Public Incorrect_Missing_Info As String ' Incorrect format/Missing Information
+        Public Incorrect_Missing_Info As String ' Incorrect format/Missing Information  
         Public Doc_Type_HKBC_IC As String ' with original doc. type of hkbc/hkic
         Public Doc_Type_HKBC_Found As String ' an validated account with the same 'HKIC No.' of doc. type 'HKBC' is found
         Public Doc_Type_HKIC_Found As String ' an validated account with the same 'HKIC No.' of doc. type 'HKIC' is found
@@ -60,6 +60,8 @@ Public Class AccountMatchingBLL
         Public Terminated As String ' account is terminated
         Public Suspended As String ' account is suspended
         Public Unknown As String ' Unknown
+
+        ' Fail
         Public Create_Acct_Fail As String ' Create account failed
         Public Rectify_Acct_Fail As String ' Rectify account failed
         Public Fail_Reason_EC_DocNo_Found As String ' an account with the same 'HKIC No.' with doc. type 'EC' is found
@@ -102,7 +104,7 @@ Public Class AccountMatchingBLL
     ''' <param name="udtStudentPersonalInfo"></param>
     ''' <param name="udtEHSPersonalInfo"></param>
     ''' <returns></returns>
-    ''' <remarks></remarks>
+    ''' <remarks>Compare Entry Account Info and Validated Account Info</remarks>
     Public Function CheckPersonalInfoMatch(ByVal blnCheckDocCode As Boolean, _
                                           ByVal udtStudentPersonalInfo As EHSPersonalInformationModel, _
                                           ByVal udtEHSPersonalInfo As EHSPersonalInformationModel) As String
@@ -327,117 +329,141 @@ Public Class AccountMatchingBLL
 
         udtStudentAmend.AccDocCode = udtEHSPersonalInfo.DocCode
 
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        setAccValidationResult(udtNewEHSAccount, udtEHSPersonalInfo.DocCode, udtStudentAmend)
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+    End Sub
+
+    ''' <summary>
+    ''' set Account Validation Result to Entry
+    ''' </summary>
+    ''' <param name="udtEHSAccount"></param>
+    ''' <param name="strDocCode"></param>
+    ''' <param name="udtStudentEntry"></param>
+    ''' <remarks></remarks>
+    Public Sub setAccValidationResult(ByVal udtEHSAccount As EHSAccountModel, _
+                                           ByVal strDocCode As String, _
+                                           ByRef udtStudentEntry As StudentFileEntryModel)
+
         ' AccValidationResult
         Dim strResult As New List(Of String)
         Dim strResultChi As New List(Of String)
-
         Dim udtStudentAccountResultDesc As StudentAccountResultDesc = Me.GetStudentAccountResultDesc
         Dim udtStudentAccountResultDescChi As StudentAccountResultDesc = Me.GetStudentAccountResultDescChi
 
-        Select Case udtNewEHSAccount.RecordStatus
+        If udtEHSAccount.AccountSource = SysAccountSource.TemporaryAccount Then
 
-            Case TempAccountRecordStatusClass.Validated
-                strResult.Add(udtStudentAccountResultDesc.Validated)
-                strResultChi.Add(udtStudentAccountResultDescChi.Validated)
+            Dim udtEHSPersonalInfo As EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
 
-            Case TempAccountRecordStatusClass.PendingVerify
+            Select Case udtEHSAccount.RecordStatus
 
-                ' Check Manual or ImmD
-                If IsManualValidation(udtEHSPersonalInfo) Then
-                    strResult.Add(udtStudentAccountResultDesc.Pending_Manual_Validation)
-                    strResultChi.Add(udtStudentAccountResultDescChi.Pending_Manual_Validation)
-                Else
-                    strResult.Add(udtStudentAccountResultDesc.Pending_ImmD_Validation)
-                    strResultChi.Add(udtStudentAccountResultDescChi.Pending_ImmD_Validation)
-                End If
+                'Case TempAccountRecordStatusClass.Validated
+                '    strResult.Add(udtStudentAccountResultDesc.Validated)
+                '    strResultChi.Add(udtStudentAccountResultDescChi.Validated)
 
-            Case TempAccountRecordStatusClass.NotForImmDValidation
+                Case TempAccountRecordStatusClass.PendingVerify
 
-                ' CRE19-001 (VSS 2019) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                'Select Case udtStudentAmend.DocCode
-                '    Case StudentFileBLL.StudentFileDocTypeCode.HKIC, _
-                '        StudentFileBLL.StudentFileDocTypeCode.HKBC, _
-                '        StudentFileBLL.StudentFileDocTypeCode.HKBC_IC, _
-                '        StudentFileBLL.StudentFileDocTypeCode.EC, _
-                '        StudentFileBLL.StudentFileDocTypeCode.ADOPC, _
-                '        StudentFileBLL.StudentFileDocTypeCode.DI, _
-                '        StudentFileBLL.StudentFileDocTypeCode.VISA, _
-                '        StudentFileBLL.StudentFileDocTypeCode.REPMT, _
-                '        StudentFileBLL.StudentFileDocTypeCode.ID235B
+                    ' Check Manual or ImmD
+                    If IsManualValidation(udtEHSPersonalInfo) Then
+                        strResult.Add(udtStudentAccountResultDesc.Pending_Manual_Validation)
+                        strResultChi.Add(udtStudentAccountResultDescChi.Pending_Manual_Validation)
+                    Else
+                        strResult.Add(udtStudentAccountResultDesc.Pending_ImmD_Validation)
+                        strResultChi.Add(udtStudentAccountResultDescChi.Pending_ImmD_Validation)
+                    End If
 
-                '        strResult.Add(udtStudentAccountResultDesc.Incorrect_Missing_Info)
+                Case TempAccountRecordStatusClass.NotForImmDValidation
+                    strResult.Add(udtStudentAccountResultDesc.Incorrect_Missing_Info)
+                    strResultChi.Add(udtStudentAccountResultDescChi.Incorrect_Missing_Info)
 
-                '    Case Else
-                '        strResult.Add(udtStudentAccountResultDesc.Doc_Type_Not_ImmD)
-                '   End Select
+                Case TempAccountRecordStatusClass.InValid
+                    strResult.Add(udtStudentAccountResultDesc.Immd_Validation_Fail)
+                    strResultChi.Add(udtStudentAccountResultDescChi.Immd_Validation_Fail)
 
-                strResult.Add(udtStudentAccountResultDesc.Incorrect_Missing_Info)
-                strResultChi.Add(udtStudentAccountResultDescChi.Incorrect_Missing_Info)
+                Case TempAccountRecordStatusClass.Removed
+                    strResult.Add(udtStudentAccountResultDesc.Removed)
+                    strResultChi.Add(udtStudentAccountResultDescChi.Removed)
 
-                ' CRE19-001 (VSS 2019) [End][Winnie]
+                Case Else
+                    strResult.Add(udtStudentAccountResultDesc.Unknown)
+                    strResultChi.Add(udtStudentAccountResultDescChi.Unknown)
 
-
-            Case TempAccountRecordStatusClass.InValid
-                strResult.Add(udtStudentAccountResultDesc.Immd_Validation_Fail)
-                strResultChi.Add(udtStudentAccountResultDescChi.Immd_Validation_Fail)
-
-            Case TempAccountRecordStatusClass.Removed
-                strResult.Add(udtStudentAccountResultDesc.Removed)
-                strResultChi.Add(udtStudentAccountResultDescChi.Removed)
-
-            Case Else
-                strResult.Add(udtStudentAccountResultDesc.Unknown)
-                strResultChi.Add(udtStudentAccountResultDescChi.Unknown)
-
-        End Select
-
-        ' IC -> BC
-        If udtStudentAmend.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKIC AndAlso udtEHSPersonalInfo.DocCode = DocTypeModel.DocTypeCode.HKBC Then
-            strResult.Add(udtStudentAccountResultDesc.Doc_Type_HKBC_Found)
-            strResultChi.Add(udtStudentAccountResultDescChi.Doc_Type_HKBC_Found)
+            End Select
 
         End If
 
+        ' Validated Account found w/wo field difference
+        If udtStudentEntry.ValidatedAccFound = YesNo.Yes Then
+            If udtStudentEntry.ValidatedAccUnmatchResult = String.Empty Then
+                strResult.Add(udtStudentAccountResultDesc.Validated)
+                strResultChi.Add(udtStudentAccountResultDescChi.Validated)
+
+            Else
+                strResult.Add(udtStudentAccountResultDesc.Validated_PartialMatch)
+                strResultChi.Add(udtStudentAccountResultDescChi.Validated_PartialMatch)
+
+            End If
+        End If
+
+        ' IC -> BC
+        If udtStudentEntry.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKIC AndAlso strDocCode = DocTypeModel.DocTypeCode.HKBC Then
+            strResult.Add(udtStudentAccountResultDesc.Doc_Type_HKBC_Found)
+            strResultChi.Add(udtStudentAccountResultDescChi.Doc_Type_HKBC_Found)
+        End If
+
         ' BC -> IC
-        If udtStudentAmend.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC AndAlso udtEHSPersonalInfo.DocCode = DocTypeModel.DocTypeCode.HKIC Then
+        If udtStudentEntry.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC AndAlso strDocCode = DocTypeModel.DocTypeCode.HKIC Then
             strResult.Add(udtStudentAccountResultDesc.Doc_Type_HKIC_Found)
             strResultChi.Add(udtStudentAccountResultDescChi.Doc_Type_HKIC_Found)
         End If
 
         ' HKBC_IC
-        If udtNewEHSAccount.RecordStatus <> TempAccountRecordStatusClass.Validated Then
-            If udtStudentAmend.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC_IC Then
+        If udtEHSAccount.RecordStatus <> TempAccountRecordStatusClass.Validated Then
+            If udtStudentEntry.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC_IC Then
                 strResult.Add(udtStudentAccountResultDesc.Doc_Type_HKBC_IC)
                 strResultChi.Add(udtStudentAccountResultDescChi.Doc_Type_HKBC_IC)
             End If
         End If
 
         ' Deceased
-        If udtNewEHSAccount.Deceased = True Then
+        If udtEHSAccount.Deceased = True Then
             strResult.Add(udtStudentAccountResultDesc.Deceased)
             strResultChi.Add(udtStudentAccountResultDescChi.Deceased)
         End If
 
+        ' Record Status: Suspend / Terminated
+        If udtEHSAccount.AccountSource = SysAccountSource.ValidateAccount Then
+            Select Case udtEHSAccount.RecordStatus
+                Case ValidatedAccountRecordStatusClass.Suspended
+                    strResult.Add(udtStudentAccountResultDesc.Suspended)
+                    strResultChi.Add(udtStudentAccountResultDescChi.Suspended)
+
+                Case ValidatedAccountRecordStatusClass.Terminated
+                    strResult.Add(udtStudentAccountResultDesc.Terminated)
+                    strResultChi.Add(udtStudentAccountResultDescChi.Terminated)
+            End Select
+        End If
+
+
         If strResult.Count > 0 Then
-            udtStudentAmend.AccValidationResult = String.Format("{0}|||{1}", String.Join(", ", strResult), String.Join(", ", strResultChi))
+            udtStudentEntry.AccValidationResult = String.Format("{0}|||{1}", String.Join(", ", strResult), String.Join(", ", strResultChi))
         Else
-            udtStudentAmend.AccValidationResult = String.Empty
+            udtStudentEntry.AccValidationResult = String.Empty
         End If
 
     End Sub
 
+    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    ' -------------------------------------------------------------------------------
     ''' <summary>
     ''' Fill Student Account Info by the validated account
     ''' </summary>
     ''' <param name="udtValidatedAccount"></param>
     ''' <param name="strDocCode"></param>
-    ''' <param name="strUnmatchField"></param>
     ''' <param name="udtStudentAmend"></param>
     ''' <remarks>Some fields are already filled when matching</remarks>
     Public Sub convertValidatedAccountInfo(ByVal udtValidatedAccount As EHSAccountModel, _
                                            ByVal strDocCode As String, _
-                                           ByVal strUnmatchField As String, _
                                            ByRef udtStudentAmend As StudentFileEntryModel)
 
         udtStudentAmend.VoucherAccID = udtValidatedAccount.VoucherAccID.Trim
@@ -445,61 +471,8 @@ Public Class AccountMatchingBLL
         udtStudentAmend.ValidatedAccFound = YesNo.Yes
         udtStudentAmend.AccDocCode = strDocCode
 
-        ' Unmatch field
-        udtStudentAmend.ValidatedAccUnmatchResult = strUnmatchField
-
-        ' AccValidationResult
-        Dim strResult As New List(Of String)
-        Dim strResultChi As New List(Of String)
-        Dim udtStudentAccountResultDesc As StudentAccountResultDesc = Me.GetStudentAccountResultDesc
-        Dim udtStudentAccountResultDescChi As StudentAccountResultDesc = Me.GetStudentAccountResultDescChi
-
-        If strUnmatchField = String.Empty Then
-            strResult.Add(udtStudentAccountResultDesc.Validated)
-            strResultChi.Add(udtStudentAccountResultDescChi.Validated)
-
-        Else
-            strResult.Add(udtStudentAccountResultDesc.Validated_PartialMatch)
-            strResultChi.Add(udtStudentAccountResultDescChi.Validated_PartialMatch)
-
-        End If
-
-        ' IC -> BC
-        If udtStudentAmend.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKIC AndAlso strDocCode = DocTypeModel.DocTypeCode.HKBC Then
-            strResult.Add(udtStudentAccountResultDesc.Doc_Type_HKBC_Found)
-            strResultChi.Add(udtStudentAccountResultDescChi.Doc_Type_HKBC_Found)
-        End If
-
-        ' BC -> IC
-        If udtStudentAmend.DocCode = StudentFileBLL.StudentFileDocTypeCode.HKBC AndAlso strDocCode = DocTypeModel.DocTypeCode.HKIC Then
-            strResult.Add(udtStudentAccountResultDesc.Doc_Type_HKIC_Found)
-            strResultChi.Add(udtStudentAccountResultDescChi.Doc_Type_HKIC_Found)
-        End If
-
-        ' Deceased
-        If udtValidatedAccount.Deceased = True Then
-            strResult.Add(udtStudentAccountResultDesc.Deceased)
-            strResultChi.Add(udtStudentAccountResultDescChi.Deceased)
-        End If
-
-        ' Record Status: Suspend / Terminated
-        Select Case udtValidatedAccount.RecordStatus
-            Case ValidatedAccountRecordStatusClass.Suspended
-                strResult.Add(udtStudentAccountResultDesc.Suspended)
-                strResultChi.Add(udtStudentAccountResultDescChi.Suspended)
-
-            Case ValidatedAccountRecordStatusClass.Terminated
-                strResult.Add(udtStudentAccountResultDesc.Terminated)
-                strResultChi.Add(udtStudentAccountResultDescChi.Terminated)
-        End Select
-
-        If strResult.Count > 0 Then
-            udtStudentAmend.AccValidationResult = String.Format("{0}|||{1}", String.Join(", ", strResult), String.Join(", ", strResultChi))
-        Else
-            udtStudentAmend.AccValidationResult = String.Empty
-        End If
-
     End Sub
+    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
     Private Function getCCCode(ByVal strChineseName As String, ByVal intPosition As Integer) As String
 
@@ -564,6 +537,11 @@ Public Class AccountMatchingBLL
         Dim strFailReason As String = String.Empty
         Dim strFailReasonChi As String = String.Empty
 
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        Dim blnAllowCreateTA_DOBNotMatch = True
+        Dim blnAllowCreateTA_DocTypeOther = True
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
         Dim udtStudentAccountResultDesc As StudentAccountResultDesc = Me.GetStudentAccountResultDesc
         Dim udtStudentAccountResultDescChi As StudentAccountResultDesc = Me.GetStudentAccountResultDescChi
 
@@ -574,19 +552,19 @@ Public Class AccountMatchingBLL
 
         '------------- Validation -----------------
         ' 
-        ' CRE19-001 (VSS 2019) [Start][Winnie]
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
-        If blnValid Then
+        ' For Validated account found but DOB not match
+        If blnValid AndAlso blnAllowCreateTA_DOBNotMatch = False Then
             If eVASearchResult = enumVAcctSearchResult.DOB_Not_Match Then
                 strFailReason = udtStudentAccountResultDesc.Fail_Reason_DOB_Not_Match
                 strFailReasonChi = udtStudentAccountResultDescChi.Fail_Reason_DOB_Not_Match
-
                 blnValid = False
             End If
         End If
 
-        ' Not to create temp account for doc type 'Other'
-        If blnValid Then
+        ' For upload doc type 'Other'
+        If blnValid AndAlso blnAllowCreateTA_DocTypeOther = False Then
             Select Case udtPersonalInfo.DocCode
                 Case DocTypeModel.DocTypeCode.OTHER
                     strFailReason = udtStudentAccountResultDesc.Fail_Reason_Other_DocType
@@ -594,7 +572,7 @@ Public Class AccountMatchingBLL
                     blnValid = False
             End Select
         End If
-        ' CRE19-001 (VSS 2019) [End][Winnie]
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         ' Check field exceed size limit
         If blnValid Then
@@ -848,21 +826,28 @@ Public Class AccountMatchingBLL
                 DocTypeModel.DocTypeCode.TW,
                 DocTypeModel.DocTypeCode.IR,
                 DocTypeModel.DocTypeCode.HKP,
-                DocTypeModel.DocTypeCode.RFNo8
-                blnIsValid = Validate_NonEHSDocType(udtEHSPersonalInfo)
+                DocTypeModel.DocTypeCode.RFNo8,
+                DocTypeModel.DocTypeCode.OTHER
 
-            Case DocTypeModel.DocTypeCode.OTHER
-                blnIsValid = False
+                blnIsValid = Validate_NonEHSDocType(udtEHSPersonalInfo)
                 ' CRE19-001 (VSS 2019) [End][Winnie]
         End Select
 
-
+        ' If all are valid, pass to ImmD for validation
         If blnIsValid Then
             udtEHSAccount.RecordStatus = TempAccountRecordStatusClass.PendingVerify
         Else
             ' Missing information
             udtEHSAccount.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
         End If
+
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        ' Check Doc Type for ImmD Validation
+        If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSPersonalInfo.DocCode).IMMDorManualValidationAvailable Then
+            udtEHSAccount.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
+        End If
+        ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         udtEHSAccount.AccountPurpose = EHSAccountModel.AccountPurposeClass.ForClaim
 
@@ -1070,14 +1055,15 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
                     udtEHSPersonalInfo.Foreign_Passport_No = udtStudent.ForeignPassportNo
 
-                    ' CRE19-001 (VSS 2019) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                    ' -------------------------------------------------------------------------------
                 Case DocTypeModel.DocTypeCode.OC,
                     DocTypeModel.DocTypeCode.OW,
                     DocTypeModel.DocTypeCode.TW,
                     DocTypeModel.DocTypeCode.IR,
                     DocTypeModel.DocTypeCode.HKP,
-                    DocTypeModel.DocTypeCode.RFNo8
+                    DocTypeModel.DocTypeCode.RFNo8,
+                    DocTypeModel.DocTypeCode.OTHER
 
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
@@ -1086,9 +1072,9 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
 
-                Case DocTypeModel.DocTypeCode.OTHER
+                Case Else
                     blnFillAll = True
-                    ' CRE19-001 (VSS 2019) [End][Winnie]
+                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End Select
         End If
 
@@ -1239,15 +1225,13 @@ Public Class AccountMatchingBLL
         Dim udtValidatedAccount As EHSAccountModel = udtEHSAccountBLL.LoadEHSAccountByIdentity(strIdentityNo, strDocCode)
 
         If Not IsNothing(udtValidatedAccount) Then
-            ' VAcct with same doc no. found            
-            udtStudent.ValidatedAccFound = YesNo.Yes
-
-            Dim udtEHSPersonalInfo As EHSPersonalInformationModel
-            udtEHSPersonalInfo = udtValidatedAccount.getPersonalInformation(strDocCode)
 
             ' Check all provided fields match with VA
             Dim strUnmatchField As String = String.Empty
             Dim blnCheckDocType As Boolean = False
+
+            Dim udtEHSPersonalInfo As EHSPersonalInformationModel
+            udtEHSPersonalInfo = udtValidatedAccount.getPersonalInformation(strDocCode)
 
             ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Winnie]
             ' ----------------------------------------------------------------------------------------
@@ -1265,7 +1249,7 @@ Public Class AccountMatchingBLL
             ' CRE19-001 (VSS 2019) [Start][Winnie]
             ' ----------------------------------------------------------------------------------------
             If strUnmatchField.Contains("DOB") Then
-                ' DOB not matched but same doc no. exist, not using the VA and not allow to create temp acct
+                ' DOB not matched but same doc no. exist, not using the VA and to create temp acct
                 eVASearchResult = enumVAcctSearchResult.DOB_Not_Match
             Else
                 ' DOB matched (Other fields may be different) use the VA directly
@@ -1287,10 +1271,19 @@ Public Class AccountMatchingBLL
             'End If
             ' CRE19-001 (VSS 2019) [End][Winnie]
 
+
             If eVASearchResult = enumVAcctSearchResult.Exist Then
-                Me.convertValidatedAccountInfo(udtValidatedAccount, strDocCode, strUnmatchField, udtStudent)
+                Me.convertValidatedAccountInfo(udtValidatedAccount, strDocCode, udtStudent)
             End If
 
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
+            ' VAcct with same doc no. found            
+            udtStudent.ValidatedAccFound = YesNo.Yes
+            udtStudent.ValidatedAccUnmatchResult = strUnmatchField
+            setAccValidationResult(udtValidatedAccount, strDocCode, udtStudent)
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
         Else
             ' VA with same doc no. not exist
             eVASearchResult = enumVAcctSearchResult.Not_Found
@@ -1530,8 +1523,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.HKIC, strDOB, dtmDOB, strExactDOB)
@@ -1586,8 +1579,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.EC, strDOB, dtmDOB, strExactDOB)
@@ -1664,8 +1657,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.HKBC, strDOB, dtmDOB, strExactDOB)
@@ -1713,8 +1706,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.ADOPC, strDOB, dtmDOB, strExactDOB)
@@ -1738,8 +1731,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.DI, strDOB, dtmDOB, strExactDOB)
@@ -1787,8 +1780,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.ID235B, strDOB, dtmDOB, strExactDOB)
@@ -1837,8 +1830,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.REPMT, strDOB, dtmDOB, strExactDOB)
@@ -1892,8 +1885,8 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
         udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.VISA, strDOB, dtmDOB, strExactDOB)
@@ -1931,11 +1924,11 @@ Public Class AccountMatchingBLL
         End If
 
         'DOB
-        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB
-        Dim strDOB As String = udtformatter.formatInputDate(udtEHSPersonalInfo.DOB)
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
         Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
 
-        udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.HKBC, strDOB, dtmDOB, strExactDOB)
+        udtSM = Me.udtValidator.chkDOB(udtEHSPersonalInfo.DocCode, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If

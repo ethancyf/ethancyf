@@ -2335,7 +2335,7 @@ Namespace BLL
                 ' ---------------------------------------------------------------------------------------------------------
                 sm = udtClaimRulesBLL.CheckRectifyEHSAccount(udtEHSAccountSmartID.SchemeCode, strDocCode, _
                                                              udtEHSAccountSmartID, udtEligibleResult, Nothing, _
-                                                             ClaimRulesBLL.Eligiblity.Check)
+                                                             ClaimRulesBLL.Eligiblity.Check, ClaimRulesBLL.Unique.Include_Self_EHSAccount)
                 ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
             End If
 
@@ -2536,6 +2536,13 @@ Namespace BLL
                 udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingConfirmation
                 udtEHSAccount.EHSPersonalInformationList(0).DataEntryBy = udtDataEntry.DataEntryAccount
             End If
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSAccount.EHSPersonalInformationList(0).DocCode).IMMDorManualValidationAvailable Then
+                udtEHSAccount.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
             udtEHSAccount.CreateSPID = udtSP.SPID
             udtEHSAccount.CreateBy = udtSP.SPID
             udtEHSAccount.EHSPersonalInformationList(0).RecordStatus = "N"
@@ -2708,6 +2715,13 @@ Namespace BLL
                 udtEHSAccountModel.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingConfirmation
                 udtEHSAccountModel.EHSPersonalInformationList(0).DataEntryBy = udtDataEntry.DataEntryAccount
             End If
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSAccountModel.EHSPersonalInformationList(0).DocCode).IMMDorManualValidationAvailable Then
+                udtEHSAccountModel.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
             udtEHSAccountModel.CreateSPID = udtSP.SPID
             udtEHSAccountModel.CreateBy = udtSP.SPID
             udtEHSAccountModel.EHSPersonalInformationList(0).RecordStatus = "N"
@@ -2777,6 +2791,13 @@ Namespace BLL
                 udtEHSAccountModel.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingConfirmation
                 udtEHSAccountModel.EHSPersonalInformationList(0).DataEntryBy = udtDataEntry.DataEntryAccount
             End If
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSAccountModel.EHSPersonalInformationList(0).DocCode).IMMDorManualValidationAvailable Then
+                udtEHSAccountModel.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
             udtEHSAccountModel.CreateSPID = udtSP.SPID
             udtEHSAccountModel.CreateBy = udtSP.SPID
             udtEHSAccountModel.EHSPersonalInformationList(0).RecordStatus = "N"
@@ -2846,6 +2867,12 @@ Namespace BLL
                 udtEHSNewAccount.EHSPersonalInformationList(0).CreateBy = udtDataEntry.SPID
                 udtEHSNewAccount.CreateSPID = udtDataEntry.SPID
             End If
+
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If Not (New DocTypeBLL).getAllDocType.Filter(udtEHSNewAccount.EHSPersonalInformationList(0).DocCode).IMMDorManualValidationAvailable Then
+                udtEHSNewAccount.RecordStatus = TempAccountRecordStatusClass.NotForImmDValidation
+            End If
+            ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             Dim udtDB As New Database()
             Try

@@ -18,6 +18,43 @@
             window.open(url,"_blank","left=0,top=0,width=0,height=0");
         }
 
+        function SelectAll(chk, chkValue, grid_id) {
+
+            var chkList = chk.parentNode.parentNode.parentNode;
+            var chks = chkList.getElementsByTagName("input");
+
+            for (var i = 0; i < chks.length; i++) {
+
+                if (chks[i] != chk && chk.checked) {
+                    chks[i].checked = false;
+                }
+            }
+
+            var objGrid = document.getElementById(grid_id)
+            for (i = 0; i < objGrid.rows.length; i++) {
+                // skip header row
+                if (i == 0) { continue; }
+                
+                var inputList = objGrid.rows[i].getElementsByTagName("input");
+                for (var k = 0; k < inputList.length; k++) {
+
+                    if (inputList[k].type == "radio" || (inputList[k].type == "checkbox")) {
+                        if (chk.checked) {
+                            //If the header checkbox is checked
+                            //check all checkboxes
+                            if (inputList[k].value == chkValue) {
+                                inputList[k].checked = true;
+                            }
+                            else {
+                                inputList[k].checked = false;
+                            }
+                        }
+                    }
+                }
+            }
+  
+        }
+
         function SelectAllYes(chkY_id,chkN_id) {
             //function SelectAllYes(id) {
             var objY = document.getElementById(chkY_id)
@@ -182,7 +219,7 @@
                     </table>
                 </asp:View>
                 <asp:View ID="vResult" runat="server">
-                    <asp:GridView ID="gvR" runat="server" CssClass="gvTable" AutoGenerateColumns="False" AllowPaging="True" Width="1210px"
+                    <asp:GridView ID="gvR" runat="server" CssClass="gvTable" AutoGenerateColumns="False" AllowPaging="True" Width="1330px"
                         AllowSorting="True" OnRowDataBound="gvR_RowDataBound" OnPreRender="gvR_PreRender"
                         OnRowCommand="gvR_RowCommand" OnSorting="gvR_Sorting" OnPageIndexChanging="gvR_PageIndexChanging">
                         <Columns>
@@ -231,7 +268,7 @@
                                     <asp:Label ID="lblRStatus" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources: Text, DownloadLatestReport %>" ItemStyle-Width="100"  ItemStyle-Height="80">
+                            <asp:TemplateField HeaderText="<%$ Resources: Text, DownloadLatestReport %>" ItemStyle-Width="222"  ItemStyle-Height="80">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRDownloadLatestReport" runat="server" />
                                 </ItemTemplate>
