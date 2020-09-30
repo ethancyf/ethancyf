@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	24 March 2015
 -- CR No.:			INT15-0002
@@ -52,11 +59,19 @@ AS BEGIN
 -- =============================================
 -- Return results
 -- =============================================
+	-- (Step 1) Update [ReimbursementAuthorisation] to V under this Reimburse ID
 	UPDATE		ReimbursementAuthorisation
 	SET			Record_Status = @record_status,
 				Update_By = @update_by,
 				Update_Dtm = GETDATE()
 	WHERE		Reimburse_ID = @reimburse_id
+
+	-- (Step 2) Delete [ReimbursementServiceProvider] under this Reimburse ID
+	DELETE FROM
+		ReimbursementServiceProvider
+	WHERE
+		Reimburse_ID = @reimburse_id
+
 
 END
 GO

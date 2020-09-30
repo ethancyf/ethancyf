@@ -51,7 +51,7 @@ End If
 End code
     <div class="row notice_topTitleBox">
         <div class="col-xs-12 col-sm-12 maintenance_topTitleText">
-            <h1><strong>@Resource.Text("RegularSystemMaintenanceSchedule")</strong></h1>
+            <h1 id="skiptarget"><strong>@Resource.Text("RegularSystemMaintenanceSchedule")</strong></h1>
         </div>
     </div>
     <div class="row">

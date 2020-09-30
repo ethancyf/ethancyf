@@ -12,8 +12,11 @@ Imports System.Data.SqlClient
 Imports Common.Component
 Imports Newtonsoft.Json
 Imports Common.ComFunction
+Imports Common.Component.StaticData
 
 Public Class SPBLL
+
+    Private udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
 
     Private _getSPResult As SPResultModel
 
@@ -53,7 +56,7 @@ Public Class SPBLL
 
         End If
 
-
+  
         ' INT20-0023  Fix to hide SIV on sesson end [Start][Koala]
         '-----------------------------------------------------------------------------------------
         Dim dvSDSubsidizeGroup As DataView = dtSDSubsidizeGroup.DefaultView
@@ -144,13 +147,15 @@ Public Class SPBLL
         Dim strProfessional As String = spRequest.Profession
         Dim strSubsidy As String = spRequest.Subsidy
         Dim strArea As String = spRequest.District
+        Dim strIsNonClinic As String = spRequest.isNonClinic
+        Dim strIsFreeSub As String = spRequest.IsFreeSub
 
         Dim lstSchemeItem As List(Of SubsidizeItemList) = GetSchemeItemList(spRequest.Subsidy, strLang).Where(Function(x) Not String.IsNullOrEmpty(x.SubsidizeFeeColumnName)).ToList()
 
         Dim dt As DataTable
 
         If XMLMain.DBLink Then
-            dt = GetSearchResult(strProfessional, strSubsidy, strArea, strLang, strServiceProviderName, strPracticeName, strPracticeAddr)
+            dt = GetSearchResult(strProfessional, strSubsidy, strArea, strLang, strServiceProviderName, strPracticeName, strPracticeAddr, strIsNonClinic, strIsFreeSub)
         Else
             dt = XMLMain.XmlStringToDataTable("SpResult01")
         End If
@@ -231,7 +236,7 @@ Public Class SPBLL
         If String.IsNullOrEmpty(spRequest.InputServiceProviderName) And String.IsNullOrEmpty(spRequest.InputPracticeName) And String.IsNullOrEmpty(spRequest.InputPracticeAddress) And _
              String.IsNullOrEmpty(spRequest.Profession) And String.IsNullOrEmpty(spRequest.Subsidy) And String.IsNullOrEmpty(spRequest.District) And _
              String.IsNullOrEmpty(spRequest.PageSize) And String.IsNullOrEmpty(spRequest.PageIndex) And String.IsNullOrEmpty(spRequest.SortType) And _
-             String.IsNullOrEmpty(spRequest.RequestType) Then
+             String.IsNullOrEmpty(spRequest.RequestType) And String.IsNullOrEmpty(spRequest.isNonClinic) And String.IsNullOrEmpty(spRequest.IsFreeSub) Then
             validateResult.returnValue = False
             validateResult.lstErrCodes.Add(FunctionCode + "-" + SeverityCode.SEVE + "-" + MsgCode.MSG00004)
             udtAuditLogEntry.AddDescripton("StackTrace", "No Searching Criteria is inputted")
@@ -261,6 +266,11 @@ Public Class SPBLL
         Dim strSortField As String = spRequest.sortColName
         Dim strSortType As String = spRequest.SortType.ToUpper
 
+
+        Dim strIsNonClinic As String = spRequest.isNonClinic
+
+        Dim strIsFreeSub As String = spRequest.IsFreeSub
+
         ' Validation 
         If validateResult.lstErrCodes.Count > 0 Then
             udtAuditLogEntry.WriteLog(LogID.LOG00015, "Search end")
@@ -287,11 +297,13 @@ Public Class SPBLL
                 udtAuditLogEntry.AddDescripton("Language", strLang)
                 udtAuditLogEntry.AddDescripton("Sort Field", strSortField)
                 udtAuditLogEntry.AddDescripton("Sort Direction", strSortType)
+                udtAuditLogEntry.AddDescripton("Venue(non-clinic)", strIsNonClinic)
+                udtAuditLogEntry.AddDescripton("FreeSubsidize", strIsFreeSub)
 
                 udtAuditLogEntry.WriteStartLog(LogID.LOG00005, "Process searching start")
             End If
 
-            Dim sessionId = SessionHelper.GenerateKey("professional:" + strProfessional + "|scheme:" + strSubsidy + "|area:" + strArea + "|providerName:" + strProviderName + "|practiceName:" + strPracticeName + "|addr:" + strPracticeAddr)
+            Dim sessionId = SessionHelper.GenerateKey("professional:" + strProfessional + "|scheme:" + strSubsidy + "|area:" + strArea + "|providerName:" + strProviderName + "|practiceName:" + strPracticeName + "|addr:" + strPracticeAddr + "|IsNonClinic" + strIsNonClinic + "|IsFreeSub" + strIsFreeSub)
             If (Not IsNothing(HttpContext.Current.Session(sessionId))) Then
                 spResultList = HttpContext.Current.Session(sessionId)
             Else
@@ -312,6 +324,9 @@ Public Class SPBLL
                 udtAuditLogEntry.AddDescripton("Language", strLang)
                 udtAuditLogEntry.AddDescripton("Sort Field", strSortField)
                 udtAuditLogEntry.AddDescripton("Sort Direction", strSortType)
+                udtAuditLogEntry.AddDescripton("Venue(non-clinic)", strIsNonClinic)
+                udtAuditLogEntry.AddDescripton("FreeSubsidize", strIsFreeSub)
+
 
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00006, "Process searching complete")
             End If
@@ -591,6 +606,9 @@ Public Class SPBLL
         vm.SchemeList = lstScheme
         vm.AreaList = GetAreaList(strLang)
         vm.PointToNoteList = lstPointToNote
+        vm.VenueList = GetVenueType(strLang)
+        vm.IsFreeSubsidizeOption = GetIsFreeSubsidizeOption(strLang)
+
 
         Return vm
     End Function
@@ -692,6 +710,13 @@ Public Class SPBLL
         codeList.selectedProfession = form("hiddenSelectedProfession")
         codeList.selectedScheme = form("selectedScheme")
         codeList.selectedDistrict = form("selectedDistrict")
+        codeList.IsNonClinic = form("hiddenSelectedIsNonClinic")
+        codeList.IsFreeSub = form("IsFreeSub")
+
+
+
+
+
         'Else
         'Below is for Form input value
         codeList.InputServiceProviderNameByForm = form("InputServiceProviderName")
@@ -701,6 +726,8 @@ Public Class SPBLL
         codeList.selectedSchemeByForm = GetSchemeList(form)
         codeList.selectedDistrictByForm = GetDistrictList(form)
         codeList.SelectedTab = form("selectedTab")
+        codeList.selectedIsFreeSubByForm = IIf((form("Item_FreeSub").Split(",")(0)) = "true", "Y", "")
+        codeList.selectedIsNonClinicByForm = form("selectedIsNonClinicByForm")
         'End If
 
         codeList.queryLang = form("querylanguage") 'zh-TW
@@ -722,8 +749,10 @@ Public Class SPBLL
         Return codeList
     End Function
 
-    Public Function GetSearchResult(ByVal strProfessional As String, ByVal strService As String, ByVal strDistrictList As String, ByVal strLanguage As String, ByVal strServiceProviderName As String, ByVal strPracticeName As String, ByVal strPracticeAddr As String) As DataTable
+    Public Function GetSearchResult(ByVal strProfessional As String, ByVal strService As String, ByVal strDistrictList As String, ByVal strLanguage As String, ByVal strServiceProviderName As String, ByVal strPracticeName As String, ByVal strPracticeAddr As String, strIsNonClinic As String, strIsFreeSub As String) As DataTable
         Dim dt As New DataTable
+
+
 
         Dim prams() As SqlParameter = { _
             udtDB.MakeInParam("@ServiceProvideName", SqlDbType.NVarChar, 200, IIf(strServiceProviderName = String.Empty, DBNull.Value, strServiceProviderName)), _
@@ -732,8 +761,10 @@ Public Class SPBLL
             udtDB.MakeInParam("@Professional", SqlDbType.VarChar, 5, IIf(strProfessional = String.Empty, DBNull.Value, strProfessional)), _
             udtDB.MakeInParam("@Subsidize_Items", SqlDbType.VarChar, 200, IIf(strService = String.Empty, DBNull.Value, strService)), _
             udtDB.MakeInParam("@DistrictList", SqlDbType.VarChar, 200, IIf(strDistrictList = String.Empty, DBNull.Value, strDistrictList)), _
-            udtDB.MakeInParam("@language", SqlDbType.VarChar, 10, IIf(strLanguage = String.Empty, DBNull.Value, strLanguage)) _
-        }
+            udtDB.MakeInParam("@language", SqlDbType.VarChar, 10, IIf(strLanguage = String.Empty, DBNull.Value, strLanguage)), _
+            udtDB.MakeInParam("@IsNonClinic", SqlDbType.VarChar, 20, IIf(strLanguage = String.Empty, DBNull.Value, strIsNonClinic)), _
+            udtDB.MakeInParam("@IsFreeSub", SqlDbType.VarChar, 20, IIf(strLanguage = String.Empty, DBNull.Value, strIsFreeSub)) _
+            }
 
         udtDB.RunProc("proc_HCSD_get_PracticeList_withFee", prams, dt)
 
@@ -843,6 +874,20 @@ Public Class SPBLL
         req.SortType = RequestForm("sortType")
         req.RequestType = RequestForm("requestType")
         req.ActionReason = RequestForm("actionReason")
+
+        If (String.Compare(RequestForm("IsNonClinic"), "NonClinic") = 0) Then
+            req.isNonClinic = "Y"
+        ElseIf (String.Compare(RequestForm("IsNonClinic"), "Clinic") = 0) Then
+            req.isNonClinic = "N"
+        ElseIf (String.Compare(RequestForm("IsNonClinic"), "AnyClinic") = 0) Then
+            req.isNonClinic = "A"
+        End If
+
+
+        If (String.Compare(RequestForm("IsFreeSub"), "Y") = 0) Then
+            req.IsFreeSub = "Y"
+        End If
+
         'req.isSearch = RequestForm("isSearch")
         If RequestForm("queryLanguage") <> "" Then
             queryLang = RequestForm("queryLanguage")
@@ -964,7 +1009,6 @@ Public Class SPBLL
 
             For Each dr As DataRow In dtSDScheme.Rows
 
-
                 Dim dvSDSubsidizeGroup As DataView = dtSDSubsidizeGroup.DefaultView
                 ' INT20-0023  Fix to hide SIV on sesson end [Start][Koala]
                 '-----------------------------------------------------------------------------------------
@@ -1067,6 +1111,67 @@ Public Class SPBLL
         Return listSubsidizeItem
     End Function
 
+
+    ' Get list of Venue Item 
+    Public Function GetVenueType(strLang As String) As VenueList
+
+        Dim VenueList As VenueList = New VenueList
+
+        Dim venueItemlist As List(Of VenueItemList) = New List(Of VenueItemList)
+        Dim staticList As StaticDataModelCollection = udtStaticDataBLL.GetStaticDataListByColumnName("Venue")
+
+        For Each staticItem As StaticDataModel In staticList
+            Dim venueItem As VenueItemList = New VenueItemList
+
+            venueItem.Item_No = staticItem.ItemNo
+            venueItem.Data_Value = IIf(strLang.Equals(CultureLanguage.English, StringComparison.CurrentCultureIgnoreCase), staticItem.DataValue, staticItem.DataValueChi)
+
+            VenueList.VenueCode = staticItem.Column_Name
+
+            venueItemlist.Add(venueItem)
+
+
+
+        Next
+
+
+        VenueList.VenueItemList = venueItemlist
+
+        Return VenueList
+
+
+
+
+
+    End Function
+
+    ' Get list of Venue Item 
+    Public Function GetIsFreeSubsidizeOption(strLang As String) As IsFreeSubsidizeOption
+
+        Dim IsFreeSubsidizeOption As IsFreeSubsidizeOption = New IsFreeSubsidizeOption
+
+        Dim staticList As StaticDataModelCollection = udtStaticDataBLL.GetStaticDataListByColumnName("FreeSubsidize")
+
+        For Each staticItem As StaticDataModel In staticList
+
+            IsFreeSubsidizeOption.Item_No = staticItem.ItemNo
+            IsFreeSubsidizeOption.Data_Value = IIf(strLang.Equals(CultureLanguage.English, StringComparison.CurrentCultureIgnoreCase), staticItem.DataValue, staticItem.DataValueChi)
+
+
+
+
+        Next
+
+
+        Return IsFreeSubsidizeOption
+
+
+
+
+
+    End Function
+
+
     ' Get list of Scheme Item filter by Selected Scheme
     Public Function GetSchemeItemList(ByVal selectedScheme As String, ByVal strLang As String) As List(Of SubsidizeItemList)
         Dim listSubsidizeItem As List(Of SubsidizeItemList) = New List(Of SubsidizeItemList)
@@ -1114,7 +1219,7 @@ Public Class SPBLL
         For Each Item As DataRow In dtSubsidizeItem.Rows
             Dim searchGroup As String = CheckNull(Item("Search_Group"))
             Dim result = schemeList.Exists(Function(x) Not String.IsNullOrEmpty(searchGroup) And x.ToString() = searchGroup)
-            If String.IsNullOrEmpty(selectedScheme) Or result Then
+            If (String.IsNullOrEmpty(selectedScheme) Or result) Then
                 listSubsidizeItem.Add(New SubsidizeItemList With {
                        .CategoryCode = Item("Subsidize_Code"),
                        .SearchGroup = Item("Search_Group"),

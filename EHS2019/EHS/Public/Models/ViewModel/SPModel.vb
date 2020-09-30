@@ -22,6 +22,9 @@ Public Class SPRequest
     Public Property RequestType As String
     Public Property sortColName As String
     Public Property ActionReason As String
+    Public Property isNonClinic As String
+    Public Property IsFreeSub As String
+
     'Public Property isSearch As Boolean
 End Class
 Public Class SPResultModel

@@ -1,6 +1,6 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Public Class DetailedPaymentAnalysisRpt 
-    Inherits GrapeCity.ActiveReports.SectionReport 
+Partial Public Class DetailedPaymentAnalysisRptEHCPBasis
+    Inherits GrapeCity.ActiveReports.SectionReport
 
     'Form overrides dispose to clean up the component list.
     Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
@@ -8,7 +8,7 @@ Partial Public Class DetailedPaymentAnalysisRpt
         End If
         MyBase.Dispose(disposing)
     End Sub
-    
+
     'NOTE: The following procedure is required by the ActiveReports Designer
     'It can be modified using the ActiveReports Designer.
     'Do not modify it using the code editor.
@@ -17,13 +17,11 @@ Partial Public Class DetailedPaymentAnalysisRpt
     Private WithEvents PageFooter1 As GrapeCity.ActiveReports.SectionReportModel.PageFooter
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DetailedPaymentAnalysisRpt))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DetailedPaymentAnalysisRptEHCPBasis))
         Me.PageHeader1 = New GrapeCity.ActiveReports.SectionReportModel.PageHeader()
         Me.lblCategory = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.Shape2 = New GrapeCity.ActiveReports.SectionReportModel.Shape()
         Me.lblSPNameText = New GrapeCity.ActiveReports.SectionReportModel.Label()
-        Me.lblBankAccNameText = New GrapeCity.ActiveReports.SectionReportModel.Label()
-        Me.lblBankAccNoText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.lblAmountText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.lblSPIDText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.lblReimburseID = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
@@ -32,19 +30,16 @@ Partial Public Class DetailedPaymentAnalysisRpt
         Me.lblCutoffDateText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.lblReportDate = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.lblReportDateText = New GrapeCity.ActiveReports.SectionReportModel.Label()
-        Me.lblProfessionText = New GrapeCity.ActiveReports.SectionReportModel.Label()
+        Me.lblVerificationCase = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.lblNoOfTransText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.Detail1 = New GrapeCity.ActiveReports.SectionReportModel.Detail()
-        Me.txtRecCount = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+        Me.txtSeq_No = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.txtSPID = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.txtSPName = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-        Me.txtProfession = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-        Me.txtBankAccName = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-        Me.txtBankAccNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+        Me.txtVerificationCase = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.txtNoOfTrans = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.txtAmount = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.PageFooter1 = New GrapeCity.ActiveReports.SectionReportModel.PageFooter()
-        Me.lblRemarks1 = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.rinfoPageNo = New GrapeCity.ActiveReports.SectionReportModel.ReportInfo()
         Me.rinfoPrintedOn = New GrapeCity.ActiveReports.SectionReportModel.ReportInfo()
         Me.lblRptNo = New GrapeCity.ActiveReports.SectionReportModel.Label()
@@ -54,14 +49,16 @@ Partial Public Class DetailedPaymentAnalysisRpt
         Me.ReportFooter1 = New GrapeCity.ActiveReports.SectionReportModel.ReportFooter()
         Me.lblTotalAmountText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.txtTotalAmount = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-        Me.txtTotalRecCount = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+        Me.txtTotalSP = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         Me.lblTotalSPText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.lblTotalTranText = New GrapeCity.ActiveReports.SectionReportModel.Label()
         Me.txtTotalTran = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+        Me.lblTotalVerCasesText = New GrapeCity.ActiveReports.SectionReportModel.Label()
+        Me.txtTotalVerCases = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+        Me.lblTotalSPPText = New GrapeCity.ActiveReports.SectionReportModel.Label()
+        Me.txtTotalSpidPractice = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
         CType(Me.lblCategory, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblSPNameText, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.lblBankAccNameText, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.lblBankAccNoText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblAmountText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblSPIDText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblReimburseID, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -70,17 +67,14 @@ Partial Public Class DetailedPaymentAnalysisRpt
         CType(Me.lblCutoffDateText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblReportDate, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblReportDateText, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.lblProfessionText, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.lblVerificationCase, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblNoOfTransText, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtRecCount, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtSeq_No, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtSPID, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtSPName, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtProfession, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtBankAccName, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtBankAccNo, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtVerificationCase, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNoOfTrans, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtAmount, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.lblRemarks1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.rinfoPageNo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.rinfoPrintedOn, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblRptNo, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -88,70 +82,53 @@ Partial Public Class DetailedPaymentAnalysisRpt
         CType(Me.lblSchemeText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblTotalAmountText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtTotalAmount, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTotalRecCount, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtTotalSP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblTotalSPText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lblTotalTranText, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtTotalTran, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.lblTotalVerCasesText, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtTotalVerCases, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.lblTotalSPPText, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtTotalSpidPractice, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
         '
         'PageHeader1
         '
-        Me.PageHeader1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.lblCategory, Me.Shape2, Me.lblSPNameText, Me.lblBankAccNameText, Me.lblBankAccNoText, Me.lblAmountText, Me.lblSPIDText, Me.lblReimburseID, Me.txtCutoffDate, Me.lblDPARText, Me.lblCutoffDateText, Me.lblReportDate, Me.lblReportDateText, Me.lblProfessionText, Me.lblNoOfTransText})
-        Me.PageHeader1.Height = 0.7783332!
+        Me.PageHeader1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.lblCategory, Me.Shape2, Me.lblSPNameText, Me.lblAmountText, Me.lblSPIDText, Me.lblReimburseID, Me.txtCutoffDate, Me.lblDPARText, Me.lblCutoffDateText, Me.lblReportDate, Me.lblReportDateText, Me.lblVerificationCase, Me.lblNoOfTransText})
+        Me.PageHeader1.Height = 0.76!
         Me.PageHeader1.Name = "PageHeader1"
         '
         'lblCategory
         '
         Me.lblCategory.Height = 0.1875!
         Me.lblCategory.HyperLink = Nothing
-        Me.lblCategory.Left = 0.0000009536743!
+        Me.lblCategory.Left = 0.00000005960464!
         Me.lblCategory.Name = "lblCategory"
         Me.lblCategory.Style = "color: rgb(255,255,255)"
         Me.lblCategory.Text = "Category"
-        Me.lblCategory.Top = 0.3745!
+        Me.lblCategory.Top = 0.377!
         Me.lblCategory.Width = 1.625!
         '
         'Shape2
         '
         Me.Shape2.Height = 0.38!
-        Me.Shape2.Left = 0.0000009536743!
+        Me.Shape2.Left = 0.00000005960464!
         Me.Shape2.Name = "Shape2"
         Me.Shape2.RoundingRadius = 9.999999!
-        Me.Shape2.Top = 0.3745!
+        Me.Shape2.Top = 0.3795!
         Me.Shape2.Width = 11.0!
         '
         'lblSPNameText
         '
         Me.lblSPNameText.Height = 0.38!
         Me.lblSPNameText.HyperLink = Nothing
-        Me.lblSPNameText.Left = 1.990001!
+        Me.lblSPNameText.Left = 1.99!
         Me.lblSPNameText.Name = "lblSPNameText"
-        Me.lblSPNameText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom"
+        Me.lblSPNameText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom; ddo-cha" & _
+    "r-set: 1"
         Me.lblSPNameText.Text = "Service Provider Name"
-        Me.lblSPNameText.Top = 0.375!
+        Me.lblSPNameText.Top = 0.3775!
         Me.lblSPNameText.Width = 2.2!
-        '
-        'lblBankAccNameText
-        '
-        Me.lblBankAccNameText.Height = 0.38!
-        Me.lblBankAccNameText.HyperLink = Nothing
-        Me.lblBankAccNameText.Left = 5.180001!
-        Me.lblBankAccNameText.Name = "lblBankAccNameText"
-        Me.lblBankAccNameText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom"
-        Me.lblBankAccNameText.Text = "Bank Account Name"
-        Me.lblBankAccNameText.Top = 0.375!
-        Me.lblBankAccNameText.Width = 2.2!
-        '
-        'lblBankAccNoText
-        '
-        Me.lblBankAccNoText.Height = 0.38!
-        Me.lblBankAccNoText.HyperLink = Nothing
-        Me.lblBankAccNoText.Left = 7.450001!
-        Me.lblBankAccNoText.Name = "lblBankAccNoText"
-        Me.lblBankAccNoText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom"
-        Me.lblBankAccNoText.Text = "Bank Account No."
-        Me.lblBankAccNoText.Top = 0.3745!
-        Me.lblBankAccNoText.Width = 1.52!
         '
         'lblAmountText
         '
@@ -160,21 +137,22 @@ Partial Public Class DetailedPaymentAnalysisRpt
         Me.lblAmountText.Left = 10.1!
         Me.lblAmountText.Name = "lblAmountText"
         Me.lblAmountText.Style = "color: Black; font-size: 10pt; font-weight: bold; text-align: right; vertical-ali" & _
-    "gn: bottom"
+    "gn: bottom; ddo-char-set: 1"
         Me.lblAmountText.Text = "Amount ($)"
-        Me.lblAmountText.Top = 0.3745!
+        Me.lblAmountText.Top = 0.377!
         Me.lblAmountText.Width = 0.8!
         '
         'lblSPIDText
         '
         Me.lblSPIDText.Height = 0.38!
         Me.lblSPIDText.HyperLink = Nothing
-        Me.lblSPIDText.Left = 0.5200009!
+        Me.lblSPIDText.Left = 0.52!
         Me.lblSPIDText.Name = "lblSPIDText"
-        Me.lblSPIDText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom"
-        Me.lblSPIDText.Text = "Service Provider ID*"
-        Me.lblSPIDText.Top = 0.3745!
-        Me.lblSPIDText.Width = 1.373999!
+        Me.lblSPIDText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom; ddo-cha" & _
+    "r-set: 1"
+        Me.lblSPIDText.Text = "Service Provider ID"
+        Me.lblSPIDText.Top = 0.377!
+        Me.lblSPIDText.Width = 1.35!
         '
         'lblReimburseID
         '
@@ -184,7 +162,7 @@ Partial Public Class DetailedPaymentAnalysisRpt
         Me.lblReimburseID.Style = "font-family: Arial; font-size: 12pt; font-weight: bold; text-align: left; text-de" & _
     "coration: none; ddo-char-set: 0"
         Me.lblReimburseID.Text = "<Reimburse_ID>"
-        Me.lblReimburseID.Top = 0.0!
+        Me.lblReimburseID.Top = 0.002!
         Me.lblReimburseID.Width = 2.3125!
         '
         'txtCutoffDate
@@ -195,162 +173,140 @@ Partial Public Class DetailedPaymentAnalysisRpt
         Me.txtCutoffDate.Style = "font-family: Arial; font-size: 12pt; font-weight: bold; text-align: left; text-de" & _
     "coration: none; ddo-char-set: 0"
         Me.txtCutoffDate.Text = "<Cutoff_Date>"
-        Me.txtCutoffDate.Top = 0.187!
+        Me.txtCutoffDate.Top = 0.192!
         Me.txtCutoffDate.Width = 1.625!
         '
         'lblDPARText
         '
         Me.lblDPARText.Height = 0.1875!
-        Me.lblDPARText.Left = 0.0!
+        Me.lblDPARText.Left = 0.00000005960464!
         Me.lblDPARText.Name = "lblDPARText"
         Me.lblDPARText.Style = "font-family: Arial; font-size: 12pt; font-weight: bold; text-align: left; text-de" & _
     "coration: none; ddo-char-set: 0"
-        Me.lblDPARText.Text = "Detailed Payment Analysis Report (on Practice Basis)"
-        Me.lblDPARText.Top = 0.187!
-        Me.lblDPARText.Width = 4.937!
+        Me.lblDPARText.Text = "Detailed Payment Analysis Report (on EHCP Basis)"
+        Me.lblDPARText.Top = 0.1895!
+        Me.lblDPARText.Width = 4.482!
         '
         'lblCutoffDateText
         '
         Me.lblCutoffDateText.Height = 0.1875!
-        Me.lblCutoffDateText.Left = 5.146!
+        Me.lblCutoffDateText.Left = 5.145833!
         Me.lblCutoffDateText.Name = "lblCutoffDateText"
         Me.lblCutoffDateText.Style = "font-family: Arial; font-size: 12pt; font-weight: bold; text-align: left; text-de" & _
     "coration: none; ddo-char-set: 0"
         Me.lblCutoffDateText.Text = "Payment Cutoff Date:"
-        Me.lblCutoffDateText.Top = 0.187!
+        Me.lblCutoffDateText.Top = 0.1895!
         Me.lblCutoffDateText.Width = 1.75!
         '
         'lblReportDate
         '
         Me.lblReportDate.Height = 0.1875!
-        Me.lblReportDate.Left = 9.312668!
+        Me.lblReportDate.Left = 9.3125!
         Me.lblReportDate.Name = "lblReportDate"
         Me.lblReportDate.Style = "font-family: Arial; font-size: 12pt; font-weight: bold; text-align: left; text-de" & _
     "coration: none; ddo-char-set: 0"
         Me.lblReportDate.Text = "<Report_Date>"
-        Me.lblReportDate.Top = 0.187!
+        Me.lblReportDate.Top = 0.1895!
         Me.lblReportDate.Width = 2.0!
         '
         'lblReportDateText
         '
         Me.lblReportDateText.Height = 0.1875!
         Me.lblReportDateText.HyperLink = Nothing
-        Me.lblReportDateText.Left = 8.250168!
+        Me.lblReportDateText.Left = 8.25!
         Me.lblReportDateText.Name = "lblReportDateText"
         Me.lblReportDateText.Style = "font-size: 12pt; font-weight: bold; text-align: right; ddo-char-set: 0"
         Me.lblReportDateText.Text = "Report Date:"
-        Me.lblReportDateText.Top = 0.187!
+        Me.lblReportDateText.Top = 0.1895!
         Me.lblReportDateText.Width = 1.0625!
         '
-        'lblProfessionText
+        'lblVerificationCase
         '
-        Me.lblProfessionText.Height = 0.38!
-        Me.lblProfessionText.HyperLink = Nothing
-        Me.lblProfessionText.Left = 4.260001!
-        Me.lblProfessionText.Name = "lblProfessionText"
-        Me.lblProfessionText.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom"
-        Me.lblProfessionText.Text = "Health Profession"
-        Me.lblProfessionText.Top = 0.377!
-        Me.lblProfessionText.Width = 0.75!
+        Me.lblVerificationCase.Height = 0.38!
+        Me.lblVerificationCase.HyperLink = Nothing
+        Me.lblVerificationCase.Left = 4.26!
+        Me.lblVerificationCase.Name = "lblVerificationCase"
+        Me.lblVerificationCase.Style = "color: Black; font-size: 10pt; font-weight: bold; vertical-align: bottom; ddo-cha" & _
+    "r-set: 1"
+        Me.lblVerificationCase.Text = "EHCP selected for checking"
+        Me.lblVerificationCase.Top = 0.379!
+        Me.lblVerificationCase.Width = 4.71!
         '
         'lblNoOfTransText
         '
         Me.lblNoOfTransText.Height = 0.38!
         Me.lblNoOfTransText.HyperLink = Nothing
-        Me.lblNoOfTransText.Left = 9.070001!
+        Me.lblNoOfTransText.Left = 9.12!
         Me.lblNoOfTransText.Name = "lblNoOfTransText"
         Me.lblNoOfTransText.Style = "color: Black; font-size: 10pt; font-weight: bold; text-align: right; vertical-ali" & _
-    "gn: bottom"
+    "gn: bottom; ddo-char-set: 1"
         Me.lblNoOfTransText.Text = "No. of Transactions"
-        Me.lblNoOfTransText.Top = 0.377!
-        Me.lblNoOfTransText.Width = 0.8999996!
+        Me.lblNoOfTransText.Top = 0.3795!
+        Me.lblNoOfTransText.Width = 0.9!
         '
         'Detail1
         '
-        Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtRecCount, Me.txtSPID, Me.txtSPName, Me.txtProfession, Me.txtBankAccName, Me.txtBankAccNo, Me.txtNoOfTrans, Me.txtAmount})
+        Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtSeq_No, Me.txtSPID, Me.txtSPName, Me.txtVerificationCase, Me.txtNoOfTrans, Me.txtAmount})
         Me.Detail1.Height = 0.252!
         Me.Detail1.KeepTogether = True
         Me.Detail1.Name = "Detail1"
         '
-        'txtRecCount
+        'txtSeq_No
         '
-        Me.txtRecCount.CanGrow = False
-        Me.txtRecCount.Height = 0.25!
-        Me.txtRecCount.Left = 0.0!
-        Me.txtRecCount.Name = "txtRecCount"
-        Me.txtRecCount.Style = "font-size: 10pt; text-align: right; vertical-align: top"
-        Me.txtRecCount.Text = "<#>"
-        Me.txtRecCount.Top = 0.0!
-        Me.txtRecCount.Width = 0.42!
+        Me.txtSeq_No.DataField = "seq_no"
+        Me.txtSeq_No.Height = 0.25!
+        Me.txtSeq_No.Left = 0.0!
+        Me.txtSeq_No.Name = "txtSeq_No"
+        Me.txtSeq_No.Style = "font-size: 10pt; text-align: right; vertical-align: top"
+        Me.txtSeq_No.Text = "<Seq_No>"
+        Me.txtSeq_No.Top = 0.0!
+        Me.txtSeq_No.Width = 0.42!
         '
         'txtSPID
         '
         Me.txtSPID.CanGrow = False
-        Me.txtSPID.DataField = "sp_id_practice"
+        Me.txtSPID.DataField = "SP_ID"
         Me.txtSPID.Height = 0.25!
         Me.txtSPID.Left = 0.52!
         Me.txtSPID.Name = "txtSPID"
         Me.txtSPID.Style = "font-size: 10pt; vertical-align: top"
-        Me.txtSPID.Text = "<SP_ID_PRACTICE>"
+        Me.txtSPID.Text = "<SP_ID>"
         Me.txtSPID.Top = 0.0!
-        Me.txtSPID.Width = 1.28!
+        Me.txtSPID.Width = 1.35!
         '
         'txtSPName
         '
         Me.txtSPName.DataField = "sp_name"
         Me.txtSPName.Height = 0.25!
-        Me.txtSPName.Left = 1.99!
+        Me.txtSPName.Left = 2.0!
         Me.txtSPName.Name = "txtSPName"
         Me.txtSPName.Style = "font-size: 10pt; vertical-align: top"
         Me.txtSPName.Text = "<SP_Name>"
         Me.txtSPName.Top = 0.0!
         Me.txtSPName.Width = 2.19!
         '
-        'txtProfession
+        'txtVerificationCase
         '
-        Me.txtProfession.DataField = "Profession"
-        Me.txtProfession.Height = 0.25!
-        Me.txtProfession.Left = 4.26!
-        Me.txtProfession.Name = "txtProfession"
-        Me.txtProfession.Style = "font-size: 10pt; vertical-align: top"
-        Me.txtProfession.Text = "<Profession>"
-        Me.txtProfession.Top = 0.0!
-        Me.txtProfession.Width = 0.75!
-        '
-        'txtBankAccName
-        '
-        Me.txtBankAccName.DataField = "bank_acc_holder"
-        Me.txtBankAccName.Height = 0.25!
-        Me.txtBankAccName.Left = 5.18!
-        Me.txtBankAccName.Name = "txtBankAccName"
-        Me.txtBankAccName.Style = "font-size: 10pt; vertical-align: top"
-        Me.txtBankAccName.Text = "<Bank_acc_holder>"
-        Me.txtBankAccName.Top = 0.0!
-        Me.txtBankAccName.Width = 2.2!
-        '
-        'txtBankAccNo
-        '
-        Me.txtBankAccNo.CanGrow = False
-        Me.txtBankAccNo.DataField = "bank_account_no"
-        Me.txtBankAccNo.Height = 0.25!
-        Me.txtBankAccNo.Left = 7.45!
-        Me.txtBankAccNo.Name = "txtBankAccNo"
-        Me.txtBankAccNo.Style = "font-size: 10pt; vertical-align: top"
-        Me.txtBankAccNo.Text = "<bank_acc_no>"
-        Me.txtBankAccNo.Top = 0.0!
-        Me.txtBankAccNo.Width = 1.62!
+        Me.txtVerificationCase.DataField = "Verification_Case"
+        Me.txtVerificationCase.Height = 0.25!
+        Me.txtVerificationCase.Left = 4.26!
+        Me.txtVerificationCase.Name = "txtVerificationCase"
+        Me.txtVerificationCase.Style = "font-size: 10pt; vertical-align: top"
+        Me.txtVerificationCase.Text = "<Verification Case>"
+        Me.txtVerificationCase.Top = 0.0!
+        Me.txtVerificationCase.Width = 0.75!
         '
         'txtNoOfTrans
         '
         Me.txtNoOfTrans.CanGrow = False
-        Me.txtNoOfTrans.DataField = "total_trans"
+        Me.txtNoOfTrans.DataField = "Total_Transaction"
         Me.txtNoOfTrans.Height = 0.25!
         Me.txtNoOfTrans.Left = 9.12!
         Me.txtNoOfTrans.Name = "txtNoOfTrans"
         Me.txtNoOfTrans.Style = "font-size: 10pt; text-align: right"
         Me.txtNoOfTrans.Text = "<No of Trans>"
         Me.txtNoOfTrans.Top = 0.0!
-        Me.txtNoOfTrans.Width = 0.85!
+        Me.txtNoOfTrans.Width = 0.9!
         '
         'txtAmount
         '
@@ -367,20 +323,9 @@ Partial Public Class DetailedPaymentAnalysisRpt
         '
         'PageFooter1
         '
-        Me.PageFooter1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.lblRemarks1, Me.rinfoPageNo, Me.rinfoPrintedOn, Me.lblRptNo, Me.lblPrintedOnText})
+        Me.PageFooter1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.rinfoPageNo, Me.rinfoPrintedOn, Me.lblRptNo, Me.lblPrintedOnText})
         Me.PageFooter1.Height = 0.779!
         Me.PageFooter1.Name = "PageFooter1"
-        '
-        'lblRemarks1
-        '
-        Me.lblRemarks1.Height = 0.1875!
-        Me.lblRemarks1.HyperLink = Nothing
-        Me.lblRemarks1.Left = 0.0!
-        Me.lblRemarks1.Name = "lblRemarks1"
-        Me.lblRemarks1.Style = "font-size: 8.25pt; ddo-char-set: 0"
-        Me.lblRemarks1.Text = "*Service Provider ID (Practice Number)"
-        Me.lblRemarks1.Top = 0.0!
-        Me.lblRemarks1.Width = 2.125!
         '
         'rinfoPageNo
         '
@@ -446,86 +391,134 @@ Partial Public Class DetailedPaymentAnalysisRpt
         '
         'ReportFooter1
         '
-        Me.ReportFooter1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.lblTotalAmountText, Me.txtTotalAmount, Me.txtTotalRecCount, Me.lblTotalSPText, Me.lblTotalTranText, Me.txtTotalTran})
-        Me.ReportFooter1.Height = 1.385!
+        Me.ReportFooter1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.lblTotalAmountText, Me.txtTotalAmount, Me.txtTotalSP, Me.lblTotalSPText, Me.lblTotalTranText, Me.txtTotalTran, Me.lblTotalVerCasesText, Me.txtTotalVerCases, Me.lblTotalSPPText, Me.txtTotalSpidPractice})
+        Me.ReportFooter1.Height = 1.464583!
         Me.ReportFooter1.KeepTogether = True
         Me.ReportFooter1.Name = "ReportFooter1"
         '
         'lblTotalAmountText
         '
-        Me.lblTotalAmountText.Height = 0.1875!
+        Me.lblTotalAmountText.Height = 0.1880001!
         Me.lblTotalAmountText.HyperLink = Nothing
-        Me.lblTotalAmountText.Left = 3.5!
+        Me.lblTotalAmountText.Left = 2.273!
         Me.lblTotalAmountText.Name = "lblTotalAmountText"
         Me.lblTotalAmountText.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; ddo-char-set: 0"
-        Me.lblTotalAmountText.Text = "Total Amount Claimed ($):"
-        Me.lblTotalAmountText.Top = 0.8125!
-        Me.lblTotalAmountText.Width = 2.125!
+        Me.lblTotalAmountText.Text = "Total Amount Claimed ($) :"
+        Me.lblTotalAmountText.Top = 0.8930001!
+        Me.lblTotalAmountText.Width = 3.35!
         '
         'txtTotalAmount
         '
         Me.txtTotalAmount.CanGrow = False
         Me.txtTotalAmount.DataField = "total_amount"
-        Me.txtTotalAmount.Height = 0.1875!
-        Me.txtTotalAmount.Left = 5.625!
+        Me.txtTotalAmount.Height = 0.1875001!
+        Me.txtTotalAmount.Left = 5.63!
         Me.txtTotalAmount.Name = "txtTotalAmount"
         Me.txtTotalAmount.OutputFormat = resources.GetString("txtTotalAmount.OutputFormat")
         Me.txtTotalAmount.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; vertical-align: middle; " & _
     "ddo-char-set: 0"
         Me.txtTotalAmount.SummaryType = GrapeCity.ActiveReports.SectionReportModel.SummaryType.GrandTotal
         Me.txtTotalAmount.Text = "<total_amount>"
-        Me.txtTotalAmount.Top = 0.81!
+        Me.txtTotalAmount.Top = 0.8930001!
         Me.txtTotalAmount.Width = 0.875!
         '
-        'txtTotalRecCount
+        'txtTotalSP
         '
-        Me.txtTotalRecCount.CanGrow = False
-        Me.txtTotalRecCount.Height = 0.1875!
-        Me.txtTotalRecCount.Left = 5.625!
-        Me.txtTotalRecCount.Name = "txtTotalRecCount"
-        Me.txtTotalRecCount.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; vertical-align: middle; " & _
+        Me.txtTotalSP.CanGrow = False
+        Me.txtTotalSP.Height = 0.1875001!
+        Me.txtTotalSP.Left = 5.63!
+        Me.txtTotalSP.Name = "txtTotalSP"
+        Me.txtTotalSP.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; vertical-align: middle; " & _
     "ddo-char-set: 0"
-        Me.txtTotalRecCount.Text = "<total_spid_practice>"
-        Me.txtTotalRecCount.Top = 0.3125!
-        Me.txtTotalRecCount.Width = 0.875!
+        Me.txtTotalSP.Text = "<total_spid>"
+        Me.txtTotalSP.Top = 0.1430001!
+        Me.txtTotalSP.Width = 0.875!
         '
         'lblTotalSPText
         '
-        Me.lblTotalSPText.Height = 0.1875!
+        Me.lblTotalSPText.Height = 0.1880001!
         Me.lblTotalSPText.HyperLink = Nothing
-        Me.lblTotalSPText.Left = 2.3125!
+        Me.lblTotalSPText.Left = 2.273!
         Me.lblTotalSPText.Name = "lblTotalSPText"
         Me.lblTotalSPText.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; ddo-char-set: 0"
-        Me.lblTotalSPText.Text = "Total No. of Service Provider ID (Practice Number):"
-        Me.lblTotalSPText.Top = 0.3125!
-        Me.lblTotalSPText.Width = 3.3125!
+        Me.lblTotalSPText.Text = "Total No. of Service Provider ID :"
+        Me.lblTotalSPText.Top = 0.1430001!
+        Me.lblTotalSPText.Width = 3.35!
         '
         'lblTotalTranText
         '
-        Me.lblTotalTranText.Height = 0.1875!
+        Me.lblTotalTranText.Height = 0.1880001!
         Me.lblTotalTranText.HyperLink = Nothing
-        Me.lblTotalTranText.Left = 3.5!
+        Me.lblTotalTranText.Left = 2.273!
         Me.lblTotalTranText.Name = "lblTotalTranText"
         Me.lblTotalTranText.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; ddo-char-set: 0"
-        Me.lblTotalTranText.Text = "Total No. of Transactions:"
-        Me.lblTotalTranText.Top = 0.56!
-        Me.lblTotalTranText.Width = 2.125!
+        Me.lblTotalTranText.Text = "Total No. of Transactions :"
+        Me.lblTotalTranText.Top = 0.6370001!
+        Me.lblTotalTranText.Width = 3.35!
         '
         'txtTotalTran
         '
         Me.txtTotalTran.CanGrow = False
-        Me.txtTotalTran.DataField = "total_trans"
-        Me.txtTotalTran.Height = 0.1875!
+        Me.txtTotalTran.DataField = "Total_Transaction"
+        Me.txtTotalTran.Height = 0.1875001!
         Me.txtTotalTran.Left = 5.63!
         Me.txtTotalTran.Name = "txtTotalTran"
         Me.txtTotalTran.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; vertical-align: middle; " & _
     "white-space: inherit; ddo-char-set: 0"
         Me.txtTotalTran.SummaryType = GrapeCity.ActiveReports.SectionReportModel.SummaryType.GrandTotal
         Me.txtTotalTran.Text = "<total_trans>"
-        Me.txtTotalTran.Top = 0.56!
+        Me.txtTotalTran.Top = 0.6370001!
         Me.txtTotalTran.Width = 0.875!
         '
-        'DetailedPaymentAnalysisRpt
+        'lblTotalVerCasesText
+        '
+        Me.lblTotalVerCasesText.Height = 0.1880001!
+        Me.lblTotalVerCasesText.HyperLink = Nothing
+        Me.lblTotalVerCasesText.Left = 2.273!
+        Me.lblTotalVerCasesText.Name = "lblTotalVerCasesText"
+        Me.lblTotalVerCasesText.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; ddo-char-set: 0"
+        Me.lblTotalVerCasesText.Text = "Total No. of EHCPs Selected for Checking :"
+        Me.lblTotalVerCasesText.Top = 1.149!
+        Me.lblTotalVerCasesText.Width = 3.35!
+        '
+        'txtTotalVerCases
+        '
+        Me.txtTotalVerCases.CanGrow = False
+        Me.txtTotalVerCases.Height = 0.1875001!
+        Me.txtTotalVerCases.Left = 5.63!
+        Me.txtTotalVerCases.Name = "txtTotalVerCases"
+        Me.txtTotalVerCases.OutputFormat = resources.GetString("txtTotalVerCases.OutputFormat")
+        Me.txtTotalVerCases.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; vertical-align: middle; " & _
+    "ddo-char-set: 0"
+        Me.txtTotalVerCases.Text = "<Verification_Case>"
+        Me.txtTotalVerCases.Top = 1.149!
+        Me.txtTotalVerCases.Width = 0.875!
+        '
+        'lblTotalSPPText
+        '
+        Me.lblTotalSPPText.Height = 0.1880001!
+        Me.lblTotalSPPText.HyperLink = Nothing
+        Me.lblTotalSPPText.Left = 2.273!
+        Me.lblTotalSPPText.Name = "lblTotalSPPText"
+        Me.lblTotalSPPText.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; ddo-char-set: 0"
+        Me.lblTotalSPPText.Text = "Total No. of Service Provider ID (Practice Number) :"
+        Me.lblTotalSPPText.Top = 0.3810001!
+        Me.lblTotalSPPText.Width = 3.35!
+        '
+        'txtTotalSpidPractice
+        '
+        Me.txtTotalSpidPractice.CanGrow = False
+        Me.txtTotalSpidPractice.Height = 0.1875001!
+        Me.txtTotalSpidPractice.Left = 5.63!
+        Me.txtTotalSpidPractice.Name = "txtTotalSpidPractice"
+        Me.txtTotalSpidPractice.OutputFormat = resources.GetString("txtTotalSpidPractice.OutputFormat")
+        Me.txtTotalSpidPractice.Style = "font-size: 9.75pt; font-weight: bold; text-align: right; vertical-align: middle; " & _
+    "ddo-char-set: 0"
+        Me.txtTotalSpidPractice.Text = "<total_spid_practice>"
+        Me.txtTotalSpidPractice.Top = 0.3810001!
+        Me.txtTotalSpidPractice.Width = 0.875!
+        '
+        'DetailedPaymentAnalysisRptEHCPBasis
         '
         Me.MasterReport = False
         Me.PageSettings.Margins.Bottom = 0.5!
@@ -549,8 +542,6 @@ Partial Public Class DetailedPaymentAnalysisRpt
         Me.Watermark = CType(resources.GetObject("$this.Watermark"), System.Drawing.Image)
         CType(Me.lblCategory, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblSPNameText, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.lblBankAccNameText, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.lblBankAccNoText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblAmountText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblSPIDText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblReimburseID, System.ComponentModel.ISupportInitialize).EndInit()
@@ -559,17 +550,14 @@ Partial Public Class DetailedPaymentAnalysisRpt
         CType(Me.lblCutoffDateText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblReportDate, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblReportDateText, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.lblProfessionText, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.lblVerificationCase, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblNoOfTransText, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtRecCount, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtSeq_No, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtSPID, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtSPName, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtProfession, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtBankAccName, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtBankAccNo, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtVerificationCase, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNoOfTrans, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtAmount, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.lblRemarks1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.rinfoPageNo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.rinfoPrintedOn, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblRptNo, System.ComponentModel.ISupportInitialize).EndInit()
@@ -577,10 +565,14 @@ Partial Public Class DetailedPaymentAnalysisRpt
         CType(Me.lblSchemeText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblTotalAmountText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtTotalAmount, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTotalRecCount, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtTotalSP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblTotalSPText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lblTotalTranText, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtTotalTran, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.lblTotalVerCasesText, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtTotalVerCases, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.lblTotalSPPText, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtTotalSpidPractice, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
     End Sub
@@ -588,21 +580,16 @@ Partial Public Class DetailedPaymentAnalysisRpt
     Private WithEvents lblCategory As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents Shape2 As GrapeCity.ActiveReports.SectionReportModel.Shape
     Private WithEvents lblSPNameText As GrapeCity.ActiveReports.SectionReportModel.Label
-    Private WithEvents lblBankAccNameText As GrapeCity.ActiveReports.SectionReportModel.Label
-    Private WithEvents lblBankAccNoText As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents lblAmountText As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents lblSPIDText As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents txtSPID As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Private WithEvents txtSPName As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Friend WithEvents ReportHeader1 As GrapeCity.ActiveReports.SectionReportModel.ReportHeader
-    Private WithEvents txtBankAccName As GrapeCity.ActiveReports.SectionReportModel.TextBox
-    Private WithEvents txtBankAccNo As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Private WithEvents txtAmount As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Private WithEvents ReportFooter1 As GrapeCity.ActiveReports.SectionReportModel.ReportFooter
     Friend WithEvents lblTotalAmountText As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents txtTotalAmount As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Friend WithEvents txtCutoffDate As GrapeCity.ActiveReports.SectionReportModel.TextBox
-    Friend WithEvents lblRemarks1 As GrapeCity.ActiveReports.SectionReportModel.Label
     Friend WithEvents rinfoPageNo As GrapeCity.ActiveReports.SectionReportModel.ReportInfo
     Friend WithEvents rinfoPrintedOn As GrapeCity.ActiveReports.SectionReportModel.ReportInfo
     Friend WithEvents lblRptNo As GrapeCity.ActiveReports.SectionReportModel.Label
@@ -611,14 +598,18 @@ Partial Public Class DetailedPaymentAnalysisRpt
     Friend WithEvents lblPrintedOnText As GrapeCity.ActiveReports.SectionReportModel.Label
     Friend WithEvents lblReportDateText As GrapeCity.ActiveReports.SectionReportModel.Label
     Friend WithEvents lblReportDate As GrapeCity.ActiveReports.SectionReportModel.TextBox
-    Private WithEvents txtRecCount As GrapeCity.ActiveReports.SectionReportModel.TextBox
-    Private WithEvents txtTotalRecCount As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    Private WithEvents txtSeq_No As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    Private WithEvents txtTotalSP As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Friend WithEvents lblTotalSPText As GrapeCity.ActiveReports.SectionReportModel.Label
     Friend WithEvents lblSchemeText As GrapeCity.ActiveReports.SectionReportModel.TextBox
-    Private WithEvents lblProfessionText As GrapeCity.ActiveReports.SectionReportModel.Label
+    Private WithEvents lblVerificationCase As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents lblNoOfTransText As GrapeCity.ActiveReports.SectionReportModel.Label
-    Private WithEvents txtProfession As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    Private WithEvents txtVerificationCase As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Private WithEvents txtNoOfTrans As GrapeCity.ActiveReports.SectionReportModel.TextBox
     Friend WithEvents lblTotalTranText As GrapeCity.ActiveReports.SectionReportModel.Label
     Private WithEvents txtTotalTran As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    Private WithEvents lblTotalVerCasesText As GrapeCity.ActiveReports.SectionReportModel.Label
+    Friend WithEvents txtTotalVerCases As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    Private WithEvents txtTotalSpidPractice As GrapeCity.ActiveReports.SectionReportModel.TextBox
+    Friend WithEvents lblTotalSPPText As GrapeCity.ActiveReports.SectionReportModel.Label
 End Class

@@ -7,9 +7,10 @@ End Code
         <div class="row">
             <div class="col-sm-12">
                 <div class="row">
-                    <div id="skiptarget" class="col-sm-12 text-1" style="padding-top: 30px;">
+
+                    <h1 id="skiptarget" class="col-sm-12 text-1" style="padding-top: 30px;">
                         @Resource.Text("LandingPageTitle")
-                    </div>
+                    </h1>
                 </div>
                 <div class="row" style="padding-top: 30px;margin-bottom:40px;">
                     <div class="col-xs-12 col-sm-6">
@@ -22,7 +23,7 @@ End Code
                                     <div class="row srcleftImgDiv" style="background:rgba(222,150,63,0.85);">
                                         <div class="visible-xs col-xs-3" style="text-align:center">
 
-                                        <img src="~/Image/common/artwork-menu-1.png" class="img-responsive scr_leftimg" alt="" />
+                                            <img src="~/Image/common/artwork-menu-1.png" class="img-responsive scr_leftimg" alt="" />
                                     </div>
                                     <div class="col-xs-9 col-sm-12">
                                         <div class="row section-row-1">
@@ -48,7 +49,7 @@ End Code
                                 <div class="row srcleftImgDiv" style="background:rgba(33,167,121,0.85);">
                                     <div class="visible-xs col-xs-3" style="text-align:center">
 
-                                        <img src="~/Image/common/artwork-menu-2.png" class="img-responsive scr_leftimg" alt="" />
+                                        <img src="~/Image/common/artwork-menu-2.png" class="img-responsive scr_leftimg" alt="Menu" />
                                     </div>
                                     <div class="col-xs-9 col-sm-12">
                                         <div class="row section-row-1">

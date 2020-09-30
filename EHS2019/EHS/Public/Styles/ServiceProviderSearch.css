@@ -239,6 +239,28 @@
         cursor: not-allowed;
         color: #8D8D8F !important;
     }
+    
+    .multiple_chk_row_container{
+        display: flex; 
+        justify-content:space-between ;
+     
+    }
+    
+   .multiple_chk_container{
+        min-width:15%;
+        word-wrap:break-word;
+    }
+
+     .multiple_chk_container.disabled{
+        cursor: not-allowed;
+        color: #8D8D8F !important;
+    }
+
+ .multiple_chk_row_container.disabled{
+        cursor: not-allowed;
+        color: #8D8D8F !important;
+    }
+    
 
 .area {
     font-weight: 600;
@@ -436,6 +458,7 @@ ul.nav.nav-pills::after {
         padding: 0px;
         min-width: 100px;
         cursor: pointer;
+    background:#E8F4FC;
     }
 
 
@@ -447,6 +470,8 @@ ul.nav.nav-pills::after {
 
     .SPTable .right-cell {
         border-radius: 0px 10px 10px 0px;
+  		text-align:center ;
+         background:#E8F4FC;
     }
 
     .SPTable .tr-header {
@@ -616,6 +641,10 @@ ul.nav.nav-pills::after {
 
         .practice_detail_VACCFee li:last-child {
             padding-bottom: 0;
+        }
+		
+		  .practice_detail_VACCFee li:not(:first-child) div:first-child {
+           width:80%
         }
 
 .modal {

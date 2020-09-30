@@ -734,6 +734,7 @@ Public Class SearchEngineBLL
         dtResult.Columns.Add(New DataColumn("completionTime", GetType(Date)))
         dtResult.Columns.Add(New DataColumn("Scheme_Code", GetType(String)))
         dtResult.Columns.Add(New DataColumn("Display_Code", GetType(String)))
+        dtResult.Columns.Add(New DataColumn("Verification_Case_Available", GetType(String))) ' CRE17-004 Generate a new DPAR on EHCP basis [Dickson]
 
         Dim dt As New DataTable
 
@@ -781,6 +782,7 @@ Public Class SearchEngineBLL
             drResult("totalAmountRMB") = dr("totalAmountRMB") ' CRE13-019-02 Extend HCVS to China [Lawrence]
             drResult("Scheme_Code") = dr("Scheme_Code")
             drResult("Display_Code") = dr("Display_Code")
+            drResult("Verification_Case_Available") = dr("Verification_Case_Available") ' CRE17-004 Generate a new DPAR on EHCP basis [Dickson]
 
             dtResult.Rows.Add(drResult)
         Next

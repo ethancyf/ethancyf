@@ -5,6 +5,8 @@
 <%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc2" %>
 <%@ Register Src="ClaimTransDetail.ascx" TagName="ClaimTransDetail" TagPrefix="uc3" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp"
+    TagPrefix="uc4" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="ContentPlaceHolderHead" runat="server">
     <style type="text/css">
@@ -435,10 +437,30 @@
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="<%$ Resources:Text, DPAReport %>" SortExpression="lineNum">
                                             <ItemTemplate>
-                                                <asp:ImageButton ID="ibtn_printer" runat="server" CausesValidation="false" CommandName="ReprintReport"
-                                                    ImageUrl="<%$ Resources:ImageUrl, SmallPrinter %>" AlternateText="<%$ Resources:AlternateText, ReprintReportBtn %>" />
+                                                <table style="width: 100%">
+                                                    <div runat="server" id="div_EHCP">
+                                                    <tr>
+                                                        <td>
+                                                            <asp:Image id ="imgPrinter_EHCP" AlternateText="<%$ Resources:AlternateText, ReprintDPAReportEHCPBtn %>" ImageUrl="<%$ Resources:ImageUrl, SmallPrinter %>" runat="server" />
+                                                        </td>
+                                                        <td>
+                                                            <asp:LinkButton id="lbtnPrint_EHCPRpt" Text="<%$ Resources:Text, DPAReportEHCP %>" CommandName="ReprintDPAReportEHCP" CausesValidation="false"  runat="server"/>      
+                                                        </td>
+                                                    </tr>
+                                                    </div>
+                                                    <div runat="server" id="div_Practice">
+                                                    <tr>
+                                                        <td>
+                                                           <asp:Image id ="imgPrinter_Practice" AlternateText="<%$ Resources:AlternateText, ReprintDPAReportPracticeBtn %>" ImageUrl="<%$ Resources:ImageUrl, SmallPrinter %>" runat="server" />
+                                                        </td>
+                                                        <td>
+                                                            <asp:LinkButton id="lbtn_PrintPracticeRpt" Text="<%$ Resources:Text, DPAReportPractice %>" CommandName="ReprintDPAReportPractice" CausesValidation="false"  runat="server"/>
+                                                        </td>
+                                                    </tr>
+                                                    </div>
+                                                </table>                                             
                                             </ItemTemplate>
-                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Top" Width="120px" />
+                                            <ItemStyle HorizontalAlign="left" VerticalAlign="Top" Width="120px" />
                                         </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
@@ -450,7 +472,7 @@
                                                 AlternateText="<%$ Resources:AlternateText, BackBtn %>" OnClick="ibtnBack_Click" />
                                         </td>
                                     </tr>
-                                </table>
+                                </table>          
                             </asp:View>
                             <asp:View ID="ViewDrillSPID" runat="server" EnableTheming="False">
                                 <asp:GridView ID="gvDrillSPID" runat="server" EnableTheming="True" AutoGenerateColumns="False"
@@ -690,6 +712,125 @@
                     </ContentTemplate>
                 </cc1:TabPanel>
             </cc1:TabContainer>
+                        <asp:Button Style="display: none" ID="btnHiddenDownload" runat="server" />
+            <cc1:ModalPopupExtender ID="mpeDownload" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnHiddenDownload" PopupControlID="pnlDownload" RepositionMode="None"
+                PopupDragHandleControlID="pnlDownloadHeading" />
+            <asp:Panel ID="pnlDownload" runat="server" Style="display: none" defaultbutton="ibtnDownload">
+                <div id="ctl00_ContentPlaceHolder1_pnlDownloadHeading" style="cursor: move">
+
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 850px">
+                        <tr>
+                            <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                            <td style="padding-left: 2px; font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
+                                <asp:Label ID="lblDownloadTitle" runat="server" Text="<%$ Resources:Text, DownloadLatestReport %>" />
+                            </td>
+                            <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px; position: relative; left: -2px"></td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 850px">
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                        <td align="center" style="background-color: #ffffff">
+                            <br />
+                            <cc2:MessageBox ID="udcDownloadErrorMessage" runat="server" Width="800px" />
+                            <cc2:InfoMessageBox ID="udcDownloadInfoMessage" runat="server" Width="800px" />
+                            <table cellpadding="0" cellspacing="0" style="width: 800px">
+                                <tr>
+                                    <td style="width: 150px; height: 36px" valign="top">
+                                        <asp:Label ID="lblReportTypeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ReportType %>" />
+                                    </td>
+                                    <td style="height: 36px" valign="top">
+                                        <asp:Label ID="lblReportType" runat="server" CssClass="tableText" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 36px" valign="top">
+                                        <asp:Label ID="lblNewPassword" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SetPassword %>" />
+                                    </td>
+                                    <td valign="top">
+                                        <table cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td align="left" valign="top">
+                                                    <asp:TextBox ID="txtNewPassword" runat="server" MaxLength="15" TextMode="Password" Width="200px" />
+                                                    <asp:Image ID="imgErrNewPassword" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
+                                                </td>
+                                                <td valign="top">
+                                                    <table cellpadding="0" style="width: 290px">
+                                                        <tr>
+                                                            <td colspan="5">
+                                                                <div id="progressBar" style="border-right: white 1px solid; border-top: white 1px solid; font-size: 1px; border-left: white 1px solid; width: 290px; border-bottom: white 1px solid; height: 10px">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="width: 290px">
+                                                            <td align="center" style="width: 30%">
+                                                                <span id="strength1"></span>
+                                                            </td>
+                                                            <td style="width: 5%">
+                                                                <span id="direction1"></span>
+                                                            </td>
+                                                            <td align="center" style="width: 30%">
+                                                                <span id="strength2"></span>
+                                                            </td>
+                                                            <td style="width: 5%">
+                                                                <span id="direction2"></span>
+                                                            </td>
+                                                            <td align="center" style="width: 30%">
+                                                                <span id="strength3"></span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" />
+                                    <td valign="top">
+                                        <asp:Label ID="lblFilePasswordTipsHeader" runat="server" Text="<%$ Resources:Text, FileDownloadPasswordTips %>" />
+                                        <br />
+                                        <asp:Label ID="lblFilePasswordTips1" runat="server" Text="<%$ Resources:Text, WebPasswordTips1-3Rule %>" />
+                                        <br />
+                                        &nbsp; &nbsp;<asp:Label ID="lblFilePasswordTips1a" runat="server" Text="<%$ Resources:Text, WebPasswordTips1a %>" />
+                                        <br />
+                                        &nbsp; &nbsp;<asp:Label ID="lblFilePasswordTips1b" runat="server" Text="<%$ Resources:Text, WebPasswordTips1b %>" />
+                                        <br />
+                                        &nbsp; &nbsp;<asp:Label ID="lblFilePasswordTips1c" runat="server" Text="<%$ Resources:Text, WebPasswordTips1c %>" />
+                                        <br />
+                                        &nbsp; &nbsp;<asp:Label ID="lblFilePasswordTips1d" runat="server" Text="<%$ Resources:Text, WebPasswordTips1d %>" />
+                                        <br />
+                                        <asp:Label ID="lblFilePasswordTips2" runat="server" Text="<%$ Resources:Text, FilePasswordTips2 %>" />
+                                        <br />
+                                        <asp:Label ID="lblFilePasswordTips3" runat="server" Text="<%$ Resources:Text, WebPasswordTips3 %>" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="center" valign="top" style="padding-top: 15px; padding-bottom: 10px">
+
+                                        <asp:ImageButton ID="ibtnDownload" name="ibtnDownload" runat="server" ImageUrl="../Images/button/btn_download.png" alt="Download" Style="border-width: 0px;" />
+                                        &nbsp;&nbsp;&nbsp;    
+                                        <input type="image" name="ctl00$ContentPlaceHolder1$ibtnDownloadClose" id="ctl00_ContentPlaceHolder1_ibtnDownloadClose" src="../Images/button/btn_close.png" alt="Close" style="border-width: 0px;" />
+
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                    </tr>
+                    <tr>
+                        <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                        <td style="background-image: url(../Images/dialog/bottom-right.png); width: 9px; height: 7px; position: relative; left: -2px"></td>
+                    </tr>
+                </table>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
 

@@ -183,15 +183,44 @@ End Code
                                                                 <span>@item.SchemeDesc</span>
                                                             </div>
                                                         </li>
-                                                        @For Each subsidyItem As SelectListItem In item.SubsidyList
-                                                            @<li>
-                                                                <div class="chk_container">
-                                                                    <span>@subsidyItem.Text</span>
-                                                                    @Html.CheckBox("SchemeItem_" + subsidyItem.Value, New With {.class = "chk chkScheme", .aria_label = subsidyItem.Text, .id = subsidyItem.Value, .name = "SchemeItem"})
+
+                                                      
+                                                        <li style ="font-weight:bold;">
+                                                            <div class="chk_container" style="margin-left:0">
+                                                                <span>@Model.IsFreeSubsidizeOption.Data_Value</span>
+                                                                @Html.CheckBox("Item_" + Model.IsFreeSubsidizeOption.Item_No, New With {.class = "chk chkFreeSub", .aria_label = Model.IsFreeSubsidizeOption.Item_No, .id = Model.IsFreeSubsidizeOption.Item_No, .name = "FreeSubsidizeItem"})
+                                                            </div>
+                                                        </li>
+                                                        @Html.HiddenFor(Function(model) model.IsFreeSub, New With {.id = "IsFreeSub"})
+
+                                                        <li style="font-weight:bold; padding-top:3%;"><span>@Resource.Text("VSS_Venue_Gp_Name")</span></li>
+                                                        <div class="multiple_chk_row_container radioCheckBox_row_container">
+                                                            @For Each venueItem As VenueItemList In Model.VenueList.VenueItemList
+
+                                                                @<div class="chk_container multiple_chk_container radioCheckBox_container">
+                                                                    <span>@venueItem.Data_Value</span>
+                                                                     &nbsp;&nbsp;
+                                                                    @Html.RadioButtonFor(Function(model) model.selectedIsNonClinicByForm, venueItem.Item_No, New With {.class = "chk chkClinic", .aria_label = venueItem.Item_No, .id = venueItem.Item_No, .name = "NonClinicItem"})
                                                                 </div>
-                                                            </li>
-                                                        Next
-                                                    </ul>
+
+
+
+                                                            Next
+                                                        </div>
+                                                        <input ismodelfield="true" id="hiddenSelectedIsNonClinic" name="hiddenSelectedIsNonClinic" type="hidden" value="" />
+
+
+                                                        <li style="font-weight:bold; padding-top:3%;" ><span>@Resource.Text("VSS_Vaccine_Gp_Name")</span></li>
+                                                            @For Each subsidyItem As SelectListItem In item.SubsidyList
+                                                                @<li  align:left>
+                                                                    <div class="chk_container" >
+                                                                        <span>@subsidyItem.Text</span>
+                                                                       
+                                                                        @Html.CheckBox("SchemeItem_" + subsidyItem.Value, New With {.class = "chk chkScheme", .aria_label = subsidyItem.Text, .id = subsidyItem.Value, .name = "SchemeItem"})
+                                                                    </div>
+                                                                </li>
+                                                            Next
+                                                        </ul>
                                                 </div>
                                             End If
                                             If item.SchemeCode.Equals("HCVS") Then
@@ -224,6 +253,7 @@ End Code
                                             End If
                                         Next
                                         @Html.HiddenFor(Function(model) model.selectedScheme, New With {.id = "selectedScheme"})
+                                       
                                     </div>
                                     <div class="row" style="margin-top:10px;">
                                         <div class="col-xs-12">
@@ -496,9 +526,10 @@ End Code
                             </div>
                             <div style="overflow:hidden;margin-left:42px;" id="divResult">
                                 <table class="table table-hover SPTable" style="margin-top:10px;border-collapse:separate; border-spacing:0px 3px;width:1100px">
+                                 <caption></caption> 
                                     <tr class="tr-header">
-                                        <td class="left-cell" colspan="5"></td>
-                                        <td class="right-cell" colspan="8">Service Fee</td>
+                                        <td class="left-cell" colspan="5"> </td>
+                                        <th class="right-cell" colspan="8">Service Fee</th>
                                     </tr>
                                     <tr class="tr-header">
                                         <td class="left-cell" colspan="5"></td>
@@ -749,12 +780,18 @@ End Using
     var selectedScheme = '@Model.selectedScheme';
     var selectedDistrict = '@Model.selectedDistrict';
 
+    var selectedIsNonClinic = '@Model.IsNonClinic';
+    var selectedIsFreeSub = '@Model.IsFreeSub';
+
     var InputServiceProviderNameByForm = '@Model.InputServiceProviderNameByForm';
     var InputPracticeNameByForm = '@Model.InputPracticeNameByForm';
     var InputPracticeAddressByForm = '@Model.InputPracticeAddressByForm';
     var selectedProfessionByForm = '@Model.selectedProfessionByForm';
     var selectedSchemeByForm = '@Model.selectedSchemeByForm';
     var selectedDistrictByForm = '@Model.selectedDistrictByForm';
+
+    var selectedIsFreeSubByForm = '@Model.selectedIsFreeSubByForm';
+    var selectedIsNonClinicByForm = '@Model.selectedIsNonClinicByForm';
 
     var actionReason = '@Model.ActionReason';
     var queryLanguageFromServer = '@Model.queryLang';
@@ -763,6 +800,9 @@ End Using
     var hasResult = '@Model.hasResult';
     var selectedTab = '@Model.SelectedTab';
     var errMsgList = [];
+ 
+
+
     $(document).ready(function () {
         initMoveTable();
         initPagesizemenu();
@@ -798,8 +838,12 @@ End Using
             $('#hiddenInputPracticeAddress').val(InputPracticeAddress);
             $('#hiddenSelectedProfession').val(selectedProfession);
             $('#selectedScheme').val(selectedScheme);
+
             $('#selectedDistrict').val(selectedDistrict);
             $('#selectedTab').val(selectedTab);
+
+            $('#hiddenSelectedIsNonClinic').val(selectedIsNonClinic);
+            $('#IsFreeSub').val(selectedIsFreeSub);
 
             $('#pageIndex').val('@Model.PageIndex');
             $('#pageSize').val('@Model.PageSize');
@@ -838,6 +882,8 @@ End Using
                             countChecked++;
                         }
                     });
+
+
                     if (countChecked > 0) {
                         $('.schemeBadge').append(countChecked);
                     } else {
@@ -855,7 +901,54 @@ End Using
                     $('#' + schemeList[i]).prop('checked', true);
                 }
                 $('.schemeBadge').append(schemeList.length);
+
+
             }
+            
+            //SelectedIsNonClinic
+            if (selectedIsNonClinicByForm != '') {
+
+                
+                $('#' + selectedIsNonClinicByForm).prop('checked', true);
+                $('#' + selectedIsNonClinicByForm).closest('.chk_container').css('color', 'rgb(1, 113, 186)');
+                 //console.log(domEle);
+                
+
+                if ($('.schemeBadge').is(':empty')) {
+                    $('.schemeBadge').html(1);
+                }
+                else {
+                    let currentBadge = parseInt($('.schemeBadge').text());
+                    $('.schemeBadge').html(1 + currentBadge);
+
+                }
+
+
+
+
+            }
+            
+
+            //SelectedIsFreeSub
+            //IsFreeSub schemeBadge + 1
+            if (selectedIsFreeSubByForm != '') {
+
+                $('#FreeSub').prop('checked', true);
+                $('#FreeSub').closest('.chk_container').css('color', 'rgb(1, 113, 186)');
+
+
+                if ($('.schemeBadge').is(':empty')) {
+                    $('.schemeBadge').html(1);
+                }
+                else {
+                    let currentBadge = parseInt($('.schemeBadge').text());
+                    $('.schemeBadge').html(1 + currentBadge);
+
+                }
+            }
+
+
+
 
             //selectedDistrict
             if (selectedDistrictByForm != '') {
@@ -881,14 +974,22 @@ End Using
             switch (selectedTab) {
                 case '1':
                     $('#professionTab').find('a').click();
+
                     break;
                 case '2':
                     $('#schemeTab').find('a').click();
+
                     break;
                 case '3':
                     $('#districtTab').find('a').click();
+
                     break;
             }
+
+
+
+
+
         };
 
 
@@ -949,10 +1050,10 @@ End Using
                     if (errorUrl) {
                         var u = rootPath + rootLang + errorUrl;
                         location.href = u;
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
     }
     function SearchResult(vQueryLang, isBtnSearch) {
         firstGetResult = false;
@@ -1050,6 +1151,9 @@ End Using
             $("#hiddenInputPracticeName").val($("#InputPracticeName").val());
             $("#hiddenInputPracticeAddress").val($("#InputPracticeAddress").val());
             $("#hiddenSelectedProfession").val('');
+            $("#hiddenSelectedIsNonClinic").val('');
+
+            $("#IsFreeSub").val("");
             $("#selectedScheme").val('');
             $('#selectedDistrict').val('');
             $("input[type='radio']:checked").each(function (index, domEle) {
@@ -1064,8 +1168,26 @@ End Using
                     //console.log(domEle);
                 }
             });
+
+            $(".chkClinic").each(function (index, domEle) {
+                if ($(domEle).prop('checked') == true) {
+                    $("#hiddenSelectedIsNonClinic").val($(domEle).attr('id'));
+                    //console.log(domEle);
+                }
+               
+            });
+
             $('#selectedScheme').val(schemeList.substring(0, schemeList.length - 1));
             //console.log(schemeList.substring(0,schemeList.length-1));
+
+
+
+            if ($("#FreeSub").prop('checked') == true) {
+                $("#IsFreeSub").val("Y");
+                //console.log(domEle);
+            }
+
+
 
             var districtList = '';
             $(".chkDistrict").each(function (index, domEle) {
@@ -1080,7 +1202,7 @@ End Using
         }
         var modelData = $('form').serializeArray();
         //var objModel = { "ProviderName": "", "PracticeName": "", "PracticeAddress": "", "Profession": "", "Scheme": "", "District": "", "pageSize": pageSize, "pageActualSize": $('#pageActualSize').val(), "pageIndex": pageIndex, "sortField": sortField, "sortColName": sortColName, "sortType": sortType, "requestType": requestType, "queryLanguage": "", "hasResult": "", "isSearch": isBtnSearch };
-        var objModel = { "ProviderName": "", "PracticeName": "", "PracticeAddress": "", "Profession": "", "Scheme": "", "District": "", "pageSize": pageSize, "pageActualSize": $('#pageActualSize').val(), "pageIndex": pageIndex, "sortField": sortField, "sortColName": sortColName, "sortType": sortType, "requestType": requestType, "queryLanguage": "", "hasResult": "" };
+        var objModel = { "ProviderName": "", "PracticeName": "", "PracticeAddress": "", "Profession": "", "Scheme": "", "District": "", "pageSize": pageSize, "pageActualSize": $('#pageActualSize').val(), "pageIndex": pageIndex, "sortField": sortField, "sortColName": sortColName, "sortType": sortType, "requestType": requestType, "queryLanguage": "", "hasResult": "", "IsNonClinic": "", "IsFreeSub": "" };
         for (var i = 0; i < modelData.length; i++) {
             if (modelData[i]['name'] == "hiddenSelectedProfession") {
                 objModel.Profession = modelData[i]['value'];
@@ -1100,14 +1222,22 @@ End Using
             else if (modelData[i]['name'] == "hasResult") {
                 objModel.hasResult = modelData[i]['value'];
             }
+
+            else if (modelData[i]['name'] == "hiddenSelectedIsNonClinic") {
+                objModel.IsNonClinic = modelData[i]['value'];
+            }
+            else if (modelData[i]['name'] == "IsFreeSub") {
+                objModel.IsFreeSub = modelData[i]['value'];
+            }
         }
-        if (objModel.ProviderName == '' && objModel.PracticeName == '' && objModel.PracticeAddress == '' && objModel.Profession == '' && objModel.Scheme == '' && objModel.District == '') {
+        if (objModel.ProviderName == '' && objModel.PracticeName == '' && objModel.PracticeAddress == '' && objModel.Profession == '' && objModel.Scheme == '' && objModel.District == '' && objModel.IsNonClinic == '' && objModel.IsFreeSub == '') {
             var errMsg = showErrorMsg('040101-E-00004');
             ErrorLog(errMsg)
             HideResultStyle();
         } else {
             $('.alert').css('display', 'none');
             $("#mobileLegend").hide();
+
             $.ajax({
                 async: false,
                 url: "@Url.Action("GetResult", "SPS")",
@@ -1140,8 +1270,8 @@ End Using
                             newDom.append(data);
 
                             //filter sorting by query
-                            var allboxs = $('.VSS_container').find(':checkbox');
-                            var checkedBoxs = $('.VSS_container').find('input:checkbox:not(:checked)');
+                            var allboxs = $('.VSS_container').find('.chkScheme');
+                            var checkedBoxs = $('.VSS_container').find('.chkScheme:not(:checked)');
                             $('#sortFieldSIV li').show();
                             $('#sortFieldSIV li').removeAttr("ishide");
                             if (allboxs.length != checkedBoxs.length) {
@@ -1153,10 +1283,10 @@ End Using
 
                             //get pageSize list
                             $.ajax({
-                                type : "post",
-                                url : '@Url.Action("GetPageSizeList", "SPS")',
-                                data : "hasvss=" + true,
-                                async : false,
+                                type: "post",
+                                url: '@Url.Action("GetPageSizeList", "SPS")',
+                                data: "hasvss=" + true,
+                                async: false,
                                 success: function (pageSizes) {
                                     $('.pageSizeBox').empty();
                                     $('.pageSizeBoxMibile>.district').remove();
@@ -1167,7 +1297,7 @@ End Using
                                         var htm = '<li class="district">' +
                                         '<div class="chk_container radioLabel" style="color: rgb(88, 88, 88);">' +
                                         '<span>' + size + ' @Resource.Text("ResultPageItems")</span>' +
-                                        '<input aria-label="'+size+'@Resource.Text("ResultPageItems")" class="chk" id="page'+i+'" name="page" type="radio" value="'+size+'">'+
+                                        '<input aria-label="' + size + '@Resource.Text("ResultPageItems")" class="chk" id="page' + i + '" name="page" type="radio" value="' + size + '">' +
                                         '</div>' +
                                         '</li>';
                                         $('.pageSizeBoxMibile').append(htm);
@@ -1191,6 +1321,7 @@ End Using
                                 hasVSS = true;
                             } else {
                                 hasVSS = false;
+
                                 $('.VSSNoteTab').css('display', 'none');
                                 desktopResult.find('.showWithVSS').css('display', 'none');
                                 $('.HCVSItem').css("border-radius", "0px 10px 10px 0px");

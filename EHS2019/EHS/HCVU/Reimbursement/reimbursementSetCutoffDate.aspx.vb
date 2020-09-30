@@ -361,10 +361,12 @@ Partial Public Class reimbursementSetCutoffDate
             End If
         End If
 
+        ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
         ' Insert into [ReimbursementAuthorisation]
         udtReimbursementBLL.InsertReimbursementAuthorisation(udtDB, ReimbursementAuthorisationStatus.Active, strUserID, _
                                                                 ReimbursementStatus.StartReimbursement, strReimID, strUserID, dtmCutoff, _
-                                                                ReimbursementAuthorisationSchemeCode.All)
+                                                                ReimbursementAuthorisationSchemeCode.All, ReimbursementVerificationCaseAvailable.Available)
+        ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
 
         lblCutoffDateAllocated.Text = lblCutoffDateConfirm.Text
         lblReimIDAllocated.Text = strReimID

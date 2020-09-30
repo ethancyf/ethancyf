@@ -291,7 +291,7 @@
         </div>
         <asp:Button runat="server" ID="btnHidden" Style="display: none" OnClientClick="return false;" />
         <!-- Timeout Reminder -->
-        <script type="text/javascript" src="../JS/TimeoutReminder.js"></script>
+        <script type="text/javascript" src="../JS/TimeoutReminder.js?ver=1"></script>
 <%--        <asp:Panel ID="panTimeoutReminder" runat="server" Style="display: none" Width="500px">
             <uc1:ucNoticePopUp ID="ucNoticePopUpTimeoutReminder" runat="server" NoticeMode="Timeout" ButtonMode="OK"
                 MessageText="<%$ Resources: Text, TimeoutReminderMessage %>" />

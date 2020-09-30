@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	24 March 2015
 -- CR No.:			INT15-0002
@@ -61,6 +68,7 @@ AS BEGIN
 DECLARE @current_dtm	datetime
 DECLARE @reimburse_id	char(15)
 DECLARE @cutoff_dtm		datetime
+DECLARE @VerifiyCaseAvailable CHAR(1)
 -- =============================================
 -- Initialization
 -- =============================================
@@ -78,6 +86,16 @@ DECLARE @cutoff_dtm		datetime
 		Authorised_Dtm DESC
 
 	SELECT @cutoff_dtm = Cutoff_Date FROM ReimbursementAuthorisation WHERE Reimburse_ID = @reimburse_id AND Authorised_Status = 'S'	
+
+	--	GET Verification Case Available or not
+	SELECT 
+		@VerifiyCaseAvailable = Verification_Case_Available 
+	FROM 
+		ReimbursementAuthorisation 
+	WHERE 
+		Reimburse_ID = @reimburse_id 
+			AND Authorised_Status = 'S' 
+				AND Record_Status = 'A'
 -- =============================================
 -- Validation 
 -- =============================================
@@ -133,7 +151,8 @@ INSERT INTO ReimbursementAuthorisation
 			   ,[Update_Dtm]
 			   ,[Reimburse_ID]
 			   ,[Cutoff_Date]
-			   ,[Scheme_Code])
+			   ,[Scheme_Code]
+			   ,[Verification_Case_Available])
 		 VALUES
 			   (@current_dtm
 			   ,'1'
@@ -145,7 +164,8 @@ INSERT INTO ReimbursementAuthorisation
 			   ,@current_dtm
 			   ,@reimburse_id
 			   ,@cutoff_dtm
-			   ,@scheme_code)
+			   ,@scheme_code
+			   ,@VerifiyCaseAvailable)
 
 END
 GO

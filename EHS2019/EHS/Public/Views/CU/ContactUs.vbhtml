@@ -15,7 +15,7 @@ End Code
             <div class="container-fluid">
                 <div class="row contact_section_1_topbox contact_topbox">
                     <div class="col-xs-12 col-sm-12">
-                        <a href="@Resource.Text("hcvURL")" target="_blank" rel="noopener noreferrer">
+                       
                             <div class="media">
                                 <div class="media-left media-middle visible-xs">
                                     <img class="media-object contact_titleimg" src="../../Image/SPS/icon_HCVS.png" alt="icon_HCVS">
@@ -32,7 +32,7 @@ End Code
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                       
                     </div>
                 </div>
                 <div class="row contact_section section_1_cntbox">
@@ -54,7 +54,7 @@ End Code
                         <div class="hidden-xs" style="padding-bottom:10px">
                             <table>
                                 <tr>
-                                    <td class="contact_section_1_text" style="min-height:30px"><span class="contact_labeltext">@Resource.Text("Email_ShotForm"):&nbsp;</span></td>
+                                    <th class="contact_section_1_text" style="min-height:30px;font-weight:normal"><span class="contact_labeltext">@Resource.Text("Email_ShotForm"):&nbsp;</span></th>
                                     <td><a class="footer_conect" href="mailto:hcvd@dh.gov.hk">hcvd@dh.gov.hk</a></td>
                                 </tr>
                                 <tr>
@@ -98,8 +98,8 @@ End Code
             <div class="container-fluid contact_2box">
                 <div class="row contact_section_1_topbox contact_topbox">
                     <div class="col-xs-12 col-sm-12">
-                        <a href="@Resource.Text("chpURL")" target="_blank" rel="noopener noreferrer">
-                            <div class="media">
+                        
+                             <div class="media">
                                 <div class="media-left  media-middle visible-xs">
                                     <img class="media-object contact_titleimg" src="../../Image/SPS/icon_VSS.png" alt="icon_VSS">
                                 </div>
@@ -115,7 +115,7 @@ End Code
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                       
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@ End Code
                         <div class="hidden-xs" style="padding-bottom:10px">
                             <table>
                                 <tr>
-                                    <td class="contact_section_1_text" style="min-height:30px"><span class="contact_labeltext">@Resource.Text("Email_ShotForm"):&nbsp;</span></td>
+                                    <th class="contact_section_1_text" style="min-height:30px;font-weight:normal"><span class="contact_labeltext">@Resource.Text("Email_ShotForm"):&nbsp;</span></th>
                                     <td><a class="footer_conect" href="mailto:vacs@dh.gov.hk">vacs@dh.gov.hk</a></td>
                                 </tr>
                                 <tr>

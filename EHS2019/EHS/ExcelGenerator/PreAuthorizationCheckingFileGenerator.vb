@@ -70,14 +70,35 @@ Public Class PreAuthorizationCheckingFileGenerator
 
         Dim udtFormatter As New Common.Format.Formatter()
         ' Mask Bank Account
-        For Each drRow As DataRow In dsData.Tables(2).Rows
-            drRow.BeginEdit()
-            drRow("Bank Account No.") = udtFormatter.maskBankAccount_HCVUSuperDownload(drRow("Bank Account No.").ToString().Trim())
-            drRow("Transaction ID") = udtFormatter.formatSystemNumber(drRow("Transaction ID").ToString().Trim())
-            drRow.EndEdit()
-        Next
-        'dsResult.AcceptChanges()
 
+        ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+        If dsData.Tables(2).Columns.Contains("Bank Account No.") Then
+            For Each drRow As DataRow In dsData.Tables(2).Rows
+                drRow.BeginEdit()
+                drRow("Bank Account No.") = udtFormatter.maskBankAccount_HCVUSuperDownload(drRow("Bank Account No.").ToString().Trim())
+                drRow("Transaction ID") = udtFormatter.formatSystemNumber(drRow("Transaction ID").ToString().Trim())
+                drRow.EndEdit()
+            Next
+        End If
+
+        If dsData.Tables(3).Columns.Contains("Bank Account No.") Then
+            For Each drRow As DataRow In dsData.Tables(3).Rows
+                drRow.BeginEdit()
+                drRow("Bank Account No.") = udtFormatter.maskBankAccount_HCVUSuperDownload(drRow("Bank Account No.").ToString().Trim())
+                drRow.EndEdit()
+            Next
+        End If
+
+        If dsData.Tables(4).Columns.Contains("Bank Account No.") Then
+            For Each drRow As DataRow In dsData.Tables(4).Rows
+                drRow.BeginEdit()
+                drRow("Bank Account No.") = udtFormatter.maskBankAccount_HCVUSuperDownload(drRow("Bank Account No.").ToString().Trim())
+                drRow("Transaction ID") = udtFormatter.formatSystemNumber(drRow("Transaction ID").ToString().Trim())
+                drRow.EndEdit()
+            Next
+        End If
+        'dsResult.AcceptChanges()
+        ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
 
         Return dsData
         ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]

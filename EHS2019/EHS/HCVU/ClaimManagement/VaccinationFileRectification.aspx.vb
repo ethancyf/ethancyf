@@ -10115,6 +10115,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                             End If
                         End If
                         drFull.Item("RectifiedRow") = YesNo.Yes
+                        drFull.Item("Processing") = ucStudentFileDetail.RowEditStatus.None
 
                         dr.Item("Student_File_ID") = strFileID
                         dr.Item("Student_Seq") = intNewEntrySeqNo
@@ -10177,6 +10178,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                             End If
                         End If
                         dr.Item("RectifiedRow") = YesNo.Yes
+                        dr.Item("Processing") = ucStudentFileDetail.RowEditStatus.None
 
                         Dim drStatusDesc As DataRow = Nothing
 

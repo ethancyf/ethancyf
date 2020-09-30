@@ -1,5 +1,6 @@
 ﻿Imports System.Web.Mvc
 Imports System.ComponentModel.DataAnnotations
+Imports Common.Component.StaticData
 
 Public Class SPSViewModel
     Public Property ProfessionList As List(Of ProfessionList) = New List(Of ProfessionList)
@@ -12,6 +13,10 @@ Public Class SPSViewModel
     Public Property InputServiceProviderName As String
     Public Property InputPracticeName As String
     Public Property InputPracticeAddress As String
+    Public Property IsNonClinic As String
+    Public Property VenueList As VenueList = New VenueList
+    Public Property IsFreeSubsidizeOption As IsFreeSubsidizeOption = New IsFreeSubsidizeOption
+    Public Property IsFreeSub As String
     Public Property IsValid As Boolean
     Public Property lstErrorCodes As List(Of String) = New List(Of String)
     Public Property ResultList As List(Of SPResultModel) = New List(Of SPResultModel)
@@ -31,6 +36,8 @@ Public Class SPSViewModel
     Public Property IsReset As Boolean
     Public Property HasResult As Boolean
 
+
+
     ' by James
     Public Property HeaderList As List(Of SchemeHeader) = New List(Of SchemeHeader)
     Public Property SubHeaderList As List(Of SchemeItemHeader) = New List(Of SchemeItemHeader)
@@ -42,6 +49,9 @@ Public Class SPSViewModel
     Public Property InputServiceProviderNameByForm As String
     Public Property InputPracticeNameByForm As String
     Public Property InputPracticeAddressByForm As String
+    Public Property selectedIsFreeSubByForm As String
+    Public Property selectedIsNonClinicByForm As String
+
     'For Selected Tab
     Public Property SelectedTab As String
 
@@ -78,6 +88,23 @@ Public Class SchemeList
     Public Property SchemeUrl As String
     Public Property SubsidyList As IEnumerable(Of SelectListItem)
     Public Property SubsidizeItemList As List(Of SubsidizeItemList)
+End Class
+
+Public Class VenueList
+    Inherits SelectListItem
+    Public Property VenueCode As String
+    Public Property VenueItemList As List(Of VenueItemList)
+End Class
+
+
+Public Class VenueItemList
+    Public Property Item_No As String
+    Public Property Data_Value As String
+End Class
+
+Public Class IsFreeSubsidizeOption
+    Public Property Item_No As String
+    Public Property Data_Value As String
 End Class
 
 Public Class AreaList

@@ -5,6 +5,16 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+
+-- =============================================
+-- Modification History
+-- CR No.			CRE20-008 (SDIR search non clinic)
+-- Modified by:		Raiman
+-- Modified date:	09 Sep 2020
+-- Description:		Add new condition for clinic and non-clinic filtering
+-- =============================================
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.			CRE19-030 (Revamp of SDIR and VBE)
@@ -97,6 +107,8 @@ CREATE PROCEDURE [dbo].[proc_HCSD_get_PracticeList_withFee]
 	,@subsidize_items varchar(200) = NULL
 	,@DistrictList varchar(200) = NULL
 	,@language varchar(10) = NULL
+	,@IsNonClinic varchar(20) = NULL
+	,@IsFreeSub varchar(20) = NULL
 AS
 BEGIN
 
@@ -350,7 +362,7 @@ BEGIN
 		,[joined_scheme]
 		,0
 		,[Mobile_Clinic]	
-		,[Non_Clinic]	
+		,[Non_Clinic]	 
 		,[Remarks_Desc]			
 		,[Remarks_Desc_Chi]		
 		FROM [SDSPPracticeFee] WITH (NOLOCK)
@@ -360,7 +372,28 @@ BEGIN
 			AND (@ServiceProvideName IS NULL OR (sp_name LIKE @ServiceProvideName ESCAPE '\' OR sp_chi_name LIKE @ServiceProvideName ESCAPE '\'))
 			AND (@PracticeName IS NULL OR (practice_name LIKE @PracticeName ESCAPE '\' OR practice_name_chi LIKE @PracticeName ESCAPE '\'))
 			AND (@PracticeAddress IS NULL OR (address_eng LIKE @PracticeAddress ESCAPE '\' OR address_chi LIKE @PracticeAddress ESCAPE '\'))
+			AND (@IsNonClinic is null OR (@IsNonClinic is not null and joined_scheme like '%VSS%' ) )
+			AND (@IsFreeSub is null  OR (@IsFreeSub is not null and joined_scheme like '%VSS%' ))
 
+
+
+
+			-- Variable for search all subsidize under vss
+
+			IF  (@subsidize_items IS NULL or @subsidize_items like 'EHCVS')and (@IsNonClinic is not null or @IsFreeSub is not null)
+			Begin
+			DECLARE @Str varchar(100) 
+			SELECT @Str = COALESCE(@Str + ';', '') + CAST(Search_Group AS varchar(100)) 
+			FROM SDSubsidizeGroup where Search_Period_To > GETDATE() and Scheme_Code like 'VSS'
+
+
+			if @subsidize_items IS NULL
+			 SET @subsidize_items = @Str
+			 else if @subsidize_items like 'EHCVS'
+				SET @subsidize_items = @subsidize_items+';'+@Str
+
+
+			END
 
 	IF @subsidize_items IS NOT NULL
 	BEGIN
@@ -536,7 +569,7 @@ BEGIN
 				CASE
 					WHEN Operator = 'AND' THEN Operator + ' ('
 		
-					WHEN Operator = 'OR' THEN  ' ((['+Subsidize_Item_Column_Name+'] is not null and @IN_'+Subsidize_Item_Column_Name+' = '''+Subsidize_Item_Column_Name+''') OR @IN_'+Subsidize_Item_Column_Name+' IS NULL) ' + Operator
+					WHEN Operator = 'OR' THEN  ' ((['+Subsidize_Item_Column_Name+'] is not null and @IN_'+Subsidize_Item_Column_Name+' = '''+Subsidize_Item_Column_Name+''' AND (@IN_IsFreeSub is null OR ( '+REPLACE(Subsidize_Item_Column_Name, 'item', 'fee')+' is null or '+REPLACE(Subsidize_Item_Column_Name, 'item', 'fee')+' like ''0000'' ))) OR @IN_'+Subsidize_Item_Column_Name+' IS NULL) ' + Operator
 		
 					-- Example: (([subsidize_item_01] is not null and @IN_subsidize_item_01 = ''subsidize_item_01'') OR @IN_subsidize_item_01 IS NULL)
 		
@@ -633,7 +666,9 @@ BEGIN
 			AND (@IN_DistrictList IS NULL OR EXISTS (SELECT 1 FROM #DistrictList WHERE DistrictBoard = district_board_shortname_SD))
 			AND (@IN_ServiceProvideName IS NULL OR (sp_name LIKE @IN_ServiceProvideName ESCAPE ''\'' OR sp_chi_name LIKE @IN_ServiceProvideName ESCAPE ''\''))
 			AND (@IN_PracticeName IS NULL OR (practice_name LIKE @IN_PracticeName ESCAPE ''\'' OR practice_name_chi LIKE @IN_PracticeName ESCAPE ''\''))
-			AND (@IN_PracticeAddress IS NULL OR (address_eng LIKE @IN_PracticeAddress ESCAPE ''\'' OR address_chi LIKE @IN_PracticeAddress ESCAPE ''\''))'
+			AND (@IN_PracticeAddress IS NULL OR (address_eng LIKE @IN_PracticeAddress ESCAPE ''\'' OR address_chi LIKE @IN_PracticeAddress ESCAPE ''\''))
+			AND  (@IN_IsNonClinic IS NULL OR ((@IN_IsNonClinic like ''A'')) OR (NonClinic LIKE @IN_IsNonClinic))
+			'
 
 	--SET @SQL_STAT_PATTERN_2 = NULL
 
@@ -673,7 +708,10 @@ BEGIN
 		@IN_DistrictList varchar(200),
 		@IN_ServiceProvideName nvarchar(200),
 		@IN_PracticeName nvarchar(200),
-		@IN_PracticeAddress nvarchar(200)'
+		@IN_PracticeAddress nvarchar(200),
+		@IN_IsFreeSub varchar(5),
+		@IN_IsNonClinic nvarchar(4)
+		'
 
 	-- ---------------------------------------------
 	-- Result Table 1
@@ -701,7 +739,9 @@ BEGIN
 		@IN_DistrictList = @DistrictList,
 		@IN_ServiceProvideName = @ServiceProvideName,
 		@IN_PracticeName = @PracticeName,
-		@IN_PracticeAddress = @PracticeAddress
+		@IN_PracticeAddress = @PracticeAddress,
+		@IN_IsFreeSub = @IsFreeSub,
+		@IN_IsNonClinic = @IsNonClinic
 
 	DROP TABLE #DistrictList
 	DROP TABLE #SDSPPracticeFee

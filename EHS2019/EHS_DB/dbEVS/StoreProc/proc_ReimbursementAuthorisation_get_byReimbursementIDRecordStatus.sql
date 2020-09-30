@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	24 March 2015
 -- CR No.:			INT15-0002
@@ -72,8 +79,8 @@ AS BEGIN
 		Update_By,
 		Update_Dtm,
 		TSMP,
-		Scheme_Code
-				
+		Scheme_Code,
+		ISNULL(Verification_Case_Available,'N')	AS Verification_Case_Available
 	FROM
 		ReimbursementAuthorisation
 	

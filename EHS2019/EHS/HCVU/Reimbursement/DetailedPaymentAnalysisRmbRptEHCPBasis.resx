@@ -117,11 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lblAmountRMBText.RTF" xml:space="preserve">
+    <value>{\rtf1{\fonttbl{\f0\fnil\fcharset0 Arial;}}{\stylesheet{\ql\li0\ri0\nowidctlpar\sl240\faauto\fs20\f0 Normal;}}\pard\plain\s0\li0\ri0\sa200\ql\nowidctlpar\lang9\sl276\faauto\f0\fs20{\f0 RichTextBox1\par}}</value>
+  </data>
+  <data name="lblAmountRMBText.RTF" xml:space="preserve">
+    <value>{\rtf1{\fonttbl{\f0\fnil\fcharset0 Arial;}}{\stylesheet{\ql\li0\ri0\nowidctlpar\sl240\faauto\fs20\f0 Normal;}}\pard\plain\s0\li0\ri0\sa200\ql\nowidctlpar\lang9\sl276\faauto\f0\fs20{\f0 RichTextBox1\par}}</value>
+  </data>
   <data name="txtAmount.OutputFormat" xml:space="preserve">
     <value>#,##0</value>
   </data>
-  <data name="txtTotalAmount.OutputFormat" xml:space="preserve">
-    <value>#,##0</value>
+  <data name="txtAmountRMB.OutputFormat" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtTotalAmountRMB.OutputFormat" xml:space="preserve">
+    <value>#,##0.00</value>
+  </data>
+  <data name="lblTotalAmountRMBText.RTF" xml:space="preserve">
+    <value>{\rtf1{\fonttbl{\f0\fnil\fcharset0 Arial;}}{\stylesheet{\ql\li0\ri0\nowidctlpar\sl240\faauto\fs20\f0 Normal;}}\pard\plain\s0\li0\ri0\sa200\ql\nowidctlpar\lang9\sl276\faauto\f0\fs20{\f0 RichTextBox1\par}}</value>
+  </data>
+  <data name="lblTotalAmountRMBText.RTF" xml:space="preserve">
+    <value>{\rtf1{\fonttbl{\f0\fnil\fcharset0 Arial;}}{\stylesheet{\ql\li0\ri0\nowidctlpar\sl240\faauto\fs20\f0 Normal;}}\pard\plain\s0\li0\ri0\sa200\ql\nowidctlpar\lang9\sl276\faauto\f0\fs20{\f0 RichTextBox1\par}}</value>
+  </data>
+  <data name="lblTotalAmountText.RTF" xml:space="preserve">
+    <value>{\rtf1{\fonttbl{\f0\fnil\fcharset0 Arial;}}{\stylesheet{\ql\li0\ri0\nowidctlpar\sl240\faauto\fs20\f0 Normal;}}\pard\plain\s0\li0\ri0\sa200\ql\nowidctlpar\lang9\sl276\faauto\f0\fs20{\f0 RichTextBox1\par}}</value>
+  </data>
+  <data name="lblTotalAmountText.RTF" xml:space="preserve">
+    <value>{\rtf1{\fonttbl{\f0\fnil\fcharset0 Arial;}}{\stylesheet{\ql\li0\ri0\nowidctlpar\sl240\faauto\fs20\f0 Normal;}}\pard\plain\s0\li0\ri0\sa200\ql\nowidctlpar\lang9\sl276\faauto\f0\fs20{\f0 RichTextBox1\par}}</value>
   </data>
   <metadata name="$this.ScriptEditorPositionForUndo" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>0, 0</value>

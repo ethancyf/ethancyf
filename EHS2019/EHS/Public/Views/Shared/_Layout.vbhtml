@@ -11,16 +11,16 @@ End Code
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="~/styles/main_styles.css">
     <link rel="stylesheet" type="text/css" href="~/styles/tabpage.css" />
-    <link href="~/Styles/ServiceProviderSearch.css" rel="stylesheet" />
+    <link href="~/Styles/ServiceProviderSearch.css?ver=1" rel="stylesheet" />
     <link href="~/styles/vbeStyle.css" rel="stylesheet" />
     <link href="~/styles/Home.css" rel="stylesheet" />
     <link href="~/styles/staticStyle.css" rel="stylesheet" />
-    <link href="~/styles/responsive.css" rel="stylesheet" />
+    <link href="~/styles/responsive.css?ver=1" rel="stylesheet" />
     <link href="~/styles/Print.css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/js/common.js"></script>
+    <script src="~/js/common.js?ver=1"></script>
 
     <script type="text/javascript">
         var rootPath = "@ViewBag.ApplicationPath" == "/" ? "@ViewBag.ApplicationPath" : "@ViewBag.ApplicationPath" + "/";
@@ -85,7 +85,7 @@ End Code
     <div class="super_container">
 
         <div class="skip_content" role="navigation" aria-label="Main menu">
-            <a href="#skiptarget" class="skip_link" title="Skip to main content">@Resource.Text("SkipToMainContent")</a>
+            <a href="#skiptarget" class="skip_link" >@Resource.Text("SkipToMainContent")</a>
         </div>
         <div id="useLang" style="display:none;" data-uselang=""></div>
         <header class="header">
@@ -97,7 +97,8 @@ End Code
                         @*<a id="logoID" href="@Url.Action("Home", "Home")">*@
                             <table id="logoID">
                                 <tr>
-                                    <td><img src="~/Image/logoicon/artwork-ehs-logo.png" alt="eHealth" class="logo_img1"></td>
+                                     
+                                    <th style=" font-weight:normal"><img src="~/Image/logoicon/artwork-ehs-logo.png" alt="eHealth" class="logo_img1"></th>
                                     <td style="padding-left:10px"><img src="~/Image/logoicon/artwork-ehealth-subsidy.png" alt="eHealth system" class="logo_img2"></td>
                                 </tr>
                             </table>
@@ -230,7 +231,8 @@ End Code
                         </ul>
                         <table>
                             <tr>
-                                <td>@Resource.Text("Email_ShotForm"):&nbsp;</td>
+                                
+                                <th style=" font-weight:normal">@Resource.Text("Email_ShotForm"):&nbsp;</th>
                                 <td><a class="footer_conect" href="mailto:hcvd@dh.gov.hk">hcvd@dh.gov.hk</a></td>
                             </tr>
                             <tr>
@@ -251,9 +253,10 @@ End Code
                             <li>@Resource.Text("Tel"): <a class="footer_conect" href="tel:21252125">2125 2125</a></li>
                             <li>@Resource.Text("Site"): <a class="footer_conect" href="@Resource.Text("chpURL")" target="_blank" rel="noopener noreferrer">http://www.chp.gov.hk</a></li>*@
                         </ul>
-                        <table>
+                        <table border="0">
                             <tr>
-                                <td>@Resource.Text("Email_ShotForm"):&nbsp;</td>
+                                <th style=" font-weight:normal">@Resource.Text("Email_ShotForm"):&nbsp;</th>
+                             
                                 <td><a class="footer_conect" href="mailto:vacs@dh.gov.hk">vacs@dh.gov.hk</a></td>
                             </tr>
                             <tr>

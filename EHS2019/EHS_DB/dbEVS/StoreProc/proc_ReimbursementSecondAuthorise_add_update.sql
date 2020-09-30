@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	24 March 2015
 -- CR No.:			INT15-0002
@@ -61,6 +68,7 @@ AS BEGIN
 -- =============================================
 	DECLARE @current_dtm	datetime
 	DECLARE @cutoff_dtm		datetime
+	DECLARE @VerifiyCaseAvailable CHAR(1)
 -- =============================================
 -- Initialization
 -- =============================================
@@ -75,6 +83,16 @@ AS BEGIN
 			AND Authorised_Status = '1' 
 			AND Record_Status = 'A'
 			AND Scheme_Code = @scheme_code
+
+	--	GET Verification Case Available or not
+	SELECT 
+		@VerifiyCaseAvailable = Verification_Case_Available 
+	FROM 
+		ReimbursementAuthorisation 
+	WHERE 
+		Reimburse_ID = @reimburse_id 
+			AND Authorised_Status = 'S' 
+				AND Record_Status = 'A'
 -- =============================================
 -- Validation 
 -- =============================================
@@ -131,7 +149,8 @@ AS BEGIN
 			   ,[Update_Dtm]
 			   ,[Reimburse_ID]
 			   ,[Cutoff_Date]
-			   ,[Scheme_Code])
+			   ,[Scheme_Code]
+			   ,[Verification_Case_Available])
 		 VALUES
 			   (@current_dtm
 			   ,'2'
@@ -143,7 +162,8 @@ AS BEGIN
 			   ,@current_dtm
 			   ,@reimburse_id
 			   ,@cutoff_dtm
-			   ,@scheme_code)
+			   ,@scheme_code
+			   ,@VerifiyCaseAvailable)
 
 END
 GO

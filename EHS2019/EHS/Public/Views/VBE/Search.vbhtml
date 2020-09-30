@@ -276,7 +276,7 @@ End Code
                                                 <div style="display:none" id="contYob">
                                                     <div class="col-xs-2 col-sm-2 no-padding">
                                                         <input id="txtAge" name="txtAge" type="number" class="form-control input-2" placeholder="@Resource.Text("Age")" maxlength="3" autocomplete="off"
-                                                               value="@code If Model IsNot Nothing Then@Model.VBERequestData.Age  End If end code" title="@Resource.Text("AriaVBESearchInputAge")" style="padding-left: 0px;padding-right: 0px;" />
+                                                               value="@code If Model IsNot Nothing Then@Model.VBERequestData.Age  End If end code" aria-label="@Resource.Text("AriaVBESearchInputAge")" style="padding-left: 0px;padding-right: 0px;" />
                                                     </div>
                                                     <div class="col-xs-1 col-sm-1" style=" text-align: center; line-height: 45px;padding-right:0px;">
                                                         @Resource.Text("VBEResultOn")
@@ -285,7 +285,7 @@ End Code
                                                         <input id="txtDay" name="txtDay" type="number" class="form-control input-2" placeholder="@Resource.Text("Day")" maxlength="2" autocomplete="off" aria-label="@Resource.Text("AriaVBESearchInputDay")" />
                                                     </div>
                                                     <div class="col-xs-3 col-sm-3" style="padding-right:0px;">
-                                                        <select id="selMonth" name="selMonth" class="form-control input-2" title="@Resource.Text("AriaVBESearchListMonth")" aria-label="@Resource.Text("AriaVBESearchListMonth")">
+                                                        <select id="selMonth" name="selMonth"  class="form-control input-2"  aria-label="@Resource.Text("AriaVBESearchListMonth")">
 
                                                             <option value="" disabled selected hidden>@Resource.Text("Month")</option>
                                                             <option value="1" title="@Resource.Text("January")">@Resource.Text("January") </option>
@@ -341,7 +341,7 @@ End Code
                                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 refresh-captcha" style="padding-left:0px;padding-right:0px;">
                                     <div>
                                         <a id="CaptchaVoice" href="javascript:void(0)" tabindex="0" class="glyphicon glyphicon-volume-up" style="margin-top:19px; cursor:pointer; color: #7141be;" aria-label="@Resource.Text("VBEPlayCaptcha")"></a>
-                                        <a id="refreshCaptcha" href="javascript:void(0)" tabindex="0" class="glyphicon glyphicon-refresh" style="margin-top:19px; cursor:pointer; color:#7141BE" aria-label="@Resource.Text("VBERefreshCaptcha")"></a>
+                                        <a id="refreshCaptcha" href="javascript:void(0)"   tabindex="0" class="glyphicon glyphicon-refresh" style="margin-top:19px; cursor:pointer; color:#7141BE" aria-label="@Resource.Text("VBERefreshCaptcha")"></a>
                                     </div>
                                 </div>
                                 <div class="col-xs-1 col-sm-1 alert_symbol">
@@ -357,11 +357,11 @@ End Code
                                             <button type="submit" class="btn btn-success submitButton" id="btnSubmit">@Resource.Text("VBEBtnCheckBalance") <span class="sr-only">@Resource.Text("AriaVBESearchCheckBalance")</span></button>
                                         </div>
                                         <div class="col-sm-6 col-xs-12 text-HowTo">
-                                    <a target="_blank" href="@Resource.Text("VBECreateAccountLinkURL")" style="color:#015990">@Resource.Text("VBECreateAccountLink")</a>
+                                    <a target="_blank" rel="noopener noreferrer" href="@Resource.Text("VBECreateAccountLinkURL")" style="color:#015990">@Resource.Text("VBECreateAccountLink")</a>
                                 </div>
                             </div>                           
                             </div>
-                            </div>
+                            </div>  
                             @*<div class="row visible-xs">
                                 <div class="col-xs-1 col-sm-1">
                                 </div>
@@ -394,7 +394,7 @@ End Code
                 </div>
             </div>
             <input type="hidden" id="inputType" name="inputType" value="" title="Hidden field">
-            <audio id="voice"></audio>
+            <audio id="voice" ></audio>
         </div>
     </text>
 End Using

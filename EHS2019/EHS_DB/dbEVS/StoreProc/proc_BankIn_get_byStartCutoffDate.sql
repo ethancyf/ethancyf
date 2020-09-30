@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	21 January 2015
 -- CR No.:			CRE13-019-02
@@ -127,8 +134,8 @@ AS BEGIN
 				AND A.Scheme_Code = B.Scheme_Code
 		) AS [totalAmountRMB],
 		B.Scheme_Code,
-		SC.Display_Code
-		
+		SC.Display_Code,
+		ISNULL(R.Verification_Case_Available,'N') AS [Verification_Case_Available]
 	FROM
 		BankIn B
 			INNER JOIN ReimbursementAuthorisation R

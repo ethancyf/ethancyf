@@ -10,6 +10,7 @@ Imports Common.Component.Scheme.SchemeClaimModel
 Imports Common.Component.UserRole
 Imports Common.SearchCriteria
 Imports HCVU.ReimbursementBLL
+Imports System.Reflection
 
 Partial Public Class reimbursement_new
     Inherits BasePageWithGridView
@@ -20,6 +21,9 @@ Partial Public Class reimbursement_new
 
     Dim udtHCVUUser As HCVUUserModel
     Dim udtHCVUUserBLL As New HCVUUserBLL
+
+    Dim udcValidator As New Common.Validation.Validator
+    Dim abc As New Datadownload
 
 #Region "Fields"
 
@@ -33,7 +37,17 @@ Partial Public Class reimbursement_new
     Dim strUpdateFail As String = "UpdateFail"
     Dim strValidationFail As String = "ValidationFail"
     Const strfirstReimbCutoffDateTSMP As String = "firstReimbCutoffDateTSMP"
+    Dim strExportReportID As String = "eHSM0012" ' CRE17-004 Generate a new DPAR on EHCP basis [Dickson]
 
+#End Region
+
+
+#Region "Audit Log Description"
+    Public Class AuditLogDesc
+        Public Const DPAR_Download_Click As String = "[Detailed Payment Analysis Report] Download - Download click"
+        Public Const DPAR_Download_Success As String = "[Detailed Payment Analysis Report] Download - Download success"
+        Public Const DPAR_Download_Fail As String = "[Detailed Payment Analysis Report] Download - Download fail"
+    End Class
 #End Region
 
 #Region "Page Events"
@@ -130,6 +144,26 @@ Partial Public Class reimbursement_new
             Dim strReimID As String = CStr(dtReimID.Rows(0)("Reimburse_ID")).Trim
             Session("firstReimbursementID") = strReimID
 
+            ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+            Dim strVerCaseAvailable As String = CStr(dtReimID.Rows(0)("Verification_Case_Available")).Trim
+            Session("VerificationCaseAvailable") = strVerCaseAvailable
+            ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
+            ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Martin]
+            Dim strvalue1 As String = String.Empty
+            Dim strvalue2 As String = String.Empty
+            Dim udtcomfunct As New Common.ComFunction.GeneralFunction
+
+            udtcomfunct.getSystemParameter("PasswordRuleNumber", strvalue1, strvalue2)
+            Me.txtNewPassword.Attributes.Remove("onKeyUp")
+            Me.txtNewPassword.Attributes.Add("onKeyUp", "checkPassword(this.value," & _
+                                                            "'" & CInt(strvalue2.Trim) & "'," & _
+                                                            "'" & CInt(strvalue2.Trim) & "'," & _
+                                                            "'strength1','strength2','strength3','progressBar'," & _
+                                                            "'" & HttpContext.GetGlobalResourceObject("Text", "PWStrengthPoor") & "'," & _
+                                                            "'" & HttpContext.GetGlobalResourceObject("Text", "PWStrengthModerate") & "'," & _
+                                                            "'" & HttpContext.GetGlobalResourceObject("Text", "PWStrengthStrong") & "'," & _
+                                                            "'direction2','direction1');")
+            ' CRE17-004 Generate a new DPAR on EHCP basis [End][Martin]
             criteria = New Common.SearchCriteria.SearchCriteria
             Session("Criteria") = criteria
 
@@ -165,10 +199,14 @@ Partial Public Class reimbursement_new
                 strBrowser = String.Empty
             End Try
 
-            MyBase.preventMultiImgClick(Me.ClientScript, Me.ibtnRPrintReport)
             MyBase.preventMultiImgClick(Me.Page.ClientScript, Me.ibtnFirstAuthorizeConfirm)
             MyBase.preventMultiImgClick(Me.Page.ClientScript, Me.ibtnReleaseConfirm)
-
+        Else
+            ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+            If mvCore.GetActiveView.ID = vTransactionDetail.ID Then
+                LoadDetail(hfCurrentDetailTransactionNo.Value)
+            End If
+            ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
         End If
     End Sub
 
@@ -205,7 +243,6 @@ Partial Public Class reimbursement_new
         If ddlScheme.SelectedValue = "0" Then
             ibtnSearchAndHold.Enabled = False
             ibtnContinue.Enabled = False
-
             udtAuditLogEntry.WriteEndLog(LogID.LOG00042, "Select scheme success")
 
         Else
@@ -426,7 +463,6 @@ Partial Public Class reimbursement_new
                     udtDB.BeginTransaction()
 
                     udtReimbursementBLL.ReimbursementAuthorizationHold(udtHCVUUser.UserID, criteria.CutoffDate, Me.hfSchemeCode.Value.Trim, strReimbuserID, udtDB)
-
                     udtReimbursementBLL.GeneratePreAuthorizationCheckingFile(Me.hfSchemeCode.Value.Trim, strSchemeDisplayCode, strReimbuserID, udtDB)
 
                     udtDB.CommitTransaction()
@@ -436,6 +472,43 @@ Partial Public Class reimbursement_new
                     Throw
                 End Try
 
+
+                'CRE17-004 Generate a new DPAR on EHCP basis [Start][Martin]
+                'generate the List of EHCPs Selected report
+                If Not (Me.hfSchemeCode.Value.Trim = SchemeClaimModel.HCVSCHN Or Me.hfSchemeCode.Value.Trim = SchemeClaimModel.HCVSDHC) Then
+                    udtAuditLogEntry.AddDescripton("Reimbursement ID", strReimbuserID)
+                    udtAuditLogEntry.AddDescripton("Cutoff Date", lblSCRReimbursementCutoffDate.Text)
+                    udtAuditLogEntry.AddDescripton("Scheme", ddlScheme.SelectedValue)
+                    udtAuditLogEntry.WriteStartLog(LogID.LOG00049, "Export List of EHCPs Selected")
+
+                    Dim udtFileGenerationBLL As New FileGeneration.FileGenerationBLL()
+
+                    Dim ds As DataSet = udtReimbursementBLL.GetListOfEHCPsSelected(strReimbuserID.Trim, lblSCRReimbursementCutoffDate.Text.Trim, Me.hfSchemeCode.Value.Trim)
+
+                    Dim strGenerationID As String = String.Empty
+                    Dim strMessageID As String = String.Empty
+
+                    If udtFileGenerationBLL.Export(strExportReportID, ds, strGenerationID, strMessageID, strReimbuserID, Me.hfSchemeCode.Value.Trim) Then
+                        udtAuditLogEntry.AddDescripton("Reimbursement ID", strReimbuserID)
+                        udtAuditLogEntry.AddDescripton("Scheme", Me.ddlScheme.SelectedValue)
+                        udtAuditLogEntry.AddDescripton("Report ID", strExportReportID)
+                        udtAuditLogEntry.AddDescripton("Generation ID", strGenerationID)
+                        udtAuditLogEntry.AddDescripton("Message ID", strMessageID)
+                        udtAuditLogEntry.WriteEndLog(LogID.LOG00050, "Export List of EHCPs Selected successful")
+                        'Me.popupNoticeExportRedirect.Show()
+                    Else
+                        udcErrorMessage.AddMessage(FUNCTION_CODE, SeverityCode.SEVE, MsgCode.MSG00008)
+                        udtAuditLogEntry.AddDescripton("Reimbursement ID", strReimbuserID)
+                        udtAuditLogEntry.AddDescripton("Scheme", Me.ddlScheme.SelectedValue)
+                        udtAuditLogEntry.AddDescripton("Report ID", strExportReportID)
+                        udtAuditLogEntry.AddDescripton("Generation ID", strGenerationID)
+                        udtAuditLogEntry.AddDescripton("Message ID", strMessageID)
+                        udtAuditLogEntry.WriteEndLog(LogID.LOG00051, "Export List of EHCPs Selected Fail")
+                        udcErrorMessage.BuildMessageBox("ExportFailure", udtAuditLogEntry, LogID.LOG00051, "Export List of EHCPs Selected Fail")
+                    End If
+                End If
+                'CRE17-004 Generate a new DPAR on EHCP basis [End][Martin]
+
                 gvGroupByReimburseID.Columns(6).Visible = IsRMBAvailable(hfSchemeCode.Value)
                 Me.GridViewDataBind(gvGroupByReimburseID, dt, "reimburseID", "DESC", False)
 
@@ -443,7 +516,11 @@ Partial Public Class reimbursement_new
 
                 ' Message: Search & hold transaction success. The pre-authorization checking file will be generated by the system within 1 hour.
                 udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
-                udcInfoMessageBox.AddMessage("990000", "I", "00028")
+                If Not (Me.hfSchemeCode.Value.Trim = SchemeClaimModel.HCVSCHN Or Me.hfSchemeCode.Value.Trim = SchemeClaimModel.HCVSDHC) Then
+                    Me.udcInfoMessageBox.AddMessage(FUNCTION_CODE, SeverityCode.SEVI, MsgCode.MSG00007)
+                Else
+                    udcInfoMessageBox.AddMessage("990000", "I", "00028")
+                End If
 
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00002, "Search and Hold successful")
             Else
@@ -541,53 +618,140 @@ Partial Public Class reimbursement_new
             Dim lblGTotalAmountRMB As Label = e.Row.FindControl("lblGTotalAmountRMB")
             lblGTotalAmountRMB.Text = formater.formatMoneyRMB(lblGTotalAmountRMB.Text, False)
 
+            ' Detailed Payment Analysis Report
+            ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+            If Session("VerificationCaseAvailable") = ReimbursementVerificationCaseAvailable.Available Then
+                e.Row.FindControl("div_EHCP").Visible = True
+                e.Row.FindControl("div_Practice").Visible = True
+            Else
+                e.Row.FindControl("div_EHCP").Visible = False
+                e.Row.FindControl("div_Practice").Visible = True
+            End If
+            ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
         End If
-
     End Sub
 
+
+    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
     Protected Sub gvGroupByReimburseID_RowCommand(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs)
         Me.udcInfoMessageBox.BuildMessageBox()
         Me.udcErrorMessage.BuildMessageBox()
         If Not (e.CommandName.ToUpper.Equals("PAGE") Or e.CommandName.ToUpper.Equals("SORT")) Then
             Dim row As GridViewRow = CType(CType(e.CommandSource, Control).NamingContainer, GridViewRow)
-            lblSCRReimburseID.Text = CType(row.Cells(1).FindControl("lbtn_reimburseID"), LinkButton).Text
+            Dim strReimbursementID As String
+            lblSCRReimburseID.Text = CType(row.Cells(1).FindControl("lbtn_reimburseID"), LinkButton).Text.Trim
+            strReimbursementID = CType(row.Cells(1).FindControl("lbtn_reimburseID"), LinkButton).Text.Trim
 
-            Dim udtAuditLogEntry As New AuditLogEntry(FUNCTION_CODE, Me)
+            If e.CommandName.Equals("DPAReportEHCP") Then
+                Me.udcErrorMessage.BuildMessageBox("UpdateFail")
+                Me.udcInfoMessageBox.BuildMessageBox()
+                Dim udtAuditLogEntry As New AuditLogEntry(FUNCTION_CODE, Me)
+                Dim db As New Common.DataAccess.Database
 
-            Try
-                udtAuditLogEntry.AddDescripton("Reimbursement Cutoff Date", lblSCRReimbursementCutoffDate.Text)
-                udtAuditLogEntry.AddDescripton("Reimbursement ID", lblSCRReimburseID.Text.Trim)
-                udtAuditLogEntry.WriteStartLog(LogID.LOG00016, "Select Reimbursement ID")
+                Try
+                    udtAuditLogEntry.AddDescripton("Reimbursement ID", strReimbursementID)
+                    udtAuditLogEntry.AddDescripton("Cutoff Date", lblSCRReimbursementCutoffDate.Text)
+                    udtAuditLogEntry.AddDescripton("Scheme", ddlScheme.SelectedValue)
+                    udtAuditLogEntry.WriteStartLog(LogID.LOG00044, "Print DPAR ECHP Basis Report")
 
-                criteria = Session("Criteria")
-                Dim dt As DataTable = udtReimbursementBLL.GetAuthorizationSummaryBySP(criteria, ReimbursementStatus.HoldForFirstAuthorisation, lblSCRReimburseID.Text, Me.hfSchemeCode.Value.Trim)
+                    'Pass the data to the Viewer by Session variables
+                    Session("RID") = strReimbursementID.Trim
+                    Session("strCutoffDate") = lblSCRReimbursementCutoffDate.Text.Trim
+                    Session("bWatermark") = "N"
+                    Session("DPAScheme") = Me.ddlScheme.SelectedValue
+                    Session("ReportSelected") = DPAReportType.EHCP
 
-                Session("AuthorizationTxnListBySP") = dt
+                    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Martin]
+                    Me.mpeDownload.Show()
+                    lblReportType.Text = "Detailed Payment Analysis Report (on EHCP Basis)"
+                    txtNewPassword.Focus()
+                    udcDownloadErrorMessage.Clear()
+                    'ScriptManager.RegisterStartupScript(Me, Page.GetType, FUNCTION_CODE, "window.open('DPAViewer.aspx','','width=' + (screen.width/1.5) + ',height=' + (screen.width/2) + ',resizable=yes')", True)
+                    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Martin]
 
-                gvGroupBySP.PageIndex = 0
+                    udtAuditLogEntry.WriteEndLog(LogID.LOG00045, "Print DPAR ECHP Basis Report successful")
+                    db.CommitTransaction()
 
-                gvGroupBySP.Columns(5).Visible = IsRMBAvailable(hfSchemeCode.Value)
-                Me.GridViewDataBind(gvGroupBySP, dt, "spNum", "ASC", False)
+                Catch ex As Exception
+                    db.RollBackTranscation()
 
-                mvCore.SetActiveView(vGroupBySP)
+                    Me.udcErrorMessage.AddMessage(FUNCTION_CODE, "E", "00002")
+                    Me.udcErrorMessage.BuildMessageBox("UpdateFail", udtAuditLogEntry, LogID.LOG00046, "Print DPAR ECHP Basis Report fail")
+                End Try
+            ElseIf e.CommandName.Equals("DPAReportPractice") Then
+                Me.udcErrorMessage.BuildMessageBox("UpdateFail")
+                Me.udcInfoMessageBox.BuildMessageBox()
+                Dim udtAuditLogEntry As New AuditLogEntry(FUNCTION_CODE, Me)
+                Dim db As New Common.DataAccess.Database
 
-                udtAuditLogEntry.WriteEndLog(LogID.LOG00017, "Select Reimbursement ID successful")
-            Catch eSQL As SqlClient.SqlException
-                If eSQL.Number = 50000 Then
-                    Dim sm As Common.ComObject.SystemMessage
-                    sm = New Common.ComObject.SystemMessage("990001", "D", eSQL.Message)
-                    udcErrorMessage.AddMessage(sm)
-                    udcErrorMessage.BuildMessageBox(strUpdateFail, udtAuditLogEntry, LogID.LOG00018, "Select Reimbursement ID fail")
-                Else
+                Try
+                    udtAuditLogEntry.AddDescripton("Reimbursement ID", strReimbursementID)
+                    udtAuditLogEntry.AddDescripton("Cutoff Date", lblSCRReimbursementCutoffDate.Text)
+                    udtAuditLogEntry.AddDescripton("Scheme", ddlScheme.SelectedValue)
+                    udtAuditLogEntry.WriteStartLog(LogID.LOG00007, "Print DPAR Practice Basis Report")
+
+                    'Pass the data to the Viewer by Session variables
+                    Session("RID") = strReimbursementID.Trim
+                    Session("strCutoffDate") = lblSCRReimbursementCutoffDate.Text.Trim
+                    Session("bWatermark") = "N"
+                    Session("DPAScheme") = Me.ddlScheme.SelectedValue
+                    Session("ReportSelected") = DPAReportType.Practice
+
+                    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Martin]
+                    Me.mpeDownload.Show()
+                    lblReportType.Text = "Detailed Payment Analysis Report (on Practice Basis)"
+                    txtNewPassword.Focus()
+                    udcDownloadErrorMessage.Clear()
+                    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Martin]
+
+                    udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Print DPAR Practice Basis Report successful")
+                    db.CommitTransaction()
+
+                Catch ex As Exception
+                    db.RollBackTranscation()
+
+                    Me.udcErrorMessage.AddMessage(FUNCTION_CODE, "E", "00002")
+                    Me.udcErrorMessage.BuildMessageBox("UpdateFail", udtAuditLogEntry, LogID.LOG00009, "Print DPAR Practice Basis Report fail")
+                End Try
+            Else
+                Dim udtAuditLogEntry As New AuditLogEntry(FUNCTION_CODE, Me)
+
+                Try
+                    udtAuditLogEntry.AddDescripton("Reimbursement Cutoff Date", lblSCRReimbursementCutoffDate.Text)
+                    udtAuditLogEntry.AddDescripton("Reimbursement ID", lblSCRReimburseID.Text.Trim)
+                    udtAuditLogEntry.WriteStartLog(LogID.LOG00016, "Select Reimbursement ID")
+
+                    criteria = Session("Criteria")
+                    Dim dt As DataTable = udtReimbursementBLL.GetAuthorizationSummaryBySP(criteria, ReimbursementStatus.HoldForFirstAuthorisation, lblSCRReimburseID.Text, Me.hfSchemeCode.Value.Trim)
+
+                    Session("AuthorizationTxnListBySP") = dt
+
+                    gvGroupBySP.PageIndex = 0
+
+                    gvGroupBySP.Columns(5).Visible = IsRMBAvailable(hfSchemeCode.Value)
+                    Me.GridViewDataBind(gvGroupBySP, dt, "spNum", "ASC", False)
+
+                    mvCore.SetActiveView(vGroupBySP)
+
+                    udtAuditLogEntry.WriteEndLog(LogID.LOG00017, "Select Reimbursement ID successful")
+                Catch eSQL As SqlClient.SqlException
+                    If eSQL.Number = 50000 Then
+                        Dim sm As Common.ComObject.SystemMessage
+                        sm = New Common.ComObject.SystemMessage("990001", "D", eSQL.Message)
+                        udcErrorMessage.AddMessage(sm)
+                        udcErrorMessage.BuildMessageBox(strUpdateFail, udtAuditLogEntry, LogID.LOG00018, "Select Reimbursement ID fail")
+                    Else
+                        udtAuditLogEntry.WriteEndLog(LogID.LOG00018, "Select Reimbursement ID fail")
+                        Throw eSQL
+                    End If
+                Catch ex As Exception
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00018, "Select Reimbursement ID fail")
-                    Throw eSQL
-                End If
-            Catch ex As Exception
-                udtAuditLogEntry.WriteEndLog(LogID.LOG00018, "Select Reimbursement ID fail")
-                Throw ex
-            End Try
+                    Throw ex
+                End Try
+            End If
         End If
     End Sub
+    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
 
     Protected Sub gvGroupByReimburseID_PreRender(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Me.GridViewPreRenderHandler(sender, e, "AuthorizationTxnListSummary")
@@ -613,45 +777,6 @@ Partial Public Class reimbursement_new
         HandleButtonEnable()
     End Sub
 
-    Protected Sub ibtnRPrintReport_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        Me.udcErrorMessage.BuildMessageBox("UpdateFail")
-        Me.udcInfoMessageBox.BuildMessageBox()
-        Dim udtAuditLogEntry As New AuditLogEntry(FUNCTION_CODE, Me)
-        Dim db As New Common.DataAccess.Database
-
-        Try
-            Dim strReimbursementID As String
-            Dim row As GridViewRow = CType(gvGroupByReimburseID.Rows(0), GridViewRow)
-            strReimbursementID = CType(row.Cells(1).FindControl("lbtn_reimburseID"), LinkButton).Text.Trim
-
-            udtAuditLogEntry.AddDescripton("Reimbursement ID", strReimbursementID)
-            udtAuditLogEntry.AddDescripton("Cutoff Date", lblSCRReimbursementCutoffDate.Text)
-            udtAuditLogEntry.AddDescripton("Scheme", ddlScheme.SelectedValue)
-            udtAuditLogEntry.WriteStartLog(LogID.LOG00007, "Print")
-
-            'Pass the data to the Viewer by Session variables
-            Session("RID") = strReimbursementID.Trim
-            Session("strCutoffDate") = lblSCRReimbursementCutoffDate.Text.Trim
-            Session("bWatermark") = "N"
-            Session("DPAScheme") = Me.ddlScheme.SelectedValue
-            ScriptManager.RegisterStartupScript(Me, Page.GetType, FUNCTION_CODE, "window.open('DPAViewer.aspx','','width=' + (screen.width/1.5) + ',height=' + (screen.width/2) + ',resizable=yes')", True)
-            'ScriptManager.RegisterStartupScript(Me, Page.GetType, FUNCTION_CODE, "window.open('DPAViewer.aspx?RID=" & strReimbursementID.Trim & "&strCutoffDate=" & Me.lbl_searchReimbCutoffDate.Text.Trim & "&bWatermark=N','','width=' + (screen.width/1.5) + ',height=' + (screen.width/2) + ',resizable=yes')", True)
-
-            udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Print successful")
-            db.CommitTransaction()
-            'Else
-            'Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Information
-            'Me.udcInfoMessageBox.AddMessage(FUNCTION_CODE, "I", "00003")
-            'Me.udcInfoMessageBox.BuildMessageBox()
-            'udtAuditLogEntry.WriteEndLog(LogID.LOG00008, "Print fail - request already submitted")
-            'End If
-        Catch ex As Exception
-            db.RollBackTranscation()
-
-            Me.udcErrorMessage.AddMessage(FUNCTION_CODE, "E", "00002")
-            Me.udcErrorMessage.BuildMessageBox("UpdateFail", udtAuditLogEntry, LogID.LOG00009, "Print fail")
-        End Try
-    End Sub
 
     Protected Sub ibtnRConfirmFirstAuthorization_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Me.udcErrorMessage.BuildMessageBox()
@@ -985,18 +1110,24 @@ Partial Public Class reimbursement_new
                 udtAuditLogEntry.AddDescripton("Transaction No", criteria.TransNum)
                 udtAuditLogEntry.WriteStartLog(LogID.LOG00025, "Select Transaction", objAuditLogInfo)
 
-                Dim searchEngine As New SearchEngineBLL
+                ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+                'Dim searchEngine As New SearchEngineBLL
+
+                ' CRE11-004              
+                'Me.ClaimTransDetail1.LoadTranInfo(udtEHSTransactionModel, searchEngine.SearchSuspendHistory(criteria))
+
+                LoadDetail(udtEHSTransactionModel.TransactionID, udtEHSTransactionModel)
 
                 ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
                 ' ----------------------------------------------------------
                 Me.ClaimTransDetail1.ShowHKICSymbol = True
                 ' CRE17-010 (OCSSS integration) [End][Chris YIM]
-                Me.ClaimTransDetail1.LoadTranInfo(udtEHSTransactionModel, searchEngine.SearchSuspendHistory(criteria))
+                'Me.ClaimTransDetail1.LoadTranInfo(udtEHSTransactionModel, searchEngine.SearchSuspendHistory(criteria))
 
                 Me.lbl_recordNo.Text = gvGroupByTransaction.PageIndex * gvGroupByTransaction.PageSize + row.RowIndex + 1
                 Me.lbl_recordMax.Text = dt.Rows.Count
-
-                mvCore.SetActiveView(vTransactionDetail)
+                'mvCore.SetActiveView(vTransactionDetail)
+                ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
 
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00026, "Select Transaction successful", objAuditLogInfo)
 
@@ -1016,6 +1147,28 @@ Partial Public Class reimbursement_new
             End Try
         End If
     End Sub
+
+    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+    Private Sub LoadDetail(ByVal strTransactionID As String, Optional ByVal udtEHSTransactionModel As EHSTransaction.EHSTransactionModel = Nothing)
+        If IsNothing(udtEHSTransactionModel) Then udtEHSTransactionModel = claimtran.LoadClaimTran(strTransactionID, True, True)
+
+        Dim searchEngine As New SearchEngineBLL
+
+        Dim udtSearchCriteria As New SearchCriteria
+        udtSearchCriteria.TransNum = strTransactionID
+
+        Dim dtSuspendHistory As DataTable = searchEngine.SearchSuspendHistory(udtSearchCriteria)
+
+        Dim udtSessionHandlerBLL As New BLL.SessionHandlerBLL
+        udtSessionHandlerBLL.EHSTransactionSaveToSession(udtEHSTransactionModel, FunctionCode)
+
+        ClaimTransDetail1.LoadTranInfo(udtEHSTransactionModel, dtSuspendHistory)
+
+        hfCurrentDetailTransactionNo.Value = strTransactionID
+
+        mvCore.SetActiveView(vTransactionDetail)
+    End Sub
+    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
 
     Protected Sub gvGroupByTransaction_RowDataBound(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         If (e.Row.RowType = DataControlRowType.Header) Then
@@ -1219,6 +1372,49 @@ Partial Public Class reimbursement_new
         HandleButtonEnable()
     End Sub
 
+
+#Region "Report download popup function"
+    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Martin]
+    Protected Sub ibtnDownload_Click(sender As Object, e As ImageClickEventArgs) Handles ibtnDownload.Click
+
+        Dim udtAuditLog As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLog.WriteStartLog(LogID.LOG00044, AuditLogDesc.DPAR_Download_Click)
+
+        Try
+            If Not udcValidator.IsEmpty(Me.txtNewPassword.Text) Then
+
+                If udcValidator.ValidateFileDownloadPassword(Me.txtNewPassword.Text) Then
+
+                    Session("ReportPassword") = txtNewPassword.Text
+                    ScriptManager.RegisterStartupScript(Me, Page.GetType, FUNCTION_CODE, "window.open('DPAViewer.aspx','','width=' + (screen.width/1.5) + ',height=' + (screen.width/2) + ',resizable=yes')", True)
+
+                    udtAuditLog.WriteEndLog(LogID.LOG00045, AuditLogDesc.DPAR_Download_Success)
+                Else
+                    udcDownloadErrorMessage.AddMessage(FunctCode.FUNT990000, "E", MsgCode.MSG00057)
+                    Me.udcDownloadErrorMessage.BuildMessageBox("DownloadFail", udtAuditLog, LogID.LOG00046, AuditLogDesc.DPAR_Download_Fail & Session("PathError"))
+                    Me.mpeDownload.Show()
+                End If
+            Else
+                udcDownloadErrorMessage.AddMessage(FunctCode.FUNT990000, "E", MsgCode.MSG00057)
+                Me.udcDownloadErrorMessage.BuildMessageBox("DownloadFail", udtAuditLog, LogID.LOG00046, AuditLogDesc.DPAR_Download_Fail & Session("PathError"))
+                Me.mpeDownload.Show()
+            End If
+
+        Catch ex As Exception
+            ErrorHandler.Log(udtAuditLog.FunctionCode, SeverityCode.SEVE, "99999", _
+                             Request.PhysicalPath, HttpContext.Current.Request.UserHostAddress, ex.ToString)
+
+            udtAuditLog.AddDescripton("DownloadFailException", ex.ToString)
+            Me.udcDownloadErrorMessage.AddMessage(FUNCTION_CODE, SeverityCode.SEVE, MsgCode.MSG00447)
+            Me.udcDownloadErrorMessage.BuildMessageBox("DownloadFail", udtAuditLog, LogID.LOG00046, AuditLogDesc.DPAR_Download_Fail & Session("PathError"))
+            Me.mpeDownload.Show()
+        End Try
+
+    End Sub
+    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Martin]
+
+
+#End Region
 #Region "Implement Working Data"
 
     ''' <summary>

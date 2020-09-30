@@ -239,6 +239,17 @@ Namespace Component
         Public Const All As String = "ALL"
     End Class
 
+    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+    Public Class ReimbursementVerificationCaseAvailable
+        Public Const Available As String = "Y"
+    End Class
+
+    Public Class DPAReportType
+        Public Const Practice As String = "PracticeBasis"
+        Public Const EHCP As String = "EHCPBasis"
+    End Class
+    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
+
     Public Class SPAcctType
         Public Const ServiceProvider As String = "S"
         Public Const DataEntryAcct As String = "D"

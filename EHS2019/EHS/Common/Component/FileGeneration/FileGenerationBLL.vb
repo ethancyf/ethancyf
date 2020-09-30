@@ -928,8 +928,9 @@ Namespace Component.FileGeneration
                             i = i + 1
                         Next
 
-                        oSheet.SaveAs(filePath)
-                        'oBook.SaveAs(filePath)
+
+                        'oSheet.SaveAs(filePath)
+                        oBook.SaveAs(filePath)
 
                         oBook.Close()
 
@@ -1083,7 +1084,7 @@ Namespace Component.FileGeneration
             Return oCells
         End Function
 
-        Public Function Export(ByVal strFileID As String, ByVal ds As DataSet, ByRef strGenerationID As String, ByRef strMessageID As String) As Boolean
+        Public Function Export(ByVal strFileID As String, ByVal ds As DataSet, ByRef strGenerationID As String, ByRef strMessageID As String, Optional ByVal strReimburseID As String = "", Optional ByVal strSchemeCode As String = "") As Boolean
 
             Dim udtDB As New Common.DataAccess.Database()
             Dim udtGeneralFunction As New GeneralFunction
@@ -1106,7 +1107,14 @@ Namespace Component.FileGeneration
                 udtQueue.GenerationID = strGenerationID
                 udtQueue.FileID = strFileID
                 udtQueue.InParm = ""
-                udtQueue.OutputFile = udtFileGenerationModel.FileNameWithDateTimeStamp
+                ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+                If strReimburseID = "" And strSchemeCode = "" Then
+                    udtQueue.OutputFile = udtFileGenerationModel.FileNameWithDateTimeStamp
+                Else
+                    udtQueue.OutputFile = udtFileGenerationModel.FileNamePrefix + strReimburseID + "-" + strSchemeCode + "-PA" + Year(DateTime.Now).ToString().Substring(2, 2) + Month(DateTime.Now).ToString().PadLeft(2, "0") + Day(DateTime.Now).ToString().PadLeft(2, "0") + Hour(DateTime.Now).ToString().PadLeft(2, "0") + Minute(DateTime.Now).ToString().PadLeft(2, "0") + (New Common.Format.Formatter).FormatFileExt(udtFileGenerationModel.FileType)
+                End If
+                ' udtQueue.OutputFile = udtFileGenerationModel.FileNameWithDateTimeStamp
+                ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
                 udtQueue.Status = Common.Component.DataDownloadStatus.Pending
                 udtQueue.FilePassword = ""
                 udtQueue.RequestDtm = Now

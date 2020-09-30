@@ -4335,9 +4335,15 @@ EHS2019/EHS/HCVU/Reimbursement/DPAViewer.aspx.vb -text
 EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRmbRpt.Designer.vb -text
 EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRmbRpt.resx -text
 EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRmbRpt.vb -text
+EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRmbRptEHCPBasis.Designer.vb -text
+EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRmbRptEHCPBasis.resx -text
+EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRmbRptEHCPBasis.vb -text
 EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRpt.Designer.vb -text
 EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRpt.resx -text
 EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRpt.vb -text
+EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRptEHCPBasis.Designer.vb -text
+EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRptEHCPBasis.resx -text
+EHS2019/EHS/HCVU/Reimbursement/DetailedPaymentAnalysisRptEHCPBasis.vb -text
 EHS2019/EHS/HCVU/Reimbursement/reimbursementCancelAuthorization.aspx -text
 EHS2019/EHS/HCVU/Reimbursement/reimbursementCancelAuthorization.aspx.designer.vb -text
 EHS2019/EHS/HCVU/Reimbursement/reimbursementCancelAuthorization.aspx.vb -text
@@ -4375,6 +4381,7 @@ EHS2019/EHS/HCVU/ReportAndDownload/Template/STAT00002_template.xlsx -text
 EHS2019/EHS/HCVU/ReportAndDownload/Template/STAT00003_template.xlsx -text
 EHS2019/EHS/HCVU/ReportAndDownload/Template/STAT00004_template.xlsx -text
 EHS2019/EHS/HCVU/ReportAndDownload/Template/STAT00005_template.xlsx -text
+EHS2019/EHS/HCVU/ReportAndDownload/Template/eHSM0012_List_of_EHCPs_Selected_Template.xlsx -text
 EHS2019/EHS/HCVU/ReportAndDownload/reportCriteriaBase.ascx -text
 EHS2019/EHS/HCVU/ReportAndDownload/reportCriteriaBase.ascx.designer.vb -text
 EHS2019/EHS/HCVU/ReportAndDownload/reportCriteriaBase.ascx.vb -text
@@ -8290,6 +8297,8 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_ClearCache_Update.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CodeMapping_get_all_cache.sql -text svneol=unset#application/octet-stream
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CrossSubsidizeRelation_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DHCSPMapping_get_byRegCode.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_DPAReport_EHCP_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_DPAReport_EHCPs_SelectedList_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DPAReport_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DailyEnrolmentStatistic.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Daily_statistic_on_SmartIC.sql -text

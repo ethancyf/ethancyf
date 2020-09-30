@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	15 June 2015
 -- CR No.:			CRE13-019-02
@@ -94,7 +101,7 @@ AS BEGIN
 	--DECLARE	@overflow_total_no_instruction		char(7)
 	DECLARE @overflow_total_amt_instruction		char(12)	
 	DECLARE @Reimbursement_Mode					varchar(2)
-	
+	DECLARE @VerifiyCaseAvailable				CHAR(1)
 	
 -- =============================================
 -- Validation 
@@ -150,7 +157,15 @@ AS BEGIN
 												
 	SELECT @Reimbursement_Mode = Reimbursement_Mode FROM SchemeClaim WHERE Scheme_Code = @scheme_code
 												
-												
+	--	GET Verification Case Available or not
+	SELECT 
+		@VerifiyCaseAvailable = Verification_Case_Available 
+	FROM 
+		ReimbursementAuthorisation 
+	WHERE 
+		Reimburse_ID = @reimburse_id 
+			AND Authorised_Status = 'S' 
+				AND Record_Status = 'A'											
 -- =============================================
 -- Return results
 -- =============================================
@@ -301,7 +316,8 @@ AS BEGIN
 			   ,[Create_Dtm]
 			   ,[Update_By]
 			   ,[Update_Dtm]
-			   ,[Scheme_Code])
+			   ,[Scheme_Code]
+			   ,[Verification_Case_Available])
 	VALUES
 			   (@current_dtm
 			   ,'R'
@@ -313,7 +329,8 @@ AS BEGIN
 			   ,@current_dtm
 			   ,@current_user
 			   ,@current_dtm
-			   ,@scheme_code)
+			   ,@scheme_code
+			   ,@VerifiyCaseAvailable)
 
 -- Step 5: Update table [ReimbursementAuthTran] ([Authorised_Status = 'R')
 	UPDATE	ReimbursementAuthTran

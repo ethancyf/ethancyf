@@ -45,9 +45,11 @@ End Code
                 <div>
                     <div class="row section-1-1">
                         <div class="col-xs-12 col-sm-7 header_1">
-                            <div class="row text-1">
-                                @Resource.Text("VoucherBalanceEnquiry")
-                            </div>
+                            <!--<div class="row text-1">-->
+                                <h1 id="skiptarget" class="text-1">
+                                    @Resource.Text("VoucherBalanceEnquiry")
+                                </h1>
+                            <!--</div>-->
                             <div class="row text-5">
                                 @Resource.Text("VBENote")
                             </div>

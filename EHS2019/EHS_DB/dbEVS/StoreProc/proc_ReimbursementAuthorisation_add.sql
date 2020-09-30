@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Dickson LAW
+-- Modified date:	07 March 2018
+-- CR No.:			CRE17-004
+-- Description:		Generate a new DPAR on EHCP basis
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	24 March 2015
 -- CR No.:			INT15-0002
@@ -50,13 +57,14 @@ GO
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_ReimbursementAuthorisation_add] 
-	@tran_status		char(1),
-	@authorised_status	char(1),
-	@authorised_by    	varchar(20),
-	@reimburse_id		char(15),
-	@current_user		varchar(20),
-	@cutoff_dtm			datetime,
-	@scheme_code		char(10)
+	@tran_status					char(1),
+	@authorised_status				char(1),
+	@authorised_by    				varchar(20),
+	@reimburse_id					char(15),
+	@current_user					varchar(20),
+	@cutoff_dtm						datetime,
+	@scheme_code					char(10),
+	@Verification_Case_Available	char(1)
 WITH RECOMPILE
 AS BEGIN
 -- =============================================
@@ -91,7 +99,8 @@ INSERT INTO ReimbursementAuthorisation
 				,[Create_Dtm]
 				,[Update_By]
 				,[Update_Dtm]
-				,[Scheme_Code])
+				,[Scheme_Code]
+				,[Verification_Case_Available])
 		 VALUES
 				(GETDATE()
 				,@authorised_status
@@ -106,7 +115,9 @@ INSERT INTO ReimbursementAuthorisation
 				,GETDATE()
 				,@current_user
 				,GETDATE()
-				,@scheme_code)
+				,@scheme_code
+				,@Verification_Case_Available
+				)
 
 END
 GO

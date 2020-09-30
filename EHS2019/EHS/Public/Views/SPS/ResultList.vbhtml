@@ -135,10 +135,10 @@
                     @<td style="border-right:0;cursor:default !important"></td>
                     @<td style="border-right:0;cursor:default !important"></td>
                     @<td></td>
-            		@<td class="right-cell" colspan="@Model.SubHeaderList.Count" id="tdServiceFee">
-                
+            		@<th class="right-cell" colspan="@Model.SubHeaderList.Count"  id="tdServiceFee">
+                 
 		                @Resource.Text("SPSResultServiceFeeLargeScreen")
-		            </td>
+		            </th>
 
             		End If
 		    </tr>

@@ -93,7 +93,7 @@ Namespace Controllers
             spBLL.WirtePracticeDetailPopupAuditLog()
 
             Return PartialView("PracticeDetail", vm)
-        End Function
+    End Function
 
         Private Function FromHexString(ByVal hexString As String) As String
             Dim bytes As Byte() = New Byte(hexString.Length / 2 - 1) {}

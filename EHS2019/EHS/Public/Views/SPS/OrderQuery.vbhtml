@@ -32,12 +32,12 @@
                         <li>
                             <div class="row typeBackground no-margin no-padding">
                                 <div class="col-xs-6 col-sm-6">
-                                    <div id="divAsc" href="#" class="activeType" onclick="setOrderValue(this, 'divDesc', '@Resource.Text("ResultPageAsc")')" value="Asc" aria_label="@Resource.Text("ResultPageAscending")">
+                                    <div id="divAsc" href="#" class="activeType" onclick="setOrderValue(this, 'divDesc', '@Resource.Text("ResultPageAsc")')" value="Asc" aria_label="@Resource.Text("ResultPageAscending")" tabindex="0">
                                         <a href="javascript:void(0);">@Resource.Text("ResultPageAscending")</a>
                                     </div>
                                 </div>
                                 <div id="btnTypCE" class="col-xs-6 col-sm-6">
-                                    <div id="divDesc" href="#" class="inactiveType" onclick="setOrderValue(this, 'divAsc', '@Resource.Text("ResultPageDesc")')" value="Desc" aria_label="@Resource.Text("ResultPageDescending")">
+                                    <div id="divDesc" href="#" class="inactiveType" onclick="setOrderValue(this, 'divAsc', '@Resource.Text("ResultPageDesc")')" value="Desc" aria_label="@Resource.Text("ResultPageDescending")" tabindex="0">
                                         <a href="javascript:void(0);">@Resource.Text("ResultPageDescending")</a>
                                     </div>
                                 </div>

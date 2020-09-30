@@ -373,7 +373,35 @@ $(document).ready(function () {
                 $(this).parent('.chk_container').css('color', '#585858');
                 $(this).parent('.chk_container').find('.chk').prop('checked', false);
             }
+
+
+
+            //for radioCheckBox_container
+            if ($(this).parent('div').first().hasClass('radioCheckBox_container')) {
+
+                let checked = $(this).find('.chk').prop('checked');
+
+                if ($(this).hasClass('disabled')) {
+                    return false;
+                }
+
+                $(this).closest('.radioCheckBox_row_container').find('.radioCheckBox_container').each(function () {
+                   
+                    $(this).css('color', '#585858');
+                  
+                });
+
+                
+                
+                $(this).parent('div').css('color', '#0171BA');
+            }
+
+
         })
+
+
+
+
 
         $('.chk').on('click', function (e) {
             e.stopPropagation();
@@ -467,7 +495,18 @@ $(document).ready(function () {
             }
             $(this).find('.chk').first().click();
         });
+
+
+        
+
+       
+
+
+
     }
+
+    
+
 
     function initNavPills() {
         $('#optSelect > li > a').on('click', function (e) {

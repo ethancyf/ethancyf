@@ -545,7 +545,7 @@ Public Class ReimbursementBLL
         End Try
     End Sub
 
-    Public Sub InsertReimbursementAuthorisation(ByRef udcDB As Database, ByVal strTranStatus As String, ByVal strAuthorisedBy As String, ByVal strAuthorisedStatus As String, ByVal strReimburseID As String, ByVal strUserID As String, ByVal dtmCutoff As Date, ByVal strSchemeCode As String)
+    Public Sub InsertReimbursementAuthorisation(ByRef udcDB As Database, ByVal strTranStatus As String, ByVal strAuthorisedBy As String, ByVal strAuthorisedStatus As String, ByVal strReimburseID As String, ByVal strUserID As String, ByVal dtmCutoff As Date, ByVal strSchemeCode As String, ByVal strVerfiyCaseAvail As String)
 
         Dim dt As New DataTable
 
@@ -559,7 +559,8 @@ Public Class ReimbursementBLL
                                             udcDB.MakeInParam("@reimburse_id", SqlDbType.Char, 15, strReimburseID), _
                                             udcDB.MakeInParam("@current_user", SqlDbType.VarChar, 20, strUserID), _
                                             udcDB.MakeInParam("@cutoff_dtm", SqlDbType.DateTime, 8, dtmCutoff), _
-                                            udcDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode)}
+                                            udcDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode), _
+                                            udcDB.MakeInParam("@Verification_Case_Available", SqlDbType.Char, 1, strVerfiyCaseAvail)} ' CRE17-004 Generate a new DPAR on EHCP basis [Dickson]
 
             udcDB.RunProc("proc_ReimbursementAuthorisation_add", prams, dt)
         Catch ex As Exception
@@ -1936,6 +1937,27 @@ Public Class ReimbursementBLL
         End If
     End Function
 
+
+
+    ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
+    Public Function GetListOfEHCPsSelected(ByVal strRimbeID As String, ByVal strCutoffDate As String, ByVal strSchemeCode As String) As DataSet
+        Dim udtDB As New Database
+        Dim ds As New DataSet
+
+        Dim prams() As SqlParameter = New SqlParameter() { _
+            udtDB.MakeInParam("@reimburse_id", SqlDbType.Char, 15, strRimbeID), _
+            udtDB.MakeInParam("@cutoff_Date_str", SqlDbType.Char, 11, strCutoffDate), _
+            udtDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode)
+        }
+
+        udtDB.RunProc("proc_DPAReport_EHCPs_SelectedList_get", prams, ds)
+
+        Return ds
+
+    End Function
+    ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
+
+
 #End Region
 
     ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
@@ -2039,10 +2061,10 @@ Public Class ReimbursementBLL
 
         ' create data object and params
         Dim prams() As SqlParameter = {udtDB.MakeInParam("@cutoff_dtm", SqlDbType.DateTime, 8, dtmCutoffDtm), _
-                                        udtDB.MakeInParam("@current_user", SqlDbType.VarChar, 20, strUser), _
-                                        udtDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode), _
-                                        udtDB.MakeInParam("@reimburse_id", SqlDbType.Char, 15, strReimburseID) _
-                                        }
+                                   udtDB.MakeInParam("@current_user", SqlDbType.VarChar, 20, strUser), _
+                                   udtDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode), _
+                                   udtDB.MakeInParam("@reimburse_id", SqlDbType.Char, 15, strReimburseID) _
+                                   }
 
         ' run the stored procedure
         udtDB.RunProc("proc_ReimbursementHold_upd", prams)

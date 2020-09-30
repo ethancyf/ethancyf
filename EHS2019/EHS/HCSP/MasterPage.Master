@@ -46,7 +46,7 @@
                 <Scripts>
                     <asp:ScriptReference Path="~/JS/WebKit.js" />
                     <asp:ScriptReference Path="~/JS/Clock.js" />
-                    <asp:ScriptReference Path="~/JS/TimeoutReminder.js" />
+                    <asp:ScriptReference Path="~/JS/TimeoutReminder.js?ver=1" />
                 </Scripts>
             </asp:ScriptManager>
             <script type="text/javascript">

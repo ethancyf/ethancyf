@@ -813,4 +813,184 @@ Partial Public Class reimbursement_enquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnDetailNext As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenDownload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenDownload As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''mpeDownload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mpeDownload As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''pnlDownload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDownload As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblDownloadTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDownloadTitle As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcDownloadErrorMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcDownloadErrorMessage As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''udcDownloadInfoMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcDownloadInfoMessage As Global.CustomControls.InfoMessageBox
+
+    '''<summary>
+    '''lblReportTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReportTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReportType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReportType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNewPassword control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewPassword As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtNewPassword control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewPassword As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgErrNewPassword control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgErrNewPassword As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblFilePasswordTipsHeader control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTipsHeader As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips1a control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips1a As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips1b control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips1b As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips1c control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips1c As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips1d control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips1d As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblFilePasswordTips3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblFilePasswordTips3 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnDownload control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnDownload As Global.System.Web.UI.WebControls.ImageButton
 End Class
