@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Oct 2018
+-- CR No.:			INT18-0019
+-- Description:		Exclude back office created account
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	24 November 2015
 -- CR No.:			CRE15-006
@@ -17,12 +24,6 @@ GO
 -- Author:				Vincent YUEN
 -- Create date:		22 Jan 2010
 -- Description:		AR3 - Report of HCSP with Frequent Rejection of Temporary Voucher Recipient Account
--- =============================================
--- =============================================
--- Modification History
--- Modified by:			
--- Modified date:			
--- Description:			
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_SP_Frequent_Account_Rejection]
@@ -135,7 +136,7 @@ AS BEGIN
 		FROM			(
 								SELECT		VA.SP_ID
 								FROM			TempVoucherAccMatchLog MatchResult
-								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID
+								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID AND ISNULL(Create_By_BO,'') <> 'Y'
 								WHERE		MatchResult.Processed = 'Y'
 													AND MatchResult.Return_Dtm >= @target_period_from
 													AND MatchResult.Return_Dtm < @target_period_to
@@ -143,7 +144,7 @@ AS BEGIN
 								UNION ALL
 								SELECT		VA.SP_ID
 								FROM			TempVoucherAccManualMatchLOG MatchResult
-								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID
+								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID AND ISNULL(Create_By_BO,'') <> 'Y'
 								INNER JOIN	TempVoucherAccount TVA ON MatchResult.Voucher_Acc_ID = TVA.Voucher_Acc_ID
 																									AND TVA.Account_Purpose NOT IN ('A', 'O')
 								WHERE		MatchResult.Return_Dtm >= @target_period_from
@@ -179,7 +180,7 @@ AS BEGIN
 								SELECT		VA.SP_ID,
 													VA.SP_Practice_Display_Seq
 								FROM			TempVoucherAccMatchLog MatchResult
-								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID
+								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID AND ISNULL(Create_By_BO,'') <> 'Y'
 								INNER JOIN	@SPRejectCount SP ON VA.SP_ID = SP.SP_ID
 								WHERE		MatchResult.Processed = 'Y'
 													AND MatchResult.Return_Dtm >= @target_period_from
@@ -189,7 +190,7 @@ AS BEGIN
 								SELECT		VA.SP_ID,
 													VA.SP_Practice_Display_Seq
 								FROM			TempVoucherAccManualMatchLOG MatchResult
-								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID
+								INNER JOIN	VoucherAccountCreationLOG VA ON MatchResult.Voucher_Acc_ID = VA.Voucher_Acc_ID AND ISNULL(Create_By_BO,'') <> 'Y'
 								INNER JOIN	@SPRejectCount SP ON VA.SP_ID = SP.SP_ID
 								WHERE		MatchResult.Return_Dtm >= @target_period_from
 													AND MatchResult.Return_Dtm < @target_period_to
