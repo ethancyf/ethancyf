@@ -15,16 +15,15 @@ GO
 -- =============================================	
 -- =============================================
 -- Author:			Winnie SUEN
--- Modified date:	26 Augest 2020
--- CR No.:			CRE20-003 (Enhancement on Programme or Scheme using batch upload)
--- Description:		Update Doc Code of Entry(Staging) when change doc code in Vaccination File Rectification
+-- Modified date:	25 September 2020
+-- CR No.:			CRE20-003-03 (Enhancement on Programme or Scheme using batch upload)
+-- Description:		Update Doc Code of Entry when change doc code in Vaccination File Rectification
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_upd_DocCode]
 	@Student_File_ID		VARCHAR(15),
 	@Student_Seq			INT,
 	@Doc_Code				CHAR(20),
-	@Acc_Doc_Code			CHAR(20),
 	@Update_By				VARCHAR(20),
 	@Update_Dtm				DATETIME
 AS BEGIN
@@ -43,17 +42,16 @@ AS BEGIN
 -- =============================================
 -- Return results
 -- =============================================
+
 	UPDATE 
-		StudentFileEntryStaging 
+		StudentFileEntryStaging
 	SET 
 		Doc_Code = @Doc_Code,
-		Acc_Doc_Code = @Acc_Doc_Code,
-		Update_By = @Update_By,
-		Update_Dtm = @Update_Dtm
-
+		Acc_Doc_Code = @Doc_Code,
+		Last_Rectify_By = @Update_By,
+		Last_Rectify_Dtm = @Update_Dtm	
 	WHERE 
-		Student_File_ID = @Student_File_ID 
-		AND Student_Seq = @Student_Seq
+		Student_File_ID = @Student_File_ID AND Student_Seq = @Student_Seq
 
 END
 GO

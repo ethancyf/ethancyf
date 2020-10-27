@@ -34,7 +34,16 @@ Partial Public Class ucReadOnlyVSS
             Dim udtStaticData As StaticDataModel = (New StaticDataBLL).GetStaticDataByColumnNameItemNo(String.Format("{0}_DOCUMENTARYPROOF", udtEHSTransaction.CategoryCode), strDocumentaryProof)
             lblDocumentaryProof.Text = udtStaticData.DataValue
 
+            'CRE20-009 VSS Da with CSSA -  visible the content of checkboxes [Start][Nichole]
+            If udtStaticData.ItemNo = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Or udtStaticData.ItemNo = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Then
+                panVSSDAConfirm.Visible = True
+            Else
+                panVSSDAConfirm.Visible = False
+            End If
+            'CRE20-009 VSS Da with CSSA - visible the content of checkboxes [End][Nichole]
         End If
+
+
 
         ' PID Institution Code/Name
         Dim strPIDInstitutionCode As String = udtEHSTransaction.TransactionAdditionFields.PIDInstitutionCode

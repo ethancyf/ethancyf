@@ -31,6 +31,10 @@ Partial Public Class ucReadOnlyVSS
         lblPlaceOfVaccinationText.Text = Me.GetGlobalResourceObject("Text", "PlaceOfVaccination")
         lblRecipientConditionText.Text = Me.GetGlobalResourceObject("Text", "RecipientCondition")
 
+        'CRE20-009 VSS DA with CSSA [Start][Nichole]
+        lblDocProofCSSA.Text = Me.GetGlobalResourceObject("Text", "ProvidedInfoCSSA")
+        lblDocProofAnnex.Text = Me.GetGlobalResourceObject("Text", "ProvidedInfoAnnex")
+        'CRE20-009 VSS DA with CSSA [End][Nichole]
         AddHandler udcClaimVaccineReadOnly.VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
 
     End Sub
@@ -71,6 +75,13 @@ Partial Public Class ucReadOnlyVSS
                     lblDocumentaryProof.Text = udtStaticData.DataValue
             End Select
 
+            'CRE20-009 VSS Da with CSSA -  visible the content of checkboxes [Start][Nichole]
+            If udtStaticData.ItemNo = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Or udtStaticData.ItemNo = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT  Then
+                panVSSDAConfirm.Visible = True
+            Else
+                panVSSDAConfirm.Visible = False
+            End If
+            'CRE20-009 VSS Da with CSSA - visible the content of checkboxes [End][Nichole]
         End If
 
         ' PID Institution Code/Name

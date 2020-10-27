@@ -2156,6 +2156,69 @@ Partial Public Class EHSClaimV2
     Protected WithEvents hfDocumentaryProof As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''panVSSDAConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panVSSDAConfirm As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkDocProofCSSA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkDocProofCSSA As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblDocProofCSSA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDocProofCSSA As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVSSDAConfirmCSSAError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVSSDAConfirmCSSAError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkDocProofAnnex control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkDocProofAnnex As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblDocProofAnnex control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDocProofAnnex As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVSSDAConfirmAnnexError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVSSDAConfirmAnnexError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''btnDocumentaryProofBack control.
     '''</summary>
     '''<remarks>

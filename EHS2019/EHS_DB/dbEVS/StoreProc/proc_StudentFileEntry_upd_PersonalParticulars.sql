@@ -28,9 +28,10 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntry_upd_PersonalParticulars]
 	@Contact_No				VARCHAR(20),
 	@Reject_Injection		CHAR(1),
 	@Update_By				VARCHAR(20),
-	@Update_Dtm				Datetime,
+	@Update_Dtm				DATETIME,
 	@HKIC_Symbol			CHAR(1),
-	@Service_Receive_Dtm	Datetime
+	@Service_Receive_Dtm	DATETIME,
+	@TSMP					BINARY(8) = NULL
 AS BEGIN
 
 	SET NOCOUNT ON;
@@ -41,6 +42,16 @@ AS BEGIN
 -- =============================================
 -- Validation 
 -- =============================================
+	IF @TSMP IS NOT NULL
+	BEGIN
+		IF (
+			SELECT TSMP FROM StudentFileEntry WHERE Student_File_ID = @Student_File_ID AND Student_Seq = @Student_Seq
+		) != @TSMP
+		BEGIN
+			RAISERROR('00011', 16, 1)
+			RETURN @@error
+		END
+	END
 -- =============================================
 -- Initialization
 -- =============================================

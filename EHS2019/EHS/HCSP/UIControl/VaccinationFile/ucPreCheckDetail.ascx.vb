@@ -331,7 +331,13 @@ Public Class ucPreCheckDetail
                     Case CultureLanguage.TradChinese
                         lblDScheme.Text = udtSchemeClaimModel.SchemeDescChi
                         lblDSchoolName.Text = udtStudentFile.SchoolNameCH
-                        lblDPractice.Text = String.Format("{0} ({1})", udtStudentFile.PracticeNameCH, udtStudentFile.PracticeDisplaySeq)
+
+                        If udtStudentFile.PracticeNameCH Is Nothing OrElse udtStudentFile.PracticeNameCH = String.Empty Then
+                            lblDPractice.Text = String.Format("{0} ({1})", udtStudentFile.PracticeNameEN, udtStudentFile.PracticeDisplaySeq)
+                        Else
+                            lblDPractice.Text = String.Format("{0} ({1})", udtStudentFile.PracticeNameCH, udtStudentFile.PracticeDisplaySeq)
+                        End If
+
                         lblDStatus.Text = udtStudentFile.RecordStatusDisplay(EnumLanguage.TC, False)
 
                     Case Else
@@ -1171,20 +1177,20 @@ Public Class ucPreCheckDetail
         trAssignDatePCV13_3.Style.Add("display", "none")
         trAssignDatePCV13_4.Style.Add("display", "none")
 
-        trAssignDateMMR_1.Style.Add("display", "none")
-        trAssignDateMMR_2.Style.Add("display", "none")
-        trAssignDateMMR_3.Style.Add("display", "none")
-        trAssignDateMMR_4.Style.Add("display", "none")
+        'trAssignDateMMR_1.Style.Add("display", "none")
+        'trAssignDateMMR_2.Style.Add("display", "none")
+        'trAssignDateMMR_3.Style.Add("display", "none")
+        'trAssignDateMMR_4.Style.Add("display", "none")
 
         txtAVaccinationDateQIV1.Text = String.Empty
         txtAGenerationDateQIV1.Text = String.Empty
         txtAVaccinationDateQIV2.Text = String.Empty
         txtAGenerationDateQIV2.Text = String.Empty
 
-        txtAVaccinationDateMMR1.Text = String.Empty
-        txtAGenerationDateMMR1.Text = String.Empty
-        txtAVaccinationDateMMR2.Text = String.Empty
-        txtAGenerationDateMMR2.Text = String.Empty
+        'txtAVaccinationDateMMR1.Text = String.Empty
+        'txtAGenerationDateMMR1.Text = String.Empty
+        'txtAVaccinationDateMMR2.Text = String.Empty
+        'txtAGenerationDateMMR2.Text = String.Empty
 
         txtAVaccinationDatePCV131.Text = String.Empty
         txtAGenerationDatePCV131.Text = String.Empty
@@ -1197,10 +1203,10 @@ Public Class ucPreCheckDetail
         imgAVaccinationDateQIV2Error.Visible = False
         imgAGenerationDateQIV2Error.Visible = False
 
-        imgAVaccinationDateMMR1Error.Visible = False
-        imgAGenerationDateMMR1Error.Visible = False
-        imgAVaccinationDateMMR2Error.Visible = False
-        imgAGenerationDateMMR2Error.Visible = False
+        'imgAVaccinationDateMMR1Error.Visible = False
+        'imgAGenerationDateMMR1Error.Visible = False
+        'imgAVaccinationDateMMR2Error.Visible = False
+        'imgAGenerationDateMMR2Error.Visible = False
 
         imgAVaccinationDatePCV131Error.Visible = False
         imgAGenerationDatePCV131Error.Visible = False
@@ -1256,24 +1262,24 @@ Public Class ucPreCheckDetail
                         trAssignDatePCV13_4.Style.Remove("display")
                     End If
 
-                    If arrCategory.Contains("HCW") Then
-                        trAssignDateMMR_1.Style.Remove("display")
-                        trAssignDateMMR_2.Style.Remove("display")
-                        trAssignDateMMR_3.Style.Remove("display")
-                        trAssignDateMMR_4.Style.Remove("display")
-                    End If
+                    'If arrCategory.Contains("HCW") Then
+                    '    trAssignDateMMR_1.Style.Remove("display")
+                    '    trAssignDateMMR_2.Style.Remove("display")
+                    '    trAssignDateMMR_3.Style.Remove("display")
+                    '    trAssignDateMMR_4.Style.Remove("display")
+                    'End If
 
                 Case RCH_TYPE.RCCC
                     trAssignDateQIV_1.Style.Remove("display")
                     trAssignDateQIV_2.Style.Remove("display")
                     trAssignDateQIV_3.Style.Remove("display")
 
-                    If arrCategory.Contains("HCW") Then
-                        trAssignDateMMR_1.Style.Remove("display")
-                        trAssignDateMMR_2.Style.Remove("display")
-                        trAssignDateMMR_3.Style.Remove("display")
-                        trAssignDateMMR_4.Style.Remove("display")
-                    End If
+                    'If arrCategory.Contains("HCW") Then
+                    '    trAssignDateMMR_1.Style.Remove("display")
+                    '    trAssignDateMMR_2.Style.Remove("display")
+                    '    trAssignDateMMR_3.Style.Remove("display")
+                    '    trAssignDateMMR_4.Style.Remove("display")
+                    'End If
 
                 Case RCH_TYPE.IPID
                     trAssignDateQIV_1.Style.Remove("display")
@@ -1332,23 +1338,23 @@ Public Class ucPreCheckDetail
                                 txtAGenerationDatePCV131.Text = CDate(drAssignDate(0)("Final_Checking_Report_Generation_Date")).ToString("dd-MM-yyyy")
                             End If
 
-                        Case "MMR"
-                            '1st/Only Dose Vaccination Date
-                            If Not IsDBNull(drAssignDate(0)("Service_Receive_Dtm")) Then
-                                txtAVaccinationDateMMR1.Text = CDate(drAssignDate(0)("Service_Receive_Dtm")).ToString("dd-MM-yyyy")
-                            End If
-                            '1st/Only Dose Generation Date
-                            If Not IsDBNull(drAssignDate(0)("Final_Checking_Report_Generation_Date")) Then
-                                txtAGenerationDateMMR1.Text = CDate(drAssignDate(0)("Final_Checking_Report_Generation_Date")).ToString("dd-MM-yyyy")
-                            End If
-                            '1st/Only Dose Vaccination Date
-                            If Not IsDBNull(drAssignDate(0)("Service_Receive_Dtm_2ndDose")) Then
-                                txtAVaccinationDateMMR2.Text = CDate(drAssignDate(0)("Service_Receive_Dtm_2ndDose")).ToString("dd-MM-yyyy")
-                            End If
-                            '1st/Only Dose Vaccination Date
-                            If Not IsDBNull(drAssignDate(0)("Final_Checking_Report_Generation_Date_2ndDose")) Then
-                                txtAGenerationDateMMR2.Text = CDate(drAssignDate(0)("Final_Checking_Report_Generation_Date_2ndDose")).ToString("dd-MM-yyyy")
-                            End If
+                            'Case "MMR"
+                            '    '1st/Only Dose Vaccination Date
+                            '    If Not IsDBNull(drAssignDate(0)("Service_Receive_Dtm")) Then
+                            '        txtAVaccinationDateMMR1.Text = CDate(drAssignDate(0)("Service_Receive_Dtm")).ToString("dd-MM-yyyy")
+                            '    End If
+                            '    '1st/Only Dose Generation Date
+                            '    If Not IsDBNull(drAssignDate(0)("Final_Checking_Report_Generation_Date")) Then
+                            '        txtAGenerationDateMMR1.Text = CDate(drAssignDate(0)("Final_Checking_Report_Generation_Date")).ToString("dd-MM-yyyy")
+                            '    End If
+                            '    '1st/Only Dose Vaccination Date
+                            '    If Not IsDBNull(drAssignDate(0)("Service_Receive_Dtm_2ndDose")) Then
+                            '        txtAVaccinationDateMMR2.Text = CDate(drAssignDate(0)("Service_Receive_Dtm_2ndDose")).ToString("dd-MM-yyyy")
+                            '    End If
+                            '    '1st/Only Dose Vaccination Date
+                            '    If Not IsDBNull(drAssignDate(0)("Final_Checking_Report_Generation_Date_2ndDose")) Then
+                            '        txtAGenerationDateMMR2.Text = CDate(drAssignDate(0)("Final_Checking_Report_Generation_Date_2ndDose")).ToString("dd-MM-yyyy")
+                            '    End If
 
                     End Select
                 End If
@@ -2035,8 +2041,11 @@ Public Class ucPreCheckDetail
                 'Without Account
                 blnWarning = True
             Else
-                'Temporary Account + Record Status = "R" (Not for ImmD Validation)
-                If dr("Real_Acc_Type") = AccType.TempAcct And dr("Real_Record_Status") = "R" Then
+                'Temporary Account + Record Status = "R" (Not for ImmD Validation) OR Record Status = "I" (Invalid)
+                If dr("Real_Acc_Type") = AccType.TempAcct And _
+                    (dr("Real_Record_Status") = EHSAccount.EHSAccountModel.TempAccountRecordStatusClass.NotForImmDValidation Or _
+                     dr("Real_Record_Status") = EHSAccount.EHSAccountModel.TempAccountRecordStatusClass.InValid) Then
+
                     blnWarning = True
                 End If
             End If

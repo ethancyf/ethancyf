@@ -375,6 +375,13 @@ Partial Public Class claimTransManagement
             BindMeansOfInput(Me.ddlTabeHSAccountMeansOfInput, Me.lblTabeHSAccountMeansOfInputText)
             BindMeansOfInput(Me.ddlTabAdvancedSearchMeansOfInput, Me.lblTabAdvancedSearchMeansOfInputText)
 
+            'CRE20-003 (add search criteria) [Start][Martin]
+            'Bind Dose
+            BindDose(Me.ddlTabTransactionDose)
+            'Bind Vaccine
+            BindVaccine(Me.ddlTabTransactionVaccines)
+            'CRE20-003 (add search criteria) [End][Martin]
+
             Me.MultiViewReimClaimTransManagement.ActiveViewIndex = ViewIndex.InputCriteria
             Me.TabContainerCTM.ActiveTabIndex = Aspect.Transaction
             Session(SESS.SelectedTabIndex) = Aspect.Transaction
@@ -609,7 +616,7 @@ Partial Public Class claimTransManagement
     End Sub
     'CRE13-012 (RCH Code sorting) [End][Chris YIM]
 
-    'CRE13-012 (RCH Code sorting) [Start][Chris YIM]
+    'CRE20-003 (add search criteria) [Start][Martin]
     '-----------------------------------------------------------------------------------------
     Private Sub BindScheme(ByVal ddlScheme As DropDownList)
         Dim udtSchemeClaimModelListFilter As New SchemeClaimModelCollection
@@ -636,7 +643,10 @@ Partial Public Class claimTransManagement
             ddlScheme.SelectedIndex = 1
             ddlScheme.Enabled = False
 
-            If ddlScheme.SelectedValue.Trim = "RVP" Then
+            If ddlScheme.SelectedValue.Trim = SchemeClaimModel.RVP Or _
+                ddlScheme.SelectedValue.Trim = SchemeClaimModel.PPP Or _
+                ddlScheme.SelectedValue.Trim = SchemeClaimModel.PPPKG Then
+
                 Me.txtTabTransactionRCHRode.Enabled = True
                 Me.txtTabServiceProviderRCHRode.Enabled = True
                 Me.txtTabeHSAccountRCHRode.Enabled = True
@@ -656,15 +666,20 @@ Partial Public Class claimTransManagement
             ddlScheme.SelectedIndex = 0
             ddlScheme.Enabled = True
 
-            Dim HasRVP As Boolean = False
+            Dim HasRVPorPPP As Boolean = False
 
             For idxItem As Integer = 0 To ddlScheme.Items.Count - 1
-                If ddlScheme.Items(idxItem).Value = "RVP" Then
-                    HasRVP = True
+                Dim strScheme As String = ddlScheme.Items(idxItem).Value
+
+                If strScheme = SchemeClaimModel.RVP Or _
+                    strScheme = SchemeClaimModel.PPP Or _
+                    strScheme = SchemeClaimModel.PPPKG Then
+
+                    HasRVPorPPP = True
                 End If
             Next
 
-            If HasRVP Then
+            If HasRVPorPPP Then
                 Me.txtTabTransactionRCHRode.Enabled = True
                 Me.txtTabServiceProviderRCHRode.Enabled = True
                 Me.txtTabeHSAccountRCHRode.Enabled = True
@@ -682,7 +697,7 @@ Partial Public Class claimTransManagement
         End If
 
     End Sub
-    'CRE13-012 (RCH Code sorting) [End][Chris YIM]
+    'CRE20-003 (add search criteria) [End][Martin]
 
     'CRE13-012 (RCH Code sorting) [Start][Chris YIM]
     '-----------------------------------------------------------------------------------------
@@ -749,6 +764,38 @@ Partial Public Class claimTransManagement
 
         ddlEnterCreationDetailPaymentMethod.SelectedIndex = 0
     End Sub
+
+    'CRE20-003 (add search criteria) [Start][Martin]
+    '-----------------------------------------------------------------------------------------
+    Private Sub BindVaccine(ByVal ddlReimbursementMethod As DropDownList)
+        Dim udtSubsidizeBLL As New SubsidizeBLL
+
+        Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
+
+        ddlReimbursementMethod.DataSource = udtSubsidizeBLL.GetSubsidizeItemBySubsidizeType("VACCINE")
+        ddlReimbursementMethod.DataValueField = "Subsidize_Item_Code"
+        ddlReimbursementMethod.DataTextField = "Subsidize_item_Display_Code"
+        ddlReimbursementMethod.DataBind()
+
+        ddlReimbursementMethod.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), ""))
+
+        ddlReimbursementMethod.SelectedIndex = 0
+    End Sub
+
+    Private Sub BindDose(ByVal ddlDose As DropDownList)
+        Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
+
+        ddlDose.DataSource = udtStaticDataBLL.GetStaticDataListByColumnName("Dose")
+        ddlDose.DataValueField = "ItemNo"
+        ddlDose.DataTextField = "DataValue"
+        ddlDose.DataBind()
+
+        ddlDose.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), ""))
+
+        ddlDose.SelectedIndex = 0
+    End Sub
+    'CRE20-003 (add search criteria) [End][Martin]
+
 
     Private Sub HandleRedirectAction()
         Dim udtRedirectParameterBLL As New RedirectParameterBLL
@@ -940,7 +987,15 @@ Partial Public Class claimTransManagement
     Protected Sub ddlScheme_SelectedIndexChanged(sender As Object, e As EventArgs)
         Dim ddlScheme As DropDownList = CType(sender, DropDownList)
 
-        If ddlScheme.Items.Contains(New ListItem("RVP", "RVP")) AndAlso (ddlScheme.SelectedValue.Trim = String.Empty Or ddlScheme.SelectedValue.Trim = "RVP") Then
+        'CRE20-003 (add search criteria) [Martin]
+        If (ddlScheme.Items.Contains(New ListItem(SchemeClaimModel.RVP, SchemeClaimModel.RVP)) Or _
+            ddlScheme.Items.Contains(New ListItem(SchemeClaimModel.PPP, SchemeClaimModel.PPP)) Or _
+            ddlScheme.Items.Contains(New ListItem(SchemeClaimModel.PPPKG, SchemeClaimModel.PPPKG))) _
+            AndAlso (ddlScheme.SelectedValue.Trim = String.Empty Or _
+                     ddlScheme.SelectedValue.Trim = SchemeClaimModel.RVP Or _
+                     ddlScheme.SelectedValue.Trim = SchemeClaimModel.PPP Or _
+                     ddlScheme.SelectedValue.Trim = SchemeClaimModel.PPPKG) Then
+
             Select Case Session(SESS.SelectedTabIndex)
                 Case Aspect.Transaction
                     Me.txtTabTransactionRCHRode.Enabled = True
@@ -1491,9 +1546,13 @@ Partial Public Class claimTransManagement
                 udtAuditLogEntry.AddDescripton("Authorized Status", Me.ddlTabTransactionAuthorizedStatus.SelectedItem.Value)
                 udtAuditLogEntry.AddDescripton("Invalidation Status", Me.ddlTabTransactionInvalidationStatus.SelectedValue)
                 udtAuditLogEntry.AddDescripton("Reimbursement Method ", Me.ddlTabTransactionReimbursementMethod.SelectedValue)
+                'CRE20-003 (add search criteria) [Start][Martin]
+                udtAuditLogEntry.AddDescripton("Vaccine ", Me.ddlTabTransactionVaccines.SelectedValue)
+                udtAuditLogEntry.AddDescripton("Dose ", Me.ddlTabTransactionDose.SelectedValue)
 
                 If (New GeneralFunction).CheckTurnOnMeansOfInput = GeneralFunction.EnumTurnOnStatus.Yes Then udtAuditLogEntry.AddDescripton("Means of Input", Me.ddlTabTransactionMeansOfInput.SelectedValue)
-                udtAuditLogEntry.AddDescripton("RCH Code", Me.txtTabTransactionRCHRode.Text.Trim)
+                udtAuditLogEntry.AddDescripton("School/RCH Code", Me.txtTabTransactionRCHRode.Text.Trim)
+                'CRE20-003 (add search criteria) [End][Martin]
 
                 udtAuditLogEntry.AddDescripton("User Aspect", "Transaction")
                 udtAuditLogEntry.AddDescripton("Program Aspect", "Transaction")
@@ -1678,6 +1737,8 @@ Partial Public Class claimTransManagement
                     'Group: Transaction
                     udtSearchCriteria.TransNum = IIf(Me.txtTabTransactionTransactionNo.Text.Trim = String.Empty, String.Empty, udtFormatter.formatSystemNumberReverse(Me.txtTabTransactionTransactionNo.Text.Trim))
                     udtSearchCriteria.HealthProf = Me.ddlTabTransactionHealthProfession.SelectedValue.Trim
+                    udtSearchCriteria.SubsidizeItemCode = Me.ddlTabTransactionVaccines.SelectedValue.Trim 'CRE20-003 (add search criteria) [Martin]
+                    udtSearchCriteria.DoseCode = Me.ddlTabTransactionDose.SelectedValue.Trim 'CRE20-003 (add search criteria) [Martin]
 
                     'Group: Common
                     If rblTabTransactionTypeOfDate.SelectedValue = TypeOfDate.ServiceDate Then
@@ -1696,7 +1757,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.Invalidation = Me.ddlTabTransactionInvalidationStatus.SelectedValue
                     udtSearchCriteria.ReimbursementMethod = Me.ddlTabTransactionReimbursementMethod.SelectedValue.Trim
                     udtSearchCriteria.MeansOfInput = Me.ddlTabTransactionMeansOfInput.SelectedValue.Trim
-                    udtSearchCriteria.RCHCode = Me.txtTabTransactionRCHRode.Text.Trim
+                    udtSearchCriteria.SchoolOrRCHCode = Me.txtTabTransactionRCHRode.Text.Trim  'CRE20-003 (add search criteria) [Martin]
 
                     'Group: SP
                     udtSearchCriteria.ServiceProviderID = String.Empty
@@ -1721,6 +1782,10 @@ Partial Public Class claimTransManagement
                     'Group: Transaction
                     udtSearchCriteria.TransNum = String.Empty
                     udtSearchCriteria.HealthProf = String.Empty
+                    'CRE20-003 (add search criteria) [Start][Martin]
+                    udtSearchCriteria.SubsidizeItemCode = String.Empty
+                    udtSearchCriteria.DoseCode = String.Empty
+                    'CRE20-003 (add search criteria) [End][Martin]
 
                     'Group: Common
                     If rblTabServiceProviderTypeOfDate.SelectedValue = TypeOfDate.ServiceDate Then
@@ -1739,7 +1804,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.Invalidation = Me.ddlTabServiceProviderInvalidationStatus.SelectedValue
                     udtSearchCriteria.ReimbursementMethod = Me.ddlTabServiceProviderReimbursementMethod.SelectedValue.Trim
                     udtSearchCriteria.MeansOfInput = Me.ddlTabServiceProviderMeansOfInput.SelectedValue.Trim
-                    udtSearchCriteria.RCHCode = Me.txtTabServiceProviderRCHRode.Text.Trim
+                    udtSearchCriteria.SchoolOrRCHCode = Me.txtTabServiceProviderRCHRode.Text.Trim
 
                     'Group: SP
                     udtSearchCriteria.ServiceProviderID = Me.txtTabServiceProviderSPID.Text.Trim
@@ -1756,6 +1821,8 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
+                    
+
                 Case Aspect.eHSAccount
                     EnumSelectedStoredProc = Aspect.eHSAccount
 
@@ -1764,6 +1831,10 @@ Partial Public Class claimTransManagement
                     'Group: Transaction
                     udtSearchCriteria.TransNum = String.Empty
                     udtSearchCriteria.HealthProf = String.Empty
+                    'CRE20-003 (add search criteria) [Start][Martin]
+                    udtSearchCriteria.SubsidizeItemCode = String.Empty
+                    udtSearchCriteria.DoseCode = String.Empty
+                    'CRE20-003 (add search criteria) [End][Martin]
 
                     'Group: Common
                     If rblTabeHSAccountTypeOfDate.SelectedValue = TypeOfDate.ServiceDate Then
@@ -1782,7 +1853,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.Invalidation = Me.ddlTabeHSAccountInvalidationStatus.SelectedValue
                     udtSearchCriteria.ReimbursementMethod = Me.ddlTabeHSAccountReimbursementMethod.SelectedValue.Trim
                     udtSearchCriteria.MeansOfInput = Me.ddlTabeHSAccountMeansOfInput.SelectedValue.Trim
-                    udtSearchCriteria.RCHCode = Me.txtTabeHSAccountRCHRode.Text.Trim
+                    udtSearchCriteria.SchoolOrRCHCode = Me.txtTabeHSAccountRCHRode.Text.Trim  'CRE20-003 (add search criteria)[Martin]
 
                     'Group: SP
                     udtSearchCriteria.ServiceProviderID = String.Empty
@@ -1810,6 +1881,7 @@ Partial Public Class claimTransManagement
                     End If
                     udtSearchCriteria.VoucherRecipientName = Me.txtTabeHSAccountName.Text.Trim
                     udtSearchCriteria.VoucherRecipientChiName = Me.txtTabeHSAccountChiName.Text.Trim
+                 
 
                 Case Aspect.AdvancedSearch
                     EnumSelectedStoredProc = Aspect.AdvancedSearch
@@ -1819,6 +1891,10 @@ Partial Public Class claimTransManagement
                     'Group: Transaction
                     udtSearchCriteria.TransNum = IIf(Me.txtTabAdvancedSearchTransactionNo.Text.Trim = String.Empty, String.Empty, udtFormatter.formatSystemNumberReverse(Me.txtTabAdvancedSearchTransactionNo.Text.Trim))
                     udtSearchCriteria.HealthProf = Me.ddlTabAdvancedSearchHealthProfession.SelectedValue.Trim
+                    'CRE20-003 (add search criteria) [Start][Martin]
+                    udtSearchCriteria.SubsidizeItemCode = String.Empty
+                    udtSearchCriteria.DoseCode = String.Empty
+                    'CRE20-003 (add search criteria) [End][Martin]
 
                     'Group: Common
                     If rblTabAdvancedSearchTypeOfDate.SelectedValue = TypeOfDate.ServiceDate Then
@@ -1837,7 +1913,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.Invalidation = Me.ddlTabAdvancedSearchInvalidationStatus.SelectedValue
                     udtSearchCriteria.ReimbursementMethod = Me.ddlTabAdvancedSearchReimbursementMethod.SelectedValue.Trim
                     udtSearchCriteria.MeansOfInput = Me.ddlTabAdvancedSearchMeansOfInput.SelectedValue.Trim
-                    udtSearchCriteria.RCHCode = Me.txtTabAdvancedSearchRCHRode.Text.Trim
+                    udtSearchCriteria.SchoolOrRCHCode = Me.txtTabAdvancedSearchRCHRode.Text.Trim  'CRE20-003 (add search criteria)[Martin]
 
                     'Group: SP
                     udtSearchCriteria.ServiceProviderID = Me.txtTabAdvancedSearchSPID.Text.Trim
@@ -1865,7 +1941,6 @@ Partial Public Class claimTransManagement
                     End If
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
-
 
                     EnumSelectedStoredProc = SearchAspectRedirection()
 
@@ -1931,6 +2006,7 @@ Partial Public Class claimTransManagement
         Dim strServiceDate As String = String.Empty
         Dim strTransactionDate As String = String.Empty
         Dim strTypeOfDate As String = String.Empty
+        Dim udtSubsidizeBLL As New SubsidizeBLL
 
         'CRE14-016 (To introduce "Deceased" status into eHS) [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
@@ -2103,8 +2179,25 @@ Partial Public Class claimTransManagement
             lblRMeansOfInput.Visible = False
         End If
 
-        'RCH Code
-        lblRRCHCode.Text = FillAnyToEmptyString(udtSearchCriteria.RCHCode)
+        'CRE20-003 (add search criteria) [Start] [Martin]
+        'RCH Code or School Code 
+        lblRRCHCode.Text = FillAnyToEmptyString(udtSearchCriteria.SchoolOrRCHCode)
+
+        If udtValidator.IsEmpty(udtSearchCriteria.SubsidizeItemCode) Then
+            lblRVaccine.Text = FillAnyToEmptyString(udtSearchCriteria.SubsidizeItemCode)
+        Else
+            lblRVaccine.Text = udtSubsidizeBLL.GetSubsidizeItemDisplayCode(udtSearchCriteria.SubsidizeItemCode)
+        End If
+
+        If udtValidator.IsEmpty(udtSearchCriteria.DoseCode) Then
+            lblRDose.Text = FillAnyToEmptyString(udtSearchCriteria.DoseCode)
+        Else
+            Dim udtStaticData As StaticDataModel = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("Dose", udtSearchCriteria.DoseCode)
+            lblRDose.Text = udtStaticData.DataValue
+        End If
+
+        'CRE20-003 (add search criteria) [End] [Martin]
+
 
         ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
         ' Service Provider Name
@@ -7440,6 +7533,8 @@ Partial Public Class claimTransManagement
             Me.ddlTabTransactionMeansOfInput.SelectedIndex = 0
             Me.txtTabTransactionRCHRode.Text = String.Empty
             Me.txtTabTransactionRCHRode.Enabled = True
+            Me.ddlTabTransactionVaccines.SelectedIndex = 0
+            Me.ddlTabTransactionDose.SelectedIndex = 0
         End If
 
         ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]

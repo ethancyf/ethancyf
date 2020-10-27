@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	11 Oct 2020
+-- CR. No			INT20-0036
+-- Description:		Fix category name too Long
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
 -- CR. No			INT20-0025
@@ -90,7 +97,7 @@ AS BEGIN
   Result_Value2    varchar(100) default '',    
   Result_Value3    varchar(100) default '',               
   Result_Value4    varchar(100) default '',                
-  Result_Value5    varchar(100) default '',                
+  Result_Value5    varchar(200) default '',                
   Result_Value6    varchar(100) default '',                
   Result_Value7    varchar(100) default '',                
   Result_Value8    varchar(100) default '',                

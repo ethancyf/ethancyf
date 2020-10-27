@@ -82,7 +82,7 @@
         <tr>
             <td rowspan="2" valign="top" style="width: 176px">
                 <asp:Label ID="lblECDOBText" runat="server" CssClass="tableTitle" Width="175px"></asp:Label></td>
-            <td style="padding-bottom: 5px;" valign="top">
+            <td style="padding-bottom: 5px; width: 300px" valign="top">
                 <asp:RadioButton ID="rbECDOB" runat="server" AutoPostBack="True" Checked="true" CssClass="tableTitle"
                     GroupName="groupECDOA" Text="" />
                 <asp:TextBox ID="txtECDOB" runat="server" AutoCompleteType="Disabled" Enabled="true"

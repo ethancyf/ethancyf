@@ -1503,11 +1503,11 @@ Public Class SearchEngineBLL
         dt.Columns.Add(New DataColumn("Invalidation_TSMP", GetType(Byte())))
         dt.Columns.Add(New DataColumn("Manual_Reimburse", GetType(String)))
         dt.Columns.Add(New DataColumn("Means_Of_Input", GetType(String)))
-        'CRE13-012 (RCH Code sorting) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        dt.Columns.Add(New DataColumn("RCH_Code", GetType(String)))
-        'CRE13-012 (RCH Code sorting) [End][Chris YIM]
-
+        'CRE20-003 (add search criteria) [Start][Martin]
+        dt.Columns.Add(New DataColumn("SchoolOrRCH_code", GetType(String)))
+        dt.Columns.Add(New DataColumn("Subsidize_Item_Code", GetType(String)))
+        dt.Columns.Add(New DataColumn("Dose_Code", GetType(String)))
+        'CRE20-003 (add search criteria) [End][Martin]
         Dim objManualReimburse As Object = DBNull.Value
 
         If udtSearchCriteria.ReimbursementMethod.Trim.Equals(Common.Component.EHSTransaction.EHSTransactionModel.ReimbursementMethodStatusClass.InEHS) Then
@@ -1518,7 +1518,7 @@ Public Class SearchEngineBLL
 
         Dim dtAll As New DataTable
 
-        'CRE13-012 (RCH Code sorting) [Start][Chris YIM]
+        'CRE20-003 (add search criteria) [Start][Martin]
         '-----------------------------------------------------------------------------------------
         Dim udtBLLSearchResult As BaseBLL.BLLSearchResult = Nothing
 
@@ -1537,7 +1537,9 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@Invalidation", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.Invalidation), DBNull.Value, udtSearchCriteria.Invalidation)), _
                                                     db.MakeInParam("@reimbursement_method", SqlDbType.VarChar, 1, objManualReimburse), _
                                                     db.MakeInParam("@Means_Of_Input", SqlDbType.Char, 1, IIf(udtSearchCriteria.MeansOfInput = String.Empty, DBNull.Value, udtSearchCriteria.MeansOfInput)), _
-                                                    db.MakeInParam("@RCH_Code", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.RCHCode), DBNull.Value, udtSearchCriteria.RCHCode)), _
+                                                    db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
+                                                    db.MakeInParam("@Subsidize_Item_Code", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.SubsidizeItemCode), DBNull.Value, udtSearchCriteria.SubsidizeItemCode)), _
+                                                    db.MakeInParam("@Dose_Code", SqlDbType.Char, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DoseCode), DBNull.Value, udtSearchCriteria.DoseCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID) _
                                                     }
 
@@ -1559,7 +1561,7 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@Invalidation", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.Invalidation), DBNull.Value, udtSearchCriteria.Invalidation)), _
                                                     db.MakeInParam("@reimbursement_method", SqlDbType.VarChar, 1, objManualReimburse), _
                                                     db.MakeInParam("@Means_Of_Input", SqlDbType.Char, 1, IIf(udtSearchCriteria.MeansOfInput = String.Empty, DBNull.Value, udtSearchCriteria.MeansOfInput)), _
-                                                    db.MakeInParam("@RCH_Code", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.RCHCode), DBNull.Value, udtSearchCriteria.RCHCode)), _
+                                                    db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID) _
                                                     }
                     ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
@@ -1581,7 +1583,7 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@Invalidation", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.Invalidation), DBNull.Value, udtSearchCriteria.Invalidation)), _
                                                     db.MakeInParam("@reimbursement_method", SqlDbType.VarChar, 1, objManualReimburse), _
                                                     db.MakeInParam("@Means_Of_Input", SqlDbType.Char, 1, IIf(udtSearchCriteria.MeansOfInput = String.Empty, DBNull.Value, udtSearchCriteria.MeansOfInput)), _
-                                                    db.MakeInParam("@RCH_Code", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.RCHCode), DBNull.Value, udtSearchCriteria.RCHCode)), _
+                                                    db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID), _
                                                     db.MakeInParam("@eHA_name", SqlDbType.VarChar, 40, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientName), DBNull.Value, udtSearchCriteria.VoucherRecipientName)), _
                                                     db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)) _
@@ -1611,7 +1613,7 @@ Public Class SearchEngineBLL
                                                   db.MakeInParam("@Means_Of_Input", SqlDbType.Char, 1, IIf(udtSearchCriteria.MeansOfInput = String.Empty, DBNull.Value, udtSearchCriteria.MeansOfInput)), _
                                                   db.MakeInParam("@Service_Receive_Dtm_From", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceDateFrom), DBNull.Value, udtSearchCriteria.ServiceDateFrom)), _
                                                   db.MakeInParam("@Service_Receive_Dtm_To", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceDateTo), DBNull.Value, udtSearchCriteria.ServiceDateTo)), _
-                                                  db.MakeInParam("@RCH_Code", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.RCHCode), DBNull.Value, udtSearchCriteria.RCHCode)) _
+                                                  db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)) _
                                               }
 
                     udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherTransaction_get_byAny", prams, blnOverrideResultLimit, db)
@@ -1689,12 +1691,13 @@ Public Class SearchEngineBLL
             dr("Invalidation_TSMP") = drAll("Invalidation_TSMP")
             dr("Manual_Reimburse") = drAll("Manual_Reimburse")
             dr("Means_Of_Input") = drAll("Means_Of_Input")
-            dr("RCH_Code") = CStr(IIf(IsDBNull(drAll("RCH_Code")), String.Empty, drAll("RCH_Code"))).Trim
+            dr("SchoolOrRCH_code") = CStr(IIf(IsDBNull(drAll("SchoolOrRCH_code")), String.Empty, drAll("SchoolOrRCH_code"))).Trim
+
 
             dt.Rows.Add(dr)
 
         Next
-        'CRE13-012 (RCH Code sorting) [End][Chris YIM]
+        'CRE20-003 (add search criteria) [End][Martin]
 
         ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
         ' -------------------------------------------------------------------------

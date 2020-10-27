@@ -207,8 +207,12 @@ Partial Public Class ucInputVSS
 
             Me.BindCategory(strLanguage, updateByTransactionModel, MyBase.ClaimCategorys)
 
+            'nichole
+            'CRE20-009 VSS Disabled with CSSA [Start][Nichole]
+            Dim strServiceDate = Me.ServiceDate()
+            Me.ucInputVSSDA.BindDocumentaryProof(MyBase.EHSClaimVaccine, strServiceDate)
             ucInputVSSPID.BindDocumentaryProof(MyBase.EHSClaimVaccine)
-
+            'CRE20-009 VSS Disabled with CSSA [End][Nichole]
             If Not MyBase.EHSClaimVaccine Is Nothing Then
                 Me.udcClaimVaccineInputVSS.ShowLegend = MyBase.ShowLegend
                 If Not blnPostbackRebuild Then

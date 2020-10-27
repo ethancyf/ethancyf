@@ -69,6 +69,20 @@
                                                     <asp:DropDownList ID="ddlTabTransactionHealthProfession" runat="server" AppendDataBoundItems="True" style="height:22px;width:280px;position:relative;top:-1px">
                                                     </asp:DropDownList></td>
                                             </tr>
+                                            <tr style="height: 30px">
+                                                <td style="vertical-align: top">
+                                                    <asp:Label ID="lblTabTransactionVaccinesText" runat="server" Text="<%$ Resources:Text, Vaccines %>"></asp:Label></td>
+                                                <td style="vertical-align: top">
+                                                    <asp:DropDownList ID="ddlTabTransactionVaccines" runat="server" AppendDataBoundItems="True" style="height:22px;width:180px;position:relative;top:-4px">
+                                                    </asp:DropDownList>
+                                                </td>
+                                                <td style="vertical-align: top;padding-left:0px">
+                                                    <asp:Label ID="lblTabTransactionDoseText" runat="server" Text="<%$ Resources:Text, Dose %>"></asp:Label></td>
+                                                <td style="vertical-align: top">
+                                                    <asp:DropDownList ID="ddlTabTransactionDose" runat="server" AppendDataBoundItems="True" style="height:22px;width:180px;position:relative;top:-4px">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
 
                                             <tr style="height: 20px">
                                                 <td style="vertical-align: top;" colspan="4">
@@ -173,9 +187,9 @@
                                                         <asp:ListItem Text="<%$ Resources:Text, Any %>" Value="" />                                                
                                                     </asp:DropDownList></td>
                                                 <td style="vertical-align: top;padding-left:0px">
-                                                    <asp:Label ID="lblTabTransactionRCHRodeText" runat="server" Text="<%$ Resources: Text, RCHCode %>"/></td>
+                                                    <asp:Label ID="lblTabTransactionRCHRodeText" runat="server" Text="<%$ Resources: Text, SchoolRCHCode %>"/></td>
                                                 <td style="vertical-align: top">
-                                                    <asp:TextBox ID="txtTabTransactionRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="10" style="position:relative;top:-4px" /></td>
+                                                    <asp:TextBox ID="txtTabTransactionRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="30" style="position:relative;top:-4px" /></td>
                                             </tr>
                                             <tr style="height: 20px">
                                             </tr>
@@ -381,9 +395,9 @@
                                                     <asp:DropDownList ID="ddlTabServiceProviderMeansOfInput" runat="server" AppendDataBoundItems="False" style="height:22px;width:180px;position:relative;top:-4px">                                              
                                                     </asp:DropDownList></td>
                                                 <td style="vertical-align: top">
-                                                    <asp:Label ID="lblTabServiceProviderRCHRodeText" runat="server" Text="<%$ Resources: Text, RCHCode %>"/></td>
+                                                    <asp:Label ID="lblTabServiceProviderRCHRodeText" runat="server" Text="<%$ Resources: Text, SchoolRCHCode %>"/></td>
                                                 <td style="vertical-align: top">
-                                                    <asp:TextBox ID="txtTabServiceProviderRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="10" style="position:relative;top:-4px" /></td>
+                                                    <asp:TextBox ID="txtTabServiceProviderRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="30" style="position:relative;top:-4px" /></td>
                                             </tr>
                                         
                                             <tr style="height: 20px">
@@ -594,9 +608,9 @@
                                                 <asp:DropDownList ID="ddlTabeHSAccountMeansOfInput" runat="server" AppendDataBoundItems="False" style="height:22px;width:180px;position:relative;top:-4px">                                               
                                                 </asp:DropDownList></td>
                                             <td style="vertical-align: top">
-                                                <asp:Label ID="lblTabeHSAccountRCHRodeText" runat="server" Text="<%$ Resources: Text, RCHCode %>"/></td>
+                                                <asp:Label ID="lblTabeHSAccountRCHRodeText" runat="server" Text="<%$ Resources: Text, SchoolRCHCode %>"/></td>
                                             <td style="vertical-align: top">
-                                                <asp:TextBox ID="txtTabeHSAccountRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="10" style="position:relative;top:-4px" /></td>
+                                                <asp:TextBox ID="txtTabeHSAccountRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="30" style="position:relative;top:-4px" /></td>
                                         </tr>
                                         
                                         <tr style="height: 20px">
@@ -747,9 +761,9 @@
                                                     <asp:DropDownList ID="ddlTabAdvancedSearchMeansOfInput" runat="server" AppendDataBoundItems="False" style="height:22px;width:180px;position:relative;top:-4px">                                               
                                                     </asp:DropDownList></td>
                                                 <td style="vertical-align: top">
-                                                    <asp:Label ID="lblTabAdvancedSearchRCHRodeText" runat="server" Text="<%$ Resources: Text, RCHCode %>"/></td>
+                                                    <asp:Label ID="lblTabAdvancedSearchRCHRodeText" runat="server" Text="<%$ Resources: Text, SchoolRCHCode %>"/></td>
                                                 <td style="vertical-align: top">
-                                                    <asp:TextBox ID="txtTabAdvancedSearchRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="10" style="position:relative;top:-4px" /></td>
+                                                    <asp:TextBox ID="txtTabAdvancedSearchRCHRode" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="30" style="position:relative;top:-4px" /></td>
                                             </tr>
 
                                             <tr style="height: 20px">
@@ -934,6 +948,21 @@
                                         <asp:Label ID="lblRHealthProfession" runat="server" CssClass="tableText"></asp:Label></td>
                                 </tr>
                                 <tr>
+                                    <td style="width: 230px;vertical-align: top">
+                                        <asp:Label ID="lblRVaccineText" runat="server" Text="<%$ Resources:Text, Vaccines %>"></asp:Label></td>
+                                    <td style="width: 250px;vertical-align: top">
+                                        <asp:Label ID="lblRVaccine" runat="server" CssClass="tableText"></asp:Label></td>
+                                    <td style="width: 230px;vertical-align: top">
+                                        <asp:Label ID="lblRDoseText" runat="server" Text="<%$ Resources:Text, Dose %>"></asp:Label></td>
+                                    <td style="vertical-align: top">
+                                        <asp:Label ID="lblRDose" runat="server" CssClass="tableText"></asp:Label></td>
+                                </tr>
+
+                                <tr style="height: 10px">
+                                     <td style="vertical-align: top;" colspan="4">
+                                         <hr style="position:relative;top:5px;margin-bottom:0px;margin-top:0px;color:#999999;border-style:solid;border-width:1px 0px 0px 0px" /></td>
+                                </tr>                              
+                                <tr>
                                     <td style="vertical-align: top">
                                         <asp:Label ID="lblRDateText" runat="server"></asp:Label></td>
                                     <td style="vertical-align: top">
@@ -969,10 +998,14 @@
                                     <td style="vertical-align: top">
                                         <asp:Label ID="lblRMeansOfInput" runat="server" CssClass="tableText"></asp:Label></td>
                                     <td style="vertical-align: top">
-                                        <asp:Label ID="lblRRCHCodeText" runat="server" Text="<%$ Resources:Text, RCHCode %>"></asp:Label></td>
+                                        <asp:Label ID="lblRSchoolRCHCodeText" runat="server" Text="<%$ Resources:Text, SchoolRCHCode %>"></asp:Label></td>
                                     <td style="vertical-align: top">
                                         <asp:Label ID="lblRRCHCode" runat="server" CssClass="tableText"></asp:Label></td>
                                 </tr>
+                                 <tr style="height: 10px">
+                                     <td style="vertical-align: top;" colspan="4">
+                                         <hr style="position:relative;top:5px;margin-bottom:0px;margin-top:0px;color:#999999;border-style:solid;border-width:1px 0px 0px 0px" /></td>
+                                </tr> 
                                 <tr>
                                     <td style="vertical-align: top">
                                         <asp:Label ID="lblRSPIDText" runat="server" Text="<%$ Resources:Text, ServiceProviderID %>"></asp:Label></td>
@@ -995,13 +1028,19 @@
                                 </tr>
                                 <tr>
                                     <td style="vertical-align: top">
-                                        <asp:Label ID="lblREHealthDocTypeText" runat="server" Text="<%$ Resources:Text, eHealthAccountIdentityDocumentType %>"></asp:Label></td>
-                                    <td style="vertical-align: top">
-                                        <asp:Label ID="lblREHealthDocType" runat="server" CssClass="tableText"></asp:Label></td>
-                                    <td style="vertical-align: top">
                                         <asp:Label ID="lblRBankAccountNoText" runat="server" Text="<%$ Resources:Text, BankAccountNo %>"></asp:Label></td>
                                     <td style="vertical-align: top">
-                                        <asp:Label ID="lblRBankAccountNo" runat="server" Font-Bold="True" CssClass="tableText"></asp:Label></td>
+                                        <asp:Label ID="lblRBankAccountNo" runat="server" Font-Bold="True" CssClass="tableText"></asp:Label></td>                                </tr>
+
+                                 <tr style="height: 10px">
+                                     <td style="vertical-align: top;" colspan="4">
+                                         <hr style="position:relative;top:5px;margin-bottom:0px;margin-top:0px;color:#999999;border-style:solid;border-width:1px 0px 0px 0px" /></td>
+                                </tr> 
+                                <tr>
+                                    <td style="vertical-align: top">
+                                        <asp:Label ID="lblREHealthDocTypeText" runat="server" Text="<%$ Resources:Text, eHealthAccountIdentityDocumentType %>"></asp:Label></td>
+                                    <td style="vertical-align: top">
+                                        <asp:Label ID="lblREHealthDocType" runat="server" CssClass="tableText"></asp:Label></td>                                    
                                 </tr>
                                 <tr>
                                     <td style="vertical-align: top">
@@ -1156,12 +1195,12 @@
                                         <asp:HiddenField ID="hfGMeansOfInput" runat="server" Value='<%# Eval("Means_Of_Input") %>' />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="<%$ Resources: Text, RCHCode %>" SortExpression="RCH_Code">
+                                <asp:TemplateField HeaderText="<%$ Resources: Text, SchoolRCHCode %>" SortExpression="SchoolOrRCH_Code">
                                     <ItemStyle Width="70px" VerticalAlign="Top" />
                                     <HeaderStyle VerticalAlign="Top" />
                                     <ItemTemplate>
                                         <asp:Label ID="lblGRCHCode" runat="server"></asp:Label>
-                                        <asp:HiddenField ID="hfGRCHCode" runat="server" Value='<%# Eval("RCH_Code") %>' />
+                                        <asp:HiddenField ID="hfGRCHCode" runat="server" Value='<%# Eval("SchoolOrRCH_Code")%>' />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -1688,7 +1727,7 @@
                                         </asp:TemplateField>
                                         <asp:TemplateField SortExpression="EName" HeaderText="<%$ Resources:Text, VRName %>">
                                             <ItemTemplate>
-                                                <asp:Label ID="lblName" runat="server"></asp:Label></br>
+                                                <asp:Label ID="lblName" runat="server"></asp:Label><br />
                                                 <asp:Label ID="lblCName" runat="server" Font-Names="HA_MingLiu"></asp:Label>
                                             </ItemTemplate>
                                             <ItemStyle VerticalAlign="Top" />

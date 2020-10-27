@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	17 Sep 2020
+-- CR No.			CRE20-003-02 (Batch Upload - Phase 2 Vacc Check Report)
+-- Description:		Add Worksheet "Follow Up Client" for VF000/001 report
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	24 Aug 2020
 -- CR No.			CRE20-003 (Batch Upload)
@@ -74,33 +81,13 @@ CREATE PROCEDURE [dbo].[proc_EHS_eHSSF_Class_Report_get]
 AS BEGIN
 
 	SET NOCOUNT ON;
-
+	
 -- =============================================
 -- Declaration
 -- =============================================
 	DECLARE @CutOffDtm				DATETIME
 
 	SET @CutOffDtm =  CONVERT(date, getdate())
--- =============================================
--- Validation 
--- =============================================
--- =============================================
--- Initialization
--- =============================================
--- =============================================
--- Return results
--- =============================================
-
-	SET NOCOUNT ON 
-	
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
-	
-	--DECLARE @Input_Student_File_ID	varchar(15)
-	--SET @Input_Student_File_ID = 'SF2018081700003'
-	--
-	
-	SET @File_ID = UPPER(@File_ID)
 
 	DECLARE @VaccineToInjectDisplay AS VARCHAR(20)
 	DECLARE @RowCount AS INT 
@@ -160,7 +147,7 @@ AS BEGIN
 		Permit_To_Remain_Until	 DATETIME,
 		Foreign_Passport_No	 VARCHAR(20),
 		EC_Serial_No	VARCHAR(10),
-		EC_Reference_No		VARCHAR(40),
+		EC_Reference_No		VARCHAR(40),		
 		Reject_Injection	VARCHAR(1),
 		HKIC_Symbol		VARCHAR(1),
 		Service_Receive_Dtm	DATETIME,
@@ -181,10 +168,28 @@ AS BEGIN
 		Transaction_ID	CHAR(20),
 		Transaction_Status	CHAR(1),
 		Transaction_Status_Desc	VARCHAR(100),
-		Transaction_result	VARCHAR(1000)			
+		Transaction_result	VARCHAR(1000),
+
+		Require_Follow_Up	CHAR(1)
 	)
 
+	CREATE TABLE #Control (
+		Seq				INT IDENTITY(1,1),
+		DynamicSheet	INT,
+		Action			CHAR(1),
+		Action_Content	VARCHAR(1000)
+	)
 
+-- =============================================
+-- Validation 
+-- =============================================
+-- =============================================
+-- Initialization
+-- =============================================
+
+	SET @File_ID = UPPER(@File_ID)
+
+	-- Vaccine
 	SELECT 
 		@VaccineType = Vaccine_Type,
 		@SchemeCode = Scheme_Code,
@@ -194,7 +199,7 @@ AS BEGIN
 			INNER JOIN Subsidize s 
 			ON h.Subsidize_Code = s.Subsidize_Code
 				AND h.Student_File_ID =  @Input_Student_File_ID
-			
+		
 	INSERT INTO #Last3VaccineRowTT (Student_Seq, Vaccine_Seq, Vaccine)
 	SELECT Student_Seq, 
 		ROW_NUMBER() OVER(PARTITION BY Student_Seq ORDER BY Service_Receive_Dtm DESC),
@@ -222,7 +227,16 @@ AS BEGIN
 			SELECT CHAR(10) + Vaccine FROM #Last3VaccineRowTT a WHERE a.Student_Seq = t.Student_Seq AND Vaccine_Seq <= 3 FOR XML PATH('')
 		),1,1,'') 
 	FROM (SELECT DISTINCT Student_Seq FROM #Last3VaccineRowTT  ) t
+	
 
+-- =============================================
+-- Return results
+-- =============================================
+	
+	OPEN SYMMETRIC KEY sym_Key
+	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	
+	-- 
 
 	IF @File_ID IN ('EHSVF001','EHSVF002','EHSVF005','EHSVF006')
 	BEGIN
@@ -286,7 +300,8 @@ AS BEGIN
 			Entitle_Inject,
 			Last3Vaccine,
 			Entitle_Inject_Fail_Reason,
-			Injected		
+			Injected,
+			Require_Follow_Up
 		)
 		SELECT 
 			DENSE_RANK() OVER( ORDER BY Class_Seq.Seq) AS TABLEID,
@@ -443,7 +458,12 @@ AS BEGIN
 			Entitle_Inject,
 			ISNULL(L3V.Vaccine, ''),
 			CASE WHEN ISNULL(Entitle_Inject_Fail_Reason, '') = '' THEN NULL ELSE Entitle_Inject_Fail_Reason END AS Entitle_Inject_Fail_Reason,
-			Injected
+			Injected,
+			CASE WHEN (E.Acc_Type IS NULL)
+					OR (E.Acc_Type = 'T'	AND E.Temp_Acc_Record_Status IN ('R','I'))
+					OR (ISNULL(Validated_Acc_Unmatch_Result,'') <> '') THEN 'Y'
+				ELSE 'N'
+				END AS [Require_Follow_Up]
 		FROM StudentFileEntry E
 		LEFT JOIN StatusData S1
 			ON E.Temp_Acc_Record_Status = S1.Status_Value
@@ -466,8 +486,6 @@ AS BEGIN
 		LEFT JOIN #Last3VaccineTT L3V
 			ON L3V.Student_Seq = e.Student_Seq
 		WHERE Student_File_ID = @Input_Student_File_ID
-
-
 
 	END
 	ELSE IF @File_ID = 'EHSVF003'
@@ -733,6 +751,178 @@ AS BEGIN
 
 	--ORDER BY Class_Name, Student_Seq
 
+	-- ===========================================
+	-- Set Report Worksheet Dynamic Control
+	-- For VF0001:  WS1: Content  WS2: Follow Up Client		WS3: Class (Dynamic)	WS4: Remark
+	-- For Others:  WS1: Content  WS2: Class (Dynamic)		WS3: Remark
+	-- ===========================================
+	DECLARE @ShowFollowUpClientWS VARCHAR(1) = 'N'
+
+	IF @File_ID = 'EHSVF001' 
+		SET @ShowFollowUpClientWS = 'Y'
+	ELSE
+		SET @ShowFollowUpClientWS = 'N'
+
+	INSERT INTO #Control (DynamicSheet, Action, Action_Content)
+	SELECT IIF(@ShowFollowUpClientWS = 'Y', 3, 2) AS [Sheet], 
+			'A', ISNULL(MAX(TableID), 0)		-- 'A': Add / 'D': Delete / 'R': Rename
+	FROM #StudentTT
+
+	-- ===============================================
+	-- Return Control Setting
+	-- ===============================================
+	SELECT DynamicSheet AS [Sheet], Action, Action_Content FROM #Control
+	
+	-- ===============================================
+	-- Follow Up Client
+	-- ===============================================
+	IF @ShowFollowUpClientWS = 'Y'
+	BEGIN
+		-- Add "Follow Up Client" Worksheet before Class Worksheet
+		DECLARE @RequireFollowUpCount AS INT
+		SELECT @RequireFollowUpCount = COUNT(1) FROM #StudentTT T
+		WHERE Require_Follow_Up = 'Y'
+		
+		IF @RequireFollowUpCount = 0 
+			SELECT ''
+		ELSE
+		BEGIN
+			IF @File_ID = 'EHSVF001'
+			BEGIN
+				IF @SchemeCode = 'VSS' AND @SubsidizeCode = 'VNIAMMR'
+				BEGIN
+					SELECT 
+						-- Section 1 - Class & account information
+						Student_Seq,
+						Class_Name,
+						Class_No,
+						CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+									ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+							ELSE
+									[dbo].[func_mask_ChiName](Chi_Name)
+							END AS Chi_Name_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+								CASE WHEN Eng_GivenName_Upload = '' THEN ''
+								ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+							ELSE
+								CASE WHEN Eng_GivenName = '' THEN ''
+								ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+							END AS Eng_GivenName_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END,
+						[HKIC_Symbol] = ISNULL(SD.Status_Description, ''),
+						'',
+						-- Section 2 - Account matching result
+						ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
+						ISNULL(Validated_Acc_Found, 'N'),
+						ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
+						ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
+						ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
+						CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
+						SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+						CASE WHEN Require_Follow_Up = 'Y' THEN 'Y' ELSE 'N' END AS [Require_Follow_Up],		-- Added by Winnie [CRE20-003-02]
+						CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
+						'',
+						-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+						CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+						[Service_Receive_Dtm] = FORMAT(Service_Receive_Dtm, 'yyyy/MM/dd'),
+						CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
+						CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
+						CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
+						CASE WHEN ISNULL(Entitle_3RDDOSE, '') = 'N' THEN 'No' ELSE Entitle_3RDDOSE END AS Entitle_3RDDOSE,
+						CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+						ISNULL(Last3Vaccine,''),
+						[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
+									CASE 
+										WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
+											CASE 
+												WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) = 0 THEN ' / ' + Entitle_Inject_Fail_Reason
+												WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) > 0 THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason, 0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) 
+											END
+										ELSE '' 
+									END,
+									IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+									IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000)
+					FROM #StudentTT T
+						LEFT OUTER JOIN
+							StatusData SD
+								ON Enum_Class = 'HKICSymbol' AND T.HKIC_Symbol = SD.Status_Value
+					WHERE Require_Follow_Up = 'Y'
+					ORDER BY Class_Name, Student_Seq
+				END
+
+				ELSE
+
+				BEGIN
+					SELECT 
+						-- Section 1 - Class & account information
+						Student_Seq,
+						Class_Name,
+						Class_No,
+						CASE WHEN (Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL) OR Chi_Name = '' THEN 
+									ISNULL([dbo].[func_mask_ChiName](Chi_Name_Upload), '')
+							ELSE
+									[dbo].[func_mask_ChiName](Chi_Name)
+							END AS Chi_Name_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN ISNULL(Eng_Surname_Upload,'') ELSE Eng_Surname END AS Eng_Surname_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN 
+								CASE WHEN Eng_GivenName_Upload = '' THEN ''
+								ELSE ISNULL([dbo].[func_get_givenname_initial](Eng_GivenName_Upload), '') END							
+							ELSE
+								CASE WHEN Eng_GivenName = '' THEN ''
+								ELSE [dbo].[func_get_givenname_initial](Eng_GivenName) END	
+							END AS Eng_GivenName_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Sex_Upload ELSE Sex END,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN dbo.func_format_DOB(DOB_Upload, Exact_DOB_Upload, 'en-us', EC_Age_Upload, EC_Date_of_Registration_Upload) ELSE dbo.func_format_DOB(DOB, Exact_DOB, 'en-us', EC_Age, EC_Date_of_Registration) END AS DOB_Upload,
+						CASE WHEN Voucher_Acc_ID IS NULL AND Temp_Voucher_Acc_ID IS NULL THEN Doc_Code_Upload ELSE Doc_Code END,
+						'',
+						-- Section 2 - Account matching result
+						ISNULL(dbo.func_format_voucher_account_number('V', Voucher_Acc_ID), '') AS Voucher_Acc_ID, 
+						ISNULL(Validated_Acc_Found, 'N'),
+						ISNULL(Validated_Acc_Unmatch_Result, '') AS Validated_Acc_Unmatch_Result,
+						ISNULL(dbo.func_format_voucher_account_number('T', Temp_Voucher_Acc_ID), '') AS Temp_Voucher_Acc_ID,
+						ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
+						CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
+						SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+						CASE WHEN Require_Follow_Up = 'Y' THEN 'Y' ELSE 'N' END AS [Require_Follow_Up],		-- Added by Winnie [CRE20-003-02]
+						CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
+						'',
+						-- Section 3 - Section 3 - Vaccination checking result (generated by system)
+						CASE WHEN Vaccination_Process_Stage_Dtm IS NULL THEN NULL ELSE FORMAT(Vaccination_Process_Stage_Dtm, 'dd MMM yyyy') END AS Vaccination_Process_Stage_Dtm,
+						CASE WHEN ISNULL(Entitle_ONLYDOSE, '') = 'N' THEN 'No' ELSE Entitle_ONLYDOSE END AS Entitle_ONLYDOSE,
+						CASE WHEN ISNULL(Entitle_1STDOSE, '') = 'N' THEN 'No' ELSE Entitle_1STDOSE END AS Entitle_1STDOSE,
+						CASE WHEN ISNULL(Entitle_2NDDOSE, '') = 'N' THEN 'No' ELSE Entitle_2NDDOSE END AS Entitle_2NDDOSE,
+						CASE WHEN ISNULL(Entitle_Inject, '') = 'N' THEN 'No' ELSE Entitle_Inject END AS Entitle_Inject,
+						ISNULL(Last3Vaccine,''),
+						[Entitle_Inject_Fail_Reason] = SUBSTRING(CONCAT(							
+									CASE 
+										WHEN ISNULL(Entitle_Inject_Fail_Reason,'') <> '' THEN 
+											CASE 
+												WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) = 0 THEN ' / ' + Entitle_Inject_Fail_Reason
+												WHEN CHARINDEX('|||', Entitle_Inject_Fail_Reason) > 0 THEN ' / ' + SUBSTRING(Entitle_Inject_Fail_Reason, 0, CHARINDEX('|||', Entitle_Inject_Fail_Reason)) 
+											END
+										ELSE '' 
+									END,
+									IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('C','S'),' / HA connection failed',''), 
+									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('C','S'),' / DH connection failed',''),
+									IIF(SUBSTRING(HA_Vaccine_Ref_Status,2,1) IN ('P'),' / HA demographics not matched',''),
+									IIF(SUBSTRING(DH_Vaccine_Ref_Status,2,1) IN ('P'),' / DH demographics not matched','')),4,10000)
+					FROM #StudentTT T
+					WHERE Require_Follow_Up = 'Y'
+					ORDER BY Class_Name, Student_Seq
+
+				END
+			END
+		END
+	END
+
+	-- ===============================================
+	-- Return Class
+	-- ===============================================
 	SET @RowCount = 1
 	SELECT @MaxRowCount = ISNULL(MAX(TableID), 0) FROM #StudentTT
 	
@@ -776,6 +966,7 @@ AS BEGIN
 					ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
 					CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
 					SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+					CASE WHEN Require_Follow_Up = 'Y' THEN 'Y' ELSE 'N' END AS [Require_Follow_Up],		-- Added by Winnie [CRE20-003-02]
 					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
 					--Chi_Name,
 					--Eng_Surname,
@@ -856,6 +1047,7 @@ AS BEGIN
 					ISNULL(Temp_Acc_Record_Status_Desc, '') AS Temp_Acc_Record_Status_Desc,
 					CASE WHEN Temp_Acc_Validate_Dtm IS NULL THEN '' ELSE FORMAT(Temp_Acc_Validate_Dtm, 'dd MMM yyyy') END AS Temp_Acc_Validate_Dtm,
 					SUBSTRING(Acc_Validation_Result, 0, CHARINDEX('|||', Acc_Validation_Result)) AS Acc_Validation_Result,
+					CASE WHEN Require_Follow_Up = 'Y' THEN 'Y' ELSE 'N' END AS [Require_Follow_Up],		-- Added by Winnie [CRE20-003-02]
 					CASE WHEN ISNULL(Reject_Injection, 'N') = 'N' THEN 'Y' ELSE 'N' END AS Confirm_Injection,	-- Reverse the meaning to display
 					--Chi_Name,
 					--Eng_Surname,
@@ -1275,13 +1467,14 @@ AS BEGIN
 		SET @RowCount = @RowCount +1
 	END
 		
-	--
+
 	
 	CLOSE SYMMETRIC KEY sym_Key
 	
 	DROP TABLE #StudentTT
 	DROP TABLE #Last3VaccineTT
 	DROP TABLE #Last3VaccineRowTT
+	DROP TABLE #Control
 
 END
 GO

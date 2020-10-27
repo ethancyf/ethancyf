@@ -2522,7 +2522,10 @@ Namespace BLL
         ''' <param name="udtEHSAccount"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function CreateTemporaryEHSAccount(ByVal udtSP As ServiceProviderModel, ByVal udtDataEntry As DataEntryUserModel, ByVal udtEHSAccount As EHSAccountModel) As Common.ComObject.SystemMessage
+        Public Function CreateTemporaryEHSAccount(ByVal udtSP As ServiceProviderModel, _
+                                                  ByVal udtDataEntry As DataEntryUserModel, _
+                                                  ByVal udtEHSAccount As EHSAccountModel, _
+                                                  Optional ByVal udtDB As Database = Nothing) As Common.ComObject.SystemMessage
 
             Dim udtErrorMsg As Common.ComObject.SystemMessage = Nothing
             udtEHSAccount.AccountPurpose = EHSAccountModel.AccountPurposeClass.ForClaim
@@ -2555,25 +2558,42 @@ Namespace BLL
             ' UI Handle
             'udtEHSAccount.CreateSPPracticeDisplaySeq = intPracticeID
 
-            Dim udtDB As New Database()
+            Dim blnLocalDB As Boolean
+
+            If udtDB Is Nothing Then
+                udtDB = New Database()
+                blnLocalDB = True
+            Else
+                blnLocalDB = False
+            End If
 
             Try
-                udtDB.BeginTransaction()
+                If blnLocalDB = True Then
+                    udtDB.BeginTransaction()
+                End If
 
                 udtErrorMsg = Me._udtEHSAccountBLL.InsertEHSAccount(udtDB, udtEHSAccount)
 
                 If udtErrorMsg Is Nothing Then
-                    udtDB.CommitTransaction()
+                    If blnLocalDB = True Then
+                        udtDB.CommitTransaction()
+                    End If
                 Else
-                    udtDB.RollBackTranscation()
+                    If blnLocalDB = True Then
+                        udtDB.RollBackTranscation()
+                    End If
                 End If
                 Return udtErrorMsg
 
             Catch eSQL As SqlException
-                udtDB.RollBackTranscation()
+                If blnLocalDB = True Then
+                    udtDB.RollBackTranscation()
+                End If
                 Throw eSQL
             Catch ex As Exception
-                udtDB.RollBackTranscation()
+                If blnLocalDB = True Then
+                    udtDB.RollBackTranscation()
+                End If
                 Throw
             End Try
 
@@ -2843,8 +2863,11 @@ Namespace BLL
 
         End Function
 
-        Public Function CreateRectifyAccount(ByVal udtSP As ServiceProviderModel, ByVal udtDataEntry As DataEntryUserModel, _
-            ByVal udtEHSXAccount As EHSAccountModel, ByVal udtEHSNewAccount As EHSAccountModel) As Common.ComObject.SystemMessage
+        Public Function CreateRectifyAccount(ByVal udtSP As ServiceProviderModel, _
+                                             ByVal udtDataEntry As DataEntryUserModel, _
+                                             ByVal udtEHSXAccount As EHSAccountModel, _
+                                             ByVal udtEHSNewAccount As EHSAccountModel, _
+                                             Optional ByVal udtDB As Database = Nothing) As Common.ComObject.SystemMessage
             'Private Sub UpdateTempEHSAccountRectify(ByVal udtEHSAccount As EHSAccountModel, ByVal strUpdateBy As String, ByVal dtmUpdate As DateTime)
             Dim udtSubsidizeWriteOffBLL As New SubsidizeWriteOffBLL
             'CRE13-006 HCVS Ceiling [End][Karl]
@@ -2874,9 +2897,19 @@ Namespace BLL
             End If
             ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
-            Dim udtDB As New Database()
+            Dim blnLocalDB As Boolean
+
+            If udtDB Is Nothing Then
+                udtDB = New Database()
+                blnLocalDB = True
+            Else
+                blnLocalDB = False
+            End If
+
             Try
-                udtDB.BeginTransaction()
+                If blnLocalDB = True Then
+                    udtDB.BeginTransaction()
+                End If
 
                 ' Since X Account removed, checking will ignore X Account
                 Me._udtEHSAccountBLL.UpdateTempEHSAccountRecordStatus(udtDB, udtEHSXAccount, udtSP.SPID, EHSAccountModel.TempAccountRecordStatusClass.Removed, DateTime.Now)
@@ -2894,17 +2927,25 @@ Namespace BLL
                 End If
 
                 If udtErrorMsg Is Nothing Then
-                    udtDB.CommitTransaction()
+                    If blnLocalDB = True Then
+                        udtDB.CommitTransaction()
+                    End If
                 Else
-                    udtDB.RollBackTranscation()
+                    If blnLocalDB = True Then
+                        udtDB.RollBackTranscation()
+                    End If
                 End If
                 Return udtErrorMsg
 
             Catch eSQL As SqlException
-                udtDB.RollBackTranscation()
+                If blnLocalDB = True Then
+                    udtDB.RollBackTranscation()
+                End If
                 Throw eSQL
             Catch ex As Exception
-                udtDB.RollBackTranscation()
+                If blnLocalDB = True Then
+                    udtDB.RollBackTranscation()
+                End If
                 Throw
             End Try
         End Function

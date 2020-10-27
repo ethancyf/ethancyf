@@ -1,11 +1,26 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_ReimbursementAuthTranList_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	DROP PROCEDURE [dbo].[proc_ReimbursementAuthTranList_get]
+﻿
+IF EXISTS
+(
+    SELECT *
+    FROM dbo.sysobjects
+    WHERE id = OBJECT_ID(N'[dbo].[proc_ReimbursementAuthTranList_get]')
+          AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+)
+    BEGIN
+        DROP PROCEDURE [dbo].[proc_ReimbursementAuthTranList_get];
+    END;
 GO
 
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Martin Tang
+-- Modified date:	10 Sep 2020
+-- CR No.:			CRE20-003 (Break Down of Monthly Statement by Schools)
+-- Description:		Add @School_Code
+-- =============================================    
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -70,7 +85,7 @@ GO
 -- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	4 September 2009
--- Description:		Pre-calculate the total unit and total amount into the temporary table @TransactionGroupByTransactionID
+-- Description:		Pre-calculate the total unit and total amount into the temporary table #TransactionGroupByTransactionID
 -- =============================================
 -- =============================================
 -- Modification History
@@ -94,7 +109,7 @@ GO
 -- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	18 September 2009
--- Description:		Remove the field [Doc_Code] in temporary table @TransactionGroupByTransactionID
+-- Description:		Remove the field [Doc_Code] in temporary table #TransactionGroupByTransactionID
 -- =============================================
 -- =============================================
 -- Modification History
@@ -114,293 +129,274 @@ GO
 -- Modified date:	4 October 2009
 -- Description:		Handle expired scheme
 -- =============================================
-CREATE PROCEDURE [dbo].[proc_ReimbursementAuthTranList_get]
-	@SP_ID					char(8),
-	@Practice_Display_Seq	smallint,
-	@Reimburse_ID			varchar(20),
-	@Scheme_Code			char(10)
-AS BEGIN
--- =============================================
--- Declaration
--- =============================================
-	DECLARE @TransactionGroupByTransactionID table (
-		Transaction_ID			char(20),
-		TotalUnit				int,
-		TotalAmount				money,
-		Authorised_Cutoff_Dtm	datetime
-	)
-	
-	DECLARE @TranList table (
-		Transaction_ID	char(20),
-		Transaction_Dtm	datetime,
-		Service_Receive_Dtm	datetime,
-		Scheme_Code	char(10),
-		Doc_Code char(10),
-		Encrypt_Field1 varbinary(100),
-		Encrypt_Field2  varbinary(100),
-		Encrypt_Field3  varbinary(100),
-		Encrypt_Field11 varbinary(100),
-		TotalUnit int,
-		TotalAmount money,
-		Invalidation	char(1)
-	)
-	
-	DECLARE @EffectiveScheme table (
-		Scheme_Code		char(10),
-		Scheme_Seq		smallint
-	)
--- =============================================
--- Initialization
--- =============================================
-	INSERT INTO @TransactionGroupByTransactionID (
-		Transaction_ID,
-		TotalUnit,
-		TotalAmount,
-		Authorised_Cutoff_Dtm
-	)
-	SELECT
-		VT.Transaction_ID,
-		SUM(TD.Unit) AS [TotalUnit],
-		SUM(TD.Total_Amount) AS [TotalAmount],
-		MIN(RAT.Authorised_Cutoff_Dtm) AS [Authorised_Cutoff_Dtm]
-		
-	FROM
-		VoucherTransaction VT WITH (NOLOCK)
-			INNER JOIN TransactionDetail TD WITH (NOLOCK)
-				ON VT.Transaction_ID = TD.Transaction_ID
-			INNER JOIN ReimbursementAuthTran RAT WITH (NOLOCK)
-				ON VT.Transaction_ID = RAT.Transaction_ID
-	
-	WHERE
-		VT.SP_ID = @SP_ID
-			AND VT.Practice_Display_Seq = @Practice_Display_Seq
-			AND RAT.Reimburse_ID = @Reimburse_ID
-			AND VT.Scheme_Code = @Scheme_Code
-			
-	GROUP BY
-		VT.Transaction_ID
-		
-		
-	INSERT INTO @EffectiveScheme (
-		Scheme_Code,
-		Scheme_Seq
-	)
-	SELECT
-		Scheme_Code,
-		MAX(Scheme_Seq)
-	FROM
-		SchemeClaim WITH (NOLOCK)
-	WHERE
-		GETDATE() >= Effective_Dtm
-	GROUP BY
-		Scheme_Code
--- =============================================
--- Return results
--- =============================================
+CREATE PROCEDURE [dbo].[proc_ReimbursementAuthTranList_get] @SP_ID                CHAR(8), 
+                                                            @Practice_Display_Seq SMALLINT, 
+                                                            @Reimburse_ID         VARCHAR(20), 
+                                                            @Scheme_Code          CHAR(10), 
+                                                            @School_Code          VARCHAR(50)
+AS
+    BEGIN
+        -- =============================================
+        -- Declaration
+        -- =============================================
+        CREATE TABLE #TransactionGroupByTransactionID
+        (Transaction_ID        CHAR(20), 
+         TotalUnit             INT, 
+         TotalAmount           MONEY, 
+         Authorised_Cutoff_Dtm DATETIME
+        );
 
-	-- Validated Account
-	Insert into @TranList
-	(
-		Transaction_ID,
-		Transaction_Dtm,
-		Service_Receive_Dtm,
-		Scheme_Code,
-		Doc_Code,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		TotalUnit,
-		TotalAmount,
-		Invalidation
-	)
-	SELECT
-		T.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Service_Receive_Dtm,
-		VT.Scheme_Code,
-		P.Doc_Code,
-		P.Encrypt_Field1,
-		P.Encrypt_Field2,
-		P.Encrypt_Field3,
-		P.Encrypt_Field11,
-		T.TotalUnit AS [Total_Unit],
-		T.TotalAmount AS [Total_Amount],
-		VT.Invalidation
-		
-	FROM
-		@TransactionGroupByTransactionID T
-			INNER JOIN VoucherTransaction VT WITH (NOLOCK)
-				ON T.Transaction_ID = VT.Transaction_ID
-			INNER JOIN VoucherAccount VA WITH (NOLOCK)
-				ON VT.Voucher_Acc_ID = VA.Voucher_Acc_ID
-			INNER JOIN PersonalInformation P WITH (NOLOCK)
-				ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID
-					AND VT.Doc_Code = P.Doc_Code
-		
-	WHERE VT.Voucher_Acc_ID <> ''
-	
-	-- Temp Account
-	Insert into @TranList
-	(
-		Transaction_ID,
-		Transaction_Dtm,
-		Service_Receive_Dtm,
-		Scheme_Code,
-		Doc_Code,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		TotalUnit,
-		TotalAmount,
-		Invalidation
-	)
-	SELECT
-		T.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Service_Receive_Dtm,
-		VT.Scheme_Code,
-		P.Doc_Code,
-		P.Encrypt_Field1,
-		P.Encrypt_Field2,
-		P.Encrypt_Field3,
-		P.Encrypt_Field11,
-		T.TotalUnit AS [Total_Unit],
-		T.TotalAmount AS [Total_Amount],
-		VT.Invalidation
-		
-	FROM
-		@TransactionGroupByTransactionID T
-			INNER JOIN VoucherTransaction VT WITH (NOLOCK)
-				ON T.Transaction_ID = VT.Transaction_ID
-			INNER JOIN TempVoucherAccount VA WITH (NOLOCK)
-				ON VT.Temp_Voucher_Acc_ID = VA.Voucher_Acc_ID
-			INNER JOIN TempPersonalInformation P WITH (NOLOCK)
-				ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID
-					AND VT.Doc_Code = P.Doc_Code
-		
-	WHERE VT.Voucher_Acc_ID = '' AND ISNULL(VT.Special_Acc_ID,'')='' AND VT.Invalid_Acc_ID is NULL
+        CREATE TABLE #TranList
+        (Transaction_ID      CHAR(20), 
+         Transaction_Dtm     DATETIME, 
+         Service_Receive_Dtm DATETIME, 
+         Scheme_Code         CHAR(10), 
+         Doc_Code            CHAR(10), 
+         Encrypt_Field1      VARBINARY(100), 
+         Encrypt_Field2      VARBINARY(100), 
+         Encrypt_Field3      VARBINARY(100), 
+         Encrypt_Field11     VARBINARY(100), 
+         TotalUnit           INT, 
+         TotalAmount         MONEY, 
+         Invalidation        CHAR(1)
+        );
 
-	-- Special Account
-	Insert into @TranList
-	(
-		Transaction_ID,
-		Transaction_Dtm,
-		Service_Receive_Dtm,
-		Scheme_Code,
-		Doc_Code,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		TotalUnit,
-		TotalAmount,
-		Invalidation
-	)
-	SELECT
-		T.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Service_Receive_Dtm,
-		VT.Scheme_Code,
-		P.Doc_Code,
-		P.Encrypt_Field1,
-		P.Encrypt_Field2,
-		P.Encrypt_Field3,
-		P.Encrypt_Field11,
-		T.TotalUnit AS [Total_Unit],
-		T.TotalAmount AS [Total_Amount],
-		VT.Invalidation
-		
-	FROM
-		@TransactionGroupByTransactionID T
-			INNER JOIN VoucherTransaction VT WITH (NOLOCK)
-				ON T.Transaction_ID = VT.Transaction_ID
-			INNER JOIN SpecialAccount VA WITH (NOLOCK)
-				ON VT.Special_Acc_ID = VA.Special_Acc_ID
-			INNER JOIN SpecialPersonalInformation P WITH (NOLOCK)
-				ON VA.Special_Acc_ID = P.Special_Acc_ID
-					AND VT.Doc_Code = P.Doc_Code
-		
-	WHERE VT.Voucher_Acc_ID = '' AND VT.Special_Acc_ID is not null AND VT.Invalid_Acc_ID is NULL
-	
-	-- Invalid Account
-	Insert into @TranList
-	(
-		Transaction_ID,
-		Transaction_Dtm,
-		Service_Receive_Dtm,
-		Scheme_Code,
-		Doc_Code,
-		Encrypt_Field1,
-		Encrypt_Field2,
-		Encrypt_Field3,
-		Encrypt_Field11,
-		TotalUnit,
-		TotalAmount,
-		Invalidation
-	)
-	SELECT
-		T.Transaction_ID,
-		VT.Transaction_Dtm,
-		VT.Service_Receive_Dtm,
-		VT.Scheme_Code,
-		P.Doc_Code,
-		P.Encrypt_Field1,
-		P.Encrypt_Field2,
-		P.Encrypt_Field3,
-		P.Encrypt_Field11,
-		T.TotalUnit AS [Total_Unit],
-		T.TotalAmount AS [Total_Amount],
-		VT.Invalidation
-		
-	FROM
-		@TransactionGroupByTransactionID T
-			INNER JOIN VoucherTransaction VT WITH (NOLOCK)
-				ON T.Transaction_ID = VT.Transaction_ID
-			INNER JOIN InvalidAccount VA WITH (NOLOCK)
-				ON VT.Invalid_Acc_ID = VA.Invalid_Acc_ID
-			INNER JOIN InvalidPersonalInformation P WITH (NOLOCK)
-				ON VA.Invalid_Acc_ID = P.Invalid_Acc_ID
-		
-	WHERE VT.Voucher_Acc_ID = '' AND VT.Invalid_Acc_ID is not NULL
-	
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
-	
-	SELECT
-		T.Transaction_ID,
-		T.Transaction_Dtm,
-		T.Service_Receive_Dtm,
-		T.Scheme_Code,
-		SC.Display_Code,
-		T.Doc_Code,
-		DT.Doc_Display_Code,
-		CONVERT(char, DecryptByKey(T.Encrypt_Field1)) AS [IDNo],
-		CONVERT(varchar(40), DecryptByKey(T.Encrypt_Field2)) AS [Eng_Name],
-		CONVERT(nvarchar, DecryptByKey(T.Encrypt_Field3)) AS [Chi_Name],
-		CONVERT(char, DecryptByKey(T.Encrypt_Field11)) AS [IDNo2],
-		T.TotalUnit AS [Total_Unit],
-		T.TotalAmount AS [Total_Amount],
-		T.Invalidation,
-		LEFT(DT.doc_display_code + Space(20), 20)  + convert(varchar, DecryptByKey(T.Encrypt_Field1)) as DocCode_IdentityNum,
-		T.Scheme_Code + ' ' + T.Transaction_ID	as SchemeCode_TransactionID		-- CRE11-024-02
-	FROM @TranList T
-		INNER JOIN @EffectiveScheme ES
-			ON T.Scheme_Code = ES.Scheme_Code
-		INNER JOIN SchemeClaim SC WITH (NOLOCK)
-			ON ES.Scheme_Code = SC.Scheme_Code
-				AND ES.Scheme_Seq = SC.Scheme_Seq
-		INNER JOIN DocType DT WITH (NOLOCK)
-			ON T.Doc_Code = DT.Doc_Code	
-	
-	ORDER BY
-		T.Transaction_Dtm
-	
-	CLOSE SYMMETRIC KEY sym_Key
+        CREATE TABLE #EffectiveScheme
+        (Scheme_Code CHAR(10), 
+         Scheme_Seq  SMALLINT
+        );
 
-END
+        -- =============================================
+        -- Initialization
+        -- =============================================
+		-- Transaction
+        INSERT INTO #TransactionGroupByTransactionID
+               (Transaction_ID, 
+                TotalUnit, 
+                TotalAmount, 
+                Authorised_Cutoff_Dtm
+               )
+        SELECT VT.Transaction_ID, 
+               SUM(TD.Unit) AS [TotalUnit], 
+               SUM(TD.Total_Amount) AS [TotalAmount], 
+               MIN(RAT.Authorised_Cutoff_Dtm) AS [Authorised_Cutoff_Dtm]
+        FROM VoucherTransaction AS VT WITH(NOLOCK)
+             INNER JOIN TransactionDetail AS TD WITH(NOLOCK)
+             ON VT.Transaction_ID = TD.Transaction_ID
+             INNER JOIN ReimbursementAuthTran AS RAT WITH(NOLOCK)
+             ON VT.Transaction_ID = RAT.Transaction_ID
+             LEFT OUTER JOIN TransactionAdditionalField AS taf
+             ON vt.Transaction_ID = taf.Transaction_ID
+                AND taf.AdditionalFieldID = 'SchoolCode'
+        WHERE VT.SP_ID = @SP_ID
+              AND VT.Practice_Display_Seq = @Practice_Display_Seq
+              AND RAT.Reimburse_ID = @Reimburse_ID
+              AND VT.Scheme_Code = @Scheme_Code
+              AND (@School_Code IS NULL
+                   OR taf.AdditionalFieldValueCode = @School_Code)
+        GROUP BY VT.Transaction_ID;
+
+		-- Scheme
+        INSERT INTO #EffectiveScheme
+               (Scheme_Code, 
+                Scheme_Seq
+               )
+        SELECT Scheme_Code, 
+               MAX(Scheme_Seq)
+        FROM SchemeClaim WITH(NOLOCK)
+        WHERE GETDATE() >= Effective_Dtm
+        GROUP BY Scheme_Code;
+
+        -- Validated Account
+        INSERT INTO #TranList
+               (Transaction_ID, 
+                Transaction_Dtm, 
+                Service_Receive_Dtm, 
+                Scheme_Code, 
+                Doc_Code, 
+                Encrypt_Field1, 
+                Encrypt_Field2, 
+                Encrypt_Field3, 
+                Encrypt_Field11, 
+                TotalUnit, 
+                TotalAmount, 
+                Invalidation
+               )
+        SELECT T.Transaction_ID, 
+               VT.Transaction_Dtm, 
+               VT.Service_Receive_Dtm, 
+               VT.Scheme_Code, 
+               P.Doc_Code, 
+               P.Encrypt_Field1, 
+               P.Encrypt_Field2, 
+               P.Encrypt_Field3, 
+               P.Encrypt_Field11, 
+               T.TotalUnit AS [Total_Unit], 
+               T.TotalAmount AS [Total_Amount], 
+               VT.Invalidation
+        FROM #TransactionGroupByTransactionID AS T
+             INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
+             ON T.Transaction_ID = VT.Transaction_ID
+             INNER JOIN VoucherAccount AS VA WITH(NOLOCK)
+             ON VT.Voucher_Acc_ID = VA.Voucher_Acc_ID
+             INNER JOIN PersonalInformation AS P WITH(NOLOCK)
+             ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID
+                AND VT.Doc_Code = P.Doc_Code
+        WHERE VT.Voucher_Acc_ID <> '';
+
+        -- Temp Account
+        INSERT INTO #TranList
+               (Transaction_ID, 
+                Transaction_Dtm, 
+                Service_Receive_Dtm, 
+                Scheme_Code, 
+                Doc_Code, 
+                Encrypt_Field1, 
+                Encrypt_Field2, 
+                Encrypt_Field3, 
+                Encrypt_Field11, 
+                TotalUnit, 
+                TotalAmount, 
+                Invalidation
+               )
+        SELECT T.Transaction_ID, 
+               VT.Transaction_Dtm, 
+               VT.Service_Receive_Dtm, 
+               VT.Scheme_Code, 
+               P.Doc_Code, 
+               P.Encrypt_Field1, 
+               P.Encrypt_Field2, 
+               P.Encrypt_Field3, 
+               P.Encrypt_Field11, 
+               T.TotalUnit AS [Total_Unit], 
+               T.TotalAmount AS [Total_Amount], 
+               VT.Invalidation
+        FROM #TransactionGroupByTransactionID AS T
+             INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
+             ON T.Transaction_ID = VT.Transaction_ID
+             INNER JOIN TempVoucherAccount AS VA WITH(NOLOCK)
+             ON VT.Temp_Voucher_Acc_ID = VA.Voucher_Acc_ID
+             INNER JOIN TempPersonalInformation AS P WITH(NOLOCK)
+             ON VA.Voucher_Acc_ID = P.Voucher_Acc_ID
+                AND VT.Doc_Code = P.Doc_Code
+        WHERE VT.Voucher_Acc_ID = ''
+              AND ISNULL(VT.Special_Acc_ID, '') = ''
+              AND VT.Invalid_Acc_ID IS NULL;
+
+        -- Special Account
+        INSERT INTO #TranList
+               (Transaction_ID, 
+                Transaction_Dtm, 
+                Service_Receive_Dtm, 
+                Scheme_Code, 
+                Doc_Code, 
+                Encrypt_Field1, 
+                Encrypt_Field2, 
+                Encrypt_Field3, 
+                Encrypt_Field11, 
+                TotalUnit, 
+                TotalAmount, 
+                Invalidation
+               )
+        SELECT T.Transaction_ID, 
+               VT.Transaction_Dtm, 
+               VT.Service_Receive_Dtm, 
+               VT.Scheme_Code, 
+               P.Doc_Code, 
+               P.Encrypt_Field1, 
+               P.Encrypt_Field2, 
+               P.Encrypt_Field3, 
+               P.Encrypt_Field11, 
+               T.TotalUnit AS [Total_Unit], 
+               T.TotalAmount AS [Total_Amount], 
+               VT.Invalidation
+        FROM #TransactionGroupByTransactionID AS T
+             INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
+             ON T.Transaction_ID = VT.Transaction_ID
+             INNER JOIN SpecialAccount AS VA WITH(NOLOCK)
+             ON VT.Special_Acc_ID = VA.Special_Acc_ID
+             INNER JOIN SpecialPersonalInformation AS P WITH(NOLOCK)
+             ON VA.Special_Acc_ID = P.Special_Acc_ID
+                AND VT.Doc_Code = P.Doc_Code
+        WHERE VT.Voucher_Acc_ID = ''
+              AND VT.Special_Acc_ID IS NOT NULL
+              AND VT.Invalid_Acc_ID IS NULL;
+
+        -- Invalid Account
+        INSERT INTO #TranList
+               (Transaction_ID, 
+                Transaction_Dtm, 
+                Service_Receive_Dtm, 
+                Scheme_Code, 
+                Doc_Code, 
+                Encrypt_Field1, 
+                Encrypt_Field2, 
+                Encrypt_Field3, 
+                Encrypt_Field11, 
+                TotalUnit, 
+                TotalAmount, 
+                Invalidation
+               )
+        SELECT T.Transaction_ID, 
+               VT.Transaction_Dtm, 
+               VT.Service_Receive_Dtm, 
+               VT.Scheme_Code, 
+               P.Doc_Code, 
+               P.Encrypt_Field1, 
+               P.Encrypt_Field2, 
+               P.Encrypt_Field3, 
+               P.Encrypt_Field11, 
+               T.TotalUnit AS [Total_Unit], 
+               T.TotalAmount AS [Total_Amount], 
+               VT.Invalidation
+        FROM #TransactionGroupByTransactionID AS T
+             INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
+             ON T.Transaction_ID = VT.Transaction_ID
+             INNER JOIN InvalidAccount AS VA WITH(NOLOCK)
+             ON VT.Invalid_Acc_ID = VA.Invalid_Acc_ID
+             INNER JOIN InvalidPersonalInformation AS P WITH(NOLOCK)
+             ON VA.Invalid_Acc_ID = P.Invalid_Acc_ID
+        WHERE VT.Voucher_Acc_ID = ''
+              AND VT.Invalid_Acc_ID IS NOT NULL;
+
+		-- =============================================
+        -- Return results
+        -- =============================================
+        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+
+        SELECT T.Transaction_ID, 
+               T.Transaction_Dtm, 
+               T.Service_Receive_Dtm, 
+               T.Scheme_Code, 
+               SC.Display_Code, 
+               T.Doc_Code, 
+               DT.Doc_Display_Code, 
+               CONVERT(CHAR, DECRYPTBYKEY(T.Encrypt_Field1)) AS [IDNo], 
+               CONVERT(VARCHAR(40), DECRYPTBYKEY(T.Encrypt_Field2)) AS [Eng_Name], 
+               CONVERT(NVARCHAR, DECRYPTBYKEY(T.Encrypt_Field3)) AS [Chi_Name], 
+               CONVERT(CHAR, DECRYPTBYKEY(T.Encrypt_Field11)) AS [IDNo2], 
+               T.TotalUnit AS [Total_Unit], 
+               T.TotalAmount AS [Total_Amount], 
+               T.Invalidation, 
+               LEFT(DT.doc_display_code + SPACE(20), 20) + CONVERT(VARCHAR, DECRYPTBYKEY(T.Encrypt_Field1)) AS DocCode_IdentityNum, 
+               T.Scheme_Code + ' ' + T.Transaction_ID AS SchemeCode_TransactionID		-- CRE11-024-02
+        FROM #TranList AS T
+             INNER JOIN #EffectiveScheme AS ES
+             ON T.Scheme_Code = ES.Scheme_Code
+             INNER JOIN SchemeClaim AS SC WITH(NOLOCK)
+             ON ES.Scheme_Code = SC.Scheme_Code
+                AND ES.Scheme_Seq = SC.Scheme_Seq
+             INNER JOIN DocType AS DT WITH(NOLOCK)
+             ON T.Doc_Code = DT.Doc_Code
+        ORDER BY T.Transaction_Dtm;
+
+        CLOSE SYMMETRIC KEY sym_Key;
+
+        DROP TABLE #TranList;
+        DROP TABLE #TransactionGroupByTransactionID;
+        DROP TABLE #EffectiveScheme;
+    END;
 GO
 
-GRANT EXECUTE ON [dbo].[proc_ReimbursementAuthTranList_get] TO HCSP
+GRANT EXECUTE ON [dbo].[proc_ReimbursementAuthTranList_get] TO HCSP;
 GO

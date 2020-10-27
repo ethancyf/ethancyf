@@ -549,7 +549,7 @@
             </td>
         </tr>
 
-        <tr id="trAssignDateMMR_1" runat="server">
+<%--        <tr id="trAssignDateMMR_1" runat="server">
             <td colspan="3" style="height:10px" />
         </tr>
         <tr id="trAssignDateMMR_2" runat="server">
@@ -614,7 +614,7 @@
                 <cc1:FilteredTextBoxExtender ID="fteAGenerationDateMMR2" runat="server" FilterType="Custom, Numbers"
                     TargetControlID="txtAGenerationDateMMR2" ValidChars="-"></cc1:FilteredTextBoxExtender>
             </td>
-        </tr>
+        </tr>--%>
 
     </table>
     <br />

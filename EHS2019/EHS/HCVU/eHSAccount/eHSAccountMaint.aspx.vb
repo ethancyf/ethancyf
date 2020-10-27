@@ -125,6 +125,7 @@ Partial Public Class eHSAccountMaint
         Public Const ConfirmRemoveTempAcctSuccess As String = "Confirm Remove Temporary Account Success" '65
         Public Const ConfirmRemoveTempAcctFail As String = "Confirm Remove Temporary Account Fail" '66
         Public Const CancelRemoveTempAcct As String = "Cancel Remove Account" '67
+        Public Const RemoveTempAcctClickFail As String = "Remove Temporary Account Click Fail" '130
         ' - Release for Rectification
         Public Const ReleaseRectifiClick As String = "Release for Rectification Click" '68
         Public Const ConfirmReleaseRectifi As String = "Confirm Release for Rectification" '69
@@ -3372,6 +3373,21 @@ Partial Public Class eHSAccountMaint
 
         Me.udcMsgBox.Clear()
 
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        ' Not allow to remove account when Vaccine File still in process
+        If udtEHSAccount.SourceApp = EHSAccountModel.SourceAppClass.SFUpload Then
+            Dim strStudentFileList As String = Me.getStudentFileInProcess(udtEHSAccount.VoucherAccID.Trim)
+
+            If strStudentFileList <> String.Empty Then
+                Me.udcMsgBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013), "%s", strStudentFileList)
+                Me.udcMsgBox.BuildMessageBox("ValidationFail", Me.udtAuditLogEntry, Common.Component.LogID.LOG00130, AuditLogDesc.RemoveTempAcctClickFail)
+
+                Return
+            End If
+        End If
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
         If udtEHSAccount.TransactionID.Equals(String.Empty) Then
             udtSM = New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVQ, MsgCode.MSG00002)
         Else
@@ -3396,6 +3412,21 @@ Partial Public Class eHSAccountMaint
         Me.udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00063, AuditLogDesc.RemoveTempAcctClick)
 
         Me.udcMsgBox.Clear()
+
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        ' Not allow to remove account when Vaccine File still in process
+        If udtEHSAccount.SourceApp = EHSAccountModel.SourceAppClass.SFUpload Then
+            Dim strStudentFileList As String = Me.getStudentFileInProcess(udtEHSAccount.VoucherAccID.Trim)
+
+            If strStudentFileList <> String.Empty Then
+                Me.udcMsgBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013), "%s", strStudentFileList)
+                Me.udcMsgBox.BuildMessageBox("ValidationFail", Me.udtAuditLogEntry, Common.Component.LogID.LOG00078, AuditLogDesc.RemoveTempAcctClickFail)
+
+                Return
+            End If
+        End If
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         If udtEHSAccount.TransactionID.Equals(String.Empty) Then
             udtSM = New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVQ, MsgCode.MSG00002)
@@ -4377,7 +4408,7 @@ Partial Public Class eHSAccountMaint
                         Case EditAccountModel.SuspendAccount
                             'Suspend Account
                             udtSM = SuspendAccount(udtEHSAccount, udtEHSAccount_Amendment, strUpdateBy)
-  
+
                         Case EditAccountModel.SuspendEnquiry
                             'Suspend Public Enquiry
                             udtSM = SuspendEnquiryAccount(udtEHSAccount, udtEHSAccount_Amendment, strUpdateBy)
@@ -4854,7 +4885,7 @@ Partial Public Class eHSAccountMaint
                 '     String.Empty, String.Empty, String.Empty)
 
                 Dim udtBLLSearchResult As BaseBLL.BLLSearchResult
-                
+
                 ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
                 udtBLLSearchResult = udtAccountChangeMaintBLL.MaintenanceSearch(FunctionCode, String.Empty, Me.txtEnterCreationDetailSPID.Text.Trim, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty)
                 ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
@@ -4993,7 +5024,7 @@ Partial Public Class eHSAccountMaint
             '                                                Me.txtAdvancedSearchName.Text.Trim, Me.txtAdvancedSearchPhone.Text.Trim, String.Empty, String.Empty)
 
             Dim udtBLLSearchResult As BaseBLL.BLLSearchResult
-            
+
             ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
             udtBLLSearchResult = udtAccountChangeMaintBLL.MaintenanceSearch(FunctionCode, String.Empty, Me.txtAdvancedSearchSPID.Text.Trim, Me.txtAdvancedSearchHKIC.Text.Trim, _
                                                                             Me.txtAdvancedSearchName.Text.Trim, String.Empty, Me.txtAdvancedSearchPhone.Text.Trim, String.Empty, String.Empty)
@@ -5663,18 +5694,16 @@ Partial Public Class eHSAccountMaint
                 End If
                 ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Dickson]
 
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie] (Allow remove account from batch)
                 ' ---------------------------------------------------------------------------------------------------------
                 'Show "Remove" button
                 '1. Record Status <> "D", "V" 
                 '2. ImmD checked and date difference between checking date and current date > 28 days
-                '3. Account is not created by batch upload 
                 If udtEHSAccount.RecordStatus <> TempAccountRecordStatusClass.Removed _
                     AndAlso udtEHSAccount.RecordStatus <> TempAccountRecordStatusClass.Validated _
                     AndAlso udtEHSAccount.FirstValidateDtm.HasValue _
                     AndAlso DateDiff(DateInterval.Day, udtEHSAccount.FirstValidateDtm.Value, Now, Microsoft.VisualBasic.FirstDayOfWeek.Sunday, FirstWeekOfYear.System) > 28 _
-                    And udtEHSAccount.SourceApp <> EHSAccountModel.SourceAppClass.SFUpload _
-                Then
+                    Then
                     Me.ibtnRemove.Visible = True
                 End If
 
@@ -5704,12 +5733,10 @@ Partial Public Class eHSAccountMaint
                 '2. Record Status = "P" (Pending Validation)
                 '3. Account Purpose <> "A","O"
                 '4. Without validation as before
-                '5. Account is not created by batch upload 
                 If udtEHSAccount.CreateByBO _
                     And udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingVerify _
                     And Not (udtEHSAccount.AccountPurpose = EHSAccountModel.AccountPurposeClass.ForAmendmentOld Or udtEHSAccount.AccountPurpose = EHSAccountModel.AccountPurposeClass.ForAmendment) _
                     And Not udteHSAccountPersonalInfo.Validating _
-                    And udtEHSAccount.SourceApp <> EHSAccountModel.SourceAppClass.SFUpload _
                 Then
                     If Me.ibtnRemove.Visible = False Then
                         Me.ibtnRemoveTempAccountByBO.Visible = True
@@ -5717,7 +5744,7 @@ Partial Public Class eHSAccountMaint
                 Else
                     Me.ibtnRemoveTempAccountByBO.Visible = False
                 End If
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             Case EHSAccountModel.SysAccountSource.SpecialAccount
                 Me.ibtnAmendHistory.Visible = False
@@ -8423,4 +8450,36 @@ Partial Public Class eHSAccountMaint
     End Sub
 #End Region
 
+    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    ' -------------------------------------------------------------------------------
+    Private Function getStudentFileInProcess(ByVal strTempVouhcerAccID As String) As String
+        Dim udtstudentFileBLL As New StudentFile.StudentFileBLL
+        Dim lstStudentFile As New List(Of String)
+        Dim strStudentFileList As String = String.Empty
+
+        Dim dt As DataTable = udtstudentFileBLL.GetStudentFileEntryByTempAccID(strTempVouhcerAccID)
+
+        For Each dr As DataRow In dt.Rows
+
+            Select Case CStr(dr("Record_Status"))
+                Case Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.Removed), _
+                    Formatter.EnumToString(StudentFile.StudentFileHeaderModel.RecordStatusEnumClass.Completed) _
+                    ' File already completed
+
+                Case Else
+                    ' Processing
+                    Dim strStudentFileID As String = dr("Student_File_ID").ToString.Trim
+
+                    If lstStudentFile.Contains(strStudentFileID) = False Then
+                        lstStudentFile.Add(strStudentFileID)
+                    End If
+
+            End Select
+        Next
+
+        If lstStudentFile.Count > 0 Then strStudentFileList = String.Join(", ", lstStudentFile.ToArray)
+
+        Return strStudentFileList
+    End Function
+    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 End Class

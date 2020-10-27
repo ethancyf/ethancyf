@@ -933,6 +933,20 @@ Namespace Component.StudentFile
 
         End Function
 
+        Public Function GetStudentFileEntryRowDisplay(ByVal strStudentFileID As String, ByVal intSchemeSeq As Integer, Optional udtDB As Database = Nothing) As DataTable
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim dt As New DataTable
+            Dim prams() As SqlParameter = { _
+                udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, strStudentFileID), _
+                udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, intSchemeSeq) _
+            }
+
+            udtDB.RunProc("proc_StudentFileEntry_Display_Row_get", prams, dt)
+
+            Return dt
+
+        End Function
         '
 
         Public Function GetStudentFileHeaderStaging(strStudentFileID As String, Optional blnWithEntry As Boolean = True, Optional udtDB As Database = Nothing) As StudentFileHeaderModel
@@ -1010,6 +1024,21 @@ Namespace Component.StudentFile
 
         End Function
 
+        Public Function GetStudentFileEntryStagingRowDisplay(ByVal strStudentFileID As String, ByVal intSchemeSeq As Integer, Optional udtDB As Database = Nothing) As DataTable
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim dt As New DataTable
+            Dim prams() As SqlParameter = { _
+                udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, strStudentFileID), _
+                udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, intSchemeSeq) _
+            }
+
+            udtDB.RunProc("proc_StudentFileEntryStaging_Display_Row_get", prams, dt)
+
+            Return dt
+
+        End Function
+
         Public Function GetStudentFileEntryStaging(ByVal strStudentFileID As String, Optional ByVal udtDB As Database = Nothing) As StudentFileEntryModelCollection
             If IsNothing(udtDB) Then udtDB = New Database
 
@@ -1049,6 +1078,50 @@ Namespace Component.StudentFile
             Next
 
             Return udtStudentFileEntryList
+
+        End Function
+
+        Public Function GetStudentFileEntryByStudentSeq(ByVal strStudentFileID As String, ByVal intStudentSeq As Integer, Optional ByVal udtDB As Database = Nothing) As StudentFileEntryModel
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim udtStudentFileEntryList As StudentFileEntryModelCollection = New StudentFileEntryModelCollection
+            Dim udtStudentFileEntryRes As StudentFileEntryModel = Nothing
+
+            udtStudentFileEntryList = Me.GetStudentFileEntry(strStudentFileID, udtDB)
+
+            For Each udtStudentFileEntry As StudentFileEntryModel In udtStudentFileEntryList
+
+                If udtStudentFileEntry.StudentSeq.Equals(intStudentSeq) Then
+                    udtStudentFileEntryRes = New StudentFileEntryModel
+                    udtStudentFileEntryRes = udtStudentFileEntry
+
+                    Exit For
+                End If
+            Next
+
+            Return udtStudentFileEntryRes
+
+        End Function
+
+        Public Function GetStudentFileEntryStagingByStudentSeq(ByVal strStudentFileID As String, ByVal intStudentSeq As Integer, Optional ByVal udtDB As Database = Nothing) As StudentFileEntryModel
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim udtStudentFileEntryList As StudentFileEntryModelCollection = New StudentFileEntryModelCollection
+            Dim udtStudentFileEntryRes As StudentFileEntryModel = Nothing
+
+            udtStudentFileEntryList = Me.GetStudentFileEntryStaging(strStudentFileID, udtDB)
+
+            For Each udtStudentFileEntry As StudentFileEntryModel In udtStudentFileEntryList
+
+                If udtStudentFileEntry.StudentSeq.Equals(intStudentSeq) Then
+                    udtStudentFileEntryRes = New StudentFileEntryModel
+                    udtStudentFileEntryRes = udtStudentFileEntry
+
+                    Exit For
+                End If
+            Next
+
+            Return udtStudentFileEntryRes
 
         End Function
 
@@ -1733,7 +1806,8 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .LastRectifyBy), _
                     udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm), _
                     udtDB.MakeInParam("@HKIC_Symbol", SqlDbType.Char, 1, IIf(.HKICSymbol Is Nothing, DBNull.Value, .HKICSymbol)), _
-                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, IIf(.ServiceDate Is Nothing, DBNull.Value, .ServiceDate)) _
+                    udtDB.MakeInParam("@Service_Receive_Dtm", SqlDbType.DateTime, 8, IIf(.ServiceDate Is Nothing, DBNull.Value, .ServiceDate)), _
+                    udtDB.MakeInParam("@TSMP", SqlDbType.Binary, 8, IIf(.TSMP Is Nothing, DBNull.Value, .TSMP)) _
                 }
 
                 Select Case eStudentFileLocation
@@ -1747,6 +1821,41 @@ Namespace Component.StudentFile
             ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         End Sub
+
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Update StudentFileEntry Contact No.
+        ''' </summary>
+        ''' <param name="udtStudent"></param>     
+        ''' <param name="eStudentFileLocation"></param>
+        ''' <param name="udtDB"></param>
+        ''' <remarks></remarks>
+        Public Sub UpdateSyncStudentInformation(ByVal udtStudent As StudentFileEntryModel, ByVal eStudentFileLocation As StudentFileLocation, Optional udtDB As Database = Nothing)
+
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            With udtStudent
+                Dim prams() As SqlParameter = { _
+                    udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
+                    udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, .StudentSeq), _
+                    udtDB.MakeInParam("@Class_No", SqlDbType.NVarChar, 10, .ClassNo), _
+                    udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, .ContactNo), _
+                    udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .LastRectifyBy), _
+                    udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
+                }
+
+                Select Case eStudentFileLocation
+                    Case StudentFileLocation.Staging
+                        udtDB.RunProc("proc_StudentFileEntryStaging_upd_Sync_PersonalParticulars", prams)
+                    Case StudentFileLocation.Permanence
+                        udtDB.RunProc("proc_StudentFileEntry_upd_Sync_PersonalParticulars", prams)
+                End Select
+
+            End With
+
+        End Sub
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         ''' <summary>
         ''' Update StudentFileEntryStaging Injected
@@ -1898,12 +2007,14 @@ Namespace Component.StudentFile
         ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
         ' -------------------------------------------------------------------------------
         ''' <summary>
-        ''' Update StudentFileEntry with new Doc Code (Target Student entry and all related entry using same account in Perm and Staging)
+        ''' Update StudentFileEntry with new Doc Code 
         ''' </summary>
         ''' <param name="udtStudent"></param>
+        ''' <param name="eStudentFileLocation"></param>
         ''' <param name="udtDB"></param>
         ''' <remarks></remarks>
         Public Sub UpdateVaccinationFileEntryDocCode(ByVal udtStudent As StudentFileEntryModel, _
+                                                     ByVal eStudentFileLocation As StudentFileLocation, _
                                                      Optional udtDB As Database = Nothing)
 
             If IsNothing(udtDB) Then udtDB = New Database
@@ -1913,12 +2024,19 @@ Namespace Component.StudentFile
                         udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
                         udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, .StudentSeq), _
                         udtDB.MakeInParam("@Doc_Code", SqlDbType.Char, 20, IIf(.DocCode = String.Empty, DBNull.Value, .DocCode)), _
-                        udtDB.MakeInParam("@Acc_Doc_Code", SqlDbType.Char, 20, IIf(.AccDocCode = String.Empty, DBNull.Value, .AccDocCode)), _
                         udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .LastRectifyBy), _
                         udtDB.MakeInParam("@Update_Dtm", SqlDbType.DateTime, 8, .LastRectifyDtm) _
                     }
 
-                udtDB.RunProc("proc_StudentFileEntry_upd_DocCode", prams)
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                Select Case eStudentFileLocation
+                    Case StudentFileLocation.Staging
+                        udtDB.RunProc("proc_StudentFileEntryStaging_upd_DocCode", prams)
+                    Case StudentFileLocation.Permanence
+                        udtDB.RunProc("proc_StudentFileEntry_upd_DocCode", prams)
+                End Select
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             End With
 
         End Sub
@@ -2738,6 +2856,55 @@ Namespace Component.StudentFile
 
         End Sub
         ' CRE19-001 (VSS 2019) [End][Winnie]
+
+        Public Function GetStudentFileEntryRelated(strStudentFileID As String, _
+                                                   intStudentSeq As Integer, _
+                                                   blnIncludeSelf As Boolean, _
+                                                   Optional udtDB As Database = Nothing) As DataTable
+
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim dt As New DataTable
+            Dim prams() As SqlParameter = { _
+                udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, strStudentFileID), _
+                udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 4, intStudentSeq) _
+            }
+
+            udtDB.RunProc("proc_StudentFileEntry_get_related_Student", prams, dt)
+
+            If Not blnIncludeSelf Then
+                Dim dtRes As DataTable = dt.Clone
+
+                For Each dr As DataRow In dt.Rows
+                    If dr("Student_File_ID").ToString.Trim <> strStudentFileID.Trim Then
+                        dtRes.ImportRow(dr)
+                    End If
+                Next
+
+                dt = dtRes
+
+            End If
+
+            Return dt
+
+        End Function
+
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        ' -------------------------------------------------------------------------------
+        Public Function GetStudentFileEntryByTempAccID(strTempVoucherAccID As String, Optional udtDB As Database = Nothing) As DataTable
+            If IsNothing(udtDB) Then udtDB = New Database
+
+            Dim dt As New DataTable
+            Dim prams() As SqlParameter = { _
+                udtDB.MakeInParam("@Temp_Voucher_Acc_ID", SqlDbType.VarChar, 15, strTempVoucherAccID) _
+            }
+
+            udtDB.RunProc("proc_StudentFileEntry_get_byTempVoucherAccID", prams, dt)
+
+            Return dt
+
+        End Function
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
     End Class
 

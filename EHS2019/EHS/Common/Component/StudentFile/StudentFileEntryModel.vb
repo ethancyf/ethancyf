@@ -158,6 +158,70 @@ Namespace Component.StudentFile
             ' CRE20-003 (Batch Upload) [End][Chris YIM]
         End Sub
 
+        Public Function Clone() As StudentFileEntryModel
+            Dim udtStudentFileEntry As New StudentFileEntryModel
+
+            udtStudentFileEntry.StudentFileID = Me.StudentFileID
+            udtStudentFileEntry.StudentSeq = Me.StudentSeq
+            udtStudentFileEntry.ClassName = Me.ClassName
+            udtStudentFileEntry.ClassNo = Me.ClassNo
+            udtStudentFileEntry.ContactNo = Me.ContactNo
+            udtStudentFileEntry.DocNo = Me.DocNo
+            udtStudentFileEntry.NameEN = Me.NameEN
+            udtStudentFileEntry.SurnameENOriginal = Me.SurnameENOriginal
+            udtStudentFileEntry.GivenNameENOriginal = Me.GivenNameENOriginal
+            udtStudentFileEntry.NameCH = Me.NameCH
+            udtStudentFileEntry.NameCHExcel = Me.NameCHExcel
+            udtStudentFileEntry.DocCode = Me.DocCode
+            udtStudentFileEntry.DOB = Me.DOB
+            udtStudentFileEntry.Exact_DOB = Me.Exact_DOB
+            udtStudentFileEntry.Sex = Me.Sex
+            udtStudentFileEntry.DateOfIssue = Me.DateOfIssue
+            udtStudentFileEntry.PermitToRemainUntil = Me.PermitToRemainUntil
+            udtStudentFileEntry.ForeignPassportNo = Me.ForeignPassportNo
+            udtStudentFileEntry.ECSerialNo = Me.ECSerialNo
+            udtStudentFileEntry.ECReferenceNo = Me.ECReferenceNo
+            udtStudentFileEntry.ECReferenceNoOtherFormat = Me.ECReferenceNoOtherFormat
+            udtStudentFileEntry.RejectInjection = Me.RejectInjection
+
+            udtStudentFileEntry.AccProcessStage = Me.AccProcessStage
+            udtStudentFileEntry.AccProcessStageDtm = Me.AccProcessStageDtm
+            udtStudentFileEntry.VoucherAccID = Me.VoucherAccID
+            udtStudentFileEntry.TempVoucherAccID = Me.TempVoucherAccID
+            udtStudentFileEntry.AccType = Me.AccType
+            udtStudentFileEntry.AccDocCode = Me.AccDocCode
+            udtStudentFileEntry.TempAccRecordStatus = Me.TempAccRecordStatus
+            udtStudentFileEntry.TempAccValidateDtm = Me.TempAccValidateDtm
+            udtStudentFileEntry.AccValidationResult = Me.AccValidationResult
+            udtStudentFileEntry.ValidatedAccFound = Me.ValidatedAccFound
+            udtStudentFileEntry.ValidatedAccUnmatchResult = Me.ValidatedAccUnmatchResult
+
+            udtStudentFileEntry.VaccinationProcessStage = Me.VaccinationProcessStage
+            udtStudentFileEntry.VaccinationProcessStageDtm = Me.VaccinationProcessStageDtm
+            udtStudentFileEntry.EntitleONLYDOSE = Me.EntitleONLYDOSE
+            udtStudentFileEntry.Entitle1STDOSE = Me.Entitle1STDOSE
+            udtStudentFileEntry.Entitle2NDDOSE = Me.Entitle2NDDOSE
+            udtStudentFileEntry.Entitle3RDDOSE = Me.Entitle3RDDOSE
+            udtStudentFileEntry.EntitleInject = Me.EntitleInject
+            udtStudentFileEntry.EntitleInjectFailReason = Me.EntitleInjectFailReason
+            udtStudentFileEntry.TransactionID = Me.TransactionID
+            udtStudentFileEntry.TransactionResult = Me.TransactionResult
+
+            udtStudentFileEntry.CreateBy = Me.CreateBy
+            udtStudentFileEntry.CreateDtm = Me.CreateDtm
+            udtStudentFileEntry.UpdateBy = Me.UpdateBy
+            udtStudentFileEntry.UpdateDtm = Me.UpdateDtm
+            udtStudentFileEntry.LastRectifyBy = Me.LastRectifyBy
+            udtStudentFileEntry.LastRectifyDtm = Me.LastRectifyDtm
+            udtStudentFileEntry.OriginalStudentFileID = Me.OriginalStudentFileID
+            udtStudentFileEntry.OriginalStudentSeq = Me.OriginalStudentSeq
+            udtStudentFileEntry.HKICSymbol = Me.HKICSymbol
+            udtStudentFileEntry.ServiceDate = Me.ServiceDate
+            udtStudentFileEntry.ManualAdd = Me.ManualAdd
+
+            Return udtStudentFileEntry
+
+        End Function
 #End Region
 
 #Region "Private Member"
@@ -742,11 +806,11 @@ Namespace Component.StudentFile
 
         ' CRE20-003 (Batch Upload) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
-        Public Property ManualAdd() As Nullable(Of DateTime)
+        Public Property ManualAdd() As String
             Get
                 Return _strManualAdd
             End Get
-            Set(ByVal value As Nullable(Of DateTime))
+            Set(ByVal value As String)
                 _strManualAdd = value
             End Set
         End Property

@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	17 Sep 2020
+-- CR No.			CRE20-003-03 (Enhancement on Programme or Scheme using batch upload)
+-- Description:		Fix Report VF000 Display Content issue
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	17 Aug 2020
 -- CR No.			CRE20-003 (Batch Upload)
@@ -413,8 +420,13 @@ AS BEGIN
 			H.SP_ID,
 			CONVERT(VARCHAR(MAX), DecryptByKey(SP.Encrypt_Field2)) AS SPName_EN,
 			CONVERT(NVARCHAR(MAX), DecryptByKey(SP.Encrypt_Field3)) AS SPName_Chi,
-			P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name,
-			P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')' AS Practice_Name_Chi,
+			[Practice_Name] = P.Practice_Name + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')',
+			[Practice_Name_Chi] =
+				CASE 
+					WHEN P.Practice_Name_Chi IS NULL THEN '' 
+					WHEN P.Practice_Name_Chi = '' THEN '' 
+					ELSE P.Practice_Name_Chi + '(' + CONVERT(VARCHAR(10), Practice_Display_Seq) +')'
+				END,
 			'',
 			RTRIM(SC.Display_Code),
 			ET.ClassCount,

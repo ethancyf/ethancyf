@@ -4,51 +4,55 @@ Namespace SearchCriteria
 #Region "Members"
 
         'Service Provider
-        Private _s_serviceProviderID As String
-        Private _s_serviceProviderHKIC As String
-        Private _s_serviceProviderName As String
-        Private _s_serviceProviderChiName As String
-        Private _s_serviceProviderProfRegNo As String
-        Private _s_healthProf As String
-        Private _s_enrolmentRefNo As String
-        Private _s_bankAcctNo As String
-        Private _s_practice As String
-        Private _s_bankAcctOwner As String
-        Private _s_bankName As String
-        Private _s_branchName As String
-        Private _s_bankAcctSubmissionDate As Nullable(Of DateTime)
-        Private _s_bankStatus As String
-        Private _s_practiceDisplaySeq As String
+        Private _strServiceProviderID As String
+        Private _strServiceProviderHKIC As String
+        Private _strServiceProviderName As String
+        Private _strServiceProviderChiName As String
+        Private _strServiceProviderProfRegNo As String
+        Private _strHealthProf As String
+        Private _strEnrolmentRefNo As String
+        Private _strBankAcctNo As String
+        Private _strPractice As String
+        Private _strBankAcctOwner As String
+        Private _strBankName As String
+        Private _strBranchName As String
+        Private _strBankAcctSubmissionDate As Nullable(Of DateTime)
+        Private _strBankStatus As String
+        Private _strPracticeDisplaySeq As String
 
         'Transaction
-        Private _s_fromDate As String
-        Private _s_cutoffDate As String
-        Private _s_transStatus As String
-        Private _s_authorizedStatus As String
-        Private _s_transNum As String
-        Private _s_firstAuthorizedBy As String
-        Private _s_firstAuthorizedDate As String
-        Private _s_secondAuthorizedBy As String
-        Private _s_secondAuthorizedDate As String
-        Private _s_reimbAuthorizedBy As String
-        Private _s_reimbAuthorizedDate As String
-        Private _s_DocCode As String
-        Private _s_Invalidation As String
+        Private _strFromDate As String
+        Private _strCutoffDate As String
+        Private _strTransStatus As String
+        Private _strAuthorizedStatus As String
+        Private _strTransNum As String
+        Private _strFirstAuthorizedBy As String
+        Private _strFirstAuthorizedDate As String
+        Private _strSecondAuthorizedBy As String
+        Private _strSecondAuthorizedDate As String
+        Private _strReimbAuthorizedBy As String
+        Private _strReimbAuthorizedDate As String
+        Private _strDocCode As String
+        Private _strInvalidation As String
         Private _strMeansOfInput As String
         Private _strServiceDateFrom As String
         Private _strServiceDateTo As String
 
+        'TransactionDetail
+        Private _strSubsidizeItemCode As String
+        Private _strDoseItemCode As String
+
         'Voucher Account
-        Private _s_voucherRecipientHKIC As String
-        Private _s_voucherRecipientName As String
-        Private _s_voucherRecipientChiName As String
-        Private _s_DocIdentityNo1 As String
-        Private _s_DocIdentityNo2 As String
-        Private _s_voucherAccID As String
-        Private _s_ReferenceNo As String
+        Private _strVoucherRecipientHKIC As String
+        Private _strVoucherRecipientName As String
+        Private _strVoucherRecipientChiName As String
+        Private _strDocIdentityNo1 As String
+        Private _strDocIdentityNo2 As String
+        Private _strVoucherAccID As String
+        Private _strReferenceNo As String
 
         'Scheme
-        Private _s_scheme As String
+        Private _strScheme As String
 
         'Reimbursement Method
         Private _strReimbursementMethod
@@ -57,7 +61,8 @@ Namespace SearchCriteria
         Private _intAspectTabIndex As Integer
 
         'RCH Code
-        Private _strRCHCode As String
+        Private _strSchoolOrRCHCode As String
+
 
 #End Region
 
@@ -65,50 +70,54 @@ Namespace SearchCriteria
 
         Public Sub New()    '20080422
             'Service Provider
-            _s_serviceProviderID = Nothing
-            _s_serviceProviderHKIC = Nothing
-            _s_serviceProviderName = Nothing
-            _s_serviceProviderChiName = Nothing
-            _s_serviceProviderProfRegNo = Nothing
-            _s_healthProf = Nothing
-            _s_enrolmentRefNo = Nothing
-            _s_bankAcctNo = Nothing
-            _s_bankAcctOwner = Nothing
-            _s_bankName = Nothing
-            _s_branchName = Nothing
-            _s_bankAcctSubmissionDate = Nothing
-            _s_practice = Nothing
-            _s_practiceDisplaySeq = Nothing
+            _strServiceProviderID = Nothing
+            _strServiceProviderHKIC = Nothing
+            _strServiceProviderName = Nothing
+            _strServiceProviderChiName = Nothing
+            _strServiceProviderProfRegNo = Nothing
+            _strHealthProf = Nothing
+            _strEnrolmentRefNo = Nothing
+            _strBankAcctNo = Nothing
+            _strBankAcctOwner = Nothing
+            _strBankName = Nothing
+            _strBranchName = Nothing
+            _strBankAcctSubmissionDate = Nothing
+            _strPractice = Nothing
+            _strPracticeDisplaySeq = Nothing
 
             'Transaction
-            _s_fromDate = Nothing
-            _s_cutoffDate = Nothing
-            _s_transStatus = Nothing
-            _s_authorizedStatus = Nothing
-            _s_transNum = Nothing
-            _s_firstAuthorizedBy = Nothing
-            _s_firstAuthorizedDate = Nothing
-            _s_secondAuthorizedBy = Nothing
-            _s_secondAuthorizedDate = Nothing
-            _s_reimbAuthorizedBy = Nothing
-            _s_reimbAuthorizedDate = Nothing
-            _s_DocCode = Nothing
-            _s_Invalidation = Nothing
+            _strFromDate = Nothing
+            _strCutoffDate = Nothing
+            _strTransStatus = Nothing
+            _strAuthorizedStatus = Nothing
+            _strTransNum = Nothing
+            _strFirstAuthorizedBy = Nothing
+            _strFirstAuthorizedDate = Nothing
+            _strSecondAuthorizedBy = Nothing
+            _strSecondAuthorizedDate = Nothing
+            _strReimbAuthorizedBy = Nothing
+            _strReimbAuthorizedDate = Nothing
+            _strDocCode = Nothing
+            _strInvalidation = Nothing
             _strMeansOfInput = Nothing
             _strServiceDateFrom = Nothing
             _strServiceDateTo = Nothing
 
+            'TransactionDetail
+            _strSubsidizeItemCode = Nothing
+            _strDoseItemCode = Nothing
+
             'Voucher Account
-            _s_voucherRecipientHKIC = Nothing
-            _s_voucherRecipientName = Nothing
-            _s_voucherRecipientChiName = Nothing
-            _s_DocIdentityNo1 = Nothing
-            _s_DocIdentityNo2 = Nothing
-            _s_voucherAccID = Nothing
-            _s_ReferenceNo = Nothing
+            _strVoucherRecipientHKIC = Nothing
+            _strVoucherRecipientName = Nothing
+            _strVoucherRecipientChiName = Nothing
+            _strDocIdentityNo1 = Nothing
+            _strDocIdentityNo2 = Nothing
+            _strVoucherAccID = Nothing
+            _strReferenceNo = Nothing
 
             'Scheme
-            _s_scheme = Nothing
+            _strscheme = Nothing
 
             'Reimbursement Method
             Me._strReimbursementMethod = Nothing
@@ -117,7 +126,7 @@ Namespace SearchCriteria
             _intAspectTabIndex = Nothing
 
             'RCH Code
-            _strRCHCode = Nothing
+            _strSchoolOrRCHCode = Nothing
 
         End Sub
 
@@ -127,325 +136,325 @@ Namespace SearchCriteria
 
         Public Property ServiceProviderID() As String
             Get
-                Return _s_serviceProviderID
+                Return _strServiceProviderID
             End Get
             Set(ByVal value As String)
-                _s_serviceProviderID = value
+                _strServiceProviderID = value
             End Set
         End Property
 
         Public Property SPPracticeDisplaySeq() As String
             Get
-                Return _s_practiceDisplaySeq
+                Return _strPracticeDisplaySeq
             End Get
             Set(ByVal value As String)
-                _s_practiceDisplaySeq = value
+                _strPracticeDisplaySeq = value
             End Set
         End Property
 
         Public Property ServiceProviderHKIC() As String
             Get
-                Return _s_serviceProviderHKIC
+                Return _strServiceProviderHKIC
             End Get
             Set(ByVal value As String)
-                _s_serviceProviderHKIC = value
+                _strServiceProviderHKIC = value
             End Set
         End Property
 
         Public Property ServiceProviderName() As String
             Get
-                Return _s_serviceProviderName
+                Return _strServiceProviderName
             End Get
             Set(ByVal value As String)
-                _s_serviceProviderName = value
+                _strServiceProviderName = value
             End Set
         End Property
 
         Public Property ServiceProviderChiName() As String
             Get
-                Return _s_serviceProviderChiName
+                Return _strServiceProviderChiName
             End Get
             Set(ByVal value As String)
-                _s_serviceProviderChiName = value
+                _strServiceProviderChiName = value
             End Set
         End Property
 
         Public Property ServiceProviderProfRegNo() As String
             Get
-                Return _s_serviceProviderProfRegNo
+                Return _strServiceProviderProfRegNo
             End Get
             Set(ByVal value As String)
-                _s_serviceProviderProfRegNo = value
+                _strServiceProviderProfRegNo = value
             End Set
         End Property
 
         Public Property HealthProf() As String
             Get
-                Return _s_healthProf
+                Return _strHealthProf
             End Get
             Set(ByVal value As String)
-                _s_healthProf = value
+                _strHealthProf = value
             End Set
         End Property
 
         Public Property EnrolmentRefNo() As String
             Get
-                Return _s_enrolmentRefNo
+                Return _strEnrolmentRefNo
             End Get
             Set(ByVal value As String)
-                _s_enrolmentRefNo = value
+                _strEnrolmentRefNo = value
             End Set
         End Property
 
         Public Property BankAcctNo() As String
             Get
-                Return _s_bankAcctNo
+                Return _strBankAcctNo
             End Get
             Set(ByVal value As String)
-                _s_bankAcctNo = value
+                _strBankAcctNo = value
             End Set
         End Property
 
         Public Property BankAccountOwner() As String
             Get
-                Return _s_bankAcctNo
+                Return _strBankAcctNo
             End Get
             Set(ByVal value As String)
-                _s_bankAcctNo = value
+                _strBankAcctNo = value
             End Set
         End Property
 
         Public Property BankName() As String
             Get
-                Return _s_bankName
+                Return _strBankName
             End Get
             Set(ByVal value As String)
-                _s_bankName = value
+                _strBankName = value
             End Set
         End Property
 
         Public Property BranchName() As String
             Get
-                Return _s_branchName
+                Return _strBranchName
             End Get
             Set(ByVal value As String)
-                _s_branchName = value
+                _strBranchName = value
             End Set
         End Property
 
         Public Property BankAcctSubmissionDate() As Nullable(Of DateTime)
             Get
-                Return _s_bankAcctSubmissionDate
+                Return _strBankAcctSubmissionDate
             End Get
             Set(ByVal value As Nullable(Of DateTime))
-                _s_bankAcctSubmissionDate = value
+                _strBankAcctSubmissionDate = value
             End Set
         End Property
 
         Public Property BankStatus() As String
             Get
-                Return _s_bankStatus
+                Return _strBankStatus
             End Get
             Set(ByVal value As String)
-                _s_bankStatus = value
+                _strBankStatus = value
             End Set
         End Property
 
         Public Property Practice() As String
             Get
-                Return _s_bankName
+                Return _strBankName
             End Get
             Set(ByVal value As String)
-                _s_bankName = value
+                _strBankName = value
             End Set
         End Property
 
         Public Property FromDate() As String
             Get
-                Return _s_fromDate
+                Return _strFromDate
             End Get
             Set(ByVal value As String)
-                _s_fromDate = value
+                _strFromDate = value
             End Set
         End Property
 
         Public Property CutoffDate() As String
             Get
-                Return _s_cutoffDate
+                Return _strCutoffDate
             End Get
             Set(ByVal value As String)
-                _s_cutoffDate = value
+                _strCutoffDate = value
             End Set
         End Property
 
         Public Property TransStatus() As String
             Get
-                Return _s_transStatus
+                Return _strTransStatus
             End Get
             Set(ByVal value As String)
-                _s_transStatus = value
+                _strTransStatus = value
             End Set
         End Property
 
         Public Property AuthorizedStatus() As String
             Get
-                Return _s_authorizedStatus
+                Return _strAuthorizedStatus
             End Get
             Set(ByVal value As String)
-                _s_authorizedStatus = value
+                _strAuthorizedStatus = value
             End Set
         End Property
 
         Public Property TransNum() As String
             Get
-                Return _s_transNum
+                Return _strTransNum
             End Get
             Set(ByVal value As String)
-                _s_transNum = value
+                _strTransNum = value
             End Set
         End Property
 
         Public Property FirstAuthorizedBy() As String
             Get
-                Return _s_firstAuthorizedBy
+                Return _strFirstAuthorizedBy
             End Get
             Set(ByVal value As String)
-                _s_firstAuthorizedBy = value
+                _strFirstAuthorizedBy = value
             End Set
         End Property
 
         Public Property FirstAuthorizedDate() As String
             Get
-                Return _s_firstAuthorizedDate
+                Return _strFirstAuthorizedDate
             End Get
             Set(ByVal value As String)
-                _s_firstAuthorizedDate = value
+                _strFirstAuthorizedDate = value
             End Set
         End Property
 
         Public Property SecondAuthorizedBy() As String
             Get
-                Return _s_secondAuthorizedBy
+                Return _strSecondAuthorizedBy
             End Get
             Set(ByVal value As String)
-                _s_secondAuthorizedBy = value
+                _strSecondAuthorizedBy = value
             End Set
         End Property
 
         Public Property SecondAuthorizedDate() As String
             Get
-                Return _s_secondAuthorizedDate
+                Return _strSecondAuthorizedDate
             End Get
             Set(ByVal value As String)
-                _s_secondAuthorizedDate = value
+                _strSecondAuthorizedDate = value
             End Set
         End Property
 
         Public Property ReimbursementAuthorizedBy() As String
             Get
-                Return _s_reimbAuthorizedBy
+                Return _strReimbAuthorizedBy
             End Get
             Set(ByVal value As String)
-                _s_reimbAuthorizedBy = value
+                _strReimbAuthorizedBy = value
             End Set
         End Property
 
         Public Property ReimbursementAuthorizedDate() As String
             Get
-                Return _s_reimbAuthorizedDate
+                Return _strReimbAuthorizedDate
             End Get
             Set(ByVal value As String)
-                _s_reimbAuthorizedDate = value
+                _strReimbAuthorizedDate = value
             End Set
         End Property
 
         Public Property VoucherRecipientHKIC() As String
             Get
-                Return _s_voucherRecipientHKIC
+                Return _strVoucherRecipientHKIC
             End Get
             Set(ByVal value As String)
-                _s_voucherRecipientHKIC = value
+                _strVoucherRecipientHKIC = value
             End Set
         End Property
 
         Public Property VoucherRecipientName() As String
             Get
-                Return _s_voucherRecipientName
+                Return _strVoucherRecipientName
             End Get
             Set(ByVal value As String)
-                _s_voucherRecipientName = value
+                _strVoucherRecipientName = value
             End Set
         End Property
 
         Public Property VoucherRecipientChiName() As String
             Get
-                Return _s_voucherRecipientChiName
+                Return _strVoucherRecipientChiName
             End Get
             Set(ByVal value As String)
-                _s_voucherRecipientChiName = value
+                _strVoucherRecipientChiName = value
             End Set
         End Property
 
         Public Property SchemeCode() As String
             Get
-                Return _s_scheme
+                Return _strscheme
             End Get
             Set(ByVal value As String)
-                _s_scheme = value
+                _strscheme = value
             End Set
         End Property
 
         Public Property DocumentType() As String
             Get
-                Return _s_DocCode
+                Return _strDocCode
             End Get
             Set(ByVal value As String)
-                _s_DocCode = value
+                _strDocCode = value
             End Set
         End Property
 
         Public Property DocumentNo1() As String
             Get
-                Return _s_DocIdentityNo1
+                Return _strDocIdentityNo1
             End Get
             Set(ByVal value As String)
-                _s_DocIdentityNo1 = value
+                _strDocIdentityNo1 = value
             End Set
         End Property
 
         Public Property DocumentNo2() As String
             Get
-                Return _s_DocIdentityNo2
+                Return _strDocIdentityNo2
             End Get
             Set(ByVal value As String)
-                _s_DocIdentityNo2 = value
+                _strDocIdentityNo2 = value
             End Set
         End Property
 
         Public Property VoucherAccID() As String
             Get
-                Return _s_voucherAccID
+                Return _strVoucherAccID
             End Get
             Set(ByVal value As String)
-                _s_voucherAccID = value
+                _strVoucherAccID = value
             End Set
         End Property
 
         Public Property ReferenceNo() As String
             Get
-                Return _s_ReferenceNo
+                Return _strReferenceNo
             End Get
             Set(ByVal value As String)
-                _s_ReferenceNo = value
+                _strReferenceNo = value
             End Set
         End Property
 
         Public Property Invalidation() As String
             Get
-                Return _s_Invalidation
+                Return _strInvalidation
             End Get
             Set(ByVal value As String)
-                _s_Invalidation = value
+                _strInvalidation = value
             End Set
         End Property
 
@@ -494,14 +503,34 @@ Namespace SearchCriteria
             End Set
         End Property
 
-        Public Property RCHCode() As String
+        Public Property SchoolOrRCHCode() As String
             Get
-                Return _strRCHCode
+                Return _strSchoolOrRCHCode
             End Get
             Set(ByVal value As String)
-                _strRCHCode = value
+                _strSchoolOrRCHCode = value
             End Set
         End Property
+
+        Public Property SubsidizeItemCode() As String
+            Get
+                Return _strSubsidizeItemCode
+            End Get
+            Set(ByVal value As String)
+                _strSubsidizeItemCode = value
+            End Set
+        End Property
+
+        Public Property DoseCode() As String
+            Get
+                Return _strDoseItemCode
+            End Get
+            Set(ByVal value As String)
+                _strDoseItemCode = value
+            End Set
+        End Property
+
+
 
 #End Region
 

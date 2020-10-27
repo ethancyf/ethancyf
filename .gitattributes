@@ -878,6 +878,7 @@ EHS2019/EHS/ExcelGenerator/Template/eHSU0009-PCV13_Statistic_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSU0010-SP_Claim_Pattern_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSU0011_MeansOfInput_Rank_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSU0012_Inspection_Record_Template.xlsx -text
+EHS2019/EHS/ExcelGenerator/Template/eHSU0013-CSSA_Claim_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSVF000-VaccinationFileTemplate.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSVF001-VaccinationFileTemplate-MMR.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSVF001-VaccinationFileTemplate-PV.xlsx -text
@@ -5792,6 +5793,7 @@ EHS2019/EHS/StaticPage/Common_HK/index.htm -text
 EHS2019/EHS/StaticPage/Common_Mainland/UnderMaintenance.aspx -text
 EHS2019/EHS/StaticPage/Common_Mainland/WAF_error.htm -text
 EHS2019/EHS/StaticPage/Common_Mainland/index.htm -text
+EHS2019/EHS/StaticPage/Common_hcvu/Download/HA_MINGLIU.exe -text
 EHS2019/EHS/StaticPage/HCSP/Demo/EN/Doc/Banner/Thumbs.db -text
 EHS2019/EHS/StaticPage/HCSP/Demo/EN/Doc/Banner/banner.png -text
 EHS2019/EHS/StaticPage/HCSP/Demo/EN/Doc/Buttons/Thumbs.db -text
@@ -8515,6 +8517,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0007_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0008_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0010_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0012_Report_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0013_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0002.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0003_01_Report.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0003_02_Report.sql -text
@@ -8901,6 +8904,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReasonForVisitL2_get_byProfCodeReaL1CodeReaL
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Recipient_Aberrant_Voucher_Usage.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Rectify_getStat.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementAuthTranList_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementAuthTranSchoolList_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementAuthTranSum_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementAuthTran_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementAuthTran_delete.sql -text
@@ -9154,6 +9158,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryPrecheckSubsidizeInject_del.
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryPrecheckSubsidizeInject_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryPrecheckSubsidizeInject_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_AccountInfo_upd.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_Display_Row_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_Display_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_get.sql -text
@@ -9165,6 +9170,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_Injected.sql -te
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_OverWriteByValidatedAcct.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_PersonalParticulars.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_ResetVaccinationProcess.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_Sync_PersonalParticulars.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_TempVoucherAcc.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_TempVoucherAccID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryStaging_upd_VaccineCheck.sql -text
@@ -9183,15 +9189,19 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryVaccine_del.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryVaccine_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_AccountInfo_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_Batch_add.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_Display_Row_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_Display_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_get_byTempVoucherAccID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_get_forVaccineCheck.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_get_related_Student.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_ChiName_Excel.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_DocCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_OverWriteByValidatedAcct.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_PersonalParticulars.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_ResetVaccinationProcess.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_Sync_PersonalParticulars.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_TempVoucherAcc.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_VaccineCheck.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntry_upd_VaccineRefStatus.sql -text
@@ -9203,6 +9213,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderPrecheckDate_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_del.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_get_forAccountMatching.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_get_forVaccineCheck.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_get_forVaccineClaim.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeaderStaging_get_forVaccineEntitle.sql -text
@@ -9212,6 +9223,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_Batch_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_get_TaskListCount.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_get_by_OriginalStudentFileID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_get_forAccountMatching.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_get_forVaccineCheck.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_get_forVaccineEntitle.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileHeader_search.sql -text
@@ -9234,6 +9246,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeGroupClaim_get_all.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeGroupEForm_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeItemDetailRule_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeItemDetails_get_all_cache.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeItem_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeItem_get_bySubsidizeCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeWriteOffGeneratorQueue_gen_hcvs_ehcvs.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeWriteOffGeneratorQueue_get.sql -text

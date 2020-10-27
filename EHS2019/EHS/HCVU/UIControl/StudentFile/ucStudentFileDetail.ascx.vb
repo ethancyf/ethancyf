@@ -879,10 +879,10 @@ Public Class ucStudentFileDetail
         trAssignDatePCV13_3.Style.Add("display", "none")
         trAssignDatePCV13_4.Style.Add("display", "none")
 
-        trAssignDateMMR_1.Style.Add("display", "none")
-        trAssignDateMMR_2.Style.Add("display", "none")
-        trAssignDateMMR_3.Style.Add("display", "none")
-        trAssignDateMMR_4.Style.Add("display", "none")
+        'trAssignDateMMR_1.Style.Add("display", "none")
+        'trAssignDateMMR_2.Style.Add("display", "none")
+        'trAssignDateMMR_3.Style.Add("display", "none")
+        'trAssignDateMMR_4.Style.Add("display", "none")
 
 
         Dim drRCH As DataRow = Nothing
@@ -926,20 +926,20 @@ Public Class ucStudentFileDetail
                     trAssignDatePCV13_3.Style.Remove("display")
                     trAssignDatePCV13_4.Style.Remove("display")
 
-                    trAssignDateMMR_1.Style.Remove("display")
-                    trAssignDateMMR_2.Style.Remove("display")
-                    trAssignDateMMR_3.Style.Remove("display")
-                    trAssignDateMMR_4.Style.Remove("display")
+                    'trAssignDateMMR_1.Style.Remove("display")
+                    'trAssignDateMMR_2.Style.Remove("display")
+                    'trAssignDateMMR_3.Style.Remove("display")
+                    'trAssignDateMMR_4.Style.Remove("display")
 
                 Case RCH_TYPE.RCCC
                     trAssignDateQIV_1.Style.Remove("display")
                     trAssignDateQIV_2.Style.Remove("display")
                     trAssignDateQIV_3.Style.Remove("display")
 
-                    trAssignDateMMR_1.Style.Remove("display")
-                    trAssignDateMMR_2.Style.Remove("display")
-                    trAssignDateMMR_3.Style.Remove("display")
-                    trAssignDateMMR_4.Style.Remove("display")
+                    'trAssignDateMMR_1.Style.Remove("display")
+                    'trAssignDateMMR_2.Style.Remove("display")
+                    'trAssignDateMMR_3.Style.Remove("display")
+                    'trAssignDateMMR_4.Style.Remove("display")
 
                 Case RCH_TYPE.IPID
                     trAssignDateQIV_1.Style.Remove("display")
@@ -1046,11 +1046,11 @@ Public Class ucStudentFileDetail
         DisplayPreCheckVaccineDate(lblAGenerationDateQIV1, dtmGenerationDateQIV1, udtStudentFile.RecordStatusEnum)
         DisplayPreCheckVaccineDate(lblAGenerationDateQIV2, dtmGenerationDateQIV2, udtStudentFile.RecordStatusEnum)
 
-        'MMR
-        DisplayPreCheckVaccineDate(lblAVaccinationDateMMR1, dtmVaccinationDateMMR1, udtStudentFile.RecordStatusEnum)
-        DisplayPreCheckVaccineDate(lblAVaccinationDateMMR2, dtmVaccinationDateMMR2, udtStudentFile.RecordStatusEnum)
-        DisplayPreCheckVaccineDate(lblAGenerationDateMMR1, dtmGenerationDateMMR1, udtStudentFile.RecordStatusEnum)
-        DisplayPreCheckVaccineDate(lblAGenerationDateMMR2, dtmGenerationDateMMR2, udtStudentFile.RecordStatusEnum)
+        ''MMR
+        'DisplayPreCheckVaccineDate(lblAVaccinationDateMMR1, dtmVaccinationDateMMR1, udtStudentFile.RecordStatusEnum)
+        'DisplayPreCheckVaccineDate(lblAVaccinationDateMMR2, dtmVaccinationDateMMR2, udtStudentFile.RecordStatusEnum)
+        'DisplayPreCheckVaccineDate(lblAGenerationDateMMR1, dtmGenerationDateMMR1, udtStudentFile.RecordStatusEnum)
+        'DisplayPreCheckVaccineDate(lblAGenerationDateMMR2, dtmGenerationDateMMR2, udtStudentFile.RecordStatusEnum)
 
         '23vPPV
         DisplayPreCheckVaccineDate(lblAVaccinationDate23vPPV1, dtmVaccinationDate23vPPV1, udtStudentFile.RecordStatusEnum)
@@ -2096,12 +2096,14 @@ Public Class ucStudentFileDetail
                     e.Row.Cells(i).Style.Add("background-color", IIf(blnHighlight, "#ffcfd9", "White"))
                 Next
 
+                'Green Color - Complete the edit
                 If dr("RectifiedRow") = YesNo.Yes Then
                     For i As Integer = 0 To e.Row.Cells.Count - 1
                         e.Row.Cells(i).Style.Add("background-color", "#c6efce")
                     Next
                 End If
 
+                'Yellow Color - Processing
                 If dr("Processing") = RowEditStatus.Processing Then
                     For i As Integer = 0 To e.Row.Cells.Count - 1
                         e.Row.Cells(i).Style.Add("background-color", "#fffd99")

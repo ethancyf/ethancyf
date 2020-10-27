@@ -551,6 +551,7 @@
                             <br />
                             <cc2:MessageBox ID="udcAcctEditErrorMessage" runat="server" Width="800px" />
                             <cc2:InfoMessageBox ID="udcAcctEditInfoMessage" runat="server" Width="800px" />
+                            <asp:Panel ID="pnlAcctEditInfo" runat="server">
                             <table cellpadding="0" cellspacing="0" style="width: 800px">                                        
                                 <tr>
                                     <td>
@@ -715,6 +716,26 @@
                                     </td>
                                 </tr>
                             </table>
+                            </asp:Panel>
+                            <asp:Panel ID="pnlConcurrentUpdate" runat="server">
+                            <table cellpadding="0" cellspacing="0" style="width: 440px">       
+                                <tr>
+                                    <td align="right" style="width: 60px; height: 42px" valign="middle">
+                                        <asp:Image ID="imgEditAcctMsg" runat="server" ImageUrl="~/Images/others/Information.png" />
+                                    </td>
+                                    <td align="center" style="height: 42px">
+                                        <asp:Label ID="lblEditAcctMsg" runat="server" Font-Bold="True" />
+                                    </td>
+                                </tr>                                                                 
+                                <tr>
+                                    <td style="text-align:center;vertical-align:top;padding-top:0px;padding-bottom:10px" colspan="2">  
+                                        <br />
+                                        <asp:ImageButton ID="ibtnEditAcctOK" runat="server" AlternateText="<%$ Resources:AlternateText, OKBtn %>"
+                                            ImageUrl="<%$ Resources:ImageUrl, OKBtn %>" OnClick="ibtnEditAcctOK_Click" />
+                                    </td>
+                                </tr>
+                            </table>
+                            </asp:Panel>
                         </td>
                         <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
                     </tr>

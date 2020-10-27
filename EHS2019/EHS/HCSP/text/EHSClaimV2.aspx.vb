@@ -1112,7 +1112,7 @@ Partial Public Class EHSClaimV2
         udtClaimCategorys = Me._udtClaimCategoryBLL.getDistinctCategoryByScheme(udtSchemeClaim, udtPersonalInformation, Me._udtEHSTransaction.ServiceDate)
         ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
-        dtCategory = ClaimCategoryBLL.ConvertCategoryToDatatable(udtClaimCategorys)
+        dtCategory = ClaimCategoryBLL.ConvertCategoryToDatatable(udtClaimCategorys, "text")
 
         ' --------------------------------------------------------------------------------------------------
         ' Vaccination Record
@@ -1221,7 +1221,10 @@ Partial Public Class EHSClaimV2
                     Case CategoryCode.VSS_PID
                         dtDocumentaryProof = udtStaticDataBLL.GetStaticDataList("VSSPID_DOCUMENTARYPROOF")
                     Case CategoryCode.VSS_DA
-                        dtDocumentaryProof = udtStaticDataBLL.GetStaticDataList("VSSDA_DOCUMENTARYPROOF")
+                        ' dtDocumentaryProof = udtStaticDataBLL.GetStaticDataList("VSSDA_DOCUMENTARYPROOF")
+                        'CRE20-009 VSS Da with CSSA - text version [Start][Nichole]
+                        dtDocumentaryProof = udtStaticDataBLL.GetStaticDataListFilter("VSSDA_DOCUMENTARYPROOF", txtServiceDate.Text)
+                        'CRE20-009 VSS Da with CSSA - text version [End][Nichole]
                 End Select
         End Select
 
@@ -1251,6 +1254,8 @@ Partial Public Class EHSClaimV2
 
             rbDocumentaryProof.Visible = True
             chkDocumentaryProof.Visible = False
+
+           
 
             If Not String.IsNullOrEmpty(strSelectedDocumentaryProofCode) Then
                 Dim listItem As ListItem = Me.rbDocumentaryProof.Items.FindByValue(strSelectedDocumentaryProofCode)
@@ -3503,6 +3508,7 @@ Partial Public Class EHSClaimV2
         End If
         'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
+         
         'CRE16-002 (Revamp VSS) [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
         ' -----------------------------------------------------------------------------------
@@ -5566,6 +5572,11 @@ Partial Public Class EHSClaimV2
         Dim strLanguage As String = SessionHandler.Language()
 
         panConfirmDetailRecipientCondition.Visible = False
+
+
+        'CRE20-009 session to handle the type of doucmentary proof  [Start][Nichole]
+        SessionHandler.EHSDocProofSaveToSession(FunctionCode, rbDocumentaryProof.SelectedValue)
+        'CRE20-009 session to handle the type of doucmentary proof  [end][Nichole]
 
         If udtEHSAccount Is Nothing Then
             Throw New ArgumentNullException("EHSAccountModel")
@@ -7787,6 +7798,34 @@ Partial Public Class EHSClaimV2
             strDocumentaryProof = Me.rbDocumentaryProof.SelectedValue
         End If
 
+        'CRE20-009 Validation on the CSSA & Annex checkbox [Start][Nichole]
+        If rbDocumentaryProof.Visible Then
+            If Me.rbDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Or Me.rbDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Then
+                If Not chkDocProofCSSA.Checked Then
+                    isValid = False
+                    Me.lblVSSDAConfirmCSSAError.Visible = True
+                    Me.udcMsgBoxErr.AddMessage("990000", "E", "00453")
+                Else
+                    Me.lblVSSDAConfirmCSSAError.Visible = False
+                End If
+            End If
+        End If
+
+
+        If rbDocumentaryProof.Visible Then
+            If Me.rbDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Or Me.rbDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Then
+                If Not chkDocProofAnnex.Checked Then
+                    isValid = False
+                    Me.lblVSSDAConfirmAnnexError.Visible = True
+                    Me.udcMsgBoxErr.AddMessage("990000", "E", "00454")
+                Else
+                    Me.lblVSSDAConfirmAnnexError.Visible = False
+                End If
+            End If
+        End If
+        'CRE20-009 Validation on the CSSA & Annex checkbox [End][Nichole]
+
+
         If chkDocumentaryProof.Visible Then
             If Not chkDocumentaryProof.Checked Then
                 isValid = False
@@ -8227,4 +8266,22 @@ Partial Public Class EHSClaimV2
 #End Region
 
 
+    Private Sub rbDocumentaryProof_SelectedIndexChanged(sender As Object, e As EventArgs) Handles rbDocumentaryProof.SelectedIndexChanged
+        'CRE20-009 The CSSA and Annex checkbox and label setting [Start][Nichole]
+        If rbDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Or rbDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Then
+            'chkDocProofCSSA.Visible = True
+            'chkDocProofAnnex.Visible = True
+            'lblDocProofAnnex.Visible = True
+            'lblDocProofCSSA.Visible = True
+            panVSSDAConfirm.Visible = True
+        Else
+            'chkDocProofCSSA.Visible = False
+            'chkDocProofAnnex.Visible = False
+            'lblDocProofAnnex.Visible = False
+            'lblDocProofCSSA.Visible = False
+            panVSSDAConfirm.Visible = False
+        End If
+
+        'CRE20-009 The CSSA and Annex checkbox and label setting [End][Nichole]
+    End Sub
 End Class

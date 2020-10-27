@@ -8,6 +8,8 @@ Namespace Generator
     Public MustInherit Class StudentFileGeneratorBase
         Inherits BaseGenerator
 
+        Dim dtWorksheetAction As DataTable = Nothing
+
         Protected Sub New(ByVal udtQueue As Common.Component.FileGeneration.FileGenerationQueueModel, ByVal udtFileGenerationModel As Common.Component.FileGeneration.FileGenerationModel)
             MyBase.New(udtQueue, udtFileGenerationModel)
 
@@ -62,6 +64,18 @@ Namespace Generator
             Next
 
             udtDB.RunProc(Me.m_udtFileGeneration.FileDataSP, params, dsData)
+
+            ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            For Each dtTable As DataTable In dsData.Tables
+                If dtTable.Columns.Contains("Sheet") Then
+                    Me.dtWorksheetAction = dtTable
+                    dsData.Tables.Remove(dtTable)
+                    dsData.AcceptChanges()
+
+                    Exit For
+                End If
+            Next
+            ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
             Return dsData
         End Function
@@ -151,6 +165,12 @@ Namespace Generator
             Return udtStudentHeader
         End Function
         ' CRE19-001-04 (PPP 2019-20) [End][Koala]
+
+        ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        Public Overrides Function GetWorksheetAction() As DataTable
+            Return Me.dtWorksheetAction
+        End Function
+        ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [End][Winnie]
     End Class
 
 

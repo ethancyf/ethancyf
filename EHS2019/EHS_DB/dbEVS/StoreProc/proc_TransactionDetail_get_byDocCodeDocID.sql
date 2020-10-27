@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR# :		
+-- Modified by:	Koala CHENG
+-- Modified date:	09 Oct 2020
+-- Description:	Fine tune
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# : CRE13-019-02
 -- Modified by:	Karl LAM
 -- Modified date:	05 Jan 2015
@@ -93,7 +100,8 @@ GO
 
 CREATE PROCEDURE [dbo].[proc_TransactionDetail_get_byDocCodeDocID]     
  @Doc_Code   char(20),    
- @identity   varchar(20)    
+ @identity   varchar(20)  
+WITH RECOMPILE
 AS    
 BEGIN    
     

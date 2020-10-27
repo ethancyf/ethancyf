@@ -1,4 +1,4 @@
-﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StaticData_get_cache]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_StaticData_get_cache]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_StaticData_get_cache]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- Modified by:		Nichole Ip
+-- Modified date:	17 August 2020
+-- CR No.:			CRE20-009
+-- Description:		VSS DA With CSSA
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -53,7 +60,7 @@ BEGIN
 -- Return results
 -- =============================================
 
-	SELECT Column_Name, Item_No, Data_Value, Data_Value_Chi, Data_Value_CN, Display_Order
+	SELECT Column_Name, Item_No, Data_Value, Data_Value_Chi, Data_Value_CN, Display_Order, Service_Date_Start
 	FROM dbo.StaticData
 	WHERE Record_Status = 'A'
 	ORDER BY Display_Order

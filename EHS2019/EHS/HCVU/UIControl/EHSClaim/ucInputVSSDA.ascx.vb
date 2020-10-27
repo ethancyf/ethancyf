@@ -13,6 +13,18 @@ Partial Public Class ucInputVSSDA
 
     Private _SingleDocumentaryProofValue As String
 
+#Region "Constants"
+
+    'CRE20-009 Declare the constant variable for documentaryProof [Start][Nichole]
+    Public Class VSS_DOCUMENTARYPROOF
+        Public Const VSS_CSSA_CERT As String = "CSSA_CERT"
+        Public Const VSS_ANNEX_PAGE As String = "ANNEX_PAGE"
+        Public Const VSS_LETTER_DA As String = "LETTER_DA"
+    End Class
+    'CRE20-009 Declare the constant variable for documentaryProof [End][Nichole]
+
+#End Region
+
 #Region "Properties"
     Public ReadOnly Property MulitDocumentaryProof() As String
         Get
@@ -38,8 +50,9 @@ Partial Public Class ucInputVSSDA
     End Sub
 
     Protected Overrides Sub Setup()
-        BindDocumentaryProof(MyBase.EHSClaimVaccine)
-
+        'CRE20-00 remove the setup to call the databind function for ddldocumentryProof [Start][Nichole]
+        'BindDocumentaryProof(MyBase.EHSClaimVaccine)
+        'CRE20-00 remove the setup to call the databind function for ddldocumentryProof [End][Nichole]
     End Sub
 
     Protected Overrides Sub Setup(ByVal blnPostbackRebuild As Boolean)
@@ -94,12 +107,26 @@ Partial Public Class ucInputVSSDA
 #End Region
 
 #Region "Events"
+    'CRE20-009 add the selectedIndexChanged function for ddlDocumentaryProof [Start][Nichole]
+    Private Sub ddlDocumentaryProof_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlDocumentaryProof.SelectedIndexChanged
 
+
+        If Not ddlDocumentaryProof Is Nothing Then
+            If ddlDocumentaryProof.SelectedValue.Trim = VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Or ddlDocumentaryProof.SelectedValue.Trim = VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Then
+                Me.panVSSDAConfirm.Visible = True
+            Else
+                Me.panVSSDAConfirm.Visible = False
+            End If
+        End If
+    End Sub
+    'CRE20-009 add the selectedIndexChanged function for ddlDocumentaryProof [End][Nichole]
 #End Region
 
 #Region "Document Proof"
-
-    Private Sub BindDocumentaryProof(ByVal udtEHSClaimVaccine As EHSClaimVaccineModel)
+    'CRE20-009 VSS Da with CSSA [Start][Nichole]
+    'change the private to public
+    Public Sub BindDocumentaryProof(ByVal udtEHSClaimVaccine As EHSClaimVaccineModel, ByVal strServiceDate As String)
+        'CRE20-009 VSS Da with CSSA [End][Nichole]
         Dim udtStaticDataBLL As New StaticDataBLL
 
         ' Dim dtCoPaymentOption As DataTable
@@ -110,7 +137,11 @@ Partial Public Class ucInputVSSDA
         Dim listItem As ListItem
         Dim blnEnableDropDownListDocumentaryProof As Boolean = False
 
-        udtStaticDataModelCollection = udtStaticDataBLL.GetStaticDataListByColumnName("VSSDA_DOCUMENTARYPROOF")
+
+        'udtStaticDataModelCollection = udtStaticDataBLL.GetStaticDataListByColumnName("VSSDA_DOCUMENTARYPROOF")
+        'CRE20-009 VSS Disabled with CSSA [Start][Nichole]
+        udtStaticDataModelCollection = udtStaticDataBLL.GetStaticDataListByDocProof("VSSDA_DOCUMENTARYPROOF", strServiceDate)
+        'CRE20-009 VSS Disabled with CSSA [End][Nichole]
 
         If udtStaticDataModelCollection.Count > 0 Then
             If udtStaticDataModelCollection.Count > 1 Then
@@ -124,7 +155,9 @@ Partial Public Class ucInputVSSDA
 
                 ddlDocumentaryProof.Items.Clear()
 
-                ddlDocumentaryProof.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "EHSClaimPleaseSelect"), String.Empty))
+                'CRE20-009 VSS DA with CSSA [Start][Nichole]
+                ddlDocumentaryProof.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+                'CRE20-009 VSS DA with CSSA [End][Nichole]
 
                 For Each udtStaticData As StaticDataModel In udtStaticDataModelCollection
                     listItem = New ListItem
@@ -179,6 +212,11 @@ Partial Public Class ucInputVSSDA
             Else
                 Me.ddlDocumentaryProof.Visible = False
                 Me.chkDocumentaryProof.Visible = True
+
+                'CRE20-009 make the cssa and Annex checkbox invisible [Start][Nichole]
+                Me.panVSSDAConfirm.Visible = False
+                'CRE20-009 make the cssa and Annex checkbox invisible [End][Nichole]
+
 
                 ' Save the User Input before clear it
                 If Me.chkDocumentaryProof.Checked Then
@@ -240,35 +278,83 @@ Partial Public Class ucInputVSSDA
 
 #Region "UI Input Validation"
     Public Function Validate(ByVal blnShowErrorImage As Boolean, ByVal objMsgBox As CustomControls.MessageBox) As Boolean
-        Dim objMsg As ComObject.SystemMessage = Nothing
+        'Dim objMsg As ComObject.SystemMessage = Nothing
+        'Dim blnResult As Boolean = True
+
+        'objMsg = ValidateDocumentaryProof(blnShowErrorImage)
+        'If objMsg IsNot Nothing Then
+        '    If objMsgBox IsNot Nothing Then objMsgBox.AddMessage(objMsg)
+        '    blnResult = False
+        'End If
+
+        'CRE20-009 VSS Da With CSSA [Start][Nichole]
+        Dim objMsg As New List(Of ComObject.SystemMessage)
         Dim blnResult As Boolean = True
 
         objMsg = ValidateDocumentaryProof(blnShowErrorImage)
         If objMsg IsNot Nothing Then
-            If objMsgBox IsNot Nothing Then objMsgBox.AddMessage(objMsg)
+            If objMsgBox IsNot Nothing Then
+                ' objMsgBox.AddMessage(objMsg)
+                For Each udtSysMsg As Common.ComObject.SystemMessage In objMsg
+                    objMsgBox.AddMessage(udtSysMsg)
+                Next
+            End If
+
             blnResult = False
         End If
+        'CRE20-009 VSS Da With CSSA [End][Nichole]
 
         Return blnResult
     End Function
 
-    Public Function ValidateDocumentaryProof(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
+    Public Function ValidateDocumentaryProof(ByVal blnShowErrorImage As Boolean) As List(Of ComObject.SystemMessage) 'As ComObject.SystemMessage
 
         Me.imgDocumentaryProofError.Visible = False
+        'CRE20-009 declare system message object & warning image setting [Start][Nichole]
+        Me.imgVSSDAConfirmCSSAError.Visible = False
+        Me.imgVSSDAConfirmAnnexError.Visible = False
+        ' Dim objMsg As ComObject.SystemMessage = Nothing
+        Dim objMsg As New List(Of ComObject.SystemMessage)
+
+        Dim lbnResult As Boolean = True
+        'CRE20-009 declare system message object & warning image setting [End][Nichole]
 
         If Me.ddlDocumentaryProof.Visible = True Then
             If String.IsNullOrEmpty(Me.MulitDocumentaryProof) = True Then
                 Me.imgDocumentaryProofError.Visible = blnShowErrorImage
-                Return New ComObject.SystemMessage("990000", "E", "00360") ' Please select "Document Proof"
+                objMsg.Add(New ComObject.SystemMessage("990000", "E", "00360")) ' Please select "Document Proof"
             End If
         End If
 
         If Me.chkDocumentaryProof.Visible = True Then
             If Me.chkDocumentaryProof.Checked = False Then
                 Me.imgDocumentaryProofError.Visible = blnShowErrorImage
-                Return New ComObject.SystemMessage("990000", "E", "00360") ' Please select "Document Proof"
+                objMsg.Add(New ComObject.SystemMessage("990000", "E", "00360")) ' Please select "Document Proof"
+                lbnResult = False
             End If
         End If
+
+        'CRE20-009 add validation on checking the checkbox CSSA & Annex have checked or not [Start][Nichole]
+        If Me.ddlDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Or Me.ddlDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Then
+            If Not Me.chkDocProofCSSA.Checked Then
+                Me.imgVSSDAConfirmCSSAError.Visible = blnShowErrorImage
+                objMsg.Add(New ComObject.SystemMessage("990000", "E", "00453")) ' Please select agreeement of "The true copy of the mentioned type of documentary proof".
+                lbnResult = False
+            End If
+        End If
+
+        If Me.ddlDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Or Me.ddlDocumentaryProof.SelectedValue = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Then
+            If Not Me.chkDocProofAnnex.Checked Then
+                Me.imgVSSDAConfirmAnnexError.Visible = blnShowErrorImage
+                objMsg.Add(New ComObject.SystemMessage("990000", "E", "00454")) ' Please select agreeement of "Signed a self-declaration".
+                lbnResult = False
+            End If
+        End If
+
+        If lbnResult = False Then
+            Return objMsg
+        End If
+        'CRE20-009 add validation on checking the checkbox CSSA & Annex have checked or not [End][Nichole]
 
         Return Nothing
     End Function

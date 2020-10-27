@@ -167,6 +167,42 @@ Partial Public Class claimTransEnquiry
     Protected WithEvents ddlTabTransactionHealthProfession As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''lblTabTransactionVaccinesText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTabTransactionVaccinesText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlTabTransactionVaccines control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlTabTransactionVaccines As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblTabTransactionDoseText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTabTransactionDoseText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlTabTransactionDose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlTabTransactionDose As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
     '''lblTabTransactionTypeOfDateText control.
     '''</summary>
     '''<remarks>
@@ -1958,6 +1994,42 @@ Partial Public Class claimTransEnquiry
     Protected WithEvents lblRHealthProfession As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblRVaccineText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRVaccineText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRVaccine control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRVaccine As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRDoseText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRDoseText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRDose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRDose As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblRDateText control.
     '''</summary>
     '''<remarks>
@@ -2084,13 +2156,13 @@ Partial Public Class claimTransEnquiry
     Protected WithEvents lblRMeansOfInput As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblRRCHCodeText control.
+    '''lblRSchoolRCHCodeText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblRRCHCodeText As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblRSchoolRCHCodeText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblRRCHCode control.
@@ -2174,24 +2246,6 @@ Partial Public Class claimTransEnquiry
     Protected WithEvents lblRSPChiName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblREHealthDocTypeText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblREHealthDocTypeText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblREHealthDocType control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblREHealthDocType As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''lblRBankAccountNoText control.
     '''</summary>
     '''<remarks>
@@ -2208,6 +2262,24 @@ Partial Public Class claimTransEnquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRBankAccountNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblREHealthDocTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblREHealthDocTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblREHealthDocType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblREHealthDocType As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblREHealthDocNoText control.

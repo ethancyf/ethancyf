@@ -19,6 +19,44 @@
             <asp:Label ID="lblDocumentaryProof" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
+     
+    <!---CRE20-009 VSS DA With CSSA [Start][Nichole] -->
+    <asp:Panel ID="panVSSDAConfirm" runat="server" visible="false" >
+    <tr id="trDocProofCSSA" runat="server">
+        <td class="tableCellStyle" style="vertical-align: top">
+            
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+             <table border="0" style="border-collapse: collapse; border-spacing:0px">
+             <tr>
+                <td style="width: 5px; vertical-align:top ">
+                <asp:CheckBox ID="chkDocProofCSSA" runat="server" Enabled="false" checked="true" />
+                </td>
+                 <td><div style="max-width:650px">
+                    <asp:Label ID="lblDocProofCSSA" runat="server" CssClass="tableText"></asp:Label></div>
+                    </td>
+                </tr>
+             </table>
+        </td>
+    </tr>
+    <tr id="trDocProofAnnex" runat="server">
+        <td class="tableCellStyle" style="vertical-align: top">
+            
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+             <table border="0" style="border-collapse: collapse; border-spacing:0px">
+             <tr>
+                <td style="width: 5px; vertical-align:top ">
+            <asp:CheckBox ID="chkDocProofAnnex" runat="server" Enabled="false"  checked="true" /> </td>
+                 <td><div style="max-width:650px">
+            <asp:Label ID="lblDocProofAnnex" runat="server" CssClass="tableText"></asp:Label></div> </td>
+                </tr>
+             </table>
+        </td>
+    </tr>
+    <tr><td colspan="2">&nbsp;</td></tr>
+    </asp:Panel>
+    <!--CRe20-009 VSS DA With CSSA [End][Nichole]-->
     <tr id="trPIDInstitutionCode" runat="server">
         <td class="tableCellStyle" style="vertical-align: top">
             <asp:Label ID="lblPIDInstitutionCodeText" runat="server" CssClass="tableTitle"></asp:Label>

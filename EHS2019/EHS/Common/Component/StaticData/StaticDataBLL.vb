@@ -32,12 +32,21 @@ Namespace Component.StaticData
                     DB.RunProc("proc_StaticData_get_cache", dt)
 
                     For Each row As DataRow In dt.Rows
+                        'CRE20-009 call the stored procedure to get the related data from staticData table [Start][Nichole]
+                        'udtStaticDataModel = New StaticDataModel(CType(row.Item("Column_Name"), String).Trim, _
+                        '                                        CType(row.Item("Item_No"), String).Trim, _
+                        '                                        CType(row.Item("Data_Value"), String).Trim, _
+                        '                                        CStr(IIf(row.Item("Data_Value_Chi") Is DBNull.Value, String.Empty, row.Item("Data_Value_Chi"))), _
+                        '                                        CStr(IIf(row.Item("Data_Value_CN") Is DBNull.Value, String.Empty, row.Item("Data_Value_CN"))))
+
                         udtStaticDataModel = New StaticDataModel(CType(row.Item("Column_Name"), String).Trim, _
                                                                 CType(row.Item("Item_No"), String).Trim, _
                                                                 CType(row.Item("Data_Value"), String).Trim, _
                                                                 CStr(IIf(row.Item("Data_Value_Chi") Is DBNull.Value, String.Empty, row.Item("Data_Value_Chi"))), _
                                                                 CStr(IIf(row.Item("Data_Value_CN") Is DBNull.Value, String.Empty, row.Item("Data_Value_CN"))), _
-                                                                CStr(IIf(row.Item("Display_Order") Is DBNull.Value, String.Empty, row.Item("Display_Order"))))
+                                                                CStr(IIf(row.Item("Display_Order") Is DBNull.Value, String.Empty, row.Item("Display_Order"))), _
+                                                               CStr(IIf(row.Item("Service_Date_Start") Is DBNull.Value, String.Empty, row.Item("Service_Date_Start"))))
+                        'CRE20-009 call the stored procedure to get the related data from staticData table [End][Nichole]
 
                         udtStaticDataModelCollection.add(udtStaticDataModel)
                     Next
@@ -84,6 +93,45 @@ Namespace Component.StaticData
 
         End Function
 
+        'CRE20-009 VSS Da with CSSA - text version [Start][Nichole]
+        Public Function GetStaticDataListFilter(ByVal astrColumnName As String, ByVal strServiceDtm As String) As DataTable
+            Dim udtStaticDataModelCollection As StaticDataModelCollection = Me.GetStaticDataListByColumnName(astrColumnName)
+
+            Dim dataTable As DataTable = New DataTable()
+            Dim dataRow As DataRow
+            Dim strConvertedDtm As Date = Date.ParseExact(strServiceDtm.Replace("-", "/"), "dd/MM/yyyy", Nothing)
+
+
+            dataTable.Columns.Add(New DataColumn(StaticDataModel.Column_Name, GetType(String)))
+            dataTable.Columns.Add(New DataColumn(StaticDataModel.Item_No, GetType(String)))
+            dataTable.Columns.Add(New DataColumn(StaticDataModel.Data_Value, GetType(String)))
+            dataTable.Columns.Add(New DataColumn(StaticDataModel.Data_Value_Chi, GetType(String)))
+            dataTable.Columns.Add(New DataColumn(StaticDataModel.Data_Value_CN, GetType(String)))
+
+            For Each udtStaticDataModel As StaticDataModel In udtStaticDataModelCollection
+
+                dataRow = dataTable.NewRow()
+                dataRow(StaticDataModel.Column_Name) = udtStaticDataModel.ColumnName
+                dataRow(StaticDataModel.Item_No) = udtStaticDataModel.ItemNo
+                dataRow(StaticDataModel.Data_Value) = udtStaticDataModel.DataValue
+                dataRow(StaticDataModel.Data_Value_Chi) = udtStaticDataModel.DataValueChi
+                dataRow(StaticDataModel.Data_Value_CN) = udtStaticDataModel.DataValueCN
+
+                If udtStaticDataModel.ServiceDate = "" Then
+                    dataTable.Rows.Add(dataRow)
+                Else
+                    If DateTime.Compare(strConvertedDtm, udtStaticDataModel.ServiceDate) > 0 Then
+                        dataTable.Rows.Add(dataRow)
+                    End If
+                End If
+            Next
+
+
+            Return dataTable
+
+        End Function
+        'CRE20-009 VSS Da with CSSA - text version [End][Nichole]
+
 
         Public Function GetStaticDataListByColumnName(ByVal strColumnName As String) As StaticDataModelCollection
             Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
@@ -93,6 +141,17 @@ Namespace Component.StaticData
 
 
         End Function
+        'CRE20-009 VSS Disabled with CSSA [Start][Nichole]
+
+        Public Function GetStaticDataListByDocProof(ByVal strColumnName As String, ByVal strServiceDate As String) As StaticDataModelCollection
+            Dim udtStaticDataModelCollection As StaticDataModelCollection = New StaticDataModelCollection
+            udtStaticDataModelCollection = GetStaticDataList()
+
+            Return udtStaticDataModelCollection.CSSAFilter(strColumnName, strServiceDate)
+
+
+        End Function
+        'CRE20-009 VSS Disabled with CSSA [End][Nichole]
 
         ''' <summary>
         ''' Get the static Data by column name and item no.
@@ -103,12 +162,17 @@ Namespace Component.StaticData
         ''' <remarks></remarks>
         Public Function GetStaticDataByColumnNameItemNo(ByVal strColumnName As String, ByVal strItemNo As String) As StaticDataModel
             Dim udtStaticDataCollectionModel As StaticDataModelCollection = New StaticDataModelCollection
+
             udtStaticDataCollectionModel = GetStaticDataListByColumnName(strColumnName.Trim)
 
             Dim udtStaticDataModel As StaticDataModel
 
             If strItemNo.Trim.Equals(String.Empty) Then
-                udtStaticDataModel = New StaticDataModel(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty)
+
+                'CRE20-009 StaticDataModel constructor add service date [Start][Nichole]
+                'udtStaticDataModel = New StaticDataModel(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty)
+                udtStaticDataModel = New StaticDataModel(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty)
+                'CRE20-009 StaticDataModel constructor add service date [End][Nichole]
             Else
                 udtStaticDataModel = udtStaticDataCollectionModel.Item(strColumnName.Trim, strItemNo.Trim)
             End If

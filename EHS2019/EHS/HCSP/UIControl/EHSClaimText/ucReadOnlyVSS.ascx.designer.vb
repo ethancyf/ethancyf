@@ -69,6 +69,69 @@ Namespace UIControl.EHCClaimText
         Protected WithEvents lblDocumentaryProof As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''panVSSDAConfirm control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents panVSSDAConfirm As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''trDocProofCSSA control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trDocProofCSSA As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''chkDocProofCSSA control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkDocProofCSSA As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''lblDocProofCSSA control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDocProofCSSA As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trDocProofAnnex control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trDocProofAnnex As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''chkDocProofAnnex control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkDocProofAnnex As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''lblDocProofAnnex control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDocProofAnnex As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''trPIDInstitutionCodeText control.
         '''</summary>
         '''<remarks>

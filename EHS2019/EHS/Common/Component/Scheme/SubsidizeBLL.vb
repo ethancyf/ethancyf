@@ -1,5 +1,6 @@
 ﻿Imports Common.ComObject
 Imports Common.DataAccess
+Imports System.Linq
 
 Namespace Component.Scheme
 
@@ -15,6 +16,7 @@ Namespace Component.Scheme
             '-----------------------------------------------------------------------------------------
             Public Const CACHE_VaccineTypeDictionary As String = "SubsidizeBLL_VaccineTypeDictionary"
             'CRE16-026 (Add PCV13) [End][Chris YIM]
+            Public Const CACHE_SubsidizeItem As String = "SubsidizeBLL_SubsidizeItem" ' 'CRE20-003 (add search criteria) [Start][Martin]
 
         End Class
 
@@ -88,9 +90,47 @@ Namespace Component.Scheme
         End Function
         'CRE16-026 (Add PCV13) [End][Chris YIM]
 
+        'CRE20-003 (add search criteria) [Start][Martin]
+        Public Function GetSubsidizeItem(Optional ByVal udtDB As Database = Nothing) As DataTable
+            Dim dt As DataTable = HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_SubsidizeItem)
+
+            If IsNothing(dt) Then
+                dt = New DataTable
+                If IsNothing(udtDB) Then udtDB = New Database
+
+                udtDB.RunProc("proc_SubsidizeItem_get_all_cache", dt)
+                CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_SubsidizeItem, dt)
+            End If
+
+            Return dt
+        End Function
+        'CRE20-003 (add search criteria) [End][Martin]
+
 #End Region
 
 #Region "Mapping Function"
+
+        'CRE20-003 (add search criteria) [Start][Martin]
+        Public Function GetSubsidizeItemBySubsidizeType(ByVal strSubsidizeType As String) As DataTable
+            Dim dt As DataTable = GetSubsidizeItem()
+
+            dt = (From Subsidize In dt.AsEnumerable
+            Where Subsidize.Field(Of String)("Subsidize_Type").Trim = strSubsidizeType
+                Select Subsidize).CopyToDataTable()
+
+            Return dt
+        End Function
+
+        Public Function GetSubsidizeItemDisplayCode(ByVal strSubsidizeItemCode As String) As String
+            Dim dt As DataTable = GetSubsidizeItem()
+
+            Dim row As DataRow = dt.Select("Subsidize_Item_Code = '" & strSubsidizeItemCode & "'").FirstOrDefault()
+            Dim result = row.Item("Subsidize_item_Display_Code")
+
+            Return result
+        End Function
+
+        'CRE20-003 (add search criteria) [End][Martin]
 
         Public Function GetSubsidizeItemBySubsidize(ByVal strSubsidizeCode As String)
             Return GetSubsidizeDictionary()(strSubsidizeCode)

@@ -198,6 +198,13 @@ Partial Public Class ucInputVSS
 
             Me.BindCategory(strLanguage, updateByTransactionModel, MyBase.ClaimCategorys)
 
+            ' Dim _udcInputEHSClaim As ucInputEHSClaimBase
+            
+            'CRE20-009 VSS Disabled with CSSA [Start][Nichole]
+            Dim strServiceDate = Me.ServiceDate()
+            Me.ucInputVSSDA.BindDocumentaryProof(MyBase.EHSClaimVaccine, strServiceDate)
+            'CRE20-009 VSS Disabled with CSSA [End][Nichole]
+
             ucInputVSSPID.BindDocumentaryProof(MyBase.EHSClaimVaccine)
 
             If Not MyBase.EHSClaimVaccine Is Nothing Then
@@ -374,6 +381,8 @@ Partial Public Class ucInputVSS
 
                     'Subsidize Claim Detail
                     Me.udcClaimVaccineInputVSS.Visible = True
+
+                    
 
                     AddHandler Me.udcClaimVaccineInputVSS.VaccineLegendClicked, AddressOf udcClaimVaccineInputVSS_VaccineLegendClicked
                     AddHandler Me.udcClaimVaccineInputVSS.SubsidizeDisabledRemarkClicked, AddressOf udcClaimVaccineInputVSS_SubsidizeDisabledRemarkClicked
@@ -1106,5 +1115,6 @@ Partial Public Class ucInputVSS
     End Sub
 
 #End Region
+
 
 End Class

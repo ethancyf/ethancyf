@@ -2004,5 +2004,44 @@ Public Class AccountMatchingBLL
 
         Return udtStudentFileEntryList
     End Function
+
+    'CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    ' -------------------------------------------------------------------------------
+    ''' <summary>
+    ''' Get student file header for processing vaccination Entitle
+    ''' </summary>
+    ''' <returns>Collection of Student_File_ID</returns>
+    ''' <remarks></remarks>
+    Public Function GetStudentFileHeaderAccountMatching(ByVal eStudentFileLocation As StudentFileLocation) As List(Of StudentFile.StudentFileHeaderModel)
+        Dim udtDB As New Database
+        Dim dt As New DataTable
+
+        Dim udtStudentBLL As New StudentFile.StudentFileBLL
+        Dim lstStudentHeader As New List(Of StudentFile.StudentFileHeaderModel)
+
+        Select Case eStudentFileLocation
+            Case StudentFileLocation.Staging
+                udtDB.RunProc("proc_StudentFileHeaderStaging_get_forAccountMatching", dt)
+
+                If dt.Rows.Count > 0 Then
+                    For Each dr As DataRow In dt.Rows
+                        lstStudentHeader.Add(udtStudentBLL.GetStudentFileHeaderStaging(dr("Student_File_ID").ToString, False))
+                        'lstVaccinationDateSeq.Add(dr("Visit"))
+                    Next
+                End If
+            Case StudentFileLocation.Permanence
+                udtDB.RunProc("proc_StudentFileHeader_get_forAccountMatching", dt)
+
+                If dt.Rows.Count > 0 Then
+                    For Each dr As DataRow In dt.Rows
+                        lstStudentHeader.Add(udtStudentBLL.GetStudentFileHeader(dr("Student_File_ID").ToString, False))
+                    Next
+                End If
+        End Select
+
+        Return lstStudentHeader
+    End Function
+    'CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
 #End Region
 End Class

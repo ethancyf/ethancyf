@@ -17,9 +17,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- Description:		
+-- Modified by:		Martin Tang
+-- Modified date:	06 Oct 2020
+-- CR No.:			INT20-033
+-- Description:		Apply ordering on result
 -- =============================================
 -- =============================================
 -- Modification History
@@ -186,7 +187,8 @@ AS
         WHERE Verification_Case = 'Y';
 
         SELECT *
-        FROM #Result;
+        FROM #Result
+		ORDER BY Seq_No;
 
         SELECT @cutoff_Date_str AS [CutoffDate], 
                @reimburse_id AS [ReimburseID], 

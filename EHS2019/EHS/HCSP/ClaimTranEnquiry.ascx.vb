@@ -364,9 +364,16 @@ Partial Public Class ClaimTranEnquiry
             ' CRE17-018-04 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [Start][Koala]
 
         ElseIf udtEHSTransaction.SourceApp = EHSTransactionModel.AppSourceClass.SFUpload Then
-            lblCreateBy.Text = Me.GetGlobalResourceObject("Text", "DepartmentOfHealth")
-            lblCreateBy_Chi.Text = Me.GetGlobalResourceObject("Text", "DepartmentOfHealthChi")
-            lblCreateBy_CN.Text = Me.GetGlobalResourceObject("Text", "DepartmentOfHealthCN")
+
+            If (New Validator).chkSPID(udtEHSTransaction.CreateBy.Trim()) Is Nothing Then
+                lblCreateBy.Text = udtEHSTransaction.CreateBy.Trim()
+                lblCreateBy_Chi.Text = udtEHSTransaction.CreateBy.Trim()
+                lblCreateBy_CN.Text = udtEHSTransaction.CreateBy.Trim()
+            Else
+                lblCreateBy.Text = Me.GetGlobalResourceObject("Text", "DepartmentOfHealth")
+                lblCreateBy_Chi.Text = Me.GetGlobalResourceObject("Text", "DepartmentOfHealthChi")
+                lblCreateBy_CN.Text = Me.GetGlobalResourceObject("Text", "DepartmentOfHealthCN")
+            End If
 
             lblPaymentMethodText.Visible = False
             lblPaymentMethod.Visible = False

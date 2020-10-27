@@ -62,7 +62,7 @@ Partial Public Class ucReadOnlyOTHER
             End If
 
             Me.lblReadonlyEName.Text = formatter.formatEnglishName(MyBase.EHSAccountPersonalInfo.ENameSurName, MyBase.EHSAccountPersonalInfo.ENameFirstName)
-            Me.lblReadonlyRegNo.Text = formatter.formatHKID(MyBase.EHSAccountPersonalInfo.IdentityNum, MyBase.MaskIdentityNumber)
+            Me.lblReadonlyRegNo.Text = MyBase.EHSAccountPersonalInfo.IdentityNum
             Me.lblReadonlyDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, udtSessionHandler.Language(), Nothing, Nothing)
             Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
             Me.lblReadonlyDocumentType.Text = strDocumentTypeFullName

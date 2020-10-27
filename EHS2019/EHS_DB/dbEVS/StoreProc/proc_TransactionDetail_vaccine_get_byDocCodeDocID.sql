@@ -10,6 +10,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:	    Chris YIM
+-- Modified date:	08 Oct 2020
+-- CR No.:			
+-- Description:	  	Tune
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:	    Chris YIM
 -- Modified date:	07 June 2017
 -- CR No.:			CRE16-026-03 (Add PCV13)
 -- Description:	  	Add Column - [VoucherTransaction].[High_Risk]
@@ -71,6 +78,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_TransactionDetail_vaccine_get_byDocCodeDocID] 
 	@Doc_Code			char(20),
 	@identity			varchar(20)
+WITH RECOMPILE
 AS BEGIN
 
 -- =============================================
@@ -283,11 +291,13 @@ CLOSE SYMMETRIC KEY sym_Key
 		tmp.[Exact_DOB],
 		tmp.[Sex]
 	FROM
-		@tmpVoucherAcct tmp INNER JOIN [VoucherTransaction] VT
+		@tmpVoucherAcct tmp INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
 			ON VT.[Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]
 				AND VT.[Invalid_Acc_ID] IS NULL
 	WHERE
-		VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] is null
+		--VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' 
+		NOT EXISTS(SELECT 1 FROM [VoucherTransaction] WITH(NOLOCK) WHERE [Record_Status] IN ('I','D') AND VT.Transaction_ID = Transaction_ID)
+		AND VT.[Invalid_acc_id] is null
 	
 	UNION		
 	--INSERT INTO @tmpVoucherTransaction
@@ -298,12 +308,14 @@ CLOSE SYMMETRIC KEY sym_Key
 		tmp.[Exact_DOB],
 		tmp.[Sex]
 	FROM
-		@tmpTempVoucherAcct tmp INNER JOIN [VoucherTransaction] VT
+		@tmpTempVoucherAcct tmp INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
 			ON VT.[Temp_Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]
 				AND VT.[Voucher_Acc_ID] = ''
 				AND VT.[Special_Acc_ID] IS NULL
 	WHERE
-		VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] is null
+		--VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' 
+		NOT EXISTS(SELECT 1 FROM [VoucherTransaction] WITH(NOLOCK) WHERE [Record_Status] IN ('I','D') AND VT.Transaction_ID = Transaction_ID)
+		AND VT.[Invalid_acc_id] is null
 				
 	UNION
 	--INSERT INTO @tmpVoucherTransaction
@@ -314,12 +326,14 @@ CLOSE SYMMETRIC KEY sym_Key
 		tmp.[Exact_DOB],
 		tmp.[Sex]
 	FROM
-		@tmpSpecialAcct tmp INNER JOIN [VoucherTransaction] VT
+		@tmpSpecialAcct tmp INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
 			ON VT.[Special_Acc_ID] = tmp.[Voucher_Acc_ID]
 				AND VT.[Voucher_Acc_ID] = ''
 				AND VT.[Invalid_Acc_ID] IS NULL
 	WHERE
-		VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' AND VT.[Invalid_acc_id] is null
+		--VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' 
+		NOT EXISTS(SELECT 1 FROM [VoucherTransaction] WITH(NOLOCK) WHERE [Record_Status] IN ('I','D') AND VT.Transaction_ID = Transaction_ID)
+		AND VT.[Invalid_acc_id] is null
 	
 	UNION
 	--INSERT INTO @tmpVoucherTransaction
@@ -330,10 +344,10 @@ CLOSE SYMMETRIC KEY sym_Key
 		tmp.[Exact_DOB],
 		tmp.[Sex]
 	FROM
-		@tmpInvalidAcct tmp INNER JOIN [VoucherTransaction] VT
+		@tmpInvalidAcct tmp INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
 			ON VT.[Invalid_Acc_ID] = tmp.[Voucher_Acc_ID]
 	WHERE
-		VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D'   
+		VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'D'   
 		
 				
 	insert into @result
@@ -387,9 +401,9 @@ CLOSE SYMMETRIC KEY sym_Key
 		VT.[High_Risk]
 	FROM
 		@tmpVoucherTransaction tmp 
-			INNER JOIN [TransactionDetail] TD 
+			INNER JOIN [TransactionDetail] TD  WITH(NOLOCK)
 				ON tmp.[Transaction_ID] = TD.[Transaction_ID]
-			INNER JOIN [VoucherTransaction] VT 
+			INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
 				ON TD.[Transaction_ID] = VT.[Transaction_ID]	
 			INNER JOIN [Practice] P
 				ON VT.[SP_ID] = P.[SP_ID] AND VT.[Practice_Display_Seq] = P.[Display_Seq]	
@@ -472,3 +486,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_TransactionDetail_vaccine_get_byDocCodeDocID] TO WSEXT
 GO
+

@@ -27,6 +27,7 @@ Imports Microsoft.Office.Interop
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.IO
+Imports System.Linq
 Imports System.Runtime.InteropServices
 Imports System.Web.Script.Serialization
 
@@ -96,6 +97,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         'Edit Account        
         Public Const OrgEHSAccount As String = "OrgEHSAccount"
+        Public Const AcctEditFileLocation As String = "010414_AcctEditFileLocation"
         Public Const AcctEditFileID As String = "010414_AcctEditFileID"
         Public Const AcctEditSeqNo As String = "010414_AcctEditSeqNo"
         Public Const AcctEditVoucherAccID As String = "010414_AcctEditVoucherAccID"
@@ -103,6 +105,11 @@ Partial Public Class VaccinationFileRectification ' 010414
         Public Const AcctEditCustomDocType As String = "010414_AcctEditCustomDocType"
         Public Const AcctEditCustomDocTypeEHSAccount As String = "010414_AcctEditCustomDocTypeEHSAccount"
         ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        'Related Student File Entry
+        Public Const RelatedStudentFileEntryDT As String = "010414_RelatedStudentFileEntryDT"
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
     End Class
 
@@ -841,12 +848,15 @@ Partial Public Class VaccinationFileRectification ' 010414
         Dim dt As DataTable = udtStudentFileBLL.GetStudentFileEntrySearch(strVaccinationFileID)
         Dim dtStaging As DataTable = udtStudentFileBLL.GetStudentFileEntryStagingSearch(strVaccinationFileID)
 
+        Session(SESS.AcctEditFileLocation) = Nothing
+
         Session(SESS.DetailEntryDT) = dt
         Session(SESS.DetailEntryStagingDT) = dtStaging
 
         Session(SESS.DetailModel) = udtStudentFile
         Session(SESS.DetailStagingModel) = udtStudentFileStaging
 
+        Session(SESS.AcctEditFileLocation) = StudentFileBLL.StudentFileLocation.Permanence
 
         If udtStudentFile.SchemeCode = Scheme.SchemeClaimModel.RVP Then
             Session(SESS.SelectedFileType) = VaccinationFileType.PreCheck
@@ -861,7 +871,6 @@ Partial Public Class VaccinationFileRectification ' 010414
         AddHandler udcStudentFileDetail.EditSelected, AddressOf lbtnEditAcct_Click
         AddHandler udcStudentFileDetail.AddAccountClicked, AddressOf ibtnAddAccount_Click
         AddHandler udcStudentFileDetail.DropDownListSelected, AddressOf ddlDClassName_DropDownListSelected
-
 
         udcStudentFileDetail.Build(udtStudentFile, dt)
 
@@ -5896,10 +5905,12 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         Me.SetupRectifyDetailScreen(strVaccinationFileID, strSeqNo, strRealVoucherAccID, strRealAccType, String.Empty, True)
 
-        Me.udcAcctEditErrorMessage.Clear()
-        Me.udcAcctEditInfoMessage.Clear()
+        ' Clear Message & Alert
+        Me.SetupRectifyDetailScreen_ClearAlert()
+
         Me.ibtnEditAcctSave.CommandArgument = strArgument
         Me.ibtnEditAcctCancel.CommandArgument = strArgument
+        Me.ibtnEditAcctOK.CommandArgument = strArgument
 
         Me.mpeAcctEdit.Show()
 
@@ -6093,10 +6104,12 @@ Partial Public Class VaccinationFileRectification ' 010414
                 'Me.SetupRectifyDetailScreen(strVaccinationFileID, strSeqNo, String.Empty, String.Empty, udcDocumentTypeRadioButtonGroup.SelectedValue, True)
                 ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
-                Me.udcAcctEditErrorMessage.Clear()
-                Me.udcAcctEditInfoMessage.Clear()
+                ' Clear Message & Alert
+                Me.SetupRectifyDetailScreen_ClearAlert()
+
                 Me.ibtnEditAcctSave.CommandArgument = strArgument
                 Me.ibtnEditAcctCancel.CommandArgument = strArgument
+                Me.ibtnEditAcctOK.CommandArgument = strArgument
 
                 Me.mpeAcctEdit.Show()
 
@@ -6128,6 +6141,50 @@ Partial Public Class VaccinationFileRectification ' 010414
             udtAuditLog.AddDescripton("Exception", ex.ToString)
             udtAuditLog.WriteEndLog(LogID.LOG00030, AuditLogDesc.Msg00030)
         End Try
+
+    End Sub
+
+    Protected Sub ibtnEditAcctOK_Click(sender As Object, e As ImageClickEventArgs)
+        Dim lstArgument() As String = Split(DirectCast(sender, ImageButton).CommandArgument.ToString.Trim, "|||")
+        Dim strVaccinationFileID As String = lstArgument(0)
+        Dim strSeqNo As String = lstArgument(1)
+        'Dim udtAuditLog As New AuditLogEntry(FunctionCode, Me)
+
+        'If Session(SESS.SelectedFileType) = VaccinationFileType.PreCheck Then
+        '    udtAuditLog.AddDescripton("Pre-check File ID", strVaccinationFileID)
+        'Else
+        '    udtAuditLog.AddDescripton("Vaccination File ID", strVaccinationFileID)
+        'End If
+        'udtAuditLog.AddDescripton("Seq No.", strSeqNo)
+        'udtAuditLog.WriteStartLog(LogID.LOG00019, AuditLogDesc.Msg00019)
+
+        RowEditStatusChange(strSeqNo, ucStudentFileDetail.RowEditStatus.None, "Cancel")
+
+        mpeAcctEdit.Hide()
+
+        Session(SESS.AcctEditPanelShow) = False
+        Session(SESS.DefaultSetCCCode) = Nothing
+        Session(SESS.AcctEditFileID) = Nothing
+        Session(SESS.AcctEditSeqNo) = Nothing
+        Session(SESS.AcctEditVoucherAccID) = Nothing
+        Session(SESS.AcctEditAccType) = Nothing
+        Session(SESS.AcctEditCustomDocType) = Nothing
+
+        Session(SESS.OrgEHSAccount) = Nothing
+        Session.Remove(SESS.OrgEHSAccount)
+        _udtSessionHandler.EHSAccountRemoveFromSession(FunctionCode)
+
+        'If Session(SESS.SelectedFileType) = VaccinationFileType.PreCheck Then
+        '    udtAuditLog.AddDescripton("Pre-check File ID", strVaccinationFileID)
+        'Else
+        '    udtAuditLog.AddDescripton("Vaccination File ID", strVaccinationFileID)
+        'End If
+        'udtAuditLog.AddDescripton("Seq No.", strSeqNo)
+        'udtAuditLog.WriteEndLog(LogID.LOG00020, AuditLogDesc.Msg00020)
+
+        Me.udcRectifyAccount.Clear()
+        Me.udcReadOnlyAccount.Clear()
+        Me.chkConfirmEHSAccount.Checked = False
 
     End Sub
 
@@ -6201,8 +6258,8 @@ Partial Public Class VaccinationFileRectification ' 010414
         Dim strSeqNo As String = String.Empty
         Dim blnNewEntry As Boolean = False
 
-        udcAcctEditInfoMessage.Clear()
-        udcAcctEditErrorMessage.Clear()
+        ' Clear Message & Alert
+        Me.SetupRectifyDetailScreen_ClearAlert()
 
         Me._udtSessionHandler.CMSVaccineResultRemoveFromSession(FunctionCode)
         Me._udtSessionHandler.CIMSVaccineResultRemoveFromSession(FunctionCode)
@@ -6228,6 +6285,11 @@ Partial Public Class VaccinationFileRectification ' 010414
         If strSeqNo = "0" Then
             blnNewEntry = True
         End If
+
+        'Get Related Student File Entry
+        Dim dtRelated As DataTable = Me.getRelatedEntry(strVaccinationFileID, strSeqNo)
+        ' Store into Session
+        Session(SESS.RelatedStudentFileEntryDT) = dtRelated
 
         'Validation - Account
         If pnlModifyAcct.Visible Then
@@ -6288,6 +6350,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                 Session(SESS.AcctEditVoucherAccID) = Nothing
                 Session(SESS.AcctEditAccType) = Nothing
                 Session(SESS.AcctEditCustomDocType) = Nothing
+
+                Session(SESS.RelatedStudentFileEntryDT) = Nothing
 
                 Session(SESS.OrgEHSAccount) = Nothing
                 Session.Remove(SESS.OrgEHSAccount)
@@ -6382,8 +6446,8 @@ Partial Public Class VaccinationFileRectification ' 010414
         udtAuditLog.AddDescripton("Seq No.", strSeqNo)
         udtAuditLog.WriteStartLog(LogID.LOG00103, AuditLogDesc.Msg00103)
 
-        udcAcctEditInfoMessage.Clear()
-        udcAcctEditErrorMessage.Clear()
+        ' Clear Message & Alert
+        Me.SetupRectifyDetailScreen_ClearAlert()
 
         'If VerifyAcctDetail(udtAuditLog) Then
         Dim udtStudentAcctField As StudentAcctFieldModel = Nothing
@@ -6445,6 +6509,16 @@ Partial Public Class VaccinationFileRectification ' 010414
     End Sub
     ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
+    Private Sub SetupRectifyDetailScreen_ClearAlert()
+        Me.udcAcctEditErrorMessage.Clear()
+        Me.udcAcctEditInfoMessage.Clear()
+        Me.imgErrRectifyContactNo.Visible = False
+        Me.imgErrRectifyClassNo.Visible = False
+        Me.imgErrRectifyHKICSymbol.Visible = False
+        Me.imgErrRectifyServiceDate.Visible = False
+
+    End Sub
+
 #End Region
 
 #Region "Build Rectify Popup Screen"
@@ -6458,27 +6532,89 @@ Partial Public Class VaccinationFileRectification ' 010414
                                          Optional ByVal udtStudentAcctField As StudentAcctFieldModel = Nothing)
 
         Dim udtStudentFileHeader As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
+
         Dim dt As DataTable = GetDetailClassDataTable(DetailClassDataTable.Selected)
-        Dim drVaccFile() As DataRow = dt.Select(String.Format("Student_Seq='{0}'", strSeqNo))
+        Dim drVaccFile() As DataRow = Nothing
         Dim drVaccFileRecord As DataRow = Nothing
+
+        Dim strDocCode As String = String.Empty
+        'Dim blnDocTypeChange As Boolean = False
+        Dim udtEHSAccount As EHSAccountModel = Nothing
         Dim blnNewEntry As Boolean = False
-
-        If drVaccFile.Length <> 1 And strSeqNo <> "0" Then
-            Throw New Exception(String.Format("VaccinationFileManagement.lbtnEditAcct_Click: No available result is found by Student_Seq({0})", strSeqNo))
-        End If
-
-        If strSeqNo = "0" Then
-            blnNewEntry = True
-            drVaccFileRecord = dt.Rows(0)
-        Else
-            drVaccFileRecord = drVaccFile(0)
-        End If
 
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
         Dim udtDocTypeModelList As DocType.DocTypeModelCollection
 
-        Dim strDocCode As String = String.Empty
-        'Dim blnDocTypeChange As Boolean = False
+        Dim udtStudentFileBLL As New StudentFileBLL
+        Dim dtSelected As DataTable = Nothing
+        Dim drSelected As DataRow = Nothing
+        Dim blnTSMP As Boolean = True
+
+        Dim eStudentFileLocation As StudentFileBLL.StudentFileLocation = Session(SESS.AcctEditFileLocation)
+
+        ' --------------------
+        ' Get entry by session
+        ' --------------------
+        If strSeqNo = "0" Then
+            blnNewEntry = True
+            drVaccFileRecord = dt.Rows(0)
+        Else
+            drVaccFile = dt.Select(String.Format("Student_Seq='{0}'", strSeqNo))
+
+            If drVaccFile.Length <> 1 Then
+                Throw New Exception(String.Format("VaccinationFileManagement.lbtnEditAcct_Click: No available result in UI is found by Student_Seq({0})", strSeqNo))
+            End If
+
+            drVaccFileRecord = drVaccFile(0)
+        End If
+
+        ' --------------------
+        ' Get entry by DB
+        ' --------------------
+        If Not blnNewEntry Then
+            If eStudentFileLocation = StudentFileLocation.Staging Then
+                dtSelected = udtStudentFileBLL.GetStudentFileEntryStagingRowDisplay(strVaccinationFileID, CInt(strSeqNo))
+            Else
+                dtSelected = udtStudentFileBLL.GetStudentFileEntryRowDisplay(strVaccinationFileID, CInt(strSeqNo))
+            End If
+
+            If dtSelected.Rows.Count <> 1 Then
+                Throw New Exception(String.Format("VaccinationFileManagement.lbtnEditAcct_Click: No available result in DB is found by Student_Seq({0})", strSeqNo))
+            End If
+
+            drSelected = dtSelected.Rows(0)
+        End If
+
+        'Compare the timestamp
+        If Not blnNewEntry Then
+            If blnActiveViewChanged Then
+                blnTSMP = IsSameTSMP(CType(drVaccFileRecord("TSMP"), Byte()), CType(drSelected("TSMP"), Byte())) And _
+                          IsSameTSMP(CType(drVaccFileRecord("Real_Account_TSMP"), Byte()), CType(drSelected("Real_Account_TSMP"), Byte()))
+            End If
+        End If
+
+        If blnTSMP Then
+            'If the timestamp are the same, show the edit panel
+            pnlAcctEditInfo.Visible = True
+            pnlConcurrentUpdate.Visible = False
+        Else
+            'If updated by others, show message to block the edit
+            pnlAcctEditInfo.Visible = False
+            pnlConcurrentUpdate.Visible = True
+
+            Dim udtAuditLog As AuditLogEntry = New AuditLogEntry(FunctionCode, Me)
+            udtAuditLog.AddDescripton("Concurrent Update", YesNo.Yes)
+
+            'The record is updated by others. Please search again.
+            Dim udtSystemMessage As SystemMessage = New SystemMessage(FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00018)
+            If Session("language") <> CultureLanguage.English Then
+                lblEditAcctMsg.Text = udtSystemMessage.GetMessage(EnumLanguage.TC)
+            Else
+                lblEditAcctMsg.Text = udtSystemMessage.GetMessage(EnumLanguage.EN)
+            End If
+
+            Return
+        End If
 
         'If doc. type = "OTHER", overrides it by regular doc. type (i.e. HKIC, HKBC,...)
         If strCustomDocCode <> String.Empty Then
@@ -6498,8 +6634,6 @@ Partial Public Class VaccinationFileRectification ' 010414
         ' ---------------------------------------------------------
         ' 1. Set the EHSAccount model
         ' ---------------------------------------------------------
-        Dim udtEHSAccount As EHSAccountModel = Nothing
-
         If blnActiveViewChanged Then
             ' No previous temporary save record
             If udtStudentAcctField Is Nothing Then
@@ -6782,6 +6916,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                 ' Create the account from previous temporary save records 
                 Dim udtStudentFile As StudentFileHeaderModel = DirectCast(Session(SESS.DetailModel), StudentFileHeaderModel)
                 Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = New EHSAccountModel.EHSPersonalInformationModel
+                Dim dtmDOB As DateTime
+                Dim strExactDOB As String = String.Empty
                 Dim blnCreateAccount As Boolean = False
 
                 If strRealVoucherAccID <> String.Empty Then
@@ -6791,6 +6927,16 @@ Partial Public Class VaccinationFileRectification ' 010414
                     ' No account in DB
                     udtEHSAccount = New EHSAccountModel
                     blnCreateAccount = True
+                End If
+
+                If blnCreateAccount Then
+                    Me._udtValidator.chkDOB(strDocCode, udtStudentAcctField.DOB, dtmDOB, strExactDOB)
+                Else
+                    Me._udtValidator.chkDOB(strDocCode, udtEHSAccount.EHSPersonalInformationList(0).DOB, dtmDOB, strExactDOB)
+                End If
+
+                If strExactDOB = String.Empty Then
+                    strExactDOB = "D"
                 End If
 
                 ' ---------------------------------------------------------------
@@ -6809,8 +6955,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                     .CCCode4 = String.Empty
                     .CCCode5 = String.Empty
                     .CCCode6 = String.Empty
-                    .DOB = Nothing
-                    .ExactDOB = String.Empty
+                    .DOB = dtmDOB
+                    .ExactDOB = strExactDOB
                     .Gender = String.Empty
                     .DateofIssue = Nothing
                     .PermitToRemainUntil = Nothing
@@ -6861,7 +7007,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         ' ---------------------------------------------------------
         '2. Bulid document input/readonly UI
         ' ---------------------------------------------------------
-        BindPersonalInfo(udtEHSAccount, blnActiveViewChanged, blnNewEntry)
+        BindPersonalInfo(udtEHSAccount, blnActiveViewChanged, blnNewEntry, strDocCode)
 
         'Special handle EC, HKBC, ADOPC Input Control to enable DOB field
         If blnNewEntry And blnActiveViewChanged Then
@@ -6935,6 +7081,20 @@ Partial Public Class VaccinationFileRectification ' 010414
                 trConfirmNotToInject.Style.Add("display", "none")
             Else
                 trConfirmNotToInject.Style.Remove("display")
+
+                Select Case udtStudentFile.RecordStatusEnum
+                    Case StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Upload,
+                         StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload,
+                         StudentFileHeaderModel.RecordStatusEnumClass.PendingConfirmation_Rectify,
+                         StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify,
+                         StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
+
+                        chkRectifyConfirmNotToInject.Enabled = True
+
+                    Case Else
+                        chkRectifyConfirmNotToInject.Enabled = False
+
+                End Select
             End If
 
             ''Input Tips - "HELP" button
@@ -6951,7 +7111,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             ibtnChangeDocumentType.Visible = False
 
             If udtEHSAccount.AccountSourceString = EHSAccountModel.SysAccountSourceClass.TemporaryAccount And _
-                Not IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode)) Then
+                Not IsReadOnly(udtEHSAccount, udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode)) Then
                 ibtnChangeDocumentType.Visible = True
                 ibtnChangeDocumentType.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ChangeDocumentTypeSBtn")
                 ibtnChangeDocumentType.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ChangeDocumentTypeSBtn")
@@ -7178,7 +7338,10 @@ Partial Public Class VaccinationFileRectification ' 010414
 
     End Sub
 
-    Private Function BindPersonalInfo(ByVal udtEHSAccount As EHSAccountModel, ByVal activeViewChanged As Boolean, ByVal blnNewEntry As Boolean) As Boolean
+    Private Function BindPersonalInfo(ByVal udtEHSAccount As EHSAccountModel, _
+                                      ByVal activeViewChanged As Boolean, _
+                                      ByVal blnNewEntry As Boolean, _
+                                      ByVal strDocCode As String) As Boolean
         Dim blnRes As Boolean = False
 
         Me.pnlModifyAcct.Visible = False
@@ -7239,7 +7402,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                         Me.udcRectifyAccount.ActiveViewChanged = activeViewChanged
 
                         'if validating, the input fields change to read-only status
-                        If IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
+                        If IsReadOnly(udtEHSAccount, udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode)) Then
                             Me.udcRectifyAccount.Mode = UIControl.DocTypeHCSP.ucInputDocTypeBase.BuildMode.ModifyReadOnly
                         Else
                             Me.udcRectifyAccount.Mode = UIControl.DocTypeHCSP.ucInputDocTypeBase.BuildMode.Modification
@@ -7364,7 +7527,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
     End Sub
 
-    Private Overloads Function GeteHSAccount(ByVal strAccountID As String, ByVal strAccType As String) As EHSAccountModel
+    Private Overloads Function GeteHSAccount(ByVal strAccountID As String, ByVal strAccType As String, Optional ByVal udtDB As Database = Nothing) As EHSAccountModel
         Dim udtEHSAccountBLL As New EHSAccountBLL
         Dim udtEHSAccount As EHSAccountModel = Nothing
 
@@ -7373,13 +7536,13 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         Select Case strAccType
             Case EHSAccountModel.SysAccountSourceClass.ValidateAccount
-                udtEHSAccount = udtEHSAccountBLL.LoadEHSAccountByVRID(strAccountID)
+                udtEHSAccount = udtEHSAccountBLL.LoadEHSAccountByVRID(strAccountID, udtDB)
 
             Case EHSAccountModel.SysAccountSourceClass.TemporaryAccount
-                udtEHSAccount = udtEHSAccountBLL.LoadTempEHSAccountByVRID(strAccountID)
+                udtEHSAccount = udtEHSAccountBLL.LoadTempEHSAccountByVRID(strAccountID, udtDB)
 
             Case EHSAccountModel.SysAccountSourceClass.SpecialAccount
-                udtEHSAccount = udtEHSAccountBLL.LoadSpecialEHSAccountByVRID(strAccountID)
+                udtEHSAccount = udtEHSAccountBLL.LoadSpecialEHSAccountByVRID(strAccountID, udtDB)
         End Select
 
         If Not IsNothing(udtEHSAccount) Then
@@ -7392,7 +7555,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
     End Function
 
-    Private Function IsReadOnly(ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel) As Boolean
+    Private Function IsReadOnly(ByVal udtEHSAccount As EHSAccountModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel) As Boolean
         Dim blnReadOnly As Boolean = False
 
         If udtEHSPersonalInfo.Validating Then
@@ -7400,14 +7563,28 @@ Partial Public Class VaccinationFileRectification ' 010414
             blnReadOnly = True
         End If
 
-        'If udtEHSPersonalInfo.CreateBySmartID Then
-        '    If udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Then
-        '        ' All fields read from smart id
-        '        blnReadOnly = True
-        '    End If
-        'End If
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+        Select Case udtEHSAccount.RecordStatus
+            Case EHSAccountModel.TempAccountRecordStatusClass.Removed,
+                EHSAccountModel.TempAccountRecordStatusClass.Validated
+                blnReadOnly = True
+        End Select
+        ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
         Return blnReadOnly
+
+    End Function
+
+    Private Function IsSameTSMP(ByVal bytTSMP_1 As Byte(), ByVal bytTSMP_2 As Byte()) As Boolean
+        Dim blnRes As Boolean = True
+
+        For i As Integer = 0 To bytTSMP_1.Length - 1
+            If bytTSMP_1(i) <> bytTSMP_2(i) Then
+                blnRes = False
+            End If
+        Next
+
+        Return blnRes
 
     End Function
 
@@ -8745,7 +8922,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
 
-        If IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
+        If IsReadOnly(udtEHSAccount, udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
             Return blnProceed
         End If
 
@@ -8848,10 +9025,18 @@ Partial Public Class VaccinationFileRectification ' 010414
 
             'Check Claim Rules   
             Dim udtClaimRulesBLL As New ClaimRules.ClaimRulesBLL
+            Dim udtStudentFileBLL As New StudentFileBLL
             Dim sm As SystemMessage = Nothing
             Dim udtEligibleResult As ClaimRules.ClaimRulesBLL.EligibleResult = Nothing
             Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
             Dim enumCheckEligiblity As ClaimRules.ClaimRulesBLL.Eligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.Check
+
+            'Get Related Student File Entry
+            Dim dtRelated As DataTable = Session(SESS.RelatedStudentFileEntryDT)
+
+            Dim smConcurrent As SystemMessage = Nothing
+            Dim strFind() As String = {"{0}", "{1}", "{2}"}
+            Dim strReplace(3) As String
 
             If udtEHSAccount.TransactionID <> "" Then
                 udtTranDetailVaccineList = Me.GetVaccinationRecord(udtEHSAccount, sm)
@@ -8860,86 +9045,262 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
 
             If IsNothing(sm) Then
-                If udtEHSAccount.VoucherAccID <> String.Empty Then
+
+                If udtEHSAccount.VoucherAccID <> String.Empty And udtEHSAccount.AccountSourceString = EHSAccountModel.SysAccountSourceClass.TemporaryAccount Then
+                    '1. Check current EHS account
                     sm = udtClaimRulesBLL.CheckRectifyEHSAccount(udtEHSAccount.SchemeCode, udtEHSAccount.SearchDocCode.Trim, _
                                                                  udtEHSAccount, udtEligibleResult, udtTranDetailVaccineList, _
                                                                  enumCheckEligiblity, ClaimRules.ClaimRulesBLL.Unique.Exclude_Self_EHSAccount)
+
+                    'Special handle to allow age over the doc. limit
+                    If sm IsNot Nothing Then
+                        Select Case sm.MessageCode
+                            Case MsgCode.MSG00185, MsgCode.MSG00213
+                                sm = Nothing
+                        End Select
+                    End If
+
+                    If sm IsNot Nothing Then
+                        Dim dtCurrent As DataTable = udtStudentFileBLL.GetStudentFileEntryRowDisplay(Session(SESS.AcctEditFileID), Session(SESS.AcctEditSeqNo))
+
+                        If IsDBNull(dtCurrent.Rows(0)("Transaction_ID")) Then
+                            For Each drRelated As DataRow In dtRelated.Rows
+
+                                'Skip to check if the same Voucher_Acc_ID
+                                If drRelated("Voucher_Acc_ID").ToString.Trim = udtEHSAccount.VoucherAccID Then
+                                    'if has transaction, get its file first
+                                    If drRelated("Transaction_ID") <> String.Empty Then
+                                        strReplace(2) = drRelated("Student_File_ID").ToString.Trim
+                                        Exit For
+                                    End If
+                                End If
+                            Next
+
+                            'if no transaction, get last one file
+                            If strReplace(2) = String.Empty Then
+                                strReplace(2) = dtRelated.Rows(dtRelated.Rows.Count - 1)("Student_File_ID").ToString.Trim
+                            End If
+
+                            If udtEHSAccount IsNot Nothing AndAlso udtEHSAccount.TransactionID <> String.Empty Then
+                                Dim udtStudentFileHeader As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeader(strReplace(2), False)
+
+                                'The service recipient is not eligible for the claim ({0}) in {1} vaccination file ({2}).
+                                smConcurrent = New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00455)
+
+                                strReplace(0) = _udtFormatter.formatSystemNumber(udtEHSAccount.TransactionID)
+
+                                Select Case udtStudentFileHeader.Dose
+                                    Case String.Empty
+                                        strReplace(1) = LCase(GetGlobalResourceObject("Text", "PreCheck"))
+                                    Case SubsidizeItemDetailsModel.DoseCode.ONLYDOSE
+                                        strReplace(1) = LCase(GetGlobalResourceObject("Text", "OnlyDose"))
+                                    Case SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+                                        strReplace(1) = LCase(GetGlobalResourceObject("Text", "1stDose2"))
+                                    Case SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+                                        strReplace(1) = LCase(GetGlobalResourceObject("Text", "2ndDose"))
+                                End Select
+
+                            End If
+
+                        End If
+                    End If
+
+                    '2. Check related EHS account
+                    If sm Is Nothing Then
+                        Dim blnRelatedAcctValid As Boolean = True
+                        Dim arrEHSAccount As New ArrayList
+                        Dim arrFileID As New ArrayList
+                        Dim arrTransactionID As New ArrayList
+                        Dim arrInvalidEHSAccount As New ArrayList
+                        Dim arrInvalidFileID As New ArrayList
+                        Dim arrInvalidTransactionID As New ArrayList
+                        Dim udtInvalidEHSAccount As EHSAccountModel = Nothing
+                        Dim strInvalidFileID As String = String.Empty
+                        Dim strInvalidTransactionID As String = String.Empty
+
+                        For Each drRelated As DataRow In dtRelated.Rows
+
+                            'Skip to check if the same Voucher_Acc_ID
+                            If drRelated("Voucher_Acc_ID").ToString.Trim = udtEHSAccount.VoucherAccID Then
+                                Continue For
+                            End If
+
+                            'Skip to check if it is validated account
+                            If drRelated("Acc_Type").ToString.Trim = EHSAccountModel.SysAccountSourceClass.ValidateAccount Then
+                                Continue For
+                            End If
+
+                            'Get the EHSAccount from DB
+                            Dim udtEHSAccountBLL As New EHSAccountBLL
+                            Dim strVoucherAccID As String = drRelated("Voucher_Acc_ID").ToString.Trim
+                            Dim udtRelatedEHSAccount As EHSAccountModel = udtEHSAccountBLL.LoadTempEHSAccountByVRID(strVoucherAccID)
+
+                            If udtRelatedEHSAccount IsNot Nothing Then
+                                If udtRelatedEHSAccount.EHSPersonalInformationList(0).Validating Then
+                                    strInvalidFileID = drRelated("Student_File_ID").ToString.Trim
+                                    blnRelatedAcctValid = False
+                                    Exit For
+                                End If
+
+                                Select Case udtRelatedEHSAccount.RecordStatus
+                                    Case EHSAccountModel.TempAccountRecordStatusClass.Removed,
+                                        EHSAccountModel.TempAccountRecordStatusClass.Validated
+
+                                        Continue For
+
+                                End Select
+
+                                arrEHSAccount.Add(udtRelatedEHSAccount)
+                                arrFileID.Add(drRelated("Student_File_ID").ToString.Trim)
+                                arrTransactionID.Add(drRelated("Transaction_ID").ToString.Trim)
+                            End If
+
+                        Next
+
+                        If blnRelatedAcctValid Then
+                            If arrEHSAccount.Count > 0 Then
+                                For intCt As Integer = 0 To arrEHSAccount.Count - 1
+                                    Dim udtRelatedEHSAccount As EHSAccountModel = arrEHSAccount(intCt)
+                                    Dim strFileID As String = arrFileID(intCt)
+                                    Dim strTransactionID As String = arrTransactionID(intCt)
+
+                                    'Initial variables
+                                    udtTranDetailVaccineList = Nothing
+                                    enumCheckEligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.Check
+                                    udtEligibleResult = Nothing
+
+                                    'If has benefits, get vaccine records from eHS, HA CMS and DH CIMS
+                                    If udtRelatedEHSAccount.TransactionID <> "" Then
+                                        udtTranDetailVaccineList = Me.GetVaccinationRecord(udtRelatedEHSAccount, sm)
+                                    Else
+                                        enumCheckEligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.NotCheck
+                                    End If
+
+                                    'Clone the account for validation checking
+                                    Dim udtCloneEHSAccount As EHSAccountModel = New EHSAccountModel(udtRelatedEHSAccount)
+
+                                    udtCloneEHSAccount.SetSearchDocCode(udtEHSAccount.SearchDocCode.Trim)
+                                    udtCloneEHSAccount.TransactionID = udtRelatedEHSAccount.TransactionID
+
+                                    With udtCloneEHSAccount.EHSPersonalInformationList(0)
+                                        .DocCode = udtEHSAccount.EHSPersonalInformationList(0).DocCode
+                                        .IdentityNum = udtEHSAccount.EHSPersonalInformationList(0).IdentityNum
+                                        .ENameSurName = udtEHSAccount.EHSPersonalInformationList(0).ENameSurName
+                                        .ENameFirstName = udtEHSAccount.EHSPersonalInformationList(0).ENameFirstName
+                                        .CName = udtEHSAccount.EHSPersonalInformationList(0).CName
+                                        .CCCode1 = udtEHSAccount.EHSPersonalInformationList(0).CCCode1
+                                        .CCCode2 = udtEHSAccount.EHSPersonalInformationList(0).CCCode2
+                                        .CCCode3 = udtEHSAccount.EHSPersonalInformationList(0).CCCode3
+                                        .CCCode4 = udtEHSAccount.EHSPersonalInformationList(0).CCCode4
+                                        .CCCode5 = udtEHSAccount.EHSPersonalInformationList(0).CCCode5
+                                        .CCCode6 = udtEHSAccount.EHSPersonalInformationList(0).CCCode6
+                                        .DOB = udtEHSAccount.EHSPersonalInformationList(0).DOB
+                                        .ExactDOB = udtEHSAccount.EHSPersonalInformationList(0).ExactDOB
+                                        .Gender = udtEHSAccount.EHSPersonalInformationList(0).Gender
+                                        .DateofIssue = udtEHSAccount.EHSPersonalInformationList(0).DateofIssue
+                                        .AdoptionPrefixNum = udtEHSAccount.EHSPersonalInformationList(0).AdoptionPrefixNum
+                                        .PermitToRemainUntil = udtEHSAccount.EHSPersonalInformationList(0).PermitToRemainUntil
+                                        .Foreign_Passport_No = udtEHSAccount.EHSPersonalInformationList(0).Foreign_Passport_No
+                                        .ECSerialNo = udtEHSAccount.EHSPersonalInformationList(0).ECSerialNo
+                                        .ECReferenceNo = udtEHSAccount.EHSPersonalInformationList(0).ECReferenceNo
+                                        .ECSerialNoNotProvided = udtEHSAccount.EHSPersonalInformationList(0).ECSerialNoNotProvided
+                                        .ECReferenceNoOtherFormat = udtEHSAccount.EHSPersonalInformationList(0).ECReferenceNoOtherFormat
+                                        .ECAge = udtEHSAccount.EHSPersonalInformationList(0).ECAge
+                                        .ECDateOfRegistration = udtEHSAccount.EHSPersonalInformationList(0).ECDateOfRegistration
+                                        .OtherInfo = udtEHSAccount.EHSPersonalInformationList(0).OtherInfo
+                                    End With
+
+                                    sm = udtClaimRulesBLL.CheckRectifyEHSAccount(udtCloneEHSAccount.SchemeCode, udtCloneEHSAccount.SearchDocCode.Trim, _
+                                                                                 udtCloneEHSAccount, udtEligibleResult, udtTranDetailVaccineList, _
+                                                                                 enumCheckEligiblity, ClaimRules.ClaimRulesBLL.Unique.Exclude_Self_EHSAccount)
+
+                                    'Special handle to allow age over the doc. limit
+                                    If sm IsNot Nothing Then
+                                        Select Case sm.MessageCode
+                                            Case MsgCode.MSG00185, MsgCode.MSG00213
+                                                sm = Nothing
+                                        End Select
+                                    End If
+
+                                    If sm IsNot Nothing Then
+                                        blnRelatedAcctValid = False
+                                        arrInvalidEHSAccount.Add(udtCloneEHSAccount)
+                                        arrInvalidFileID.Add(strFileID)
+                                        arrInvalidTransactionID.Add(strTransactionID)
+                                    End If
+
+                                Next
+
+                                If Not blnRelatedAcctValid Then
+                                    'if has transaction, get its file first
+                                    For ct As Integer = 0 To arrInvalidTransactionID.Count - 1
+                                        If arrInvalidTransactionID(ct) <> String.Empty Then
+                                            udtInvalidEHSAccount = arrInvalidEHSAccount(ct)
+                                            strInvalidFileID = arrInvalidFileID(ct)
+                                            Exit For
+                                        End If
+                                    Next
+
+                                    'if no transaction, get any one file
+                                    If udtInvalidEHSAccount Is Nothing Then
+                                        udtInvalidEHSAccount = arrInvalidEHSAccount(0)
+                                        strInvalidFileID = arrInvalidFileID(0)
+                                    End If
+                                End If
+
+                            End If
+
+                        End If
+
+                        If Not blnRelatedAcctValid Then
+                            Dim udtStudentFileHeader As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeader(strInvalidFileID.Trim, False)
+
+                            If udtInvalidEHSAccount IsNot Nothing AndAlso udtInvalidEHSAccount.TransactionID <> String.Empty Then
+                                'The service recipient is not eligible for the claim ({0}) in {1} vaccination file ({2}).
+                                smConcurrent = New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00455)
+                                strReplace(0) = _udtFormatter.formatSystemNumber(udtInvalidEHSAccount.TransactionID)
+                            Else
+                                'The eHealth (Subsidies) Account is not available to rectify in {1} vaccination file ({2}).
+                                smConcurrent = New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00456)
+                                strReplace(0) = String.Empty
+                            End If
+
+                            Select Case udtStudentFileHeader.Dose
+                                Case String.Empty
+                                    strReplace(1) = LCase(GetGlobalResourceObject("Text", "PreCheck"))
+                                Case SubsidizeItemDetailsModel.DoseCode.ONLYDOSE
+                                    strReplace(1) = LCase(GetGlobalResourceObject("Text", "OnlyDose"))
+                                Case SubsidizeItemDetailsModel.DoseCode.FirstDOSE
+                                    strReplace(1) = LCase(GetGlobalResourceObject("Text", "1stDose2"))
+                                Case SubsidizeItemDetailsModel.DoseCode.SecondDOSE
+                                    strReplace(1) = LCase(GetGlobalResourceObject("Text", "2ndDose"))
+                            End Select
+                            strReplace(2) = strInvalidFileID
+
+                        End If
+
+                    End If
+
                 End If
+
             End If
 
-            Dim blnShowDeclaration As Boolean = False
-
-            If IsNothing(sm) Then
-                'If Not IsNothing(udtEligibleResult) Then
-                '    If udtEligibleResult.HandleMethod = ClaimRules.ClaimRulesBLL.HandleMethodENum.Declaration Then
-
-                '        Dim strText As String = String.Empty
-                '        If Not udtEligibleResult.RelatedEligibleRule Is Nothing AndAlso Not String.IsNullOrEmpty(udtEligibleResult.RelatedEligibleRule.ObjectName3) Then
-                '            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleRule.ObjectName3.Trim())
-                '        ElseIf Not udtEligibleResult.RelatedEligibleExceptionRule Is Nothing AndAlso Not String.IsNullOrEmpty(udtEligibleResult.RelatedEligibleExceptionRule.ObjectName3) Then
-                '            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleExceptionRule.ObjectName3.Trim())
-                '        ElseIf Not udtEligibleResult.RelatedClaimCategoryEligibilityModel Is Nothing AndAlso Not String.IsNullOrEmpty(udtEligibleResult.RelatedClaimCategoryEligibilityModel.ObjectName3) Then
-                '            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedClaimCategoryEligibilityModel.ObjectName3.Trim())
-                '        End If
-
-                '        If Not String.IsNullOrEmpty(strText) Then
-                '            Me.lblClamDeclaration.Text = strText
-                '            ModalPopupExtenderClaimDEclaration.Show()
-                '            blnShowDeclaration = True
-                '        Else
-                '            blnShowDeclaration = False
-                '        End If
-                '    Else
-                '        blnShowDeclaration = False
-                '    End If
-                'Else
-                '    blnShowDeclaration = False
-                'End If
-
+            If IsNothing(sm) AndAlso IsNothing(smConcurrent) Then
                 Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctionCode)
 
-                'If Not blnShowDeclaration Then
-                '    'SetupConfirmRectifyAcc(udtEHSAccount)
-                '    'Me.mvRectify.ActiveViewIndex = intConfirmAccount
-
-                '    'Dim blnModify As Boolean = False
-
-                '    'If Not IsNothing(Session(SESS_ModifyAcc)) Then
-                '    '    If CBool(Session(SESS_ModifyAcc)) = True Then
-                '    '        pnlCreateAccDeclaration.Visible = True
-                '    '    Else
-                '    '        pnlCreateAccDeclaration.Visible = False
-                '    '    End If
-                '    'Else
-                '    '    pnlCreateAccDeclaration.Visible = False
-                '    'End If
-
-                '    udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
-                '    udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
-                '    udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
-                '    udtAuditLog.WriteEndLog(LogID.LOG00015, AuditLogDesc.ValidateRectifiedAccountComplete)
-                'Else
-                '    udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
-                '    udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
-                '    udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
-                '    udtAuditLog.WriteEndLog(LogID.LOG00017, AuditLogDesc.ShowDeclarationWithValidationComplete)
-                'End If
             Else
-                'Me.udcMsgBoxErr.Clear()
-                Me.udcAcctEditErrorMessage.AddMessage(sm)
-                'udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
-                'udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
-                'udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
-                'Me.udcMsgBoxErr.BuildMessageBox(MessageBoxHeaderKey.ValidationFail, udtAuditLog, LogID.LOG00016, AuditLogDesc.ValidateRectifiedAccountFail)
+                If smConcurrent IsNot Nothing Then
+                    Me.udcAcctEditErrorMessage.AddMessage(smConcurrent, strFind, strReplace)
+                Else
+                    If sm IsNot Nothing Then
+                        Me.udcAcctEditErrorMessage.AddMessage(sm)
+                    End If
+                End If
 
                 blnProceed = False
 
             End If
-            'Else
-            '    udtAuditLog.AddDescripton("AccountID", udtEHSAccount.VoucherAccID.Trim)
-            '    udtAuditLog.AddDescripton("AccountSource", udtEHSAccount.AccountSourceString)
-            '    udtAuditLog.AddDescripton("DocCode", udtEHSAccount.SearchDocCode.Trim)
-            'Me.udcMsgBoxErr.BuildMessageBox(MessageBoxHeaderKey.ValidationFail, udtAuditLog, LogID.LOG00016, AuditLogDesc.ValidateRectifiedAccountFail)
+
         End If
 
         Return blnProceed
@@ -8974,6 +9335,18 @@ Partial Public Class VaccinationFileRectification ' 010414
         If txtRectifyClassNo.Text.Length > 10 Then
             blnValid = False
             Dim sm As SystemMessage = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00029)
+            udcAcctEditErrorMessage.AddMessage(sm, "%s", lblRectifyClassNoText.Text)
+            Me.imgErrRectifyClassNo.Visible = True
+        End If
+
+        Dim dtVaccFile As DataTable = GetDetailClassDataTable(DetailClassDataTable.Selected)
+        Dim drVaccFile() As DataRow = Nothing
+
+        drVaccFile = dtVaccFile.Select(String.Format("Class_No='{0}' AND Student_Seq <> '{1}'", txtRectifyClassNo.Text, Session(SESS.AcctEditSeqNo)))
+
+        If drVaccFile.Length > 0 Then
+            blnValid = False
+            Dim sm As SystemMessage = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00457)
             udcAcctEditErrorMessage.AddMessage(sm, "%s", lblRectifyClassNoText.Text)
             Me.imgErrRectifyClassNo.Visible = True
         End If
@@ -9113,7 +9486,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         'For temp. save inputted value for field difference use when add new account to match validated account
         Dim udtInputPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = Nothing
 
-        If IsReadOnly(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
+        If IsReadOnly(udtEHSAccount, udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode.Trim)) Then
             Return blnRes
         End If
 
@@ -9179,7 +9552,10 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         ' Save inputted detail to DB
+        Dim udtDB As New Database
+
         Try
+            udtDB.BeginTransaction()
 
             Dim udtEHSAccountBLL As New EHSAccountBLL
             Dim udtClaimRulesBLL As New ClaimRules.ClaimRulesBLL
@@ -9194,6 +9570,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             Dim enumCheckEligiblity As ClaimRules.ClaimRulesBLL.Eligiblity = ClaimRules.ClaimRulesBLL.Eligiblity.Check
             Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
 
+
             If udtEHSAccount.TransactionID <> "" Then
                 udtTranDetailVaccineList = Me.GetVaccinationRecord(udtEHSAccount, sm)
             Else
@@ -9202,7 +9579,47 @@ Partial Public Class VaccinationFileRectification ' 010414
 
             If blnCreateAcc Then
                 ' -------------------------------------------------------------------------------
-                ' Check Document Limit
+                ' 1. Block deceased recipient to create account
+                ' Check Active Death Record
+                ' If dead, return "(document id name) is invalid"
+                ' -------------------------------------------------------------------------------
+                If sm Is Nothing Then
+                    Dim udtDeathRecordBLL As New eHealthAccountDeathRecord.eHealthAccountDeathRecordBLL
+
+                    If (New DocTypeBLL).getDocTypeByAvailable(DocTypeBLL.EnumAvailable.DeathRecordAvailable).Filter(strDocCode) IsNot Nothing Then
+                        If udtDeathRecordBLL.GetDeathRecordEntry(udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).IdentityNum).IsDead() Then
+                            Dim strMsgCode As String = String.Empty
+
+                            strMsgCode = _udtValidator.GetMessageForIdentityNoIsNoLongerValid(strDocCode).MessageCode
+
+                            If strMsgCode <> String.Empty Then
+                                sm = New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, strMsgCode)
+                            End If
+
+                        End If
+                    End If
+                End If
+
+                ' -------------------------------------------------------------------------------
+                ' 2. Block EHCP make voucher claim for themselves
+                ' Check Inputted Doc. No. with SP's HKID
+                ' If matches, return "HCPs are not allowed to make claims for himself/herself"
+                ' -------------------------------------------------------------------------------
+                If sm Is Nothing Then
+                    Dim udtServiceProviderBLL As New ServiceProviderBLL
+                    Dim udtSP As ServiceProviderModel = udtServiceProviderBLL.GetServiceProviderBySPID(New Database, udtStudentFileHeader.SPID)
+                    Dim strMsgCode As String = String.Empty
+
+                    strMsgCode = udtClaimRulesBLL.IsSPClaimForThemselves(udtSP.HKID, strDocCode, udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).IdentityNum)
+
+                    If strMsgCode <> String.Empty Then
+                        sm = New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, strMsgCode)
+                    End If
+
+                End If
+
+                ' -------------------------------------------------------------------------------
+                ' 3. Check Document Limit
                 ' -------------------------------------------------------------------------------
                 Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode)
 
@@ -9221,7 +9638,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
                 ' -------------------------------------------------------------------------------
-                ' Check Create EHSAccount
+                ' 4. Check Create EHSAccount
                 ' -------------------------------------------------------------------------------
                 ' If uploaded doc type is "HKBC" with "HKIC" validated account, the "HKIC" validated account will prefer to use.
                 If sm Is Nothing Then
@@ -9251,6 +9668,14 @@ Partial Public Class VaccinationFileRectification ' 010414
                 sm = udtClaimRulesBLL.CheckRectifyEHSAccount(udtEHSAccount.SchemeCode, strDocCode.Trim, _
                                                              udtEHSAccount, udtEligibleResult, udtTranDetailVaccineList, _
                                                              enumCheckEligiblity, ClaimRules.ClaimRulesBLL.Unique.Exclude_Self_EHSAccount)
+
+                'Special handle to allow age over the doc. limit
+                If sm IsNot Nothing Then
+                    Select Case sm.MessageCode
+                        Case MsgCode.MSG00185, MsgCode.MSG00213
+                            sm = Nothing
+                    End Select
+                End If
             End If
 
             'Special handling for no account record to match validated account
@@ -9288,27 +9713,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                         If udtPersonalInfo.DOB <> udtInputPersonalInfo.DOB Then
                             blnValid = False
                         End If
-
-                        'Select Case udtPersonalInfo.ExactDOB
-                        '    Case "D"
-                        '        If udtPersonalInfo.DOB.Year <> udtInputPersonalInfo.DOB.Year Or _
-                        '            udtPersonalInfo.DOB.Month <> udtInputPersonalInfo.DOB.Month Or _
-                        '            udtPersonalInfo.DOB.Day <> udtInputPersonalInfo.DOB.Day Then
-                        '            blnValid = False
-                        '        End If
-
-                        '    Case "M"
-                        '        If udtPersonalInfo.DOB.Year <> udtInputPersonalInfo.DOB.Year Or _
-                        '            udtPersonalInfo.DOB.Month <> udtInputPersonalInfo.DOB.Month Then
-                        '            blnValid = False
-                        '        End If
-
-                        '    Case "Y"
-                        '        If udtPersonalInfo.DOB.Year <> udtInputPersonalInfo.DOB.Year Then
-                        '            blnValid = False
-                        '        End If
-
-                        'End Select
 
                         If blnValid Then
                             ' -------------------------------------------------------------------------
@@ -9378,8 +9782,6 @@ Partial Public Class VaccinationFileRectification ' 010414
                                 Dim strUserID As String = (New HCVUUserBLL).GetHCVUUser.UserID.Trim
                                 Dim dtmNow As DateTime = _udtGeneralFunction.GetSystemDateTime
 
-                                Dim udtDB As New Database
-
                                 intNewEntrySeqNo = dtFull.Rows.Count + 1
                                 Session(SESS.AcctEditSeqNo) = intNewEntrySeqNo
 
@@ -9423,35 +9825,25 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                                 End With
 
-                                Try
-                                    udtDB.BeginTransaction()
+                                'Permanence
+                                udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
-                                    'Permanence
-                                    udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Permanence)
-
-                                    'Staging
-                                    If udtStudentFileStaging IsNot Nothing Then
-                                        udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Staging)
-                                    End If
-
-                                    udtDB.CommitTransaction()
-
-                                Catch ex As Exception
-                                    udtDB.RollBackTranscation()
-                                    Throw
-
-                                End Try
+                                'Staging
+                                If udtStudentFileStaging IsNot Nothing Then
+                                    udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                                End If
 
                             End If
 
                             udtStudent.StudentSeq = Session(SESS.AcctEditSeqNo)
 
+                            '1.1. Save Current Entry
                             'Perm
-                            udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Permanence)
+                            udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
                             'Staging
                             If udtStudentFileStaging IsNot Nothing Then
-                                udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging)
+                                udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging, udtDB)
                             End If
 
                             udtInputStudentFile = udtStudent
@@ -9504,7 +9896,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                             End If
                             ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
-                            udtEHSAccountBLL.UpdateEHSAccountRectify(udtOrgEHSAccount, udtEHSAccount, strUpdateBy, dtmCurrentDate)
+                            udtEHSAccountBLL.UpdateEHSAccountRectify(udtOrgEHSAccount, udtEHSAccount, strUpdateBy, dtmCurrentDate, udtDB)
+
 
                             If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
                                 If udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
@@ -9512,15 +9905,16 @@ Partial Public Class VaccinationFileRectification ' 010414
                                     udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                              Session(SESS.AcctEditSeqNo), _
                                                                                              udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
-                                                                                             StudentFileBLL.StudentFileLocation.Permanence)
+                                                                                             StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
                                     'Staging
                                     If udtStudentFileStaging IsNot Nothing Then
                                         udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                                  Session(SESS.AcctEditSeqNo), _
                                                                                                  udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
-                                                                                                 StudentFileBLL.StudentFileLocation.Staging)
+                                                                                                 StudentFileBLL.StudentFileLocation.Staging, udtDB)
                                     End If
+
                                 End If
                             End If
 
@@ -9539,7 +9933,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                             udtNew_EHSAccount.SubsidizeWriteOff_CreateReason = eHASubsidizeWriteOff_CreateReason.PersonalInfoAmend
 
-                            sm = udtEHSClaimBLL.CreateRectifyAccount(udtStudentFileHeader.SPID, udtOrgEHSAccount, udtNew_EHSAccount)
+                            sm = udtEHSClaimBLL.CreateRectifyAccount(udtStudentFileHeader.SPID, udtOrgEHSAccount, udtNew_EHSAccount, udtDB)
 
                             If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
                                 If IsNothing(sm) AndAlso udtNew_EHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
@@ -9547,14 +9941,14 @@ Partial Public Class VaccinationFileRectification ' 010414
                                     udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                              Session(SESS.AcctEditSeqNo), _
                                                                                              udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
-                                                                                             StudentFileBLL.StudentFileLocation.Permanence)
+                                                                                             StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
                                     'Staging
                                     If udtStudentFileStaging IsNot Nothing Then
                                         udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                                  Session(SESS.AcctEditSeqNo), _
                                                                                                  udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
-                                                                                                 StudentFileBLL.StudentFileLocation.Staging)
+                                                                                                 StudentFileBLL.StudentFileLocation.Staging, udtDB)
                                     End If
                                 End If
                             End If
@@ -9576,18 +9970,16 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                     udtNew_EHSAccount.SubsidizeWriteOff_CreateReason = eHASubsidizeWriteOff_CreateReason.PersonalInfoCreation
 
-                    sm = udtEHSClaimBLL.CreateTemporaryEHSAccount(udtStudentFileHeader.SPID, udtNew_EHSAccount)
+                    sm = udtEHSClaimBLL.CreateTemporaryEHSAccount(udtStudentFileHeader.SPID, udtNew_EHSAccount, udtDB)
 
                     If blnNewEntry Then
                         If IsNothing(sm) Then
-                            Dim udtNewEHSAccount As EHSAccountModel = GetEHSAccount(strNewAccountID, EHSAccountModel.SysAccountSourceClass.TemporaryAccount)
+                            Dim udtNewEHSAccount As EHSAccountModel = GetEHSAccount(strNewAccountID, EHSAccountModel.SysAccountSourceClass.TemporaryAccount, udtDB)
                             Dim dtFull As DataTable = udtStudentFileBLL.GetStudentFileEntryDT(udtStudentFileHeader.StudentFileID)
                             Dim dt As DataTable = GetDetailClassDataTable(DetailClassDataTable.Selected)
                             Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtNewEHSAccount.EHSPersonalInformationList.Filter(strDocCode)
                             Dim strUserID As String = (New HCVUUserBLL).GetHCVUUser.UserID.Trim
                             Dim dtmNow As DateTime = _udtGeneralFunction.GetSystemDateTime
-
-                            Dim udtDB As New Database
 
                             intNewEntrySeqNo = dtFull.Rows.Count + 1
                             Session(SESS.AcctEditSeqNo) = intNewEntrySeqNo
@@ -9632,24 +10024,14 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                             End With
 
-                            Try
-                                udtDB.BeginTransaction()
 
-                                'Permanence
-                                udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Permanence)
+                            'Permanence
+                            udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
-                                'Staging
-                                If udtStudentFileStaging IsNot Nothing Then
-                                    udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Staging)
-                                End If
-
-                                udtDB.CommitTransaction()
-
-                            Catch ex As Exception
-                                udtDB.RollBackTranscation()
-                                Throw
-
-                            End Try
+                            'Staging
+                            If udtStudentFileStaging IsNot Nothing Then
+                                udtStudentFileBLL.InsertStudentFileEntry(udtNewStudentFileEntry, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                            End If
 
                         End If
 
@@ -9661,14 +10043,14 @@ Partial Public Class VaccinationFileRectification ' 010414
                             udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                      Session(SESS.AcctEditSeqNo), _
                                                                                      udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
-                                                                                     StudentFileBLL.StudentFileLocation.Permanence)
+                                                                                     StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
                             'Staging
                             If udtStudentFileStaging IsNot Nothing Then
                                 udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(Session(SESS.AcctEditFileID), _
                                                                                          Session(SESS.AcctEditSeqNo), _
                                                                                          udtEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
-                                                                                         StudentFileBLL.StudentFileLocation.Staging)
+                                                                                         StudentFileBLL.StudentFileLocation.Staging, udtDB)
                             End If
                         End If
                     End If
@@ -9708,26 +10090,17 @@ Partial Public Class VaccinationFileRectification ' 010414
                             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
                             'Perm
-                            udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence)
+                            udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
                             'Staging
                             If udtStudentFileStaging IsNot Nothing Then
-                                udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging)
+                                udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
                             End If
 
                         Else
                             'Temporary Account
                             'Re-take eHS account from DB
-                            Dim udtNewAcc As EHSAccountModel = GetEHSAccount(strNewAccountID, EHSAccountModel.SysAccountSourceClass.TemporaryAccount)
-
-                            ''Auto Record Confirmation: Pending Confirmation -> Pending Validation
-                            'If udtNewAcc.RecordStatus = "C" Then
-                            '    Dim udtDB As New Database
-                            '    udtEHSAccountBLL.UpdateTempEHSAccountConfirmation(udtDB, strNewAccountID, udtSP.SPID, _
-                            '                                                      _udtGeneralFunction.GetSystemDateTime(), udtNewAcc.TSMP)
-
-                            '    udtNewAcc = GetEHSAccount(strNewAccountID, EHSAccountModel.SysAccountSourceClass.TemporaryAccount)
-                            'End If
+                            Dim udtNewAcc As EHSAccountModel = GetEHSAccount(strNewAccountID, EHSAccountModel.SysAccountSourceClass.TemporaryAccount, udtDB)
 
                             'Check Manual Validation for update "Acc_Validation_Result"
                             Dim strAccValidationResult As String = String.Empty
@@ -9755,11 +10128,11 @@ Partial Public Class VaccinationFileRectification ' 010414
                             udtStudent.LastRectifyDtm = _udtGeneralFunction.GetSystemDateTime
 
                             'Perm
-                            udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence)
+                            udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
 
                             'Staging
                             If udtStudentFileStaging IsNot Nothing Then
-                                udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging)
+                                udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
                             End If
 
                         End If
@@ -9774,28 +10147,23 @@ Partial Public Class VaccinationFileRectification ' 010414
                             udtStudent.StudentFileID = Session(SESS.AcctEditFileID)
                             udtStudent.StudentSeq = IIf(blnNewEntry, intNewEntrySeqNo, Session(SESS.AcctEditSeqNo))
                             udtStudent.DocCode = strCustomDocType
-                            udtStudent.AccDocCode = strCustomDocType
                             udtStudent.LastRectifyBy = strUpdateBy
                             udtStudent.LastRectifyDtm = dtmCurrentDate
 
-                            udtStudentFileBLL.UpdateVaccinationFileEntryDocCode(udtStudent)
+                            'Permanence
+                            udtStudentFileBLL.UpdateVaccinationFileEntryDocCode(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+
+                            'Staging
+                            If udtStudentFileStaging IsNot Nothing Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryDocCode(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                            End If
+
                         End If
                         ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
                         If Me.IsReusedAcc(udtEHSAccount.OriginalAccID) And Not udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.SpecialAccount Then
                             'retake eHS account from DB and save it to session
-                            GetEHSAccount(strNewAccountID, udtEHSAccount.AccountSourceString)
-
-                            '    strMsgCode = MsgCode.MSG00002 '"00002"
-                            '    Dim strOld As String() = {"%s"}
-                            '    Dim strNew As String() = {""}
-                            '    strNew(0) = Me._udtFormatter.formatSystemNumber(udtEHSAccount.VoucherAccID.Trim)
-                            '    sm = New SystemMessage(FunctionCode, SeverityCode.SEVI, strMsgCode)
-                            '    Me.udcInfoMessageBox.AddMessage(sm, strOld, strNew)
-                            'Else
-                            '    strMsgCode = MsgCode.MSG00001 '"00001"
-                            '    sm = New SystemMessage(FunctionCode, SeverityCode.SEVI, strMsgCode)
-                            '    Me.udcInfoMessageBox.AddMessage(sm)
+                            GetEHSAccount(strNewAccountID, udtEHSAccount.AccountSourceString, udtDB)
                         End If
 
                     End If
@@ -9807,15 +10175,41 @@ Partial Public Class VaccinationFileRectification ' 010414
                     If IsNothing(sm) Then
                         'Success          
                         ' Document Type Changed
-                        If udtEHSAccount.TransactionID <> "" Then
-                            If strCustomDocType <> String.Empty Then
-                                Dim udtEHSTransactionBLL As New EHSTransactionBLL
-                                udtEHSTransactionBLL.UpdateTransactionDocCode(udtEHSAccount.TransactionID, strCustomDocType, strUpdateBy, dtmCurrentDate)
+                        Dim udtEHSTransactionBLL As New EHSTransactionBLL
+
+                        If strCustomDocType <> String.Empty Then
+                            If udtEHSAccount.TransactionID <> "" Then
+                                udtEHSTransactionBLL.UpdateTransactionDocCode(udtEHSAccount.TransactionID, strCustomDocType, strUpdateBy, dtmCurrentDate, udtDB)
                             End If
                         End If
                     End If
-                    ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+                End If
+                ' CRE20-003 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                ' -------------------------------------------------------------------------------
+                If IsNothing(sm) Then
+                    If blnCreateAcc Then
+                        If udtEHSAccount.AccountSource <> EHSAccountModel.SysAccountSource.ValidateAccount Then
+                            udtEHSAccount = Me._udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
+                        End If
+                    End If
+
+                    'Re-take eHS account from DB
+                    udtEHSAccount = GetEHSAccount(udtEHSAccount.VoucherAccID, udtEHSAccount.AccountSourceString, udtDB)
+
+                    'Update Related Entry
+                    Me.UpdateRelatedEntryAccount(udtEHSAccount, strDocCode, blnCreateAcc, strUpdateBy, udtDB)
+                End If
+
+                If IsNothing(sm) Then
+                    udtDB.CommitTransaction()
+                Else
+                    udtDB.RollBackTranscation()
+                End If
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+                If IsNothing(sm) Then
                     OutputSystemMessage = sm
 
                     'Audit log
@@ -9845,6 +10239,24 @@ Partial Public Class VaccinationFileRectification ' 010414
                         If udtEHSAccount.AccountSource <> EHSAccountModel.SysAccountSource.ValidateAccount Then
                             udtEHSAccount = Me._udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
                         End If
+                    End If
+
+                    'Re-take eHS account from DB
+                    udtEHSAccount = GetEHSAccount(udtEHSAccount.VoucherAccID, udtEHSAccount.AccountSourceString)
+
+                    'Re-take entry from DB
+                    Dim eStudentFileLocation As StudentFileBLL.StudentFileLocation = Session(SESS.AcctEditFileLocation)
+
+                    Dim dtSelected As DataTable = Nothing
+
+                    If eStudentFileLocation = StudentFileLocation.Staging Then
+                        'Staging
+                        dtSelected = udtStudentFileBLL.GetStudentFileEntryStagingRowDisplay(strFileID, CInt(strSeqNo))
+
+                    Else
+                        'Permanence
+                        dtSelected = udtStudentFileBLL.GetStudentFileEntryRowDisplay(strFileID, CInt(strSeqNo))
+
                     End If
 
                     Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(strDocCode)
@@ -9883,6 +10295,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         drFull.Item("EC_Age") = IIf(udtPersonalInfo.ECAge Is Nothing, DBNull.Value, udtPersonalInfo.ECAge)
                         drFull.Item("EC_Date_of_Registration") = IIf(udtPersonalInfo.ECDateOfRegistration Is Nothing, DBNull.Value, udtPersonalInfo.ECDateOfRegistration)
                         drFull.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
+                        drFull.Item("Real_Account_TSMP") = udtEHSAccount.TSMP
+                        drFull.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
                         drFull.Item("RectifiedRow") = YesNo.Yes
 
                         dr.Item("Doc_Code") = udtPersonalInfo.DocCode
@@ -9915,6 +10329,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         dr.Item("EC_Age") = IIf(udtPersonalInfo.ECAge Is Nothing, DBNull.Value, udtPersonalInfo.ECAge)
                         dr.Item("EC_Date_of_Registration") = IIf(udtPersonalInfo.ECDateOfRegistration Is Nothing, DBNull.Value, udtPersonalInfo.ECDateOfRegistration)
                         dr.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
+                        dr.Item("Real_Account_TSMP") = udtEHSAccount.TSMP
+                        dr.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
                         dr.Item("RectifiedRow") = YesNo.Yes
 
                         Dim drStatusDesc As DataRow = Nothing
@@ -10114,6 +10530,9 @@ Partial Public Class VaccinationFileRectification ' 010414
                                 End With
                             End If
                         End If
+                        drFull.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
+                        drFull.Item("Real_Account_TSMP") = udtEHSAccount.TSMP
+                        drFull.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
                         drFull.Item("RectifiedRow") = YesNo.Yes
                         drFull.Item("Processing") = ucStudentFileDetail.RowEditStatus.None
 
@@ -10177,6 +10596,9 @@ Partial Public Class VaccinationFileRectification ' 010414
                                 End With
                             End If
                         End If
+                        dr.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
+                        dr.Item("Real_Account_TSMP") = udtEHSAccount.TSMP
+                        dr.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
                         dr.Item("RectifiedRow") = YesNo.Yes
                         dr.Item("Processing") = ucStudentFileDetail.RowEditStatus.None
 
@@ -10352,7 +10774,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                     End If
 
                     blnRes = False
-
+                    udtDB.RollBackTranscation()
                 End If
             Else
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
@@ -10363,10 +10785,12 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
 
                 blnRes = False
-
+                udtDB.RollBackTranscation()
             End If
 
         Catch eSQL As SqlException
+            udtDB.RollBackTranscation()
+
             If eSQL.Number = 50000 Then
 
                 sm = New SystemMessage("990001", SeverityCode.SEVD, eSQL.Message)
@@ -10383,6 +10807,7 @@ Partial Public Class VaccinationFileRectification ' 010414
 
             End If
         Catch ex As Exception
+            udtDB.RollBackTranscation()
             Throw
 
         End Try
@@ -10404,14 +10829,34 @@ Partial Public Class VaccinationFileRectification ' 010414
         Dim dtmServiceDate As DateTime
         Dim strUpdateBy As String = udtHCVUUser.UserID
 
+        ' CRE20-003 (Batch Upload) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim eStudentFileLocation As StudentFileBLL.StudentFileLocation = Session(SESS.AcctEditFileLocation)
+
+        ' --------------------
+        ' Get entry by session
+        ' --------------------
+        Dim dtVaccFile As DataTable = GetDetailClassDataTable(DetailClassDataTable.Selected)
+        Dim drVaccFile() As DataRow = Nothing
+        Dim drVaccFileRecord As DataRow = Nothing
+
+        drVaccFile = dtVaccFile.Select(String.Format("Student_Seq='{0}'", strSeqNo))
+
+        If drVaccFile.Length <> 1 Then
+            Throw New Exception(String.Format("VaccinationFileManagement.ibtnEditAcctSave_Click: No available result in UI is found by Student_Seq({0})", strSeqNo))
+        End If
+
+        drVaccFileRecord = drVaccFile(0)
+
+        Dim udtDB As Database = New Database()
+
         Try
-            ' CRE20-003 (Batch Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             '----------------------------------
             '1. Save to DB
             '----------------------------------
             Dim udtStudentFileBLL As New StudentFileBLL
             Dim udtStudentFileStaging As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeaderStaging(strFileID, blnWithEntry:=False)
+
             Dim udtStudent As StudentFileEntryModel = New StudentFileEntryModel
 
             udtStudent.StudentFileID = strFileID
@@ -10438,17 +10883,72 @@ Partial Public Class VaccinationFileRectification ' 010414
                 udtStudent.ServiceDate = Nothing
             End If
 
-            'Permanence
-            udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileLocation.Permanence)
+            udtDB.BeginTransaction()
 
-            'Staging
-            If udtStudentFileStaging IsNot Nothing Then
-                udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileLocation.Staging)
+            '1.1. Save Current to DB
+            If eStudentFileLocation = StudentFileLocation.Staging Then
+                'Permanence
+                udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileLocation.Permanence)
+
+                'Staging
+                If udtStudentFileStaging IsNot Nothing Then
+                    udtStudent.TSMP = CType(drVaccFileRecord("TSMP"), Byte())
+
+                    udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileLocation.Staging)
+
+                End If
+
+            Else
+                'Permanence
+                udtStudent.TSMP = CType(drVaccFileRecord("TSMP"), Byte())
+
+                udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileLocation.Permanence)
+
+                'Staging
+                If udtStudentFileStaging IsNot Nothing Then
+                    udtStudent.TSMP = Nothing
+
+                    udtStudentFileBLL.UpdateStudentInformation(udtStudent, StudentFileLocation.Staging)
+
+                End If
+
             End If
+
+            '1.2. Save Copy to related entry
+            Dim dtRelated As DataTable = Session(SESS.RelatedStudentFileEntryDT)
+            For Each drRelated As DataRow In dtRelated.Rows
+
+                udtStudent.StudentFileID = drRelated("Student_File_ID")
+                udtStudent.StudentSeq = drRelated("Student_Seq")
+
+                'Permanence
+                If drRelated("In_Perm") = YesNo.Yes Then
+                    udtStudentFileBLL.UpdateSyncStudentInformation(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+                End If
+
+                'Staging
+                If drRelated("In_Staging") = YesNo.Yes Then
+                    udtStudentFileBLL.UpdateSyncStudentInformation(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                End If
+            Next
+
+            udtDB.CommitTransaction()
 
             '----------------------------------
             '2. Update Account Info Gridview 
             '----------------------------------
+            Dim dtSelected As DataTable = Nothing
+
+            If eStudentFileLocation = StudentFileLocation.Staging Then
+                'Staging
+                dtSelected = udtStudentFileBLL.GetStudentFileEntryStagingRowDisplay(strFileID, CInt(strSeqNo))
+
+            Else
+                'Perm
+                dtSelected = udtStudentFileBLL.GetStudentFileEntryRowDisplay(strFileID, CInt(strSeqNo))
+
+            End If
+
             ' All Class/Category
             Dim dtFull As DataTable = GetDetailClassDataTable(DetailClassDataTable.Full)
             Dim drFull As DataRow = dtFull.Select(String.Format("Student_Seq={0}", strSeqNo))(0)
@@ -10464,6 +10964,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
                 drFull.Item("Service_Receive_Dtm") = dtmServiceDate
             End If
+            drFull.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
             drFull.Item("RectifiedRow") = YesNo.Yes
 
             dtFull.AcceptChanges()
@@ -10483,6 +10984,7 @@ Partial Public Class VaccinationFileRectification ' 010414
                 End If
                 dr.Item("Service_Receive_Dtm") = dtmServiceDate
             End If
+            dr.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
             dr.Item("RectifiedRow") = YesNo.Yes
 
             dt.AcceptChanges()
@@ -10492,25 +10994,29 @@ Partial Public Class VaccinationFileRectification ' 010414
                 Me.udcInfoMessageBox.AddMessage(sm)
             End If
 
-            ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
 
         Catch eSQL As SqlException
-            If eSQL.Number = 50000 Then
+            udtDB.RollBackTranscation()
 
+            If eSQL.Number = 50000 Then
                 sm = New SystemMessage("990001", SeverityCode.SEVD, eSQL.Message)
+                udtAuditLog.AddDescripton("Update info.", "Fail")
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
 
-                Me.udcAcctEditErrorMessage.BuildMessageBox("UpdateFail", udtAuditLog, LogID.LOG00099, "Update contact no. fail")
+                'Me.udcAcctEditErrorMessage.BuildMessageBox("UpdateFail", udtAuditLog, LogID.LOG00099, "Update contact no. fail")
 
                 blnRes = False
 
             Else
                 Throw eSQL
             End If
+
         Catch ex As Exception
             Throw
 
         End Try
+        ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
         Return blnRes
 
@@ -10600,6 +11106,42 @@ Partial Public Class VaccinationFileRectification ' 010414
                 udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging)
             End If
 
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
+            Dim dtRelated As DataTable = Session(SESS.RelatedStudentFileEntryDT)
+
+            ' Overwrite related entry with same Voucher Account ID
+            For Each drRelated As DataRow In dtRelated.Rows
+
+                Dim strRelatedVoucherAccID As String = String.Empty
+                strRelatedVoucherAccID = drRelated("Voucher_Acc_ID").ToString.Trim
+
+                'Skip to update if the Voucher_Acc_ID not the same
+                If String.IsNullOrEmpty(strRelatedVoucherAccID) Then
+                    Continue For
+                End If
+
+                If udtEHSAccount.VoucherAccID.Trim <> strRelatedVoucherAccID Then
+                    Continue For
+                End If
+
+                Dim udtRelatedStudent As StudentFileEntryModel = udtStudent.Clone()
+
+                udtRelatedStudent.StudentFileID = drRelated("Student_File_ID")
+                udtRelatedStudent.StudentSeq = drRelated("Student_Seq")
+
+                'Permanence
+                If drRelated("In_Perm") = YesNo.Yes Then
+                    udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtRelatedStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Permanence)
+                End If
+
+                'Staging
+                If drRelated("In_Staging") = YesNo.Yes Then
+                    udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtRelatedStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging)
+                End If
+            Next
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
             'Audit log
             udtAuditLog.WriteEndLog(LogID.LOG00042, AuditLogDesc.Msg00042)
 
@@ -10609,6 +11151,18 @@ Partial Public Class VaccinationFileRectification ' 010414
             Dim strSeqNo As String = CStr(Session(SESS.AcctEditSeqNo))
             Dim strFileID As String = CStr(Session(SESS.AcctEditFileID))
             Dim drStatusDesc As DataRow = Nothing
+
+            Dim dtSelected As DataTable = Nothing
+            Dim eStudentFileLocation As StudentFileBLL.StudentFileLocation = Session(SESS.AcctEditFileLocation)
+            If eStudentFileLocation = StudentFileLocation.Staging Then
+                'Staging
+                dtSelected = udtStudentFileBLL.GetStudentFileEntryStagingRowDisplay(strFileID, CInt(strSeqNo))
+
+            Else
+                'Perm
+                dtSelected = udtStudentFileBLL.GetStudentFileEntryRowDisplay(strFileID, CInt(strSeqNo))
+
+            End If
 
             Dim dtFull As DataTable = GetDetailClassDataTable(DetailClassDataTable.Full)
             Dim drFull As DataRow = dtFull.Select(String.Format("Student_Seq={0}", strSeqNo))(0)
@@ -10633,6 +11187,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             drFull.Item("EC_Serial_No") = IIf(udtPersonalInfo.ECSerialNo = String.Empty, DBNull.Value, udtPersonalInfo.ECSerialNo)
             drFull.Item("EC_Reference_No") = IIf(udtPersonalInfo.ECReferenceNo Is Nothing, DBNull.Value, udtPersonalInfo.ECReferenceNo)
             drFull.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
+            drFull.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
             drFull.Item("RectifiedRow") = YesNo.Yes
 
             drStatusDesc = Nothing
@@ -10698,6 +11253,7 @@ Partial Public Class VaccinationFileRectification ' 010414
             dr.Item("EC_Serial_No") = IIf(udtPersonalInfo.ECSerialNo = String.Empty, DBNull.Value, udtPersonalInfo.ECSerialNo)
             dr.Item("EC_Reference_No") = IIf(udtPersonalInfo.ECReferenceNo Is Nothing, DBNull.Value, udtPersonalInfo.ECReferenceNo)
             dr.Item("Real_Record_Status") = udtEHSAccount.RecordStatus
+            dr.Item("TSMP") = dtSelected.Rows(0).Item("TSMP")
             dr.Item("RectifiedRow") = YesNo.Yes
 
             drStatusDesc = Nothing
@@ -11743,6 +12299,456 @@ Partial Public Class VaccinationFileRectification ' 010414
 
     End Sub
 
+    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    ' -------------------------------------------------------------------------------
+    Public Function getRelatedEntry(ByVal strFileID As String, ByVal intSeqNo As Integer) As DataTable
+        Dim udtStudentFileBLL As New StudentFileBLL
+        Dim udtEHSAccountBLL As New EHSAccountBLL
+
+        Dim dtRes As New DataTable
+        dtRes.Columns.Add("Student_File_ID", GetType(String))
+        dtRes.Columns.Add("Student_Seq", GetType(Integer))
+        dtRes.Columns.Add("In_Perm", GetType(String))
+        dtRes.Columns.Add("In_Staging", GetType(String))
+        dtRes.Columns.Add("Voucher_Acc_ID", GetType(String)) ' Validated Acc ID / Temp Acc ID
+        dtRes.Columns.Add("Acc_Type", GetType(String))
+        dtRes.Columns.Add("Update_Acc", GetType(String))
+        dtRes.Columns.Add("Transaction_ID", GetType(String))
+
+        Dim dtRelated As DataTable = udtStudentFileBLL.GetStudentFileEntryRelated(strFileID, intSeqNo, False)
+
+        For Each drRelated As DataRow In dtRelated.Rows
+            Dim blnUpdateRelatedAcc = False
+            Dim dt As New DataTable
+
+            Dim udtRelatedStudentFile As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeader(drRelated("Student_File_ID"), blnWithEntry:=False)
+            Dim udtRelatedStudentFileStaging As StudentFileHeaderModel = udtStudentFileBLL.GetStudentFileHeaderStaging(drRelated("Student_File_ID"), blnWithEntry:=False)
+
+            If udtRelatedStudentFile IsNot Nothing Then
+                dt = udtStudentFileBLL.GetStudentFileEntryRowDisplay(drRelated("Student_File_ID"), drRelated("Student_Seq"))
+            Else
+                dt = udtStudentFileBLL.GetStudentFileEntryStagingRowDisplay(drRelated("Student_File_ID"), drRelated("Student_Seq"))
+            End If
+
+            Dim strVoucherAccID As String = dt.Rows(0)("Real_Voucher_Acc_ID").ToString.Trim
+            Dim strAccType As String = dt.Rows(0)("Real_Acc_Type").ToString.Trim
+            Dim strTransactionID As String = String.Empty
+
+            If strVoucherAccID = String.Empty Then
+                ' No Account
+                blnUpdateRelatedAcc = True
+
+            ElseIf strVoucherAccID <> String.Empty AndAlso strAccType = EHSAccountModel.SysAccountSourceClass.ValidateAccount Then
+                ' Skip update for Validated Acc
+                blnUpdateRelatedAcc = False
+
+            ElseIf strVoucherAccID <> String.Empty AndAlso strAccType = EHSAccountModel.SysAccountSourceClass.TemporaryAccount Then
+
+                ' Load Temp Account with latest information
+                Dim udtRelatedTempAccount As EHSAccountModel = udtEHSAccountBLL.LoadTempEHSAccountByVRID(strVoucherAccID)
+
+                ' Skip update for Temp Acc in validating / Removed / being Validated
+                If Not IsNothing(udtRelatedTempAccount) Then
+                    If udtRelatedTempAccount.EHSPersonalInformationList(0).Validating OrElse _
+                        udtRelatedTempAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.Removed OrElse _
+                        udtRelatedTempAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.Validated _
+                    Then
+                        blnUpdateRelatedAcc = False
+                    Else
+                        blnUpdateRelatedAcc = True
+                    End If
+                End If
+
+            End If
+
+            If Not IsDBNull(dt.Rows(0)("Transaction_ID")) Then
+                strTransactionID = dt.Rows(0)("Transaction_ID").ToString.Trim
+            End If
+
+            Dim dr As DataRow
+            dr = dtRes.NewRow
+            dr("Student_File_ID") = drRelated("Student_File_ID")
+            dr("Student_Seq") = drRelated("Student_Seq")
+            dr("In_Perm") = IIf(udtRelatedStudentFile IsNot Nothing, YesNo.Yes, YesNo.No)
+            dr("In_Staging") = IIf(udtRelatedStudentFileStaging IsNot Nothing, YesNo.Yes, YesNo.No)
+            dr("Voucher_Acc_ID") = strVoucherAccID
+            dr("Acc_Type") = strAccType
+            dr("Update_Acc") = IIf(blnUpdateRelatedAcc, YesNo.Yes, YesNo.No)
+            dr("Transaction_ID") = strTransactionID
+
+            dtRes.Rows.Add(dr)
+
+        Next
+
+        Return dtRes
+    End Function
+
+
+    Private Sub UpdateRelatedEntryAccount(ByVal udtCurrentEHSAccount As EHSAccountModel, _
+                                          ByVal strDocCode As String, _
+                                          ByVal blnCreateAcc As Boolean, _
+                                          ByVal strUpdateBy As String, _
+                                          Optional ByVal udtDB As Database = Nothing)
+
+        Dim udtStudentFileBLL As New StudentFileBLL
+        Dim udtEHSAccountBLL As New EHSAccountBLL
+        Dim udtEHSTransactionBLL As New EHSTransactionBLL
+        Dim dtmCurrentDate = _udtGeneralFunction.GetSystemDateTime
+
+        Dim udtStudentAccountResultDesc As StudentAccountResultDesc = GetStudentAccountResultDesc()
+        Dim udtStudentAccountResultDescChi As StudentAccountResultDesc = Me.GetStudentAccountResultDescChi
+
+
+        'Re-take current entry from DB
+        Dim udtCurrentStudent As StudentFileEntryModel = udtStudentFileBLL.GetStudentFileEntryByStudentSeq(Session(SESS.AcctEditFileID), CInt(Session(SESS.AcctEditSeqNo)), udtDB)
+
+        If udtCurrentEHSAccount Is Nothing OrElse udtCurrentStudent Is Nothing Then
+            Return
+        End If
+
+        'Get the related entry from DB
+        Dim dtRelated As DataTable = Session(SESS.RelatedStudentFileEntryDT)
+
+        For Each drRelated As DataRow In dtRelated.Rows
+
+            ' Skip If not update account
+            If drRelated("Update_Acc").ToString.Trim() = YesNo.No Then Continue For
+
+            Dim blnUpdateStudentTempAccInfo As Boolean = False
+            Dim blnDirectUpdateExistingAccount As Boolean = False
+            Dim blnUpdateDocCode As Boolean = False
+            Dim blnUpdateExcelChiName As Boolean = False
+
+            Dim udtOrgRelatedTempAccount As EHSAccountModel = Nothing
+            Dim udtRelatedTempAccount As EHSAccountModel = Nothing
+
+            Dim udtRelatedStudent As StudentFileEntryModel = Nothing
+
+            If drRelated("In_Perm") = YesNo.Yes Then
+                udtRelatedStudent = udtStudentFileBLL.GetStudentFileEntryByStudentSeq(drRelated("Student_File_ID"), CInt(drRelated("Student_Seq")), udtDB)
+            Else
+                udtRelatedStudent = udtStudentFileBLL.GetStudentFileEntryStagingByStudentSeq(drRelated("Student_File_ID"), CInt(drRelated("Student_Seq")), udtDB)
+            End If
+
+
+            If udtCurrentEHSAccount.VoucherAccID <> String.Empty Then
+                'Validated Account 
+                If udtCurrentEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                    ' -------------------------------------------------------------------------
+                    ' 1. Current: No Account -> Edit Save -> VA Found
+                    ' a. Related: No Account (Copy current entry personal + VA acc Info to Related entry)
+                    ' b. Related: With Temp Account (update entry + original account personal info)
+                    ' -------------------------------------------------------------------------
+                    If blnCreateAcc Then
+
+                        ' a. Related: No Account (Copy current entry personal + VA acc Info to Related entry)
+                        '==============================================
+                        If String.IsNullOrEmpty(drRelated("Voucher_Acc_ID")) Then
+
+                            Dim udtStudent As New StudentFileEntryModel
+
+                            With udtStudent
+                                .StudentFileID = udtRelatedStudent.StudentFileID
+                                .StudentSeq = udtRelatedStudent.StudentSeq
+
+                                'Update Vaccination File Entry - Student Info Part
+                                .NameEN = udtCurrentStudent.NameEN
+                                .SurnameENOriginal = udtCurrentStudent.SurnameENOriginal
+                                .GivenNameENOriginal = udtCurrentStudent.GivenNameENOriginal
+                                .NameCH = udtCurrentStudent.NameCH
+                                .NameCHExcel = udtCurrentStudent.NameCHExcel
+
+                                .DOB = udtCurrentStudent.DOB
+                                .Exact_DOB = udtCurrentStudent.Exact_DOB
+                                .Sex = udtCurrentStudent.Sex
+                                .DateOfIssue = udtCurrentStudent.DateOfIssue
+
+                                .PermitToRemainUntil = udtCurrentStudent.PermitToRemainUntil
+                                .ForeignPassportNo = udtCurrentStudent.ForeignPassportNo
+                                .ECSerialNo = udtCurrentStudent.ECSerialNo
+                                .ECReferenceNo = udtCurrentStudent.ECReferenceNo
+                                .ECReferenceNoOtherFormat = udtCurrentStudent.ECReferenceNoOtherFormat
+
+                                .LastRectifyBy = udtCurrentStudent.LastRectifyBy
+                                .LastRectifyDtm = udtCurrentStudent.LastRectifyDtm
+
+                                'Update Vaccination File Entry - Validated Account Part
+                                .DocCode = udtCurrentStudent.DocCode
+                                .VoucherAccID = udtCurrentStudent.VoucherAccID.Trim
+                                .AccType = udtCurrentStudent.AccType
+                                .AccDocCode = udtCurrentStudent.AccDocCode
+                                .AccValidationResult = udtCurrentStudent.AccValidationResult
+                                .ValidatedAccFound = udtCurrentStudent.ValidatedAccFound
+                            End With
+
+                            If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                                If udtStudent.NameCH <> String.Empty Then
+                                    blnUpdateExcelChiName = True
+                                End If
+                            End If
+
+                            '----------------------------
+                            'Student Personal Info
+                            '----------------------------
+                            'Permanence
+                            If drRelated("In_Perm") = YesNo.Yes Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+                            End If
+
+                            'Staging
+                            If drRelated("In_Staging") = YesNo.Yes Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryByValidatedAcct(udtStudent, blnUpdateExcelChiName, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                            End If
+
+                            '----------------------------
+                            'Validated Account Info
+                            '----------------------------
+                            'Permanence
+                            If drRelated("In_Perm") = YesNo.Yes Then
+                                udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+                            End If
+
+                            'Staging
+                            If drRelated("In_Staging") = YesNo.Yes Then
+                                udtStudentFileBLL.UpdateStudentValidatedVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                            End If
+
+
+                            ' b. Related: With Temp Account (update entry + original account personal info)
+                            '==============================================
+                        ElseIf drRelated("Acc_Type") = EHSAccountModel.SysAccountSourceClass.TemporaryAccount Then
+
+                            blnDirectUpdateExistingAccount = True
+                            blnUpdateStudentTempAccInfo = True
+
+                            udtOrgRelatedTempAccount = udtEHSAccountBLL.LoadTempEHSAccountByVRID(drRelated("Voucher_Acc_ID"), udtDB)
+                            udtRelatedTempAccount = New EHSAccountModel(udtOrgRelatedTempAccount)
+
+                        End If
+
+                    End If
+
+                ElseIf udtCurrentEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.TemporaryAccount Or _
+                    udtCurrentEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.SpecialAccount Then
+                    ' -------------------------------------------------------------------------
+                    ' 2. Current: No Account -> Edit Save -> Create New EHSAccount / Update EHSAccount (For Temporary / Special)
+                    ' Update entry if related entry has:
+                    ' a. No account (will copy account info from current entry)
+                    ' b. Temp account exist with same temp account id (update entry only)
+                    ' c. Temp account exist with diff temp account id (update entry + original account personal info)
+                    '------------------------------------------------------------------
+                    If String.IsNullOrEmpty(drRelated("Voucher_Acc_ID")) Then
+                        blnUpdateStudentTempAccInfo = True
+
+                    ElseIf drRelated("Acc_Type") = EHSAccountModel.SysAccountSourceClass.TemporaryAccount Then
+
+                        udtOrgRelatedTempAccount = udtEHSAccountBLL.LoadTempEHSAccountByVRID(drRelated("Voucher_Acc_ID"), udtDB)
+                        udtRelatedTempAccount = New EHSAccountModel(udtOrgRelatedTempAccount)
+
+                        If udtCurrentEHSAccount.VoucherAccID = drRelated("Voucher_Acc_ID") Then
+                            blnDirectUpdateExistingAccount = False
+                            blnUpdateStudentTempAccInfo = True
+                        Else
+                            ' Diff Temp Acc ID                            
+                            blnDirectUpdateExistingAccount = True
+                            blnUpdateStudentTempAccInfo = True
+                        End If
+
+                    End If
+
+                End If
+
+                '==============================================
+                '3. Update Account
+                '==============================================
+                If blnDirectUpdateExistingAccount Then
+
+                    ' Overwrite with Rectified Personal Info
+                    With udtRelatedTempAccount.EHSPersonalInformationList(0)
+                        .DocCode = udtCurrentEHSAccount.EHSPersonalInformationList(0).DocCode
+                        .IdentityNum = udtCurrentEHSAccount.EHSPersonalInformationList(0).IdentityNum
+                        .ENameSurName = udtCurrentEHSAccount.EHSPersonalInformationList(0).ENameSurName
+                        .ENameFirstName = udtCurrentEHSAccount.EHSPersonalInformationList(0).ENameFirstName
+                        .CName = udtCurrentEHSAccount.EHSPersonalInformationList(0).CName
+                        .CCCode1 = udtCurrentEHSAccount.EHSPersonalInformationList(0).CCCode1
+                        .CCCode2 = udtCurrentEHSAccount.EHSPersonalInformationList(0).CCCode2
+                        .CCCode3 = udtCurrentEHSAccount.EHSPersonalInformationList(0).CCCode3
+                        .CCCode4 = udtCurrentEHSAccount.EHSPersonalInformationList(0).CCCode4
+                        .CCCode5 = udtCurrentEHSAccount.EHSPersonalInformationList(0).CCCode5
+                        .CCCode6 = udtCurrentEHSAccount.EHSPersonalInformationList(0).CCCode6
+                        .DOB = udtCurrentEHSAccount.EHSPersonalInformationList(0).DOB
+                        .ExactDOB = udtCurrentEHSAccount.EHSPersonalInformationList(0).ExactDOB
+                        .Gender = udtCurrentEHSAccount.EHSPersonalInformationList(0).Gender
+                        .DateofIssue = udtCurrentEHSAccount.EHSPersonalInformationList(0).DateofIssue
+                        .AdoptionPrefixNum = udtCurrentEHSAccount.EHSPersonalInformationList(0).AdoptionPrefixNum
+                        .PermitToRemainUntil = udtCurrentEHSAccount.EHSPersonalInformationList(0).PermitToRemainUntil
+                        .Foreign_Passport_No = udtCurrentEHSAccount.EHSPersonalInformationList(0).Foreign_Passport_No
+                        .ECSerialNo = udtCurrentEHSAccount.EHSPersonalInformationList(0).ECSerialNo
+                        .ECReferenceNo = udtCurrentEHSAccount.EHSPersonalInformationList(0).ECReferenceNo
+                        .ECSerialNoNotProvided = udtCurrentEHSAccount.EHSPersonalInformationList(0).ECSerialNoNotProvided
+                        .ECReferenceNoOtherFormat = udtCurrentEHSAccount.EHSPersonalInformationList(0).ECReferenceNoOtherFormat
+                        .ECAge = udtCurrentEHSAccount.EHSPersonalInformationList(0).ECAge
+                        .ECDateOfRegistration = udtCurrentEHSAccount.EHSPersonalInformationList(0).ECDateOfRegistration
+                        .OtherInfo = udtCurrentEHSAccount.EHSPersonalInformationList(0).OtherInfo
+                    End With
+
+                    ' Update Status to PendingVerify (Missing Info case will not happen since all fields must be inputted in UI)
+                    If udtRelatedTempAccount.RecordStatus.Trim.Equals(VRAcctValidatedStatus.Invalid) Or _
+                        udtRelatedTempAccount.RecordStatus.Trim.Equals(VRAcctValidatedStatus.Restricted) Then
+
+                        udtRelatedTempAccount.RecordStatus = VRAcctValidatedStatus.PendingForVerify
+                    End If
+
+                    If Not (New DocTypeBLL).getAllDocType.Filter(strDocCode).IMMDorManualValidationAvailable Then
+                        udtRelatedTempAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.NotForImmDValidation
+                    End If
+
+                    udtEHSAccountBLL.UpdateEHSAccountRectify(udtOrgRelatedTempAccount, udtRelatedTempAccount, udtCurrentEHSAccount.UpdateBy, dtmCurrentDate, udtDB)
+
+                    '==============================================
+                    '3b. Update Doc Code if difference
+                    '==============================================
+                    If udtOrgRelatedTempAccount.EHSPersonalInformationList(0).DocCode <> strDocCode Then
+
+                        blnUpdateDocCode = True
+                        ' ---------------------------
+                        ' Update Voucher Transaction Doc Code
+                        ' ---------------------------
+                        If udtOrgRelatedTempAccount IsNot Nothing Then
+                            If udtOrgRelatedTempAccount.TransactionID <> "" Then
+                                udtEHSTransactionBLL.UpdateTransactionDocCode(udtOrgRelatedTempAccount.TransactionID, strDocCode, udtCurrentEHSAccount.UpdateBy, dtmCurrentDate, udtDB)
+                            End If
+                        End If
+
+                    End If
+                End If
+
+                '==============================================
+                '4. Update Entry
+                '==============================================
+                If blnUpdateStudentTempAccInfo Then
+
+                    'Update Vaccination File Entry - Temporary Account Part
+                    Dim udtStudent As StudentFileEntryModel = New StudentFileEntryModel
+                    Dim dtmNow As DateTime = _udtGeneralFunction.GetSystemDateTime
+
+                    If blnDirectUpdateExistingAccount Then
+                        'Check Manual Validation for update "Acc_Validation_Result"
+                        Dim strAccValidationResult As String = String.Empty
+                        If _udtValidator.chkManualValidation(udtRelatedTempAccount.EHSPersonalInformationList.Filter(strDocCode).DocCode, _
+                                                             udtRelatedTempAccount.EHSPersonalInformationList.Filter(strDocCode)) Then
+                            strAccValidationResult = String.Format("{0}|||{1}", _
+                                                                    udtStudentAccountResultDesc.Pending_Manual_Validation, _
+                                                                    udtStudentAccountResultDescChi.Pending_Manual_Validation)
+                        Else
+                            strAccValidationResult = String.Format("{0}|||{1}", _
+                                                                    udtStudentAccountResultDesc.Pending_ImmD_Validation, _
+                                                                    udtStudentAccountResultDescChi.Pending_ImmD_Validation)
+                        End If
+
+                        With udtStudent
+                            .StudentFileID = udtRelatedStudent.StudentFileID
+                            .StudentSeq = udtRelatedStudent.StudentSeq
+                            .DocCode = strDocCode
+                            .TempVoucherAccID = udtRelatedTempAccount.VoucherAccID
+                            .AccType = udtRelatedTempAccount.AccountSourceString
+                            .AccDocCode = strDocCode
+                            .TempAccRecordStatus = udtRelatedTempAccount.RecordStatus
+                            .AccValidationResult = strAccValidationResult
+                            .ValidatedAccFound = udtCurrentStudent.ValidatedAccFound
+                            .LastRectifyBy = strUpdateBy
+                            .LastRectifyDtm = dtmNow
+                        End With
+
+                    Else
+                        ' Copy From Current Entry
+                        With udtStudent
+                            .StudentFileID = udtRelatedStudent.StudentFileID
+                            .StudentSeq = udtRelatedStudent.StudentSeq
+                            .TempVoucherAccID = udtCurrentStudent.TempVoucherAccID
+                            .AccType = udtCurrentStudent.AccType
+                            .AccDocCode = udtCurrentStudent.AccDocCode
+                            .TempAccRecordStatus = udtCurrentStudent.TempAccRecordStatus
+                            .AccValidationResult = udtCurrentStudent.AccValidationResult
+                            .ValidatedAccFound = udtCurrentStudent.ValidatedAccFound
+                            .LastRectifyBy = strUpdateBy
+                            .LastRectifyDtm = dtmNow
+                        End With
+
+                    End If
+
+                    'Permanence
+                    If drRelated("In_Perm") = YesNo.Yes Then
+                        udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+                    End If
+
+                    'Staging
+                    If drRelated("In_Staging") = YesNo.Yes Then
+                        udtStudentFileBLL.UpdateStudentTempVoucherAccount(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                    End If
+
+                    If udtRelatedStudent.DocCode <> strDocCode Then
+                        blnUpdateDocCode = True
+                    End If
+
+                End If
+
+                '==============================================
+                '5. Update Vaccination File Entry - Doc Code
+                '==============================================
+                If blnUpdateDocCode Then
+
+                    Dim udtStudent As StudentFileEntryModel = New StudentFileEntryModel
+                    With udtStudent
+                        .StudentFileID = udtRelatedStudent.StudentFileID
+                        .StudentSeq = udtRelatedStudent.StudentSeq
+                        .DocCode = strDocCode
+                        .LastRectifyBy = udtCurrentStudent.LastRectifyBy
+                        .LastRectifyDtm = udtCurrentStudent.LastRectifyDtm
+                    End With
+
+                    'Permanence
+                    If drRelated("In_Perm") = YesNo.Yes Then
+                        udtStudentFileBLL.UpdateVaccinationFileEntryDocCode(udtStudent, StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+                    End If
+
+                    'Staging
+                    If drRelated("In_Staging") = YesNo.Yes Then
+                        udtStudentFileBLL.UpdateVaccinationFileEntryDocCode(udtStudent, StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                    End If
+
+                End If
+
+                '==============================================
+                '6. Update Vaccination File Entry - Name_CH_Excel
+                '==============================================
+                If blnUpdateStudentTempAccInfo Or blnDirectUpdateExistingAccount Then
+                    If strDocCode = DocTypeModel.DocTypeCode.HKIC Or strDocCode = DocTypeModel.DocTypeCode.EC Then
+                        If udtCurrentEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName <> String.Empty Then
+
+                            'Permanence
+                            If drRelated("In_Perm") = YesNo.Yes Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(udtRelatedStudent.StudentFileID, _
+                                                                                         udtRelatedStudent.StudentSeq, _
+                                                                                         udtCurrentEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                         StudentFileBLL.StudentFileLocation.Permanence, udtDB)
+                            End If
+
+                            'Staging
+                            If drRelated("In_Staging") = YesNo.Yes Then
+                                udtStudentFileBLL.UpdateVaccinationFileEntryChiNameExcel(udtRelatedStudent.StudentFileID, _
+                                                                                         udtRelatedStudent.StudentSeq, _
+                                                                                         udtCurrentEHSAccount.EHSPersonalInformationList.Filter(strDocCode).CName, _
+                                                                                         StudentFileBLL.StudentFileLocation.Staging, udtDB)
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        Next
+
+    End Sub
+    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 #Region "Enter Details Validation"
 
     'HKID
@@ -11785,6 +12791,17 @@ Partial Public Class VaccinationFileRectification ' 010414
                 isValid = False
                 udcInputHKIC.SetHKICNoModificationError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        End If
+
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.HKIC, udcInputHKIC.HKID)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputHKIC.SetHKICNoModificationError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDesc)
             End If
         End If
 
@@ -11930,6 +12947,17 @@ Partial Public Class VaccinationFileRectification ' 010414
                 isValid = False
                 udcInputEC.SetECHKICModificationError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        End If
+
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.EC, udcInputEC.HKID)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputEC.SetECHKICModificationError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc)
             End If
         End If
 
@@ -12217,6 +13245,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.HKBC, udcInputHKBC.RegistrationNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputHKBC.SetRegistrationNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.HKBC).DocIdentityDesc)
+            End If
+        End If
+
         'DOB
         Dim strExactDOB As String = String.Empty
         Dim strDOB As String = udcInputHKBC.DOB
@@ -12338,6 +13377,17 @@ Partial Public Class VaccinationFileRectification ' 010414
                 isValid = False
                 udcInputAdopt.SetEntryNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        End If
+
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.ADOPC, udcInputAdopt.IdentityNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputAdopt.SetEntryNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDesc)
             End If
         End If
 
@@ -12464,6 +13514,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.DI, udcInputDI.TravelDocNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputDI.SetTDError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.DI).DocIdentityDesc)
+            End If
+        End If
+
         'English Name
         sm = Me._udtValidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
         If Not IsNothing(sm) Then
@@ -12562,6 +13623,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.ID235B, udcInputID235B.BirthEntryNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputID235B.SetBirthEntryNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.ID235B).DocIdentityDesc)
+            End If
+        End If
+
         'English Name
         sm = Me._udtValidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
         If Not IsNothing(sm) Then
@@ -12652,6 +13724,17 @@ Partial Public Class VaccinationFileRectification ' 010414
                 isValid = False
                 udcInputReentryPermit.SetREPMTNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        End If
+
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.REPMT, udcInputReentryPermit.REPMTNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputReentryPermit.SetREPMTNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.REPMT).DocIdentityDesc)
             End If
         End If
 
@@ -12752,6 +13835,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.VISA, udcInputVisa.VISANo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputVisa.SetVISANoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.VISA).DocIdentityDesc)
+            End If
+        End If
+
         'PassportNo
         If udcInputVisa.PassportNo.Equals(String.Empty) Then
             isValid = False
@@ -12837,6 +13931,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.OW, udcInputOW.DocumentNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputOW.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.OW).DocIdentityDesc)
+            End If
+        End If
+
         'DOB
         Dim strExactDOB As String = String.Empty
         Dim strDOB As String = udcInputOW.DOB
@@ -12910,6 +14015,17 @@ Partial Public Class VaccinationFileRectification ' 010414
                 isValid = False
                 udcInputTW.SetDocumentNoError(True)
                 Me.udcAcctEditErrorMessage.AddMessage(sm)
+            End If
+        End If
+
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.TW, udcInputTW.DocumentNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputTW.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.TW).DocIdentityDesc)
             End If
         End If
 
@@ -12989,6 +14105,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.RFNo8, udcInputRFNo8.DocumentNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputRFNo8.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.RFNo8).DocIdentityDesc)
+            End If
+        End If
+
         'DOB
         Dim strExactDOB As String = String.Empty
         Dim strDOB As String = udcInputRFNo8.DOB
@@ -13065,6 +14192,17 @@ Partial Public Class VaccinationFileRectification ' 010414
             End If
         End If
 
+        'Check duplicate Doc No.
+        If Me.udcRectifyAccount.EditDocumentNo Then
+            sm = ValidateDuplicateDocNo(DocTypeModel.DocTypeCode.OTHER, udcInputOTHER.DocumentNo)
+
+            If Not IsNothing(sm) Then
+                isValid = False
+                udcInputOTHER.SetDocumentNoError(True)
+                Me.udcAcctEditErrorMessage.AddMessage(sm, "%s", (New DocTypeBLL).getAllDocType.Filter(DocTypeModel.DocTypeCode.OTHER).DocIdentityDesc)
+            End If
+        End If
+
         'DOB
         Dim strExactDOB As String = String.Empty
         Dim strDOB As String = udcInputOTHER.DOB
@@ -13104,6 +14242,31 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         Return isValid
+    End Function
+
+    Private Function ValidateDuplicateDocNo(ByVal strDocCode As String, ByVal strDocNo As String) As SystemMessage
+        Dim sm As SystemMessage = Nothing
+
+        Dim dtVaccFile As DataTable = GetDetailClassDataTable(DetailClassDataTable.Full)
+        Dim lstDocNo As List(Of String)
+
+        'Replace special characters before checking doc. no. duplicating 
+        Dim strDocumentNo As String = Regex.Replace(strDocNo.ToUpper.Trim, "[^a-zA-Z0-9]", String.Empty)
+
+        lstDocNo = dtVaccFile.AsEnumerable().Select(Function(x) New With {
+                                                            .DocNo = x.Field(Of String)("Doc_No"),
+                                                            .Student_Seq = x.Field(Of Integer)("Student_Seq")
+                                                      }).Where(Function(s) Regex.Replace(s.DocNo.Trim, "[^a-zA-Z0-9]", String.Empty) = strDocumentNo _
+                                                                   AndAlso s.Student_Seq <> Session(SESS.AcctEditSeqNo)) _
+                                                            .Select(Function(h) h.DocNo).ToList()
+
+        If lstDocNo.Count > 0 Then
+            sm = New SystemMessage("990000", SeverityCode.SEVE, MsgCode.MSG00457)
+
+        End If
+
+        Return sm
+
     End Function
 
     Private Function AccountCreationValdiation(ByVal strDocCode As String, ByVal strDocumentNo As String, ByVal strDocumentNoPrefix As String, ByVal strDOB As String) As SystemMessage

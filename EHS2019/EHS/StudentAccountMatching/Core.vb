@@ -9,6 +9,7 @@ Imports Common.DataAccess
 Imports Common.Format
 Imports StudentAccountMatching.AccountMatchingBLL
 Imports System.Data.SqlClient
+Imports Common.Component.FileGeneration
 
 Module Core
     Sub Main(ByVal args() As String)
@@ -155,56 +156,37 @@ Public Class ScheduleJob
                 CheckAndUpdateTempVoucherAccount()
             End If
 
+            ' ==================================================================================
+            ' Pick up the Student File need to process (Check Account before Report Generation)
+            ' ==================================================================================
+
+            ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' -------------------------------------------------------------------------------
             ' Get Student File Header List from staging
             If blnGetFromStaging Then
-                Dim dt As DataTable = udtStudentFileBLL.GetStudentFileHeaderStagingDT(String.Empty, StudentFileHeaderModel.RecordStatusEnumClass.NA)
 
-                For Each dr As DataRow In dt.Rows
-                    Dim udtStudentFileHeader As StudentFileHeaderModel = New StudentFileHeaderModel(dr)
+                Dim lstStudentHeader As List(Of StudentFile.StudentFileHeaderModel) = udtAccountMatchingBLL.GetStudentFileHeaderAccountMatching(StudentFileBLL.StudentFileLocation.Staging)
 
-                    Select Case udtStudentFileHeader.RecordStatusEnum
-                        Case StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Upload, _
-                            StudentFileHeaderModel.RecordStatusEnumClass.ProcessingChecking_Rectify, _
-                            StudentFileHeaderModel.RecordStatusEnumClass.ProcessingVaccination_Claim
-
-                            AccountMatching(strMode, udtStudentFileHeader, udtStudentFileHeader.RecordStatusEnum, StudentFileBLL.StudentFileLocation.Staging)
-
-                        Case Else
-                            Continue For
-
-                    End Select
+                For intCount As Integer = 0 To lstStudentHeader.Count - 1
+                    Dim udtStudentHeader As StudentFile.StudentFileHeaderModel = lstStudentHeader(intCount)
+                    AccountMatching(strMode, udtStudentHeader, udtStudentHeader.RecordStatusEnum, StudentFileBLL.StudentFileLocation.Staging)
                 Next
+
             End If
 
 
-            ' Get Student File Header List from Perm (Status: FR)
+            ' Get Student File Header List from Perm (Same logic with "proc_StudentFileHeader_get_forVaccineEntitle")
             If blnGetFromPerm Then
 
-                ' CRE19-001 (VSS 2019) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                Dim dt As DataTable = udtStudentFileBLL.GetStudentFileHeaderDT(String.Empty, StudentFileHeaderModel.RecordStatusEnumClass.NA)
+                Dim lstStudentHeader As List(Of StudentFile.StudentFileHeaderModel) = udtAccountMatchingBLL.GetStudentFileHeaderAccountMatching(StudentFileBLL.StudentFileLocation.Permanence)
 
-                For Each dr As DataRow In dt.Rows
-                    Dim udtStudentFileHeader As StudentFileHeaderModel = New StudentFileHeaderModel(dr)
-
-                    Select Case udtStudentFileHeader.RecordStatusEnum
-
-                        Case StudentFileHeaderModel.RecordStatusEnumClass.PendingFinalReportGeneration
-                            ' Check Student account on the gen final report date
-                            Dim dtmCurrent As DateTime = udtGeneralFunction.GetSystemDateTime
-
-                            If dtmCurrent.Date >= udtStudentFileHeader.FinalCheckingReportGenerationDate Then
-                                AccountMatching(strMode, udtStudentFileHeader, udtStudentFileHeader.RecordStatusEnum, StudentFileBLL.StudentFileLocation.Permanence)
-
-                            End If
-
-                        Case Else
-                            Continue For
-
-                    End Select
-                    ' CRE19-001 (VSS 2019) [End][Winnie]
+                For intCount As Integer = 0 To lstStudentHeader.Count - 1
+                    Dim udtStudentHeader As StudentFile.StudentFileHeaderModel = lstStudentHeader(intCount)
+                    AccountMatching(strMode, udtStudentHeader, udtStudentHeader.RecordStatusEnum, StudentFileBLL.StudentFileLocation.Permanence)
                 Next
             End If
+            ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
             ' End of Account Matching
 
             ConsoleLog("Account Matching is Completed.")
@@ -458,7 +440,7 @@ Public Class ScheduleJob
                             ' Check field different between TA Info and VA Info
                             eVASearchResultRecheck = udtAccountMatchingBLL.IsVAcctExisted(udtStudentCopy, udtExistingTempAccount.EHSPersonalInformationList(0))
 
-                            If Not eVASearchResultRecheck = enumVAcctSearchResult.Not_Found Then                                
+                            If Not eVASearchResultRecheck = enumVAcctSearchResult.Not_Found Then
                                 udtStudentAmend.ValidatedAccFound = udtStudentCopy.ValidatedAccFound
                                 udtStudentAmend.ValidatedAccUnmatchResult = udtStudentCopy.ValidatedAccUnmatchResult
 

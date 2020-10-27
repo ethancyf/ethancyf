@@ -32,6 +32,14 @@ Public Class ExcelBuilder
     Private _intExcelWorkSheetMaxRow As Integer
     ' CRE13-016 - Upgrade to excel 2007 [End][Tommy L]
 
+    ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+    Public Class WorksheetAction
+        Public Const Add As String = "A"
+        Public Const Delete As String = "D"
+        Public Const Rename As String = "R"
+    End Class
+    ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
 #Region "Constructor"
 
     Private Sub New()
@@ -629,62 +637,86 @@ Public Class ExcelBuilder
                     oSheets = oBook.Worksheets
 
                     'XLSParmeter
+                    ' ==== For VF0001 ====
+                    ' 1st sheet: Batch
+                    ' 2nd sheet: Follow Up Client
+                    ' 3rd sheet: DynamicGenSheet
+                    ' 4th sheet: Remark
+                    ' 5th sheet: Change History
+                    ' 6th sheet: (Hidden)
+
+                    ' ==== For Others ====
                     ' 1st sheet: Batch
                     ' 2nd sheet: DynamicGenSheet
                     ' 3rd sheet: Remark
                     ' 4th sheet: Change History
                     ' 5th sheet: (Hidden)
 
-                    Dim intContentSheet As Integer = 1
-                    Dim intDynamicGenSheet As Integer = 2
-                    Dim intRemarkSheet As Integer = 3
+                    Dim intDynamicGenSheet As Integer = 0
 
-                    Dim dtContent As DataTable
                     Dim lstdtDynamicGenData As List(Of DataTable)
-                    Dim dtRemark As DataTable
-
-                    Dim intDataSetTableCount As Integer = dsData.Tables.Count
-                    dtContent = dsData.Tables(0).Copy
-                    dtRemark = dsData.Tables(intDataSetTableCount - 1).Copy
-
                     lstdtDynamicGenData = New List(Of DataTable)
-                    For Each dt As DataTable In dsData.Tables
-                        If dt.Columns.Contains("Class_Name") Then
-                            Dim dtCopy As DataTable = dt.Copy
-                            lstdtDynamicGenData.Add(dt)
-                        End If
-                    Next
-
 
                     Dim xlsContentSheet As Excel.Worksheet = Nothing
                     Dim xlsDynamicGenSheet As Excel.Worksheet = Nothing
-                    Dim xlsRemarkSheet As Excel.Worksheet = Nothing
 
-                    ' CRE19-001 (VSS 2019) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
+                    ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                    ' -------------------------------------------------------------------------------
                     ' Handle Hidden worksheet
                     Dim intVisibleSheetCount As Integer = 0
+                    Dim intDatatable As Integer = 0
 
                     For i = 1 To oSheets.Count
                         If oSheets(i).Visible <> Excel.XlSheetVisibility.xlSheetVisible Then Continue For
                         intVisibleSheetCount += 1
-
-                        'Content
-                        If intVisibleSheetCount = intContentSheet Then xlsContentSheet = oSheets.Item(i)
+                        
+                        'First sheet
+                        If intVisibleSheetCount = 1 Then xlsContentSheet = oSheets.Item(i)
 
                         'DynamicGenSheet
-                        If intVisibleSheetCount = intDynamicGenSheet Then xlsDynamicGenSheet = oSheets.Item(i)
+                        Dim blnIsDynamicSheet As Boolean = False
 
-                        'Remark
-                        If intVisibleSheetCount = intRemarkSheet Then xlsRemarkSheet = oSheets.Item(i)
+                        If Not IsNothing(dtWorksheetAction) Then
 
+                            For Each dr As DataRow In dtWorksheetAction.Rows
+                                If intVisibleSheetCount = dr("Sheet") AndAlso dr("Action") = WorksheetAction.Add Then
+                                    blnIsDynamicSheet = True
+
+                                    xlsDynamicGenSheet = oSheets.Item(i)
+                                    intDynamicGenSheet = intVisibleSheetCount
+
+                                    Dim intNoOfDynamicSheet = CInt(dr("Action_Content"))
+
+                                    If intNoOfDynamicSheet > 0 Then
+
+                                        For k As Integer = 1 To intNoOfDynamicSheet
+                                            Dim dtFormData As DataTable = dsData.Tables(intDatatable).Copy
+                                            lstdtDynamicGenData.Add(dtFormData)
+                                            intDatatable += 1
+                                        Next
+
+                                    End If
+
+                                    Exit For
+                                End If
+                            Next
+                        End If
+
+                        ' Normal Worksheet Bind Data
+                        If blnIsDynamicSheet = False Then
+                            Dim dtFormData As DataTable = dsData.Tables(intDatatable).Copy
+
+                            oSheet = CType(oSheets.Item(i), Excel.Worksheet)
+                            oCells = DataTable2Excel(dtFormData, oSheet, intStartRow(intVisibleSheetCount - 1), oSheets, iCurrentSheet)
+
+                            intDatatable += 1
+                        End If
+                        ' CRE20-003-02 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                     Next
 
-                    'Content
-                    oSheet = CType(xlsContentSheet, Excel.Worksheet)
-                    oCells = DataTable2Excel(dtContent, oSheet, intStartRow(intContentSheet - 1), oSheets, iCurrentSheet)
-
-                    'DynamicGenSheet
+                    ' CRE19-001 (VSS 2019) [Start][Winnie]
+                    ' -------------------------------------------------------------------------------
+                    'DynamicGenSheet Bind Data
                     Dim iCurrentDynamicGenSheet As Integer = xlsDynamicGenSheet.Index
                     For Each dt As DataTable In lstdtDynamicGenData
                         xlsDynamicGenSheet.Copy(After:=oBook.Worksheets(iCurrentDynamicGenSheet - 1))
@@ -696,10 +728,6 @@ Public Class ExcelBuilder
                         iCurrentDynamicGenSheet += 1
                     Next
                     xlsDynamicGenSheet.Delete()
-
-                    'Remark
-                    oSheet = CType(xlsRemarkSheet, Excel.Worksheet)
-                    oCells = DataTable2Excel(dtRemark, oSheet, intStartRow(intRemarkSheet - 1), oSheets, iCurrentSheet)
                     ' CRE19-001 (VSS 2019) [End][Winnie]
 
 
@@ -716,10 +744,10 @@ Public Class ExcelBuilder
 
                         For Each dr As DataRow In dtWorksheetAction.Rows
                             Select Case dr("Action")
-                                Case "D"
+                                Case WorksheetAction.Delete
                                     DirectCast(oSheets(dr("Sheet")), Excel.Worksheet).Delete()
 
-                                Case "R"
+                                Case WorksheetAction.Rename
                                     DirectCast(oSheets(dr("Sheet")), Excel.Worksheet).Name = dr("Action_Content")
 
                             End Select

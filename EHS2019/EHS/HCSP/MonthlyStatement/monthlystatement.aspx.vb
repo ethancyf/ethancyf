@@ -31,6 +31,7 @@ Partial Public Class monthlystatement
         Public Const SchemeBackClick As String = "Scheme Back click"
         Public Const TransactionBackClick As String = "Transaction Back click" '00010
         Public Const TransactionDetailBackClick As String = "Transaction Detail Back click"
+        Public Const SchoolListBackClick As String = "School List Back click"
     End Class
 
     Private Class ViewIndex
@@ -38,6 +39,7 @@ Partial Public Class monthlystatement
         Public Const Scheme As Integer = 1
         Public Const Transaction As Integer = 2
         Public Const Detail As Integer = 3
+        Public Const School As Integer = 4  'CRE20-003 (Break Down of Monthly Statement by Schools )[Martin]
     End Class
 
     <Serializable()> Private Class SubsidizeSummary
@@ -76,6 +78,7 @@ Partial Public Class monthlystatement
     Private Const SESS_TransactionDataTable As String = "020701_TransactionDataTable"
     Private Const SESS_TransactionNo As String = "020701_TransactionNo"
     Private Const SESS_EHSTransaction As String = "020701_EHSTransaction"
+    Private Const SESS_SchoolListDataTable As String = "020701_SchoolListDataTable"
 
     Private Const AvailableItemDescInjection As String = "Injection"
 
@@ -499,8 +502,13 @@ Partial Public Class monthlystatement
 
         If dtScheme.Rows.Count = 1 Then
             Dim drScheme As DataRow = dtScheme.Rows(0)
-            BuildGvTransaction(CStr(drScheme("Scheme_Code")).Trim, CStr(drScheme("Display_Code")).Trim)
-
+            'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+            If CStr(drScheme("Scheme_Code")).Trim = SchemeClaimModel.PPP Or CStr(drScheme("Scheme_Code")).Trim = SchemeClaimModel.PPPKG Then
+                BuildGvSchool(CStr(drScheme("Scheme_Code")).Trim, CStr(drScheme("Display_Code")).Trim)
+            Else
+                BuildGvTransaction(CStr(drScheme("Scheme_Code")).Trim, CStr(drScheme("Display_Code")).Trim, Nothing, Nothing, Nothing)
+            End If
+            'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
         Else
             GridViewDataBind(gvScheme, dtScheme, "Display_Seq", "ASC", False)
 
@@ -561,8 +569,13 @@ Partial Public Class monthlystatement
             Dim strSchemeCode As String = e.CommandArgument.ToString.Trim
             Dim strDisplayCode As String = CType(e.CommandSource, LinkButton).Text.Trim
 
-            BuildGvTransaction(strSchemeCode, strDisplayCode)
-
+            'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+            If strSchemeCode = SchemeClaimModel.PPP Or strSchemeCode = SchemeClaimModel.PPPKG Then
+                BuildGvSchool(strSchemeCode, strDisplayCode)
+            Else
+                BuildGvTransaction(strSchemeCode, strDisplayCode, Nothing, Nothing, Nothing)
+            End If
+            'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
         End If
     End Sub
 
@@ -603,17 +616,28 @@ Partial Public Class monthlystatement
         GridViewSortingHandler(sender, e, SESS_SchemeDataTable)
     End Sub
 
-    Private Sub BuildGvTransaction(ByVal strSchemeCode As String, ByVal strDisplayCode As String)
+    'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+    Private Sub BuildGvTransaction(ByVal strSchemeCode As String, ByVal strDisplayCode As String, ByVal strSchoolCode As String, ByVal strSchoolEngName As String, ByVal strSchoolChiName As String)
         MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.Transaction
 
         Dim intPracticeDisplaySeq As Integer = CInt(ViewState("PracticeDisplaySeq"))
         Dim strReimburseID As String = CStr(ViewState("ReimburseID"))
         Dim udtSP As ServiceProviderModel = UserACBLL.GetUserAC
 
-        Dim dtTransaction As DataTable = udtReimbursementBLL.GetMonthlyReimbursementStatementDetails(udtSP.SPID, intPracticeDisplaySeq, strReimburseID, strSchemeCode)
+        Dim dtTransaction As DataTable = udtReimbursementBLL.GetMonthlyReimbursementStatementDetails(udtSP.SPID, intPracticeDisplaySeq, strReimburseID, strSchemeCode, strSchoolCode)
         Session(SESS_TransactionDataTable) = dtTransaction
 
         GridViewDataBind(gvTransaction, dtTransaction, "Transaction_Dtm", "ASC", False)
+
+        'School Code and School Name
+        If strSchemeCode.Trim = SchemeClaimModel.PPP Or strSchemeCode.Trim = SchemeClaimModel.PPPKG Then
+            panlTSchool.Visible = True
+            lblTSchoolCode.Text = strSchoolCode.Trim
+            lblTSchoolEngName.Text = strSchoolEngName.Trim
+            lblTSchoolChiName.Text = "(" + strSchoolChiName.Trim + ")"
+        Else
+            panlTSchool.Visible = False
+        End If
 
         ' Practice
         lblTPractice.Text = lblSPractice.Text
@@ -638,7 +662,7 @@ Partial Public Class monthlystatement
         udtAuditLogEntry.WriteLog(LogID.LOG00007, AuditLogDescription.ViewTransaction)
 
     End Sub
-
+    'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
     '
 
     Protected Sub gvTransaction_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvTransaction.RowDataBound
@@ -763,8 +787,88 @@ Partial Public Class monthlystatement
         GridViewSortingHandler(sender, e, SESS_TransactionDataTable)
     End Sub
 
-    '
+    'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+    Private Sub BuildGvSchool(ByVal strSchemeCode As String, ByVal strDisplayCode As String)
+        MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.School
 
+        Dim intPracticeDisplaySeq As Integer = CInt(ViewState("PracticeDisplaySeq"))
+        Dim strReimburseID As String = CStr(ViewState("ReimburseID"))
+        Dim udtSP As ServiceProviderModel = UserACBLL.GetUserAC
+
+        Dim dtSchoolList As DataTable = udtReimbursementBLL.GetMonthlyReimbursementStatementSchoolList(udtSP.SPID, intPracticeDisplaySeq, strReimburseID, strSchemeCode)
+        Session(SESS_SchoolListDataTable) = dtSchoolList
+
+        GridViewDataBind(gvSchool, dtSchoolList, "School_Code", "ASC", False)
+
+        ' Practice
+        lblSLPractice.Text = lblSPractice.Text
+        lblSLPractice_Chi.Text = lblSPractice_Chi.Text
+
+        If (Session("language") = TradChinese OrElse Session("language") = SimpChinese) AndAlso lblSLPractice.Text <> lblSLPractice_Chi.Text Then
+            lblSLPractice_Chi.Visible = True
+            lblSLPractice.Visible = False
+        Else
+            lblSLPractice.Visible = True
+            lblSLPractice_Chi.Visible = False
+        End If
+
+        ' Statement
+        lblSLStatement.Text = lblSStatement.Text
+
+        ' Scheme
+        lblSLScheme.Text = strDisplayCode.Trim
+
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.AddDescripton("Scheme", strSchemeCode)
+        udtAuditLogEntry.WriteLog(LogID.LOG00007, AuditLogDescription.ViewTransaction)
+
+    End Sub
+
+    Protected Sub gvSchool_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvSchool.RowDataBound
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim dr As DataRow = CType(e.Row.DataItem, System.Data.DataRowView).Row
+
+            'School Code
+            Dim lbtSchoolCode As LinkButton = e.Row.FindControl("lbtSchoolCode")
+            lbtSchoolCode.CommandArgument = String.Format("{0}|||{1}|||{2}", _
+                                                          CStr(dr("Scheme_Code")), _
+                                                            CStr(dr("SchoolName_Eng")), _
+                                                            CStr(dr("SchoolName_Chi")))
+
+            'School Chinese Name
+            Dim lblTransactionDtm As Label = e.Row.FindControl("lbSchoolChiName")
+            lblTransactionDtm.Text = "(" + CStr(dr("SchoolName_Chi")) + ")"
+        End If
+
+    End Sub
+
+    Protected Sub gvSchool_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gvSchool.RowCommand
+        If TypeOf e.CommandSource Is LinkButton Then
+            Dim strSchoolCode As String = CType(e.CommandSource, LinkButton).Text.Trim
+            Dim strArgument() As String = Split(DirectCast(e.CommandSource, LinkButton).CommandArgument.ToString.Trim, "|||")
+            Dim strSchemeCode As String = strArgument(0)
+            Dim strSchoolEngName As String = strArgument(1)
+            Dim strSchoolChiName As String = strArgument(2)
+
+            BuildGvTransaction(strSchemeCode, lblSLScheme.Text, strSchoolCode, strSchoolEngName, strSchoolChiName)
+        End If
+    End Sub
+
+
+    Protected Sub gvSchool_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles gvSchool.PageIndexChanging
+        GridViewPageIndexChangingHandler(sender, e, SESS_SchoolListDataTable)
+    End Sub
+
+    Protected Sub gvSchool_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvSchool.PreRender
+        GridViewPreRenderHandler(sender, e, SESS_SchoolListDataTable)
+    End Sub
+
+    Protected Sub gvSchool_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles gvSchool.Sorting
+        GridViewSortingHandler(sender, e, SESS_SchoolListDataTable)
+    End Sub
+    'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
+
+    '
     Public Overrides Sub GridViewHeaderImage_Click(ByVal sender As Object, ByVal e As SortedGridviewHeaderModel.GridViewHeaderImageEventArgs)
         Select Case e.intColumn
             Case 1, 4
@@ -802,15 +906,16 @@ Partial Public Class monthlystatement
 
         Dim dtScheme As DataTable = Session(SESS_SchemeDataTable)
 
-        If dtScheme.Rows.Count = 1 Then
+        'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+        If panlTSchool.Visible = True Then
+            MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.School
+        ElseIf dtScheme.Rows.Count = 1 Then
             MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.Summary
-
             If Not IsNothing(Session(SESS_StatementDataSet)) Then BuildDynamicStatement(Session(SESS_StatementDataSet))
-
         Else
             MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.Scheme
         End If
-
+        'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
     End Sub
 
     Protected Sub ibtnDetailBack_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -818,9 +923,23 @@ Partial Public Class monthlystatement
         udtAuditLogEntry.WriteLog(LogID.LOG00011, AuditLogDescription.TransactionDetailBackClick)
 
         udcClaimTranEnquiry.Clear()
-
         MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.Transaction
     End Sub
+
+    'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+    Protected Sub ibtnSchoolBack_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteLog(LogID.LOG00010, AuditLogDescription.SchoolListBackClick)
+
+        Dim dtScheme As DataTable = Session(SESS_SchemeDataTable)
+        If dtScheme.Rows.Count = 1 Then
+            MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.Summary
+            If Not IsNothing(Session(SESS_StatementDataSet)) Then BuildDynamicStatement(Session(SESS_StatementDataSet))
+        Else
+            MultiViewMonthlyStatement.ActiveViewIndex = ViewIndex.Scheme
+        End If
+    End Sub
+    'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
 
     Private Sub SetDropDownListSelectedIndex(ByRef ddlMonthlyStatement As DropDownList, ByVal strValue As String)
         Dim i As Integer

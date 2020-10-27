@@ -3732,11 +3732,9 @@ Partial Public Class EHSRectification
                 End If
             End If
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'If udtEHSAccount.EHSPersonalInformationList(0).Validating Then
-            If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If IsReadOnly(udtEHSAccount) Then
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                 ibtnRectifyAccountModify.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ModifyDisableBtn")
                 ibtnRectifyAccountSave.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SaveDisableBtn")
             Else
@@ -3988,15 +3986,23 @@ Partial Public Class EHSRectification
 
             End If
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------            
-            If .EHSPersonalInformationList(0).Validating Then
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            ' ----------------------------------------------------------------------------------------
+            If udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.Validated OrElse _
+                udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.Removed Then
+                Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Information
+                Me.udcInfoMsgBox.AddMessage(FunctCode.FUNT990001, SeverityCode.SEVD, MsgCode.MSG00018)
+                Me.udcInfoMsgBox.BuildMessageBox()
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
+
+            ElseIf .EHSPersonalInformationList(0).Validating Then
                 Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Information
                 Me.udcInfoMsgBox.AddMessage(FuncCode, SeverityCode.SEVI, MsgCode.MSG00004)
                 Me.udcInfoMsgBox.BuildMessageBox()
             End If
 
-            If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If IsReadOnly(udtEHSAccount) Then
                 ibtnRectifyAccountModify.Enabled = False
                 ibtnRectifyAccountSave.Enabled = False
                 ibtnRectifyAccountModify.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ModifyDisableBtn")
@@ -4004,13 +4010,13 @@ Partial Public Class EHSRectification
 
                 Me.udcRectifyAccount.Mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly
 
-                If .EHSPersonalInformationList(0).Validating Then
+                If IsReadOnly(udtEHSAccount, blnCheckSmartID:=False) Then
                     SetupSmartID(udtSP.SPID, .EHSPersonalInformationList(0).DocCode, False, .EHSPersonalInformationList(0).SmartIDVer)
                 Else
                     ' Read Only + Not Validating = IDEAS2.5
                     SetupSmartID(udtSP.SPID, .EHSPersonalInformationList(0).DocCode, True, .EHSPersonalInformationList(0).SmartIDVer)
                 End If
-
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
             Else
                 ibtnRectifyAccountModify.Enabled = True
                 ibtnRectifyAccountSave.Enabled = True
@@ -4346,11 +4352,9 @@ Partial Public Class EHSRectification
 
         If udtEHSAccountPassed.AccountSource = EHSAccountModel.SysAccountSource.SpecialAccount Then
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'If udtEHSAccountPassed.EHSPersonalInformationList(0).Validating Then
-            If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If IsReadOnly(udtEHSAccount) Then
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                 mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly
             Else
                 mode = ucInputDocTypeBase.BuildMode.Modification
@@ -4360,11 +4364,9 @@ Partial Public Class EHSRectification
             If Me.IsReusedAcc(udtEHSAccountPassed.OriginalAccID) Then
                 mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly
             Else
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                'If udtEHSAccountPassed.EHSPersonalInformationList(0).Validating Then
-                If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                If IsReadOnly(udtEHSAccount) Then
+                    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                     mode = ucInputDocTypeBase.BuildMode.ModifyReadOnly
                 Else
                     mode = ucInputDocTypeBase.BuildMode.Modification
@@ -4842,11 +4844,9 @@ Partial Public Class EHSRectification
 
         If udtEHAccountPassed.AccountSource = EHSAccountModel.SysAccountSource.SpecialAccount Then
 
-            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            'If udtEHAccountPassed.EHSPersonalInformationList(0).Validating Then
-            If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+            ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+            If IsReadOnly(udtEHSAccount) Then
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
                 Return ucInputDocTypeBase.BuildMode.ModifyReadOnly
             Else
@@ -4857,11 +4857,10 @@ Partial Public Class EHSRectification
             If Me.IsReusedAcc(udtEHAccountPassed.OriginalAccID) Then
                 Return ucInputDocTypeBase.BuildMode.ModifyReadOnly
             Else
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                'If udtEHAccountPassed.EHSPersonalInformationList(0).Validating Then
-                If IsReadOnly(udtEHSAccount.EHSPersonalInformationList(0)) Then
-                    ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
+                If IsReadOnly(udtEHSAccount) Then
+                    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
                     Return ucInputDocTypeBase.BuildMode.ModifyReadOnly
                 Else
                     Return ucInputDocTypeBase.BuildMode.Modification
@@ -5314,27 +5313,38 @@ Partial Public Class EHSRectification
     End Function
     ' I-CRE17-003 (Enhance eHA rectification on HCSP to check with eHS(S) and CMS vaccination) [End][Winnie]
 
-    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
     ' ---------------------------------------------------------------------------------------------------------
-    Private Function IsReadOnly(ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel) As Boolean
+    Private Function IsReadOnly(ByVal udtEHSAccount As EHSAccountModel, _
+                                Optional ByVal blnCheckSmartID As Boolean = True) As Boolean
         Dim blnReadOnly As Boolean = False
+
+        Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
 
         If udtEHSPersonalInfo.Validating Then
             ' Cannot modify info during immd validating
             blnReadOnly = True
         End If
 
-        If udtEHSPersonalInfo.CreateBySmartID Then
-            If udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Or _
-                udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS_Combo_New_WithGender Then
-                ' All fields read from smart id
+        Select Case udtEHSAccount.RecordStatus
+            Case EHSAccountModel.TempAccountRecordStatusClass.Removed,
+                EHSAccountModel.TempAccountRecordStatusClass.Validated
                 blnReadOnly = True
+        End Select
+
+        If blnCheckSmartID Then
+            If udtEHSPersonalInfo.CreateBySmartID Then
+                If udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS2_WithGender Or _
+                    udtEHSPersonalInfo.SmartIDVer = SmartIDVersion.IDEAS_Combo_New_WithGender Then
+                    ' All fields read from smart id
+                    blnReadOnly = True
+                End If
             End If
         End If
 
         Return blnReadOnly
     End Function
-    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+    ' CRE20-003-03 Enhancement on Programme or Scheme using batch upload [End][Winnie]
 
     Private Sub lbtnHere_Click(sender As Object, e As EventArgs) Handles lbtnSmartIDSoftwareNotInstalled2.Click
 

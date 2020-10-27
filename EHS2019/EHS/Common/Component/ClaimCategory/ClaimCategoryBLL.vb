@@ -2,10 +2,12 @@ Imports Common.ComObject
 Imports Common.DataAccess
 Imports Common.Component.PracticeSchemeInfo
 Imports Common.Component.EHSAccount.EHSAccountModel
+ 
 
 Namespace Component.ClaimCategory
 
     Public Class ClaimCategoryBLL
+
 
         Public Class CACHE_STATIC_DATA
             Public Const CACHE_ALL_SchemeClaimCategory As String = "ClaimCategoryBLL_ALL_SchemeClaimCategory"
@@ -46,7 +48,12 @@ Namespace Component.ClaimCategory
         Public Sub New()
         End Sub
 
-        Public Shared Function ConvertCategoryToDatatable(ByVal udtClaimCategoryModelCollection As ClaimCategoryModelCollection) As DataTable
+        Public Shared Function ConvertCategoryToDatatable(ByVal udtClaimCategoryModelCollection As ClaimCategoryModelCollection, Optional ByVal strVersion As String = "") As DataTable
+            'CRE20-009 Change the style of rbCategorySelection [Start][Nichole]
+            Dim strCategoryName As String = Nothing
+
+
+            'CRE20-009 Change the style of rbCategorySelection [End][Nichole]
 
             Dim dtCategory As New DataTable()
             dtCategory.Columns.Add(ClaimCategoryModel._Category_Code, GetType(String))
@@ -64,6 +71,11 @@ Namespace Component.ClaimCategory
                 dr(ClaimCategoryModel._Category_Name_CN) = udtClaimCategoryModel.CategoryNameCN
                 dr(ClaimCategoryModel._IsMedicalCondition) = udtClaimCategoryModel.IsMedicalCondition
 
+                'CRE20-009 Change the style of rbCategorySelection [Start][Nichole]
+                If udtClaimCategoryModel.CategoryCode = "VSSDA" And strVersion = "" Then
+                    dr(ClaimCategoryModel._Category_Name) = "<span style='position:absolute;width:700px'>" + udtClaimCategoryModel.CategoryName + "</span><br><br>"
+                End If
+                'CRE20-009 Change the style of rbCategorySelection [End][Nichole]
                 dtCategory.Rows.Add(dr)
             Next
 

@@ -2651,6 +2651,15 @@ Partial Public Class VaccinationFileRectification
     Protected WithEvents udcAcctEditInfoMessage As Global.CustomControls.InfoMessageBox
 
     '''<summary>
+    '''pnlAcctEditInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAcctEditInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''lblRectifyRecipientDetail control.
     '''</summary>
     '''<remarks>
@@ -3261,6 +3270,42 @@ Partial Public Class VaccinationFileRectification
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnEditAcctSave As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''pnlConcurrentUpdate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlConcurrentUpdate As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''imgEditAcctMsg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgEditAcctMsg As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblEditAcctMsg control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEditAcctMsg As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnEditAcctOK control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnEditAcctOK As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''btnHiddenAcctEdit control.

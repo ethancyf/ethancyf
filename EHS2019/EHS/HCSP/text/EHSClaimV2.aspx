@@ -131,6 +131,7 @@
                         <asp:Label ID="lblViewTranDetailDocumentaryProof" runat="server" CssClass="tableText"></asp:Label></td>
                 </tr>
             </table>
+           
             <table border="0" cellpadding="0" cellspacing="0" class="textVersionTable" runat="server"
                 id="tblViewTranDetailRCHCode">
                 <tr>
@@ -983,11 +984,48 @@
                 </tr>
                 <tr>
                     <td style="width: 100%">
-                        <asp:RadioButtonList ID="rbDocumentaryProof" runat="server" Width="100%" Visible="false"/>
+                         <!---CRE20-009 Set autopostback to true for active the selectchanged function [Start][Nichole] -->
+                        <asp:RadioButtonList ID="rbDocumentaryProof" runat="server" Width="100%" AutoPostBack="true" Visible="false"/>
+                         <!---CRE20-009 Set autopostback to true for active the selectchanged function [End][Nichole] -->
                         <asp:checkbox ID="chkDocumentaryProof" runat="server" Visible="false"/>
                         <asp:hiddenfield ID="hfDocumentaryProof" runat="server" Visible="false"/>
                     </td>
                 </tr>
+                <!--CRE20-009 add checkbox CSSA and Annex for CSSA Claim [Start][Nichole] -->
+                <asp:Panel ID="panVSSDAConfirm" runat="server" visible="false" >
+                <tr>
+                    <td style="width: 100%"><br />
+                         <table border="0" style="border-collapse: collapse; border-spacing:0px">
+                         <tr> <td style="width:20px">&nbsp;</td>
+                             <td style="width: 5px; vertical-align:top ">
+                                <asp:checkbox ID="chkDocProofCSSA" runat="server" />
+                             </td>
+                             <td>
+                                <asp:Label ID="lblDocProofCSSA" runat="server"   AssociatedControlId="chkDocProofCSSA"  CssClass="tableText"  Text="<%$ Resources:Text,  ProvidedInfoCSSA%>"></asp:Label>
+                                <asp:Label ID="lblVSSDAConfirmCSSAError" runat="server" ForeColor="Red" Text="*" Visible="False"></asp:Label>
+                            </td>
+                         </tr>
+                         </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 100%">
+                         <table border="0" style="border-collapse: collapse; border-spacing:0px">
+                         <tr><td style="width:20px">&nbsp;</td>
+                             <td style="width: 5px; vertical-align:top ">
+                                <asp:checkbox ID="chkDocProofAnnex" runat="server"  />
+                             </td>
+                             <td>
+                                <asp:Label ID="lblDocProofAnnex" runat="server"  AssociatedControlId="chkDocProofAnnex"   CssClass="tableText"  Text="<%$ Resources:Text,  ProvidedInfoAnnex%>"></asp:Label>
+                                <asp:Label ID="lblVSSDAConfirmAnnexError" runat="server" ForeColor="Red" Text="*" Visible="False"></asp:Label>
+                            </td>
+                         </tr>
+                             <tr><td colspan="2">&nbsp;</td></tr>
+                         </table>
+                    </td>
+                </tr>
+                </asp:Panel> 
+                 <!--CRE20-009 add checkbox CSSA and Annex for CSSA Claim [End][Nichole] -->
             </table>
             <asp:Button ID="btnDocumentaryProofBack" runat="server" Text="<%$ Resources: AlternateText, BackBtn %>" />
             <asp:Button ID="btnDocumentaryProofCancel" runat="server" Text="<%$ Resources:AlternateText, CancelBtn%>" />
@@ -1050,7 +1088,6 @@
                     </td>
                 </tr>
                 </asp:Panel>
-                <tr style="height:5px"/>
             </table>
             <asp:Button ID="btnPlaceVaccinationBack" runat="server" Text="<%$ Resources: AlternateText, BackBtn %>" />
             <asp:Button ID="btnPlaceVaccinationCancel" runat="server" Text="<%$ Resources:AlternateText, CancelBtn%>" />

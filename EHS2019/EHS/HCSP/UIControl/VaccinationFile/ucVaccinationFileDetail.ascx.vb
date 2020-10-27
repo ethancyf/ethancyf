@@ -241,8 +241,21 @@ Public Class ucVaccinationFileDetail
                 Case CultureLanguage.TradChinese
                     lblDScheme.Text = udtSchemeClaimModel.SchemeDescChi
                     lblDSchoolName.Text = udtStudentFile.SchoolNameCH
+
                     lblDServiceProviderName.Text = udtStudentFile.SPNameCH
-                    lblDPractice.Text = String.Format("{0} ({1})", udtStudentFile.PracticeNameCH, udtStudentFile.PracticeDisplaySeq)
+
+                    If udtStudentFile.SPNameCH Is Nothing OrElse udtStudentFile.SPNameCH = String.Empty Then
+                        lblDServiceProviderName.Text = udtStudentFile.SPNameEN
+                    Else
+                        lblDServiceProviderName.Text = udtStudentFile.SPNameCH
+                    End If
+
+                    If udtStudentFile.PracticeNameCH Is Nothing OrElse udtStudentFile.PracticeNameCH = String.Empty Then
+                        lblDPractice.Text = String.Format("{0} ({1})", udtStudentFile.PracticeNameEN, udtStudentFile.PracticeDisplaySeq)
+                    Else
+                        lblDPractice.Text = String.Format("{0} ({1})", udtStudentFile.PracticeNameCH, udtStudentFile.PracticeDisplaySeq)
+                    End If
+
                     'lblDDoseToInject.Text = udtStudentFile.DoseDisplay(EnumLanguage.TC)
                     lblDStatus.Text = udtStudentFile.RecordStatusDisplay(EnumLanguage.TC, False)
                 Case Else

@@ -419,6 +419,13 @@ AS BEGIN
 				WHEN ACC.Real_Acc_Type = 'T'	THEN TVA.Record_Status
 				ELSE ''
 			END,
+		[Real_Account_TSMP] =
+			CASE
+				WHEN ACC.Real_Acc_Type IS NULL	THEN NULL
+				WHEN ACC.Real_Acc_Type = 'V'	THEN VA.TSMP
+				WHEN ACC.Real_Acc_Type = 'T'	THEN TVA.TSMP
+				ELSE NULL
+			END,
 		[Original_NameEN] = CONVERT(VARCHAR(MAX), DecryptByKey(SFE.Encrypt_Field2)),
 		[Original_NameCN] = CONVERT(NVARCHAR(MAX), DecryptByKey(SFE.Encrypt_Field3)),
 		[Original_DOB] = SFE.DOB,

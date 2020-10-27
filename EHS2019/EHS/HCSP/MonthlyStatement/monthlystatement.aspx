@@ -66,11 +66,13 @@
                                                 <table cellpadding="0" cellspacing="0" style="width: 570px">
                                                     <tr>
                                                         <td style="text-align: center">
-                                                            <asp:Label ID="lblStatementHeader1" runat="server" CssClass="boldText" Text="<%$ Resources:Text, eHealthSystem %>"></asp:Label></td>
+                                                            <asp:Label ID="lblStatementHeader1" runat="server" CssClass="boldText" Text="<%$ Resources:Text, eHealthSystem %>"></asp:Label>
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="text-align: center">
-                                                            <asp:Label ID="lblStatementHeader2" runat="server" CssClass="boldText"></asp:Label></td>
+                                                            <asp:Label ID="lblStatementHeader2" runat="server" CssClass="boldText"></asp:Label>
+                                                        </td>
                                                     </tr>
                                                     <tr style="height: 30px">
                                                     </tr>
@@ -267,6 +269,23 @@
                                                     <td>
                                                         <asp:Label ID="lblTScheme" runat="server" CssClass="tableText"></asp:Label></td>
                                                 </tr>
+                                                <asp:Panel ID="panlTSchool" runat="server">
+                                                <tr style="height: 30px">
+                                                    <td>
+                                                        <asp:Label ID="lblTSchoolCodeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SchoolCode %>"></asp:Label></td>
+                                                    <td>
+                                                        <asp:Label ID="lblTSchoolCode" runat="server" CssClass="tableText"></asp:Label></td>
+                                                </tr>
+                                                <tr style="height: 30px">
+                                                    <td>
+                                                        <asp:Label ID="lblTSchoolNameText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SchoolName %>"></asp:Label></td>
+                                                    <td>
+                                                        <asp:Label ID="lblTSchoolEngName" runat="server" CssClass="tableText"></asp:Label>
+                                                        <br/>
+                                                        <asp:Label ID="lblTSchoolChiName" runat="server" CssClass="tableText"></asp:Label>
+                                                    </td>
+                                                </tr>
+												</asp:Panel>
                                             </table>
                                         </td>
                                     </tr>
@@ -377,6 +396,93 @@
                                         <td>
                                             <asp:ImageButton ID="ibtnDetailBack" runat="server" ImageUrl="<%$ Resources:ImageUrl, BackBtn %>"
                                                 AlternateText="<%$ Resources:AlternateText, BackBtn %>" OnClick="ibtnDetailBack_Click" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </asp:View>
+                            <asp:View ID="ViewSchool" runat="server">
+                                <table cellpadding="0" cellspacing="0" style="width: 100%">
+                                    <tr style="height: 40px">
+                                        <td>
+                                            <asp:Label ID="lblSchoolList" runat="server" CssClass="tableCaption" Text='<%$ Resources:Text, ClaimRecord %>'></asp:Label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table cellpadding="0" cellspacing="0">
+                                                <tr style="height: 30px">
+                                                    <td style="width: 150px">
+                                                        <asp:Label ID="lblSLPracticeText" runat="server" CssClass="tableTitle" Text='<%$ Resources:Text, Practice %>'></asp:Label></td>
+                                                    <td>
+                                                        <asp:Label ID="lblSLPractice" runat="server" CssClass="tableText"></asp:Label>
+                                                        <asp:Label ID="lblSLPractice_Chi" runat="server" CssClass="tableTextChi"></asp:Label></td>
+                                                </tr>
+                                                <tr style="height: 30px">
+                                                    <td>
+                                                        <asp:Label ID="lblSLStatementText" runat="server" CssClass="tableTitle" Text='<%$ Resources:Text, Statement %>'></asp:Label></td>
+                                                    <td>
+                                                        <asp:Label ID="lblSLStatement" runat="server" CssClass="tableText"></asp:Label></td>
+                                                </tr>
+                                                 <tr style="height: 30px">
+                                                    <td>
+                                                        <asp:Label ID="lblSLSchemeText" runat="server" CssClass="tableTitle" Text='<%$ Resources:Text, Scheme %>'></asp:Label></td>
+                                                    <td>
+                                                        <asp:Label ID="lblSLScheme" runat="server" CssClass="tableText"></asp:Label></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:GridView ID="gvSchool" runat="server" AllowPaging="True" AllowSorting="true"
+                                                Width="750px" BackColor="White" AutoGenerateColumns="false">
+                                                <Columns>
+                                                    <asp:TemplateField>
+                                                        <ItemStyle Width="20px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblIndex" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label></ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="School_Code" HeaderText="<%$ Resources:Text, SchoolCode %>">
+                                                        <HeaderStyle VerticalAlign="Top" />
+                                                        <ItemStyle Width="190px" />
+                                                        <ItemTemplate>                                                            
+                                                            <asp:LinkButton ID="lbtSchoolCode" runat="server" Text='<%# Eval("School_Code")%>'
+                                                                ></asp:LinkButton>                                                                
+                                                            <%--<asp:HiddenField ID="hfSchemeCode" runat="server" Value='<%# Eval("Scheme_Code") %>' />--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="SchoolName_Eng" HeaderText="<%$ Resources:Text, SchoolName %>">
+                                                        <HeaderStyle VerticalAlign="Top" />
+                                                        <ItemStyle Width="800px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lbSchoolEngName" runat="server" Text='<%# Eval("SchoolName_Eng")%>'></asp:Label>
+                                                            <br />
+                                                            <asp:Label ID="lbSchoolChiName" runat="server" Text='<%# Eval("SchoolName_Chi")%>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="No_of_Transaction" HeaderText="<%$ Resources:Text, NoOfTransaction %>">
+                                                        <HeaderStyle VerticalAlign="Top" />
+                                                        <ItemStyle Width="200px" HorizontalAlign="Right" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblNoOfTransaction" runat="server" Text='<%# Eval("No_of_Transaction")%>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>                                                    
+                                                    <asp:TemplateField SortExpression="Total_Amount" HeaderText="<%$ Resources:Text, TotalRedeemAmountSign %>">                                                    
+                                                        <HeaderStyle VerticalAlign="Top" />
+                                                        <ItemStyle Width="100px" HorizontalAlign="Right" />
+                                                        <ItemTemplate>                                                            
+                                                            <asp:Label ID="lblTotalAmount" runat="server" Text='<%# Eval("Total_Amount") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                                <HeaderStyle HorizontalAlign="Center" />
+                                            </asp:GridView>
+                                        </td>
+                                    </tr>
+                                    <tr style="height: 40px">
+                                        <td>
+                                            <asp:ImageButton ID="ibtnSchoolBack" runat="server" ImageUrl="<%$ Resources:ImageUrl, BackBtn %>"
+                                                AlternateText="<%$ Resources:AlternateText, BackBtn %>" OnClick="ibtnSchoolBack_Click" />
                                         </td>
                                     </tr>
                                 </table>

@@ -30,6 +30,15 @@ Namespace UIControl.EHCClaimText
 
             AddHandler udcClaimVaccineReadOnlyText.RemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
 
+            'CRE20-009 session to handle the type of doucmentary proof  [Start][Nichole]
+            Dim strDocProof = SessionHandler.EHSDocProofGetFromSession(Common.Component.FunctCode.FUNT020202)
+            If strDocProof = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_ANNEX_PAGE Or strDocProof = ucInputVSSDA.VSS_DOCUMENTARYPROOF.VSS_CSSA_CERT Then
+                panVSSDAConfirm.Visible = True
+                lblDocProofCSSA.Text = Me.GetGlobalResourceObject("Text", "ProvidedInfoCSSA")
+                lblDocProofAnnex.Text = Me.GetGlobalResourceObject("Text", "ProvidedInfoAnnex")
+            End If
+            'CRE20-009 session to handle the type of doucmentary proof  [end][Nichole]
+
         End Sub
 
         Protected Overrides Sub Setup()

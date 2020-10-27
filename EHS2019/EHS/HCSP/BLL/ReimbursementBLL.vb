@@ -27,7 +27,24 @@ Namespace BLL
 
         End Function
 
-        Public Function GetMonthlyReimbursementStatementDetails(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer, ByVal strReimburseID As String, ByVal strSchemeCode As String) As DataTable
+        'CRE20-003 (Break Down of Monthly Statement by Schools ) [Start][Martin]
+        Public Function GetMonthlyReimbursementStatementDetails(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer, ByVal strReimburseID As String, ByVal strSchemeCode As String, ByVal strSchoolCode As String) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            Dim prams() As SqlParameter = { _
+                        db.MakeInParam("@SP_ID", SqlDbType.Char, 8, strSPID), _
+                        db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, intPracticeDisplaySeq), _
+                        db.MakeInParam("@Reimburse_ID", SqlDbType.Char, 15, strReimburseID), _
+                        db.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, strSchemeCode), _
+                        db.MakeInParam("@School_Code", SqlDbType.Char, 50, IIf(IsNothing(strSchoolCode), DBNull.Value, strSchoolCode))}
+            db.RunProc("proc_ReimbursementAuthTranList_get", prams, dt)
+
+            Return dt
+        End Function
+
+
+        Public Function GetMonthlyReimbursementStatementSchoolList(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer, ByVal strReimburseID As String, ByVal strSchemeCode As String) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -36,10 +53,11 @@ Namespace BLL
                         db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, intPracticeDisplaySeq), _
                         db.MakeInParam("@Reimburse_ID", SqlDbType.Char, 15, strReimburseID), _
                         db.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, strSchemeCode)}
-            db.RunProc("proc_ReimbursementAuthTranList_get", prams, dt)
+            db.RunProc("proc_ReimbursementAuthTranSchoolList_get", prams, dt)
 
             Return dt
         End Function
+        'CRE20-003 (Break Down of Monthly Statement by Schools ) [End][Martin]
 
         Public Function GetBankInDateList(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer) As DataTable
             Dim dt As New DataTable

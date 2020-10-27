@@ -6,6 +6,10 @@
         Private _strDataValueChi As String
         Private _strDataValueCN As String
         Private _strDisplayOrder As String
+        'CRE20-009 declare variable for service date [Start][Nichole]
+        Private _strServiceDate As String
+        'CRE20-009 declare variable for service date [End][Nichole]
+
 
         Public Const Column_Name As String = "Column_Name"
         Public Const Item_No As String = "Item_No"
@@ -13,6 +17,9 @@
         Public Const Data_Value_Chi As String = "Data_Value_Chi"
         Public Const Data_Value_CN As String = "Data_Value_CN"
         Public Const Display_Order As String = "Display_Order"
+        'CRE20-009 declare variable for service date [Start][Nichole]
+        Public Const Service_Dtm As String = "Service_Dtm"
+        'CRE20-009 declare variable for service date [End][Nichole]
 
         Public Property ColumnName()
             Get
@@ -68,13 +75,27 @@
             End Set
         End Property
 
-        Public Sub New(ByVal strColumnName As String, ByVal strItemNo As String, ByVal strDataValue As String, ByVal strDataValueChi As String, ByVal strDataValueCN As String, Optional ByVal strDisplayOrder As String = "")
+        'CRE20-009 declare property for service date [Start][Nichole]
+        Public Property ServiceDate()
+            Get
+                Return _strServiceDate
+            End Get
+            Set(ByVal value)
+                _strServiceDate = value
+            End Set
+        End Property
+        'CRE20-009 declare property for service date [End][Nichole]
+
+        Public Sub New(ByVal strColumnName As String, ByVal strItemNo As String, ByVal strDataValue As String, ByVal strDataValueChi As String, ByVal strDataValueCN As String, Optional ByVal strDisplayOrder As String = "", Optional ByVal strServiceDate As String = "")
             _strColumnName = strColumnName
             _strItemNo = strItemNo
             _strDataValue = strDataValue
             _strDataValueChi = strDataValueChi
             _strDataValueCN = strDataValueCN
             _strDisplayOrder = strDisplayOrder
+            'CRE20-009 declare variable for service date on constructor [Start][Nichole]
+            _strServiceDate = strServiceDate
+            'CRE20-009 declare variable for service date on constructor [End][Nichole]
         End Sub
 
         Public Sub New(ByVal udtStaticDataModel As StaticDataModel)
@@ -84,6 +105,9 @@
             _strDataValueChi = udtStaticDataModel.DataValueChi
             _strDataValueCN = udtStaticDataModel.DataValueCN
             _strDisplayOrder = udtStaticDataModel.DisplayOrder
+            'CRE20-009 declare variable for service date on constructor [Start][Nichole]
+            _strServiceDate = udtStaticDataModel.ServiceDate
+            'CRE20-009 declare variable for service date on constructor [End][Nichole]
         End Sub
 
     End Class

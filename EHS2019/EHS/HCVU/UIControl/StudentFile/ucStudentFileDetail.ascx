@@ -445,7 +445,7 @@
             </td>
         </tr>
 
-        <tr id="trAssignDateMMR_1" runat="server">
+<%--        <tr id="trAssignDateMMR_1" runat="server">
             <td colspan="3" style="height:10px" />
         </tr>
         <tr id="trAssignDateMMR_2" runat="server">
@@ -478,7 +478,7 @@
             <td style="height:22px;vertical-align:middle;text-align:left;padding-left:10px">
                 <asp:Label ID="lblAGenerationDateMMR2" runat="server" class="tableText"></asp:Label>
             </td>
-        </tr>
+        </tr>--%>
 
     </table>
     <br />

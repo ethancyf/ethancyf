@@ -2,11 +2,15 @@
 <%@ Register Assembly="HCVU" Namespace="HCVU" TagPrefix="cc1" %>
 <table cellpadding="0" cellspacing="0">
     <tr style="height: 22px">
-        <td id="tdCategory" runat="server" style="vertical-align: top">
+        <td id="tdCategory" runat="server" style="vertical-align: top"   >
             <asp:Label ID="lblCategoryText" runat="server" Text="<%$ Resources:Text, Category %>"></asp:Label>
         </td>
-        <td style="vertical-align: top">
+        <td style="vertical-align: top" > 
+            <!--- CRE20-009 prevent the text oversize the screen [Start][Nichole]-->
+            <div style="max-width:700px">
             <asp:Label ID="lblCategory" runat="server" CssClass="tableText"></asp:Label>
+            </div>
+            <!--- CRE20-009 prevent the text oversize the screen [End][Nichole]-->
         </td>
     </tr>
     <tr id="trDocumentaryProof" runat="server" style="height: 22px">
@@ -14,9 +18,57 @@
             <asp:Label ID="lblDocumentaryProofText" runat="server" Text="<%$ Resources:Text, TypeOfDocumentaryProof %>"></asp:Label>
         </td>
         <td style="vertical-align: top">
+            <!--- CRE20-009 prevent the text oversize the screen [Start][Nichole]-->
+             <div style="max-width:700px">
             <asp:Label ID="lblDocumentaryProof" runat="server" CssClass="tableText"></asp:Label>
+                 </div>
+            <!--- CRE20-009 prevent the text oversize the screen [End][Nichole]-->
         </td>
     </tr>
+    <!---CRE20-009 VSS DA with CSSA [Start][Nichole] -->
+    <asp:Panel ID="panVSSDAConfirm" runat="server" visible="false" >
+    <tr id="trDocProofCSSA" runat="server">
+        <td class="tableCellStyle" style="vertical-align: top">
+            
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top"> 
+            <table border="0" style="border-collapse: collapse; border-spacing:0px">
+                        <tr>
+                            <td style="width: 5px; vertical-align:top ">
+                            <asp:CheckBox ID="chkDocProofCSSA" runat="server" Enabled="false" checked="true" />
+                            </td>
+                            <td>
+                            <div style="max-width:650px">
+                            <asp:Label ID="lblDocProofCSSA" runat="server" CssClass="tableText"  Text="<%$ Resources:Text, ProvidedInfoCSSA %>"></asp:Label>
+                            </div>
+                            </td>
+                        </tr>
+            </table>
+        </td>
+    </tr>
+    
+    <tr id="trDocProofAnnex" runat="server">
+        <td class="tableCellStyle" style="vertical-align: top">
+            
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+            <table border="0" style="border-collapse: collapse; border-spacing:0px">
+                        <tr>
+                            <td style="width: 5px; vertical-align:top ">
+                            <asp:CheckBox ID="chkDocProofAnnex" runat="server" Enabled="false"  checked="true" />
+                            </td>
+                            <td>
+                            <div style="max-width:650px">
+                            <asp:Label ID="lblDocProofAnnex" runat="server" CssClass="tableText"  Text="<%$ Resources:Text, ProvidedInfoAnnex %>"></asp:Label>
+                            </div>
+                            </td>
+                        </tr>
+            </table>
+        </td>
+    </tr>
+    <tr><td colspan="2">&nbsp;</td></tr>
+    </asp:Panel>
+    <!--CRE20-009 VSS DA with CSSA [End][Nichole]-->
     <tr id="trPIDInstitutionCode" runat="server" style="height: 22px">
         <td style="vertical-align: top">
             <asp:Label ID="lblPIDInstitutionCodeText" runat="server" Text="<%$ Resources:Text, PIDInstitutionCode %>"></asp:Label>

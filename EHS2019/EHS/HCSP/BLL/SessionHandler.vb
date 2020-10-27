@@ -6,6 +6,8 @@ Imports Common.Component.DataEntryUser
 Imports Common.Component.ServiceProvider
 Imports Common.Component.EHSTransaction
 Imports Common.Component.ClaimRules.ClaimRulesBLL
+Imports Common.Component.DHCCLAIM.DHCClaimBLL
+
 
 Namespace BLL
 
@@ -40,6 +42,10 @@ Namespace BLL
             Public Const SESS_HighRisk As String = "SESS_HIGHRISK"
             Public Const SESS_SubsidizeDisabledDetailKey As String = "SESS_SUBSIDIZEDISABLEDDETAILKEY"
             'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+            'CRe20-009 VSS DA with CSSA [Start][Nichole]
+            Public Const SESS_DocumentaryProof As String = "SESS_DOCUMENTARYPROOF"
+            'CRE20-009 VSS DA with CSSA [End][Nichole]
 
             '------------------------------------------------------------------------------------------
             'EHS Claim Session
@@ -123,6 +129,11 @@ Namespace BLL
             Public Const SESS_PopupBlockerShow As String = "SESS_POPUPBLOCKERSHOW"
             ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
 
+            'CRE20-xxx DHC Claim Service [Start][Nichole]
+            'declare the session for store the artifact parameter value
+            Public Const SESS_DHCArtifact As String = "SESS_DHCARTIFACT"
+            Public Const SESS_DHCClientInfo As String = "SESS_DHCClientINFO"
+            'CRE20-xxx DHC Claim Service [End][Nichole]
             '------------------------------------------------------------------------------------------
             ' OCSSS - HKIC Symbol
             '------------------------------------------------------------------------------------------
@@ -426,6 +437,22 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctCode, SessionName.SESS_EHSClaimSteps))
         End Sub
 #End Region
+
+'CRE20-009 VSS DA With CSSA - store the documentary proof [Start][Nichole]
+#Region "EHS Documentary Proof"
+        Public Sub EHSDocProofSaveToSession(ByVal strFunctCode As String, ByVal strDocProof As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctCode, SessionName.SESS_DocumentaryProof)) = strDocProof
+        End Sub
+
+        Public Function EHSDocProofGetFromSession(ByVal strFunctCode As String) As String
+            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctCode, SessionName.SESS_DocumentaryProof))
+        End Function
+
+        Public Sub EHSDocProofRemoveFromSession(ByVal strFunctCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctCode, SessionName.SESS_DocumentaryProof))
+        End Sub
+#End Region
+'CRE20-009 VSS DA With CSSA - store the documentary proof [End][Nichole]
 
 #Region "EHS Claim Confirm Message"
         Public Sub EHSClaimConfirmMessageSaveToSession(ByVal strFunctCode As String, ByVal obj As Object)
@@ -1042,6 +1069,29 @@ Namespace BLL
 
 #End Region
 
+#Region "DHC service"
+        'CRE20-xxx DHC Claim service [Start][Nichole]
+
+        Public Sub ArtifactSaveToSession(ByVal strFunctionCode As String, ByVal strArtifact As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact)) = strArtifact
+        End Sub
+        Public Sub ArtifactRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
+        End Sub
+
+        Public Function ArtifactGetFromSession(ByVal strFunctionCode As String) As String
+            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
+        End Function
+
+        'Public Sub DHCInfoSaveToSession(ByVal strFunctionCode As String, ByVal udtDHCInfo As DHCPersonalInformationModel)
+        '    HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo)) = udtDHCInfo
+        'End Sub
+
+        'Public Function DHCInfoGetFromSession(ByVal strFunctionCode As String) As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
+        '    Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo))
+        'End Function
+        'CRE20-xxx DHC Claim Service [End][Nichole]
+#End Region
 #Region "Vaccination Record Enquiry"
 
         Public Sub FromVaccinationRecordEnquirySaveToSession(ByVal value As Boolean)
