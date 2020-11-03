@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 Oct 2020
+-- CR No.:			INT20-0042 (Fix eHSU0006 report)
+-- Description:		Extend to '100' columns
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Marco CHOI
 -- Modified date:	3 Sep 2017
 -- CR No.:			CRE16-026
@@ -148,7 +155,57 @@ SET NOCOUNT ON;
 		Result_Value47			NVARCHAR(255),
 		Result_Value48			NVARCHAR(255),
 		Result_Value49			NVARCHAR(255),
-		Result_Value50			NVARCHAR(255)
+		Result_Value50			NVARCHAR(255),
+		Result_Value51			NVARCHAR(255),
+		Result_Value52			NVARCHAR(255), 
+		Result_Value53			NVARCHAR(255),
+		Result_Value54			NVARCHAR(255),
+		Result_Value55			NVARCHAR(255),
+		Result_Value56			NVARCHAR(255),
+		Result_Value57			NVARCHAR(255),
+		Result_Value58			NVARCHAR(255),
+		Result_Value59			NVARCHAR(255),
+		Result_Value60			NVARCHAR(255),
+		Result_Value61			NVARCHAR(255),
+		Result_Value62			NVARCHAR(255), 
+		Result_Value63			NVARCHAR(255),
+		Result_Value64			NVARCHAR(255),
+		Result_Value65			NVARCHAR(255),
+		Result_Value66			NVARCHAR(255),
+		Result_Value67			NVARCHAR(255),
+		Result_Value68			NVARCHAR(255),
+		Result_Value69			NVARCHAR(255),
+		Result_Value70			NVARCHAR(255),
+		Result_Value71			NVARCHAR(255),
+		Result_Value72			NVARCHAR(255), 
+		Result_Value73			NVARCHAR(255),
+		Result_Value74			NVARCHAR(255),
+		Result_Value75			NVARCHAR(255),
+		Result_Value76			NVARCHAR(255),
+		Result_Value77			NVARCHAR(255),
+		Result_Value78			NVARCHAR(255),
+		Result_Value79			NVARCHAR(255),
+		Result_Value80			NVARCHAR(255),
+		Result_Value81			NVARCHAR(255),
+		Result_Value82			NVARCHAR(255), 
+		Result_Value83			NVARCHAR(255),
+		Result_Value84			NVARCHAR(255),
+		Result_Value85			NVARCHAR(255),
+		Result_Value86			NVARCHAR(255),
+		Result_Value87			NVARCHAR(255),
+		Result_Value88			NVARCHAR(255),
+		Result_Value89			NVARCHAR(255),
+		Result_Value90			NVARCHAR(255),
+		Result_Value91			NVARCHAR(255),
+		Result_Value92			NVARCHAR(255), 
+		Result_Value93			NVARCHAR(255),
+		Result_Value94			NVARCHAR(255),
+		Result_Value95			NVARCHAR(255),
+		Result_Value96			NVARCHAR(255),
+		Result_Value97			NVARCHAR(255),
+		Result_Value98			NVARCHAR(255),
+		Result_Value99			NVARCHAR(255),
+		Result_Value100			NVARCHAR(255)
 	)
 -- =============================================    
 -- Initialization    
@@ -163,7 +220,7 @@ SET NOCOUNT ON;
 
 	SET @i = 1
 
-	WHILE @i <= 24 BEGIN
+	WHILE @i <= 100 BEGIN
 		INSERT INTO @FrameTable (C, ColName) VALUES (@i, 'C' + CONVERT(VARCHAR, @i))
 		SET @i = @i + 1
 	END   
@@ -700,26 +757,28 @@ SET NOCOUNT ON;
 
 	-- ====================================================
 	INSERT INTO @OutputTable (
-		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  Result_Value6,  
-		Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10, Result_Value11, Result_Value12, 
-		Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, 
-		Result_Value19, Result_Value20, Result_Value21, Result_Value22, Result_Value23, Result_Value24,
-		Result_Value25, Result_Value26, Result_Value27, Result_Value28, Result_Value29, Result_Value30,  
-		Result_Value31, Result_Value32, Result_Value33, Result_Value34, Result_Value35, Result_Value36, 
-		Result_Value37, Result_Value38, Result_Value39, Result_Value40, Result_Value41, Result_Value42, 
-		Result_Value43, Result_Value44, Result_Value45, Result_Value46, Result_Value47, Result_Value48,
-		Result_Value49, Result_Value50
+		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  Result_Value6,  Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10, 
+		Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19, Result_Value20, 
+		Result_Value21, Result_Value22, Result_Value23, Result_Value24,	Result_Value25, Result_Value26, Result_Value27, Result_Value28, Result_Value29, Result_Value30,  
+		Result_Value31, Result_Value32, Result_Value33, Result_Value34, Result_Value35, Result_Value36, Result_Value37, Result_Value38, Result_Value39, Result_Value40, 
+		Result_Value41, Result_Value42, Result_Value43, Result_Value44, Result_Value45, Result_Value46, Result_Value47, Result_Value48,	Result_Value49, Result_Value50,
+		Result_Value51, Result_Value52, Result_Value53, Result_Value54, Result_Value55, Result_Value56, Result_Value57, Result_Value58,	Result_Value59, Result_Value60,
+		Result_Value61, Result_Value62, Result_Value63, Result_Value64, Result_Value65, Result_Value66, Result_Value67, Result_Value68,	Result_Value69, Result_Value70,
+		Result_Value71, Result_Value72, Result_Value73, Result_Value74, Result_Value75, Result_Value76, Result_Value77, Result_Value78,	Result_Value79, Result_Value80,
+		Result_Value81, Result_Value82, Result_Value83, Result_Value84, Result_Value85, Result_Value86, Result_Value87, Result_Value88,	Result_Value89, Result_Value90,
+		Result_Value91, Result_Value92, Result_Value93, Result_Value94, Result_Value95, Result_Value96, Result_Value97, Result_Value98,	Result_Value99, Result_Value100
 	)
 	SELECT
-		ISNULL(C1, ''),  ISNULL(C2, ''),  ISNULL(C3, ''),  ISNULL(C4, ''),  ISNULL(C5, ''),  ISNULL(C6, ''),  
-		ISNULL(C7, ''),  ISNULL(C8, ''),  ISNULL(C9, ''),  ISNULL(C10, ''), ISNULL(C11, ''), ISNULL(C12, ''), 
-		ISNULL(C13, ''), ISNULL(C14, ''), ISNULL(C15, ''), ISNULL(C16, ''), ISNULL(C17, ''), ISNULL(C18, ''), 
-		ISNULL(C19, ''), ISNULL(C20, ''), ISNULL(C21, ''), ISNULL(C22, ''), ISNULL(C23, ''), ISNULL(C24, ''),
-		ISNULL(C25, ''), ISNULL(C26, ''), ISNULL(C27, ''), ISNULL(C28, ''), ISNULL(C29, ''), ISNULL(C30, ''),  
-		ISNULL(C31, ''), ISNULL(C32, ''), ISNULL(C33, ''), ISNULL(C34, ''), ISNULL(C35, ''), ISNULL(C36, ''), 
-		ISNULL(C37, ''), ISNULL(C38, ''), ISNULL(C39, ''), ISNULL(C40, ''), ISNULL(C41, ''), ISNULL(C42, ''), 
-		ISNULL(C43, ''), ISNULL(C44, ''), ISNULL(C45, ''), ISNULL(C46, ''), ISNULL(C47, ''), ISNULL(C48, ''),
-		ISNULL(C49, ''), ISNULL(C50, '')
+		ISNULL(C1, ''),  ISNULL(C2, ''),  ISNULL(C3, ''),  ISNULL(C4, ''),  ISNULL(C5, ''),  ISNULL(C6, ''),  ISNULL(C7, ''),  ISNULL(C8, ''),  ISNULL(C9, ''),  ISNULL(C10, ''), 
+		ISNULL(C11, ''), ISNULL(C12, ''), ISNULL(C13, ''), ISNULL(C14, ''), ISNULL(C15, ''), ISNULL(C16, ''), ISNULL(C17, ''), ISNULL(C18, ''), ISNULL(C19, ''), ISNULL(C20, ''), 
+		ISNULL(C21, ''), ISNULL(C22, ''), ISNULL(C23, ''), ISNULL(C24, ''),	ISNULL(C25, ''), ISNULL(C26, ''), ISNULL(C27, ''), ISNULL(C28, ''), ISNULL(C29, ''), ISNULL(C30, ''),  
+		ISNULL(C31, ''), ISNULL(C32, ''), ISNULL(C33, ''), ISNULL(C34, ''), ISNULL(C35, ''), ISNULL(C36, ''), ISNULL(C37, ''), ISNULL(C38, ''), ISNULL(C39, ''), ISNULL(C40, ''), 
+		ISNULL(C41, ''), ISNULL(C42, ''), ISNULL(C43, ''), ISNULL(C44, ''), ISNULL(C45, ''), ISNULL(C46, ''), ISNULL(C47, ''), ISNULL(C48, ''),	ISNULL(C49, ''), ISNULL(C50, ''),
+		ISNULL(C51, ''), ISNULL(C52, ''), ISNULL(C53, ''), ISNULL(C54, ''), ISNULL(C55, ''), ISNULL(C56, ''), ISNULL(C57, ''), ISNULL(C58, ''),	ISNULL(C59, ''), ISNULL(C60, ''),
+		ISNULL(C61, ''), ISNULL(C62, ''), ISNULL(C63, ''), ISNULL(C64, ''), ISNULL(C65, ''), ISNULL(C66, ''), ISNULL(C67, ''), ISNULL(C68, ''),	ISNULL(C69, ''), ISNULL(C70, ''),
+		ISNULL(C71, ''), ISNULL(C72, ''), ISNULL(C73, ''), ISNULL(C74, ''), ISNULL(C75, ''), ISNULL(C76, ''), ISNULL(C77, ''), ISNULL(C78, ''),	ISNULL(C79, ''), ISNULL(C80, ''),
+		ISNULL(C81, ''), ISNULL(C82, ''), ISNULL(C83, ''), ISNULL(C84, ''), ISNULL(C85, ''), ISNULL(C86, ''), ISNULL(C87, ''), ISNULL(C88, ''),	ISNULL(C89, ''), ISNULL(C90, ''),
+		ISNULL(C91, ''), ISNULL(C92, ''), ISNULL(C93, ''), ISNULL(C94, ''), ISNULL(C95, ''), ISNULL(C96, ''), ISNULL(C97, ''), ISNULL(C98, ''),	ISNULL(C99, ''), ISNULL(C100, '')
 	FROM (
 		SELECT
 			D.R,
@@ -732,30 +791,33 @@ SET NOCOUNT ON;
 		) P 
 	PIVOT (
 		MAX(Txt)
-		FOR ColName IN (C1,  C2,  C3,  C4,  C5,  C6,
-						C7,  C8,  C9,  C10, C11, C12, 
-						C13, C14, C15, C16, C17, C18, 
-						C19, C20, C21, C22, C23, C24,
-						C25, C26, C27, C28, C29, C30,  
-						C31, C32, C33, C34, C35, C36, 
-						C37, C38, C39, C40, C41, C42, 
-						C43, C44, C45, C46, C47, C48,
-						C49, C50)
+		FOR ColName IN (C1,  C2,  C3,  C4,	C5,	 C6,  C7,  C8,  C9,  C10, 
+						C11, C12, C13, C14, C15, C16, C17, C18, C19, C20, 
+						C21, C22, C23, C24,	C25, C26, C27, C28, C29, C30,  
+						C31, C32, C33, C34, C35, C36, C37, C38, C39, C40, 
+						C41, C42, C43, C44, C45, C46, C47, C48,	C49, C50,
+						C51, C52, C53, C54, C55, C56, C57, C58,	C59, C60,
+						C61, C62, C63, C64, C65, C66, C67, C68,	C69, C70,
+						C71, C72, C73, C74, C75, C76, C77, C78,	C79, C80,
+						C81, C82, C83, C84, C85, C86, C87, C88,	C89, C90,
+						C91, C92, C93, C94, C95, C96, C97, C98,	C99, C100
+					)
 	) AS PVT
 	ORDER BY
 	R
 		
 
 	SELECT
-		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  Result_Value6,  
-		Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10, Result_Value11, Result_Value12, 
-		Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, 
-		Result_Value19, Result_Value20, Result_Value21, Result_Value22, Result_Value23, Result_Value24,
-		Result_Value25, Result_Value26, Result_Value27, Result_Value28, Result_Value29, Result_Value30,  
-		Result_Value31, Result_Value32, Result_Value33, Result_Value34, Result_Value35, Result_Value36, 
-		Result_Value37, Result_Value38, Result_Value39, Result_Value40, Result_Value41, Result_Value42, 
-		Result_Value43, Result_Value44, Result_Value45, Result_Value46, Result_Value47, Result_Value48,
-		Result_Value49, Result_Value50
+		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  Result_Value6,  Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10, 
+		Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19, Result_Value20, 
+		Result_Value21, Result_Value22, Result_Value23, Result_Value24,	Result_Value25, Result_Value26, Result_Value27, Result_Value28, Result_Value29, Result_Value30,  
+		Result_Value31, Result_Value32, Result_Value33, Result_Value34, Result_Value35, Result_Value36, Result_Value37, Result_Value38, Result_Value39, Result_Value40, 
+		Result_Value41, Result_Value42, Result_Value43, Result_Value44, Result_Value45, Result_Value46, Result_Value47, Result_Value48,	Result_Value49, Result_Value50,
+		Result_Value51, Result_Value52, Result_Value53, Result_Value54, Result_Value55, Result_Value56, Result_Value57, Result_Value58,	Result_Value59, Result_Value60,
+		Result_Value61, Result_Value62, Result_Value63, Result_Value64, Result_Value65, Result_Value66, Result_Value67, Result_Value68,	Result_Value69, Result_Value70,
+		Result_Value71, Result_Value72, Result_Value73, Result_Value74, Result_Value75, Result_Value76, Result_Value77, Result_Value78,	Result_Value79, Result_Value80,
+		Result_Value81, Result_Value82, Result_Value83, Result_Value84, Result_Value85, Result_Value86, Result_Value87, Result_Value88,	Result_Value89, Result_Value90,
+		Result_Value91, Result_Value92, Result_Value93, Result_Value94, Result_Value95, Result_Value96, Result_Value97, Result_Value98,	Result_Value99, Result_Value100
 	FROM 
 		@OutputTable 
 
