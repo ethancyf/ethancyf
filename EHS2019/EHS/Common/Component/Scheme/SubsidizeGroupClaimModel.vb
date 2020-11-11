@@ -14,6 +14,7 @@ Namespace Component.Scheme
             Public Const SubsidizeTypeVaccine As String = "VACCINE"
             Public Const SubsidizeTypeVoucher As String = "VOUCHER"
             Public Const SubsidizeTypeRegistration As String = "REGISTRATION"
+            Public Const SubsidizeType_HAService As String = "HASERVICE"
         End Class
 
         'CRE16-026 (Add PCV13) [Start][Chris YIM]
@@ -25,8 +26,6 @@ Namespace Component.Scheme
         End Class
         'CRE16-026 (Add PCV13) [End][Chris YIM]
 
-        ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Class SubsidizeCodeClass
             Public Const EHCVS As String = "EHCVS"
             Public Const CIV As String = "CIV"
@@ -88,8 +87,9 @@ Namespace Component.Scheme
             Public Const VFDHMMR As String = "VFDHMMR"
             Public Const RWMMR As String = "RWMMR"
             Public Const VNIAMMR As String = "VNIAMMR"
+            Public Const HAS_A As String = "HAS_A"
+            Public Const HAS_B As String = "HAS_B"
         End Class
-        ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
 #End Region
 

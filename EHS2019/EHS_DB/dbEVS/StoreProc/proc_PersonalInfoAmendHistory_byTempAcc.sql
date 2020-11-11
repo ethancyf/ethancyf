@@ -6,6 +6,15 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================  
+-- Modification History  
+-- CR No.:			INT20-037
+-- Modified by:		Koala CHENG
+-- Modified date:	30 Oct 2020
+-- Description:		1. To avoid insert duplicate key (System_dtm,Voucher_Acc_ID) when user confirm multiple temp account in batch
+--					Auto increment 1 to 109 milliseconds to system_dtm
+--					2. Add WITH (NOLOCK)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
@@ -42,6 +51,9 @@ BEGIN
 -- Return results
 -- =============================================
 
+DECLARE @System_dtm as DATETIME 
+SET @System_dtm = DATEADD(ms, ABS(CHECKSUM(NEWID()) % 100), GETDATE())
+
 insert into personalinfoamendhistory
 (
 	System_Dtm,
@@ -77,7 +89,9 @@ insert into personalinfoamendhistory
 	Encrypt_Field11,
 	SmartID_Ver
 )
-Select	getdate(),
+Select	(SELECT DATEADD(ms, 10 * COUNT(1), @System_dtm) 
+			FROM PersonalInfoAmendHistory WITH (NOLOCK) 
+			WHERE System_Dtm = @System_dtm AND Voucher_Acc_ID = t.Validated_Acc_ID) AS [System_Dtm],
 		t.Validated_Acc_ID,
 		tp.DOB,
 		tp.Exact_DOB,
@@ -110,7 +124,7 @@ Select	getdate(),
 		tp.Encrypt_Field11,
 		tp.SmartID_Ver
 		
-from TempVoucherAccount t, TempPersonalInformation tp
+from TempVoucherAccount t WITH (NOLOCK), TempPersonalInformation tp WITH (NOLOCK)
 where t.voucher_acc_id = tp.voucher_acc_id
 and tp.voucher_acc_id = @Voucher_Acc_ID
 and tp.Doc_code = @doc_code

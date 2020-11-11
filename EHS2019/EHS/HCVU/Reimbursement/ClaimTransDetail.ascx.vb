@@ -473,9 +473,6 @@ Partial Public Class ClaimTransDetail
         ' Scheme-related fields
         udcReadOnlyEHSClaim.Clear()
 
-
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Select Case udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode)
             Case SchemeClaimModel.EnumControlType.VOUCHER
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
@@ -529,8 +526,16 @@ Partial Public Class ClaimTransDetail
                 udcReadOnlyEHSClaim.Width = 204
                 udcReadOnlyEHSClaim.BuildPPP()
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
+                udcReadOnlyEHSClaim.Width = 204
+                udcReadOnlyEHSClaim.BuildSSSCMC()
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
 
         ' ===== CRE10-027: Means of Input =====
 

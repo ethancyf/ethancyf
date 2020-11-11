@@ -404,8 +404,12 @@
                                                 <asp:Label ID="lblRecordSummaryText" runat="server" CssClass="tableCaption" Text="<%$ Resources: Text, RecordSummary %>"></asp:Label><br />
                                                 <asp:Table ID="tblRecordSummary" runat="server" cellpadding="0" cellspacing="0" BorderWidth="2" style="background-color: white; text-align: center">
                                                     <asp:TableRow ID="trRecordSummaryTitle" runat="server" style="height: 30px" BorderWidth="2">
-                                                        <asp:TableCell style="width: 180px; border-top-style: none; border-left-style: none">
-                                                        </asp:TableCell>
+                                                        <asp:TableCell style="width: 110px" BorderWidth="2" runat="server" ID="tdSummarySchemeTitle">
+                                                            <asp:Label ID="lblSummarySchemeText" runat="server" CssClass="tableTitle"
+                                                                Text="<%$ Resources: Text, Scheme %>"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell style="width: 180px; border-top-style: none; border-left-style: none" ID="tdSummaryClaimTitle">
+                                                            <asp:Label ID="lblSummaryClaimText" runat="server" CssClass="tableTitle"
+                                                                Text="<%$ Resources: Text, ClaimVoucher %>"></asp:Label></asp:TableCell>
                                                        <%--  <td style="width: 140px">
                                                             <asp:Label ID="lblSummaryManualReimbursedText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, ManualReimbursed %>"></asp:Label></td>--%>
                                                         <asp:TableCell style="width: 110px" BorderWidth="2" ID="tdSummaryIncompleteTitle">
@@ -429,8 +433,10 @@
                                                        
                                                     </asp:TableRow>
                                                     <asp:TableRow ID="trRecordSummaryTotalAmountRMB" runat="server" style="display:none" BorderWidth="1">
+                                                        <asp:TableCell BorderWidth="2" RowSpan="2" runat="server" ID="tdSummarySchemeHCVSCHN">
+                                                            <asp:Label ID="lblSummaryHCVSCHN" runat="server" CssClass="tableTitle"></asp:Label></asp:TableCell>
                                                         <asp:TableCell BorderWidth="2">
-                                                            <asp:Label ID="lblSummaryTotalAmountTextRMB" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TotalAmountClaimedSignRMB %>"></asp:Label></asp:TableCell>
+                                                            <asp:Label ID="lblSummaryTotalAmountTextRMB" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TotalVoucherAmountClaimedSignRMB %>"></asp:Label></asp:TableCell>
                                                         <%--<asp:TableCell BorderWidth="2">
                                                             <asp:Label ID="lblSummaryIncompleteRMB" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>--%>
                                                         <asp:TableCell BorderWidth="2">
@@ -454,7 +460,7 @@
                                                         <%--<td>
                                                             <asp:Label ID="lblSummaryTotalAmountText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TotalRedeemAmountSign %>"></asp:Label></td>--%>
                                                         <asp:TableCell BorderWidth="2">
-                                                            <asp:Label ID="lblSummaryTotalAmountText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TotalAmountClaimedSign %>"></asp:Label></asp:TableCell>
+                                                            <asp:Label ID="lblSummaryTotalAmountText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TotalVoucherAmountClaimedSign %>"></asp:Label></asp:TableCell>
                                                         <%--<td>
                                                             <asp:Label ID="lblManualReimbursed" runat="server" CssClass="tableText"></asp:Label></td>--%>
                                                         <asp:TableCell BorderWidth="2" ID="tdSummaryIncomplete">
@@ -471,6 +477,28 @@
                                                             <asp:Label ID="lblSummaryReimbursed" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
                                                         <asp:TableCell BorderWidth="2">
                                                             <asp:Label ID="lblSummarySuspended" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
+                                                      
+                                                    </asp:TableRow>
+
+                                                    <asp:TableRow ID="trRecordSummaryTotalAmountRMB_SSSCMC" runat="server" style="display:none" BorderWidth="1">
+                                                        <asp:TableCell BorderWidth="2" runat="server" ID="tdSummarySchemeSSSCMC">
+                                                            <asp:Label ID="lblSummarySSSCMC" runat="server" CssClass="tableTitle"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryTotalAmountTextRMB_SSSCMC" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TotalAmountClaimedSignRMB %>"></asp:Label></asp:TableCell>
+                                                        <%--<asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryIncompleteRMB" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>--%>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryPendingComfirmRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryPendingVRAcctValidateRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryReadyToReimburseRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryVoidedRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummaryReimbursedRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSummarySuspendedRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
                                                       
                                                     </asp:TableRow>
                                                 </asp:Table>

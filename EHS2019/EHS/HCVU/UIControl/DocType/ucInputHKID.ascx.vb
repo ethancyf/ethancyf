@@ -511,50 +511,70 @@ Partial Public Class ucInputHKID
             Dim strDBCName As String = String.Empty
             Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
 
-            If Not Me._strCCCode1 Is Nothing AndAlso Me._strCCCode1.Length > 4 Then
-                Me.txtNewCCCode1.Text = Me._strCCCode1.Substring(0, 4)
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode1.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode1.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtNewCCCode1.Text = String.Empty
+            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+            If Not Me._strCCCode1 Is Nothing Then
+                If Me._strCCCode1.Length > 4 Then
+                    Me.txtNewCCCode1.Text = Me._strCCCode1.Substring(0, 4)
+                Else
+                    Me.txtNewCCCode1.Text = String.Empty
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode1)
             End If
 
-            If Not Me._strCCCode2 Is Nothing AndAlso Me._strCCCode2.Trim().Length > 4 Then
-                Me.txtNewCCCode2.Text = Me._strCCCode2.Substring(0, 4)
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode2.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode2.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtNewCCCode2.Text = String.Empty
+            If Not Me._strCCCode2 Is Nothing Then
+                If Me._strCCCode2.Trim().Length > 4 Then
+                    Me.txtNewCCCode2.Text = Me._strCCCode2.Substring(0, 4)
+                Else
+                    Me.txtNewCCCode2.Text = String.Empty
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode2)
             End If
 
-            If Not Me._strCCCode3 Is Nothing AndAlso Me._strCCCode3.Trim().Length > 4 Then
-                Me.txtNewCCCode3.Text = Me._strCCCode3.Substring(0, 4)
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode3.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode3.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtNewCCCode3.Text = String.Empty
+            If Not Me._strCCCode3 Is Nothing Then
+                If Me._strCCCode3.Length > 4 Then
+                    Me.txtNewCCCode3.Text = Me._strCCCode3.Substring(0, 4)
+                Else
+                    Me.txtNewCCCode3.Text = String.Empty
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode3)
             End If
 
-            If Not Me._strCCCode4 Is Nothing AndAlso Me._strCCCode4.Trim().Length > 4 Then
-                Me.txtNewCCCode4.Text = Me._strCCCode4.Substring(0, 4)
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode4.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode4.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtNewCCCode4.Text = String.Empty
+            If Not Me._strCCCode4 Is Nothing Then
+                If Me._strCCCode4.Length > 4 Then
+                    Me.txtNewCCCode4.Text = Me._strCCCode4.Substring(0, 4)
+                Else
+                    Me.txtNewCCCode4.Text = String.Empty
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode4)
             End If
 
-            If Not Me._strCCCode5 Is Nothing AndAlso Me._strCCCode5.Trim().Length > 4 Then
-                Me.txtNewCCCode5.Text = Me._strCCCode5.Substring(0, 4)
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode5.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode5.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtNewCCCode5.Text = String.Empty
+            If Not Me._strCCCode5 Is Nothing Then
+                If Me._strCCCode5.Length > 4 Then
+                    Me.txtNewCCCode5.Text = Me._strCCCode5.Substring(0, 4)
+                Else
+                    Me.txtNewCCCode5.Text = String.Empty
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode5)
             End If
 
-            If Not Me._strCCCode6 Is Nothing AndAlso Me._strCCCode6.Trim().Length > 4 Then
-                Me.txtNewCCCode6.Text = Me._strCCCode6.Substring(0, 4)
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode6.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode6.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtNewCCCode6.Text = String.Empty
+            If Not Me._strCCCode6 Is Nothing Then
+                If Me._strCCCode6.Length > 4 Then
+                    Me.txtNewCCCode6.Text = Me._strCCCode6.Substring(0, 4)
+                Else
+                    Me.txtNewCCCode6.Text = String.Empty
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode6)
             End If
+            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
             If strDBCName = String.Empty Then
-                If Not MyBase.EHSPersonalInfoOriginal.CName.Equals(string.Empty) Then
+                If Not MyBase.EHSPersonalInfoOriginal.CName.Equals(String.Empty) Then
                     Me.lblNewCName.Text = MyBase.EHSPersonalInfoOriginal.CName
                     Me._strCName = MyBase.EHSPersonalInfoOriginal.CName
                 End If
@@ -568,47 +588,68 @@ Partial Public Class ucInputHKID
             Dim strDBCNameAmend As String = String.Empty
             Dim udtCCCodeBLL As CCCodeBLL = New CCCodeBLL
 
-            If Not Me._strCCCode1Amend Is Nothing AndAlso Me._strCCCode1Amend.Length > 4 Then
-                Me.txtCCCode1.Text = Me._strCCCode1Amend.Substring(0, 4)
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode1Amend.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode1Amend.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtCCCode1.Text = String.Empty
+            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+            If Not Me._strCCCode1Amend Is Nothing Then
+                If Me._strCCCode1Amend.Length > 4 Then
+                    Me.txtCCCode1.Text = Me._strCCCode1Amend.Substring(0, 4)                    
+                Else
+                    Me.txtCCCode1.Text = String.Empty
+                End If
+
+                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode1Amend)
             End If
 
-            If Not Me._strCCCode2Amend Is Nothing AndAlso Me._strCCCode2Amend.Trim().Length > 4 Then
-                Me.txtCCCode2.Text = Me._strCCCode2Amend.Substring(0, 4)
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode2Amend.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode2Amend.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtCCCode2.Text = String.Empty
+
+            If Not Me._strCCCode2Amend Is Nothing Then
+                If Me._strCCCode2Amend.Length > 4 Then
+                    Me.txtCCCode2.Text = Me._strCCCode2Amend.Substring(0, 4)
+                Else
+                    Me.txtCCCode2.Text = String.Empty
+                End If
+
+                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode2Amend)
             End If
 
-            If Not Me._strCCCode3Amend Is Nothing AndAlso Me._strCCCode3Amend.Trim().Length > 4 Then
-                Me.txtCCCode3.Text = Me._strCCCode3Amend.Substring(0, 4)
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode3Amend.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode3Amend.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtCCCode3.Text = String.Empty
+            If Not Me._strCCCode3Amend Is Nothing Then
+                If Me._strCCCode3Amend.Length > 4 Then
+                    Me.txtCCCode3.Text = Me._strCCCode3Amend.Substring(0, 4)
+                Else
+                    Me.txtCCCode3.Text = String.Empty
+                End If
+
+                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode3Amend)
             End If
 
-            If Not Me._strCCCode4Amend Is Nothing AndAlso Me._strCCCode4Amend.Trim().Length > 4 Then
-                Me.txtCCCode4.Text = Me._strCCCode4Amend.Substring(0, 4)
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode4Amend.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode4Amend.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtCCCode4.Text = String.Empty
+            If Not Me._strCCCode4Amend Is Nothing Then
+                If Me._strCCCode4Amend.Length > 4 Then
+                    Me.txtCCCode4.Text = Me._strCCCode4Amend.Substring(0, 4)
+                Else
+                    Me.txtCCCode4.Text = String.Empty
+                End If
+
+                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode4Amend)
             End If
 
-            If Not Me._strCCCode5Amend Is Nothing AndAlso Me._strCCCode5Amend.Trim().Length > 4 Then
-                Me.txtCCCode5.Text = Me._strCCCode5Amend.Substring(0, 4)
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode5Amend.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode5Amend.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtCCCode5.Text = String.Empty
+            If Not Me._strCCCode5Amend Is Nothing Then
+                If Me._strCCCode5Amend.Length > 4 Then
+                    Me.txtCCCode5.Text = Me._strCCCode5Amend.Substring(0, 4)
+                Else
+                    Me.txtCCCode5.Text = String.Empty
+                End If
+
+                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode5Amend)
             End If
 
-            If Not Me._strCCCode6Amend Is Nothing AndAlso Me._strCCCode6Amend.Trim().Length > 4 Then
-                Me.txtCCCode6.Text = Me._strCCCode6Amend.Substring(0, 4)
-                strDBCNameAmend += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode6Amend.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode6Amend.Substring(4, 1)) - 1)("Big5").ToString()
-            Else
-                Me.txtCCCode6.Text = String.Empty
+            If Not Me._strCCCode6Amend Is Nothing Then
+                If Me._strCCCode6Amend.Length > 4 Then
+                    Me.txtCCCode6.Text = Me._strCCCode6Amend.Substring(0, 4)
+                Else
+                    Me.txtCCCode6.Text = String.Empty
+                End If
+
+                strDBCNameAmend += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode6Amend)
             End If
+            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
             If strDBCNameAmend = String.Empty Then
                 'Me.SetCName(Me._strCNameAmend)
@@ -625,40 +666,60 @@ Partial Public Class ucInputHKID
             Dim strDBCName As String = String.Empty
             Dim strCNameCode As String = String.Empty
 
-            If Not Me._strCCCode1 Is Nothing AndAlso Me._strCCCode1.Length > 4 Then
-                strCNameCode += Me._strCCCode1.Substring(0, 4) + " "
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode1.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode1.Substring(4, 1)) - 1)("Big5").ToString()
+            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+            If Not Me._strCCCode1 Is Nothing Then
+                If Me._strCCCode1.Length > 4 Then
+                    strCNameCode += Me._strCCCode1.Substring(0, 4) + " "                    
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode1)
             End If
 
-            If Not Me._strCCCode2 Is Nothing AndAlso Me._strCCCode2.Trim().Length > 4 Then
-                strCNameCode += Me._strCCCode2.Substring(0, 4) + " "
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode2.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode2.Substring(4, 1)) - 1)("Big5").ToString()
+            If Not Me._strCCCode2 Is Nothing Then
+                If Me._strCCCode2.Length > 4 Then
+                    strCNameCode += Me._strCCCode2.Substring(0, 4) + " "
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode2)
             End If
 
-            If Not Me._strCCCode3 Is Nothing AndAlso Me._strCCCode3.Trim().Length > 4 Then
-                strCNameCode += Me._strCCCode3.Substring(0, 4) + " "
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode3.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode3.Substring(4, 1)) - 1)("Big5").ToString()
+            If Not Me._strCCCode3 Is Nothing Then
+                If Me._strCCCode3.Length > 4 Then
+                    strCNameCode += Me._strCCCode3.Substring(0, 4) + " "
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode3)
             End If
 
-            If Not Me._strCCCode4 Is Nothing AndAlso Me._strCCCode4.Trim().Length > 4 Then
-                strCNameCode += Me._strCCCode4.Substring(0, 4) + " "
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode4.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode4.Substring(4, 1)) - 1)("Big5").ToString()
+            If Not Me._strCCCode4 Is Nothing Then
+                If Me._strCCCode4.Length > 4 Then
+                    strCNameCode += Me._strCCCode4.Substring(0, 4) + " "
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode4)
             End If
 
-            If Not Me._strCCCode5 Is Nothing AndAlso Me._strCCCode5.Trim().Length > 4 Then
-                strCNameCode += Me._strCCCode5.Substring(0, 4) + " "
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode5.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode5.Substring(4, 1)) - 1)("Big5").ToString()
+            If Not Me._strCCCode5 Is Nothing Then
+                If Me._strCCCode5.Length > 4 Then
+                    strCNameCode += Me._strCCCode5.Substring(0, 4) + " "
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode5)
             End If
 
-            If Not Me._strCCCode6 Is Nothing AndAlso Me._strCCCode6.Trim().Length > 4 Then
-                strCNameCode += Me._strCCCode6.Substring(0, 4) + " "
-                strDBCName += _eHSAccountMaintBLL.getCCCTail(Me._strCCCode6.Substring(0, 4)).Rows(Integer.Parse(Me._strCCCode6.Substring(4, 1)) - 1)("Big5").ToString()
+            If Not Me._strCCCode6 Is Nothing Then
+                If Me._strCCCode6.Length > 4 Then
+                    strCNameCode += Me._strCCCode6.Substring(0, 4) + " "
+                End If
+
+                strDBCName += _eHSAccountMaintBLL.getCCCodeBig5(Me._strCCCode6)
             End If
+            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
             lblCCCodeOrginal.Text = strCNameCode
             Me.lblCNameOriginal.Text = strDBCName
 
-        End If
+            End If
 
     End Sub
 

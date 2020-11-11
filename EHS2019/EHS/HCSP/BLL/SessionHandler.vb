@@ -6,8 +6,6 @@ Imports Common.Component.DataEntryUser
 Imports Common.Component.ServiceProvider
 Imports Common.Component.EHSTransaction
 Imports Common.Component.ClaimRules.ClaimRulesBLL
-Imports Common.Component.DHCCLAIM.DHCClaimBLL
-
 
 Namespace BLL
 
@@ -148,6 +146,11 @@ Namespace BLL
             ' ---------------------------------------------------------------------------------------------------------
             Public Const SESS_BatchUploadScheme As String = "SESS_BATCHUPLOADSCHEME"
             ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            Public Const SESS_SchemeSelectedForPractice As String = "SESS_SCHEME_SELECTED_FOR_PRACTICE"
+            Public Const SESS_HAPatient As String = "SESS_HA_PATIENT"
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
 
         End Class
 
@@ -438,7 +441,7 @@ Namespace BLL
         End Sub
 #End Region
 
-'CRE20-009 VSS DA With CSSA - store the documentary proof [Start][Nichole]
+        'CRE20-009 VSS DA With CSSA - store the documentary proof [Start][Nichole]
 #Region "EHS Documentary Proof"
         Public Sub EHSDocProofSaveToSession(ByVal strFunctCode As String, ByVal strDocProof As String)
             HttpContext.Current.Session(String.Format("{0}_{1}", strFunctCode, SessionName.SESS_DocumentaryProof)) = strDocProof
@@ -452,7 +455,7 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctCode, SessionName.SESS_DocumentaryProof))
         End Sub
 #End Region
-'CRE20-009 VSS DA With CSSA - store the documentary proof [End][Nichole]
+        'CRE20-009 VSS DA With CSSA - store the documentary proof [End][Nichole]
 
 #Region "EHS Claim Confirm Message"
         Public Sub EHSClaimConfirmMessageSaveToSession(ByVal strFunctCode As String, ByVal obj As Object)
@@ -798,6 +801,24 @@ Namespace BLL
 
 #End Region
 
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+#Region "Scheme Selected for Practice Selection"
+
+        Public Sub SchemeSelectedForPracticeSaveToSession(ByVal strSchemeCode As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SchemeSelectedForPractice)) = strSchemeCode
+        End Sub
+
+        Public Function SchemeSelectedForPracticeGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SchemeSelectedForPractice)), String)
+        End Function
+
+        Public Sub SchemeSelectedForPracticeRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SchemeSelectedForPractice))
+        End Sub
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+#End Region
+
+
 #Region "Scheme Selected"
 
         Public Sub SchemeSelectedSaveToSession(ByVal udtSchemeClaim As SchemeClaimModel, ByVal strFunctionCode As String)
@@ -1069,29 +1090,6 @@ Namespace BLL
 
 #End Region
 
-#Region "DHC service"
-        'CRE20-xxx DHC Claim service [Start][Nichole]
-
-        Public Sub ArtifactSaveToSession(ByVal strFunctionCode As String, ByVal strArtifact As String)
-            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact)) = strArtifact
-        End Sub
-        Public Sub ArtifactRemoveFromSession(ByVal strFunctionCode As String)
-            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
-        End Sub
-
-        Public Function ArtifactGetFromSession(ByVal strFunctionCode As String) As String
-            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
-        End Function
-
-        'Public Sub DHCInfoSaveToSession(ByVal strFunctionCode As String, ByVal udtDHCInfo As DHCPersonalInformationModel)
-        '    HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo)) = udtDHCInfo
-        'End Sub
-
-        'Public Function DHCInfoGetFromSession(ByVal strFunctionCode As String) As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
-        '    Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo))
-        'End Function
-        'CRE20-xxx DHC Claim Service [End][Nichole]
-#End Region
 #Region "Vaccination Record Enquiry"
 
         Public Sub FromVaccinationRecordEnquirySaveToSession(ByVal value As Boolean)
@@ -1223,7 +1221,6 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_IDEASComboVersion))
         End Sub
 
-
 #Region "NoticedDuplicateClaimAlert"
         ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
         Public Sub NoticedDuplicateClaimAlertSaveToSession(ByVal NoticedDuplicateClaimAlert As String)
@@ -1243,6 +1240,29 @@ Namespace BLL
         End Sub
         ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
 #End Region
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "HA Patient (For SSSCMC Claim Only)"
+        Public Sub HAPatientSaveToSession(ByVal dtHAPatient As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_HAPatient) = dtHAPatient
+        End Sub
+
+        Public Function HAPatientGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_HAPatient) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_HAPatient), DataTable)
+            End If
+        End Function
+
+        Public Sub HAPatientRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_HAPatient)
+        End Sub
+#End Region
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+
     End Class
 End Namespace
 

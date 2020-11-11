@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	22 Oct 2020
+-- CR No.			CRE20-015 (HA Scheme)
+-- Description:		Add column - Claim Amount RMB
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	10 Sep 2020
 -- CR No.			CRE20-003
@@ -252,31 +259,32 @@ GO
 --exec  [dbo].[proc_VoucherTransaction_get_byAny] null,'R',null,null,null,null,null,null,'01 Jan 1980 00:00:00','01 Jan 2013 23:59:59',null,'HAADMIN',null,null,null,null,null,null,null,null,null, 1,1,1
 --exec  [dbo].[proc_VoucherTransaction_get_byAny] null, null,null,null,null,null,null,null,'01 Jan 1980 00:00:00','01 Jan 2013 23:59:59',null,'HAADMIN',null,null,null,null,null,null,null,null,null, 1,1,1
 
-CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byAny] @transaction_id               CHAR(20), 
-                                                           @status                       CHAR(1), 
-                                                           @authorised_status            CHAR(1), 
-                                                           @sp_id                        CHAR(8), 
-                                                           @sp_name                      VARCHAR(40), 
-                                                           @sp_hkid                      CHAR(9), 
-                                                           @bank_acc                     VARCHAR(30), 
-                                                           @service_type                 CHAR(5), 
-                                                           @from_date                    DATETIME, 
-                                                           @to_date                      DATETIME, 
-                                                           @scheme_code                  CHAR(10), 
-                                                           @user_id                      VARCHAR(20), 
-                                                           @doc_code                     CHAR(20), 
-                                                           @identity_no1                 VARCHAR(20), 
-                                                           @Adoption_Prefix_Num          CHAR(7), 
-                                                           @Invalidation                 CHAR(1), 
-                                                           @voucher_acc_id               VARCHAR(15), 
-                                                           @reimbursement_method         CHAR(1), 
-                                                           @Means_Of_Input               CHAR(1), 
-                                                           @Service_Receive_Dtm_From     DATETIME, 
-                                                           @Service_Receive_Dtm_To       DATETIME, 
-                                                           @SchoolOrRCH_code             CHAR(50), 
-                                                           @result_limit_1st_enable      BIT, 
-                                                           @result_limit_override_enable BIT, 
-                                                           @override_result_limit        BIT
+CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byAny] 
+	@transaction_id               CHAR(20), 
+    @status                       CHAR(1), 
+    @authorised_status            CHAR(1), 
+    @sp_id                        CHAR(8), 
+    @sp_name                      VARCHAR(40), 
+    @sp_hkid                      CHAR(9), 
+    @bank_acc                     VARCHAR(30), 
+    @service_type                 CHAR(5), 
+    @from_date                    DATETIME, 
+    @to_date                      DATETIME, 
+    @scheme_code                  CHAR(10), 
+    @user_id                      VARCHAR(20), 
+    @doc_code                     CHAR(20), 
+    @identity_no1                 VARCHAR(20), 
+    @Adoption_Prefix_Num          CHAR(7), 
+    @Invalidation                 CHAR(1), 
+    @voucher_acc_id               VARCHAR(15), 
+    @reimbursement_method         CHAR(1), 
+    @Means_Of_Input               CHAR(1), 
+    @Service_Receive_Dtm_From     DATETIME, 
+    @Service_Receive_Dtm_To       DATETIME, 
+    @SchoolOrRCH_code             CHAR(50), 
+    @result_limit_1st_enable      BIT, 
+    @result_limit_override_enable BIT, 
+    @override_result_limit        BIT
 AS
     BEGIN  
         -- =============================================  
@@ -303,6 +311,7 @@ AS
          Scheme_Code          CHAR(10),
          --  Scheme_Seq	int,
          Claim_Amount         MONEY, 
+         Claim_Amount_RMB     MONEY, 
          Invalidation         CHAR(1), 
          Invalidation_TSMP    BINARY(8), 
          Manual_Reimburse     CHAR(1), 
@@ -363,6 +372,7 @@ AS
                 Scheme_Code,
                 --  Scheme_Seq,
                 Claim_Amount, 
+                Claim_Amount_RMB, 
                 Invalidation, 
                 Invalidation_TSMP, 
                 Manual_Reimburse, 
@@ -393,6 +403,7 @@ AS
                                                                                                        VT.Scheme_Code,
                                                                                                        --  TD.Scheme_Seq,
                                                                                                        SUM(TD.Total_Amount), 
+                                                                                                       SUM(TD.Total_Amount_RMB), 
                                                                                                        VT.Invalidation, 
                                                                                                        TI.TSMP AS [Invalidation_TSMP], 
                                                                                                        VT.Manual_Reimburse, 
@@ -572,6 +583,7 @@ AS
                 Scheme_Code,
                 --  Scheme_Seq,
                 Claim_Amount, 
+                Claim_Amount_RMB, 
                 Invalidation, 
                 Invalidation_TSMP, 
                 Manual_Reimburse, 
@@ -596,6 +608,7 @@ AS
                                                                                                        VT.Scheme_Code,  
                                                                                                        --  TD.Scheme_Seq,
                                                                                                        SUM(TD.Total_Amount), 
+                                                                                                       SUM(TD.Total_Amount_RMB), 
                                                                                                        VT.Invalidation, 
                                                                                                        TI.TSMP AS [Invalidation_TSMP], 
                                                                                                        VT.Manual_Reimburse, 
@@ -758,6 +771,7 @@ AS
                 Scheme_Code,
                 --  Scheme_Seq,  
                 Claim_Amount, 
+                Claim_Amount_RMB, 
                 Invalidation, 
                 Invalidation_TSMP, 
                 Manual_Reimburse, 
@@ -788,6 +802,7 @@ AS
                                                                                                        VT.Scheme_Code,  
                                                                                                        --  TD.Scheme_Seq,
                                                                                                        SUM(TD.Total_Amount), 
+                                                                                                       SUM(TD.Total_Amount_RMB), 
                                                                                                        VT.Invalidation, 
                                                                                                        TI.TSMP AS [Invalidation_TSMP], 
                                                                                                        VT.Manual_Reimburse, 
@@ -962,6 +977,7 @@ AS
                 Scheme_Code,  
                 --  Scheme_Seq,
                 Claim_Amount, 
+                Claim_Amount_RMB, 
                 Invalidation, 
                 Invalidation_TSMP, 
                 Manual_Reimburse, 
@@ -992,6 +1008,7 @@ AS
                                                                                                        VT.Scheme_Code,  
                                                                                                        --  TD.Scheme_Seq,
                                                                                                        SUM(TD.Total_Amount), 
+                                                                                                       SUM(TD.Total_Amount_RMB), 
                                                                                                        VT.Invalidation, 
                                                                                                        TI.TSMP AS [Invalidation_TSMP], 
                                                                                                        VT.Manual_Reimburse, 
@@ -1181,6 +1198,7 @@ AS
                T.Scheme_Code, 
                SC.Display_Code, 
                T.Claim_Amount AS [totalAmount], 
+               T.Claim_Amount_RMB AS [totalAmountRMB], 
                ISNULL(T.Invalidation, '') AS [Invalidation], 
                T.Invalidation_TSMP, 
                ISNULL(T.Manual_Reimburse, 'N') AS [Manual_Reimburse],

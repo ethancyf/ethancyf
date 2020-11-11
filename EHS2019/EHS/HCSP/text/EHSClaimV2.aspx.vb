@@ -1255,7 +1255,7 @@ Partial Public Class EHSClaimV2
             rbDocumentaryProof.Visible = True
             chkDocumentaryProof.Visible = False
 
-           
+
 
             If Not String.IsNullOrEmpty(strSelectedDocumentaryProofCode) Then
                 Dim listItem As ListItem = Me.rbDocumentaryProof.Items.FindByValue(strSelectedDocumentaryProofCode)
@@ -3508,7 +3508,7 @@ Partial Public Class EHSClaimV2
         End If
         'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
-         
+
         'CRE16-002 (Revamp VSS) [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
         ' -----------------------------------------------------------------------------------
@@ -4629,12 +4629,13 @@ Partial Public Class EHSClaimV2
         Dim strText As String = String.Empty
         Dim strKey As String = String.Empty
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         udtEHSTransaction.HighRisk = HighRisk()
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.HighRisk = udtEHSTransaction.HighRisk
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 
         ' Hide Error Message
         Me.udcVaccineClaimVaccineInputText.SetDoseErrorImage(False)

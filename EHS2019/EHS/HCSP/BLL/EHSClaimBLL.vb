@@ -20,6 +20,7 @@ Imports Common.DataAccess
 Imports Common.Format
 Imports Common.WebService.Interface
 Imports HCSP.EHSClaimVaccineModel
+Imports Common.Component.HAServicePatient
 
 
 Namespace BLL
@@ -1751,7 +1752,7 @@ Namespace BLL
                         'Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_CreateBySmartID
                         strMsgCode = "00248"
                     Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOIDOB_CreateBySmartID_WithoutGender_DiffName
-                        strMsgCode = "00248"                        
+                        strMsgCode = "00248"
                     Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_SmallerDOI
                         strMsgCode = "00249"
                     Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithGender, _
@@ -1836,7 +1837,7 @@ Namespace BLL
                         'Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_CreateBySmartID
                         strMsgCode = "00248"
                     Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOIDOB_CreateBySmartID_WithoutGender_DiffName
-                        strMsgCode = "00248"                        
+                        strMsgCode = "00248"
                     Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_SmallerDOI
                         strMsgCode = "00249"
                     Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB_WithGender, _
@@ -4174,6 +4175,91 @@ Namespace BLL
             udtEHSTransactionModel.VoucherAfterRedeem = udtEHSTransactionModel.VoucherBeforeRedeem - udtEHSTransactionModel.VoucherClaim
             udtEHSTransactionModel.ClaimAmount = udtEHSTransactionDetail.TotalAmount
 
+
+        End Sub
+
+        ''' <summary>
+        ''' Construct EHS Transaction Detail For SSSCMC
+        ''' </summary>
+        ''' <param name="udtSP"></param>
+        ''' <param name="udtDataEntry"></param>
+        ''' <param name="udtEHSTransactionModel"></param>
+        ''' <param name="udtEHSAccount"></param>
+        ''' <remarks></remarks>
+        Public Sub ConstructEHSTransactionDetail_SSSCMC(ByVal udtSP As ServiceProviderModel, _
+                                                        ByVal udtDataEntry As DataEntryUserModel, _
+                                                        ByRef udtEHSTransactionModel As EHSTransactionModel, _
+                                                        ByVal udtEHSAccount As EHSAccountModel,
+                                                        ByVal dtHAPatient As DataTable)
+
+            Dim udtSchemeClaimModel As SchemeClaimModel = Me._udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransactionModel.SchemeCode, udtEHSTransactionModel.ServiceDate.AddDays(1).AddMinutes(-1))
+
+            ' VoucherTransaction
+            If udtDataEntry Is Nothing Then
+                If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                    udtEHSTransactionModel.RecordStatus = udtSchemeClaimModel.ConfirmedTransactionStatus
+                    udtEHSTransactionModel.VoucherAccID = udtEHSAccount.VoucherAccID
+                Else
+                    udtEHSTransactionModel.RecordStatus = EHSTransactionModel.TransRecordStatusClass.PendingVRValidate
+                    udtEHSTransactionModel.TempVoucherAccID = udtEHSAccount.VoucherAccID
+                End If
+
+                udtEHSTransactionModel.CreateBy = udtSP.SPID
+                udtEHSTransactionModel.UpdateBy = udtSP.SPID
+                udtEHSTransactionModel.DataEntryBy = String.Empty
+            Else
+
+                If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                    udtEHSTransactionModel.VoucherAccID = udtEHSAccount.VoucherAccID
+                Else
+                    udtEHSTransactionModel.TempVoucherAccID = udtEHSAccount.VoucherAccID
+                End If
+                udtEHSTransactionModel.RecordStatus = EHSTransactionModel.TransRecordStatusClass.Pending
+                udtEHSTransactionModel.CreateBy = udtSP.SPID
+                udtEHSTransactionModel.UpdateBy = udtSP.SPID
+                udtEHSTransactionModel.DataEntryBy = udtDataEntry.DataEntryAccount
+            End If
+
+            udtEHSTransactionModel.TransactionDtm = Now
+            udtEHSTransactionModel.DocCode = udtEHSAccount.SearchDocCode
+
+            'Sub-Patient Type
+            Dim strSubsidizeCode As String = String.Empty
+
+            Select Case dtHAPatient.Rows(0)("Patient_Type").ToString.Trim
+                Case "A"
+                    strSubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_A
+                Case "B"
+                    strSubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_B
+                Case Else
+                    Throw New Exception(String.Format("Invalid Patient Type({0}) is found in DB table HAServicePatient.", dtHAPatient.Rows(0)("Patient_Type").ToString.Trim))
+            End Select
+
+            udtEHSTransactionModel.TransactionDetails = New TransactionDetailModelCollection()
+
+            ' ------------------------------------------------------------------------
+            ' Construct the Detail usign the Active Scheme & Subsidize By Service date 
+            ' ------------------------------------------------------------------------
+            Dim udtEHSTransactionDetail As New EHSTransaction.TransactionDetailModel()
+            udtEHSTransactionDetail.SchemeCode = udtSchemeClaimModel.SchemeCode
+            udtEHSTransactionDetail.SchemeSeq = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SchemeSeq
+            udtEHSTransactionDetail.SubsidizeCode = strSubsidizeCode
+            udtEHSTransactionDetail.SubsidizeItemCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode
+
+            Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+            udtEHSTransactionDetail.AvailableItemCode = udtSubsidizeItemDetailList(0).AvailableItemCode
+            udtEHSTransactionDetail.Unit = Nothing
+            udtEHSTransactionDetail.PerUnitValue = Nothing
+            udtEHSTransactionDetail.TotalAmount = Nothing
+            udtEHSTransactionDetail.Remark = String.Empty
+            udtEHSTransactionDetail.ExchangeRate_Value = udtEHSTransactionModel.ExchangeRate
+            udtEHSTransactionDetail.TotalAmountRMB = udtEHSTransactionModel.VoucherClaimRMB
+
+            udtEHSTransactionModel.TransactionDetails.Add(udtEHSTransactionDetail)
+
+            udtEHSTransactionModel.VoucherBeforeRedeem = 0
+            udtEHSTransactionModel.VoucherAfterRedeem = 0
+            udtEHSTransactionModel.ClaimAmount = Nothing
 
         End Sub
 

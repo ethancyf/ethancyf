@@ -55,6 +55,10 @@ Namespace PrintOut.ConsentFormInformation
         Private _dblConversionRate As Decimal?
         'CRE13-019-02 Extend HCVS to China [End][Winnie]
 
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Private _strSubsidyFeeRMB As String
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+
         ' CRE19-006 (DHC) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         Private _strPracticeName As String
@@ -72,6 +76,8 @@ Namespace PrintOut.ConsentFormInformation
             Public Const HCVSC As String = "HCVSCHN"
             Public Const VSS As String = "VSS"
             Public Const HCVSDHC As String = "HCVSDHC"
+            Public Const SSSCMC As String = "SSSCMC"
+
         End Class
 
         Public Class LanguageClassExternal
@@ -149,6 +155,13 @@ Namespace PrintOut.ConsentFormInformation
         End Enum
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
 
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Public Class SSSCMCSubsidyInfoClass
+            Public Const TypeA As String = "TypeA"
+            Public Const TypeB As String = "TypeB"
+        End Class
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+
 #End Region
 
 #Region "Constructor"
@@ -198,6 +211,10 @@ Namespace PrintOut.ConsentFormInformation
             _dblConversionRate = 0.0
             _strCoPaymentFeeRMB = String.Empty
             'CRE13-019-02 Extend HCVS to China [End][Winnie]
+
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            _strSubsidyFeeRMB = String.Empty
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
 
             ' CRE19-006 (DHC) [Start][Winnie]
             ' ----------------------------------------------------------------------------------------
@@ -410,6 +427,17 @@ Namespace PrintOut.ConsentFormInformation
             End Set
         End Property
         'CRE13-019-02 Extend HCVS to China [End][Winnie]
+
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Public Property SubsidyFeeRMB() As String
+            Get
+                Return _strSubsidyFeeRMB
+            End Get
+            Set(ByVal value As String)
+                _strSubsidyFeeRMB = value
+            End Set
+        End Property
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
 
         ''' <summary>
         ''' The platform request to generate consent form (Default: None)

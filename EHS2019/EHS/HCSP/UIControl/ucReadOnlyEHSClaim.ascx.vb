@@ -19,8 +19,6 @@ Partial Public Class ucReadOnlyEHSClaim
     Public Event VaccineRemarkClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
 
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-    ' --------------------------------------------------------------------------------------
     Private Class EHSClaimControlID
         Public Const HCVS As String = "ucReadOnlyEHSClaim_HCVS"
         Public Const EVSS As String = "ucReadOnlyEHSClaim_EVSS"
@@ -34,8 +32,12 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const VSS As String = "ucReadOnlyEHSClaim_VSS"
         Public Const ENHVSSO As String = "ucReadOnlyEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucReadOnlyEHSClaim_PPP"
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const SSSCMC As String = "ucReadOnlyEHSClaim_SSSCMC"
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
     End Class
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
 
 #Region "Setup Function"
     Public Sub Built()
@@ -48,8 +50,6 @@ Partial Public Class ucReadOnlyEHSClaim
             strFolderPath = "~/UIControl/EHSClaim"
         End If
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Dim enumControlType As SchemeClaimModel.EnumControlType = New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
 
         Select Case enumControlType
@@ -137,8 +137,14 @@ Partial Public Class ucReadOnlyEHSClaim
                     AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyPPP).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
                 End If
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlySSSCMC.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.SSSCMC
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
         udcReadOnlyEHSClaim.EHSClaimVaccine = Me._udtEHSClaimVaccine
         udcReadOnlyEHSClaim.EHSTransaction = Me._udtEHSTransaction

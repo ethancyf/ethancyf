@@ -3,6 +3,8 @@ Imports Common.Component.EHSAccount
 Imports Common.Component.Scheme
 Imports Common.Component.EHSTransaction
 Imports Common.Component.ClaimCategory
+Imports Common.Component
+Imports HCSP.BLL
 
 Partial Public Class ucInputEHSClaim
     Inherits System.Web.UI.UserControl
@@ -23,11 +25,12 @@ Partial Public Class ucInputEHSClaim
     Private _udtClaimCategorys As ClaimCategoryModelCollection
     Private _udcInputEHSClaim As ucInputEHSClaimBase = Nothing
     Private _btnIsModifyMode As Boolean = False
+    Private _udtSessionHandler As New SessionHandler
+
     'CRE16-002 (Revamp VSS) [Start][Chris YIM]
     '-----------------------------------------------------------------------------------------
     Private _blnNonClinic As Boolean
     'CRE16-002 (Revamp VSS) [End][Chris YIM]
-
 
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
     ' -----------------------------------------------------------------------------------------
@@ -55,8 +58,7 @@ Partial Public Class ucInputEHSClaim
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
     Private Class EHSClaimControlID
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
+
         Public Const HCVS As String = "ucInputEHSClaim_HCVS"
         Public Const EVSS As String = "ucInputEHSClaim_EVSS"
         Public Const CIVSS As String = "ucInputEHSClaim_CIVSS"
@@ -69,7 +71,10 @@ Partial Public Class ucInputEHSClaim
         Public Const VSS As String = "ucInputEHSClaim_VSS"
         Public Const ENHVSSO As String = "ucInputEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucInputEHSClaim_PPP"
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
     End Class
 
@@ -109,8 +114,6 @@ Partial Public Class ucInputEHSClaim
                 Me.PlaceHolder1.Controls.Add(_udcInputEHSClaim)
             End If
 
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Dim enumControlType As SchemeClaimModel.EnumControlType = New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
 
             Select Case New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
@@ -147,11 +150,15 @@ Partial Public Class ucInputEHSClaim
                 Case SchemeClaimModel.EnumControlType.PPP
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.PPP Then BuiltSchemeControlOnly(True)
 
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                Case SchemeClaimModel.EnumControlType.SSSCMC
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.SSSCMC Then BuiltSchemeControlOnly(True) ' ---------------------------------------------------------------------------------------------------------
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 Case Else
                     Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
             End Select
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
         End If
 
@@ -159,9 +166,7 @@ Partial Public Class ucInputEHSClaim
             _udcInputEHSClaim.Clear()
         End If
 
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
         _udcInputEHSClaim.SchemeClaim = New SchemeClaimBLL().getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(_strSchemeCode)
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
         _udcInputEHSClaim.ActiveViewChanged = Me.ActiveViewChanged
         _udcInputEHSClaim.IsSupportedDevice = Me.IsSupportedDevice
         _udcInputEHSClaim.AvaliableForClaim = Me._blnAvaliableForClaim
@@ -174,10 +179,7 @@ Partial Public Class ucInputEHSClaim
         _udcInputEHSClaim.ClaimCategorys = Me._udtClaimCategorys
         _udcInputEHSClaim.SetupTableTitle(Me._intTableTitleWidth)
         _udcInputEHSClaim.IsModifyMode = Me.IsModifyMode
-        'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         _udcInputEHSClaim.NonClinic = Me._blnNonClinic
-        'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
         _udcInputEHSClaim.SetupContent()
         _blnIsControlBuilt = True
@@ -210,8 +212,6 @@ Partial Public Class ucInputEHSClaim
         Me.ucInputHCVS.Visible = False
         Me.ucInputHCVSChina.Visible = False
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Dim enumControlType As SchemeClaimModel.EnumControlType = New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
 
         Select Case enumControlType
@@ -342,16 +342,26 @@ Partial Public Class ucInputEHSClaim
                 ' ''    'AddHandler udcInputVSS.RecipientConditionHelpClick, AddressOf udcInputEHSClaim_RecipientConditionHelpClick
                 ' ''End If
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputSSSCMC.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.SSSCMC
+                If Me._textOnlyVersion Then
+                    'No Input Control
+                Else
+                    Dim udcInputSSSCMC As ucInputSSSCMC = CType(udcInputEHSClaim, ucInputSSSCMC)
+
+                End If
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
-                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
         End Select
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
         _udcInputEHSClaim = udcInputEHSClaim
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
         _udcInputEHSClaim.SchemeClaim = New SchemeClaimBLL().getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(_strSchemeCode)
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
         _udcInputEHSClaim.ActiveViewChanged = Me.ActiveViewChanged
         _udcInputEHSClaim.IsSupportedDevice = Me.IsSupportedDevice
         _udcInputEHSClaim.AvaliableForClaim = Me._blnAvaliableForClaim
@@ -362,19 +372,19 @@ Partial Public Class ucInputEHSClaim
         _udcInputEHSClaim.ServiceDate = Me._dtmServiceDate
         _udcInputEHSClaim.ClaimCategorys = Me._udtClaimCategorys
         _udcInputEHSClaim.SetupTableTitle(Me._intTableTitleWidth)
-        'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         _udcInputEHSClaim.NonClinic = Me._blnNonClinic
-        'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
         _udcInputEHSClaim.SetupContent()
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-        'CRE13-019-02 Extend HCVS to China [Start][Karl]
-        If _udcInputEHSClaim.ID <> Me.ucInputHCVS.ID AndAlso _udcInputEHSClaim.ID <> Me.ucInputHCVSChina.ID Then
-            'CRE13-019-02 Extend HCVS to China [End][Karl]
-            Me.PlaceHolder1.Controls.Add(_udcInputEHSClaim)
-        End If
-        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Select Case _udcInputEHSClaim.ID
+            Case Me.ucInputHCVS.ID, ucInputHCVSChina.ID, ucInputSSSCMC.ID
+                'Not to add PlaceHolder Control
+            Case Else
+                Me.PlaceHolder1.Controls.Add(_udcInputEHSClaim)
+        End Select
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
         If Not blnByCreateChildControl Then _udcInputEHSClaim.SetupContent()
 
@@ -740,6 +750,21 @@ Partial Public Class ucInputEHSClaim
     End Function
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetSSSCMCControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.SSSCMC)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputSSSCMC)
+            End If
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 #End Region
 
 #Region "Property"

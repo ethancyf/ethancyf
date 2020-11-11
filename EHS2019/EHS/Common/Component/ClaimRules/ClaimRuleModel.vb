@@ -62,10 +62,29 @@ Namespace Component.ClaimRules
             Public Const INNERSUBSIDIZE = "INNERSUBSIDIZE"
             Public Const SUBSIDIZEMUTEX = "SUBSIDIZEMUTEX"
 
+            ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             ''' <summary>
             ''' In same season, both 1st dose and 2nd dose are vaccinated with the same school code
             ''' </summary>
             Public Const SCHOOLCODE = "SCHOOLCODE"
+
+            ''' <summary>
+            ''' In same season, dose is vaccinated under EHS
+            ''' </summary>
+            Public Const DOSE_IN_EHS = "DOSEINEHS"
+
+            ''' <summary>
+            ''' In same season, no dose is vaccinated
+            ''' </summary>
+            Public Const NO_DOSE_IN_SEASON = "NODOSEINSEASON"
+
+            ''' <summary>
+            ''' Check patient whether is in list of Gov SIV
+            ''' </summary>
+            Public Const CHECK_ON_LIST = "CHECKONLIST"
+            ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
+
 
         End Class
 

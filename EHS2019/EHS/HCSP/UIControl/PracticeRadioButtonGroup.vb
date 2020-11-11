@@ -49,57 +49,42 @@ Public Class PracticeRadioButtonGroup
     'hide/show
     Private _blnShowCloseButton As Boolean
 
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Private _blnSchemeSelection As Boolean = False
+    Private _strSelectedScheme As String = String.Empty
+
+    Private _practiceDisplays As BLL.PracticeDisplayModelCollection
+    Private _practices As PracticeModelCollection
+    Private _schemeInfoList As SchemeInformationModelCollection
+    Private _strlanguage As String
+    Private _displayMode As DisplayMode
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
+
     'Events
-    Public Event PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeqas As Integer, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeqas As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event SchemeSelected()
 
-    Private Sub PracticeRadioButtonGroup_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-        'Dim table As Table
-        'Dim tableRow As TableRow
-        'Dim tableCell As TableCell
+    Private Sub PracticeRadioButtonGroup_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
+        Dim control As Control = Me.FindControl(MyBase.ID & "_rblScheme")
+        If Not control Is Nothing Then
+            Dim rblScheme As RadioButtonList = CType(control, RadioButtonList)
+            SetSchemeSelectValue(rblScheme, ViewState("SchemeSelected"))
 
-        'table = New Table
-        'table.CellPadding = 0
-        'table.CellSpacing = 0
-        'table.Style.Item("width") = "100%"
+            Dim tblPractice As Control = Me.FindControl(MyBase.ID & "_tblPractice")
+            BindPractice(rblScheme.SelectedValue, tblPractice, _practiceDisplays, _practices, _schemeInfoList, _strlanguage, _displayMode)
+        End If
 
-        'tableRow = New TableRow()
-        'Dim headerLabel As Label = New Label()
-        'headerLabel.Text = "Practice Radio Button Group"
-        'tableCell = New TableCell
-        'tableCell.CssClass = Me._strHeaderCss
-        'tableCell.Controls.Add(headerLabel)
-
-        'tableRow.Cells.Add(tableCell)
-        'table.Rows.Add(tableRow)
-
-        ''Create Header space
-        'tableCell = New TableCell
-        'tableCell.Height = 15
-        'tableRow = New TableRow()
-        'tableRow.Cells.Add(tableCell)
-        'table.Rows.Add(tableRow)
-        'Me.Controls.Add(table)
-        'Dim udtUserAC As UserACModel = New UserACModel
-        'udtUserAC = UserACBLL.GetUserAC
-
-        'If Not udtUserAC Is Nothing Then
-
-        '    If udtUserAC.UserType = Common.Component.SPAcctType.ServiceProvider Then
-        '        Dim serviceProvider As ServiceProviderModel
-        '        serviceProvider = CType(udtUserAC, ServiceProviderModel)
-        '        Me.BuildRadioButtonGroup(serviceProvider.PracticeList)
-
-        '    ElseIf udtUserAC.UserType = Common.Component.SPAcctType.DataEntryAcct Then
-        '        Dim dataEntry As DataEntryUserModel
-        '        dataEntry = CType(udtUserAC, DataEntryUserModel)
-        '        Me.BuildRadioButtonGroup(dataEntry.PracticeList)
-        '    End If
-
-        'Else
-        'End If
     End Sub
 
     Public Sub BuildRadioButtonGroup(ByVal practiceDisplays As BLL.PracticeDisplayModelCollection, ByVal practices As PracticeModelCollection, ByVal schemeInfoList As SchemeInformationModelCollection, ByVal strlanguage As String, ByVal displayMode As DisplayMode)
+
+        _practiceDisplays = practiceDisplays
+        _practices = practices
+        _schemeInfoList = schemeInfoList
+        _strlanguage = strlanguage
+        _displayMode = displayMode
+
+        ViewState("SchemeSelected") = Me._strSelectedScheme
 
         If Not practiceDisplays Is Nothing Then
             Dim formatter As Formatter = New Formatter()
@@ -108,6 +93,7 @@ Public Class PracticeRadioButtonGroup
             Dim tableCell As TableCell
             Dim panel As Panel
             Dim contentWidth As Integer = Me.PracticeTabelWidth - 20
+            Dim strSelectedScheme As String = String.Empty
 
             Me.Controls.Clear()
 
@@ -143,6 +129,29 @@ Public Class PracticeRadioButtonGroup
 
             table.Rows.Add(tableRow)
 
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            'Row 2 ' Scheme Selection
+            Dim rblScheme As RadioButtonList = New RadioButtonList
+            rblScheme.ID = MyBase.ID & "_rblScheme"
+            rblScheme.RepeatDirection = RepeatDirection.Horizontal
+            rblScheme.Width = Me.PracticeTabelWidth
+
+            BindScheme(rblScheme, practiceDisplays, practices, schemeInfoList, strlanguage)
+
+            tableCell = New TableCell
+            tableCell.CssClass = ""
+            tableCell.ColumnSpan = 2
+            tableCell.Controls.Add(rblScheme)
+
+            rblScheme.AutoPostBack = True
+            AddHandler rblScheme.SelectedIndexChanged, AddressOf rblScheme_SelectedIndexChanged
+
+
+            tableRow = New TableRow()
+            tableRow.Cells.Add(tableCell)
+            table.Rows.Add(tableRow)
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
+
             'Create Header space8
             'Row 2, Cell 1 (Merged)
             tableCell = New TableCell
@@ -174,211 +183,52 @@ Public Class PracticeRadioButtonGroup
             table = New Table
             table.CellPadding = 5
             table.CellSpacing = 0
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            table.ID = MyBase.ID & "_tblPractice"
 
-            Dim tableInnerPractice As Table
-            Dim tableInnerPracticeRow As TableRow
-            Dim tableInnerPracticeCell As TableCell
-            Dim label As Label
-            Dim label2 As Label
-            Dim bankAccountNo As String
-            Dim practiceIndex As Integer = 0
-            Dim udtSchemeClaimBLL As SchemeClaimBLL = New SchemeClaimBLL()
-            Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Nothing
-
-            Dim udtGF As New Common.ComFunction.GeneralFunction()
-            Dim dtmDate As DateTime = udtGF.GetSystemDateTime()
-
-            For Each practiceDisplay As BLL.PracticeDisplayModel In practiceDisplays
-                ' CRE11-024-01 HCVS Pilot Extension Part 1 [Start]
-                ' -----------------------------------------------------------------------------------------
-                ' Filter practice if profession is not available for claim
-                If Not practiceDisplay.Profession.IsClaimPeriod(dtmDate) Then Continue For
-                ' CRE11-024-01 HCVS Pilot Extension Part 1 [End]
-
-                'Tabel for each practice
-                tableInnerPractice = New Table
-                tableInnerPractice.CellPadding = 0
-                tableInnerPractice.CellSpacing = 0
-
-
-                'Create Practice Label--------------------------------------------------------------------
-                label = New Label
-                label2 = New Label
-                label.ID = String.Format("{0}_PracticeSchemeLabel_{1}", MyBase.ID, practiceIndex)
-                label2.ID = String.Format("{0}_BankPracticeAddressLabel_{1}", MyBase.ID, practiceIndex)
-
-                'label.Width = contentWidth - 90
-                If Me._blnMaskBankAccountNo Then
-                    bankAccountNo = formatter.maskBankAccount(practiceDisplay.BankAccountNo)
-                Else
-                    bankAccountNo = practiceDisplay.BankAccountNo
-                End If
-
-                Dim strPracticeName As String = String.Empty
-                If strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese Then
-                    strPracticeName = practiceDisplay.PracticeNameChi
-                Else
-                    strPracticeName = practiceDisplay.PracticeName
-                End If
-
-                ' Practice Name (Practice ID) [Bank Account]
-                ' [Practice Address]
-                If (strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese) AndAlso Not practiceDisplay.DisplayEngOnly AndAlso Not practiceDisplay.BuildingChi Is Nothing AndAlso practiceDisplay.BuildingChi.Trim() <> "" Then
-                    label.Text = String.Format("{0} ({1}) ", strPracticeName, practiceDisplay.PracticeID)
-                    label2.Text = String.Format("[{0}]{1}[{2}]", bankAccountNo, "<br>", _
-                        formatter.formatAddressChi(practiceDisplay.Room, practiceDisplay.Floor, practiceDisplay.Block, practiceDisplay.BuildingChi, practiceDisplay.District, ""))
-                Else
-                    label.Text = String.Format("{0} ({1}) ", strPracticeName, practiceDisplay.PracticeID)
-                    label2.Text = String.Format("[{0}]{1}[{2}]", bankAccountNo, "<br>", _
-                        formatter.formatAddress(practiceDisplay.Room, practiceDisplay.Floor, practiceDisplay.Block, practiceDisplay.Building, practiceDisplay.District, ""))
-                End If
-
-                'label.Height = 25
-                'label.Attributes("value") = String.Format("{0}-{1}-{2}", practice.SPID, practice.DisplaySeq, practice.BankAcct.DisplaySeq)
-                If strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese Then
-                    label.CssClass = Me._strPracticeTextCss
-                Else
-                    label.CssClass = Me._strHeaderTextCss
-                End If
-
-                label2.CssClass = Me._strHeaderTextCss
-
-                'Add Practice Label into cells
-                tableInnerPracticeCell = New TableCell
-                tableInnerPracticeCell.Width = contentWidth - 90
-                tableInnerPracticeCell.Controls.Add(label)
-                tableInnerPracticeCell.Controls.Add(label2)
-
-                tableInnerPracticeRow = New TableRow()
-                tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
-                tableInnerPractice.Rows.Add(tableInnerPracticeRow)
-                '----------------------------------------------------------------------------------------
-
-                udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(practices(practiceDisplay.PracticeID).PracticeSchemeInfoList, schemeInfoList, dtmDate)
-
-                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-                ' --------------------------------------------------------------------------------------
-                udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterWithoutReadonly()
-                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
-
-                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-                udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(DirectCast(Me.Page, BasePage).SubPlatform)
-                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
-
-                For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
-                    'Add Space label
-                    label = New Label()
-                    label.Width = 25
-
-                    'Create Scheme Label
-                    Dim schemeLabel As Label = New Label()
-                    schemeLabel.Text = String.Format("- {0}", udtSchemeClaimModel.SchemeDesc(strlanguage))
-
-                    schemeLabel.Height = 20
-                    schemeLabel.CssClass = Me._strSchemeLabelCss
-
-                    'Add Cell for scheme label
-                    tableInnerPracticeCell = New TableCell
-                    tableInnerPracticeCell.Controls.Add(label)
-                    tableInnerPracticeCell.Controls.Add(schemeLabel)
-
-                    tableInnerPracticeRow = New TableRow()
-                    tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
-                    tableInnerPractice.Rows.Add(tableInnerPracticeRow)
-
-                    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-                    '-----------------------------------------------------------------------------------------
-                    Dim udtConvertedSchemeCode As String = udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtSchemeClaimModel.SchemeCode)
-
-                    If practices(practiceDisplay.PracticeID).PracticeSchemeInfoList.Filter(udtConvertedSchemeCode).IsNonClinic() Then
-                        'Add Space label
-                        label = New Label()
-                        label.Width = 35
-
-                        'Create Scheme Label
-                        schemeLabel = New Label()
-                        schemeLabel.Text = String.Format("({0})", HttpContext.GetGlobalResourceObject("Text", "ProvideServiceAtNonClinicSetting"))
-
-                        schemeLabel.Height = 20
-                        schemeLabel.CssClass = Me._strSchemeLabelCss
-
-                        'Add Cell for Non-Clinic Statement
-                        tableInnerPracticeCell = New TableCell
-                        tableInnerPracticeCell.Controls.Add(label)
-                        tableInnerPracticeCell.Controls.Add(schemeLabel)
-
-                        tableInnerPracticeRow = New TableRow()
-                        tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
-                        tableInnerPractice.Rows.Add(tableInnerPracticeRow)
-                    End If
-                    'CRE16-002 (Revamp VSS) [End][Chris YIM]
-
-                Next
-
-                ''Add available schemes-------------------------------------------------------------------
-                'For Each practiceSchemeInfo As PracticeSchemeInfoModel In practice.PracticeSchemeInfoList.Values
-
-
-
-                'Next
-                '----------------------------------------------------------------------------------------
-
-                'Add Practice and schemes table
-                tableCell = New TableCell
-                tableCell.BorderWidth = 1
-                tableCell.BorderStyle = WebControls.BorderStyle.Solid
-                tableCell.BorderColor = Drawing.Color.Black
-
-                tableCell.Controls.Add(tableInnerPractice)
-                tableRow = New TableRow()
-                tableRow.Cells.Add(tableCell)
-
-
-                'Add Selection Button
-                Dim btnPracticeSelection As ImageButton = New ImageButton()
-                btnPracticeSelection.ID = String.Format("{0}_PracticeSchemeImageButton_{1}", MyBase.ID, practiceIndex)
-                btnPracticeSelection.ImageUrl = Me._strSelectButtonImgURL
-                btnPracticeSelection.Attributes("DataTextField") = practiceDisplay.PracticeName
-                btnPracticeSelection.Attributes("DataValueField") = practiceDisplay.BankAccountNo
-                btnPracticeSelection.Attributes("PracticeDisplaySeq") = practiceDisplay.PracticeID
-                AddHandler btnPracticeSelection.Click, AddressOf btnPracticeSelection_click
-
-
-                tableCell = New TableCell
-                tableCell.Width = 70
-                tableCell.BorderWidth = 1
-                tableCell.BorderStyle = WebControls.BorderStyle.Solid
-                tableCell.BorderColor = Drawing.Color.Black
-
-                tableCell.HorizontalAlign = HorizontalAlign.Center
-                tableCell.VerticalAlign = VerticalAlign.Top
-                tableCell.Controls.Add(btnPracticeSelection)
-
-
-                tableRow.Cells.Add(tableCell)
-                table.Rows.Add(tableRow)
-
-                practiceIndex += 1
-            Next
+            BindPractice(rblScheme.SelectedValue, table, practiceDisplays, practices, schemeInfoList, strlanguage, displayMode)
 
             panel.Controls.Add(table)
             Me.Controls.Add(panel)
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
         End If
     End Sub
 
+#Region "Event"
     Private Sub btnPracticeSelection_click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim imageButton As ImageButton = CType(sender, ImageButton)
         Dim strPracticeName As String = imageButton.Attributes("DataTextField")
         Dim strBankAcctNo As String = imageButton.Attributes("DataValueField")
         Dim intBankAccountDisplaySeq As Integer = CType(imageButton.Attributes("PracticeDisplaySeq"), Integer)
+        Dim strSchemeCode As String = String.Empty
 
-        RaiseEvent PracticeSelected(strPracticeName, strBankAcctNo, intBankAccountDisplaySeq, sender, e)
+        Dim control As Control = Me.FindControl(MyBase.ID & "_rblScheme")
+        If Not control Is Nothing Then
+            Dim rblScheme As RadioButtonList = CType(control, RadioButtonList)
+            strSchemeCode = rblScheme.SelectedValue
+        End If
+
+        RaiseEvent PracticeSelected(strPracticeName, strBankAcctNo, intBankAccountDisplaySeq, strSchemeCode, sender, e)
     End Sub
 
     Private Sub btnClose_click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Return
     End Sub
 
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Protected Sub rblScheme_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim rblScheme As RadioButtonList = CType(sender, RadioButtonList)
+        Dim tblPractice As Control = Me.FindControl(MyBase.ID & "_tblPractice")
+
+        BindPractice(rblScheme.SelectedValue, tblPractice, _practiceDisplays, _practices, _schemeInfoList, _strlanguage, _displayMode)
+
+        ViewState("SchemeSelected") = rblScheme.SelectedValue
+        RaiseEvent SchemeSelected()
+    End Sub
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
+#End Region
+
+#Region "Property"
     Public Property HeaderText() As String
         Get
             Return Me._strHeaderText
@@ -482,89 +332,317 @@ Public Class PracticeRadioButtonGroup
         End Set
     End Property
 
-    'Private Function GetSelectedValue() As String
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Public Property SchemeSelection() As Boolean
+        Get
+            Return Me._blnSchemeSelection
+        End Get
+        Set(ByVal value As Boolean)
+            Me._blnSchemeSelection = value
+        End Set
+    End Property
 
-    '    Dim table As Table = CType(Me.Controls(0), Table)
+    Public Property SelectedScheme() As String
+        Get
+            Return Me._strSelectedScheme
+        End Get
+        Set(ByVal value As String)
+            Me._strSelectedScheme = value
+        End Set
+    End Property
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
+#End Region
 
-    '    For Each tableRow As TableRow In table.Rows
-    '        For Each tableCell As TableCell In tableRow.Cells
-    '            For Each control As Control In tableCell.Controls
-    '                If TypeOf control Is RadioButton Then
-    '                    Dim radioButton As RadioButton = CType(control, RadioButton)
-    '                    If radioButton.Checked Then
-    '                        Return radioButton.Attributes("value").ToString()
-    '                    End If
-    '                End If
-    '            Next
-    '        Next
-    '    Next
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Public Sub BindScheme(ByVal rblScheme As RadioButtonList, ByVal practiceDisplays As BLL.PracticeDisplayModelCollection, ByVal practices As PracticeModelCollection, ByVal schemeInfoList As SchemeInformationModelCollection, ByVal strlanguage As String)
+        Dim udtGF As New Common.ComFunction.GeneralFunction()
+        Dim dtmDate As DateTime = udtGF.GetSystemDateTime()
+        Dim lstSchemeCode As List(Of String) = New List(Of String)
+        Dim udtSchemeClaimBLL As SchemeClaimBLL = New SchemeClaimBLL()
 
-    '    Return String.Empty
-    'End Function
+        rblScheme.Items.Clear()
 
-    'Private Function GetSelectedText() As String
+        For Each practiceDisplay As BLL.PracticeDisplayModel In practiceDisplays
+            If Not practiceDisplay.Profession.IsClaimPeriod(dtmDate) Then Continue For
+            Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Nothing
 
-    '    Dim table As Table = CType(Me.Controls(0), Table)
+            udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(practices(practiceDisplay.PracticeID).PracticeSchemeInfoList, schemeInfoList, dtmDate)
 
-    '    For Each tableRow As TableRow In table.Rows
-    '        For Each tableCell As TableCell In tableRow.Cells
-    '            For Each control As Control In tableCell.Controls
-    '                If TypeOf control Is RadioButton Then
-    '                    Dim radioButton As RadioButton = CType(control, RadioButton)
-    '                    If radioButton.Checked Then
-    '                        Return radioButton.Text
-    '                    End If
-    '                End If
-    '            Next
-    '        Next
-    '    Next
+            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
+            ' --------------------------------------------------------------------------------------
+            udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterWithoutReadonly()
+            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
-    '    Return String.Empty
-    'End Function
+            ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+            udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(DirectCast(Me.Page, BasePage).SubPlatform)
+            ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
+            Dim udtSchemeClaimModelList As SchemeClaimModelCollection = Nothing
+            For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
+
+                If lstSchemeCode.Contains(udtSchemeClaimModel.SchemeCode) = False Then
+                    lstSchemeCode.Add(udtSchemeClaimModel.SchemeCode)
+                End If
+            Next
+
+        Next
+
+        ' Bind Scheme in order
+        Dim udtSchemeClaimModelFullList As SchemeClaimModelCollection = udtSchemeClaimBLL.getAllSchemeClaim_WithSubsidizeGroup()
+
+        For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelFullList
+            If lstSchemeCode.Contains(udtSchemeClaimModel.SchemeCode) Then
+                Dim listItem As ListItem = New ListItem()
+                listItem = New ListItem(udtSchemeClaimModel.SchemeDesc(strlanguage), udtSchemeClaimModel.SchemeCode)
+                rblScheme.Items.Add(listItem)
+            End If
+        Next
+
+        ' Select Scheme
+        If Me._blnSchemeSelection Then
+            rblScheme.Visible = True
+            rblScheme.SelectedIndex = 0
+        Else
+            rblScheme.Visible = False
+            rblScheme.SelectedIndex = -1
+        End If
+
+        ' Hide If only 1 scheme is available
+        If rblScheme.Items.Count <= 1 Then
+            rblScheme.Visible = False
+            rblScheme.SelectedIndex = -1
+        End If
+
+    End Sub
+
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Private Sub SetSchemeSelectValue(ByVal rblScheme As RadioButtonList, ByVal strSelectedValue As String)
+        ' Select Scheme
+        If strSelectedValue <> String.Empty Then
+            Dim listItem As ListItem = rblScheme.Items.FindByValue(strSelectedValue)
+            If listItem IsNot Nothing Then
+                rblScheme.ClearSelection()
+                listItem.Selected = True
+            End If
+        End If
+    End Sub
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Public Sub BindPractice(ByVal strSchemeCode As String, ByVal control As Control, ByVal practiceDisplays As BLL.PracticeDisplayModelCollection, ByVal practices As PracticeModelCollection, ByVal schemeInfoList As SchemeInformationModelCollection, ByVal strlanguage As String, ByVal displayMode As DisplayMode)
+
+        If Not control Is Nothing Then
+            Dim tblPractice As Table = CType(control, Table)
+            tblPractice.Rows.Clear()
+
+            Dim formatter As Formatter = New Formatter()
+            Dim tableRow As TableRow
+            Dim tableCell As TableCell
+            Dim tableInnerPractice As Table
+            Dim tableInnerPracticeRow As TableRow
+            Dim tableInnerPracticeCell As TableCell
+            Dim label As Label
+            Dim label2 As Label
+            Dim bankAccountNo As String
+            Dim practiceIndex As Integer = 0
+            Dim udtSchemeClaimBLL = New SchemeClaimBLL()
+            Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Nothing
+
+            Dim contentWidth As Integer = Me.PracticeTabelWidth - 20
+
+            Dim udtGF As New Common.ComFunction.GeneralFunction()
+            Dim dtmDate As DateTime = udtGF.GetSystemDateTime()
+
+            For Each practiceDisplay As BLL.PracticeDisplayModel In practiceDisplays
+                ' CRE11-024-01 HCVS Pilot Extension Part 1 [Start]
+                ' -----------------------------------------------------------------------------------------
+                ' Filter practice if profession is not available for claim
+                If Not practiceDisplay.Profession.IsClaimPeriod(dtmDate) Then Continue For
+                ' CRE11-024-01 HCVS Pilot Extension Part 1 [End]
+
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Dim blnContainsSelectedScheme As Boolean = False
+                ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+                'Tabel for each practice
+                tableInnerPractice = New Table
+                tableInnerPractice.CellPadding = 0
+                tableInnerPractice.CellSpacing = 0
 
 
-    'Public Property AutoPostBack() As Boolean
-    '    Get
-    '        Return Me._blnAutoPostBack
-    '    End Get
-    '    Set(ByVal value As Boolean)
-    '        Me._blnAutoPostBack = value
-    '    End Set
-    'End Property
+                'Create Practice Label--------------------------------------------------------------------
+                label = New Label
+                label2 = New Label
+                label.ID = String.Format("{0}_PracticeSchemeLabel_{1}", MyBase.ID, practiceIndex)
+                label2.ID = String.Format("{0}_BankPracticeAddressLabel_{1}", MyBase.ID, practiceIndex)
 
-    'Public Property SPSessionName() As String
-    '    Get
-    '        Return Me._strSPSessionName
-    '    End Get
-    '    Set(ByVal value As String)
-    '        Me._strSPSessionName = value
-    '    End Set
-    'End Property
+                'label.Width = contentWidth - 90
+                If Me._blnMaskBankAccountNo Then
+                    bankAccountNo = formatter.maskBankAccount(practiceDisplay.BankAccountNo)
+                Else
+                    bankAccountNo = practiceDisplay.BankAccountNo
+                End If
 
-    'Public Property SelectedValue() As String
-    '    Get
-    '        Return Me.GetSelectedValue()
-    '    End Get
-    '    Set(ByVal value As String)
-    '        Me._strSelectedValue = value
-    '    End Set
-    'End Property
+                Dim strPracticeName As String = String.Empty
+                If strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese Then
+                    strPracticeName = practiceDisplay.PracticeNameChi
+                Else
+                    strPracticeName = practiceDisplay.PracticeName
+                End If
 
-    'Public Property SelectedIndex() As Integer
-    '    Get
-    '        Return Me._intSelectedIndex
-    '    End Get
-    '    Set(ByVal value As Integer)
-    '        Me._intSelectedIndex = value
-    '    End Set
-    'End Property
+                ' Practice Name (Practice ID) [Bank Account]
+                ' [Practice Address]
+                If (strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese) AndAlso Not practiceDisplay.DisplayEngOnly AndAlso Not practiceDisplay.BuildingChi Is Nothing AndAlso practiceDisplay.BuildingChi.Trim() <> "" Then
+                    label.Text = String.Format("{0} ({1}) ", strPracticeName, practiceDisplay.PracticeID)
+                    label2.Text = String.Format("[{0}]{1}[{2}]", bankAccountNo, "<br>", _
+                        formatter.formatAddressChi(practiceDisplay.Room, practiceDisplay.Floor, practiceDisplay.Block, practiceDisplay.BuildingChi, practiceDisplay.District, ""))
+                Else
+                    label.Text = String.Format("{0} ({1}) ", strPracticeName, practiceDisplay.PracticeID)
+                    label2.Text = String.Format("[{0}]{1}[{2}]", bankAccountNo, "<br>", _
+                        formatter.formatAddress(practiceDisplay.Room, practiceDisplay.Floor, practiceDisplay.Block, practiceDisplay.Building, practiceDisplay.District, ""))
+                End If
 
-    'Public Property SelectedText() As String
-    '    Get
-    '        Return Me.GetSelectedText()
-    '    End Get
-    '    Set(ByVal value As String)
-    '        Me._strSelectedText = value
-    '    End Set
-    'End Property
+                'label.Height = 25
+                'label.Attributes("value") = String.Format("{0}-{1}-{2}", practice.SPID, practice.DisplaySeq, practice.BankAcct.DisplaySeq)
+                If strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese Then
+                    label.CssClass = Me._strPracticeTextCss
+                Else
+                    label.CssClass = Me._strHeaderTextCss
+                End If
+
+                label2.CssClass = Me._strHeaderTextCss
+
+                'Add Practice Label into cells
+                tableInnerPracticeCell = New TableCell
+                tableInnerPracticeCell.Width = contentWidth - 90
+                tableInnerPracticeCell.Controls.Add(label)
+                tableInnerPracticeCell.Controls.Add(label2)
+
+                tableInnerPracticeRow = New TableRow()
+                tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
+                tableInnerPractice.Rows.Add(tableInnerPracticeRow)
+                '----------------------------------------------------------------------------------------
+
+                udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(practices(practiceDisplay.PracticeID).PracticeSchemeInfoList, schemeInfoList, dtmDate)
+
+                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
+                ' --------------------------------------------------------------------------------------
+                udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterWithoutReadonly()
+                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+                udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(DirectCast(Me.Page, BasePage).SubPlatform)
+                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
+                For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
+                    'Add Space label
+                    label = New Label()
+                    label.Width = 25
+
+                    'Create Scheme Label
+                    Dim schemeLabel As Label = New Label()
+                    schemeLabel.Text = String.Format("- {0}", udtSchemeClaimModel.SchemeDesc(strlanguage))
+
+                    schemeLabel.Height = 20
+                    schemeLabel.CssClass = Me._strSchemeLabelCss
+
+                    'Add Cell for scheme label
+                    tableInnerPracticeCell = New TableCell
+                    tableInnerPracticeCell.Controls.Add(label)
+                    tableInnerPracticeCell.Controls.Add(schemeLabel)
+
+                    tableInnerPracticeRow = New TableRow()
+                    tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
+                    tableInnerPractice.Rows.Add(tableInnerPracticeRow)
+
+                    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
+                    '-----------------------------------------------------------------------------------------
+                    Dim udtConvertedSchemeCode As String = udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtSchemeClaimModel.SchemeCode)
+
+                    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                    If Me._blnSchemeSelection AndAlso strSchemeCode <> String.Empty Then
+                        If udtConvertedSchemeCode = strSchemeCode Then
+                            blnContainsSelectedScheme = True
+                        End If
+                    Else
+                        blnContainsSelectedScheme = True
+                    End If
+                    ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+                    If practices(practiceDisplay.PracticeID).PracticeSchemeInfoList.Filter(udtConvertedSchemeCode).IsNonClinic() Then
+                        'Add Space label
+                        label = New Label()
+                        label.Width = 35
+
+                        'Create Scheme Label
+                        schemeLabel = New Label()
+                        schemeLabel.Text = String.Format("({0})", HttpContext.GetGlobalResourceObject("Text", "ProvideServiceAtNonClinicSetting"))
+
+                        schemeLabel.Height = 20
+                        schemeLabel.CssClass = Me._strSchemeLabelCss
+
+                        'Add Cell for Non-Clinic Statement
+                        tableInnerPracticeCell = New TableCell
+                        tableInnerPracticeCell.Controls.Add(label)
+                        tableInnerPracticeCell.Controls.Add(schemeLabel)
+
+                        tableInnerPracticeRow = New TableRow()
+                        tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
+                        tableInnerPractice.Rows.Add(tableInnerPracticeRow)
+                    End If
+                    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+                Next
+
+                If blnContainsSelectedScheme = False Then
+                    Continue For
+                End If
+                ''Add available schemes-------------------------------------------------------------------
+                'For Each practiceSchemeInfo As PracticeSchemeInfoModel In practice.PracticeSchemeInfoList.Values
+
+
+
+                'Next
+                '----------------------------------------------------------------------------------------
+
+                'Add Practice and schemes table
+                tableCell = New TableCell
+                tableCell.BorderWidth = 1
+                tableCell.BorderStyle = WebControls.BorderStyle.Solid
+                tableCell.BorderColor = Drawing.Color.Black
+
+                tableCell.Controls.Add(tableInnerPractice)
+                tableRow = New TableRow()
+                tableRow.Cells.Add(tableCell)
+
+
+                'Add Selection Button
+                Dim btnPracticeSelection As ImageButton = New ImageButton()
+                btnPracticeSelection.ID = String.Format("{0}_PracticeSchemeImageButton_{1}", MyBase.ID, practiceIndex)
+                btnPracticeSelection.ImageUrl = Me._strSelectButtonImgURL
+                btnPracticeSelection.Attributes("DataTextField") = practiceDisplay.PracticeName
+                btnPracticeSelection.Attributes("DataValueField") = practiceDisplay.BankAccountNo
+                btnPracticeSelection.Attributes("PracticeDisplaySeq") = practiceDisplay.PracticeID
+                AddHandler btnPracticeSelection.Click, AddressOf btnPracticeSelection_click
+
+                tableCell = New TableCell
+                tableCell.Width = 70
+                tableCell.BorderWidth = 1
+                tableCell.BorderStyle = WebControls.BorderStyle.Solid
+                tableCell.BorderColor = Drawing.Color.Black
+
+                tableCell.HorizontalAlign = HorizontalAlign.Center
+                tableCell.VerticalAlign = VerticalAlign.Top
+                tableCell.Controls.Add(btnPracticeSelection)
+
+
+                tableRow.Cells.Add(tableCell)
+                tblPractice.Rows.Add(tableRow)
+
+                practiceIndex += 1
+            Next
+        End If
+
+    End Sub
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
 End Class

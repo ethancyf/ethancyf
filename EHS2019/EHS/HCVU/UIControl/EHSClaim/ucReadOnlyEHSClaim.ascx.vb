@@ -14,8 +14,7 @@ Partial Public Class ucReadOnlyEHSClaim
 #End Region
 
 #Region "Private Classes"
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-    ' --------------------------------------------------------------------------------------
+
     Private Class UserControlPath
         Public Const HCVS As String = "~/UIControl/EHSClaim/ucReadOnlyHCVS.ascx"
         Public Const CIVSS As String = "~/UIControl/EHSClaim/ucReadOnlyCIVSS.ascx"
@@ -29,9 +28,12 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const EHAPP As String = "~/UIControl/EHSClaim/ucReadOnlyEHAPP.ascx"
         Public Const ENHVSSO As String = "~/UIControl/EHSClaim/ucReadOnlyENHVSSO.ascx"
         Public Const PPP As String = "~/UIControl/EHSClaim/ucReadOnlyPPP.ascx"
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const SSSCMC As String = "~/UIControl/EHSClaim/ucReadOnlySSSCMC.ascx"
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
     End Class
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
 #End Region
 
@@ -53,7 +55,7 @@ Partial Public Class ucReadOnlyEHSClaim
         'Stores all properties in session (only one session, hastable)
         setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
         setSessionValue("_intWidth", _intWidth)
-        setSessionValue("EHSClaimBuild", "HCVSChina")
+        setSessionValue("EHSClaimBuild", "HCVSCHN")
         'CRE13-019-02 Extend HCVS to China [Start][Karl]
         Dim udcReadOnlyHCVSChina As ucReadOnlyHCVSChina = Me.LoadControl(UserControlPath.HCVS_CHINA)
 
@@ -190,6 +192,21 @@ Partial Public Class ucReadOnlyEHSClaim
     End Sub
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Sub BuildSSSCMC()
+        setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
+        setSessionValue("_intWidth", _intWidth)
+        setSessionValue("EHSClaimBuild", "SSSCMC")
+
+        Dim udcReadOnlySSSCMC As ucReadOnlySSSCMC = Me.LoadControl(UserControlPath.SSSCMC)
+
+        udcReadOnlySSSCMC.Build(_udtEHSTransaction, _intWidth)
+
+        phReadOnlyEHSClaim.Controls.Add(udcReadOnlySSSCMC)
+    End Sub
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
     Public Sub Clear()
         phReadOnlyEHSClaim.Controls.Clear()
 
@@ -271,34 +288,28 @@ Partial Public Class ucReadOnlyEHSClaim
             Me._udtEHSTransaction = getSession("_udtEHSTransaction")
             Me._intWidth = getSession("_intWidth")
 
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
             Select Case getSession("EHSClaimBuild")
-                Case "HCVS"
+                Case SchemeClaimModel.HCVS
                     Me.BuildHCVS()
-                    'CRE13-019-02 Extend HCVS to China [Start][Karl]
-                Case "HCVSChina"
+                Case SchemeClaimModel.HCVSCHN
                     Me.BuildHCVSChina()
-                    'CRE13-019-02 Extend HCVS to China [End][Karl]
-                Case "CIVSS"
+                Case SchemeClaimModel.CIVSS
                     Me.BuildCIVSS()
-                Case "EVSS"
+                Case SchemeClaimModel.EVSS
                     Me.BuildEVSS()
-                Case "RVP"
+                Case SchemeClaimModel.RVP
                     Me.BuildRVP()
-                Case "HSIVSS"
+                Case SchemeClaimModel.HSIVSS
                     Me.BuildHSIVSS()
-                    ' CRE13-001 - EHAPP [Start][Tommy L]
-                    ' -------------------------------------------------------------------------------------
-                Case "EHAPP"
+                Case SchemeClaimModel.EHAPP
                     Me.BuildEHAPP()
-                    ' CRE13-001 - EHAPP [End][Tommy L]
-
-                Case "PIDVSS"
+                Case SchemeClaimModel.PIDVSS
                     Me.BuildPIDVSS()
-                Case "VSS"
+                Case SchemeClaimModel.VSS
                     Me.BuildVSS()
+                Case SchemeClaimModel.SSSCMC
+                    Me.BuildSSSCMC()
             End Select
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
             Session(ucReadOnlyEHSClaim.strForceRebuildEHSClaim) = Nothing
         End If

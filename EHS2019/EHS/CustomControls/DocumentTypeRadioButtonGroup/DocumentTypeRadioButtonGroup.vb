@@ -239,6 +239,25 @@ Public Class DocumentTypeRadioButtonGroup
                 Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
             End If
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Me.HCSPSubPlatform = EnumHCSPSubPlatform.CN Then
+
+                Dim udtDocTypeList As New DocTypeModelCollection
+
+                For Each udtSchemeDocType As SchemeDocTypeModel In Me._udtSchemeDocTypeList
+                    Dim udtDocType As DocTypeModel = udtDocTypeModelList.Filter(udtSchemeDocType.DocCode)
+
+                    If udtDocType IsNot Nothing Then
+                        udtDocTypeList.Add(udtDocType)
+                    End If
+
+                Next
+
+                udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
+            End If
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Me.Build(udtDocTypeModelList, Me._udtSchemeDocTypeList)
 
         Else

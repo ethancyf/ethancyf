@@ -65,11 +65,12 @@ Partial Public Class claimTransEnquiry
     Private Const SESS_SearchCriteria As String = "010403_SearchCriteria"
     Private Const SESS_TransactionDataTable As String = "010403_TransactionDataTable"
     Private Const SESS_EHSTransaction As String = "010403_EHSTransaction"
-    'Private Const SESS_AuditLogInfo As String = "010403_AuditLogInfo"
-    ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-    ' -------------------------------------------------------------------------
     Private Const SESS_FromRedirect As String = "010403_FromRedirect"
-    ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Const SESS_SchemeClaimListFilteredByUserRole As String = "010403_SchemeClaimListFilteredByUserRole"
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
 #End Region
 
 #Region "Page Events"
@@ -304,6 +305,11 @@ Partial Public Class claimTransEnquiry
                 End If
             Next
         Next
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Session(SESS_SchemeClaimListFilteredByUserRole) = udtSchemeClaimModelListFilter
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
         ddlScheme.DataSource = udtSchemeClaimModelListFilter
         ddlScheme.DataValueField = "SchemeCode"
@@ -810,7 +816,7 @@ Partial Public Class claimTransEnquiry
                 txtDateTo = Me.txtTabTransactionDateTo
                 imgDateErr = Me.imgTabTransactionDateErr
                 lblDateText = Me.lblTabTransactionDateText
-                
+
                 ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
             Case Aspect.ServiceProvider
                 blnTextFieldInputted = Me.txtTabServiceProviderSPID.Text.Trim <> String.Empty _
@@ -1190,7 +1196,7 @@ Partial Public Class claimTransEnquiry
 
                 udtAuditLogEntry.AddDescripton("User Aspect", "Transaction")
                 udtAuditLogEntry.AddDescripton("Program Aspect", "Transaction")
-                
+
                 ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
             Case Aspect.ServiceProvider
                 imgTabServiceProviderDateErr.Visible = False
@@ -1358,7 +1364,7 @@ Partial Public Class claimTransEnquiry
             udtSearchCriteria.ServiceDateTo = String.Empty
             udtSearchCriteria.FromDate = String.Empty
             udtSearchCriteria.CutoffDate = String.Empty
-            
+
             ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
             Select Case Session(SESS.SelectedTabIndex)
                 Case Aspect.Transaction
@@ -1595,19 +1601,29 @@ Partial Public Class claimTransEnquiry
 
         ' ===== CRE10-027: Means of Input =====
         If (New GeneralFunction).CheckTurnOnMeansOfInput = GeneralFunction.EnumTurnOnStatus.Yes Then
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [Start][Tommy L]
-            ' -----------------------------------------------------------------------------------------
-            'gvTransaction.Columns(14).Visible = True
-            gvTransaction.Columns(13).Visible = True
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
+            gvTransaction.Columns(14).Visible = True ' Means of Input
         Else
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [Start][Tommy L]
-            ' -----------------------------------------------------------------------------------------
-            'gvTransaction.Columns(14).Visible = False
-            gvTransaction.Columns(13).Visible = False
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
+            gvTransaction.Columns(14).Visible = False ' Means of Input
         End If
         ' ===== End of CRE10-027 =====
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim blnShowRMB As Boolean = False
+        Dim udtSchemeClaimList As SchemeClaimModelCollection = Session(SESS_SchemeClaimListFilteredByUserRole)
+
+        For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
+            If udtSchemeClaim.ReimbursementCurrency = SchemeClaimModel.EnumReimbursementCurrency.HKDRMB Then
+                blnShowRMB = True
+            End If
+        Next
+
+        If blnShowRMB Then
+            gvTransaction.Columns(10).Visible = True 'TotalAmountRMB
+        Else
+            gvTransaction.Columns(10).Visible = False 'TotalAmountRMB
+        End If
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
     End Sub
 
@@ -1799,7 +1815,7 @@ Partial Public Class claimTransEnquiry
         If udtValidator.IsEmpty(udtSearchCriteria.SubsidizeItemCode) Then
             lblRVaccine.Text = FillAnyToEmptyString(udtSearchCriteria.SubsidizeItemCode)
         Else
-           lblRVaccine.Text = udtSubsidizeBLL.GetSubsidizeItemDisplayCode(udtSearchCriteria.SubsidizeItemCode)
+            lblRVaccine.Text = udtSubsidizeBLL.GetSubsidizeItemDisplayCode(udtSearchCriteria.SubsidizeItemCode)
         End If
 
         If udtValidator.IsEmpty(udtSearchCriteria.DoseCode) Then
@@ -1861,8 +1877,6 @@ Partial Public Class claimTransEnquiry
                 Status.GetDescriptionFromDBCode(ReimbursementStatus.ClassCode, hfGAuthorizedStatus.Value.Trim, lblGAuthorisedStatus.Text, String.Empty)
             End If
 
-            ' CRE13-001 EHAPP [Start][Karl]
-            ' -----------------------------------------------------------------------------------------
             'Total Amount
             Dim strTotalAmount As String
             Dim lblTotalAmount As Label
@@ -1877,8 +1891,21 @@ Partial Public Class claimTransEnquiry
             End If
 
             lblTotalAmount.Text = strTotalAmount
-            ' CRE13-001 EHAPP [End][Karl]
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Total Amount
+            Dim strTotalAmountRMB As String = String.Empty
+            Dim lblTotalAmountRMB As Label = CType(e.Row.FindControl("lblTotalAmountRMB"), Label)
+
+            If IsDBNull(dr.Item("totalAmountRMB")) = True Then
+                strTotalAmountRMB = Me.GetGlobalResourceObject("Text", "ServiceFeeN/A")
+            Else
+                strTotalAmountRMB = CDbl(dr.Item("totalAmountRMB")).ToString("#,##0")
+            End If
+
+            lblTotalAmountRMB.Text = strTotalAmountRMB
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             ' Invalidation
             Dim lblGInvalidation As Label = e.Row.FindControl("lblGInvalidation")

@@ -234,9 +234,22 @@ Namespace Component.EHSTransaction
 
                 udtEHSTransaction.TransactionInvalidation = Me.getTransactionInvalidation(udtEHSTransaction.TransactionID, udtdb)
 
-                'For Voucher case only 1 TransactionDetail record only                
-                udtEHSTransaction.VoucherClaim = udtEHSTransaction.TransactionDetails(0).Unit
-                udtEHSTransaction.PerVoucherValue = udtEHSTransaction.TransactionDetails(0).PerUnitValue
+                'For Voucher case only 1 TransactionDetail record only     
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                If udtEHSTransaction.TransactionDetails(0).Unit.HasValue Then
+                    udtEHSTransaction.VoucherClaim = udtEHSTransaction.TransactionDetails(0).Unit
+                Else
+                    udtEHSTransaction.VoucherClaim = Nothing
+                End If
+
+                If udtEHSTransaction.TransactionDetails(0).PerUnitValue.HasValue Then
+                    udtEHSTransaction.PerVoucherValue = udtEHSTransaction.TransactionDetails(0).PerUnitValue
+                Else
+                    udtEHSTransaction.PerVoucherValue = Nothing
+                End If
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
 
                 If Not IsDBNull(userrow("Create_By")) Then
                     udtEHSTransaction.CreateBy = userrow("Create_by")
@@ -903,6 +916,24 @@ Namespace Component.EHSTransaction
                         End If
                         ' INT13-0012 - Fix EHAPP concurrent claim checking [End][Tommy L]
                         ' CRE13-001 - EHAPP [End][Tommy L]
+
+                        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                    ElseIf udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
+                        ' Available Subsidy 
+                        Dim decAvailableSubsidy As Decimal = 0.0
+
+                        decAvailableSubsidy = Me.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaimModel.SubsidizeGroupClaimList, udtDB)
+
+                        '1. Compare the available subsidy between model and DB
+                        '2. Check claimed amount between 0 and available subsidy
+                        If (decAvailableSubsidy <> udtEHSTransactionModel.TransactionAdditionFields.SubsidyBeforeClaim) Or _
+                            (decAvailableSubsidy <= 0 OrElse decAvailableSubsidy < udtEHSTransactionModel.TransactionDetails(0).TotalAmountRMB) Then
+
+                            strMsgCode = "00197"
+                        End If
+
+                        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
                     Else
                         ' Available Voucher 
                         Dim intAvailableVoucher As Integer = 0
@@ -2315,8 +2346,9 @@ Namespace Component.EHSTransaction
             For Each udtTransactionDetail As TransactionDetailModel In udtTransactionDetails
 
                 With udtTransactionDetail
-                    'CRE13-019-02 Extend HCVS to China [Start][Karl]
-                    ' CRE13-001 - EHAPP [Start][Tommy L]
+
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
                     Dim prams() As SqlParameter = { _
                         udtDB.MakeInParam("@Transaction_ID", EHSTransactionModel.Transaction_ID_DataType, EHSTransactionModel.Transaction_ID_DataSize, strTranID), _
                         udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, .SchemeCode.Trim()), _
@@ -2324,13 +2356,12 @@ Namespace Component.EHSTransaction
                         udtDB.MakeInParam("@Subsidize_Code", SqlDbType.Char, 10, .SubsidizeCode), _
                         udtDB.MakeInParam("@Subsidize_Item_Code", SqlDbType.Char, 10, .SubsidizeItemCode), _
                         udtDB.MakeInParam("@Available_item_Code", SqlDbType.Char, 20, .AvailableItemCode), _
-                        udtDB.MakeInParam("@Unit", SqlDbType.Int, 2, .Unit), _
+                        udtDB.MakeInParam("@Unit", SqlDbType.Int, 2, IIf(.Unit.HasValue, .Unit, DBNull.Value)), _
                         udtDB.MakeInParam("@Per_Unit_Value", SqlDbType.Money, 4, IIf(.PerUnitValue.HasValue, .PerUnitValue, DBNull.Value)), _
                         udtDB.MakeInParam("@Remark", SqlDbType.NVarChar, 255, .Remark), _
                         udtDB.MakeInParam("@ExchangeRate_Value", SqlDbType.Decimal, 9, IIf(.ExchangeRate_Value.HasValue, .ExchangeRate_Value, DBNull.Value)), _
                         udtDB.MakeInParam("@Total_Amount_RMB", SqlDbType.Money, 4, IIf(.TotalAmountRMB.HasValue, .TotalAmountRMB, DBNull.Value))}
-                    ' CRE13-001 - EHAPP [End][Tommy L]
-                    'CRE13-019-02 Extend HCVS to China [End][Karl]
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
                     udtDB.RunProc("proc_TransactionDetail_add", prams)
                 End With
@@ -3220,6 +3251,47 @@ Namespace Component.EHSTransaction
         End Function
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function getTransactionDetail_SSSCMC(ByVal strDocCode As String, ByVal strIdentityNum As String, ByVal strSchemeCode As String, _
+                                                    Optional ByVal udtDB As Database = Nothing) As TransactionDetailModelCollection
+
+            Dim udtTransactionDetailList As New TransactionDetailModelCollection()
+            Dim udtTranDetailModel As TransactionDetailModel = Nothing
+
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim dt As New DataTable()
+
+            strIdentityNum = Me._udtFormatter.formatDocumentIdentityNumber(strDocCode, strIdentityNum)
+
+            Try
+                Dim prams() As SqlParameter = { _
+                    udtDB.MakeInParam("@Doc_Code", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocCode), _
+                    udtDB.MakeInParam("@identity", EHSAccount.EHSAccountModel.IdentityNum_DataType, EHSAccount.EHSAccountModel.IdentityNum_DataSize, strIdentityNum), _
+                    udtDB.MakeInParam("@Scheme_Code", SchemeClaimModel.Scheme_Code_DataType, SchemeClaimModel.Scheme_Code_DataSize, strSchemeCode) _
+                }
+
+                udtDB.RunProc("proc_TransactionDetail_SSSCMC_get_byDocCodeDocIDScheme", prams, dt)
+
+                For Each dr As DataRow In dt.Rows
+                    udtTranDetailModel = Me.FillTransactionDetail(dr)
+                    udtTranDetailModel.ServiceReceiveDtm = CDate(dr("Service_Receive_Dtm"))
+                    udtTranDetailModel.DOB = CDate(dr("DOB"))
+                    udtTranDetailModel.ExactDOB = CStr(dr("Exact_DOB")).Trim()
+                    udtTransactionDetailList.Add(udtTranDetailModel)
+                Next
+
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtTransactionDetailList
+
+        End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         Public Function getTransactionDetailVoucher(ByVal strDocCode As String, ByVal strIdentityNum As String, ByVal strSchemeCode As String, _
                 ByVal strSubsidizeCode As String, Optional ByVal udtDB As Database = Nothing) As TransactionDetailModelCollection
 
@@ -3547,6 +3619,41 @@ Namespace Component.EHSTransaction
             Return intNumSubsidize_Total - intNumSubsidize_Used
         End Function
         ' INT13-0012 - Fix EHAPP concurrent claim checking [End][Tommy L]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function getAvailableSubsidizeItem_SSSCMC(ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                         ByVal udtSubsidizeGroupClaimList As SubsidizeGroupClaimModelCollection, _
+                                                         Optional ByRef udtDB As Database = Nothing) As Decimal
+
+            Dim udtSchemeDetailBLL As New SchemeDetails.SchemeDetailBLL
+
+            Dim udtSubsidizeItemDetailList As SchemeDetails.SubsidizeItemDetailsModelCollection = udtSchemeDetailBLL.getSubsidizeItemDetails(udtSubsidizeGroupClaimList(0).SubsidizeItemCode)
+            Dim udtSubsidizeItemDetail As SchemeDetails.SubsidizeItemDetailsModel = udtSubsidizeItemDetailList(0)
+
+            Dim udtTransDetailBenefitList As TransactionDetailModelCollection = Me.getTransactionDetail_SSSCMC(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtSubsidizeGroupClaimList(0).SchemeCode, udtDB)
+            Dim udtTransDetailBenefitListByAvailItem As TransactionDetailModelCollection
+
+            Dim decNumSubsidize_Total As Decimal = CDec(udtSubsidizeGroupClaimList(0).NumSubsidize)
+            Dim decNumSubsidize_Used As Decimal = 0.0
+
+            For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSubsidizeGroupClaimList
+                udtTransDetailBenefitListByAvailItem = udtTransDetailBenefitList.FilterBySubsidizeItemDetail(udtSubsidizeGroupClaim.SchemeCode, _
+                                                                                                             udtSubsidizeGroupClaim.SchemeSeq, _
+                                                                                                             udtSubsidizeGroupClaim.SubsidizeCode, _
+                                                                                                             udtSubsidizeGroupClaim.SubsidizeItemCode, _
+                                                                                                             udtSubsidizeItemDetail.AvailableItemCode)
+
+                For Each udtTransDetailBenefitByAvailItem As TransactionDetailModel In udtTransDetailBenefitListByAvailItem
+                    decNumSubsidize_Used += CDec(udtTransDetailBenefitByAvailItem.TotalAmountRMB)
+                Next
+            Next
+
+            Return decNumSubsidize_Total - decNumSubsidize_Used
+
+        End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
 #End Region
 
 #Region "Transaction Checking"

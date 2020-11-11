@@ -363,6 +363,7 @@
     <Content Include="Images\others\SearchOldSmartIC_tw.png" />
     <Content Include="Images\others\SmartIDCardReader.png" />
     <Content Include="Images\Scheme\Scheme_Logo_ENHVSSO.jpg" />
+    <Content Include="Images\Scheme\Scheme_Logo_SSSCMC.jpg" />
     <Content Include="Images\Scheme\Scheme_Logo_VSS.jpg" />
     <Content Include="JS\ideasComboLib4Ra.js" />
     <Content Include="JS\ideasComboVersion.js" />
@@ -386,12 +387,14 @@
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPPP.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputPIDVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlySSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx" />
@@ -1758,6 +1761,60 @@
     <Compile Include="Printout\SmartIDChangePersonalPaticularForm\SmartIDChangePersonalPaticularForm.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsent1.Designer.vb">
+      <DependentUpon>ClaimConsent1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsent1.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration1FullVersion.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration1FullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration2FullVersion.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration2FullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration3FullVersion.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration3FullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration4FullVersion.Designer.vb">
+      <DependentUpon>ClaimConsentDecaraDeclaration4FullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration4FullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\SignatureFormFullVersion.Designer.vb">
+      <DependentUpon>SignatureFormFullVersion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\SignatureFormFullVersion.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\SignatureFormFullVersionSmartID.Designer.vb">
+      <DependentUpon>SignatureFormFullVersionSmartID.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\SignatureFormFullVersionSmartID.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\SSSCMCConsentForm_CN.Designer.vb">
+      <DependentUpon>SSSCMCConsentForm_CN.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\SSSCMCConsentForm_CN.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\VoucherNotice.Designer.vb">
+      <DependentUpon>VoucherNotice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Printout\SSSCMCConsentForm_CN\VoucherNotice.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Printout\VoucherAccountChangeForm_VR.aspx.designer.vb">
       <DependentUpon>VoucherAccountChangeForm_VR.aspx</DependentUpon>
     </Compile>
@@ -2538,6 +2595,13 @@
       <DependentUpon>ucInputEHAPP.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputSSSCMC.ascx.designer.vb">
+      <DependentUpon>ucInputSSSCMC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputSSSCMC.ascx.vb">
+      <DependentUpon>ucInputSSSCMC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputHCVSChina.ascx.designer.vb">
       <DependentUpon>ucInputHCVSChina.ascx</DependentUpon>
     </Compile>
@@ -2585,6 +2649,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyEHAPP.ascx.vb">
       <DependentUpon>ucReadOnlyEHAPP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlySSSCMC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlySSSCMC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlySSSCMC.ascx.vb">
+      <DependentUpon>ucReadOnlySSSCMC.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx.designer.vb">
@@ -4340,6 +4411,33 @@
       <SubType>Designer</SubType>
       <DependentUpon>SmartIDChangePersonalPaticularForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\ClaimConsent1.resx">
+      <DependentUpon>ClaimConsent1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration1FullVersion.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration1FullVersion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration2FullVersion.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration2FullVersion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration3FullVersion.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration3FullVersion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\ClaimConsentDecaraDeclaration4FullVersion.resx">
+      <DependentUpon>ClaimConsentDecaraDeclaration4FullVersion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\SignatureFormFullVersion.resx">
+      <DependentUpon>SignatureFormFullVersion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\SignatureFormFullVersionSmartID.resx">
+      <DependentUpon>SignatureFormFullVersionSmartID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\SSSCMCConsentForm_CN.resx">
+      <DependentUpon>SSSCMCConsentForm_CN.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Printout\SSSCMCConsentForm_CN\VoucherNotice.resx">
+      <DependentUpon>VoucherNotice.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Printout\VoucherConsentForm\v2\ClaimConsent1SPName40_v2.resx">
       <DependentUpon>ClaimConsent1SPName40_v2.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -5499,9 +5597,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2524</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/HCSP</IISUrl>
+          <IISUrl>https://localhost/HCSP</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>https://localhost/HCSP</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost/HCSP</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

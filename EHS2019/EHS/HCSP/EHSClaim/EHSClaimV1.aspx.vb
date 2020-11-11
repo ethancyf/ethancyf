@@ -28,6 +28,7 @@ Imports HCSP.UIControl.EHCClaimText
 Imports System.Net
 Imports System.Web.Services
 Imports Common.Component.VoucherInfo
+Imports Common.Component.HAServicePatient
 
 <System.Web.Script.Services.ScriptService()> _
 Partial Public Class EHSClaimV1
@@ -673,10 +674,11 @@ Partial Public Class EHSClaimV1
     ''' <param name="strPracticeName"></param>
     ''' <param name="strBankAcctNo"></param>
     ''' <param name="intBankAccountDisplaySeq"></param>
+    ''' <param name="strSchemeCode"></param>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     ''' <remarks></remarks>
-    Private Sub udcPopupPracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcPopupPracticeRadioButtonGroup.PracticeSelected
+    Private Sub udcPopupPracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcPopupPracticeRadioButtonGroup.PracticeSelected
         ' Get current user account
         Dim udtDataEntryModel As DataEntryUserModel = Nothing
         GetCurrentUserAccount(_udtSP, udtDataEntryModel, False)
@@ -687,6 +689,9 @@ Partial Public Class EHSClaimV1
 
         ' Save the new selected Practice to session
         _udtSessionHandler.PracticeDisplaySaveToSession(udtNewPracticeDisplay, FunctCode)
+
+        ' Save the new selected Scheme to session
+        _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
 
         ' Audit log
         Dim udtSchemeClaim As SchemeClaimModel = _udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
@@ -871,6 +876,12 @@ Partial Public Class EHSClaimV1
         End Select
     End Sub
 
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Private Sub udcPopupPracticeRadioButtonGroup_SchemeSelected() Handles udcPopupPracticeRadioButtonGroup.SchemeSelected
+        ModalPopupPracticeSelection.Show()
+    End Sub
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
+
     '---------------------------------------------------------------------------------------------------------
     'Select Print Option
     '---------------------------------------------------------------------------------------------------------
@@ -955,140 +966,6 @@ Partial Public Class EHSClaimV1
                 ' Do Nothing
         End Select
     End Sub
-
-    ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
-    ' Obsoleted, replaced by function "Step2aClaimSubmit"
-    'Public Sub ExclamationConfirm()
-    '    Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
-    '    Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
-    '    Dim udtPracticeDisplay As BLL.PracticeDisplayModel = Me._udtSessionHandler.PracticeDisplayGetFromSession(FunctCode)
-    '    Dim udtFormatter As Formatter = New Formatter()
-    '    Dim udtValidator As Validator = New Validator()
-    '    Dim isValid As Boolean
-    '    Dim strServiceDate As String = String.Empty
-    '    Dim udtDataEntryUser As DataEntryUserModel = Nothing
-    '    Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FunctCode, Me)
-    '    Dim isTSWCase As Boolean = False
-
-    '    EHSClaimBasePage.AuditLogEnterClaimDetailStart(udtAuditLogEntry, True, Me._udtSessionHandler.SmartIDContentGetFormSession(FunctCode))
-
-    '    Me._udtSessionHandler.CurrentUserGetFromSession(Me._udtSP, udtDataEntryUser)
-    '    Me.ModalPopupExclamationConfirmationBox.Hide()
-
-    '    'Check Service Date since service is checked by step2a "Claim" button (not in Step2aCIVSSValidation )
-    '    'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-    '    '-----------------------------------------------------------------------------------------
-    '    Dim udtSubPlatformBLL As New SubPlatformBLL
-    '    'strServiceDate = udtFormatter.formatInputDate(Me.txtStep2aServiceDate.Text)
-    '    strServiceDate = udtFormatter.formatInputDate(Me.txtStep2aServiceDate.Text, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
-    '    'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
-    '    Me._udtSystemMessage = udtValidator.chkServiceDate(strServiceDate)
-    '    If Not Me._udtSystemMessage Is Nothing Then
-    '        isValid = False
-    '        Me.imgStep2aServiceDateError.Visible = True
-    '        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
-    '    Else
-    '        'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-    '        '-----------------------------------------------------------------------------------------
-    '        'Me.txtStep2aServiceDate.Text = strServiceDate
-    '        Me.txtStep2aServiceDate.Text = udtFormatter.formatInputTextDate(strServiceDate, udtSubPlatformBLL.GetDateFormatLocale(Me.SubPlatform))
-    '        'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
-    '    End If
-
-    '    ' CRE13-001 - EHAPP [Start][Koala]
-    '    ' -------------------------------------------------------------------------------------
-    '    udtSchemeClaim = Me._udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtSchemeClaim.SchemeCode, udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English))
-    '    Me._udtSessionHandler.SchemeSelectedSaveToSession(udtSchemeClaim, FunctCode)
-    '    ' CRE13-001 - EHAPP [End][Koala]
-
-    '    Me._udtEHSTransaction = Me._udtEHSClaimBLL.ConstructNewEHSTransaction(udtSchemeClaim, udtEHSAccount, udtPracticeDisplay, udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English), Me.GetExtRefStatus(udtEHSAccount, udtSchemeClaim))
-    '    Me._udtEHSTransaction.ServiceDate = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
-
-    '    ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-    '    Select Case udtSchemeClaim.ControlType
-    '        Case SchemeClaimModel.EnumControlType.VOUCHER
-    '            ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
-    '            isValid = Me.Step2aHCVSValidation(True, Me._udtEHSTransaction)
-    '        Case SchemeClaimModel.EnumControlType.VOUCHERCHINA
-    '            isValid = Me.Step2aHCVSChinaValidation(True, Me._udtEHSTransaction)
-    '            ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
-    '        Case SchemeClaimModel.EnumControlType.CIVSS
-    '            isValid = Me.Step2aCIVSSValidation(True, Me._udtEHSTransaction)
-    '        Case SchemeClaimModel.EnumControlType.EVSS
-    '            isValid = Me.Step2aEVSSValidation(True, udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English))
-    '        Case SchemeClaimModel.EnumControlType.HSIVSS
-    '            isValid = Me.Step2aHSIVSSValidation(True, Me._udtEHSTransaction)
-    '        Case SchemeClaimModel.EnumControlType.RVP
-    '            isValid = Me.Step2aRVPValidation(True, Me._udtEHSTransaction)
-    '            ' CRE13-001 - EHAPP [Start][Tommy L]
-    '            ' -------------------------------------------------------------------------------------
-    '        Case SchemeClaimModel.EnumControlType.EHAPP
-    '            isValid = Me.Step2aEHAPPValidation(Me._udtEHSTransaction)
-    '            ' CRE13-001 - EHAPP [End][Tommy L]
-    '            'CRE15-005-03 (New PIDVSS scheme) [Start][Chris YIM]
-    '            '-----------------------------------------------------------------------------------------
-    '        Case SchemeClaimModel.EnumControlType.PIDVSS
-    '            isValid = Me.Step2aPIDVSSValidation(True, Me._udtEHSTransaction)
-    '            'CRE15-005-03 (New PIDVSS scheme) [End][Chris YIM]
-    '            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '            '-----------------------------------------------------------------------------------------
-    '        Case SchemeClaimModel.EnumControlType.VSS
-    '            isValid = Me.Step2aVSSValidation(True, Me._udtEHSTransaction)
-    '            'CRE16-002 (Revamp VSS) [End][Chris YIM]
-    '    End Select
-    '    ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
-
-    '    If isValid Then
-    '        'Me._udtEHSTransaction = Me._udtEHSClaimBLL.ConstructNewEHSTransaction(udtSchemeClaim, udtEHSAccount, udtPracticeDisplay)
-    '        'Me._udtEHSTransaction.ServiceDate = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
-
-    '        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-    '        'CRE13-019-02 Extend HCVS to China [Start][Karl]
-    '        If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VOUCHER OrElse udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
-    '            'CRE13-019-02 Extend HCVS to China [Start][Karl]
-    '            'Me._udtEHSTransaction.ServiceDate = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
-    '            Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount)
-
-    '            ' CRE13-001 - EHAPP [Start][Tommy L]
-    '            ' -------------------------------------------------------------------------------------
-    '        ElseIf udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.EHAPP Then
-    '            Me._udtEHSClaimBLL.ConstructEHSTransDetail_Registration(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount)
-    '            ' CRE13-001 - EHAPP [End][Tommy L]
-
-    '        Else
-
-    '            Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount, Me._udtSessionHandler.EHSClaimVaccineGetFromSession())
-    '        End If
-    '        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
-
-
-    '        Me._udtSessionHandler.EHSTransactionSaveToSession(Me._udtEHSTransaction, FunctCode)
-
-    '        ' --------------------------------------------------------------------------------------------
-    '        ' TSW Checking
-    '        ' --------------------------------------------------------------------------------------------
-    '        If udtSchemeClaim.TSWCheckingEnable Then
-    '            isTSWCase = Me._udtEHSClaimBLL.chkIsTSWCase(Me._udtSP.SPID, udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).IdentityNum)
-    '        End If
-
-
-    '        EHSClaimBasePage.AuditLogEnterClaimDetailPassed(udtAuditLogEntry, Me._udtEHSTransaction, True, isTSWCase)
-
-    '        Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step2b
-    '    Else
-    '        Me._udtSessionHandler.EHSTransactionRemoveFromSession(FunctCode)
-    '        Dim errorMessageCodeTable As DataTable = Me.udcMsgBoxErr.GetCodeTable
-
-    '        If errorMessageCodeTable.Rows.Count > 0 Then
-    '            Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail, udtAuditLogEntry, Common.Component.LogID.LOG00005, String.Format("Enter Claim Detail Failed With System Message", FunctCode))
-    '        Else
-    '            EHSClaimBasePage.AuditLogEnterClaimDetailPassed(udtAuditLogEntry)
-    '        End If
-
-    '    End If
-    'End Sub
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]
-    ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
 
     '---------------------------------------------------------------------------------------------------------
     'Search RCH
@@ -2323,6 +2200,10 @@ Partial Public Class EHSClaimV1
             Dim udtPracticeDisplayList As PracticeDisplayModelCollection = _udtSessionHandler.PracticeDisplayListGetFromSession()
 
             udcPopupPracticeRadioButtonGroup.VerticalScrollBar = True
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            udcPopupPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
+            udcPopupPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
             udcPopupPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplayList, _udtSP.PracticeList, _
                 _udtSP.SchemeInfoList, _udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.BankAccount)
         End If
@@ -3552,7 +3433,15 @@ Partial Public Class EHSClaimV1
                 Me.txtStep2aServiceDate.Style.Add("Display", "none")
                 Me.btnStep2aServiceDateCal.Visible = False
 
-                Me.lblStep2aServiceDate.Text = udtFormatter.formatDisplayDate(Me.txtStep2aServiceDate.Text, Me._udtSessionHandler.Language())
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                If Me.SubPlatform = EnumHCSPSubPlatform.CN Then
+                    Me.lblStep2aServiceDate.Text = Me.txtStep2aServiceDate.Text
+                Else
+                    Me.lblStep2aServiceDate.Text = udtFormatter.formatDisplayDate(Me.txtStep2aServiceDate.Text, Me._udtSessionHandler.Language())
+                End If
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 Me.lblStep2aServiceDate.Visible = True
             End If
             ' CRE19-006 (DHC) [End][Winnie]
@@ -3737,6 +3626,10 @@ Partial Public Class EHSClaimV1
             Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Nothing
             udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession()
             Me.udcPopupPracticeRadioButtonGroup.VerticalScrollBar = True
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            Me.udcPopupPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
+            Me.udcPopupPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
             Me.udcPopupPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, Me._udtSP.PracticeList, Me._udtSP.SchemeInfoList, Me._udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.BankAccount)
 
             If Not udtEHSAccount Is Nothing Then
@@ -4283,6 +4176,40 @@ Partial Public Class EHSClaimV1
                         End If
                         ' CRE13-001 - EHAPP [End][Tommy L]
 
+                        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                    Case SchemeClaimModel.EnumControlType.SSSCMC
+                        Dim blnValid As Boolean = True
+                        Dim udtPersonalInformation As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
+
+                        ' Check Patient whether is on list
+                        If (New ClaimRulesBLL).CheckIsHAPatient(udtSchemeClaim.SchemeCode, udtEHSAccount.SearchDocCode, udtPersonalInformation.IdentityNum) <> String.Empty Then
+                            blnValid = False
+                        End If
+
+                        ' Check Patient whether has available subsidy
+                        If Not _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList) > 0 Then
+                            blnValid = False
+                        End If
+
+                        If blnValid Then
+                            notAvailableForClaim = False
+
+                            'Sub-Patient Type
+                            Dim dtHAPatient As DataTable = (New HAServicePatientBLL).getHAServicePatientByIdentityNum(udtPersonalInformation.DocCode, udtPersonalInformation.IdentityNum)
+
+                            If dtHAPatient.Rows.Count = 0 Then
+                                Throw New Exception(String.Format("Document No.({0}) of Document type({1}) is not found in DB table HAServicePatient.", _
+                                                                  udtPersonalInformation.IdentityNum, _
+                                                                  udtPersonalInformation.DocCode))
+                            End If
+
+                            Me._udtSessionHandler.HAPatientSaveToSession(dtHAPatient)
+
+                        End If
+
+                        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 End Select
 
                 ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
@@ -4357,15 +4284,9 @@ Partial Public Class EHSClaimV1
             Me.udcStep2aInputEHSClaim.SchemeType = udtSchemeClaim.SchemeCode.Trim()
             Me.udcStep2aInputEHSClaim.EHSAccount = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
             Me.udcStep2aInputEHSClaim.EHSTransaction = Me._udtSessionHandler.EHSTransactionGetFromSession(FunctCode)
-            'CRE13-018 Change Voucher Amount to 1 Dollar [Start][Karl]
-            'Me.udcStep2aInputEHSClaim.TableTitleWidth = 160
             Me.udcStep2aInputEHSClaim.TableTitleWidth = 205
-            'CRE13-018 Change Voucher Amount to 1 Dollar [End][Karl]
             Me.udcStep2aInputEHSClaim.ServiceDate = dtmServiceDate
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             Me.udcStep2aInputEHSClaim.NonClinic = Me._udtSessionHandler.NonClinicSettingGetFromSession(FunctCode)
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
             Me.udcStep2aInputEHSClaim.Built()
 
             ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
@@ -4541,8 +4462,6 @@ Partial Public Class EHSClaimV1
                                                                                   GetExtRefStatus(udtEHSAccount, udtSchemeClaim), _
                                                                                   GetDHVaccineRefStatus(udtEHSAccount, udtSchemeClaim))
 
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Select Case udtSchemeClaim.ControlType
                 Case SchemeClaimModel.EnumControlType.VOUCHER
                     isValid = Me.Step2aHCVSValidation(blnIsConfirmed, Me._udtEHSTransaction)
@@ -4577,11 +4496,17 @@ Partial Public Class EHSClaimV1
                 Case SchemeClaimModel.EnumControlType.PPP
                     isValid = Me.Step2aPPPValidation(blnIsConfirmed, Me._udtEHSTransaction)
 
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case SchemeClaimModel.EnumControlType.SSSCMC
+                    isValid = Me.Step2aSSSCMCValidation(blnIsConfirmed, Me._udtEHSTransaction)
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+
                 Case Else
                     Throw New Exception(String.Format("No available input control for scheme({0}).", udtSchemeClaim.ControlType.ToString))
 
             End Select
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
         End If
 
@@ -4597,29 +4522,29 @@ Partial Public Class EHSClaimV1
             End If
             ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-            'CRE13-019-02 Extend HCVS to China [Start][Karl]
             If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VOUCHER OrElse udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
-                'CRE13-019-02 Extend HCVS to China [End][Karl]
                 Me._udtEHSTransaction.ServiceDate = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
                 Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount)
-                ' CRE13-001 - EHAPP [Start][Tommy L]
-                ' -------------------------------------------------------------------------------------
+
             ElseIf udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.EHAPP Then
                 Me._udtEHSClaimBLL.ConstructEHSTransDetail_Registration(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount)
-                ' CRE13-001 - EHAPP [End][Tommy L]
+
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            ElseIf udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.SSSCMC Then
+                Me._udtEHSClaimBLL.ConstructEHSTransactionDetail_SSSCMC(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount, Me._udtSessionHandler.HAPatientGetFromSession())
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Else
-                'CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 Dim dicVaccineRef As Dictionary(Of String, String) = EHSTransactionModel.GetVaccineRef(GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), Me._udtEHSTransaction)
                 Me._udtEHSTransaction.EHSVaccineResult = dicVaccineRef(EHSTransactionModel.VaccineRefType.EHS)
                 Me._udtEHSTransaction.HAVaccineResult = dicVaccineRef(EHSTransactionModel.VaccineRefType.HA)
                 Me._udtEHSTransaction.DHVaccineResult = dicVaccineRef(EHSTransactionModel.VaccineRefType.DH)
-                'CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
 
                 Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, Me._udtEHSTransaction, udtEHSAccount, Me._udtSessionHandler.EHSClaimVaccineGetFromSession())
+
             End If
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+
 
             Me._udtSessionHandler.EHSTransactionSaveToSession(Me._udtEHSTransaction, FunctCode)
 
@@ -4654,8 +4579,6 @@ Partial Public Class EHSClaimV1
 
         'Scheme can be nothing, if SP changed practice which is no available for the recipient 
         If Not udtSchemeClaim Is Nothing Then
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Select Case udtSchemeClaim.ControlType
                 Case SchemeClaimModel.EnumControlType.VOUCHER
                     Me.Step2aCleanHCVSError()
@@ -4690,11 +4613,17 @@ Partial Public Class EHSClaimV1
                 Case SchemeClaimModel.EnumControlType.PPP
                     Me.Step2aCleanPPPError()
 
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case SchemeClaimModel.EnumControlType.SSSCMC
+                    Me.Step2aCleanSSSCMCError()
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 Case Else
                     Throw New Exception(String.Format("No available input control for scheme({0}).", udtSchemeClaim.ControlType.ToString))
 
             End Select
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
 
         End If
     End Sub
@@ -4802,6 +4731,17 @@ Partial Public Class EHSClaimV1
         'End If
     End Sub
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub Step2aCleanSSSCMCError()
+        Dim udcInputSSSCMC As ucInputSSSCMC = Me.udcStep2aInputEHSClaim.GetSSSCMCControl()
+        If Not udcInputSSSCMC Is Nothing Then
+            udcInputSSSCMC.SetError(False)
+        End If
+    End Sub
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
 #End Region
 
 #Region "Step 2a Validation for Enter Claim detail"
@@ -6340,11 +6280,12 @@ Partial Public Class EHSClaimV1
         Dim strKey As String = String.Empty
         Dim udtRuleResult As RuleResult = Nothing
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 
         udcInputVSS.SetDoseErrorImage(False)
 
@@ -7098,6 +7039,105 @@ Partial Public Class EHSClaimV1
     End Function
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function Step2aSSSCMCValidation(ByVal checkByConfirmationBox As Boolean, ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
+
+        ' ---------------------------------------------
+        ' Init
+        '----------------------------------------------
+        Dim isValid As Boolean = True
+        Dim strDOB As String = String.Empty
+        Dim udtEligibleResult As EligibleResult = Nothing
+
+        Dim udcInputSSSCMC As ucInputSSSCMC = Me.udcStep2aInputEHSClaim.GetSSSCMCControl()
+
+        Dim udtValidator As Validator = New Validator()
+
+        Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
+        Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
+        Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
+
+        Dim decAvailableAmount As Decimal = 0
+
+        udcInputSSSCMC.SetError(False)
+
+        Me.udcMsgBoxErr.Clear()
+
+        If Not checkByConfirmationBox Then
+
+            ' -----------------------------------------------
+            ' UI Input Validation
+            '------------------------------------------------
+            If Not udcInputSSSCMC.Validate(True, Me.udcMsgBoxErr) Then
+                isValid = False
+            End If
+
+            If isValid Then
+                ' --------------------------------------------------------------
+                ' Check Eligibility:
+                ' --------------------------------------------------------------
+                If udtEHSPersonalInfo.DocCode = DocTypeModel.DocTypeCode.EC AndAlso udtEHSPersonalInfo.ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration Then
+                    strDOB = _udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, udtEHSPersonalInfo.ECAge, udtEHSPersonalInfo.ECDateOfRegistration)
+                Else
+                    strDOB = _udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, Nothing, Nothing)
+                End If
+
+                Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckEligibilityForEnterClaim(udtSchemeClaim, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo, Nothing, udtEligibleResult)
+
+                If Not Me._udtSystemMessage Is Nothing Then
+                    ' If Check Eligibility Block Show Error
+                    isValid = False
+                    Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+                End If
+            End If
+
+            If isValid Then
+                ' --------------------------------------------------------------
+                ' Check Document Limit:
+                ' --------------------------------------------------------------
+                Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckExceedDocumentLimitForEnterClaim(udtSchemeClaim.SchemeCode, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo)
+                If Not Me._udtSystemMessage Is Nothing Then
+                    isValid = False
+                    Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+                End If
+            End If
+
+            If isValid Then
+                ' --------------------------------------------------------------
+                ' Check Benefit:
+                ' --------------------------------------------------------------
+                Dim udtEHSTransactionBLL As New EHSTransactionBLL
+
+                decAvailableAmount = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+
+                If decAvailableAmount > 0 AndAlso decAvailableAmount >= udcInputSSSCMC.UsedRMB Then
+                    ' Subsidies for SSSCMC is available
+                Else
+                    ' No available subsidies for SSSCMC
+                    isValid = False
+                    Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00107"))
+                End If
+
+            End If
+
+        End If
+
+        If isValid Then
+            udtEHSTransaction.VoucherBeforeRedeem = Nothing
+            udtEHSTransaction.VoucherAfterRedeem = Nothing
+            udtEHSTransaction.VoucherClaim = Nothing
+            udtEHSTransaction.ExchangeRate = udcInputSSSCMC.ExchangeRate
+            udtEHSTransaction.VoucherClaimRMB = udcInputSSSCMC.UsedRMB
+
+            udcInputSSSCMC.Save(udtEHSTransaction)
+
+        End If
+
+        Return isValid
+    End Function
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
     Private Function Step2aPromptClaimRule(ByVal udtClaimRuleResult As ClaimRuleResult) As String
         Dim strText As String = String.Empty
         'Rule Detail: service date is over 24 days and less then 28 date, prompt warning message
@@ -7761,12 +7801,18 @@ Partial Public Class EHSClaimV1
 
                 If udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
                     Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount, udtEHSClaimVaccine)
-                    ' CRE13-001 - EHAPP [Start][Tommy L]
-                    ' -------------------------------------------------------------------------------------
+
                 ElseIf udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeRegistration Then
                     blnVaccineType = False
                     Me._udtEHSClaimBLL.ConstructEHSTransDetail_Registration(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount)
-                    ' CRE13-001 - EHAPP [End][Tommy L]
+
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                ElseIf udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
+                    blnVaccineType = False
+                    Me._udtEHSClaimBLL.ConstructEHSTransactionDetail_SSSCMC(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount, Me._udtSessionHandler.HAPatientGetFromSession())
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 Else
                     blnVaccineType = False
                     Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount)
@@ -7812,6 +7858,14 @@ Partial Public Class EHSClaimV1
                     blnVaccineType = False
                     Me._udtEHSClaimBLL.ConstructEHSTransDetail_Registration(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount)
                     ' CRE13-001 - EHAPP [End][Tommy L]
+
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                ElseIf udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
+                    blnVaccineType = False
+                    Me._udtEHSClaimBLL.ConstructEHSTransactionDetail_SSSCMC(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount, Me._udtSessionHandler.HAPatientGetFromSession())
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 Else
                     blnVaccineType = False
                     Me._udtEHSClaimBLL.ConstructEHSTransactionDetails(Me._udtSP, udtDataEntryUser, udtEHSTransaction, udtEHSAccount)
@@ -8094,10 +8148,7 @@ Partial Public Class EHSClaimV1
             Me._udtSessionHandler.SchemeSubsidizeListRemoveFromSession(FunctCode)
             Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
             Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctCode)
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             Me._udtSessionHandler.ClaimForSamePatientSaveToSession(True, FunctCode)
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
             Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step2a
 
@@ -8368,7 +8419,7 @@ Partial Public Class EHSClaimV1
 #Region "Step of Select Practice"
 
     'Select Practice in MuiltView
-    Protected Sub PracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles PracticeRadioButtonGroup.PracticeSelected
+    Protected Sub PracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles PracticeRadioButtonGroup.PracticeSelected
         If Me._blnIsRequireHandlePageRefresh Then
             Return
         End If
@@ -8387,6 +8438,9 @@ Partial Public Class EHSClaimV1
 
         Me._udtSessionHandler.PracticeDisplaySaveToSession(udtPracticeDisplay, FunctCode)
 
+        ' Save the new selected Scheme to session
+        _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
+
         'Log Practice Selection
         EHSClaimBasePage.AuditLogPracticeSelected(New AuditLogEntry(FunctionCode, Me), False, udtPracticeDisplay, Nothing, False)
 
@@ -8402,6 +8456,10 @@ Partial Public Class EHSClaimV1
 
         'Build practice Selection List
         Me.PracticeRadioButtonGroup.VerticalScrollBar = False
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Me.PracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
+        Me.PracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
         Me.PracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, Me._udtSP.PracticeList, Me._udtSP.SchemeInfoList, Me._udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.BankAccount)
 
     End Sub

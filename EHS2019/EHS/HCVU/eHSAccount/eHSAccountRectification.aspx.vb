@@ -769,6 +769,11 @@ Partial Public Class eHSAccountRectification
 
         udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccountGetFromSession(FuncCode)
 
+        ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+        ' Reset
+        Me.udcCCCode.Clean()
+        ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
+
         If udtEHSAccount.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
             '------------------------------------------------------------
             'Amendment of validated account
@@ -902,6 +907,7 @@ Partial Public Class eHSAccountRectification
                     If Me.NeedPopupCCCodeDialog(DocInputMode) Then
                         Me.ucInputDocumentType_SelectChineseName_HKIC(DocInputMode, udcInputHKIC, Nothing, Nothing)
                         blnProceed = False
+
                     End If
                 End If
 
@@ -1918,17 +1924,20 @@ Partial Public Class eHSAccountRectification
             Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
 
             sm = Me.udcCCCode.BindCCCode()
+
+            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+            Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
+            Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
+            Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
+            Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
+            Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
+            Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
+            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
+
             'Bind CCCode Drop Down List
             If sm Is Nothing Then
                 udcInputHKID.SetCCCodeError(False)
                 Me.ModalPopupExtenderChooseCCCode.Show()
-
-                Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
-                Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
-                Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
-                Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
-                Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
-                Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
                 Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00024, AuditLogDesc.ChineseNameCodeCheckingSuccess)
             Else
                 sm = New SystemMessage(CommonFuncCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00039)
@@ -1937,7 +1946,9 @@ Partial Public Class eHSAccountRectification
             End If
         End If
 
-        Me.udcMsgBox.BuildMessageBox(strValidationFail, udtAuditLogEntry, LogID.LOG00025, AuditLogDesc.ChineseNameCodeCheckingFail)
+        If Not IsNothing(sender) Then
+            Me.udcMsgBox.BuildMessageBox(strValidationFail, udtAuditLogEntry, LogID.LOG00025, AuditLogDesc.ChineseNameCodeCheckingFail)
+        End If
 
     End Sub
 

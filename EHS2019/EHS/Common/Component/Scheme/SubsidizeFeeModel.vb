@@ -13,14 +13,9 @@ Namespace Component.Scheme
             Public Const SubsidizeFeeTypeVoucher As String = "VOUCHER"
             Public Const SubsidizeFeeTypeVaccine As String = "VACCINE_FEE"
             Public Const SubsidizeFeeTypeInjection As String = "INJECTION_FEE"
-            ' CRE13-001 - EHAPP [Start][Tommy L]
-            ' -------------------------------------------------------------------------------------
             Public Const SubsidizeFeeTypeNA As String = "NA"
-            ' CRE13-001 - EHAPP [End][Tommy L]
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             Public Const SubsidizeFeeTypeSubsidize As String = "SUBSIDIZE_FEE"
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
         End Class
 
 #Region "Private Member"

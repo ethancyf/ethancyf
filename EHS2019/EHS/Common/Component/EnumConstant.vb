@@ -2462,6 +2462,7 @@ Namespace Component
         Public Const StudentFileChecking As String = "StudentFileChecking" ' CRE17-018-03 (New initiatives for VSS and RVP in 2018-19 - Phase 3 - Claim) [Koala]
         Public Const StudentAccountMatching As String = "StudentAccountMatching"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
         ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
+        Public Const HAServicePatientImporter As String = "HAServicePatientImporter"  ' CRE20-015 (HA Scheme)[Raiman]
         ' ---------------------------------------------------------------------------------------------------------
         Public Const PatientPortalDoctorListGenerator As String = "PatientPortalDoctorListGenerator"
         ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
@@ -2487,6 +2488,7 @@ Namespace Component
         Public Const StudentFileChecking As String = "019919" ' CRE17-018-03 (New initiatives for VSS and RVP in 2018-19 - Phase 3 - Claim) [Koala]
         Public Const StudentAccountMatching As String = "019920"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
         Public Const PatientPortalDoctorListGenerator As String = "019921" ' CRE18-XXX (Provide data to eHR Portal) [Chris YIM]
+        Public Const HAServicePatientImporter As String = "019922" ' CRE20-015 (HA Scheme)[Raiman]
     End Class
 
     Public Class ScheduleJobLogStatus

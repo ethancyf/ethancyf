@@ -623,8 +623,6 @@ Public MustInherit Class EHSClaimBasePage
             udtAuditLogEntry.AddDescripton("Is TSW Case", "False")
         End If
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Dim enumControlType As SchemeClaimModel.EnumControlType = New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode.Trim())
 
         Select Case enumControlType
@@ -661,11 +659,16 @@ Public MustInherit Class EHSClaimBasePage
             Case SchemeClaimModel.EnumControlType.PPP
                 udtAuditLogEntry = AuditLogPPP(udtAuditLogEntry, udtEHSTransaction)
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00011, "Enter Claim Detail Complete")
     End Sub
@@ -828,6 +831,12 @@ Public MustInherit Class EHSClaimBasePage
             Case SchemeClaimModel.EnumControlType.PPP
                 udtAuditLogEntry = AuditLogPPP(udtAuditLogEntry, udtEHSTransaction)
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
@@ -898,6 +907,12 @@ Public MustInherit Class EHSClaimBasePage
 
             Case SchemeClaimModel.EnumControlType.PPP
                 udtAuditLogEntry = AuditLogPPP(udtAuditLogEntry, udtEHSTransaction)
+
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
@@ -1458,6 +1473,23 @@ Public MustInherit Class EHSClaimBasePage
         Return udtAuditLogEntry
     End Function
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Shared Function AuditLogSSSCMC(ByVal udtAuditLogEntry As AuditLogEntry, ByVal udtEHSTransaction As EHSTransactionModel) As AuditLogEntry
+        udtAuditLogEntry.AddDescripton("Scheme", udtEHSTransaction.SchemeCode.Trim)
+
+        udtAuditLogEntry.AddDescripton("ExchangeRate", udtEHSTransaction.ExchangeRate)
+
+        udtAuditLogEntry.AddDescripton("VoucherRedeemRMB", udtEHSTransaction.VoucherClaimRMB)
+
+        For Each udtTransactAdditionfield As TransactionAdditionalFieldModel In udtEHSTransaction.TransactionAdditionFields
+            udtAuditLogEntry.AddDescripton(udtTransactAdditionfield.AdditionalFieldID, udtTransactAdditionfield.AdditionalFieldValueCode)
+        Next
+
+        Return udtAuditLogEntry
+    End Function
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
 #End Region
 

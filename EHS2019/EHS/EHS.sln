@@ -113,6 +113,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "GenCaptchaSpeechApi", "GenC
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PatientPortalDoctorListGenerator", "PatientPortalDoctorListGenerator\PatientPortalDoctorListGenerator.vbproj", "{30D0C8FA-87B4-4E7F-80D4-D3FD610A8B4B}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "HAServicePatientImporter", "HAServicePatientImporter\HAServicePatientImporter.vbproj", "{C48A11AB-1740-4D83-83E5-F19CA4C4D077}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -663,6 +665,16 @@ Global
 		{30D0C8FA-87B4-4E7F-80D4-D3FD610A8B4B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{30D0C8FA-87B4-4E7F-80D4-D3FD610A8B4B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{30D0C8FA-87B4-4E7F-80D4-D3FD610A8B4B}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

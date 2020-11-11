@@ -1052,6 +1052,9 @@ Partial Public Class EHSRectification
                 'udtEHSAccount.CreateSPPracticeDisplaySeq = udtPracticeDisplays.Item(0).PracticeID
 
             Else
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Me.PracticeRadioButtonGroup.SchemeSelection = False
+                ' CRE20-0XX (HA Scheme) [End][Winnie]
                 Me.PracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, udtSP.PracticeList, udtSP.SchemeInfoList, udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.BankAccount)
 
                 Dim strCurrentPracticeName As String = String.Empty
@@ -1485,7 +1488,7 @@ Partial Public Class EHSRectification
 
 #Region "View 6 - Practice Selection View Button Action"
 
-    Protected Sub PracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles PracticeRadioButtonGroup.PracticeSelected
+    Protected Sub PracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles PracticeRadioButtonGroup.PracticeSelected
         'Audit log
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
         Me.udtAuditLogEntry.AddDescripton("PracticeID", intBankAccountDisplaySeq)
@@ -3810,6 +3813,10 @@ Partial Public Class EHSRectification
         Me.udtSessionHandler.SmartIDContentRemoveFormSession(FuncCode)
         Me.udtSessionHandler.PracticeDisplayRemoveFromSession(FuncCode)
 
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Me.udtSessionHandler.SchemeSelectedForPracticeRemoveFromSession(FuncCode)
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+
         Session(SESS_InputMode) = Nothing
         Session.Remove(SESS_InputMode)
 
@@ -4063,6 +4070,10 @@ Partial Public Class EHSRectification
 
                 GetCurrentUser(udtSP, udtDataEntry)
                 udtPracticeDisplays = Session(SESS_PracticeCollection)
+
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Me.PracticeRadioButtonGroup.SchemeSelection = False
+                ' CRE20-0XX (HA Scheme) [End][Winnie]
                 Me.PracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, udtSP.PracticeList, udtSP.SchemeInfoList, udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.BankAccount)
 
             Case intSmartIDConfirmation
@@ -4411,6 +4422,10 @@ Partial Public Class EHSRectification
 
                 Dim strCurrentPracticeName As String = String.Empty
                 Dim strCurrentPracticeNameChi As String = String.Empty
+
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Me.PracticeRadioButtonGroup.SchemeSelection = False
+                ' CRE20-0XX (HA Scheme) [End][Winnie]
 
                 Me.PracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, udtSP.PracticeList, udtSP.SchemeInfoList, udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.BankAccount)
                 Me.udtEHSTransaction = udtEHSTransactionBLL.LoadClaimTran(udtEHSAccountOrg.TransactionID)

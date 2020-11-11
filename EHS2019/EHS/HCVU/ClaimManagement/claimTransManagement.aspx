@@ -1163,6 +1163,13 @@
                                     <ItemStyle HorizontalAlign="Right" Width="90px"  VerticalAlign="Top" />
                                       <HeaderStyle VerticalAlign="Top" /> 
                                  </asp:TemplateField>     
+                                 <asp:TemplateField SortExpression="totalAmountRMB" HeaderText='<%$ Resources:Text, TotalRedeemAmountSignRMB %>'>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblTotalAmountRMB" runat="server" Text='<%# Eval("totalAmountRMB") %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <ItemStyle HorizontalAlign="Right" Width="90px"  VerticalAlign="Top" />
+                                      <HeaderStyle VerticalAlign="Top" /> 
+                                 </asp:TemplateField>   
                                 <asp:TemplateField HeaderText="<%$ Resources:Text, TransactionStatus %>" SortExpression="transstatus">
                                     <ItemStyle Width="120px" VerticalAlign="Top" />
                                     <HeaderStyle VerticalAlign="Top" />

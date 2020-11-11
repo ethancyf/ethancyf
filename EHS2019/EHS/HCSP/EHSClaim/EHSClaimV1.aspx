@@ -573,7 +573,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="eHSTableHeading" valign="top">
+                                <td class="eHSTableHeading" style="vertical-align:top;width:200px">
                                     <asp:Label ID="lblStep2aAcctInfo" runat="server" Text="<%$ Resources:Text, AccountInfo%>"></asp:Label>
                                 </td>
                                 <td>
@@ -741,7 +741,7 @@
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
-                                <td style="width: 175px; padding-top: 10px;"></td>
+                                <td style="width: 200px; padding-top: 10px;padding-right: 5px"></td>
                                 <td style="padding-top: 10px">
                                     <asp:ImageButton ID="btnStep2aCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn%>"
                                         ImageUrl="<%$ Resources:ImageUrl, CancelBtn%>" 
@@ -834,7 +834,7 @@
                         <table cellspacing="0" cellpadding="0" border="0" style="min-height: 50px">
                             <tbody>
                                 <tr>
-                                    <td style="width: 175px"></td>
+                                    <td style="width: 200px;padding-right: 5px"></td>
                                     <td>
                                         <asp:Panel ID="panlblStep2bPrintConsent" runat="server">
                                             <table border="0" cellpadding="0" cellspacing="0">
@@ -875,7 +875,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 175px"></td>
+                                    <td style="width: 200px;padding-right: 5px"></td>
                                     <td></td>
                                 </tr>
                             </tbody>
@@ -884,7 +884,7 @@
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr id="trStep2bDeclareClaim" runat="server">
-                                <td style="width: 175px; height: 16px"></td>
+                                <td style="width: 200px; padding-right: 5px; height: 16px"></td>
                                 <td style="width: 550px; height: 16px" class="checkboxStyle">
                                     <asp:CheckBox ID="chkStep2bDeclareClaim" TabIndex="1" runat="server" Text="<%$ Resources:Text, ProvidedInfoTrueClaimSP%>"
                                         AutoPostBack="True">
@@ -892,12 +892,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-bottom: 5px; width: 175px; padding-top: 5px; height: 16px"></td>
-                                <td style="padding-bottom: 5px; padding-top: 5px">
+                                <td style="padding-bottom: 5px; width: 200px; padding-right: 5px; padding-top: 5px; height: 16px"></td>
+                                <td style="padding-bottom: 5px; padding-top: 10px">
                                     <asp:ImageButton ID="btnStep2bBack" TabIndex="2" runat="server" AlternateText="<%$ Resources:AlternateText, BackBtn%>"
-                                        ImageUrl="<%$ Resources:ImageUrl, BackBtn%>"></asp:ImageButton>&nbsp;<asp:ImageButton
+                                        ImageUrl="<%$ Resources:ImageUrl, BackBtn%>"></asp:ImageButton>&nbsp;
+                                    <asp:ImageButton
                                             ID="btnStep2bConfirm" TabIndex="4" runat="server" AlternateText="<%$ Resources:AlternateText, ConfirmBtn%>"
-                                            ImageUrl="<%$ Resources:ImageUrl, ConfirmDisableBtn%>" Enabled="False"></asp:ImageButton></td>
+                                            ImageUrl="<%$ Resources:ImageUrl, ConfirmDisableBtn%>" Enabled="False"></asp:ImageButton>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

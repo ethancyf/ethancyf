@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	21 Oct 2020
+-- CR No.:			CRE20-015 (HA Scheme)
+-- Description:		Enlarge size of [Scheme_Claim].[Scheme_Desc] from 100 -> 200
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT13-0030
 -- Modified by:		Tommy LAM
 -- Modified date:	23 Dec 2013
@@ -130,7 +137,7 @@ end
 		Scheme_Code		char(10),
 		Display_Code	char(25),
 		Display_Seq		smallint,
-		Scheme_Desc		varchar(100)
+		Scheme_Desc		varchar(200)
 	)
 
 	CREATE TABLE #ReportData (

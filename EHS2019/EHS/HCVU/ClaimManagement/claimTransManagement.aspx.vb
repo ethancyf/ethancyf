@@ -278,9 +278,6 @@ Partial Public Class claimTransManagement
 #End Region
 
 #Region "Session Constants"
-
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-    ' --------------------------------------------------------------------------------------
     Private Const SESS_SchemeClaimList As String = "010404_SchemeClaimList"
     Private Const SESS_SearchCriteria As String = "010404_SearchCriteria"
     Private Const SESS_TransactionDataTable As String = "010404_TransactionDataTable"
@@ -291,7 +288,10 @@ Partial Public Class claimTransManagement
     Private Const SESS_FromRedirect As String = "010404_FromRedirect"
     Private Const SESS_SearchRVPHomeList As String = "010404_SearchRVPHomeList"
     Private Const SESS_SearchSchoolList As String = "010404_SearchSchoolList"
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Const SESS_SchemeClaimListFilteredByUserRole As String = "010403_SchemeClaimListFilteredByUserRole"
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
 #End Region
 
@@ -632,6 +632,11 @@ Partial Public Class claimTransManagement
                 End If
             Next
         Next
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Session(SESS_SchemeClaimListFilteredByUserRole) = udtSchemeClaimModelListFilter
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
         ddlScheme.DataSource = udtSchemeClaimModelListFilter
         ddlScheme.DataValueField = "SchemeCode"
@@ -1821,7 +1826,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
-                    
+
 
                 Case Aspect.eHSAccount
                     EnumSelectedStoredProc = Aspect.eHSAccount
@@ -1881,7 +1886,7 @@ Partial Public Class claimTransManagement
                     End If
                     udtSearchCriteria.VoucherRecipientName = Me.txtTabeHSAccountName.Text.Trim
                     udtSearchCriteria.VoucherRecipientChiName = Me.txtTabeHSAccountChiName.Text.Trim
-                 
+
 
                 Case Aspect.AdvancedSearch
                     EnumSelectedStoredProc = Aspect.AdvancedSearch
@@ -1985,19 +1990,31 @@ Partial Public Class claimTransManagement
 
         ' ===== CRE10-027: Means of Input =====
         If (New GeneralFunction).CheckTurnOnMeansOfInput = GeneralFunction.EnumTurnOnStatus.Yes Then
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [Start][Tommy L]
-            ' -----------------------------------------------------------------------------------------
-            'gvTransaction.Columns(14).Visible = True
-            gvTransaction.Columns(13).Visible = True
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
+            gvTransaction.Columns(14).Visible = True
         Else
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [Start][Tommy L]
-            ' -----------------------------------------------------------------------------------------
-            'gvTransaction.Columns(14).Visible = False
-            gvTransaction.Columns(13).Visible = False
-            ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
+            gvTransaction.Columns(14).Visible = False
         End If
         ' ===== End of CRE10-027 =====
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim blnShowRMB As Boolean = False
+        Dim udtSchemeClaimList As SchemeClaimModelCollection = Session(SESS_SchemeClaimListFilteredByUserRole)
+
+        For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
+            If udtSchemeClaim.ReimbursementCurrency = SchemeClaimModel.EnumReimbursementCurrency.HKDRMB OrElse _
+                udtSchemeClaim.ReimbursementCurrency = SchemeClaimModel.EnumReimbursementCurrency.RMB Then
+
+                blnShowRMB = True
+            End If
+        Next
+
+        If blnShowRMB Then
+            gvTransaction.Columns(10).Visible = True 'TotalAmountRMB
+        Else
+            gvTransaction.Columns(10).Visible = False 'TotalAmountRMB
+        End If
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
     End Sub
 
@@ -2286,8 +2303,6 @@ Partial Public Class claimTransManagement
                 Status.GetDescriptionFromDBCode(ReimbursementStatus.ClassCode, hfGAuthorizedStatus.Value.Trim, lblGAuthorisedStatus.Text, String.Empty)
             End If
 
-            ' CRE13-001 EHAPP [Start][Karl]
-            ' -----------------------------------------------------------------------------------------
             'Total Amount
             Dim strTotalAmount As String
             Dim lblTotalAmount As Label
@@ -2302,7 +2317,22 @@ Partial Public Class claimTransManagement
             End If
 
             lblTotalAmount.Text = strTotalAmount
-            ' CRE13-001 EHAPP [End][Karl]
+
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Total Amount
+            Dim strTotalAmountRMB As String = String.Empty
+            Dim lblTotalAmountRMB As Label = CType(e.Row.FindControl("lblTotalAmountRMB"), Label)
+
+            If IsDBNull(dr.Item("totalAmountRMB")) = True Then
+                strTotalAmountRMB = Me.GetGlobalResourceObject("Text", "ServiceFeeN/A")
+            Else
+                strTotalAmountRMB = CDbl(dr.Item("totalAmountRMB")).ToString("#,##0")
+            End If
+
+            lblTotalAmountRMB.Text = strTotalAmountRMB
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             ' Invalidation
             Dim lblGInvalidation As Label = e.Row.FindControl("lblGInvalidation")
             Dim hfGInvalidation As HiddenField = e.Row.FindControl("hfGInvalidation")

@@ -6646,6 +6646,10 @@ Partial Public Class VaccinationFileManagement ' 020901
         Session(SESS.AcctEditVoucherAccID) = strRealVoucherAccID
         Session(SESS.AcctEditAccType) = strRealAccType
 
+        ' INT20-0043 (Fix error when change Doc Type) [Start][Winnie]
+        Session(SESS.AcctEditCustomDocType) = Nothing
+        ' INT20-0043 (Fix error when change Doc Type) [End][Winnie]
+
         Session(SESS.SchemeDocTypeLegendPanelShow) = False
 
         Try
@@ -6752,6 +6756,10 @@ Partial Public Class VaccinationFileManagement ' 020901
             Session(SESS.AcctEditSeqNo) = Nothing
             Session(SESS.AcctEditVoucherAccID) = Nothing
             Session(SESS.AcctEditAccType) = Nothing
+
+            ' INT20-0043 (Fix error when change Doc Type) [Start][Winnie]
+            Session(SESS.AcctEditCustomDocType) = Nothing
+            ' INT20-0043 (Fix error when change Doc Type) [End][Winnie]
 
             'Session(SESS.OrgEHSAccount) = Nothing
             'Session.Remove(SESS.OrgEHSAccount)
@@ -9065,8 +9073,13 @@ Partial Public Class VaccinationFileManagement ' 020901
         udtAuditLog.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
         udtAuditLog.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
         udtAuditLog.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
-        Me.udcAcctEditErrorMessage.BuildMessageBox(strValidationFail, udtAuditLog, LogID.LOG00046, AuditLogDesc.Msg00046)
 
+        ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+        'Sender <> Nothing => User Click "Chinese Name" Btn, build msg box here
+        If Not IsNothing(sender) Then            
+            Me.udcAcctEditErrorMessage.BuildMessageBox(strValidationFail, udtAuditLog, LogID.LOG00046, AuditLogDesc.Msg00046)
+        End If
+        ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
     End Sub
 
     Private Function NeedPopupCCCodeDialog() As Boolean

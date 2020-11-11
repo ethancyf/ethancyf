@@ -109,7 +109,7 @@ Public Class ClaimVaccineReadOnly
 
                 tblCell1 = New TableCell()
                 tblCell1.Height = 20
-                tblCell1.Width = 180
+                tblCell1.Width = 220
                 tblCell1.CssClass = Me._strCssTableText
 
                 tblCell2 = New TableCell()

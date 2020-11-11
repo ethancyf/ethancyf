@@ -39,7 +39,16 @@ function showREPMTHelp(lang) {
 }
 
 function showHKBCHelp(lang) {
-    newwindow = window.open('../../../SampleHKBC.htm', 'Sample', 'toolbar=no, height=590, width=450, menubar=no, resizable=no, location=no, status=no,')
+    var l;
+
+    switch (lang) {
+        case 'zh-cn':
+            l = 'CN';
+            break;
+        default:
+            l = '';
+    }
+    newwindow = window.open('../../../SampleHKBC' + l + '.htm', 'Sample', 'toolbar=no, height=590, width=450, menubar=no, resizable=no, location=no, status=no,')
     newwindow.focus();
     return false;
 }

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	04 Nov 2020
+-- CR No.			CRE20-14 (Gov SIV 2020_21)
+-- Description:		Fix to add "LAIV" for display last 3 vaccine history
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	17 Sep 2020
 -- CR No.			CRE20-003-02 (Batch Upload - Phase 2 Vacc Check Report)
@@ -215,7 +222,7 @@ AS BEGIN
 		INNER JOIN StatusData SD
 			ON v.Record_Type = SD.Status_Value AND SD.Enum_Class = 'VaccinationRecordRecordType'
 	WHERE Student_File_ID = @Input_Student_File_ID AND (
-		(@VaccineType = 'QIV' AND v.Subsidize_Item_Code NOT IN ('PV','PV13','MMR'))
+		(@VaccineType IN ('QIV','LAIV') AND v.Subsidize_Item_Code NOT IN ('PV','PV13','MMR'))
 		OR (@VaccineType IN ('PV','PV13') AND v.Subsidize_Item_Code IN ('PV','PV13'))
 		OR (@VaccineType IN ('MMR') AND v.Subsidize_Item_Code IN ('MMR'))
 	)

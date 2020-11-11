@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	21 Oct 2020
+-- CR No.:			CRE20-015 (HA Scheme)
+-- Description:		Enlarge size of [Scheme_Claim].[Scheme_Desc] from 100 -> 200
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	2 November 2015
 -- CR No.:			CRE15-006
@@ -71,7 +78,7 @@ AS BEGIN
   Scheme_Code  char(10),  
   Display_Code char(25),  
   Display_Seq  smallint,  
-  Scheme_Desc  varchar(100)  
+  Scheme_Desc  varchar(200)  
  )  
    
  DECLARE @pivot_table_column_header  varchar(MAX)  --[HCVS] varchar(50),[HCVSC] varchar(50)

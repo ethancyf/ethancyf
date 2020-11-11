@@ -42,6 +42,20 @@ Namespace Component.EHSTransaction
             ' PPP
             Public Const SchoolCode As String = "SchoolCode"
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' SSSCMC
+            Public Const ClaimedPaymentType As String = "ClaimedPaymentType"
+            Public Const RegistrationFeeRMB As String = "RegistrationFeeRMB"
+            Public Const ConsultAndRegFeeRMB As String = "ConsultAndRegFeeRMB"
+            Public Const DrugFeeRMB As String = "DrugFeeRMB"
+            Public Const InvestigationFeeRMB As String = "InvestigationFeeRMB"
+            Public Const OtherFeeRMB As String = "OtherFeeRMB"
+            Public Const SubsidyBeforeClaim As String = "SubsidyBeforeClaim"
+            Public Const SubsidyAfterClaim As String = "SubsidyAfterClaim"
+            Public Const TotalSupportFee As String = "TotalSupportFee"
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Public Shared Function ReasonForVisitL1() As String()
                 ' Principal
                 ' Secondary 1

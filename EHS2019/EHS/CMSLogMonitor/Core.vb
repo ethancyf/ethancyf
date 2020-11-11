@@ -75,6 +75,7 @@ Public Class ScheduleJob
         OCSSSSlowResponse
         OCSSSConnectFail
         EHRSSPatientPortalSlowResponse
+        HAServicePatientImporter
     End Enum
 
 #End Region
@@ -94,6 +95,7 @@ Public Class ScheduleJob
             udtEventLog.WriteEntry(strMessage, typeEntryType, CInt(strEventID))
 
         Catch Ex As Exception
+            Console.WriteLine(Ex)
             ' Do nothing
 
         End Try
@@ -406,10 +408,19 @@ Public Class ScheduleJob
         dtmLastCheck.Insert(HealthCheckType.OCSSSHealthCheckFail, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.OCSSSSlowResponse, dtmNow)
         dtmLastCheck.Insert(HealthCheckType.OCSSSConnectFail, dtmNow)
+
+
         ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         dtmLastCheck.Insert(HealthCheckType.EHRSSPatientPortalSlowResponse, dtmNow)
         ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
+
+
+        ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+        dtmLastCheck.Insert(HealthCheckType.HAServicePatientImporter, dtmNow)
+        ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
+
 
         CheckTime.ReadCheckTime(dtmLastCheck)
 
@@ -450,6 +461,13 @@ Public Class ScheduleJob
             CheckEHRSS_PP_SlowResponse(dtmLastCheck(HealthCheckType.EHRSSPatientPortalSlowResponse), dtmNow)
             ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
 
+
+
+            ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
+            ' ---------------------------------------------------------------------------------------------------------
+            CheckHASPImporter_ImportFail(dtmLastCheck(HealthCheckType.HAServicePatientImporter), dtmNow)
+            ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
+
             CheckTime.WriteCheckTime(dtmLastCheck)
 
             Log("Monitor Task Completed")
@@ -459,7 +477,6 @@ Public Class ScheduleJob
         End Try
 
     End Sub
-
 
 #Region "CMS"
     Private Sub CheckHealthCheckFail(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
@@ -2091,5 +2108,111 @@ Public Class ScheduleJob
     End Sub
 
 #End Region
+
+
+#Region "HASPImporter"
+    Private Sub CheckHASPImporter_ImportFail(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
+        ' +--------------------------------------------------------------------------------------------------+
+        ' | For every [5] minutes, monitor the ScheduleJobLog to see if any HAServicePatientImporter         |
+        ' | fail case. If there is error case, raise pager alert;If there is warning case, raise email alert |
+        ' +--------------------------------------------------------------------------------------------------+
+
+        Log("Checking HASPImporter_ImportFail")
+
+        ' Check whether need to run
+        If DateDiff(DateInterval.Minute, dtmLastCheck, dtmCurrent) < CInt(ConfigurationManager.AppSettings("HASPImporter_CheckInterval")) Then
+            Log("Smaller than CheckInterval, no need to run")
+
+            Return
+        End If
+
+        ' Update now to be the new LastCheckTime
+        dtmLastCheck = dtmCurrent
+
+        ' Check logs
+        Dim intScheduleJobLogMinuteBefore As Integer = CInt(ConfigurationManager.AppSettings("HASPImporter_ScheduleJobLogMinuteBefore"))
+        Dim strScheduleJobLogProgramID As String = ConfigurationManager.AppSettings("HASPImporter_ProgramID")
+        Dim strScheduleJobPagerAlertLogID As String = ConfigurationManager.AppSettings("HASPImporter_PagerAlertLogID")
+        Dim strScheduleJobEmailAlertLogID As String = ConfigurationManager.AppSettings("HASPImporter_EmailAlertLogID")
+
+
+        Dim strPagerAlertLogID_PagerAlert As String = ConfigurationManager.AppSettings("HASPImporter_PagerAlertLogID_PagerAlert")
+
+        Dim strEmailAlertLogID_EmailAlert As String = ConfigurationManager.AppSettings("HASPImporter_EmailAlertLogID_EmailAlert")
+
+
+        Dim dtPagerAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobPagerAlertLogID, _
+                                                         dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                         dtmCurrent)
+
+        Dim dtEmailAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobEmailAlertLogID, _
+                                                          dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                          dtmCurrent)
+
+        Dim strMessage As String = String.Empty
+        Dim blnPagerAlert As Boolean = False
+        Dim blnEmailAlert As Boolean = False
+
+        If dtPagerAlertLogID.Rows.Count > 0 Then
+
+            If strPagerAlertLogID_PagerAlert = "Y" Then blnPagerAlert = True
+
+            ' Get the latest description
+            strMessage = dtPagerAlertLogID.Rows(0)("Description")
+
+        ElseIf dtEmailAlertLogID.Rows.Count > 0 Then
+
+            If strEmailAlertLogID_EmailAlert = "Y" Then blnEmailAlert = True
+
+            ' Get the latest description
+            strMessage = dtEmailAlertLogID.Rows(0)("Description")
+        End If
+
+
+
+        If blnPagerAlert Then
+            Log("CheckHASPImporter_ImportFail pager alert")
+
+            CheckHASPImporter_ImportFailAlert(AlertType.PagerAlert, strMessage)
+        End If
+
+        If blnEmailAlert Then
+            Log("CheckHASPImporter_ImportFail email alert")
+
+            CheckHASPImporter_ImportFailAlert(AlertType.EmailAlert, strMessage)
+        End If
+
+        Log("Completed checking CheckHASPImporter_ImportFail")
+
+    End Sub
+
+
+    'For CheckHASPImporter_ImportFail write event log
+    Private Sub CheckHASPImporter_ImportFailAlert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("HASPImporter_EventSource"), _
+                              ConfigurationManager.AppSettings("HASPImporter_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("HASPImporter_EventSource"), _
+                              ConfigurationManager.AppSettings("HASPImporter_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
+#End Region
+
+
+
+
+
+
 
 End Class

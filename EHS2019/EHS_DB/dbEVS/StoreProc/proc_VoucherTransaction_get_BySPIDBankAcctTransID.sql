@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-015 (HA Scheme)
+-- Modified by:		Winnie SUEN
+-- Modified date:	16 Oct 2020
+-- Description:		Show [Total_Claim_Amount_RMB] for SSSCMC scheme
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE19-006 (DHC)
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Jun 2019
@@ -244,7 +251,7 @@ AS BEGIN
 	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID  AND VT.Scheme_Code = 'HCVSCHN'
+		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
 
 	where isnull(VT.[voucher_acc_id],'') <> ''
 	and isnull(VT.[invalid_acc_id],'') = ''
@@ -340,7 +347,7 @@ AS BEGIN
 	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID  AND VT.Scheme_Code = 'HCVSCHN'
+		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
 
 	where isnull(VT.invalid_acc_id,'') = ''
 	and isnull(VT.special_acc_id,'') = ''
@@ -444,7 +451,7 @@ AS BEGIN
 	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID  AND VT.Scheme_Code = 'HCVSCHN'
+		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
 
 	where isnull(VT.invalid_acc_id,'') = ''
 	and isnull(VT.special_acc_id,'') <> ''
@@ -553,7 +560,7 @@ AS BEGIN
 	LEFT JOIN SchemeClaim SC WITH (NOLOCK)
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
-		ON VT.Transaction_ID = TD.Transaction_ID  AND VT.Scheme_Code = 'HCVSCHN'
+		ON VT.Transaction_ID = TD.Transaction_ID AND TD.Total_Amount_RMB IS NOT NULL
 
 	where isnull(VT.invalid_acc_id,'') <> ''
 	AND VT.Record_Status NOT IN ('B', 'D')
@@ -626,6 +633,9 @@ AS BEGIN
 	-- Item_Group_Seq 85: Reason_for_Visit_S3
 	-- Item_Group_Seq 91: High Risk
 	-- Item_Group_Seq 92: School Code
+	-- Item_Group_Seq 101: RegistrationFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+	-- Item_Group_Seq 102: CoPaymentFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+
 	-- ==========================================
 
 
@@ -1013,7 +1023,8 @@ AS BEGIN
 			INNER JOIN @TempTransactionAdditionalField TAF
 				ON T.Transaction_ID = TAF.Transaction_ID
 					AND TAF.AdditionalFieldID = 'CoPaymentFeeRMB'
-
+	WHERE
+		T.Scheme_Code = 'HCVSCHN'
 
 	-- Item_Group_Seq 72: PaymentType (HCVSCHN)
 
@@ -1042,7 +1053,8 @@ AS BEGIN
 			INNER JOIN StaticData SD WITH (NOLOCK)
 				ON TAF.AdditionalFieldValueCode = SD.Item_No
 					AND SD.Column_Name = 'HCVSCHN_PAYMENTTYPE'
-
+	WHERE
+		T.Scheme_Code = 'HCVSCHN'
 
 	-- Item_Group_Seq 81: Reason_for_Visit (Header)
 
@@ -1294,6 +1306,65 @@ AS BEGIN
 					AND TAF.AdditionalFieldID = 'SchoolCode'
 			INNER JOIN (Select * From School WITH (NOLOCK)) SCH
 				ON TAF.AdditionalFieldValueCode = SCH.School_Code
+
+	-- Item_Group_Seq 101: RegistrationFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+
+	INSERT INTO @OtherInfo (Transaction_ID, Item_Group_Seq, Display_Seq, Content_EN, Content_TC, Content_SC)
+	SELECT
+		T.Transaction_ID,
+		101,
+		1,
+		FORMATMESSAGE('%s: ¥%s %s',
+			(SELECT Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_RegistrationFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END,
+			(SELECT Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = IIF(TD.Subsidize_Code = 'HAS_A','SSSCMC_PatientPaid','SSSCMC_PatientFree')) 
+		),
+		FORMATMESSAGE('%s: ¥%s %s',
+			(SELECT Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_RegistrationFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END,
+			(SELECT Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = IIF(TD.Subsidize_Code = 'HAS_A','SSSCMC_PatientPaid','SSSCMC_PatientFree'))
+		),
+		FORMATMESSAGE('%s: ¥%s %s',
+			(SELECT CN_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_RegistrationFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END,
+			(SELECT CN_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = IIF(TD.Subsidize_Code = 'HAS_A','SSSCMC_PatientPaid','SSSCMC_PatientFree'))
+		)
+	FROM
+		@TempTransaction T
+			INNER JOIN @TempTransactionAdditionalField TAF
+				ON T.Transaction_ID = TAF.Transaction_ID
+					AND TAF.AdditionalFieldID = 'RegistrationFeeRMB'
+			INNER JOIN TransactionDetail TD WITH (NOLOCK)
+				ON T.Transaction_ID = TD.Transaction_ID
+	WHERE
+		T.Scheme_Code = 'SSSCMC'
+
+	-- Item_Group_Seq 102: CoPaymentFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+
+	INSERT INTO @OtherInfo (Transaction_ID, Item_Group_Seq, Display_Seq, Content_EN, Content_TC, Content_SC)
+	SELECT
+		T.Transaction_ID,
+		102,
+		1,
+		FORMATMESSAGE('%s: ¥%s',
+			(SELECT Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_ExtraCoPaymentFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END
+		),
+		FORMATMESSAGE('%s: ¥%s',
+			(SELECT Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_ExtraCoPaymentFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END
+		),
+		FORMATMESSAGE('%s: ¥%s',
+			(SELECT CN_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_ExtraCoPaymentFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END
+		)
+	FROM
+		@TempTransaction T
+			INNER JOIN @TempTransactionAdditionalField TAF
+				ON T.Transaction_ID = TAF.Transaction_ID
+					AND TAF.AdditionalFieldID = 'CoPaymentFeeRMB'
+	WHERE
+		T.Scheme_Code = 'SSSCMC'
 
 -- =============================================
 -- Return results

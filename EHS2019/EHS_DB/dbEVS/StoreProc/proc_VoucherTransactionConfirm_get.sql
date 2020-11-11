@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-015 (HA Scheme)
+-- Modified by:		Winnie SUEN
+-- Modified date:	16 Oct 2020
+-- Description:		Show [Total_Claim_Amount_RMB] for SSSCMC scheme
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	26 August 2018
 -- CR No.:			CRE17-018
@@ -255,7 +262,7 @@ select v.Transaction_ID,
   v.High_Risk
 from VoucherTransaction v
 	LEFT JOIN TransactionDetail TD  
-		ON v.Transaction_ID = TD.Transaction_ID  AND v.Scheme_Code = 'HCVSCHN'
+		ON v.Transaction_ID = TD.Transaction_ID AND TD.Total_Amount_RMB IS NOT NULL
 	LEFT JOIN SchemeClaim SC
 		ON v.Scheme_Code = SC.Scheme_Code,
   PersonalInformation p,  
@@ -350,7 +357,7 @@ select v.Transaction_ID,
   v.High_Risk
 from VoucherTransaction v
 	LEFT JOIN TransactionDetail TD  
-		ON v.Transaction_ID = TD.Transaction_ID  AND v.Scheme_Code = 'HCVSCHN'
+		ON v.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
 	LEFT JOIN SchemeClaim SC
 		ON v.Scheme_Code = SC.Scheme_Code,
   TempPersonalInformation p,  
@@ -415,6 +422,9 @@ and (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @
 	-- Item_Group_Seq 84: Reason_for_Visit_S2
 	-- Item_Group_Seq 85: Reason_for_Visit_S3
 	-- Item_Group_Seq 91: High Risk
+	-- Item_Group_Seq 101: RegistrationFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+	-- Item_Group_Seq 102: CoPaymentFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+
 	-- ==========================================
 
 
@@ -774,7 +784,8 @@ and (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @
 			INNER JOIN @TempTransactionAdditionalField TAF
 				ON T.Transaction_ID = TAF.Transaction_ID
 					AND TAF.AdditionalFieldID = 'CoPaymentFeeRMB'
-
+	WHERE
+		T.Scheme_Code = 'HCVSCHN'
 
 	-- Item_Group_Seq 72: PaymentType (HCVSCHN)
 
@@ -803,7 +814,8 @@ and (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @
 			INNER JOIN StaticData SD
 				ON TAF.AdditionalFieldValueCode = SD.Item_No
 					AND SD.Column_Name = 'HCVSCHN_PAYMENTTYPE'
-
+	WHERE
+		T.Scheme_Code = 'HCVSCHN'
 
 	-- Item_Group_Seq 81: Reason_for_Visit (Header)
 
@@ -1002,6 +1014,65 @@ and (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @
 	WHERE
 		T.High_Risk IS NOT NULL
 
+
+-- Item_Group_Seq 101: RegistrationFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+
+	INSERT INTO @OtherInfo (Transaction_ID, Item_Group_Seq, Display_Seq, Content_EN, Content_TC, Content_SC)
+	SELECT
+		T.Transaction_ID,
+		101,
+		1,
+		FORMATMESSAGE('%s: ¥%s %s',
+			(SELECT Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_RegistrationFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END,
+			(SELECT Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = IIF(TD.Subsidize_Code = 'HAS_A','SSSCMC_PatientPaid','SSSCMC_PatientFree')) 
+		),
+		FORMATMESSAGE('%s: ¥%s %s',
+			(SELECT Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_RegistrationFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END,
+			(SELECT Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = IIF(TD.Subsidize_Code = 'HAS_A','SSSCMC_PatientPaid','SSSCMC_PatientFree'))
+		),
+		FORMATMESSAGE('%s: ¥%s %s',
+			(SELECT CN_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_RegistrationFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END,
+			(SELECT CN_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = IIF(TD.Subsidize_Code = 'HAS_A','SSSCMC_PatientPaid','SSSCMC_PatientFree'))
+		)
+	FROM
+		#VoucherAccTransaction T
+			INNER JOIN @TempTransactionAdditionalField TAF
+				ON T.Transaction_ID = TAF.Transaction_ID
+					AND TAF.AdditionalFieldID = 'RegistrationFeeRMB'
+			INNER JOIN TransactionDetail TD WITH (NOLOCK)
+				ON T.Transaction_ID = TD.Transaction_ID
+	WHERE
+		T.Scheme_Code = 'SSSCMC'
+
+	-- Item_Group_Seq 102: CoPaymentFeeRMB (SSSCMC) (with formatting the string to 1,234,567)
+
+	INSERT INTO @OtherInfo (Transaction_ID, Item_Group_Seq, Display_Seq, Content_EN, Content_TC, Content_SC)
+	SELECT
+		T.Transaction_ID,
+		102,
+		1,
+		FORMATMESSAGE('%s: ¥%s',
+			(SELECT Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_ExtraCoPaymentFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END
+		),
+		FORMATMESSAGE('%s: ¥%s',
+			(SELECT Chinese_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_ExtraCoPaymentFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END
+		),
+		FORMATMESSAGE('%s: ¥%s',
+			(SELECT CN_Description FROM SystemResource WHERE ObjectType = 'Text' AND ObjectName = 'SSSCMC_ExtraCoPaymentFee'), 
+			CASE WHEN AdditionalFieldValueCode = '0' THEN '0' ELSE FORMAT(CONVERT(decimal(9, 2), AdditionalFieldValueCode), 'N2') END
+		)
+	FROM
+		#VoucherAccTransaction T
+			INNER JOIN @TempTransactionAdditionalField TAF
+				ON T.Transaction_ID = TAF.Transaction_ID
+					AND TAF.AdditionalFieldID = 'CoPaymentFeeRMB'
+	WHERE
+		T.Scheme_Code = 'SSSCMC'
   
 update #VoucherAccTransaction  
 set total_unit = temp.total_unit  

@@ -712,10 +712,18 @@ Partial Public Class ClaimTransactionMaintenance
     Private Sub SwitchTableRecordSummaryLanguage()
         If Me.SubPlatform.Equals(EnumHCSPSubPlatform.CN) Then
             trRecordSummaryTotalAmountRMB.Style.Add("display", "default")
+            trRecordSummaryTotalAmountRMB_SSSCMC.Style.Add("display", "default")
+            tdSummarySchemeHCVSCHN.Style.Add("display", "default")
+            tdSummarySchemeSSSCMC.Style.Add("display", "default")
+            tdSummarySchemeTitle.Style.Add("display", "default")
             tdSummaryIncompleteTitle.Style.Add("display", "none")
             tdSummaryIncomplete.Style.Add("display", "none")
         Else
             trRecordSummaryTotalAmountRMB.Style.Add("display", "none")
+            trRecordSummaryTotalAmountRMB_SSSCMC.Style.Add("display", "none")
+            tdSummarySchemeTitle.Style.Add("display", "none")
+            tdSummarySchemeHCVSCHN.Style.Add("display", "none")
+            tdSummarySchemeSSSCMC.Style.Add("display", "none")
         End If
 
     End Sub
@@ -1291,59 +1299,109 @@ Partial Public Class ClaimTransactionMaintenance
         Dim dblManualReimbursedClaimRMB As Double = 0
         'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
 
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Dim dblIncompleteRMB_SSSCMC As Double = 0
+        Dim dblPendingConfirmRMB_SSSCMC As Double = 0
+        Dim dblPendingValidationRMB_SSSCMC As Double = 0
+        Dim dblReadyRMB_SSSCMC As Double = 0
+        Dim dblVoidedRMB_SSSCMC As Double = 0
+        Dim dblReimbursedRMB_SSSCMC As Double = 0
+        Dim dblSuspendedRMB_SSSCMC As Double = 0
+        Dim dblManualReimbursedClaimRMB_SSSCMC As Double = 0
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+
         For Each dr As DataRow In dt.Rows
             If IsNumeric(dr("Total_Claim_Amount")) = True Then
-                Select Case CStr(dr("Record_Status")).Trim
-                    Case ClaimTransStatus.Incomplete
-                        dblIncomplete += CDbl(dr("Total_Claim_Amount"))
 
-                    Case ClaimTransStatus.Pending
-                        dblPendingConfirm += CDbl(dr("Total_Claim_Amount"))
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                ' Show HKD only when (1) HK Platform  or  (2) Scheme HCVSCHN in CN platform
+                If Me.SubPlatform <> EnumHCSPSubPlatform.CN OrElse _
+                    (Me.SubPlatform = EnumHCSPSubPlatform.CN AndAlso CStr(dr("Scheme_Code")).Trim = SchemeClaimModel.HCVSCHN) Then
+                    ' CRE20-0XX (HA Scheme) [End][Winnie]
 
-                    Case ClaimTransStatus.PendingVRValidate
-                        dblPendingValidation += CDbl(dr("Total_Claim_Amount"))
+                    Select Case CStr(dr("Record_Status")).Trim
+                        Case ClaimTransStatus.Incomplete
+                            dblIncomplete += CDbl(dr("Total_Claim_Amount"))
 
-                    Case ClaimTransStatus.Active
-                        dblReady += CDbl(dr("Total_Claim_Amount"))
+                        Case ClaimTransStatus.Pending
+                            dblPendingConfirm += CDbl(dr("Total_Claim_Amount"))
 
-                    Case ClaimTransStatus.Inactive, ClaimTransStatus.RejectedBySP
-                        dblVoided += CDbl(dr("Total_Claim_Amount"))
+                        Case ClaimTransStatus.PendingVRValidate
+                            dblPendingValidation += CDbl(dr("Total_Claim_Amount"))
 
-                    Case ClaimTransStatus.Reimbursed, ClaimTransStatus.ManualReimbursedClaim
-                        dblReimbursed += CDbl(dr("Total_Claim_Amount"))
+                        Case ClaimTransStatus.Active
+                            dblReady += CDbl(dr("Total_Claim_Amount"))
 
-                    Case ClaimTransStatus.Suspended
-                        dblSuspended += CDbl(dr("Total_Claim_Amount"))
+                        Case ClaimTransStatus.Inactive, ClaimTransStatus.RejectedBySP
+                            dblVoided += CDbl(dr("Total_Claim_Amount"))
 
-                        ' Case ClaimTransStatus.ManualReimbursedClaim
-                        '    dblManualReimbursedClaim += CDbl(dr("Total_Claim_Amount"))
-                End Select
+                        Case ClaimTransStatus.Reimbursed, ClaimTransStatus.ManualReimbursedClaim
+                            dblReimbursed += CDbl(dr("Total_Claim_Amount"))
+
+                        Case ClaimTransStatus.Suspended
+                            dblSuspended += CDbl(dr("Total_Claim_Amount"))
+
+                    End Select
+
+                End If
+
             End If
 
             'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
             '-----------------------------------------------------------------------------------------
             If IsNumeric(dr("Total_Claim_Amount_RMB")) = True Then
-                Select Case CStr(dr("Record_Status")).Trim
-                    Case ClaimTransStatus.Incomplete
-                        dblIncompleteRMB += CDbl(dr("Total_Claim_Amount_RMB"))
 
-                    Case ClaimTransStatus.Pending
-                        dblPendingConfirmRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                Select Case CStr(dr("Scheme_Code")).Trim
 
-                    Case ClaimTransStatus.PendingVRValidate
-                        dblPendingValidationRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                    Case SchemeClaimModel.HCVSCHN
+                        Select Case CStr(dr("Record_Status")).Trim
+                            Case ClaimTransStatus.Incomplete
+                                dblIncompleteRMB += CDbl(dr("Total_Claim_Amount_RMB"))
 
-                    Case ClaimTransStatus.Active
-                        dblReadyRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                            Case ClaimTransStatus.Pending
+                                dblPendingConfirmRMB += CDbl(dr("Total_Claim_Amount_RMB"))
 
-                    Case ClaimTransStatus.Inactive, ClaimTransStatus.RejectedBySP
-                        dblVoidedRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                            Case ClaimTransStatus.PendingVRValidate
+                                dblPendingValidationRMB += CDbl(dr("Total_Claim_Amount_RMB"))
 
-                    Case ClaimTransStatus.Reimbursed, ClaimTransStatus.ManualReimbursedClaim
-                        dblReimbursedRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                            Case ClaimTransStatus.Active
+                                dblReadyRMB += CDbl(dr("Total_Claim_Amount_RMB"))
 
-                    Case ClaimTransStatus.Suspended
-                        dblSuspendedRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                            Case ClaimTransStatus.Inactive, ClaimTransStatus.RejectedBySP
+                                dblVoidedRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Reimbursed, ClaimTransStatus.ManualReimbursedClaim
+                                dblReimbursedRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Suspended
+                                dblSuspendedRMB += CDbl(dr("Total_Claim_Amount_RMB"))
+                        End Select
+
+                        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                    Case SchemeClaimModel.SSSCMC
+                        Select Case CStr(dr("Record_Status")).Trim
+                            Case ClaimTransStatus.Incomplete
+                                dblIncompleteRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Pending
+                                dblPendingConfirmRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.PendingVRValidate
+                                dblPendingValidationRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Active
+                                dblReadyRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Inactive, ClaimTransStatus.RejectedBySP
+                                dblVoidedRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Reimbursed, ClaimTransStatus.ManualReimbursedClaim
+                                dblReimbursedRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+
+                            Case ClaimTransStatus.Suspended
+                                dblSuspendedRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
+                        End Select
+                        ' CRE20-0XX (HA Scheme) [End][Winnie]
                 End Select
             End If
             'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
@@ -1369,6 +1427,7 @@ Partial Public Class ClaimTransactionMaintenance
 
         'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
+        lblSummaryHCVSCHN.Text = SchemeClaimModel.HCVSCHN
         'lblSummaryIncompleteRMB.Text = udtFormatter.formatMoneyRMB(dblIncompleteRMB.ToString, False)
         lblSummaryPendingComfirmRMB.Text = udtFormatter.formatMoneyRMB(dblPendingConfirmRMB.ToString, False)
         lblSummaryPendingVRAcctValidateRMB.Text = udtFormatter.formatMoneyRMB(dblPendingValidationRMB.ToString, False)
@@ -1377,6 +1436,16 @@ Partial Public Class ClaimTransactionMaintenance
         lblSummaryReimbursedRMB.Text = udtFormatter.formatMoneyRMB(dblReimbursedRMB.ToString, False)
         lblSummarySuspendedRMB.Text = udtFormatter.formatMoneyRMB(dblSuspendedRMB.ToString, False)
         'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        lblSummarySSSCMC.Text = SchemeClaimModel.SSSCMC
+        lblSummaryPendingComfirmRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblPendingConfirmRMB_SSSCMC.ToString, False)
+        lblSummaryPendingVRAcctValidateRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblPendingValidationRMB_SSSCMC.ToString, False)
+        lblSummaryReadyToReimburseRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblReadyRMB_SSSCMC.ToString, False)
+        lblSummaryVoidedRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblVoidedRMB_SSSCMC.ToString, False)
+        lblSummaryReimbursedRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblReimbursedRMB_SSSCMC.ToString, False)
+        lblSummarySuspendedRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblSuspendedRMB_SSSCMC.ToString, False)
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
 
         'lblManualReimbursed.Text = dblManualReimbursedClaim.ToString("#,##0")
     End Sub

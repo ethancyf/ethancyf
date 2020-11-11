@@ -9,10 +9,12 @@
         Private _strCategoryCode As String
         Private _strRCHCode As String
         Private _strHighRisk As String
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Private _strSchoolCode As String
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strSPID As String
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 
         'User Define Type
         Private _udtInputVaccineModelCollection As InputPicker.InputVaccineModelCollection
@@ -55,8 +57,6 @@
             End Set
         End Property
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Public Property SchoolCode() As String
             Get
                 Return _strSchoolCode
@@ -65,7 +65,18 @@
                 _strSchoolCode = Value
             End Set
         End Property
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property SPID() As String
+            Get
+                Return _strSPID
+            End Get
+            Set(ByVal Value As String)
+                _strSPID = Value
+            End Set
+        End Property
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 
         Public Property EHSClaimVaccine() As InputVaccineModelCollection
             Get

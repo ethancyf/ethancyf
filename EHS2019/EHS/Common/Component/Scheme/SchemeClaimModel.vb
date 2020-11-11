@@ -13,7 +13,7 @@ Namespace Component.Scheme
 #Region "Schema"
         'Scheme_Code	char(10)	Unchecked
         'Scheme_Seq	smallint	Unchecked
-        'Scheme_Desc	varchar(100)	Checked
+        'Scheme_Desc	varchar(200)	Checked
         'Scheme_Desc_Chi	nvarchar(100)	Checked
         'Display_Code	char(25)	Unchecked
         'Display_Seq	smallint	Unchecked
@@ -39,8 +39,7 @@ Namespace Component.Scheme
 #End Region
 
 #Region "Constant Value"
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
+
         Public Const CIVSS As String = "CIVSS"
         Public Const EVSS As String = "EVSS"
         Public Const HCVS As String = "HCVS"
@@ -54,7 +53,7 @@ Namespace Component.Scheme
         Public Const PPP As String = "PPP"
         Public Const PPPKG As String = "PPPKG"          ' CRE19-001 (VSS 2019) 
         Public Const HCVSDHC As String = "HCVSDHC"      ' CRE19-006 (DHC)
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+        Public Const SSSCMC As String = "SSSCMC"      ' CRE20-0XX (HA Scheme)
 
 #End Region
 
@@ -70,11 +69,12 @@ Namespace Component.Scheme
             EHAPP
             PIDVSS
             VSS
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             ENHVSSO
             PPP
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            SSSCMC
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         End Enum
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
@@ -88,6 +88,7 @@ Namespace Component.Scheme
             NA
             HKD
             HKDRMB
+            RMB
         End Enum
 
         Public Enum EnumAvailableHCSPSubPlatform
@@ -145,7 +146,7 @@ Namespace Component.Scheme
         Public Const Scheme_Seq_DataSize As Integer = 2
 
         Public Const Scheme_Desc_DataType As SqlDbType = SqlDbType.VarChar
-        Public Const Scheme_Desc_DataSize As Integer = 100
+        Public Const Scheme_Desc_DataSize As Integer = 200
 
         Public Const Scheme_Desc_Chi_DataType As SqlDbType = SqlDbType.NVarChar
         Public Const Scheme_Desc_Chi_DataSize As Integer = 100

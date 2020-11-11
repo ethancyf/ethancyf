@@ -105,32 +105,21 @@ Public Class ClaimVaccineInput
             'Add Header Text -> |    | Total Amount  | $XXX |   |
             table.Controls.Add(Me.BuildFooterRow(intTotalAmount.ToString()))
 
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             If Not _blnShowRemark Then
                 For Each tr As TableRow In table.Rows
-                    tr.Cells(0).Width = Unit.Pixel(195)
-                    ' CRE18-004 (CIMS Vaccination Sharing) [Start][Koala CHENG]
-                    ' ----------------------------------------------------------
+                    'tr.Cells(0).Width = Unit.Pixel(195)
                     tr.Cells(1).Width = Unit.Pixel(300)
-                    'tr.Cells(1).Width = Unit.Pixel(275)
-                    ' CRE18-004(CIMS Vaccination Sharing) [End][Koala CHENG]
                     tr.Cells(2).Width = Unit.Pixel(145)
                     tr.Cells(3).Visible = False
                 Next
             Else
                 For Each tr As TableRow In table.Rows
-                    tr.Cells(0).Width = Unit.Pixel(195)
-                    ' CRE18-004 (CIMS Vaccination Sharing) [Start][Koala CHENG]
-                    ' ----------------------------------------------------------
+                    'tr.Cells(0).Width = Unit.Pixel(195)
                     tr.Cells(1).Width = Unit.Pixel(300)
-                    'tr.Cells(1).Width = Unit.Pixel(275)
-                    ' CRE18-004(CIMS Vaccination Sharing) [End][Koala CHENG]
                     tr.Cells(2).Width = Unit.Pixel(145)
                     tr.Cells(3).Width = Unit.Pixel(320)
                 Next
             End If
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
 
             Me.Controls.Clear()
             Me.Controls.Add(table)
@@ -788,7 +777,8 @@ Public Class ClaimVaccineInput
         tableCell.HorizontalAlign = HorizontalAlign.Center
         tableCell.BorderWidth = 1
         tableCell.BorderColor = Drawing.Color.DarkGray
-        tableCell.Width = 170
+        'tableCell.Width = 170
+        tableCell.Style.Add("min-width", "195px")
         tableCell.Controls.Add(lable)
 
         If _blnShowLegend AndAlso Not IsNothing(imageButton) Then

@@ -1427,6 +1427,15 @@ Partial Public Class MyProfileV2
     Protected WithEvents lblDEUsernameTip2c As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblPracticeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPracticeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''chkPracticeList control.
     '''</summary>
     '''<remarks>
@@ -1452,15 +1461,6 @@ Partial Public Class MyProfileV2
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgDEPracticeError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''lblPracticeText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblPracticeText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblDEPasswordSettings control.

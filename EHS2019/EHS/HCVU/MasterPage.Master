@@ -185,6 +185,28 @@
             setTimeout("window.location = '" + url + "'", 4000);
         }
     </script>
+
+    <script type="text/javascript">
+
+        //var Page;
+
+        //window.onload = function () {
+        //    pageLoad();
+        //}
+
+        //function pageLoad() {
+        //    Page = Sys.WebForms.PageRequestManager.getInstance();
+        //    Page.add_initializeRequest(OnInitializeRequest);
+        //}
+
+        //function OnInitializeRequest(sender, args) {
+        //    var postBackElement = args.get_postBackElement();
+        //    if (Page.get_isInAsyncPostBack()) {
+        //        args.set_cancel(true);
+        //    }
+        //}
+
+    </script>
     <asp:ContentPlaceHolder ID="ContentPlaceHolderHead" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body>

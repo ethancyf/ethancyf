@@ -146,6 +146,8 @@ Namespace Component.ClaimRules
             Public Const GENDER As String = "GENDER"
             Public Const SERVICEDTM As String = "SERVICEDTM"
             Public Const EXACTDOD As String = "EXACTDOD"
+            Public Const HAPATIENT As String = "HAPATIENT" ' CRE20-0XX (HA Scheme)
+
         End Class
 
         Public Class DOBCalMethodClass
@@ -200,6 +202,14 @@ Namespace Component.ClaimRules
             Public Const ClaimRuleBlock = "ClaimRuleBlock"
         End Class
 
+        ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Class CheckList
+            Public Const GovSIVList As String = "GOVSIVLIST"
+        End Class
+        ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
+
+#Region "RuleResult Class"
         <Serializable()> MustInherit Class RuleResult
             Protected _blnPromptConfirmed As Boolean
             Protected _blnMatchedCase As Boolean
@@ -267,6 +277,7 @@ Namespace Component.ClaimRules
                 End Get
             End Property
         End Class
+#End Region
 
         <Serializable()> Class EligibleResult
             Inherits RuleResult
@@ -675,6 +686,22 @@ Namespace Component.ClaimRules
         End Function
         'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Public Shared Function CompareEligibleRuleByHAPatient(ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, _
+                                                              ByVal strCompareValue As String, ByVal strOperator As String) As Boolean
+            Dim strPassValue As String = String.Empty
+            Dim udtHAServicePatientBLL As New HAServicePatient.HAServicePatientBLL
+            Dim dtHAPatient As DataTable = udtHAServicePatientBLL.getHAServicePatientByIdentityNum(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum)
+
+            If dtHAPatient.Rows.Count > 0 Then
+                strPassValue = dtHAPatient.Rows(0)("Patient_Type").ToString
+            End If
+
+            Return RuleComparator(strOperator, strCompareValue.Trim, strPassValue.Trim)
+
+        End Function
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+
         Public Shared Sub ConvertPassValueDate(ByVal strUnit As String, ByVal dtmPassDOB As DateTime, ByVal dtmCompareDate As Date, ByRef dtmReturnPassDOB As DateTime, ByRef dtmReturnCompareDate As DateTime)
             '   Y   = Year (exact Year)        
             '   M   = Month (exact Month)            
@@ -845,7 +872,7 @@ Namespace Component.ClaimRules
                         Catch ex As Exception
                             d1 = New Date(dtmPassDOB.Year, dtmCompareDate.Month, dtmCompareDate.Day - 1)
                         End Try
-                        
+
                         dblResult += d1.Subtract(dtmPassDOB).Days / 365.25
 
                     End If
@@ -2052,6 +2079,12 @@ Namespace Component.ClaimRules
                         Return CheckEligibleRuleSingleEntryByDOD(udtEHSPersonalInfo, udtEligibilityRule)
                     End If
                     'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
+
+                    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Case EligibilityRuleTypeClass.HAPATIENT
+                    Return CheckEligibleRuleSingleEntryByHAPatient(udtEHSPersonalInfo, udtEligibilityRule)
+                    ' CRE20-0XX (HA Scheme) [End][Winnie]
+
                 Case Else
                     Throw New Exception("ClaimRuleBLL[CheckEligibleRuleSingleEntry]: Unhandled Eligible Rule : " & udtEligibilityRule.RuleType.Trim().ToUpper())
             End Select
@@ -2115,6 +2148,15 @@ Namespace Component.ClaimRules
             Return CompareEligibleRuleByExactDate(udtEHSPersonalInfo.LogicalDOD(EHSPersonalInformationModel.DODCalMethodClass.LASTDAYOFMONTHYEAR), strCompareValue, strOperator)
         End Function
         'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
+
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Private Shared Function CheckEligibleRuleSingleEntryByHAPatient(ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, ByVal udtEligibilityRule As EligibilityRuleModel) As Boolean
+            Dim strCompareValue As String = udtEligibilityRule.CompareValue.Trim
+            Dim strOperator As String = udtEligibilityRule.Operator.Trim().ToUpper()
+
+            Return CompareEligibleRuleByHAPatient(udtEHSPersonalInfo, strCompareValue, strOperator)
+        End Function
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
 
         Public Shared Function ConvertEligibilityRule(ByVal udtEligibilityRuleList As EligibilityRuleModelCollection) As SortedList(Of String, EligibilityRuleModelCollection)
             Dim lstSortEligibilityRuleList As New SortedList(Of String, EligibilityRuleModelCollection)
@@ -3989,78 +4031,102 @@ Namespace Component.ClaimRules
                     Return CompareSubsidizeAtSameClaim(udtInputPicker.EHSClaimVaccine, _
                                                         udtClaimRule.Operator, udtClaimRule.CompareValue)
 
+                    ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
                 Case ClaimRuleModel.RuleTypeClass.SCHOOLCODE
-                    Select Case udtClaimRule.RuleName
-                        Case "NotAtSameSchool"
-                            'Only check transaction at the same season
-                            If IsNothing(udtTransactionDetailsBenifit) OrElse udtTransactionDetailsBenifit.Count = 0 Then Return False
-                            If udtTransactionDetailModel Is Nothing Then Return False
-                            If udtInputPicker Is Nothing Then Return False
+                    'Only check transaction at the same season
+                    If IsNothing(udtTransactionDetailsBenifit) OrElse udtTransactionDetailsBenifit.Count = 0 Then Return False
+                    If udtTransactionDetailModel Is Nothing Then Return False
+                    If udtInputPicker Is Nothing Then Return False
 
-                            ' If benefit do not include vaccine at the same scheme, then returns the result is matched.
-                            If udtTransactionDetailsBenifit.Filter(udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.SubsidizeCode).Count = 0 Then Return True
+                    Dim udtFilteredTranDetailBenifitList As TransactionDetailModelCollection = Me.GetEqvTranDetailBenifitList(udtTransactionDetailsBenifit, udtClaimRule)
 
-                            ' If benefit included vaccine at the same scheme, then clicks the school code whether is the same. 
-                            If udtInputPicker.SchoolCode <> String.Empty Then
-                                Dim udtEHSTransactionBLL As New EHSTransactionBLL
-                                Dim blnRes As Boolean = False
+                    ' If benefit do not include vaccine at the same scheme, then returns the result is matched.
+                    If udtFilteredTranDetailBenifitList.Count = 0 Then Return True
 
-                                For Each udtTranDetail As TransactionDetailModel In udtTransactionDetailsBenifit.Filter(udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.SubsidizeCode)
+                    ' If benefit included vaccine at the same scheme, then clicks the school code whether is the same. 
+                    If udtInputPicker.SchoolCode <> String.Empty Then
+                        Dim udtEHSTransactionBLL As New EHSTransactionBLL
+                        Dim blnRes As Boolean = False
 
-                                    'Get "School Code" from EHS Transaction
-                                    Dim strSchoolCode As String = String.Empty
+                        For Each udtTranDetail As TransactionDetailModel In udtFilteredTranDetailBenifitList
 
-                                    Dim udtTransactionAdditionalField As TransactionAdditionalFieldModel = Nothing
+                            'Get "School Code" from EHS Transaction
+                            Dim strSchoolCode As String = String.Empty
 
-                                    If udtTranDetail.TransactionID <> String.Empty Then
-                                        udtTransactionAdditionalField = udtEHSTransactionBLL.GetSchoolCodeByTranID(udtTranDetail.TransactionID)
+                            Dim udtTransactionAdditionalField As TransactionAdditionalFieldModel = Nothing
 
-                                        If Not udtTransactionAdditionalField Is Nothing Then strSchoolCode = udtTransactionAdditionalField.AdditionalFieldValueCode
-                                    End If
+                            If udtTranDetail.TransactionID <> String.Empty Then
+                                udtTransactionAdditionalField = udtEHSTransactionBLL.GetSchoolCodeByTranID(udtTranDetail.TransactionID)
 
-                                    'If "SchoolCode" of 2nd dose is not equal to "SchoolCode" of 1st dose, it is broken the claim rule.
-                                    If RuleComparator(udtClaimRule.Operator, strSchoolCode, udtInputPicker.SchoolCode) Then
-                                        blnRes = True
-                                    End If
-
-                                Next
-
-                                Return blnRes
-
-                            Else
-                                'If "SchoolCode" is empty, it is broken the claim rule.
-                                Return True
-
+                                If Not udtTransactionAdditionalField Is Nothing Then strSchoolCode = udtTransactionAdditionalField.AdditionalFieldValueCode
                             End If
 
-                        Case "NotVaccineInEHS"
-                            'Only check transaction at the same season
-                            If IsNothing(udtTransactionDetailsBenifit) OrElse udtTransactionDetailsBenifit.Count = 0 Then Return False
-                            If udtTransactionDetailModel Is Nothing Then Return False
-                            If udtInputPicker Is Nothing Then Return False
-
-                            For Each udtTranDetail As TransactionDetailModel In udtTransactionDetailsBenifit.Filter(udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.SubsidizeCode)
-                                'If 1st dose is not vaccined at EHS(S), it is broken the claim rule.
-                                If udtTranDetail.TransactionID = String.Empty Then Return True
-
-                            Next
-
-                        Case "NoDoseAsBefore"
-                            If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
-                                If IsNothing(udtTransactionDetailsBenifit) OrElse udtTransactionDetailsBenifit.Count = 0 Then Return True
+                            'If "SchoolCode" of 2nd dose is not equal to "SchoolCode" of 1st dose, it is broken the claim rule.
+                            If RuleComparator(udtClaimRule.Operator, strSchoolCode, udtInputPicker.SchoolCode) Then
+                                blnRes = True
                             End If
 
-                        Case Else
-                            'Nothing to do
+                        Next
 
-                    End Select
+                        Return blnRes
+
+                    Else
+                        'If "SchoolCode" is empty, it is broken the claim rule.
+                        Return True
+
+                    End If
+
+                Case ClaimRuleModel.RuleTypeClass.DOSE_IN_EHS
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    'Only check transaction at the same season
+                    If IsNothing(udtTransactionDetailsBenifit) OrElse udtTransactionDetailsBenifit.Count = 0 Then Return False
+                    If udtTransactionDetailModel Is Nothing Then Return False
+                    If udtInputPicker Is Nothing Then Return False
+
+                    Dim udtFilteredTranDetailBenifitList As TransactionDetailModelCollection = Me.GetEqvTranDetailBenifitList(udtTransactionDetailsBenifit, udtClaimRule)
+
+                    'if vaccinated outside EHS(S), the transaction ID is empty.
+                    For Each udtTranDetail As TransactionDetailModel In udtFilteredTranDetailBenifitList
+                        'If one of dose is not vaccined at EHS(S), it is broken the claim rule.
+                        If udtTranDetail.TransactionID = String.Empty Then Return True
+                    Next
+
+                    Return False
+
+                Case ClaimRuleModel.RuleTypeClass.NO_DOSE_IN_SEASON
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+                        If IsNothing(udtTransactionDetailsBenifit) Then Return True
+
+                        ' ---------------------------------------------
+                        ' Only count on one subsidize item (e.g. SIV)
+                        ' ---------------------------------------------
+                        Dim udtFilteredTranDetailBenifitList As New TransactionDetailModelCollection
+
+                        Dim strSubsidizeItemCode As String = (New SubsidizeBLL).GetSubsidizeItemBySubsidize(udtClaimRule.SubsidizeCode)
+
+                        For Each udtTranDetail As TransactionDetailModel In udtTransactionDetailsBenifit
+                            If udtTranDetail.SubsidizeItemCode.Trim.ToUpper = strSubsidizeItemCode.Trim.ToUpper Then
+                                udtFilteredTranDetailBenifitList.Add(udtTranDetail)
+                            End If
+                        Next
+
+                        If udtFilteredTranDetailBenifitList.Count = 0 Then
+                            Return True
+                        Else
+                            Return False
+                        End If
+
+                    End If
+                    ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
 
                     ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
                     ' ---------------------------------------------------------------------------------------------------------
                 Case ClaimRuleModel.RuleTypeClass.SERVICEDATE
-                    If strDoseCode.Trim().ToUpper() = String.Empty Then
-                        Return False
-                    End If
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
 
                     If Not udtClaimRule.CompareValue Is Nothing Then
                         Dim dtmCompareDate As Date = Convert.ToDateTime(udtClaimRule.CompareValue)
@@ -4072,6 +4138,32 @@ Namespace Component.ClaimRules
 
                     End If
                     ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+                    ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case ClaimRuleModel.RuleTypeClass.CHECK_ON_LIST
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtInputPicker Is Nothing Then Return False
+
+                    Select Case udtClaimRule.CompareValue.Trim().ToUpper()
+                        Case CheckList.GovSIVList
+                            Dim dtPatient As DataTable = Me.GetGovSIVPatient(udtInputPicker.SPID, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum)
+
+                            If dtPatient.Rows.Count > 0 Then
+                                Return False
+                            Else
+                                Return True
+                            End If
+
+                        Case Else
+                            Throw New Exception(String.Format("ClaimRulesBLL.CheckClaimRuleSingleEntry: Invalid check list ({0}).", udtClaimRule.CompareValue.Trim()))
+
+                    End Select
+
+                Case Else
+                    Throw New Exception(String.Format("ClaimRulesBLL.CheckClaimRuleSingleEntry: Invalid Claim Rule type ({0}).", udtClaimRule.Type.Trim()))
+                    ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
 
             End Select
 
@@ -5416,6 +5508,40 @@ Namespace Component.ClaimRules
         End Function
 #End Region
 
+
+#Region "Block HA Service Claim for non HA Patient (Table: [HAServicePatient])"
+
+        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+        Public Function CheckIsHAPatient(ByVal strSchemeCode As String, _
+                                             ByVal strRecipientDocCode As String, _
+                                             ByVal strRecipientIdentityNum As String) As String
+            Dim blnValid As Boolean = False
+
+            If strSchemeCode <> SchemeClaimModel.SSSCMC Then
+                ' Bypass the checking for non HA scheme
+                blnValid = True
+            End If
+
+            ' If the DocCode and the IdentityNum not exist in Patient List: return as error
+            Dim udtHAServicePatientBLL As New HAServicePatient.HAServicePatientBLL
+            Dim dtHAPatient As DataTable = udtHAServicePatientBLL.getHAServicePatientByIdentityNum(strRecipientDocCode, strRecipientIdentityNum)
+
+            If dtHAPatient.Rows.Count > 0 Then
+                If dtHAPatient.Rows(0)("Patient_Type") <> String.Empty Then
+                    blnValid = True
+                End If
+            End If
+
+            If blnValid Then
+                Return String.Empty
+            Else
+                Return "00106"
+            End If
+
+        End Function
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+#End Region
+
 #Region "Others"
         'CRE16-026 (Add PCV13) [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
@@ -5440,6 +5566,76 @@ Namespace Component.ClaimRules
         'CRE16-026 (Add PCV13) [End][Chris YIM]
 #End Region
 
+#Region "Check list of Gov SIV"
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Check list of Gov SIV
+        ''' </summary>
+        ''' <param name="udtDB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function GetGovSIVPatient(ByVal strSPID As String, ByVal strDocType As String, ByVal strIdentityNum As String, Optional ByVal udtDB As Database = Nothing) As DataTable
+            Dim udtFormatter As New Format.Formatter()
+            Dim dt As New DataTable
+
+            If udtDB Is Nothing Then udtDB = New Database()
+
+            strIdentityNum = udtFormatter.formatDocumentIdentityNumber(strDocType, strIdentityNum)
+
+            Try
+                Dim prams() As SqlParameter = { _
+                    udtDB.MakeInParam("@SP_ID", ServiceProvider.ServiceProviderModel.SPIDDataType, ServiceProvider.ServiceProviderModel.SPIDDataSize, strSPID), _
+                    udtDB.MakeInParam("@Doc_Code", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocType), _
+                    udtDB.MakeInParam("@Identity", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strIdentityNum)}
+                udtDB.RunProc("proc_GovSIVPatient_get_byDocCodeDocID", prams, dt)
+
+            Catch eSQL As SqlException
+                Throw
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+
+        End Function
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
+
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function GetEqvTranDetailBenifitList(ByVal udtTransactionDetailsBenifit As TransactionDetailModelCollection, _
+                                                     ByVal udtClaimRule As ClaimRuleModel) As TransactionDetailModelCollection
+
+            Dim udtFilteredTranDetailBenifitList As New TransactionDetailModelCollection
+
+            Dim strSubsidizeItemCode As String = (New SubsidizeBLL).GetSubsidizeItemBySubsidize(udtClaimRule.SubsidizeCode)
+
+            '-----------------------------------------------------------------------------------------
+            ' Check with Equivalent Dose related Transaction (equivalent dose from EqvSubsidizeMap)
+            '-----------------------------------------------------------------------------------------
+            ' Dose: SchemeCode, SchemeSeq, SubsidizeItemCode <=> Eqv * 3
+            Dim udtEqvSubsidizeMapList As EqvSubsidizeMapModelCollection = Me._udtSchemeDetailBLL.getALLEqvSubsidizeMap().Filter(udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, strSubsidizeItemCode)
+
+            For Each udtTranDetail As TransactionDetailModel In udtTransactionDetailsBenifit
+                For Each udtEqvSubsidizeMapModel As EqvSubsidizeMapModel In udtEqvSubsidizeMapList
+
+                    If udtTranDetail.SchemeCode.Trim().ToUpper() = udtEqvSubsidizeMapModel.EqvSchemeCode.Trim().ToUpper() AndAlso _
+                       udtTranDetail.SchemeSeq = udtEqvSubsidizeMapModel.EqvSchemeSeq AndAlso _
+                       udtTranDetail.SubsidizeItemCode.Trim().ToUpper() = udtEqvSubsidizeMapModel.EqvSubsidizeItemCode.Trim().ToUpper() Then
+
+                        udtFilteredTranDetailBenifitList.Add(udtTranDetail)
+                        Exit For
+
+                    End If
+                Next
+            Next
+
+            Return udtFilteredTranDetailBenifitList
+
+        End Function
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
+
+#End Region
 
     End Class
 End Namespace

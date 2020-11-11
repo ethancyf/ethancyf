@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	21 Oct 2020
+-- CR No.:			CRE20-015 (HA Scheme)
+-- Description:		Enlarge size of [Scheme_Claim].[Scheme_Desc] from 100 -> 200
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	17 Aug 2020
 -- CR No.:			CRE17-004
@@ -46,8 +53,8 @@ AS
         );
 
         DECLARE @tempLegend TABLE
-        (Parameter VARCHAR(100), 
-         Value     VARCHAR(100)
+        (Parameter VARCHAR(1000), 
+         Value     VARCHAR(1000)
         );
 
         CREATE TABLE #ResultEHCP

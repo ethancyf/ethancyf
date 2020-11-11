@@ -112,14 +112,14 @@ Public Class ClaimVaccineInput
             '-----------------------------------------------------------------------------------------
             If Not _blnShowRemark Then
                 For Each tr As TableRow In table.Rows
-                    tr.Cells(0).Width = Unit.Pixel(200)
+                    'tr.Cells(0).Width = Unit.Pixel(200)
                     tr.Cells(1).Width = Unit.Pixel(275)
                     tr.Cells(2).Width = Unit.Pixel(145)
                     tr.Cells(3).Visible = False
                 Next
             Else
                 For Each tr As TableRow In table.Rows
-                    tr.Cells(0).Width = Unit.Pixel(180)
+                    'tr.Cells(0).Width = Unit.Pixel(180)
                     tr.Cells(1).Width = Unit.Pixel(190)
                     tr.Cells(2).Width = Unit.Pixel(140)
                     tr.Cells(3).Width = Unit.Pixel(320)
@@ -738,7 +738,8 @@ Public Class ClaimVaccineInput
         tableCell.VerticalAlign = VerticalAlign.Middle
         tableCell.BorderWidth = 1
         tableCell.BorderColor = Drawing.Color.DarkGray
-        tableCell.Width = 170
+        'tableCell.Width = 170
+        tableCell.Style.Add("min-width", "200px")
         tableCell.Controls.Add(lable)
         tableCell.Controls.Add(imageButton)
         tableRow.Controls.Add(tableCell)

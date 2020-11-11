@@ -77,6 +77,9 @@ Partial Public Class ChooseCCCode
         If strCCCode Is Nothing OrElse strCCCode.Equals(String.Empty) Then
             ddlCCCode.Items.Clear()
             ddlCCCode.Enabled = False
+            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+            Me.udteHSAccountMaintBLL.CCCodeRemoveFromSession(strfunctionCode, sessionName)
+            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
         Else
             If IsNothing(ddlCCCode.SelectedItem) Then
                 If blnSaveCCCodeToSession Then
@@ -274,7 +277,12 @@ Partial Public Class ChooseCCCode
 
                 If strCCCode.Length = 5 Then
                     strTail = strCCCode.Substring(4, 1)
-                    ddlCCCode.SelectedValue = strTail
+                    ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+                    'ddlCCCode.SelectedValue = strTail
+                    If Not ddlCCCode.Items.FindByValue(strTail) Is Nothing Then
+                        ddlCCCode.SelectedValue = strTail
+                    End If
+                    ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
                 End If
 
             End If

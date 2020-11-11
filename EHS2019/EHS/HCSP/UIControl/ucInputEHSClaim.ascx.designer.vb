@@ -32,6 +32,15 @@ Partial Public Class ucInputEHSClaim
     Protected WithEvents ucInputHCVSChina As Global.HCSP.ucInputHCVSChina
 
     '''<summary>
+    '''ucInputSSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucInputSSSCMC As Global.HCSP.ucInputSSSCMC
+
+    '''<summary>
     '''PlaceHolder1 control.
     '''</summary>
     '''<remarks>

@@ -1285,7 +1285,11 @@ function tabChanges(sender, e) {
                                                 </tr>
                                                 <tr>
                                                     <td align="left" valign="top" height="2" />
-                                                    <td align="left" valign="top" height="2" />
+                                                    <%--<td align="left" valign="top" height="2" />--%>
+                                                    <td style="width: 150px; padding-top:5px;" align="left" valign="top">
+                                                        <asp:Label ID="lblPracticeText" runat="server" Text="<%$ Resources:Text, Practice %>"
+                                                            Style="font-weight: bold;"></asp:Label>
+                                                    </td>
                                                     <td colspan="2" rowspan="2" align="left" valign="top" style="width: 473px; border-spacing: 0px">
                                                         <table cellpadding="0" cellspacing="0" style="height: 29px; vertical-align: top">
                                                             <tr>
@@ -1304,13 +1308,13 @@ function tabChanges(sender, e) {
                                                         </table>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <%--<tr>
                                                     <td align="left" valign="top" width="10"></td>
                                                     <td style="width: 150px;" align="left" valign="top">
                                                         <asp:Label ID="lblPracticeText" runat="server" Text="<%$ Resources:Text, Practice %>"
                                                             Style="font-weight: bold;"></asp:Label>
                                                     </td>
-                                                </tr>
+                                                </tr>--%>
                                                 <%--
                                                 <asp:Panel ID="PanelPrintingOptionSettingAcc" runat="server">
                                                     <tr>

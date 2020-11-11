@@ -261,7 +261,7 @@ Partial Public Class SchemeLegend
         gvSchemeNameHelpScheme.DataBind()
 
         If gvSchemeNameHelpScheme.Rows.Count > 0 Then
-            gvSchemeNameHelpScheme.Rows(0).Cells(0).Width = 150
+            gvSchemeNameHelpScheme.Rows(0).Cells(0).Width = 160
             For Each r As GridViewRow In gvSchemeNameHelpScheme.Rows
                 r.Cells(0).VerticalAlign = VerticalAlign.Top
             Next

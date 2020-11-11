@@ -65,6 +65,11 @@ Public MustInherit Class BasePrintoutForm
             Case SchemeClaimModel.ENHVSSO
                 rpt = GetReport()
 
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            Case SchemeClaimModel.SSSCMC
+                rpt = ConsentFormInformationBLL.GetReport(BulidConsentFormInformation(strFunctCode))
+                ' CRE20-0XX (HA Scheme) [End][Winnie]
+
             Case Else
                 rpt = Nothing
 
@@ -145,6 +150,7 @@ Public MustInherit Class BasePrintoutForm
         Dim obj As New ConsentFormInformationModel
         obj.Platform = ConsentFormInformationModel.EnumPlatform.HCSP
         obj.FormType = udtSchemeClaim.SchemeCode
+
         obj.Language = Me.Language
         obj.FormStyle = Me.FormStyle
         obj.NeedPassword = ConsentFormInformationModel.NeedPasswordClass.No
@@ -338,6 +344,45 @@ Public MustInherit Class BasePrintoutForm
                 End If
                 ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
                 'CRE13-019-02 Extend HCVS to China [End][Winnie]
+
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            Case ConsentFormInformationModel.FormTypeClass.SSSCMC
+                ' Voucher Claim
+                obj.VoucherClaimRMB = udtEHSTransaction.VoucherClaimRMB.ToString
+                obj.VoucherAfterRedeem = udtEHSTransaction.TransactionAdditionFields.SubsidyAfterClaim
+                obj.VoucherBeforeRedeem = udtEHSTransaction.TransactionAdditionFields.SubsidyBeforeClaim
+
+                'MO Name
+                Dim udtPractice As PracticeModel = udtSP.PracticeList.Item(udtEHSTransaction.PracticeID)
+                Dim strMODisplaySeq As String = udtPractice.MODisplaySeq
+
+                Dim udtMO As MedicalOrganizationModel = udtSP.MOList.Item(udtPractice.MODisplaySeq)
+
+                Select Case Me.Language
+                    Case ConsentFormInformationModel.LanguageClassInternal.English
+                        obj.MOName = udtMO.MOEngName
+
+                    Case ConsentFormInformationModel.LanguageClassInternal.Chinese,
+                        ConsentFormInformationModel.LanguageClassInternal.SimpChinese
+                        If udtMO.MOChiName.Trim <> String.Empty Then
+                            obj.MOName = udtMO.MOChiName
+                        Else
+                            obj.MOName = udtMO.MOEngName
+                        End If
+                End Select
+
+                ' Co-Payment Fee & Subsidy Fee RMB
+                Select Case udtEHSTransaction.TransactionDetails(0).SubsidizeCode.Trim
+                    Case SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_A
+                        obj.CoPaymentFeeRMB = udtEHSTransaction.TransactionAdditionFields.RegistrationFeeRMB
+                        obj.SubsidyFeeRMB = 0
+
+                    Case SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_B
+                        obj.CoPaymentFeeRMB = 0
+                        obj.SubsidyFeeRMB = udtEHSTransaction.TransactionAdditionFields.RegistrationFeeRMB
+                End Select
+        ' CRE20-0XX (HA Scheme) [End][Winnie]
+
             Case ConsentFormInformationModel.FormTypeClass.CIVSS
 
                 ' Dose

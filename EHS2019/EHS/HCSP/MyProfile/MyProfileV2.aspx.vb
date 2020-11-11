@@ -2649,6 +2649,10 @@ Partial Public Class MyProfileV2
                 If strPracticeNameChi.Trim() = "" Then
                     strPracticeNameChi = strPracticeName
                 End If
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                strPracticeName += String.Format(" ({0})", udcPractice.DisplaySeq.ToString())
+                strPracticeNameChi += String.Format(" ({0})", udcPractice.DisplaySeq.ToString())
+                ' CRE20-0XX (HA Scheme) [End][Winnie]
 
                 If LCase(Session("language")) = TradChinese OrElse LCase(Session("language")) = SimpChinese Then
                     Me.chkPracticeList.Items.Add(strPracticeNameChi)

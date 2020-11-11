@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	22 Oct 2020
+-- CR No.			CRE20-015 (HA Scheme)
+-- Description:		Add column - Claim Amount RMB
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	10 Sep 2020
 -- CR No.			CRE20-003
@@ -35,7 +42,7 @@ GO
 -- Modified date:  14 Jul 2016  
 -- Description:    Claim Transaction Management/Enquiry Revamp
 -- ============================================= 
---exec  [dbo].[proc_VoucherTransaction_get_byTranAspect] null,null,'01 Jan 1980 00:00:00','01 Jan 2013 23:59:59',null,null,null,'R',null,null,null,null,null,'HAADM1',1,1,1
+--exec [proc_VoucherTransaction_get_byTranAspect] null,null,'17 Oct 2020 00:00:00','22 Oct 2020 23:59:59',null,null,null,null,null,null,null,null,null,null,null,'HAADM1',1,1,1
 
 CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byTranAspect] 
 	@transaction_id               CHAR(20), 
@@ -82,6 +89,7 @@ AS
          Invalid_Acc_ID       CHAR(15), 
          Scheme_Code          CHAR(10), 
          Claim_Amount         MONEY, 
+         Claim_Amount_RMB     MONEY, 
          Invalidation         CHAR(1), 
          Invalidation_TSMP    BINARY(8), 
          Manual_Reimburse     CHAR(1), 
@@ -152,6 +160,7 @@ ON #TempTransaction
                         Invalid_Acc_ID, 
                         Scheme_Code, 
                         Claim_Amount, 
+                        Claim_Amount_RMB, 
                         Invalidation, 
                         Invalidation_TSMP, 
                         Manual_Reimburse, 
@@ -182,6 +191,7 @@ ON #TempTransaction
                                                                                                                VT.Invalid_Acc_ID, 
                                                                                                                VT.Scheme_Code, 
                                                                                                                SUM(TD.Total_Amount), 
+                                                                                                               SUM(TD.Total_Amount_RMB), 
                                                                                                                VT.Invalidation, 
                                                                                                                TI.TSMP AS [Invalidation_TSMP], 
                                                                                                                VT.Manual_Reimburse, 
@@ -305,6 +315,7 @@ ON #TempTransaction
                         Invalid_Acc_ID, 
                         Scheme_Code, 
                         Claim_Amount, 
+                        Claim_Amount_RMB, 
                         Invalidation, 
                         Invalidation_TSMP, 
                         Manual_Reimburse, 
@@ -336,6 +347,7 @@ ON #TempTransaction
                                                                                                                VT.Scheme_Code,
                                                                                                                --  TD.Scheme_Seq,
                                                                                                                SUM(TD.Total_Amount), 
+                                                                                                               SUM(TD.Total_Amount_RMB), 
                                                                                                                VT.Invalidation, 
                                                                                                                TI.TSMP AS [Invalidation_TSMP], 
                                                                                                                VT.Manual_Reimburse, 
@@ -507,6 +519,7 @@ ON #TempTransaction
                T.Scheme_Code, 
                SC.Display_Code, 
                T.Claim_Amount AS [totalAmount], 
+               T.Claim_Amount_RMB AS [totalAmountRMB], 
                ISNULL(T.Invalidation, '') AS [Invalidation], 
                T.Invalidation_TSMP, 
                ISNULL(T.Manual_Reimburse, 'N') AS [Manual_Reimburse],

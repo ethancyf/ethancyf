@@ -8,6 +8,13 @@ GO
 
 -- =============================================  
 -- Modification History  
+-- CR No.:			INT20-037
+-- Modified by:		Koala CHENG
+-- Modified date:	19 Oct 2020
+-- Description:		1. Add "WITH (UPDLOCK, HOLDLOCK)" 
+-- =============================================
+-- =============================================  
+-- Modification History  
 -- CR No.:			CRE19-022
 -- Modified by:		Winnie SUEN
 -- Modified date:	13 Jul 2020
@@ -62,7 +69,7 @@ BEGIN
 	
     SELECT TOP 1 
 		@Profile_Type = Profile_Type, @Last_Reset_Dtm = convert(varchar(8), Last_Reset_Dtm, 112) 
-	FROM [dbo].[SystemProfile]
+	FROM [dbo].[SystemProfile] WITH (UPDLOCK, HOLDLOCK)
 	WHERE
 		[Profile_ID] = @Profile_ID AND [Scheme_Code] = @Scheme_Code
 	ORDER BY Profile_Year DESC, Profile_Month DESC

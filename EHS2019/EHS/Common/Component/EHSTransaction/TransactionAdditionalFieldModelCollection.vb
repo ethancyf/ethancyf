@@ -130,6 +130,116 @@ Namespace Component.EHSTransaction
             End Get
         End Property
 
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property ClaimedPaymentType() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ClaimedPaymentType)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property RegistrationFeeRMB() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.RegistrationFeeRMB)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property ConsultAndRegFeeRMB() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ConsultAndRegFeeRMB)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property DrugFeeRMB() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.DrugFeeRMB)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property InvestigationFeeRMB() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.InvestigationFeeRMB)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property OtherFeeRMB() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.OtherFeeRMB)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property OtherFeeRMBRemark() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.OtherFeeRMB)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueDesc
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property SubsidyBeforeClaim() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.SubsidyBeforeClaim)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property SubsidyAfterClaim() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.SubsidyAfterClaim)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property TotalSupportFee() As Decimal
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.TotalSupportFee)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         Public ReadOnly Property HasReasonForVisit() As Boolean
             Get
                 Dim udtAdditionalField As TransactionAdditionalFieldModel

@@ -994,6 +994,11 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim udtInputPicker As New InputPickerModel
             Dim udtInputVaccineCollection As New InputVaccineModelCollection
 
+            ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+            ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
+
             '------------------------------------------------------------------------------
             ' 1. Retrieve and concat the current claiming vaccination from TransactionDetail
             '------------------------------------------------------------------------------

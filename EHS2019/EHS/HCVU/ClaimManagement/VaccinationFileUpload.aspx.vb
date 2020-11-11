@@ -1187,7 +1187,26 @@ Partial Public Class VaccinationFileUpload ' 010413
 
             xlsWorkBook.Close()
 
+            ' --------------------------------------------------
+            ' Vaccination Date
+            ' --------------------------------------------------
+            Select Case ddlIScheme.SelectedValue.Trim
+                Case SchemeClaimModel.PPP, SchemeClaimModel.PPPKG
+                    ValidateClaimPeriod()
+
+                Case SchemeClaimModel.RVP, SchemeClaimModel.VSS
+                    ' Nothing to do
+
+            End Select
+
+            If udcMessageBox.GetCodeTable.Rows.Count <> 0 Then
+                udcMessageBox.BuildMessageBox(MessageBoxHeaderKey.ValidationFail, udtAuditLog, LogID.LOG00015, "[StdFileUpload] UploadFile - Next click fail")
+                Return
+            End If
+
+            ' --------------------------------------------------
             ' Student Count
+            ' --------------------------------------------------
             If dt.Rows.Count = 0 Then
                 udtAuditLog.AddDescripton("StackTrace", "No data rows in the Excel file")
                 ' Cannot read any data in the Excel file.
@@ -1358,7 +1377,7 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Dim blnValidSubsidy As Boolean = False
                 For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
 
-                    If udtSGClaim.SubsidizeDisplayCode = dicUploadContent("Subsidy") Then
+                    If udtSGClaim.SubsidizeDisplayCode.ToUpper() = dicUploadContent("Subsidy").ToUpper() Then
                         blnValidSubsidy = True
                         strSubsidizeCode = udtSGClaim.SubsidizeCode
                         Exit For
@@ -2110,28 +2129,24 @@ Partial Public Class VaccinationFileUpload ' 010413
                     blnValidOnlyDoseVaccineDate = True
 
                     ' Claim Period
-                    Dim blnWithinPeriod As Boolean = False                    
+                    Dim dtmLastService As Nullable(Of Date) = Nothing
                     For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
                         If dtmVaccinationDate1 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate1 <= udtSGClaim.LastServiceDtm Then
                             int1stDoseSchemeSeq = udtSGClaim.SchemeSeq
                             hfCSchemeSeq.Value = int1stDoseSchemeSeq
-                            blnWithinPeriod = True
+                        End If
 
-                            ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
-                            If udtSGClaim.LastServiceDtm < dtmCurrentDate Then
-                                blnPastSeason = True
+                        If dtmLastService Is Nothing Then
+                            dtmLastService = udtSGClaim.LastServiceDtm
+                        Else
+                            If dtmLastService < udtSGClaim.LastServiceDtm Then
+                                dtmLastService = udtSGClaim.LastServiceDtm
                             End If
-                            ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
-
-                            Exit For
-
                         End If
                     Next
 
-                    If Not blnWithinPeriod Then
-                        ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblIOnlyDoseText.Text, ddlIScheme.SelectedItem.Text})
-                        imgIVaccinationDate1Error.Visible = True
+                    If dtmLastService < dtmCurrentDate Then
+                        blnPastSeason = True
                     End If
 
                 End If
@@ -2154,28 +2169,24 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Else
                     blnValid2ndDoseVaccineDate = True
 
-                    Dim blnWithinPeriod As Boolean = False                    
+                    Dim dtmLastService As Nullable(Of Date) = Nothing
                     For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
                         If dtmVaccinationDate2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate2 <= udtSGClaim.LastServiceDtm Then
                             int2ndDoseSchemeSeq = udtSGClaim.SchemeSeq
                             hfCSchemeSeq.Value = int2ndDoseSchemeSeq
-                            blnWithinPeriod = True
+                        End If
 
-                            ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
-                            If udtSGClaim.LastServiceDtm < dtmCurrentDate Then
-                                blnPastSeason = True
+                        If dtmLastService Is Nothing Then
+                            dtmLastService = udtSGClaim.LastServiceDtm
+                        Else
+                            If dtmLastService < udtSGClaim.LastServiceDtm Then
+                                dtmLastService = udtSGClaim.LastServiceDtm
                             End If
-                            ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
-
-                            Exit For
-
                         End If
                     Next
 
-                    If Not blnWithinPeriod Then
-                        ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblI2ndDoseText.Text, ddlIScheme.SelectedItem.Text})
-                        imgIVaccinationDate2Error.Visible = True
+                    If dtmLastService < dtmCurrentDate Then
+                        blnPastSeason = True
                     End If
 
                 End If
@@ -2369,28 +2380,24 @@ Partial Public Class VaccinationFileUpload ' 010413
                     blnValidOnlyDoseVaccineDate_2 = True
 
                     ' Claim Period
-                    Dim blnWithinPeriod As Boolean = False
+                    Dim dtmLastService As Nullable(Of Date) = Nothing
                     For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
                         If dtmVaccinationDate1_2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate1_2 <= udtSGClaim.LastServiceDtm Then
                             int1stDoseSchemeSeq_2 = udtSGClaim.SchemeSeq
                             hfCSchemeSeq.Value = int1stDoseSchemeSeq_2
-                            blnWithinPeriod = True
+                        End If
 
-                            ' CRE19-017 (Upload Vaccine File with past date) [Start][Winnie]
-                            If udtSGClaim.LastServiceDtm < dtmCurrentDate Then
-                                blnPastSeason_2 = True
+                        If dtmLastService Is Nothing Then
+                            dtmLastService = udtSGClaim.LastServiceDtm
+                        Else
+                            If dtmLastService < udtSGClaim.LastServiceDtm Then
+                                dtmLastService = udtSGClaim.LastServiceDtm
                             End If
-                            ' CRE19-017 (Upload Vaccine File with past date) [End][Winnie]
-
-                            Exit For
-
                         End If
                     Next
 
-                    If Not blnWithinPeriod Then
-                        ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblIOnlyDoseText.Text, ddlIScheme.SelectedItem.Text})
-                        imgIVaccinationDate1Error_2.Visible = True
+                    If dtmLastService < dtmCurrentDate Then
+                        blnPastSeason_2 = True
                     End If
 
                 End If
@@ -2445,26 +2452,24 @@ Partial Public Class VaccinationFileUpload ' 010413
                 Else
                     blnValid2ndDoseVaccineDate_2 = True
 
-                    Dim blnWithinPeriod As Boolean = False
+                    Dim dtmLastService As Nullable(Of Date) = Nothing
                     For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
                         If dtmVaccinationDate2_2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate2_2 <= udtSGClaim.LastServiceDtm Then
                             int2ndDoseSchemeSeq_2 = udtSGClaim.SchemeSeq
                             hfCSchemeSeq.Value = int2ndDoseSchemeSeq_2
-                            blnWithinPeriod = True
+                        End If
 
-                            If udtSGClaim.LastServiceDtm < dtmCurrentDate Then
-                                blnPastSeason_2 = True
+                        If dtmLastService Is Nothing Then
+                            dtmLastService = udtSGClaim.LastServiceDtm
+                        Else
+                            If dtmLastService < udtSGClaim.LastServiceDtm Then
+                                dtmLastService = udtSGClaim.LastServiceDtm
                             End If
-
-                            Exit For
-
                         End If
                     Next
 
-                    If Not blnWithinPeriod Then
-                        ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
-                        udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblI2ndDoseText.Text, ddlIScheme.SelectedItem.Text})
-                        imgIVaccinationDate2Error_2.Visible = True
+                    If dtmLastService < dtmCurrentDate Then
+                        blnPastSeason_2 = True
                     End If
 
                 End If
@@ -2706,6 +2711,129 @@ Partial Public Class VaccinationFileUpload ' 010413
         End If
 
     End Sub
+
+    ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub ValidateClaimPeriod()
+
+        '1st Visit
+        Dim dtmVaccinationDate1 As DateTime = DateTime.MinValue
+        Dim dtmVaccinationDate2 As DateTime = DateTime.MinValue
+
+        '2nd Visit
+        Dim dtmVaccinationDate1_2 As DateTime = DateTime.MinValue
+        Dim dtmVaccinationDate2_2 As DateTime = DateTime.MinValue
+
+        ' -------------------------------------
+        ' Subsidy
+        ' -------------------------------------
+        Dim dicUploadContent As Dictionary(Of String, String) = Session(SESS.UploadContent)
+        Dim strSubsidizeCode As String = String.Empty
+
+        If dicUploadContent("Subsidy") = String.Empty Then
+            ' The "Subsidy" in upload file is missing.
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00037)
+            imgIVaccinationFileError.Visible = True
+
+        Else
+            For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue).SubsidizeGroupClaimList
+                If udtSGClaim.SubsidizeDisplayCode.ToUpper() = dicUploadContent("Subsidy").ToUpper() Then
+                    strSubsidizeCode = udtSGClaim.SubsidizeCode
+                    Exit For
+
+                End If
+            Next
+        End If
+
+        If strSubsidizeCode = String.Empty Then
+            ' The "Subsidy" in upload file is invalid.
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00038)
+            imgIVaccinationFileError.Visible = True
+            Return
+        End If
+
+        ' -------------------------------------
+        ' Claim Period
+        ' -------------------------------------
+        Dim blnWithinPeriod1 As Boolean = False
+        Dim blnWithinPeriod2 As Boolean = False
+        Dim blnWithinPeriod1_2 As Boolean = False
+        Dim blnWithinPeriod2_2 As Boolean = False
+
+        Dim blnError1 As Boolean = False
+        Dim blnError2 As Boolean = False
+
+        For Each udtSGClaim As SubsidizeGroupClaimModel In (New SchemeClaimBLL).getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(ddlIScheme.SelectedValue.Trim).SubsidizeGroupClaimList.FilterBySchemeCodeAndSubsidizeCode(ddlIScheme.SelectedValue.Trim, strSubsidizeCode)
+
+            If txtIVaccinationDate1.Text.Trim <> String.Empty Then
+                DateTime.TryParseExact(txtIVaccinationDate1.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccinationDate1)
+
+                If dtmVaccinationDate1 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate1 <= udtSGClaim.LastServiceDtm Then
+                    blnWithinPeriod1 = True
+                End If
+            End If
+
+            If txtIVaccinationDate2.Text.Trim <> String.Empty Then
+                DateTime.TryParseExact(txtIVaccinationDate2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccinationDate2)
+
+                If dtmVaccinationDate2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate2 <= udtSGClaim.LastServiceDtm Then
+                    blnWithinPeriod2 = True
+                End If
+
+            End If
+
+            If txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+                DateTime.TryParseExact(txtIVaccinationDate1_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccinationDate1_2)
+
+                If dtmVaccinationDate1_2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate1_2 <= udtSGClaim.LastServiceDtm Then
+                    blnWithinPeriod1_2 = True
+                End If
+
+            End If
+
+            If txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+                DateTime.TryParseExact(txtIVaccinationDate2_2.Text.Trim, "dd-MM-yyyy", Nothing, Nothing, dtmVaccinationDate2_2)
+
+                If dtmVaccinationDate2_2 >= udtSGClaim.ClaimPeriodFrom AndAlso dtmVaccinationDate2_2 <= udtSGClaim.LastServiceDtm Then
+                    blnWithinPeriod2_2 = True
+                End If
+
+            End If
+
+        Next
+
+        If Not blnWithinPeriod1 AndAlso txtIVaccinationDate1.Text.Trim <> String.Empty Then
+            blnError1 = True
+            ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblIOnlyDoseText.Text, ddlIScheme.SelectedItem.Text})
+            imgIVaccinationDate1Error.Visible = True
+        End If
+
+        If Not blnWithinPeriod2 AndAlso txtIVaccinationDate2.Text.Trim <> String.Empty Then
+            blnError2 = True
+            ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
+            udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblI2ndDoseText.Text, ddlIScheme.SelectedItem.Text})
+            imgIVaccinationDate2Error.Visible = True
+        End If
+
+        If Not blnWithinPeriod1_2 AndAlso txtIVaccinationDate1_2.Text.Trim <> String.Empty Then
+            If Not blnError1 Then
+                ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
+                udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblIOnlyDoseText.Text, ddlIScheme.SelectedItem.Text})
+            End If
+            imgIVaccinationDate1Error_2.Visible = True
+        End If
+
+        If Not blnWithinPeriod2_2 AndAlso txtIVaccinationDate2_2.Text.Trim <> String.Empty Then
+            If Not blnError2 Then
+                ' "Vaccination Date" ({Dose}) is not within {Scheme} claim period.
+                udcMessageBox.AddMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00013, New String() {"{Dose}", "{Scheme}"}, New String() {lblI2ndDoseText.Text, ddlIScheme.SelectedItem.Text})
+            End If
+            imgIVaccinationDate2Error_2.Visible = True
+        End If
+
+    End Sub
+    ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 
     ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------

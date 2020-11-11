@@ -2139,35 +2139,49 @@ Namespace Component.StudentFile
                 Return Nothing
             End If
 
-            If strValue.StartsWith("00" + strSeparator + "00" + strSeparator) Then
-                ' strValue = "00-00-1930"
-                dtmDOB1 = New Date(strValue.Substring(6, 4), 1, 1)
-                If dtmDOB1 = Date.MinValue Then
-                    dtmDOB1 = Nothing
-                End If
-                If Not IsNothing(dtmDOB1) Then
-                    strExactDOB = "Y"
-                End If
+            Try
+                If strValue.StartsWith("00" + strSeparator + "00" + strSeparator) Then
+                    ' strValue = "00-00-1930"
+                    ' INT20-0044 (Fix batch upload with invalid DOB) [Start][Winnie]
+                    'dtmDOB1 = New Date(strValue.Substring(6, 4), 1, 1)
+                    Dim strConvertedValue As String = "01" + strSeparator + "01" + strSeparator + strValue.Substring(6, 4)
+                    DateTime.TryParseExact(strConvertedValue, "dd" + strSeparator + "MM" + strSeparator + "yyyy", Nothing, Nothing, dtmDOB1)
+                    ' INT20-0044 (Fix batch upload with invalid DOB) [End][Winnie]
+                    If dtmDOB1 = Date.MinValue Then
+                        dtmDOB1 = Nothing
+                    End If
+                    If Not IsNothing(dtmDOB1) Then
+                        strExactDOB = "Y"
+                    End If
 
-            ElseIf strValue.StartsWith("00" + strSeparator) Then
-                ' strValue = "00-02-1930"
-                dtmDOB1 = New Date(strValue.Substring(6, 4), strValue.Substring(3, 2), 1)
-                If dtmDOB1 = Date.MinValue Then
-                    dtmDOB1 = Nothing
-                End If
-                If Not IsNothing(dtmDOB1) Then
-                    strExactDOB = "M"
-                End If
-            Else
-                ' strValue = "01-02-1930"
-                DateTime.TryParseExact(strValue, "dd" + strSeparator + "MM" + strSeparator + "yyyy", Nothing, Nothing, dtmDOB1)
-                If dtmDOB1 = Date.MinValue Then
-                    Return Nothing
+                ElseIf strValue.StartsWith("00" + strSeparator) Then
+                    ' strValue = "00-02-1930"
+                    ' INT20-0044 (Fix batch upload with invalid DOB) [Start][Winnie]
+                    'dtmDOB1 = New Date(strValue.Substring(6, 4), strValue.Substring(3, 2), 1)
+                    Dim strConvertedValue As String = "01" + strSeparator + strValue.Substring(3, 2) + strSeparator + strValue.Substring(6, 4)
+                    DateTime.TryParseExact(strConvertedValue, "dd" + strSeparator + "MM" + strSeparator + "yyyy", Nothing, Nothing, dtmDOB1)
+                    ' INT20-0044 (Fix batch upload with invalid DOB) [End][Winnie]
+                    If dtmDOB1 = Date.MinValue Then
+                        dtmDOB1 = Nothing
+                    End If
+                    If Not IsNothing(dtmDOB1) Then
+                        strExactDOB = "M"
+                    End If
                 Else
-                    strExactDOB = "D"
+                    ' strValue = "01-02-1930"
+                    DateTime.TryParseExact(strValue, "dd" + strSeparator + "MM" + strSeparator + "yyyy", Nothing, Nothing, dtmDOB1)
+                    If dtmDOB1 = Date.MinValue Then
+                        Return Nothing
+                    Else
+                        strExactDOB = "D"
+                    End If
                 End If
-            End If
 
+                ' INT20-0044 (Fix batch upload with invalid DOB) [Start][Winnie]
+            Catch ex As Exception
+                Return Nothing
+            End Try
+            ' INT20-0044 (Fix batch upload with invalid DOB) [End][Winnie]
 
             'If Double.TryParse(strDOB, dblDOB) Then
             '    Return DateTime.FromOADate(dblDOB)

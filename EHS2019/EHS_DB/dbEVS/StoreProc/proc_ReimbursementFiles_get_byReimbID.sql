@@ -1,4 +1,4 @@
-
+﻿
 IF EXISTS
 (
     SELECT *
@@ -17,9 +17,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- Description:		
+-- Modified by:		Winnie SUEN
+-- Modified date:	21 Oct 2020
+-- CR No.:			CRE20-015 (HA Scheme)
+-- Description:		Enlarge size of [Scheme_Claim].[Scheme_Desc] from 100 -> 200
 -- =============================================
 -- =============================================
 -- Modification History
@@ -94,8 +95,8 @@ AS
         DECLARE @strReleasedMsg VARCHAR(50);
 
         DECLARE @tempLegend TABLE
-        (Parameter VARCHAR(100), 
-         Value     VARCHAR(100)
+        (Parameter VARCHAR(1000), 
+         Value     VARCHAR(1000)
         );
 
         DECLARE @EffectiveScheme TABLE
@@ -717,12 +718,12 @@ AS
                        (Parameter, 
                         Value
                        )
-                SELECT N'Total Amount Claimed (¥)', 
+                SELECT N'Total Amount Claimed (瞼)', 
                        ISNULL(SUM(Total_Amount_RMB), 0)
                 FROM #initialTransaction;     
-                --SELECT N'Total Amount Claimed (¥)', ISNULL(SUM(SubsidizeTotalAmount_RMB),0) FROM #SP_Practice_Summary         
+                --SELECT N'Total Amount Claimed (瞼)', ISNULL(SUM(SubsidizeTotalAmount_RMB),0) FROM #SP_Practice_Summary         
                 --SELECT
-                --	N'Total Amount Claimed (¥)', ISNULL(SUM(td.Total_Amount_RMB),0)        
+                --	N'Total Amount Claimed (瞼)', ISNULL(SUM(td.Total_Amount_RMB),0)        
                 --FROM     VoucherTransaction t, ServiceProvider sp, practice p, bankaccount b , ReimbursementAuthTran rat, TransactionDetail td        
                 --WHERE    t.SP_ID = sp.SP_ID         
                 --AND t.sp_id = p.sp_id AND t.practice_display_seq = p.display_seq AND t.sp_id = sp.sp_id        

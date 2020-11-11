@@ -1986,6 +1986,37 @@ Public Class eHSAccountMaintBLL
         dtRes = udtCCCodeBLL.GetCCCodeDesc(strcccode)
         Return dtRes
     End Function
+
+    ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+    Public Function getCCCodeBig5(ByVal strCCCode As String) As String
+        Dim strCCCodeBig5 As String = String.Empty
+        Dim dtRes As DataTable
+        Dim strTail As String
+
+        If Not strCCCode Is Nothing AndAlso strCCCode.Length > 0 Then
+            If strCCCode.Length <> 5 Then
+                Return " "
+            End If
+
+            dtRes = Me.getCCCTail(strCCCode.Substring(0, 4))
+            strTail = strCCCode.Substring(4, 1)
+            If Not dtRes Is Nothing AndAlso dtRes.Rows.Count > 0 Then
+
+                For Each dataRow As DataRow In dtRes.Rows
+                    If dataRow("ccc_tail").ToString().Equals(strTail) Then
+                        Return dataRow("Big5").ToString()
+                    End If
+                Next
+
+                Return " "
+            Else
+                Return " "
+            End If
+        End If
+
+        Return strCCCodeBig5
+    End Function
+    ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 #End Region
 
 #Region "Search / Save EHS account"

@@ -3093,6 +3093,11 @@ Partial Public Class eHSAccountMaint
 
         Me.udcInfoMsgBox.Clear()
 
+        ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+        ' Reset
+        Me.udcCCCode.Clean()
+        ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
+
         udtEHSAccount = udteHSAccountMaintBLL.EHSAccountGetFromSession(FunctionCode)
         udtEHSAccount_Amendment = udteHSAccountMaintBLL.EHSAccount_Amend_GetFromSession(FunctionCode)
 
@@ -7491,18 +7496,20 @@ Partial Public Class eHSAccountMaint
 
             Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
 
+            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+            Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
+            Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
+            Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
+            Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
+            Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
+            Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
+            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
+
             sm = Me.udcCCCode.BindCCCode()
             'Bind CCCode Drop Down List
             If sm Is Nothing Then
                 udcInputHKID.SetCCCodeError(False)
                 Me.ModalPopupExtenderChooseCCCode.Show()
-
-                Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
-                Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
-                Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
-                Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
-                Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
-                Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
                 Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00085, AuditLogDesc.ChineseNameCodeCheckingSuccess)
             Else
                 sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00039)

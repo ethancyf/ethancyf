@@ -464,6 +464,42 @@ Partial Public Class ClaimTransactionMaintenance
     Protected WithEvents trRecordSummaryTitle As Global.System.Web.UI.WebControls.TableRow
 
     '''<summary>
+    '''tdSummarySchemeTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdSummarySchemeTitle As Global.System.Web.UI.WebControls.TableCell
+
+    '''<summary>
+    '''lblSummarySchemeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummarySchemeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tdSummaryClaimTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdSummaryClaimTitle As Global.System.Web.UI.WebControls.TableCell
+
+    '''<summary>
+    '''lblSummaryClaimText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryClaimText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''tdSummaryIncompleteTitle control.
     '''</summary>
     '''<remarks>
@@ -543,6 +579,24 @@ Partial Public Class ClaimTransactionMaintenance
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trRecordSummaryTotalAmountRMB As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''tdSummarySchemeHCVSCHN control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdSummarySchemeHCVSCHN As Global.System.Web.UI.WebControls.TableCell
+
+    '''<summary>
+    '''lblSummaryHCVSCHN control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryHCVSCHN As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblSummaryTotalAmountTextRMB control.
@@ -696,6 +750,96 @@ Partial Public Class ClaimTransactionMaintenance
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSummarySuspended As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRecordSummaryTotalAmountRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRecordSummaryTotalAmountRMB_SSSCMC As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''tdSummarySchemeSSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdSummarySchemeSSSCMC As Global.System.Web.UI.WebControls.TableCell
+
+    '''<summary>
+    '''lblSummarySSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummarySSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummaryTotalAmountTextRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryTotalAmountTextRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummaryPendingComfirmRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryPendingComfirmRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummaryPendingVRAcctValidateRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryPendingVRAcctValidateRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummaryReadyToReimburseRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryReadyToReimburseRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummaryVoidedRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryVoidedRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummaryReimbursedRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummaryReimbursedRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSummarySuspendedRMB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSummarySuspendedRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''ibtnBack control.

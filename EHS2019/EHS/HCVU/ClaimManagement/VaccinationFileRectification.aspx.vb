@@ -5869,8 +5869,13 @@ Partial Public Class VaccinationFileRectification ' 010414
         Session(SESS.AcctEditAccType) = strRealAccType
 
         Session(SESS.SchemeDocTypeLegendPanelShow) = False
+
         ' Clear the temporary save
         Session(SESS.AcctEditCustomDocTypeEHSAccount) = Nothing
+        ' INT20-0043 (Fix error when change Doc Type) [Start][Winnie]
+        Session(SESS.AcctEditCustomDocType) = Nothing
+        Session(SESS.DocTypeSelectionPanelShow) = False
+        ' INT20-0043 (Fix error when change Doc Type) [End][Winnie]
 
         'Try
         Dim dr As DataRow = RowEditStatusChange(strSeqNo, ucStudentFileDetail.RowEditStatus.Processing, String.Empty)
@@ -5962,8 +5967,10 @@ Partial Public Class VaccinationFileRectification ' 010414
         Session(SESS.AcctEditAccType) = Nothing
 
         Session(SESS.SchemeDocTypeLegendPanelShow) = False
+
         ' Clear the temporary save
         Session(SESS.AcctEditCustomDocTypeEHSAccount) = Nothing
+        Session(SESS.AcctEditCustomDocType) = Nothing
 
         Me.udcRectifyAccount.Clear()
         Me.udcReadOnlyAccount.Clear()
@@ -6024,6 +6031,10 @@ Partial Public Class VaccinationFileRectification ' 010414
         Session(SESS.AcctEditSeqNo) = Nothing
         Session(SESS.AcctEditVoucherAccID) = Nothing
         Session(SESS.AcctEditAccType) = Nothing
+
+        ' INT20-0043 (Fix error when change Doc Type) [Start][Winnie]
+        Session(SESS.AcctEditCustomDocType) = Nothing
+        ' INT20-0043 (Fix error when change Doc Type) [End][Winnie]
 
         'Session(SESS.OrgEHSAccount) = Nothing
         'Session.Remove(SESS.OrgEHSAccount)
@@ -8816,8 +8827,13 @@ Partial Public Class VaccinationFileRectification ' 010414
         udtAuditLog.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
         udtAuditLog.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
         udtAuditLog.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
-        Me.udcAcctEditErrorMessage.BuildMessageBox(MessageBoxHeaderKey.ValidationFail, udtAuditLog, LogID.LOG00046, AuditLogDesc.Msg00046)
 
+        ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+        'Sender <> Nothing => User Click "Chinese Name" Btn, build msg box here
+        If Not IsNothing(sender) Then
+            Me.udcAcctEditErrorMessage.BuildMessageBox(MessageBoxHeaderKey.ValidationFail, udtAuditLog, LogID.LOG00046, AuditLogDesc.Msg00046)
+        End If
+        ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
     End Sub
 
     Private Function NeedPopupCCCodeDialog() As Boolean

@@ -404,7 +404,7 @@ Partial Public Class EHSAccountCreationV1
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
     'Practice Selection
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
-    Private Sub udcPracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeqas As Integer, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcPracticeRadioButtonGroup.PracticeSelected
+    Private Sub udcPracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeqas As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcPracticeRadioButtonGroup.PracticeSelected
         Dim isValidForCreation As Boolean = True
         Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Nothing
         Dim udtSchemeClaimModelCollection As Scheme.SchemeClaimModelCollection = Nothing
@@ -417,6 +417,9 @@ Partial Public Class EHSAccountCreationV1
         udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession()
         udtSelectedPracticedisplay = udtPracticeDisplays.Filter(intBankAccountDisplaySeqas)
         Me._udtSessionHandler.PracticeDisplaySaveToSession(udtSelectedPracticedisplay, FunctCode)
+
+        ' Save the new selected Scheme to session
+        _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
 
         Select Case Me.mvAccountCreation.ActiveViewIndex
             Case ActiveViewIndex.Step1b1
@@ -463,6 +466,12 @@ Partial Public Class EHSAccountCreationV1
                 End If
         End Select
     End Sub
+
+    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+    Private Sub udcPracticeRadioButtonGroup_SchemeSelected() Handles udcPracticeRadioButtonGroup.SchemeSelected
+        Me.ModalPopupPracticeSelection.Show()
+    End Sub
+    ' CRE20-0XX (HA Scheme) [End][Winnie]
 
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
     'Confirm only Popup Box
@@ -1120,6 +1129,10 @@ Partial Public Class EHSAccountCreationV1
             'Set up practice selection popup Box
             udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession()
             Me.udcPracticeRadioButtonGroup.VerticalScrollBar = True
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            Me.udcPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
+            Me.udcPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
             Me.udcPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, Me._udtSP.PracticeList, Me._udtSP.SchemeInfoList, Me._udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.Address)
 
             Me.udcStep1b1InputDocumentType.EHSAccount = udtEHSAccount

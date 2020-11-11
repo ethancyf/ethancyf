@@ -3151,6 +3151,13 @@ Partial Public Class eHSAccountEnquiry
                     If dtTransaction.Rows.Count > 0 Then
                         Dim dv As New DataView(dtTransaction)
 
+                        ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                        ' Hide HA Scheme 
+                        If udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
+                            Continue For
+                        End If
+                        ' CRE20-0XX (HA Scheme) [End][Winnie]
+
                         ' CRE19-026 (HCVS hotline service) [Start][Winnie]
                         ' -----------------------------------------------------------------------------------------
                         'dv.RowFilter = "Scheme_Code='" + udtSchemeClaim.SchemeCode.Trim + "'"
@@ -3207,7 +3214,10 @@ Partial Public Class eHSAccountEnquiry
                             '-------------------------------------------------------------------------------------
                             Dim blnShowDoseColumn As Boolean
                             blnShowDoseColumn = True
-                            If udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeRegistration Then
+                            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                            If udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeRegistration OrElse _
+                                udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
+                                ' CRE20-0XX (HA Scheme) [End][Winnie]
                                 blnShowDoseColumn = False
                             End If
 

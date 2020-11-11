@@ -1461,12 +1461,7 @@ Public Class SearchEngineBLL
 
     End Function
 
-    ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-    ' -------------------------------------------------------------------------
-    'Public Function SearchVoucherTransactionByAny(ByVal udtSearchCriteria As Common.SearchCriteria.SearchCriteria, ByVal strUserID As String) As DataTable
     Public Function SearchVoucherTransactionByAny(ByVal strFunctionCode As String, ByVal udtSearchCriteria As Common.SearchCriteria.SearchCriteria, ByVal strUserID As String, ByVal blnOverrideResultLimit As Boolean, ByVal EnumSelectedStoredProc As Aspect) As BaseBLL.BLLSearchResult
-        ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
-
         Dim dt As New DataTable
         dt.Columns.Add(New DataColumn("lineNum", GetType(Integer)))
         dt.Columns.Add(New DataColumn("selected", GetType(CheckBox)))
@@ -1475,19 +1470,16 @@ Public Class SearchEngineBLL
         dt.Columns.Add(New DataColumn("serviceProvider", GetType(String)))
         dt.Columns.Add(New DataColumn("spChiName", GetType(String)))
         dt.Columns.Add(New DataColumn("spID", GetType(String)))
-
-        'CRE12-015 - Add the respective practice number in ．Practice・ in the functions under ．Reimbursement・ in eHS [Start] [Tommy Tse]
-
         dt.Columns.Add(New DataColumn("practiceid", GetType(String)))
-
         dt.Columns.Add(New DataColumn("spid_practiceid", GetType(String)))
-
-        'CRE12-015 - Add the respective practice number in ．Practice・ in the functions under ．Reimbursement・ in eHS [End] [Tommy Tse]
-
         dt.Columns.Add(New DataColumn("bankAccount", GetType(String)))
         dt.Columns.Add(New DataColumn("practice", GetType(String)))
         dt.Columns.Add(New DataColumn("voucherRedeem", GetType(Integer)))
         dt.Columns.Add(New DataColumn("totalAmount", GetType(Integer)))
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        dt.Columns.Add(New DataColumn("totalAmountRMB", GetType(Integer)))
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         dt.Columns.Add(New DataColumn("authorizedStatus", GetType(String)))
         dt.Columns.Add(New DataColumn("transStatus", GetType(String)))
         dt.Columns.Add(New DataColumn("tsmp", GetType(Byte())))
@@ -1564,11 +1556,10 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID) _
                                                     }
-                    ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
 
                     udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherTransaction_get_bySPAspect", prams, blnOverrideResultLimit, db)
+
                 Case Aspect.eHSAccount
-                    ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
                     Dim prams() As SqlParameter = {db.MakeInParam("@doc_code", SqlDbType.Char, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentType), DBNull.Value, udtSearchCriteria.DocumentType)), _
                                                     db.MakeInParam("@identity_no1", SqlDbType.VarChar, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo1), DBNull.Value, udtSearchCriteria.DocumentNo1)), _
                                                     db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo2), DBNull.Value, udtSearchCriteria.DocumentNo2)), _
@@ -1588,9 +1579,9 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@eHA_name", SqlDbType.VarChar, 40, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientName), DBNull.Value, udtSearchCriteria.VoucherRecipientName)), _
                                                     db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)) _
                                                     }
-                    ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
 
                     udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherTransaction_get_byEHAAspect", prams, blnOverrideResultLimit, db)
+
                 Case Else
                     Dim prams() As SqlParameter = {db.MakeInParam("@transaction_id", SqlDbType.Char, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.TransNum), DBNull.Value, udtSearchCriteria.TransNum)), _
                                                   db.MakeInParam("@status", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.TransStatus), DBNull.Value, udtSearchCriteria.TransStatus)), _
@@ -1617,6 +1608,7 @@ Public Class SearchEngineBLL
                                               }
 
                     udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherTransaction_get_byAny", prams, blnOverrideResultLimit, db)
+
             End Select
 
             If Not udtBLLSearchResult Is Nothing Then
@@ -1653,21 +1645,16 @@ Public Class SearchEngineBLL
                 dr("spChiName") = udcFormater.formatChineseName(drAll("SPChiName"))
             End If
             dr("spID") = drAll("SPID")
-
-            'CRE12-015 - Add the respective practice number in ．Practice・ in the functions under ．Reimbursement・ in eHS [Start] [Tommy Tse]
-
             dr("practiceid") = drAll("practiceid")
-
             dr("spid_practiceid") = drAll("SPID").ToString + "(" + drAll("practiceid").ToString + ")"
-
-            'dr("spID") = drAll("SPID").ToString + "(" + drAll("practiceid").ToString + ")"
-
-            'CRE12-015 - Add the respective practice number in ．Practice・ in the functions under ．Reimbursement・ in eHS [End] [Tommy Tse]
-
             dr("bankAccount") = drAll("BankAccountNo")
             dr("practice") = drAll("PracticeName")
             dr("voucherRedeem") = drAll("voucherRedeem")
             dr("totalAmount") = drAll("totalAmount")
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            dr("totalAmountRMB") = drAll("totalAmountRMB")
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             dr("transStatus") = drAll("status")
 
@@ -1699,12 +1686,9 @@ Public Class SearchEngineBLL
         Next
         'CRE20-003 (add search criteria) [End][Martin]
 
-        ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-        ' -------------------------------------------------------------------------
-        'Return dt
         udtBLLSearchResult.Data = dt
+
         Return udtBLLSearchResult
-        ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
 
     End Function
 

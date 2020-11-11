@@ -152,17 +152,14 @@ Namespace PrintOut.ConsentFormInformation
             Dim strOption As String = String.Empty
             Dim strDocNo As String = String.Empty
 
-            ' CRE19-006 (DHC) [Start][Winnie]
-            ' ----------------------------------------------------------------------------------------
-            If udtCFInfo.FormType = ConsentFormInformationModel.FormTypeClass.HCVS OrElse
-                udtCFInfo.FormType = ConsentFormInformationModel.FormTypeClass.HCVSC OrElse
-                udtCFInfo.FormType = ConsentFormInformationModel.FormTypeClass.HCVSDHC Then
-                ' CRE19-006 (DHC) [End][Winnie]
-
-                If udtCFInfo.DocType = ConsentFormInformationModel.DocTypeClass.HKIC Or udtCFInfo.DocType = ConsentFormInformationModel.DocTypeClass.EC Then
+            ' CRE20-0XX (HA Scheme) [Start][Winnie]
+            Select Case udtCFInfo.DocType
+                Case ConsentFormInformationModel.DocTypeClass.HKIC, _
+                    ConsentFormInformationModel.DocTypeClass.HKBC, _
+                    ConsentFormInformationModel.DocTypeClass.EC
                     udtCFInfo.DocNo = formatter.formatHKID(udtCFInfo.DocNo, False)
-                End If
-            End If
+            End Select
+            ' CRE20-0XX (HA Scheme) [End][Winnie]
 
             ' CRE19-006 (DHC) [Start][Winnie]
             ' ----------------------------------------------------------------------------------------
@@ -178,6 +175,10 @@ Namespace PrintOut.ConsentFormInformation
                     strOption += "C"
                 Case ConsentFormInformationModel.FormTypeClass.EVSS
                     strOption += "E"
+                    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Case ConsentFormInformationModel.FormTypeClass.SSSCMC
+                    strOption += "S"
+                    ' CRE20-0XX (HA Scheme) [End][Winnie]
             End Select
 
             Select Case udtCFInfo.Language
@@ -200,46 +201,20 @@ Namespace PrintOut.ConsentFormInformation
 
             Select Case strOption
 
-                ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
-                ' -----------------------------------------------------------------------------------------
                 Case "HCF"
-                    'Return New PrintOut.VoucherConsentForm_CHI.VoucherConsentForm_CHI(udtCFInfo)
                     Return LoadReportVersion(udtCFInfo, "VoucherConsentForm_CHI")
                 Case "HCC"
-                    'Return New PrintOut.VoucherConsentForm_CHI.VoucherConsentCondensedForm_CHI(udtCFInfo)
                     Return LoadReportVersion(udtCFInfo, "VoucherConsentCondensedForm_CHI")
                 Case "HEF"
-                    'Return New PrintOut.VoucherConsentForm.VoucherConsentForm(udtCFInfo)
                     Return LoadReportVersion(udtCFInfo, "VoucherConsentForm")
                 Case "HEC"
-                    'Return New PrintOut.VoucherConsentForm.VoucherConsentCondensedForm(udtCFInfo)
                     Return LoadReportVersion(udtCFInfo, "VoucherConsentCondensedForm")
-                    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
-
-                    'CRE13-019-02 Extend HCVS to China [Start][Winnie]
                 Case "VSF"
                     Return LoadReportVersion(udtCFInfo, "VoucherConsentForm_CN")
-                    'CRE13-019-02 Extend HCVS to China [End][Winnie]
-
-                    ' CRE13-018 - Change Voucher Amount to 1 Dollar [Start][Tommy L]
-                    ' -----------------------------------------------------------------------------------------
-                    'Case "CCF"
-                    '    Return New PrintOut.CIVSSConsentForm_CHI.CIVSSConsentForm_CHI(udtCFInfo)
-                    'Case "CCC"
-                    '    Return New PrintOut.CIVSSConsentForm_CHI.CIVSSConsentCondensedForm_CHI(udtCFInfo)
-                    'Case "CEF"
-                    '    Return New PrintOut.CIVSSConsentForm.CIVSSConsentForm(udtCFInfo)
-                    'Case "CEC"
-                    '    Return New PrintOut.CIVSSConsentForm.CIVSSConsentCondensedForm(udtCFInfo)
-                    'Case "ECF"
-                    '    Return New PrintOut.EVSSConsentForm_CHI.EVSSConsentForm_CHI(udtCFInfo)
-                    'Case "ECC"
-                    '    Return New PrintOut.EVSSConsentForm_CHI.EVSSConsentCondensedForm_CHI(udtCFInfo)
-                    'Case "EEF"
-                    '    Return New PrintOut.EVSSConsentForm.EVSSConsentForm(udtCFInfo)
-                    'Case "EEC"
-                    '    Return New PrintOut.EVSSConsentForm.EVSSConsentCondensedForm(udtCFInfo)
-                    ' CRE13-018 - Change Voucher Amount to 1 Dollar [End][Tommy L]
+                    ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                Case "SSF"
+                    Return LoadReportVersion(udtCFInfo, "SSSCMCConsentForm_CN")
+                    ' CRE20-0XX (HA Scheme) [End][Winnie]
                 Case Else
                     Throw New Exception("Unknown report")
 
