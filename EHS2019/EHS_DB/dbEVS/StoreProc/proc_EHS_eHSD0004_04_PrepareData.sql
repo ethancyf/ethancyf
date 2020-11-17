@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	16 Nov 2020
+-- CR No.:			INT20-0050
+-- Description:		Fix temp table column for "Display_Code_For_Claim" 
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -53,7 +59,7 @@ AS BEGIN
   Transaction_Dtm    datetime,          
   Service_Receive_Dtm   datetime,          
   Category_Code    varchar(50),          
-  Vaccine      varchar(20),    
+  Vaccine      varchar(25),    
   Scheme_Seq int,
   Per_Unit_Value      int,
   Subsidize_Item_Code	char(10),   
@@ -77,7 +83,7 @@ AS BEGIN
   Transaction_Dtm    datetime,          
   Service_Receive_Dtm   datetime,          
   Category_Code    varchar(50),          
-  Vaccine varchar(20),
+  Vaccine varchar(25),
   Scheme_Seq int,
   Dose      char(20),          
   DOB       datetime,          

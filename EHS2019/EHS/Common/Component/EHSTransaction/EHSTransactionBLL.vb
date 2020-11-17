@@ -3276,8 +3276,8 @@ Namespace Component.EHSTransaction
                 For Each dr As DataRow In dt.Rows
                     udtTranDetailModel = Me.FillTransactionDetail(dr)
                     udtTranDetailModel.ServiceReceiveDtm = CDate(dr("Service_Receive_Dtm"))
-                    udtTranDetailModel.DOB = CDate(dr("DOB"))
-                    udtTranDetailModel.ExactDOB = CStr(dr("Exact_DOB")).Trim()
+                    'udtTranDetailModel.DOB = CDate(dr("DOB"))
+                    'udtTranDetailModel.ExactDOB = CStr(dr("Exact_DOB")).Trim()
                     udtTransactionDetailList.Add(udtTranDetailModel)
                 Next
 

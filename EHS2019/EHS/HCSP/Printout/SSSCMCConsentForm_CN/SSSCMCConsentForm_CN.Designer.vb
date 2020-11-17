@@ -43,11 +43,8 @@
             Me.TextBox72 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.TextBox73 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.TextBox74 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-            Me.TextBox76 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-            Me.TextBox77 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.TextBox78 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-            Me.txtHCVUInfo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtTransactionNumberText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.sreSPConsent1 = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.sreDeclaration = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
@@ -57,6 +54,8 @@
             Me.TextBox5 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.TextBox6 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtTransactionTo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox8 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox9 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.PageHeader1 = New GrapeCity.ActiveReports.SectionReportModel.PageHeader()
             Me.txtPreprint = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.TextBox2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
@@ -94,17 +93,16 @@
             CType(Me.TextBox72, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox73, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox74, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.TextBox76, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.TextBox77, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox78, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.txtHCVUInfo, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtTransactionNumberText, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox3, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox4, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtTransactionTo, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox8, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox9, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtPreprint, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox7, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -120,8 +118,8 @@
             '
             'detconsentForm_CN
             '
-            Me.detconsentForm_CN.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtAppendix, Me.txtVoidTransactionNumberText, Me.txtTransactionNumber, Me.txtVoidTransactionNumber, Me.txtTransactionToText, Me.txtConsentTitle, Me.pbkAppendix, Me.TextBox54, Me.TextBox56, Me.TextBox57, Me.TextBox59, Me.TextBox60, Me.TextBox61, Me.TextBox62, Me.TextBox63, Me.TextBox64, Me.TextBox65, Me.TextBox66, Me.TextBox67, Me.TextBox68, Me.TextBox69, Me.TextBox70, Me.TextBox72, Me.TextBox73, Me.TextBox74, Me.TextBox76, Me.TextBox77, Me.TextBox78, Me.TextBox1, Me.txtHCVUInfo, Me.txtTransactionNumberText, Me.sreSPConsent1, Me.sreDeclaration, Me.sreVoucherNotice, Me.TextBox3, Me.TextBox4, Me.TextBox5, Me.TextBox6, Me.txtTransactionTo})
-            Me.detconsentForm_CN.Height = 8.322918!
+            Me.detconsentForm_CN.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtAppendix, Me.txtVoidTransactionNumberText, Me.txtTransactionNumber, Me.txtVoidTransactionNumber, Me.txtTransactionToText, Me.txtConsentTitle, Me.pbkAppendix, Me.TextBox54, Me.TextBox56, Me.TextBox57, Me.TextBox59, Me.TextBox60, Me.TextBox61, Me.TextBox62, Me.TextBox63, Me.TextBox64, Me.TextBox65, Me.TextBox66, Me.TextBox67, Me.TextBox68, Me.TextBox69, Me.TextBox70, Me.TextBox72, Me.TextBox73, Me.TextBox74, Me.TextBox78, Me.TextBox1, Me.txtTransactionNumberText, Me.sreSPConsent1, Me.sreDeclaration, Me.sreVoucherNotice, Me.TextBox3, Me.TextBox4, Me.TextBox5, Me.TextBox6, Me.txtTransactionTo, Me.TextBox8, Me.TextBox9})
+            Me.detconsentForm_CN.Height = 8.218751!
             Me.detconsentForm_CN.Name = "detconsentForm_CN"
             '
             'txtAppendix
@@ -201,9 +199,9 @@
             Me.pbkAppendix.Height = 0.01!
             Me.pbkAppendix.Left = 0.0!
             Me.pbkAppendix.Name = "pbkAppendix"
-            Me.pbkAppendix.Size = New System.Drawing.SizeF(7.520833!, 0.01!)
+            Me.pbkAppendix.Size = New System.Drawing.SizeF(6.5!, 0.01!)
             Me.pbkAppendix.Top = 1.823!
-            Me.pbkAppendix.Width = 7.520833!
+            Me.pbkAppendix.Width = 6.5!
             '
             'TextBox54
             '
@@ -368,7 +366,7 @@
             Me.TextBox72.Name = "TextBox72"
             Me.TextBox72.Style = "font-family: 新細明體; font-size: 12pt; font-weight: bold; text-align: left; text-dec" & _
         "oration: none; ddo-char-set: 0"
-            Me.TextBox72.Text = "查阅个人资料"
+            Me.TextBox72.Text = "查阅及更正个人资料"
             Me.TextBox72.Top = 6.0795!
             Me.TextBox72.Width = 7.34375!
             '
@@ -384,47 +382,24 @@
             '
             'TextBox74
             '
-            Me.TextBox74.Height = 0.4375!
+            Me.TextBox74.Height = 0.21875!
             Me.TextBox74.Left = 0.3125!
             Me.TextBox74.Name = "TextBox74"
             Me.TextBox74.Style = "font-family: 新細明體; font-size: 12pt; text-align: left; vertical-align: top; ddo-ch" & _
         "ar-set: 0"
-            Me.TextBox74.Text = "根据香港法例第486章《个人资料（私隐）条例》第18和第22条以及附表1保障资料第6原则所述，你有权查阅及修正你的个人资料。应查阅资料要求而提供资料时，可能要征收" & _
-        "费用。"
+            Me.TextBox74.Text = "阁下有权查阅及改正有关阁下所提供的个人资料，相关人士可申请查阅及更正个人资料。"
             Me.TextBox74.Top = 6.42325!
-            Me.TextBox74.Width = 7.03125!
-            '
-            'TextBox76
-            '
-            Me.TextBox76.Height = 0.25!
-            Me.TextBox76.Left = 0.0!
-            Me.TextBox76.LineSpacing = 3.0!
-            Me.TextBox76.Name = "TextBox76"
-            Me.TextBox76.Style = "font-family: 新細明體; font-size: 12pt; font-weight: bold; text-align: left; text-dec" & _
-        "oration: none; ddo-char-set: 0"
-            Me.TextBox76.Text = "查询"
-            Me.TextBox76.Top = 7.0795!
-            Me.TextBox76.Width = 7.34375!
-            '
-            'TextBox77
-            '
-            Me.TextBox77.Height = 0.25!
-            Me.TextBox77.Left = 0.0!
-            Me.TextBox77.Name = "TextBox77"
-            Me.TextBox77.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
-            Me.TextBox77.Text = "5."
-            Me.TextBox77.Top = 7.392!
-            Me.TextBox77.Width = 0.3125!
+            Me.TextBox74.Width = 7.0315!
             '
             'TextBox78
             '
             Me.TextBox78.Height = 0.25!
-            Me.TextBox78.Left = 0.3125!
+            Me.TextBox78.Left = 0.312!
             Me.TextBox78.Name = "TextBox78"
             Me.TextBox78.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; vertical-align: top; ddo" & _
         "-char-set: 0"
-            Me.TextBox78.Text = "有关所提供个人资料（包括查阅及修正资料）的查询，应向下述人士提出："
-            Me.TextBox78.Top = 7.392!
+            Me.TextBox78.Text = "有关支援计划的资料可致电支援计划办事处(+852)2300-7070作出申请。"
+            Me.TextBox78.Top = 6.692!
             Me.TextBox78.Width = 7.03125!
             '
             'TextBox1
@@ -437,17 +412,6 @@
             Me.TextBox1.Text = "香港特别行政区政府（下称 ""政府"" ）食物及卫生局局长"
             Me.TextBox1.Top = 0.7315001!
             Me.TextBox1.Width = 6.875!
-            '
-            'txtHCVUInfo
-            '
-            Me.txtHCVUInfo.Height = 0.25!
-            Me.txtHCVUInfo.Left = 0.312!
-            Me.txtHCVUInfo.LineSpacing = 2.0!
-            Me.txtHCVUInfo.Name = "txtHCVUInfo"
-            Me.txtHCVUInfo.Style = "font-family: 新細明體; font-size: 12pt; text-align: left; vertical-align: top"
-            Me.txtHCVUInfo.Text = Nothing
-            Me.txtHCVUInfo.Top = 7.691999!
-            Me.txtHCVUInfo.Width = 3.5625!
             '
             'txtTransactionNumberText
             '
@@ -491,7 +455,7 @@
             Me.sreVoucherNotice.Name = "sreVoucherNotice"
             Me.sreVoucherNotice.Report = Nothing
             Me.sreVoucherNotice.ReportName = "SubReport1"
-            Me.sreVoucherNotice.Top = 8.058371!
+            Me.sreVoucherNotice.Top = 7.889!
             Me.sreVoucherNotice.Width = 7.3125!
             '
             'TextBox3
@@ -545,6 +509,28 @@
             Me.txtTransactionTo.Text = Nothing
             Me.txtTransactionTo.Top = 0.5130001!
             Me.txtTransactionTo.Width = 3.087!
+            '
+            'TextBox8
+            '
+            Me.TextBox8.Height = 0.25!
+            Me.TextBox8.Left = 0.313!
+            Me.TextBox8.Name = "TextBox8"
+            Me.TextBox8.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; vertical-align: top; ddo" & _
+        "-char-set: 0"
+            Me.TextBox8.Text = "有关互通系统的资料，申请表格可于电子健康纪录互通系统网页(www.ehealth.gov.hk)下载。"
+            Me.TextBox8.Top = 6.972!
+            Me.TextBox8.Width = 7.03125!
+            '
+            'TextBox9
+            '
+            Me.TextBox9.Height = 0.427!
+            Me.TextBox9.Left = 0.311!
+            Me.TextBox9.Name = "TextBox9"
+            Me.TextBox9.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; vertical-align: top; ddo" & _
+        "-char-set: 0"
+            Me.TextBox9.Text = "阁下亦可向电子健康纪录申请及咨询中心(电话：(+852)3467-6300)了解有关详情。中心可按查阅资料要求，向阁下收取适度的费用。"
+            Me.TextBox9.Top = 7.242001!
+            Me.TextBox9.Width = 7.03125!
             '
             'PageHeader1
             '
@@ -735,17 +721,16 @@
             CType(Me.TextBox72, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox73, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox74, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.TextBox76, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.TextBox77, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox78, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.txtHCVUInfo, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtTransactionNumberText, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox3, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox4, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtTransactionTo, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox8, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox9, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtPreprint, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox7, System.ComponentModel.ISupportInitialize).EndInit()
@@ -790,10 +775,7 @@
         Friend WithEvents TextBox72 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents TextBox73 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents TextBox74 As GrapeCity.ActiveReports.SectionReportModel.TextBox
-        Friend WithEvents TextBox76 As GrapeCity.ActiveReports.SectionReportModel.TextBox
-        Friend WithEvents TextBox77 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents TextBox78 As GrapeCity.ActiveReports.SectionReportModel.TextBox
-        Friend WithEvents txtHCVUInfo As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents TextBox1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtTransactionNumberText As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtPageTotalBText As GrapeCity.ActiveReports.SectionReportModel.TextBox
@@ -813,6 +795,8 @@
         Private WithEvents TextBox6 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Private WithEvents txtTransactionTo As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Private WithEvents TextBox7 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox8 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox9 As GrapeCity.ActiveReports.SectionReportModel.TextBox
     End Class
 
 

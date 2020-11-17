@@ -75,12 +75,6 @@ Namespace PrintOut.SSSCMCConsentForm_CN
 
             End If
 
-            ' Contact Info            
-            _udtGeneralFunction.getSytemParameterByParameterNameSchemeCode("ConsentFormContactInfo_HA_CN", txtHCVUInfo.Text, String.Empty, ConsentFormInformationModel.FormTypeClass.SSSCMC)
-
-            Dim udtFormatter As New Formatter
-            txtHCVUInfo.Text = udtFormatter.formatLineBreak(txtHCVUInfo.Text)
-
             ' Voucher notice
             sreVoucherNotice.Report = New PrintOut.SSSCMCConsentForm_CN.VoucherNotice(udtCFInfo)
 

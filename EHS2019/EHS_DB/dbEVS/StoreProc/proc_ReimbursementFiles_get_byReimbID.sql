@@ -14,7 +14,13 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	16 Nov 2020
+-- CR No.:			INT20-0050
+-- Description:		Fix temp table column for "Display_Code_For_Claim" 
+-- =============================================  
 -- =============================================
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -556,7 +562,7 @@ AS
 
         DECLARE @Scheme_Seq INT;
         DECLARE @Display_Seq INT;
-        DECLARE @avail_subsidizeCode CHAR(20);
+        DECLARE @avail_subsidizeCode CHAR(25);
         DECLARE @subsidize_count INT;
         DECLARE @subsidize_amount INT;
         DECLARE @subsidize_value INT;

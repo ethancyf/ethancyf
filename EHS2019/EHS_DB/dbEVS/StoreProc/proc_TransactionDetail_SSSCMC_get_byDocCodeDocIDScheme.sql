@@ -57,9 +57,9 @@ BEGIN
 	)  
   
 	DECLARE @tmpVoucherTransactionDistinct Table(  
-		Transaction_ID	CHAR(20),  
-		DOB				DATETIME,  
-		Exact_DOB		CHAR(1)  
+		Transaction_ID	CHAR(20)  
+		--,DOB			DATETIME  
+		--,Exact_DOB		CHAR(1)  
 	)  
   
 	DECLARE @tmpVoucherTransaction Table(  
@@ -187,8 +187,8 @@ BEGIN
 	-- Distinct the Transaction   
   
 	INSERT INTO @tmpVoucherTransactionDistinct  
-	SELECT 
-		[Transaction_ID], [DOB], [Exact_DOB] 
+	SELECT DISTINCT
+		[Transaction_ID]
 	FROM 
 		@tmpVoucherTransaction as tmpV 
 	WHERE  
@@ -223,8 +223,8 @@ BEGIN
 		'' as [Available_Item_Desc_Chi],  
 		'' as [Available_Item_Desc_CN],  
 		VT.[Service_Receive_Dtm],  
-		tmp.[DOB],  
-		tmp.[Exact_DOB]  
+		[DOB] = NULL,  
+		[Exact_DOB] = NULL  
 	FROM  
 		@tmpVoucherTransactionDistinct tmp  
 			INNER JOIN [TransactionDetail] TD WITH (NOLOCK)  

@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	16 Nov 2020
+-- CR No.			INT20-0049
+-- Description:		Fix column length of Subsidy(Display code for claim)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	11 Nov 2019
 -- CR No.			INT19-0026
@@ -61,7 +68,7 @@ AS BEGIN
 		SP_ID			char(8),
 		Vaccine_Date	datetime,
 		Report_Gen_Date	datetime,
-		Subsidy			varchar(20),
+		Subsidy			varchar(25),
 		Dose			varchar(20),
 		Record_Status	varchar(2)
 	)
