@@ -26,7 +26,7 @@ Public Class ProgramMgr
     Private errorFileList As New ArrayList
     Private zipFileNameForLog As String = ""
     Private csvFileNameForLog As String = ""
-
+    Private SkippedRowList As New ArrayList
     Private Const HKIC_EC_Header_Doc_Code As String = "HKIC_EC"
 
     Dim objLogStartKeyStack As New Stack(Of Common.ComObject.AuditLogStartKey)
@@ -120,10 +120,9 @@ Public Class ProgramMgr
             Dim fileListForImport() As String = IO.Directory.GetFiles(m_strImportFolderPath, "*.zip")
 
             'not exist today zip file
-            If Not (fileListForImport.Contains(m_strImportFolderPath + "\" + todayFileName)) Then
-                HASPLogger.LogLine("[Error]Today zip file(" + todayFileName + ") cannot be found in import folder.")
-                HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "Today zip file(" + todayFileName + ") cannot be found in import folder.", zipFileNameForLog)
-
+            If Not (System.IO.File.Exists(Me.m_strImportFolderPath + "\" + todayFileName)) Then
+                HASPLogger.LogLine("[Error]Today zip file(" + Me.m_strImportFolderPath + "\" + todayFileName + ") cannot be found in import folder.")
+                HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "Today zip file(" + Me.m_strImportFolderPath + "\" + todayFileName + ") cannot be found in import folder.", zipFileNameForLog)
             End If
 
             'sort the file name by desc
@@ -216,8 +215,8 @@ Public Class ProgramMgr
                         End Try
 
                     Else
-                        HASPLogger.LogLine("[" + fileName + "] [Error]Unzip File Fail")
-                        HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + fileName + "] Unzip File Fail", zipFileNameForLog)
+                        HASPLogger.LogLine("[" + fileName + "] [Error]Unzip File Fail " + m_strImportFolderPath + "/" + fileName)
+                        HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + fileName + "] Unzip File Fail " + m_strImportFolderPath + "/" + fileName, zipFileNameForLog)
                         errorFileList.Add(fileName)
 
                         Continue For
@@ -322,7 +321,7 @@ Public Class ProgramMgr
                             If (countRow <> num_rows) Then
                                 exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "] : is empty row.")
                                 HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (1 + countRow).ToString() + "] : is empty row.", zipFileNameForLog)
-
+                                SkippedRowList.Add(countRow)
                             End If
                             Continue For
                         End If
@@ -330,6 +329,7 @@ Public Class ProgramMgr
                         If strline.Length <> 8 Then
                             exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "] : Column number should not be greater or less than 8")
                             HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (1 + countRow).ToString() + "] : Column number should not be greater or less than 8", zipFileNameForLog)
+                            SkippedRowList.Add(countRow)
                             Continue For
                         End If
 
@@ -338,7 +338,7 @@ Public Class ProgramMgr
                         If checkContain.Contains("") Then
                             exceptionText = exceptionText + Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + (1 + countRow).ToString() + "] : Has empty value in row")
                             HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + (1 + countRow).ToString() + "] : Has empty value in row", zipFileNameForLog)
-
+                            SkippedRowList.Add(countRow)
                             Continue For
                         End If
 
@@ -387,13 +387,13 @@ Public Class ProgramMgr
                     Throw ex
                 End Try
             Else
-                HASPLogger.LogLine("[Error]Csv File Not Found : " + strFileNameNoExtension + ".csv" + vbCr + "The csv name should be same as zip name.")
-                HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + zipFileNameForLog + "] Csv File Not Found : " + strFileNameNoExtension + ".csv" + vbCr + "The csv name should be same as zip name.", zipFileNameForLog)
+                HASPLogger.LogLine("[Error]Csv File Not Found : " + Me.m_strImportFolderPath + "\" + strFileNameNoExtension + ".csv" + vbCr + "The csv name should be same as zip name.")
+                HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + zipFileNameForLog + "] Csv File Not Found : " + Me.m_strImportFolderPath + "\" + strFileNameNoExtension + ".csv" + vbCr + "The csv name should be same as zip name.", zipFileNameForLog)
 
-                Throw New System.Exception("[Error]Csv File Not Found: " + strFileNameNoExtension + ".csv")
+                Throw New System.Exception("[Error]Csv File Not Found: " + Me.m_strImportFolderPath + "\" + strFileNameNoExtension + ".csv")
             End If
 
-
+ 
             ' ------------ End Import File & Pharsed Record To DB -------------
 
         Catch ex As Exception
@@ -413,10 +413,16 @@ Public Class ProgramMgr
 
 
         Dim duplicateList As New ArrayList
+        Dim skippedRow As Integer = 0
         Try
 
             For Each row As DataRow In dtImport.Rows
-                Dim indexOfRow As String = (dtImport.Rows.IndexOf(row) + 2).ToString()
+
+                If (SkippedRowList.Contains((dtImport.Rows.IndexOf(row) + 1 + skippedRow))) Then
+                    skippedRow = skippedRow + 1
+                End If
+
+                Dim indexOfRow As String = (dtImport.Rows.IndexOf(row) + 2 + skippedRow).ToString()
 
                 'check SERIAL NO using regex if serial number not equal to first 8 number space then 4 number pattern
                 'Dim serialNo_regex As New Regex("^[0-9]{8}(\s)[0-9]{4}$")
@@ -592,33 +598,34 @@ Public Class ProgramMgr
 
 
 
-                If (row("PAYMENT_TYPE_RESULT") = "Y" Or row.Item("PAYMENT_TYPE_RESULT") = "N") Then
-                    If (row.Item("Claimed_Payment_Type") = "GP" And row.Item("PAYMENT_TYPE_RESULT") = "N") Then
-                        HASPLogger.LogLine("[" + csvFileNameForLog + "] [Warning][Row " + indexOfRow + "] : PAYMENT_TYPE_RESULT should be Y only if claimed payment type is GP.")
-                        HASPLogger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + indexOfRow + "] : PAYMENT_TYPE_RESULT should be Y only if claimed payment type is GP.", zipFileNameForLog)
-
-                    End If
-                Else
+                If Not (row("PAYMENT_TYPE_RESULT") = "Y" Or row.Item("PAYMENT_TYPE_RESULT") = "N") Then
                     exceptionText += Environment.NewLine + ("[" + csvFileNameForLog + "] [Error][Row " + indexOfRow + "] : PAYMENT_TYPE_RESULT only allowed Y or N")
                     HASPLogger.Log(Common.Component.LogID.LOG00008, objLogStartKeyStack.Peek, "[" + csvFileNameForLog + "] [Row " + indexOfRow + "] : PAYMENT_TYPE_RESULT only allowed Y or N.", zipFileNameForLog)
-
                 End If
 
                 'If (row.Item("Waive").ToString().Length > 1) Then
                 '    exceptionText += Environment.NewLine + ("[Error][Row " + indexOfRow + "] :Waive should not be more than 1 character")
                 'End If
 
+                row("Patient_Type") = ""
+
                 'Patient Type
-                If (row("PAYMENT_TYPE_RESULT").ToString() = "Y" And row("Eligibility") = "Y") Then
+                If (row("Eligibility") = "Y") Then
                     If (row("Claimed_Payment_Type_Code") = "") Then
                         row("Patient_Type") = "A"
-                    ElseIf (chkPaymentTypeCode_match.Success) Then
-                        row("Patient_Type") = "B"
-                    Else
 
+                    ElseIf (chkPaymentTypeCode_match.Success) Then
+                        If (row("PAYMENT_TYPE_RESULT") = "N") Then
+                            row("Patient_Type") = "A"
+
+                        ElseIf (row("PAYMENT_TYPE_RESULT") = "Y") Then
+                            row("Patient_Type") = "B"
+                        End If
+                    Else
+                        'do nothing
                     End If
                 Else
-                    row("Patient_Type") = ""
+                    'do nothing
                 End If
 
 

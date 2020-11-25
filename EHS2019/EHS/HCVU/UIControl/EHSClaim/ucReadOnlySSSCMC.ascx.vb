@@ -49,6 +49,14 @@ Partial Public Class ucReadOnlySSSCMC
                 Me.lblRegistrationFeeRemark.Text = Me.GetGlobalResourceObject("Text", "SSSCMC_PatientFree")
         End Select
 
+        ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
+        If udtTAFList.PaymentTypeMatch IsNot Nothing AndAlso udtTAFList.PaymentTypeMatch.ToString <> Common.Component.YesNo.Yes Then
+            Me.trRegistrationFeeWarning.Visible = True
+        Else
+            Me.trRegistrationFeeWarning.Visible = False
+        End If
+        ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
+
         Me.lblConsultAndRegFee.Text = udtTAFList.ConsultAndRegFeeRMB.ToString("#,0.00")
         Me.lblDrugFee.Text = udtTAFList.DrugFeeRMB.ToString("#,0.00")
         Me.lblInvestigationFee.Text = udtTAFList.InvestigationFeeRMB.ToString("#,0.00")

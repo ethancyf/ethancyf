@@ -27,6 +27,14 @@
             <asp:Label ID="lblRegistrationFeeRemark" runat="server" CssClass="tableText" />
         </td>
     </tr>
+    <tr id="trRegistrationFeeWarning" runat="server">
+        <td class="tableCellStyle" colspan="3">
+            <div style="padding: 5px; border-width:1px; border-style:solid; border-color:red; background-color:rgba(255, 255, 153, 1);">
+                <asp:Label ID="lblRegistrationFeeWarning" runat="server" CssClass="tableText" 
+                    style="color:red;" Text="<%$ Resources:Text, SSSCMC_RegistrationFeeWarning%>" />
+            </div>
+        </td>
+    </tr>
     <tr>
         <td colspan="3" style="padding-bottom:2px">
             <hr />

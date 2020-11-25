@@ -240,6 +240,16 @@ Namespace Component.EHSTransaction
         End Property
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+        ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
+        Public ReadOnly Property PaymentTypeMatch() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.PaymentTypeMatch)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
+
         Public ReadOnly Property HasReasonForVisit() As Boolean
             Get
                 Dim udtAdditionalField As TransactionAdditionalFieldModel

@@ -50,6 +50,24 @@ Partial Public Class ucInputSSSCMC
     Protected WithEvents lblRegistrationFeeRemark As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trRegistrationFeeWarning control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRegistrationFeeWarning As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRegistrationFeeWarning control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRegistrationFeeWarning As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblMedicalServiceInfoText control.
     '''</summary>
     '''<remarks>

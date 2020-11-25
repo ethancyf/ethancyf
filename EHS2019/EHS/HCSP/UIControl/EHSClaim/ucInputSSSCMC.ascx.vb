@@ -255,6 +255,14 @@ Partial Public Class ucInputSSSCMC
                 Throw New Exception(String.Format("Invalid Patient Type({0}) is found in DB table HAServicePatient.", Me.PatientType))
         End Select
 
+        ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
+        If Me.PaymentTypeResult = YesNo.No AndAlso Me.ClaimedPaymentTypeCode <> String.Empty Then
+            Me.trRegistrationFeeWarning.Visible = True
+        Else
+            Me.trRegistrationFeeWarning.Visible = False
+        End If
+        ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
+
         ' Available subsidy
         _decAvailableSubidy = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
 
@@ -384,6 +392,20 @@ Partial Public Class ucInputSSSCMC
         End Get
     End Property
 
+    ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
+    Public ReadOnly Property ClaimedPaymentTypeCode() As String
+        Get
+            Return _dtHAPatient.Rows(0)("Claimed_Payment_Type_Code").ToString.Trim
+        End Get
+    End Property
+
+    Public ReadOnly Property PaymentTypeResult() As String
+        Get
+            Return _dtHAPatient.Rows(0)("Payment_Type_Result").ToString.Trim
+        End Get
+    End Property
+    ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
+
     Public ReadOnly Property ExchangeRate() As Decimal
         Get
             Return 1.0
@@ -463,6 +485,25 @@ Partial Public Class ucInputSSSCMC
         udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
         udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
         udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+        ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
+        'PaymentTypeMatch
+        Dim strPaymentTypeMatch As String = String.Empty
+        If Me.PaymentTypeResult = YesNo.No AndAlso Me.ClaimedPaymentTypeCode <> String.Empty Then
+            strPaymentTypeMatch = YesNo.No
+        Else
+            strPaymentTypeMatch = YesNo.Yes
+        End If
+
+        udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+        udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.PaymentTypeMatch
+        udtTransactAdditionfield.AdditionalFieldValueCode = strPaymentTypeMatch
+        udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
+        udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+        udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
+        udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
+        udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+        ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
         'RegistrationFeeRMB
         udtTransactAdditionfield = New TransactionAdditionalFieldModel()
