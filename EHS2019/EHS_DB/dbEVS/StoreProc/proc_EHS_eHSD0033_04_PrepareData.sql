@@ -6,6 +6,20 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
   
+  -- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Nov 2020
+-- CR. No			CRE20-014-02 (GOV SIV - Phase 2)
+-- Description:		(1) Rectify [Vaccine] column data type to VARCHAR(25)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	16 Nov 2020
+-- CR No.:			INT20-0050
+-- Description:		Fix temp table column for "Display_Code_For_Claim" 
+-- =============================================  
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -78,7 +92,7 @@ BEGIN
 		Reimbursement_Status	CHAR(1),
 		Create_By_SmartID		CHAR(1),
 		Row						INT,
-		Vaccine					CHAR(20),
+		Vaccine					VARCHAR(25),
 		Category_Code			VARCHAR(10),
 		SchoolCode				VARCHAR(30)
 	 )        
@@ -99,7 +113,7 @@ BEGIN
 		Reimbursement_Status	CHAR(1),
 		Create_By_SmartID		CHAR(1),
 		Row						INT,
-		Vaccine					CHAR(20),
+		Vaccine					VARCHAR(25),
 		Category_Code			VARCHAR(10),
 		SchoolCode				VARCHAR(30)
 	)          

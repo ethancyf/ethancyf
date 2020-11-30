@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.			CRE20-014-02 (Gov SIV 2020_21 - Phase 2)
+-- Modified by:		Koala CHENG
+-- Modified date:	06 Nov 2020
+-- Description:		[03-Practice & BankAcc] Move Gov SIV to the end of VSS vaccine list
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.			CRE16-022 (SDIR Remark)
 -- Modified by:		CHRIS YIM
 -- Modified date:	17 Feb 2020
@@ -350,6 +357,18 @@ AS BEGIN
 			ON SGBO_SF.Scheme_Code = Filtered_SGBO.Scheme_Code AND SGBO_SF.Scheme_Seq = Filtered_SGBO.Scheme_Seq AND SGBO_SF.Subsidize_Code = Filtered_SGBO.Subsidize_Code
 			-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
 
+
+	
+	-- For GOV SIV, move the display of GOV SIV to the end of VSS vaccine list
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '91' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '92' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VCQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '93' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VCLAIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '94' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VAQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '95' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VEQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '96' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPIDQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '97' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPIDLAIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '98' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VDAQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '99' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VDALAIVG'	
 -- ---------------------------------------------
 -- @ServiceProviderStatus
 -- ---------------------------------------------

@@ -9,6 +9,15 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
+-- Modified date:	09 Nov 2020
+-- CR. No			CRE20-014-02 (GOV SIV - Phase 2)
+-- Description:		(1) Add summary of QIV Govt and LAIV Govt to sub report [02-Age Group]
+--					(2) Add 2 sub report for QIV Govt and LAIV Govt by school code
+--						[03-QIV (Govt)] and [03-LAIV (Govt)]
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
 -- CR. No			INT20-0025
 -- Description:		(1) Add WITH (NOLOCK)
@@ -67,6 +76,8 @@ SET NOCOUNT ON;
 	DECLARE @Category_Seq	INT		
 	DECLARE @QIV_Subsidize_Code		VARCHAR(10)
 	DECLARE @LAIV_Subsidize_Code	VARCHAR(10)
+	DECLARE @QIVG_Subsidize_Code	VARCHAR(10)
+	DECLARE @LAIVG_Subsidize_Code	VARCHAR(10)
 
 	-- For Age Cursor
 	DECLARE @Age VARCHAR(100)
@@ -208,6 +219,38 @@ OPEN SYMMETRIC KEY sym_Key
 	)
 
 	CREATE TABLE #ResultTable_04  
+	(    
+		_display_seq INT,
+		_result_value1 varchar(200) default '',    
+		_result_value2 varchar(100) default '',    
+		_result_value3 varchar(100) default '',    
+		_result_value4 varchar(100) default '',    
+		_result_value5 varchar(100) default '',    
+		_result_value6 varchar(100) default '',    
+		_result_value7 varchar(100) default '',    
+		_result_value8 varchar(100) default '',    
+		_result_value9 varchar(100) default '',    
+		_result_value10 varchar(100) default ''
+	)
+
+	-- QIV Govt transaction
+	CREATE TABLE #ResultTable_05 
+	(    
+		_display_seq INT,
+		_result_value1 varchar(200) default '',    
+		_result_value2 varchar(100) default '',    
+		_result_value3 varchar(100) default '',    
+		_result_value4 varchar(100) default '',    
+		_result_value5 varchar(100) default '',    
+		_result_value6 varchar(100) default '',    
+		_result_value7 varchar(100) default '',    
+		_result_value8 varchar(100) default '',    
+		_result_value9 varchar(100) default '',    
+		_result_value10 varchar(100) default ''
+	)
+
+	-- LAIV Govt transaction
+	CREATE TABLE #ResultTable_06  
 	(    
 		_display_seq INT,
 		_result_value1 varchar(200) default '',    
@@ -606,12 +649,20 @@ OPEN SYMMETRIC KEY sym_Key
 
 			SELECT @LAIV_Subsidize_Code = Subsidize_Code
 			FROM @SIV_ByCategory 
-			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%LAIV'			
+			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%LAIV'	
+			
+			SELECT @QIVG_Subsidize_Code = Subsidize_Code
+			FROM @SIV_ByCategory 
+			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%QIVG'
+
+			SELECT @LAIVG_Subsidize_Code = Subsidize_Code
+			FROM @SIV_ByCategory 
+			WHERE Category_Code = @Category_Code AND Subsidize_Code LIKE '%LAIVG'	
 			
 			INSERT INTO #ResultTable_02 (_display_seq) VALUES (@Row)		
 			SET @Row = @Row + 1
 
-			-- Header --				
+			-- Header (Normal QIV and LAIV) --				
 			INSERT INTO #ResultTable_02 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4)
 			VALUES	(@Row, '', '', '', 'No. of SP involved')
 				
@@ -627,6 +678,10 @@ OPEN SYMMETRIC KEY sym_Key
 									WHERE Subsidize_Code = @LAIV_Subsidize_Code)
 			WHERE _display_seq = @Row
 	
+			UPDATE #ResultTable_02
+			SET _result_value3 = 'Sub-total'
+			WHERE _display_seq = @Row
+
 			SET @Row = @Row + 1
 		
 			-- QIV --		
@@ -635,7 +690,9 @@ OPEN SYMMETRIC KEY sym_Key
 			-- LAIV --
 			SET @result2 = (SELECT COUNT(1) FROM #Transaction WHERE Subsidize_Code = @LAIV_Subsidize_Code) -- AND IsSIV = 1 AND IsCurrentSeason = 1												
 			
-
+			-- QIV + LAIV --
+			SET @result3 = @result1 + @result2 								
+			
 			-- No. of SP Involved
 			SET @result4 = (SELECT COUNT(DISTINCT SP_ID) 
 							FROM #Transaction 
@@ -646,9 +703,100 @@ OPEN SYMMETRIC KEY sym_Key
 
 			INSERT INTO #ResultTable_02 (_display_seq, _result_value1, _result_value2,_result_value3,_result_value4)
 			VALUES 
-				(@Row, @result1, @result2, '', @result4)
+				(@Row, @result1, @result2, @result3, @result4)
 
+			-- Empty Row --	
+			SET @Row = @Row + 1
+			INSERT INTO #ResultTable_02 (_display_seq) VALUES (@Row)		
+			SET @Row = @Row + 1
+
+				
+			-- Header (Government QIV and LAIV) --				
+			INSERT INTO #ResultTable_02 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4)
+			VALUES	(@Row, '', '', '', 'No. of SP involved')
+				
+			UPDATE #ResultTable_02
+			SET _result_value1 = (	SELECT Display_Code_For_claim 
+									FROM @SIV_ByCategory 
+									WHERE Subsidize_Code = @QIVG_Subsidize_Code)
+			WHERE _display_seq = @Row
 		
+			UPDATE #ResultTable_02
+			SET _result_value2 = (	SELECT Display_Code_For_claim 
+									FROM @SIV_ByCategory 
+									WHERE Subsidize_Code = @LAIVG_Subsidize_Code)
+			WHERE _display_seq = @Row
+	
+			UPDATE #ResultTable_02
+			SET _result_value3 = 'Sub-total'
+			WHERE _display_seq = @Row
+
+			SET @Row = @Row + 1
+		
+			-- QIV --		
+			SET @result1 = (SELECT COUNT(1) FROM #Transaction WHERE Subsidize_Code = @QIVG_Subsidize_Code) -- AND IsSIV = 1 AND IsCurrentSeason = 1
+
+			-- LAIV --
+			SET @result2 = (SELECT COUNT(1) FROM #Transaction WHERE Subsidize_Code = @LAIVG_Subsidize_Code) -- AND IsSIV = 1 AND IsCurrentSeason = 1												
+			
+			-- QIV + LAIV --
+			SET @result3 = @result1 + @result2 								
+			
+			-- No. of SP Involved
+			SET @result4 = (SELECT COUNT(DISTINCT SP_ID) 
+							FROM #Transaction 
+							WHERE 
+								Subsidize_Code IN (@QIVG_Subsidize_Code, @LAIVG_Subsidize_Code))
+								--AND IsSIV = 1 AND IsCurrentSeason = 1							
+		
+
+			INSERT INTO #ResultTable_02 (_display_seq, _result_value1, _result_value2,_result_value3,_result_value4)
+			VALUES 
+				(@Row, @result1, @result2, @result3, @result4)
+
+			-- Empty Row --	
+			SET @Row = @Row + 1
+			INSERT INTO #ResultTable_02 (_display_seq) VALUES (@Row)		
+			SET @Row = @Row + 1
+		
+			-- Header (Total QIV and LAIV) --				
+			INSERT INTO #ResultTable_02 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4)
+			VALUES	(@Row, '', '', '', 'Total No. of SP involved')
+				
+			UPDATE #ResultTable_02
+			SET _result_value1 = 'QIV Total'
+			WHERE _display_seq = @Row
+		
+			UPDATE #ResultTable_02
+			SET _result_value2 = 'LAIV Total'
+			WHERE _display_seq = @Row
+	
+			UPDATE #ResultTable_02
+			SET _result_value3 = 'Total'
+			WHERE _display_seq = @Row
+
+			SET @Row = @Row + 1
+		
+			-- QIV --		
+			SET @result1 = (SELECT COUNT(1) FROM #Transaction WHERE Subsidize_Code IN (@QIV_Subsidize_Code,@QIVG_Subsidize_Code)) -- AND IsSIV = 1 AND IsCurrentSeason = 1
+
+			-- LAIV --
+			SET @result2 = (SELECT COUNT(1) FROM #Transaction WHERE Subsidize_Code IN (@LAIV_Subsidize_Code,@LAIVG_Subsidize_Code)) -- AND IsSIV = 1 AND IsCurrentSeason = 1												
+			
+			-- QIV + LAIV --
+			SET @result3 = @result1 + @result2 								
+			
+			-- No. of SP Involved
+			SET @result4 = (SELECT COUNT(DISTINCT SP_ID) 
+							FROM #Transaction 
+							WHERE 
+								Subsidize_Code IN (@QIV_Subsidize_Code, @LAIV_Subsidize_Code, @QIVG_Subsidize_Code, @LAIVG_Subsidize_Code))
+								--AND IsSIV = 1 AND IsCurrentSeason = 1							
+		
+			INSERT INTO #ResultTable_02 (_display_seq, _result_value1, _result_value2,_result_value3,_result_value4)
+			VALUES 
+				(@Row, @result1, @result2, @result3, @result4)
+
 			FETCH NEXT FROM Category_Cursor INTO @Category_Code, @Category_Seq
 		END    
 	CLOSE Category_Cursor  
@@ -1015,6 +1163,117 @@ OPEN SYMMETRIC KEY sym_Key
 
 
 	-- =============================================    
+	-- eHS(S)D0033-03: Report on yearly PPPKG claim transaction by school code (Current Season) (QIV Govt)
+	-- ============================================= 
+
+	-- insert record for the final output format    
+	INSERT INTO #ResultTable_05 (_display_seq, _result_value1)    
+	VALUES (1, REPLACE('eHS(S)D0033-03: Report on yearly PPP-KG claim transaction by school code ([DATE])', '[DATE]', @current_scheme_desc))    
+	INSERT INTO #ResultTable_05 (_display_seq)    
+	VALUES (2)    
+	INSERT INTO #ResultTable_05 (_display_seq, _result_value1)    
+	VALUES (3, 'Reporting period: as at ' + FORMAT(DATEADD(dd, -1, @Cutoff_Dtm), 'yyyy/MM/dd'))
+	INSERT INTO #ResultTable_05 (_display_seq)    
+	VALUES (4)  
+
+	INSERT INTO #ResultTable_05 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5,
+								_result_value6,  _result_value7,  _result_value8,  _result_value9,  _result_value10)
+	VALUES (5, '', '', '', '', '', '', '', '', '', '')
+
+
+	UPDATE #ResultTable_05
+	SET _result_value2 = (	SELECT Display_Code_For_claim 
+							FROM @SIV_ByCategory 
+							WHERE Subsidize_Code LIKE '%QIVG')						
+	WHERE _display_seq = 5
+		
+
+	INSERT INTO #ResultTable_05 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6)
+	VALUES (6, 'School Code','1st dose','2nd dose','Only dose','Total','No. of Students')
+
+	INSERT INTO #ResultTable_05 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6)
+	SELECT 
+		10 + ROW_NUMBER () OVER (ORDER BY T.SchoolCode),
+		T.SchoolCode, 
+		ISNULL(T.Is1stDose, 0) AS [1stDose],
+		ISNULL(T.Is2ndDose, 0) AS [2ndDose],
+		ISNULL(T.IsOnlyDose, 0) AS [OnlyDose],
+		ISNULL(T.NoOfTrans, 0) AS [Total],
+		T.NoOfStudents
+	FROM
+		(
+			SELECT
+				SchoolCode,
+				SUM(Is1stDose) [Is1stDose],
+				SUM(Is2ndDose) [Is2ndDose],
+				SUM(IsOnlyDose) [IsOnlyDose],
+				COUNT(Transaction_ID) [NoOfTrans],
+				COUNT(DISTINCT identity_num) [NoOfStudents] -- Same doc code + doc id consider as 1 student
+			FROM
+				#Transaction
+			WHERE 
+				Subsidize_Code = @QIVG_Subsidize_Code
+			GROUP BY
+				SchoolCode
+		) T
+
+	-- =============================================    
+	-- eHS(S)D0033-03: Report on yearly PPPKG claim transaction by school code (Current Season) (LAIV Govt)
+	-- ============================================= 
+
+	-- insert record for the final output format    
+	INSERT INTO #ResultTable_06 (_display_seq, _result_value1)    
+	VALUES (1, REPLACE('eHS(S)D0033-03: Report on yearly PPP-KG claim transaction by school code ([DATE])', '[DATE]', @current_scheme_desc))    
+	INSERT INTO #ResultTable_06 (_display_seq)    
+	VALUES (2)    
+	INSERT INTO #ResultTable_06 (_display_seq, _result_value1)    
+	VALUES (3, 'Reporting period: as at ' + FORMAT(DATEADD(dd, -1, @Cutoff_Dtm), 'yyyy/MM/dd'))
+	INSERT INTO #ResultTable_06 (_display_seq)    
+	VALUES (4)  
+
+	INSERT INTO #ResultTable_06 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5,
+								_result_value6,  _result_value7,  _result_value8,  _result_value9,  _result_value10)
+	VALUES (5, '', '', '', '', '', '', '', '', '', '')
+
+	UPDATE #ResultTable_06
+	SET _result_value2 = (	SELECT Display_Code_For_claim 
+							FROM @SIV_ByCategory 
+							WHERE Subsidize_Code LIKE '%LAIVG')								
+	WHERE _display_seq = 5
+		
+
+	INSERT INTO #ResultTable_06 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6)
+	VALUES (6, 'School Code','1st dose','2nd dose','Only dose','Total','No. of Students')
+
+	INSERT INTO #ResultTable_06 (_display_seq, _result_value1, _result_value2, _result_value3, _result_value4, _result_value5, _result_value6)
+	SELECT 
+		10 + ROW_NUMBER () OVER (ORDER BY T.SchoolCode),
+		T.SchoolCode, 
+		ISNULL(T.Is1stDose, 0) AS [1stDose],
+		ISNULL(T.Is2ndDose, 0) AS [2ndDose],
+		ISNULL(T.IsOnlyDose, 0) AS [OnlyDose],
+		ISNULL(T.NoOfTrans, 0) AS [Total],
+		T.NoOfStudents
+	FROM
+		(
+			SELECT
+				SchoolCode,
+				SUM(Is1stDose) [Is1stDose],
+				SUM(Is2ndDose) [Is2ndDose],
+				SUM(IsOnlyDose) [IsOnlyDose],
+				COUNT(Transaction_ID) [NoOfTrans],
+				COUNT(DISTINCT identity_num) [NoOfStudents] -- Same doc code + doc id consider as 1 student
+			FROM
+				#Transaction
+			WHERE 
+				Subsidize_Code = @LAIVG_Subsidize_Code
+			GROUP BY
+				SchoolCode
+		) T
+
+
+
+	-- =============================================    
 	-- Final Result
 	-- ============================================= 
 
@@ -1073,7 +1332,43 @@ OPEN SYMMETRIC KEY sym_Key
 	 FROM #ResultTable_04   
 	 ORDER BY    
 		_display_seq     
+
+--
+
+	DELETE FROM RpteHSD0033_03_PPPKG_QIVG_Tx_BySchoolCode
 	
+	INSERT INTO RpteHSD0033_03_PPPKG_QIVG_Tx_BySchoolCode    
+	(
+		Display_Seq,    
+		Col1,  Col2,  Col3,  Col4,  Col5,  
+		Col6,  Col7,  Col8,  Col9,  Col10	
+	)     
+	SELECT  
+		_display_seq,    
+		_result_value1,  _result_value2,  _result_value3,  _result_value4,  _result_value5,   
+		_result_value6,  _result_value7,  _result_value8,  _result_value9,  _result_value10
+	 FROM #ResultTable_05    
+	 ORDER BY    
+		_display_seq     	
+
+--
+
+	DELETE FROM RpteHSD0033_03_PPPKG_LAIVG_Tx_BySchoolCode
+	
+	INSERT INTO RpteHSD0033_03_PPPKG_LAIVG_Tx_BySchoolCode    
+	(
+		Display_Seq,    
+		Col1,  Col2,  Col3,  Col4,  Col5,  
+		Col6,  Col7,  Col8,  Col9,  Col10	
+	)     
+	SELECT  
+		_display_seq,    
+		_result_value1,  _result_value2,  _result_value3,  _result_value4,  _result_value5,   
+		_result_value6,  _result_value7,  _result_value8,  _result_value9,  _result_value10
+	 FROM #ResultTable_06  
+	 ORDER BY    
+		_display_seq     
+
 --
 	    
 	CLOSE SYMMETRIC KEY sym_Key    

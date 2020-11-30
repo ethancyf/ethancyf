@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" Codebehind="ucReadOnlySSSCMC.ascx.vb"
     Inherits="HCVU.ucReadOnlySSSCMC" %>
 
-<table cellpadding="0" cellspacing="0" style="width: 850px" >
+<table cellpadding="0" cellspacing="0" style="width: 950px" >
     <tr>
         <td colspan="3" style="padding-bottom:2px">
             <hr />
@@ -50,7 +50,7 @@
         <td class="tableCellStyle" style="width:200px">
             <asp:Label ID="lblConsultAndRegFeeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_ConsultAndSelfPaidFee%>" />
         </td>
-        <td class="tableCellStyle" colspan="2" style="width:150px">
+        <td class="tableCellStyle" style="width:150px">
             <table style="display: block;">
                 <tr>
                     <td style="width:10px">
@@ -62,12 +62,35 @@
                 </tr>
             </table>
         </td>
+        <td class="tableCellStyle" rowspan="2" style="vertical-align:top;">
+            <table style="display: block;" id="tblExemptRegFee" runat="server">
+                <tr>
+                    <td style="width:160px;">
+                        <asp:Label ID="lblExemptRegFeeText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFee%>" />
+                    </td>
+                    <td style="text-align:right;">
+                        <asp:Label ID="lblExemptRegFeeReasonText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason%>" />
+                    </td>
+                    <td style="width:350px;">
+                        <asp:Label ID="lblExemptRegFeeReason1Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason1%>" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <asp:Label ID="lblExemptRegFeeReason2Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason2%>" />                        
+                        <asp:Label ID="lblRegFeeChargedDate" runat="server" CssClass="tableText" />
+                    </td>
+                </tr>
+            </table>         
+        </td>
     </tr>
     <tr>
         <td class="tableCellStyle" style="width:200px">
             <asp:Label ID="lblDrugFeeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_DrugFee%>" />
         </td>
-        <td class="tableCellStyle" colspan="2" style="width:150px">
+        <td class="tableCellStyle" style="width:150px">
             <table style="display: block;">
                 <tr>
                     <td style="width:10px">

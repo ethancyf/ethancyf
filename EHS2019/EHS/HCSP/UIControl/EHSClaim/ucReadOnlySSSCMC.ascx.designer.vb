@@ -104,6 +104,60 @@ Partial Public Class ucReadOnlySSSCMC
     Protected WithEvents lblConsultAndRegFee As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''tblExemptRegFee control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblExemptRegFee As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''lblExemptRegFeeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblExemptRegFeeReasonText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeReasonText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblExemptRegFeeReason1Text control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeReason1Text As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblExemptRegFeeReason2Text control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeReason2Text As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRegFeeChargedDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRegFeeChargedDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblDrugFeeText control.
     '''</summary>
     '''<remarks>

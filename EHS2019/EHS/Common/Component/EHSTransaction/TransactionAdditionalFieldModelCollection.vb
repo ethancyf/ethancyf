@@ -250,6 +250,31 @@ Namespace Component.EHSTransaction
         End Property
         ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
+        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+        Public ReadOnly Property ExemptRegFee() As Boolean
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ExemptRegFee)
+                If udtAdditionalField IsNot Nothing Then
+                    If udtAdditionalField.AdditionalFieldValueCode = YesNo.Yes Then
+                        Return True
+                    Else
+                        Return False
+                    End If
+                End If
+
+                Return False
+            End Get
+        End Property
+
+        Public ReadOnly Property RegFeeChargedDate() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ExemptRegFee)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueDesc
+            End Get
+        End Property
+        ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
+
         Public ReadOnly Property HasReasonForVisit() As Boolean
             Get
                 Dim udtAdditionalField As TransactionAdditionalFieldModel

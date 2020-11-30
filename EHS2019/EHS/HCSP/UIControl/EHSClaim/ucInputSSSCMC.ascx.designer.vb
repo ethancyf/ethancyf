@@ -122,6 +122,96 @@ Partial Public Class ucInputSSSCMC
     Protected WithEvents imgConsultAndRegFeeError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''chkExemptRegFee control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkExemptRegFee As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''tblExemptRegFeeReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblExemptRegFeeReason As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''lblExemptRegFeeReasonText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeReasonText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblExemptRegFeeReason1Text control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeReason1Text As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblExemptRegFeeReason2Text control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblExemptRegFeeReason2Text As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtRegFeeChargedDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtRegFeeChargedDate As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnRegFeeChargedDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnRegFeeChargedDate As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''calRegFeeChargedDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calRegFeeChargedDate As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''filtereditRegFeeChargedDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtereditRegFeeChargedDate As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''imgRegFeeChargedDateError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgRegFeeChargedDateError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblDrugFeeText control.
     '''</summary>
     '''<remarks>

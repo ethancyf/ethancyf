@@ -55,6 +55,7 @@ Namespace Component.EHSTransaction
             Public Const SubsidyAfterClaim As String = "SubsidyAfterClaim"
             Public Const TotalSupportFee As String = "TotalSupportFee"
             Public Const PaymentTypeMatch As String = "PaymentTypeMatch" ' CRE20-015-05 (Special Support Scheme) [Winnie]
+            Public Const ExemptRegFee As String = "ExemptRegFee" ' CRE20-015-06 (Special Support Scheme) [Winnie]
             ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             Public Shared Function ReasonForVisitL1() As String()

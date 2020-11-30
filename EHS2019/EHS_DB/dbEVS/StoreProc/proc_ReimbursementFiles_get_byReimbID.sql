@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	18 Nov 2020
+-- CR No.:			CRE20-016 (To update the format of the Pre Authorization Checking File)
+-- Description:		Add [No.] and [Selected] column on Practice Basis (02)
+-- ============================================= 
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	16 Nov 2020
 -- CR No.:			INT20-0050
@@ -161,7 +168,7 @@ AS
         SP_ID                  CHAR(8), 
         SP_Item_No             SMALLINT, 
         SP_Verification_Case   VARCHAR(1), 
-        Practice_Display_Seq   SMALLINT, 
+        Practice_Display_Seq   SMALLINT,
         Scheme_Seq             SMALLINT,
         --TRAN_Verification_Case   CHAR(1),     
         RCH_Code               CHAR(10), 
@@ -192,7 +199,8 @@ AS
          Total_Amount_RMB     MONEY, 
          Scheme_Code          CHAR(10), 
          Practice_Display_Seq SMALLINT, 
-         SP_ID                CHAR(8)
+         SP_ID                CHAR(8),
+		 SP_Verification_Case VARCHAR(1)
         );
         CREATE TABLE #temp03
         (SP_Item_No             SMALLINT,  
@@ -822,7 +830,8 @@ AS
                 Total_Amount_RMB, 
                 Scheme_Code, 
                 practice_display_seq, 
-                SP_ID
+                SP_ID,
+				SP_Verification_Case
                )
         SELECT SP_ID_Practice, 
                SP_Name, 
@@ -835,7 +844,8 @@ AS
                SUM(Total_Amount_RMB), 
                Display_Code, 
                practice_display_seq, 
-               SP_ID
+               SP_ID,
+			   IIF(ISNULL(SP_Verification_Case, '') = '', 'N', 'Y')
         FROM #initialTransaction
         GROUP BY SP_ID_Practice, 
                  SP_Name, 
@@ -846,7 +856,8 @@ AS
                  Bank_Account_No, 
                  Display_Code, 
                  practice_display_seq, 
-                 SP_ID;
+                 SP_ID,
+				 IIF(ISNULL(SP_Verification_Case, '') = '', 'N', 'Y');
 
         -----------------------------------    
         -- Result Table 5:  Sheet 03 
@@ -1125,13 +1136,15 @@ AS
                     END;
                     ELSE
                     BEGIN
-                        SELECT SP_ID_Practice, 
+                        SELECT ROW_NUMBER() OVER(ORDER BY SP_ID, practice_display_seq ASC) AS [SP_Practice_Item_No],
+							   SP_ID_Practice, 
                                SP_Name, 
                                Practice_Name, 
                                Bank_Acc_Holder, 
                                Bank_Account_No AS [Bank Account No.], 
                                Total_Amount, 
-                               RTRIM(Scheme_Code)
+                               RTRIM(Scheme_Code),
+							   SP_Verification_Case
                         FROM #temp02
                         ORDER BY SP_ID ASC, 
                                  practice_display_seq ASC;

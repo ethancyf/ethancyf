@@ -6,7 +6,7 @@
 <script type="text/javascript">
 </script>
 
-<table cellpadding="0" cellspacing="0" style="width: 850px" >
+<table cellpadding="0" cellspacing="0" style="width: 905px" >
     <tr>
         <td colspan="3" style="padding-bottom:2px">
             <hr />
@@ -55,7 +55,7 @@
         <td class="tableCellStyle" style="width:200px">
             <asp:Label ID="lblConsultAndRegFeeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_ConsultAndSelfPaidFee%>" />
         </td>
-        <td class="tableCellStyle" colspan="2" style="width:150px">
+        <td class="tableCellStyle" style="width:150px">
             <table style="display: block;">
                 <tr>
                     <td style="width:26px">
@@ -74,12 +74,50 @@
                 </tr>
             </table>
         </td>
+        <td class="tableCellStyle" rowspan="2" style="vertical-align:top;">
+            <div style="display: inline-block; vertical-align:top;">
+                <table style="display: inline-block; border-spacing:0px;">
+                    <tr>
+                        <td style="width:160px;">
+                            <asp:CheckBox ID="chkExemptRegFee" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFee%>"
+                                onclick="changeExemptRegFee(this);"></asp:CheckBox>                        
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table id="tblExemptRegFeeReason" runat="server" style="display: none;">
+                <tr>
+                    <td style="width:50px; text-align:right;">
+                        <asp:Label ID="lblExemptRegFeeReasonText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason%>" />
+                    </td>
+                    <td style="width:300px;" colspan="2">
+                        <asp:Label ID="lblExemptRegFeeReason1Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason1%>" />
+                    </td>
+                    <td />
+                </tr>
+                <tr>
+                    <td />
+                    <td>
+                        <asp:Label ID="lblExemptRegFeeReason2Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason2%>" />
+                        <asp:TextBox ID="txtRegFeeChargedDate" runat="server" Width="70px" MaxLength="10" onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
+                        <asp:ImageButton ID="ibtnRegFeeChargedDate" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                            AlternateText="<%$ Resources:AlternateText, CalenderBtn %>"></asp:ImageButton>
+                        <cc1:CalendarExtender ID="calRegFeeChargedDate" CssClass="ajax_cal" runat="server" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy" TargetControlID="txtRegFeeChargedDate" PopupButtonID="ibtnRegFeeChargedDate" />
+                        <cc1:FilteredTextBoxExtender ID="filtereditRegFeeChargedDate" runat="server" FilterType="Custom, Numbers" TargetControlID="txtRegFeeChargedDate" ValidChars="-" />
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgRegFeeChargedDateError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
+                    </td>     
+                </tr>
+            </table>         
+        </td>
     </tr>
     <tr>
         <td class="tableCellStyle" style="width:200px">
             <asp:Label ID="lblDrugFeeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_DrugFee%>" />
         </td>
-        <td class="tableCellStyle" colspan="2" style="width:150px">
+        <td class="tableCellStyle" style="width:150px">
             <table style="display: block;">
                 <tr>
                     <td style="width:26px">

@@ -4150,11 +4150,7 @@ Namespace Component.ClaimRules
                         Case CheckList.GovSIVList
                             Dim dtPatient As DataTable = Me.GetGovSIVPatient(udtInputPicker.SPID, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum)
 
-                            If dtPatient.Rows.Count > 0 Then
-                                Return False
-                            Else
-                                Return True
-                            End If
+                            Return CheckClaimRuleSingleEntryByCheckOnList(dtPatient.Rows.Count, udtClaimRule.Operator.Trim())
 
                         Case Else
                             Throw New Exception(String.Format("ClaimRulesBLL.CheckClaimRuleSingleEntry: Invalid check list ({0}).", udtClaimRule.CompareValue.Trim()))
@@ -4418,6 +4414,32 @@ Namespace Component.ClaimRules
             Return blnIn
 
         End Function
+
+        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Shared Function CheckClaimRuleSingleEntryByCheckOnList(ByVal intCount As Integer, ByVal strOperator As String) As Boolean
+            Dim blnRes As Boolean = False
+
+            Select Case strOperator
+                Case "="
+                    If intCount > 0 Then
+                        blnRes = False
+                    Else
+                        blnRes = True
+                    End If
+
+                Case "<>"
+                    If intCount <= 0 Then
+                        blnRes = False
+                    Else
+                        blnRes = True
+                    End If
+
+            End Select
+
+            Return blnRes
+        End Function
+        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 #End Region
 
 #Region "Active Scheme Checking"

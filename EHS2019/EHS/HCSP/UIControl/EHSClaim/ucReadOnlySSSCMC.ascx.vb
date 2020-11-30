@@ -18,6 +18,7 @@ Partial Public Class ucReadOnlySSSCMC
 
     Protected Overrides Sub Setup()
         Dim strLanguage As String = MyBase.SessionHandler.Language()
+        Dim udtFormatter As New Formatter
 
         Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
 
@@ -66,6 +67,18 @@ Partial Public Class ucReadOnlySSSCMC
         ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
         Me.lblConsultAndRegFee.Text = udtTAFList.ConsultAndRegFeeRMB.ToString("#,0.00")
+
+        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+        If udtTAFList.ExemptRegFee = True Then
+            tblExemptRegFee.Visible = True
+            Dim strChargedDate As String = udtFormatter.formatInputDate(udtTAFList.RegFeeChargedDate, strLanguage)
+            Me.lblRegFeeChargedDate.Text = udtFormatter.formatDisplayDate(strChargedDate, strLanguage)
+        Else
+            tblExemptRegFee.Visible = False
+            Me.lblRegFeeChargedDate.Text = String.Empty
+        End If
+        ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
+
         Me.lblDrugFee.Text = udtTAFList.DrugFeeRMB.ToString("#,0.00")
         Me.lblInvestigationFee.Text = udtTAFList.InvestigationFeeRMB.ToString("#,0.00")
         Me.lblOtherFee.Text = udtTAFList.OtherFeeRMB.ToString("#,0.00")
@@ -119,7 +132,10 @@ Partial Public Class ucReadOnlySSSCMC
                                ByRef decCoPayemtFee As Decimal, _
                                ByRef decTotalSupportFee As Decimal)
 
-        Dim decBaseTotalSupportFee As Decimal = IIf(strPatientType = "B", 100, 0)
+        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+        'Dim decBaseTotalSupportFee As Decimal = IIf(strPatientType = "B", 100, 0)
+        Dim decBaseTotalSupportFee As Decimal = IIf(strPatientType = "B", intRegistrationFee, 0)
+        ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
         Dim decConsultAndRegFee As Decimal
         Dim decDrugFee As Decimal
         Dim decInvestigationFee As Decimal

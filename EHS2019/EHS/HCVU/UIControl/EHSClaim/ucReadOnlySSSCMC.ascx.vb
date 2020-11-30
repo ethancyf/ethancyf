@@ -11,6 +11,7 @@ Partial Public Class ucReadOnlySSSCMC
     End Sub
 
     Public Sub Build(ByVal udtEHSTransaction As EHSTransactionModel, ByVal intWidth As Integer)
+        Dim udtFormatter As New Formatter
         Dim udtTAFList As TransactionAdditionalFieldModelCollection = udtEHSTransaction.TransactionAdditionFields
 
         Dim decRegistrationFee As Decimal = udtTAFList.RegistrationFeeRMB
@@ -58,6 +59,18 @@ Partial Public Class ucReadOnlySSSCMC
         ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
         Me.lblConsultAndRegFee.Text = udtTAFList.ConsultAndRegFeeRMB.ToString("#,0.00")
+
+        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+        If udtTAFList.ExemptRegFee = True Then
+            tblExemptRegFee.Visible = True
+            Dim strChargedDate As String = udtFormatter.formatInputDate(udtTAFList.RegFeeChargedDate, Common.Component.CultureLanguage.SimpChinese)
+            Me.lblRegFeeChargedDate.Text = udtFormatter.formatDisplayDate(strChargedDate)
+        Else
+            tblExemptRegFee.Visible = False
+            Me.lblRegFeeChargedDate.Text = String.Empty
+        End If
+        ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
+
         Me.lblDrugFee.Text = udtTAFList.DrugFeeRMB.ToString("#,0.00")
         Me.lblInvestigationFee.Text = udtTAFList.InvestigationFeeRMB.ToString("#,0.00")
         Me.lblOtherFee.Text = udtTAFList.OtherFeeRMB.ToString("#,0.00")
@@ -107,7 +120,10 @@ Partial Public Class ucReadOnlySSSCMC
                                ByRef decCoPayemtFee As Decimal, _
                                ByRef decTotalSupportFee As Decimal)
 
-        Dim decBaseTotalSupportFee As Decimal = IIf(strPatientType = "B", 100, 0)
+        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+        'Dim decBaseTotalSupportFee As Decimal = IIf(strPatientType = "B", 100, 0)
+        Dim decBaseTotalSupportFee As Decimal = IIf(strPatientType = "B", intRegistrationFee, 0)
+        ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
         Dim decConsultAndRegFee As Decimal
         Dim decDrugFee As Decimal
         Dim decInvestigationFee As Decimal

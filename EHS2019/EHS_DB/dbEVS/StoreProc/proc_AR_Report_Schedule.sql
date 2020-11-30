@@ -6,12 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+
 -- =============================================
 -- Modification History
--- Modified by:		Chris YIM
--- Modified date:	27 Jul 2020
--- CR No.			CRE19-031 (VSS MMR Upload)
--- Description:		VSS Non-immune Adults Weekly Statistic Report (eHSW0006)
+-- Modified by:		Raiman Chong
+-- Modified date:	10 Nov 2020
+-- CR No.:			CRE20-014-02 (Gov SIV 2020_21) 
+-- Description:		New Weekly Report eHSW0008
 -- =============================================
 -- =============================================
 -- Modification History
@@ -19,13 +20,6 @@ GO
 -- Modified date:	22 JULY 2020
 -- CR No.:			CRE19-022 (Inspection Schedule Weekly Report) 
 -- Description:		New Weekly Report eHSW0005
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		Winnie SUEN
--- Modified date:	23 Mar 2020
--- CR No.:			CRE19-023 (VSS non-clinic report)
--- Description:		VSS Non-Clinic setting Weekly Statistic Report (eHSW0005)
 -- =============================================
 -- =============================================
 -- Modification History
@@ -143,9 +137,6 @@ GO
 
 CREATE PROCEDURE [dbo].[proc_AR_Report_Schedule]
 AS BEGIN
-
-	SET NOCOUNT ON;
-
 -- =============================================
 -- Declaration
 -- =============================================
@@ -195,8 +186,8 @@ AS BEGIN
 		-- Inspection Schedule Weekly Report
 		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0005' ,'' ,'eHS(S)'
 
-		-- Weekly VSS Non-immune Adults Statistic - Weekly Basis
-		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0006' ,'' ,'eHS(S)'
+		-- Report_Using_Government_Supplied_Vaccine_Template
+		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0008' ,'' ,'eHS(S)'
 	END
 
 	---------------------------------------------------------------------------------------------
@@ -231,6 +222,4 @@ AS BEGIN
 	END
 
 END
-
 GO
-

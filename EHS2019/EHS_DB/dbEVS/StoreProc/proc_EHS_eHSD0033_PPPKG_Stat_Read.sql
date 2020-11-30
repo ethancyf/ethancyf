@@ -9,6 +9,14 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
+-- Modified date:	09 Nov 2020
+-- CR. No			CRE20-014-02 (GOV SIV - Phase 2)
+-- Description:		() Add 2 sub report for QIV Govt and LAIV Govt by school code
+--						[03-QIV (Govt)] and [03-LAIV (Govt)]
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
 -- CR. No			INT20-0025
 -- Description:		(1) Add WITH (NOLOCK)
@@ -182,6 +190,46 @@ SELECT
 	isnull(Col10,'')
 FROM    
 	RpteHSD0033_03_PPPKG_LAIV_Tx_BySchoolCode WITH (NOLOCK)
+ORDER BY  
+	Display_Seq  
+
+-- --------------------------------------------------  
+-- From stored procedure: proc_EHS_eHSD0033_02_03_PrepareData
+-- To Excel sheet:   eHSD0033-03: Report on yearly PPPKG claim transaction by school code (current season) (QIV Govt)
+-- --------------------------------------------------  
+SELECT    
+	isnull(Col1,''),  
+	isnull(Col2,''),  
+	isnull(Col3,''),  
+	isnull(Col4,''),  
+	isnull(Col5,''),  
+	isnull(Col6,''),  
+	isnull(Col7,''),  
+	isnull(Col8,''),  
+	isnull(Col9,''),  
+	isnull(Col10,'')
+FROM    
+	RpteHSD0033_03_PPPKG_QIVG_Tx_BySchoolCode WITH (NOLOCK)
+ORDER BY  
+	Display_Seq  
+
+-- --------------------------------------------------  
+-- From stored procedure: proc_EHS_eHSD0033_02_03_PrepareData
+-- To Excel sheet:   eHSD0033-03: Report on yearly PPPKG claim transaction by school code (current season) (LAIV Govt)
+-- --------------------------------------------------  
+SELECT    
+	isnull(Col1,''),  
+	isnull(Col2,''),  
+	isnull(Col3,''),  
+	isnull(Col4,''),  
+	isnull(Col5,''),  
+	isnull(Col6,''),  
+	isnull(Col7,''),  
+	isnull(Col8,''),  
+	isnull(Col9,''),  
+	isnull(Col10,'')
+FROM    
+	RpteHSD0033_03_PPPKG_LAIVG_Tx_BySchoolCode WITH (NOLOCK)
 ORDER BY  
 	Display_Seq  
 
