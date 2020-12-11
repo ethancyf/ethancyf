@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	27 Jul 2020
+-- CR No.			CRE19-031 (VSS MMR Upload)
+-- Description:		VSS Non-immune Adults Weekly Statistic Report (eHSW0006)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Raiman Chong
@@ -185,6 +191,9 @@ AS BEGIN
 
 		-- Inspection Schedule Weekly Report
 		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0005' ,'' ,'eHS(S)'
+
+		-- Weekly VSS Non-immune Adults Statistic - Weekly Basis
+		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0006' ,'' ,'eHS(S)'
 
 		-- Report_Using_Government_Supplied_Vaccine_Template
 		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0008' ,'' ,'eHS(S)'

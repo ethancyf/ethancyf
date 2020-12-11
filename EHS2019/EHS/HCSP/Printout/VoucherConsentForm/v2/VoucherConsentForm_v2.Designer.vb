@@ -366,7 +366,7 @@
             Me.txtPersonalData.Style = "font-size: 11.25pt; font-weight: bold; text-align: left; text-decoration: none; d" & _
         "do-char-set: 0"
             Me.txtPersonalData.Text = "Access to Personal Data"
-            Me.txtPersonalData.Top = 5.53125!
+            Me.txtPersonalData.Top = 5.562!
             Me.txtPersonalData.Width = 7.375!
             '
             'txtPersonalData1Number
@@ -376,7 +376,7 @@
             Me.txtPersonalData1Number.Name = "txtPersonalData1Number"
             Me.txtPersonalData1Number.Style = "font-size: 11.25pt; text-align: justify"
             Me.txtPersonalData1Number.Text = "4."
-            Me.txtPersonalData1Number.Top = 5.78125!
+            Me.txtPersonalData1Number.Top = 5.812!
             Me.txtPersonalData1Number.Width = 0.21875!
             '
             'txtPersonalData1
@@ -387,7 +387,7 @@
             Me.txtPersonalData1.Style = "font-size: 11.25pt; text-align: justify; text-justify: distribute; vertical-align" & _
         ": top; ddo-char-set: 0"
             Me.txtPersonalData1.Text = resources.GetString("txtPersonalData1.Text")
-            Me.txtPersonalData1.Top = 5.78125!
+            Me.txtPersonalData1.Top = 5.812!
             Me.txtPersonalData1.Width = 7.1875!
             '
             'txtEnquiries
@@ -398,7 +398,7 @@
             Me.txtEnquiries.Style = "font-size: 11.25pt; font-weight: bold; text-align: left; text-decoration: none; d" & _
         "do-char-set: 0"
             Me.txtEnquiries.Text = "Enquiries"
-            Me.txtEnquiries.Top = 6.53125!
+            Me.txtEnquiries.Top = 6.625!
             Me.txtEnquiries.Width = 7.375!
             '
             'txtEnquiries1Number
@@ -408,7 +408,7 @@
             Me.txtEnquiries1Number.Name = "txtEnquiries1Number"
             Me.txtEnquiries1Number.Style = "font-size: 11.25pt; text-align: justify"
             Me.txtEnquiries1Number.Text = "5."
-            Me.txtEnquiries1Number.Top = 6.78125!
+            Me.txtEnquiries1Number.Top = 6.875!
             Me.txtEnquiries1Number.Width = 0.21875!
             '
             'txtEnquiries1
@@ -420,7 +420,7 @@
         ": top; ddo-char-set: 0"
             Me.txtEnquiries1.Text = "Enquiries concerning the personal data provided, including the making of access a" & _
         "nd correction, should be addressed to:"
-            Me.txtEnquiries1.Top = 6.78125!
+            Me.txtEnquiries1.Top = 6.875!
             Me.txtEnquiries1.Width = 7.1875!
             '
             'txtTransactionTo
@@ -440,7 +440,7 @@
             Me.txtHCVUInfo.Name = "txtHCVUInfo"
             Me.txtHCVUInfo.Style = "font-size: 11.25pt; text-align: left; vertical-align: top; ddo-char-set: 0"
             Me.txtHCVUInfo.Text = Nothing
-            Me.txtHCVUInfo.Top = 7.3125!
+            Me.txtHCVUInfo.Top = 7.3755!
             Me.txtHCVUInfo.Width = 3.5625!
             '
             'TextBox1
@@ -484,7 +484,7 @@
             Me.sreVoucherNotice.Name = "sreVoucherNotice"
             Me.sreVoucherNotice.Report = Nothing
             Me.sreVoucherNotice.ReportName = "SubReport2"
-            Me.sreVoucherNotice.Top = 8.25!
+            Me.sreVoucherNotice.Top = 7.812!
             Me.sreVoucherNotice.Width = 7.40625!
             '
             'txtTitleEng

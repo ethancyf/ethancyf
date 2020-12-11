@@ -119,5 +119,8 @@ Namespace PrintOut.VoucherConsentForm
 
         End Sub
 
+        Private Sub VoucherConsentForm_v2_ReportStart(sender As Object, e As EventArgs) Handles MyBase.ReportStart
+
+        End Sub
     End Class
 End Namespace

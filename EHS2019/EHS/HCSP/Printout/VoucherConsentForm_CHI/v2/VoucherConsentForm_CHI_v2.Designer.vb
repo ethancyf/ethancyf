@@ -499,11 +499,11 @@
             '
             Me.sreVoucherNotice.CloseBorder = False
             Me.sreVoucherNotice.Height = 0.25!
-            Me.sreVoucherNotice.Left = 0.0625!
+            Me.sreVoucherNotice.Left = 0.062!
             Me.sreVoucherNotice.Name = "sreVoucherNotice"
             Me.sreVoucherNotice.Report = Nothing
             Me.sreVoucherNotice.ReportName = "SubReport1"
-            Me.sreVoucherNotice.Top = 8.4375!
+            Me.sreVoucherNotice.Top = 8.312!
             Me.sreVoucherNotice.Width = 7.3125!
             '
             'txtTitle

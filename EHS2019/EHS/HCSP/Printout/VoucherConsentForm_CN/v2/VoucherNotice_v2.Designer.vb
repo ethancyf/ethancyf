@@ -20,6 +20,7 @@ Namespace PrintOut.VoucherConsentForm_CN
         Private Sub InitializeComponent()
             Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(VoucherNotice_v2))
             Me.Detail1 = New GrapeCity.ActiveReports.SectionReportModel.Detail()
+            Me.Shape1 = New GrapeCity.ActiveReports.SectionReportModel.Shape()
             Me.shpNotedRemainingClaimedNo = New GrapeCity.ActiveReports.SectionReportModel.Shape()
             Me.txtNoticeClaimedAfterNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtNoticeTitle = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
@@ -41,6 +42,10 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtConversionRateRemark2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtToRemark = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtExchangeRate = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox5 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox6 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             CType(Me.txtNoticeClaimedAfterNoText, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtNoticeTitle, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtNoticeToText, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -61,21 +66,35 @@ Namespace PrintOut.VoucherConsentForm_CN
             CType(Me.txtConversionRateRemark2, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtToRemark, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtExchangeRate, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'Detail1
             '
-            Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.shpNotedRemainingClaimedNo, Me.txtNoticeClaimedAfterNoText, Me.txtNoticeTitle, Me.txtNoticeToText, Me.txtNoticeSPNameText, Me.txtNoticeDateofVisitText, Me.txtNoticeClaimedBeforeNoText, Me.txtNoticeTo, Me.txtNoticeSPName, Me.txtNoticeDateofVisit, Me.txtNoticeClaimedBeforeNo, Me.txtNoticeClaimedAfterNo, Me.txtNoticeClaimedNoText, Me.txtNoticeClaimedNo, Me.txtCutLine, Me.TextBox3, Me.TextBox4, Me.txtConversionRateRemark1, Me.txtConversionRateRemark2, Me.txtToRemark, Me.txtExchangeRate})
-            Me.Detail1.Height = 3.09375!
+            Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Shape1, Me.shpNotedRemainingClaimedNo, Me.txtNoticeClaimedAfterNoText, Me.txtNoticeTitle, Me.txtNoticeToText, Me.txtNoticeSPNameText, Me.txtNoticeDateofVisitText, Me.txtNoticeClaimedBeforeNoText, Me.txtNoticeTo, Me.txtNoticeSPName, Me.txtNoticeDateofVisit, Me.txtNoticeClaimedBeforeNo, Me.txtNoticeClaimedAfterNo, Me.txtNoticeClaimedNoText, Me.txtNoticeClaimedNo, Me.txtCutLine, Me.TextBox3, Me.TextBox4, Me.txtConversionRateRemark1, Me.txtConversionRateRemark2, Me.txtToRemark, Me.txtExchangeRate, Me.TextBox1, Me.TextBox2, Me.TextBox5, Me.TextBox6})
+            Me.Detail1.Height = 3.299667!
             Me.Detail1.Name = "Detail1"
+            '
+            'Shape1
+            '
+            Me.Shape1.Height = 0.45!
+            Me.Shape1.Left = 2.211!
+            Me.Shape1.Name = "Shape1"
+            Me.Shape1.RoundingRadius = 40.0!
+            Me.Shape1.Style = GrapeCity.ActiveReports.SectionReportModel.ShapeType.RoundRect
+            Me.Shape1.Top = 2.833!
+            Me.Shape1.Width = 3.092!
             '
             'shpNotedRemainingClaimedNo
             '
             Me.shpNotedRemainingClaimedNo.Height = 0.375!
-            Me.shpNotedRemainingClaimedNo.Left = 3.68!
+            Me.shpNotedRemainingClaimedNo.Left = 3.680001!
             Me.shpNotedRemainingClaimedNo.Name = "shpNotedRemainingClaimedNo"
             Me.shpNotedRemainingClaimedNo.RoundingRadius = 9.999999!
-            Me.shpNotedRemainingClaimedNo.Top = 2.692!
+            Me.shpNotedRemainingClaimedNo.Top = 2.3645!
             Me.shpNotedRemainingClaimedNo.Width = 3.6!
             '
             'txtNoticeClaimedAfterNoText
@@ -87,7 +106,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeClaimedAfterNoText.Style = "font-family: 新細明體; font-size: 14pt; text-align: left; vertical-align: middle; ddo" & _
         "-char-set: 1"
             Me.txtNoticeClaimedAfterNoText.Text = "可供使用的医疗券余额："
-            Me.txtNoticeClaimedAfterNoText.Top = 2.7545!
+            Me.txtNoticeClaimedAfterNoText.Top = 2.427!
             Me.txtNoticeClaimedAfterNoText.Width = 2.18!
             '
             'txtNoticeTitle
@@ -110,7 +129,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeToText.Name = "txtNoticeToText"
             Me.txtNoticeToText.Style = "font-family: 新細明體; font-size: 14pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeToText.Text = "致："
-            Me.txtNoticeToText.Top = 0.6587501!
+            Me.txtNoticeToText.Top = 0.5!
             Me.txtNoticeToText.Width = 0.5!
             '
             'txtNoticeSPNameText
@@ -122,7 +141,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeSPNameText.Name = "txtNoticeSPNameText"
             Me.txtNoticeSPNameText.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeSPNameText.Text = "应诊的医疗服务提供者："
-            Me.txtNoticeSPNameText.Top = 1.28575!
+            Me.txtNoticeSPNameText.Top = 0.979!
             Me.txtNoticeSPNameText.Width = 3.3!
             '
             'txtNoticeDateofVisitText
@@ -133,7 +152,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeDateofVisitText.Name = "txtNoticeDateofVisitText"
             Me.txtNoticeDateofVisitText.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeDateofVisitText.Text = "到诊日期："
-            Me.txtNoticeDateofVisitText.Top = 1.59825!
+            Me.txtNoticeDateofVisitText.Top = 1.2915!
             Me.txtNoticeDateofVisitText.Width = 3.3!
             '
             'txtNoticeClaimedBeforeNoText
@@ -144,7 +163,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeClaimedBeforeNoText.Name = "txtNoticeClaimedBeforeNoText"
             Me.txtNoticeClaimedBeforeNoText.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeClaimedBeforeNoText.Text = "到诊前你户口内可使用的医疗券金额为："
-            Me.txtNoticeClaimedBeforeNoText.Top = 1.91075!
+            Me.txtNoticeClaimedBeforeNoText.Top = 1.604!
             Me.txtNoticeClaimedBeforeNoText.Width = 3.3!
             '
             'txtNoticeTo
@@ -155,7 +174,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeTo.Style = "font-family: HA_MingLiu; font-size: 15.75pt; text-align: left; text-decoration: u" & _
         "nderline; ddo-char-set: 136"
             Me.txtNoticeTo.Text = Nothing
-            Me.txtNoticeTo.Top = 0.6587501!
+            Me.txtNoticeTo.Top = 0.5!
             Me.txtNoticeTo.Width = 6.75!
             '
             'txtNoticeSPName
@@ -166,7 +185,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeSPName.Style = "font-family: HA_MingLiu; font-size: 13pt; text-align: left; text-decoration: unde" & _
         "rline; ddo-char-set: 1"
             Me.txtNoticeSPName.Text = Nothing
-            Me.txtNoticeSPName.Top = 1.28575!
+            Me.txtNoticeSPName.Top = 0.979!
             Me.txtNoticeSPName.Width = 3.95!
             '
             'txtNoticeDateofVisit
@@ -177,7 +196,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeDateofVisit.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; text-decoration: underline;" & _
         " ddo-char-set: 136"
             Me.txtNoticeDateofVisit.Text = Nothing
-            Me.txtNoticeDateofVisit.Top = 1.59825!
+            Me.txtNoticeDateofVisit.Top = 1.2915!
             Me.txtNoticeDateofVisit.Width = 3.95!
             '
             'txtNoticeClaimedBeforeNo
@@ -188,7 +207,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeClaimedBeforeNo.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; text-decoration: underline;" & _
         " ddo-char-set: 1"
             Me.txtNoticeClaimedBeforeNo.Text = Nothing
-            Me.txtNoticeClaimedBeforeNo.Top = 1.91075!
+            Me.txtNoticeClaimedBeforeNo.Top = 1.604!
             Me.txtNoticeClaimedBeforeNo.Width = 3.95!
             '
             'txtNoticeClaimedAfterNo
@@ -199,7 +218,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeClaimedAfterNo.Style = "font-family: 新細明體; font-size: 14pt; text-align: left; text-decoration: underline;" & _
         " vertical-align: middle; ddo-char-set: 1"
             Me.txtNoticeClaimedAfterNo.Text = Nothing
-            Me.txtNoticeClaimedAfterNo.Top = 2.7545!
+            Me.txtNoticeClaimedAfterNo.Top = 2.427!
             Me.txtNoticeClaimedAfterNo.Width = 1.26!
             '
             'txtNoticeClaimedNoText
@@ -210,7 +229,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeClaimedNoText.Name = "txtNoticeClaimedNoText"
             Me.txtNoticeClaimedNoText.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeClaimedNoText.Text = "该次诊症使用的医疗券金额："
-            Me.txtNoticeClaimedNoText.Top = 2.22325!
+            Me.txtNoticeClaimedNoText.Top = 1.9165!
             Me.txtNoticeClaimedNoText.Width = 3.3!
             '
             'txtNoticeClaimedNo
@@ -221,7 +240,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtNoticeClaimedNo.Style = "font-family: 新細明體; font-size: 13pt; text-align: left; text-decoration: underline;" & _
         " ddo-char-set: 1"
             Me.txtNoticeClaimedNo.Text = Nothing
-            Me.txtNoticeClaimedNo.Top = 2.22325!
+            Me.txtNoticeClaimedNo.Top = 1.9165!
             Me.txtNoticeClaimedNo.Width = 3.95!
             '
             'txtCutLine
@@ -267,7 +286,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtConversionRateRemark1.Name = "txtConversionRateRemark1"
             Me.txtConversionRateRemark1.Style = "font-family: 新細明體; font-size: 8pt; text-align: left; ddo-char-set: 1"
             Me.txtConversionRateRemark1.Text = "（于到诊当日人民币与医疗券的换算率为"
-            Me.txtConversionRateRemark1.Top = 2.49375!
+            Me.txtConversionRateRemark1.Top = 2.16625!
             Me.txtConversionRateRemark1.Width = 2.038!
             '
             'txtConversionRateRemark2
@@ -278,7 +297,7 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtConversionRateRemark2.Name = "txtConversionRateRemark2"
             Me.txtConversionRateRemark2.Style = "font-family: 新細明體; font-size: 8pt; text-align: left; ddo-char-set: 1"
             Me.txtConversionRateRemark2.Text = "）"
-            Me.txtConversionRateRemark2.Top = 2.49375!
+            Me.txtConversionRateRemark2.Top = 2.16625!
             Me.txtConversionRateRemark2.Width = 0.2696252!
             '
             'txtToRemark
@@ -289,19 +308,59 @@ Namespace PrintOut.VoucherConsentForm_CN
             Me.txtToRemark.Style = "font-family: HA_MingLiu; font-size: 13pt; text-align: left; text-decoration: none" & _
         "; ddo-char-set: 1"
             Me.txtToRemark.Text = "（医疗券使用者姓名）"
-            Me.txtToRemark.Top = 0.909!
+            Me.txtToRemark.Top = 0.7502499!
             Me.txtToRemark.Width = 1.875!
             '
             'txtExchangeRate
             '
             Me.txtExchangeRate.Height = 0.1459999!
-            Me.txtExchangeRate.Left = 5.348!
+            Me.txtExchangeRate.Left = 5.348001!
             Me.txtExchangeRate.Name = "txtExchangeRate"
             Me.txtExchangeRate.Style = "font-family: 新細明體; font-size: 8.25pt; text-align: left; text-decoration: none; dd" & _
         "o-char-set: 136"
             Me.txtExchangeRate.Text = Nothing
-            Me.txtExchangeRate.Top = 2.49375!
+            Me.txtExchangeRate.Top = 2.16625!
             Me.txtExchangeRate.Width = 0.3320003!
+            '
+            'TextBox1
+            '
+            Me.TextBox1.Height = 0.148!
+            Me.TextBox1.Left = 2.645!
+            Me.TextBox1.Name = "TextBox1"
+            Me.TextBox1.Style = "font-family: 新細明體; font-size: 10pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox1.Text = "长者医疗券计划热线︰(852) 2838 2311"
+            Me.TextBox1.Top = 2.887!
+            Me.TextBox1.Width = 2.375!
+            '
+            'TextBox2
+            '
+            Me.TextBox2.Height = 0.151!
+            Me.TextBox2.Left = 2.437!
+            Me.TextBox2.Name = "TextBox2"
+            Me.TextBox2.Style = "font-family: Wingdings; font-size: 10.75pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox2.Text = "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+            Me.TextBox2.Top = 2.884!
+            Me.TextBox2.Width = 0.208!
+            '
+            'TextBox5
+            '
+            Me.TextBox5.Height = 0.148!
+            Me.TextBox5.Left = 2.645!
+            Me.TextBox5.Name = "TextBox5"
+            Me.TextBox5.Style = "font-family: 新細明體; font-size: 10pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox5.Text = "查询医疗券余额：(852) 2838 0511"
+            Me.TextBox5.Top = 3.059!
+            Me.TextBox5.Width = 2.274!
+            '
+            'TextBox6
+            '
+            Me.TextBox6.Height = 0.151!
+            Me.TextBox6.Left = 2.437!
+            Me.TextBox6.Name = "TextBox6"
+            Me.TextBox6.Style = "font-family: Wingdings; font-size: 10.75pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox6.Text = "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+            Me.TextBox6.Top = 3.056!
+            Me.TextBox6.Width = 0.208!
             '
             'VoucherNotice_v2
             '
@@ -336,6 +395,10 @@ Namespace PrintOut.VoucherConsentForm_CN
             CType(Me.txtConversionRateRemark2, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtToRemark, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtExchangeRate, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub
@@ -360,6 +423,11 @@ Namespace PrintOut.VoucherConsentForm_CN
         Private WithEvents txtConversionRateRemark2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Private WithEvents txtToRemark As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Private WithEvents txtExchangeRate As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents Shape1 As GrapeCity.ActiveReports.SectionReportModel.Shape
+        Private WithEvents TextBox2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox5 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox6 As GrapeCity.ActiveReports.SectionReportModel.TextBox
     End Class
 
 End Namespace

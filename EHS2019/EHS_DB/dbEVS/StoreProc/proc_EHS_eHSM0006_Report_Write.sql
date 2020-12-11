@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	1 Dec 2020
+-- CR. No			INT20-0053
+-- Description:		Hide SSSCMC Practice
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
 -- CR. No			INT20-0025
@@ -1813,9 +1820,14 @@ AS BEGIN
 		Display_Seq, 
 		CAST(Display_Seq AS VARCHAR) + '.' + Practice_Name 
     FROM
-		Practice WITH (NOLOCK)
+		Practice P WITH (NOLOCK) 
     WHERE
 		SP_ID = @HKUSZH_SP_ID
+		AND EXISTS (SELECT SP_ID, Practice_Display_Seq 
+					FROM PracticeSchemeInfo PSI WITH (NOLOCK)
+					WHERE P.SP_ID = PSI.SP_ID AND P.Display_Seq = PSI.Practice_Display_Seq
+						AND PSI.Scheme_Code = @scheme_code_mainland
+					)
 	
 ------------------------------------------------------------------------------------
 --Age 65-69

@@ -19,26 +19,31 @@ Namespace PrintOut.VoucherConsentForm_CHI
         <System.Diagnostics.DebuggerStepThrough()> _
         Private Sub InitializeComponent()
             Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(VoucherNotice_v2))
-            Me.Detail1 = New GrapeCity.ActiveReports.SectionReportModel.Detail
-            Me.shpNotedRemainingClaimedNo = New GrapeCity.ActiveReports.SectionReportModel.Shape
-            Me.txtNoticeClaimedAfterNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeTitle = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeToText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeSPNameText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeDateofVisitText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeClaimedBeforeNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeNotification = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeTo = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeSPName = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeDateofVisit = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeClaimedBeforeNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeClaimedAfterNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeClaimedNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtNoticeClaimedNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtCutLine = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.TextBox3 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.TextBox4 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtToRemark = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.Detail1 = New GrapeCity.ActiveReports.SectionReportModel.Detail()
+            Me.Shape1 = New GrapeCity.ActiveReports.SectionReportModel.Shape()
+            Me.shpNotedRemainingClaimedNo = New GrapeCity.ActiveReports.SectionReportModel.Shape()
+            Me.txtNoticeClaimedAfterNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeTitle = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeToText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeSPNameText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeDateofVisitText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeClaimedBeforeNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeNotification = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeTo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeSPName = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeDateofVisit = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeClaimedBeforeNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeClaimedAfterNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeClaimedNoText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtNoticeClaimedNo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtCutLine = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox3 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox4 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtToRemark = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox2 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox5 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox6 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             CType(Me.txtNoticeClaimedAfterNoText, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtNoticeTitle, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtNoticeToText, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -57,378 +62,281 @@ Namespace PrintOut.VoucherConsentForm_CHI
             CType(Me.TextBox3, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.TextBox4, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtToRemark, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'Detail1
             '
-            Me.Detail1.ColumnSpacing = 0.0!
-            Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.shpNotedRemainingClaimedNo, Me.txtNoticeClaimedAfterNoText, Me.txtNoticeTitle, Me.txtNoticeToText, Me.txtNoticeSPNameText, Me.txtNoticeDateofVisitText, Me.txtNoticeClaimedBeforeNoText, Me.txtNoticeNotification, Me.txtNoticeTo, Me.txtNoticeSPName, Me.txtNoticeDateofVisit, Me.txtNoticeClaimedBeforeNo, Me.txtNoticeClaimedAfterNo, Me.txtNoticeClaimedNoText, Me.txtNoticeClaimedNo, Me.txtCutLine, Me.TextBox3, Me.TextBox4, Me.txtToRemark})
-            Me.Detail1.Height = 2.947917!
+            Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.Shape1, Me.shpNotedRemainingClaimedNo, Me.txtNoticeClaimedAfterNoText, Me.txtNoticeTitle, Me.txtNoticeToText, Me.txtNoticeSPNameText, Me.txtNoticeDateofVisitText, Me.txtNoticeClaimedBeforeNoText, Me.txtNoticeNotification, Me.txtNoticeTo, Me.txtNoticeSPName, Me.txtNoticeDateofVisit, Me.txtNoticeClaimedBeforeNo, Me.txtNoticeClaimedAfterNo, Me.txtNoticeClaimedNoText, Me.txtNoticeClaimedNo, Me.txtCutLine, Me.TextBox3, Me.TextBox4, Me.txtToRemark, Me.TextBox1, Me.TextBox2, Me.TextBox5, Me.TextBox6})
+            Me.Detail1.Height = 3.097!
             Me.Detail1.Name = "Detail1"
+            '
+            'Shape1
+            '
+            Me.Shape1.Height = 0.45!
+            Me.Shape1.Left = 2.187!
+            Me.Shape1.Name = "Shape1"
+            Me.Shape1.RoundingRadius = 40.0!
+            Me.Shape1.Style = GrapeCity.ActiveReports.SectionReportModel.ShapeType.RoundRect
+            Me.Shape1.Top = 2.605!
+            Me.Shape1.Width = 3.062!
             '
             'shpNotedRemainingClaimedNo
             '
-            Me.shpNotedRemainingClaimedNo.Border.BottomColor = System.Drawing.Color.Black
-            Me.shpNotedRemainingClaimedNo.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.shpNotedRemainingClaimedNo.Border.LeftColor = System.Drawing.Color.Black
-            Me.shpNotedRemainingClaimedNo.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.shpNotedRemainingClaimedNo.Border.RightColor = System.Drawing.Color.Black
-            Me.shpNotedRemainingClaimedNo.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.shpNotedRemainingClaimedNo.Border.TopColor = System.Drawing.Color.Black
-            Me.shpNotedRemainingClaimedNo.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.shpNotedRemainingClaimedNo.Height = 0.375!
             Me.shpNotedRemainingClaimedNo.Left = 3.68!
             Me.shpNotedRemainingClaimedNo.Name = "shpNotedRemainingClaimedNo"
             Me.shpNotedRemainingClaimedNo.RoundingRadius = 9.999999!
-            Me.shpNotedRemainingClaimedNo.Top = 2.53125!
+            Me.shpNotedRemainingClaimedNo.Top = 2.125!
             Me.shpNotedRemainingClaimedNo.Width = 3.6!
             '
             'txtNoticeClaimedAfterNoText
             '
-            Me.txtNoticeClaimedAfterNoText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNoText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedAfterNoText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNoText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedAfterNoText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNoText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedAfterNoText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNoText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeClaimedAfterNoText.Height = 0.25!
             Me.txtNoticeClaimedAfterNoText.Left = 3.77!
             Me.txtNoticeClaimedAfterNoText.LineSpacing = 3.0!
             Me.txtNoticeClaimedAfterNoText.Name = "txtNoticeClaimedAfterNoText"
-            Me.txtNoticeClaimedAfterNoText.Style = "ddo-char-set: 1; text-align: left; font-size: 14pt; font-family: ·s²Ó©úÅé; vertical-a" & _
-                "lign: middle; "
+            Me.txtNoticeClaimedAfterNoText.Style = "font-family: ·s²Ó©úÅé; font-size: 14pt; text-align: left; vertical-align: middle; ddo" & _
+        "-char-set: 1"
             Me.txtNoticeClaimedAfterNoText.Text = "¥i¨Ñ¨Ï¥ÎªºÂåÀø¨é¾lÃB¡G"
-            Me.txtNoticeClaimedAfterNoText.Top = 2.59375!
+            Me.txtNoticeClaimedAfterNoText.Top = 2.1875!
             Me.txtNoticeClaimedAfterNoText.Width = 2.18!
             '
             'txtNoticeTitle
             '
-            Me.txtNoticeTitle.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeTitle.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeTitle.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeTitle.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeTitle.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeTitle.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeTitle.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeTitle.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeTitle.Height = 0.25!
             Me.txtNoticeTitle.Left = 0.0!
             Me.txtNoticeTitle.LineSpacing = 3.0!
             Me.txtNoticeTitle.Name = "txtNoticeTitle"
-            Me.txtNoticeTitle.Style = "ddo-char-set: 1; text-decoration: underline; text-align: center; font-weight: bol" & _
-                "d; font-size: 14pt; font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeTitle.Style = "font-family: ·s²Ó©úÅé; font-size: 14pt; font-weight: bold; text-align: center; text-d" & _
+        "ecoration: underline; ddo-char-set: 1"
             Me.txtNoticeTitle.Text = "ÂåÀø¨é¨Ï¥Î°O¿ý"
             Me.txtNoticeTitle.Top = 0.3125!
             Me.txtNoticeTitle.Width = 7.28125!
             '
             'txtNoticeToText
             '
-            Me.txtNoticeToText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeToText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeToText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeToText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeToText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeToText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeToText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeToText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeToText.Height = 0.25!
             Me.txtNoticeToText.Left = 0.0!
             Me.txtNoticeToText.LineSpacing = 3.0!
             Me.txtNoticeToText.Name = "txtNoticeToText"
-            Me.txtNoticeToText.Style = "ddo-char-set: 1; text-align: left; font-size: 14pt; font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeToText.Style = "font-family: ·s²Ó©úÅé; font-size: 14pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeToText.Text = "­P¡G"
-            Me.txtNoticeToText.Top = 0.71875!
+            Me.txtNoticeToText.Top = 0.562!
             Me.txtNoticeToText.Width = 0.5!
             '
             'txtNoticeSPNameText
             '
-            Me.txtNoticeSPNameText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeSPNameText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeSPNameText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeSPNameText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeSPNameText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeSPNameText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeSPNameText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeSPNameText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeSPNameText.CanShrink = True
             Me.txtNoticeSPNameText.Height = 0.25!
             Me.txtNoticeSPNameText.Left = 0.0!
             Me.txtNoticeSPNameText.LineSpacing = 3.0!
             Me.txtNoticeSPNameText.Name = "txtNoticeSPNameText"
-            Me.txtNoticeSPNameText.Style = "ddo-char-set: 1; text-align: left; font-size: 13pt; font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeSPNameText.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeSPNameText.Text = "À³¶EªºÂåÀøªA°È´£¨ÑªÌ¡G"
-            Me.txtNoticeSPNameText.Top = 1.125!
+            Me.txtNoticeSPNameText.Top = 0.90575!
             Me.txtNoticeSPNameText.Width = 3.3!
             '
             'txtNoticeDateofVisitText
             '
-            Me.txtNoticeDateofVisitText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisitText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeDateofVisitText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisitText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeDateofVisitText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisitText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeDateofVisitText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisitText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeDateofVisitText.Height = 0.25!
             Me.txtNoticeDateofVisitText.Left = 0.0!
             Me.txtNoticeDateofVisitText.LineSpacing = 3.0!
             Me.txtNoticeDateofVisitText.Name = "txtNoticeDateofVisitText"
-            Me.txtNoticeDateofVisitText.Style = "ddo-char-set: 1; text-align: left; font-size: 13pt; font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeDateofVisitText.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeDateofVisitText.Text = "¨ì¶E¤é´Á¡G"
-            Me.txtNoticeDateofVisitText.Top = 1.4375!
+            Me.txtNoticeDateofVisitText.Top = 1.21825!
             Me.txtNoticeDateofVisitText.Width = 3.3!
             '
             'txtNoticeClaimedBeforeNoText
             '
-            Me.txtNoticeClaimedBeforeNoText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNoText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedBeforeNoText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNoText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedBeforeNoText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNoText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedBeforeNoText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNoText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeClaimedBeforeNoText.Height = 0.25!
             Me.txtNoticeClaimedBeforeNoText.Left = 0.0!
             Me.txtNoticeClaimedBeforeNoText.LineSpacing = 3.0!
             Me.txtNoticeClaimedBeforeNoText.Name = "txtNoticeClaimedBeforeNoText"
-            Me.txtNoticeClaimedBeforeNoText.Style = "ddo-char-set: 1; text-align: left; font-size: 13pt; font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeClaimedBeforeNoText.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeClaimedBeforeNoText.Text = "¨ì¶E«e§A¤á¤f¤º¥i¨Ï¥ÎªºÂåÀø¨éª÷ÃB¬°¡G"
-            Me.txtNoticeClaimedBeforeNoText.Top = 1.75!
+            Me.txtNoticeClaimedBeforeNoText.Top = 1.53075!
             Me.txtNoticeClaimedBeforeNoText.Width = 3.3!
             '
             'txtNoticeNotification
             '
-            Me.txtNoticeNotification.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeNotification.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeNotification.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeNotification.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeNotification.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeNotification.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeNotification.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeNotification.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeNotification.CanGrow = False
             Me.txtNoticeNotification.Height = 0.1875!
-            Me.txtNoticeNotification.Left = 0.0!
+            Me.txtNoticeNotification.Left = 0.0000002384186!
             Me.txtNoticeNotification.LineSpacing = 3.0!
             Me.txtNoticeNotification.Name = "txtNoticeNotification"
-            Me.txtNoticeNotification.Style = "ddo-char-set: 136; text-decoration: none; text-align: left; font-style: italic; f" & _
-                "ont-size: 9.75pt; font-family: ·s²Ó©úÅé; vertical-align: bottom; "
+            Me.txtNoticeNotification.Style = "font-family: ·s²Ó©úÅé; font-size: 9.75pt; font-style: italic; text-align: left; text-" & _
+        "decoration: none; vertical-align: bottom; ddo-char-set: 136"
             Me.txtNoticeNotification.Text = "¡]¦¹³¡¥÷¥Ñ¹q¸£¦Lµo¡AµL¶·Ã±¸p¡C¡^"
-            Me.txtNoticeNotification.Top = 2.75!
+            Me.txtNoticeNotification.Top = 2.34375!
             Me.txtNoticeNotification.Width = 7.28125!
             '
             'txtNoticeTo
             '
-            Me.txtNoticeTo.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeTo.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeTo.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeTo.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeTo.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeTo.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeTo.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeTo.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeTo.Height = 0.25!
             Me.txtNoticeTo.Left = 0.5!
             Me.txtNoticeTo.Name = "txtNoticeTo"
-            Me.txtNoticeTo.Style = "ddo-char-set: 136; text-decoration: underline; text-align: left; font-size: 15.75" & _
-                "pt; font-family: HA_MingLiu; "
+            Me.txtNoticeTo.Style = "font-family: HA_MingLiu; font-size: 15.75pt; text-align: left; text-decoration: u" & _
+        "nderline; ddo-char-set: 136"
             Me.txtNoticeTo.Text = Nothing
-            Me.txtNoticeTo.Top = 0.71875!
+            Me.txtNoticeTo.Top = 0.562!
             Me.txtNoticeTo.Width = 6.75!
             '
             'txtNoticeSPName
             '
-            Me.txtNoticeSPName.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeSPName.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeSPName.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeSPName.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeSPName.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeSPName.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeSPName.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeSPName.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeSPName.Height = 0.25!
             Me.txtNoticeSPName.Left = 3.3!
             Me.txtNoticeSPName.Name = "txtNoticeSPName"
-            Me.txtNoticeSPName.Style = "ddo-char-set: 1; text-decoration: underline; text-align: left; font-size: 13pt; f" & _
-                "ont-family: HA_MingLiu; "
-            Me.txtNoticeSPName.Top = 1.125!
+            Me.txtNoticeSPName.Style = "font-family: HA_MingLiu; font-size: 13pt; text-align: left; text-decoration: unde" & _
+        "rline; ddo-char-set: 1"
+            Me.txtNoticeSPName.Text = Nothing
+            Me.txtNoticeSPName.Top = 0.90575!
             Me.txtNoticeSPName.Width = 3.95!
             '
             'txtNoticeDateofVisit
             '
-            Me.txtNoticeDateofVisit.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisit.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeDateofVisit.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisit.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeDateofVisit.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisit.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeDateofVisit.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeDateofVisit.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeDateofVisit.Height = 0.25!
             Me.txtNoticeDateofVisit.Left = 3.3!
             Me.txtNoticeDateofVisit.Name = "txtNoticeDateofVisit"
-            Me.txtNoticeDateofVisit.Style = "ddo-char-set: 136; text-decoration: underline; text-align: left; font-size: 13pt;" & _
-                " font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeDateofVisit.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; text-decoration: underline;" & _
+        " ddo-char-set: 136"
             Me.txtNoticeDateofVisit.Text = Nothing
-            Me.txtNoticeDateofVisit.Top = 1.4375!
+            Me.txtNoticeDateofVisit.Top = 1.21825!
             Me.txtNoticeDateofVisit.Width = 2.09375!
             '
             'txtNoticeClaimedBeforeNo
             '
-            Me.txtNoticeClaimedBeforeNo.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNo.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedBeforeNo.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNo.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedBeforeNo.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNo.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedBeforeNo.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedBeforeNo.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeClaimedBeforeNo.Height = 0.25!
             Me.txtNoticeClaimedBeforeNo.Left = 3.3!
             Me.txtNoticeClaimedBeforeNo.Name = "txtNoticeClaimedBeforeNo"
-            Me.txtNoticeClaimedBeforeNo.Style = "ddo-char-set: 1; text-decoration: underline; text-align: left; font-size: 13pt; f" & _
-                "ont-family: ·s²Ó©úÅé; "
+            Me.txtNoticeClaimedBeforeNo.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; text-decoration: underline;" & _
+        " ddo-char-set: 1"
             Me.txtNoticeClaimedBeforeNo.Text = Nothing
-            Me.txtNoticeClaimedBeforeNo.Top = 1.75!
+            Me.txtNoticeClaimedBeforeNo.Top = 1.53075!
             Me.txtNoticeClaimedBeforeNo.Width = 3.95!
             '
             'txtNoticeClaimedAfterNo
             '
-            Me.txtNoticeClaimedAfterNo.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNo.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedAfterNo.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNo.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedAfterNo.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNo.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedAfterNo.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedAfterNo.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeClaimedAfterNo.Height = 0.25!
             Me.txtNoticeClaimedAfterNo.Left = 5.95!
             Me.txtNoticeClaimedAfterNo.Name = "txtNoticeClaimedAfterNo"
-            Me.txtNoticeClaimedAfterNo.Style = "ddo-char-set: 1; text-decoration: underline; text-align: left; font-size: 14pt; f" & _
-                "ont-family: ·s²Ó©úÅé; vertical-align: middle; "
+            Me.txtNoticeClaimedAfterNo.Style = "font-family: ·s²Ó©úÅé; font-size: 14pt; text-align: left; text-decoration: underline;" & _
+        " vertical-align: middle; ddo-char-set: 1"
             Me.txtNoticeClaimedAfterNo.Text = Nothing
-            Me.txtNoticeClaimedAfterNo.Top = 2.59375!
+            Me.txtNoticeClaimedAfterNo.Top = 2.1875!
             Me.txtNoticeClaimedAfterNo.Width = 1.26!
             '
             'txtNoticeClaimedNoText
             '
-            Me.txtNoticeClaimedNoText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNoText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedNoText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNoText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedNoText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNoText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedNoText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNoText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeClaimedNoText.Height = 0.25!
             Me.txtNoticeClaimedNoText.Left = 0.0!
             Me.txtNoticeClaimedNoText.LineSpacing = 3.0!
             Me.txtNoticeClaimedNoText.Name = "txtNoticeClaimedNoText"
-            Me.txtNoticeClaimedNoText.Style = "ddo-char-set: 1; text-align: left; font-size: 13pt; font-family: ·s²Ó©úÅé; "
+            Me.txtNoticeClaimedNoText.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; ddo-char-set: 1"
             Me.txtNoticeClaimedNoText.Text = "¸Ó¦¸¶E¯g¨Ï¥ÎªºÂåÀø¨éª÷ÃB¡G"
-            Me.txtNoticeClaimedNoText.Top = 2.0625!
+            Me.txtNoticeClaimedNoText.Top = 1.84325!
             Me.txtNoticeClaimedNoText.Width = 3.3!
             '
             'txtNoticeClaimedNo
             '
-            Me.txtNoticeClaimedNo.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNo.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedNo.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNo.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedNo.Border.RightColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNo.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtNoticeClaimedNo.Border.TopColor = System.Drawing.Color.Black
-            Me.txtNoticeClaimedNo.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtNoticeClaimedNo.Height = 0.25!
             Me.txtNoticeClaimedNo.Left = 3.3!
             Me.txtNoticeClaimedNo.Name = "txtNoticeClaimedNo"
-            Me.txtNoticeClaimedNo.Style = "text-decoration: underline; ddo-char-set: 1; text-align: left; font-size: 13pt; f" & _
-                "ont-family: ·s²Ó©úÅé; "
+            Me.txtNoticeClaimedNo.Style = "font-family: ·s²Ó©úÅé; font-size: 13pt; text-align: left; text-decoration: underline;" & _
+        " ddo-char-set: 1"
             Me.txtNoticeClaimedNo.Text = Nothing
-            Me.txtNoticeClaimedNo.Top = 2.0625!
+            Me.txtNoticeClaimedNo.Top = 1.84325!
             Me.txtNoticeClaimedNo.Width = 3.95!
             '
             'txtCutLine
             '
-            Me.txtCutLine.Border.BottomColor = System.Drawing.Color.Black
             Me.txtCutLine.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.ThickDash
-            Me.txtCutLine.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtCutLine.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtCutLine.Border.RightColor = System.Drawing.Color.Black
-            Me.txtCutLine.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtCutLine.Border.TopColor = System.Drawing.Color.Black
-            Me.txtCutLine.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtCutLine.Height = 0.125!
             Me.txtCutLine.Left = 0.25!
             Me.txtCutLine.LineSpacing = 3.0!
             Me.txtCutLine.Name = "txtCutLine"
-            Me.txtCutLine.Style = "text-decoration: underline; ddo-char-set: 1; text-align: center; font-weight: bol" & _
-                "d; font-size: 15pt; font-family: ·s²Ó©úÅé; "
+            Me.txtCutLine.Style = "font-family: ·s²Ó©úÅé; font-size: 15pt; font-weight: bold; text-align: center; text-d" & _
+        "ecoration: underline; ddo-char-set: 1"
             Me.txtCutLine.Text = Nothing
             Me.txtCutLine.Top = 0.125!
             Me.txtCutLine.Width = 7.03125!
             '
             'TextBox3
             '
-            Me.TextBox3.Border.BottomColor = System.Drawing.Color.Black
-            Me.TextBox3.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox3.Border.LeftColor = System.Drawing.Color.Black
-            Me.TextBox3.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox3.Border.RightColor = System.Drawing.Color.Black
-            Me.TextBox3.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox3.Border.TopColor = System.Drawing.Color.Black
-            Me.TextBox3.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.TextBox3.Height = 0.21875!
             Me.TextBox3.Left = 0.0!
             Me.TextBox3.Name = "TextBox3"
-            Me.TextBox3.Style = "ddo-char-set: 2; font-size: 15.75pt; font-family: Wingdings; "
+            Me.TextBox3.Style = "font-family: Wingdings; font-size: 15.75pt; ddo-char-set: 2"
             Me.TextBox3.Text = "ƒp"
             Me.TextBox3.Top = 0.125!
             Me.TextBox3.Width = 0.25!
             '
             'TextBox4
             '
-            Me.TextBox4.Border.BottomColor = System.Drawing.Color.Black
-            Me.TextBox4.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox4.Border.LeftColor = System.Drawing.Color.Black
-            Me.TextBox4.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox4.Border.RightColor = System.Drawing.Color.Black
-            Me.TextBox4.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox4.Border.TopColor = System.Drawing.Color.Black
-            Me.TextBox4.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.TextBox4.CanGrow = False
             Me.TextBox4.Height = 0.21875!
             Me.TextBox4.Left = 0.25!
             Me.TextBox4.Name = "TextBox4"
-            Me.TextBox4.Style = "ddo-char-set: 136; text-decoration: none; text-align: left; font-style: normal; f" & _
-                "ont-size: 9.75pt; font-family: ·s²Ó©úÅé; vertical-align: bottom; "
+            Me.TextBox4.Style = "font-family: ·s²Ó©úÅé; font-size: 9.75pt; font-style: normal; text-align: left; text-" & _
+        "decoration: none; vertical-align: bottom; ddo-char-set: 136"
             Me.TextBox4.Text = "¡]½Ðªu½u¼¹¤U¡^"
             Me.TextBox4.Top = 0.0!
             Me.TextBox4.Width = 1.03125!
             '
             'txtToRemark
             '
-            Me.txtToRemark.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtToRemark.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtToRemark.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtToRemark.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtToRemark.Border.RightColor = System.Drawing.Color.Black
-            Me.txtToRemark.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtToRemark.Border.TopColor = System.Drawing.Color.Black
-            Me.txtToRemark.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtToRemark.Height = 0.25!
             Me.txtToRemark.Left = 4.5!
             Me.txtToRemark.Name = "txtToRemark"
-            Me.txtToRemark.Style = "text-decoration: none; ddo-char-set: 1; text-align: left; font-size: 13pt; font-f" & _
-                "amily: HA_MingLiu; "
+            Me.txtToRemark.Style = "font-family: HA_MingLiu; font-size: 13pt; text-align: left; text-decoration: none" & _
+        "; ddo-char-set: 1"
             Me.txtToRemark.Text = "(ÂåÀø¨é¨Ï¥ÎªÌ©m¦W)"
-            Me.txtToRemark.Top = 0.71875!
+            Me.txtToRemark.Top = 0.562!
             Me.txtToRemark.Width = 1.8125!
+            '
+            'TextBox1
+            '
+            Me.TextBox1.Height = 0.1880002!
+            Me.TextBox1.Left = 2.694!
+            Me.TextBox1.Name = "TextBox1"
+            Me.TextBox1.Style = "font-family: ·s²Ó©úÅé; font-size: 11pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox1.Text = "ªøªÌÂåÀø¨é­p¹º¼ö½u¡J2838 2311"
+            Me.TextBox1.Top = 2.642!
+            Me.TextBox1.Width = 2.375!
+            '
+            'TextBox2
+            '
+            Me.TextBox2.Height = 0.2110002!
+            Me.TextBox2.Left = 2.416!
+            Me.TextBox2.Name = "TextBox2"
+            Me.TextBox2.Style = "font-family: Wingdings; font-size: 12.75pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox2.Text = "ƒv" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+            Me.TextBox2.Top = 2.615!
+            Me.TextBox2.Width = 0.2080001!
+            '
+            'TextBox5
+            '
+            Me.TextBox5.Height = 0.16!
+            Me.TextBox5.Left = 2.694!
+            Me.TextBox5.Name = "TextBox5"
+            Me.TextBox5.Style = "font-family: ·s²Ó©úÅé; font-size: 11pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox5.Text = "¬d¸ßÂåÀø¨é¾lÃB¡G2838 0511"
+            Me.TextBox5.Top = 2.828!
+            Me.TextBox5.Width = 2.375!
+            '
+            'TextBox6
+            '
+            Me.TextBox6.Height = 0.2110002!
+            Me.TextBox6.Left = 2.416!
+            Me.TextBox6.Name = "TextBox6"
+            Me.TextBox6.Style = "font-family: Wingdings; font-size: 12.75pt; text-align: left; ddo-char-set: 1"
+            Me.TextBox6.Text = "ƒv" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+            Me.TextBox6.Top = 2.809!
+            Me.TextBox6.Width = 0.2080001!
             '
             'VoucherNotice_v2
             '
@@ -438,11 +346,11 @@ Namespace PrintOut.VoucherConsentForm_CHI
             Me.PrintWidth = 7.34375!
             Me.Sections.Add(Me.Detail1)
             Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Arial; font-style: normal; text-decoration: none; font-weight: norma" & _
-                        "l; font-size: 10pt; color: Black; ", "Normal"))
-            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 16pt; font-weight: bold; ", "Heading1", "Normal"))
+                "l; font-size: 10pt; color: Black", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 16pt; font-weight: bold", "Heading1", "Normal"))
             Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Times New Roman; font-size: 14pt; font-weight: bold; font-style: ita" & _
-                        "lic; ", "Heading2", "Normal"))
-            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 13pt; font-weight: bold; ", "Heading3", "Normal"))
+                "lic", "Heading2", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 13pt; font-weight: bold", "Heading3", "Normal"))
             CType(Me.txtNoticeClaimedAfterNoText, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtNoticeTitle, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtNoticeToText, System.ComponentModel.ISupportInitialize).EndInit()
@@ -461,6 +369,10 @@ Namespace PrintOut.VoucherConsentForm_CHI
             CType(Me.TextBox3, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.TextBox4, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtToRemark, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox1, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox2, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox5, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.TextBox6, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub
@@ -483,6 +395,11 @@ Namespace PrintOut.VoucherConsentForm_CHI
         Friend WithEvents TextBox3 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents TextBox4 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtToRemark As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents Shape1 As GrapeCity.ActiveReports.SectionReportModel.Shape
+        Private WithEvents TextBox1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox2 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox5 As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents TextBox6 As GrapeCity.ActiveReports.SectionReportModel.TextBox
     End Class
 
 End Namespace

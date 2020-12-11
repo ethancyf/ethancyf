@@ -222,7 +222,7 @@
             Me.TextBox56.Style = "font-family: 新細明體; font-size: 12pt; font-weight: bold; text-align: left; text-dec" & _
         "oration: none; ddo-char-set: 0"
             Me.TextBox56.Text = "收集资料之目的"
-            Me.TextBox56.Top = 2.604554!
+            Me.TextBox56.Top = 2.573804!
             Me.TextBox56.Width = 7.3125!
             '
             'TextBox57
@@ -234,7 +234,7 @@
             Me.TextBox57.Style = "font-family: 新細明體; font-size: 12pt; font-weight: bold; text-align: left; text-dec" & _
         "oration: none; ddo-char-set: 0"
             Me.TextBox57.Text = "接受转介人的类别"
-            Me.TextBox57.Top = 5.25588!
+            Me.TextBox57.Top = 5.16213!
             Me.TextBox57.Width = 7.3125!
             '
             'TextBox59
@@ -244,7 +244,7 @@
             Me.TextBox59.Name = "TextBox59"
             Me.TextBox59.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox59.Text = "所提供的个人资料，会供政府作下列一项或多项用途："
-            Me.TextBox59.Top = 2.917054!
+            Me.TextBox59.Top = 2.886304!
             Me.TextBox59.Width = 7.0!
             '
             'TextBox60
@@ -254,7 +254,7 @@
             Me.TextBox60.Name = "TextBox60"
             Me.TextBox60.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox60.Text = "1."
-            Me.TextBox60.Top = 2.917054!
+            Me.TextBox60.Top = 2.886304!
             Me.TextBox60.Width = 0.3125!
             '
             'TextBox61
@@ -264,7 +264,7 @@
             Me.TextBox61.Name = "TextBox61"
             Me.TextBox61.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox61.Text = "处理医疗券的付款以及管理和监察医疗券计划；"
-            Me.TextBox61.Top = 3.198304!
+            Me.TextBox61.Top = 3.167554!
             Me.TextBox61.Width = 6.6875!
             '
             'TextBox62
@@ -274,7 +274,7 @@
             Me.TextBox62.Name = "TextBox62"
             Me.TextBox62.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox62.Text = "(a)"
-            Me.TextBox62.Top = 3.198304!
+            Me.TextBox62.Top = 3.167554!
             Me.TextBox62.Width = 0.3125!
             '
             'TextBox63
@@ -284,7 +284,7 @@
             Me.TextBox63.Name = "TextBox63"
             Me.TextBox63.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox63.Text = "作统计和研究用途；"
-            Me.TextBox63.Top = 3.718554!
+            Me.TextBox63.Top = 3.687804!
             Me.TextBox63.Width = 6.6875!
             '
             'TextBox64
@@ -294,7 +294,7 @@
             Me.TextBox64.Name = "TextBox64"
             Me.TextBox64.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox64.Text = "(c)"
-            Me.TextBox64.Top = 3.718554!
+            Me.TextBox64.Top = 3.687804!
             Me.TextBox64.Width = 0.3125!
             '
             'TextBox65
@@ -304,7 +304,7 @@
             Me.TextBox65.Name = "TextBox65"
             Me.TextBox65.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox65.Text = "作法例规定、授权或准许的任何其他合法用途；以及"
-            Me.TextBox65.Top = 3.968553!
+            Me.TextBox65.Top = 3.937803!
             Me.TextBox65.Width = 6.6875!
             '
             'TextBox66
@@ -314,7 +314,7 @@
             Me.TextBox66.Name = "TextBox66"
             Me.TextBox66.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox66.Text = "(d)"
-            Me.TextBox66.Top = 3.968553!
+            Me.TextBox66.Top = 3.937803!
             Me.TextBox66.Width = 0.3125!
             '
             'TextBox67
@@ -324,7 +324,7 @@
             Me.TextBox67.Name = "TextBox67"
             Me.TextBox67.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox67.Text = "2."
-            Me.TextBox67.Top = 4.631054!
+            Me.TextBox67.Top = 4.600304!
             Me.TextBox67.Width = 0.3125!
             '
             'TextBox68
@@ -334,7 +334,7 @@
             Me.TextBox68.Name = "TextBox68"
             Me.TextBox68.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox68.Text = "提供个人资料乃属自愿性质，如果医疗券使用者/见证人/监护人不提供充份的数据，医疗券使用者可能无法使用医疗券。"
-            Me.TextBox68.Top = 4.631054!
+            Me.TextBox68.Top = 4.600304!
             Me.TextBox68.Width = 7.0!
             '
             'TextBox69
@@ -345,7 +345,7 @@
             Me.TextBox69.Style = "font-family: 新細明體; font-size: 12pt; text-align: left; vertical-align: top; ddo-ch" & _
         "ar-set: 0"
             Me.TextBox69.Text = "你所提供的个人资料，主要由政府内部使用（包括但并不限于卫生署及入境事务处），但政府亦可能于有需要时，因以上第1段所列目的而向其他机构披露。"
-            Me.TextBox69.Top = 5.56838!
+            Me.TextBox69.Top = 5.47463!
             Me.TextBox69.Width = 7.0!
             '
             'TextBox70
@@ -355,7 +355,7 @@
             Me.TextBox70.Name = "TextBox70"
             Me.TextBox70.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox70.Text = "3."
-            Me.TextBox70.Top = 5.56838!
+            Me.TextBox70.Top = 5.47463!
             Me.TextBox70.Width = 0.3125!
             '
             'TextBox72
@@ -367,7 +367,7 @@
             Me.TextBox72.Style = "font-family: 新細明體; font-size: 12pt; font-weight: bold; text-align: left; text-dec" & _
         "oration: none; ddo-char-set: 0"
             Me.TextBox72.Text = "查阅个人资料"
-            Me.TextBox72.Top = 6.16213!
+            Me.TextBox72.Top = 6.03125!
             Me.TextBox72.Width = 7.34375!
             '
             'TextBox73
@@ -377,7 +377,7 @@
             Me.TextBox73.Name = "TextBox73"
             Me.TextBox73.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox73.Text = "4."
-            Me.TextBox73.Top = 6.50588!
+            Me.TextBox73.Top = 6.375!
             Me.TextBox73.Width = 0.3125!
             '
             'TextBox74
@@ -389,7 +389,7 @@
         "ar-set: 0"
             Me.TextBox74.Text = "根据香港法例第486章《个人资料（私隐）条例》第18和第22条以及附表1保障资料第6原则所述，你有权查阅及修正你的个人资料。本署应查阅资料要求而提供资料时，可能要" & _
         "征收费用。"
-            Me.TextBox74.Top = 6.50588!
+            Me.TextBox74.Top = 6.375!
             Me.TextBox74.Width = 7.03125!
             '
             'TextBox76
@@ -401,7 +401,7 @@
             Me.TextBox76.Style = "font-family: 新細明體; font-size: 12pt; font-weight: bold; text-align: left; text-dec" & _
         "oration: none; ddo-char-set: 0"
             Me.TextBox76.Text = "查询"
-            Me.TextBox76.Top = 7.16213!
+            Me.TextBox76.Top = 6.96825!
             Me.TextBox76.Width = 7.34375!
             '
             'TextBox77
@@ -411,7 +411,7 @@
             Me.TextBox77.Name = "TextBox77"
             Me.TextBox77.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox77.Text = "5."
-            Me.TextBox77.Top = 7.47463!
+            Me.TextBox77.Top = 7.28075!
             Me.TextBox77.Width = 0.3125!
             '
             'TextBox78
@@ -422,7 +422,7 @@
             Me.TextBox78.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; vertical-align: top; ddo" & _
         "-char-set: 0"
             Me.TextBox78.Text = "有关所提供个人资料（包括查阅及修正资料）的查询，应向下述人士提出："
-            Me.TextBox78.Top = 7.47463!
+            Me.TextBox78.Top = 7.28075!
             Me.TextBox78.Width = 7.03125!
             '
             'TextBox1
@@ -444,7 +444,7 @@
             Me.txtHCVUInfo.Name = "txtHCVUInfo"
             Me.txtHCVUInfo.Style = "font-family: 新細明體; font-size: 12pt; text-align: left; vertical-align: top"
             Me.txtHCVUInfo.Text = Nothing
-            Me.txtHCVUInfo.Top = 7.84963!
+            Me.txtHCVUInfo.Top = 7.65575!
             Me.txtHCVUInfo.Width = 3.5625!
             '
             'txtTransactionNumberText
@@ -485,11 +485,11 @@
             '
             Me.sreVoucherNotice.CloseBorder = False
             Me.sreVoucherNotice.Height = 0.25!
-            Me.sreVoucherNotice.Left = 0.06181103!
+            Me.sreVoucherNotice.Left = 0.062!
             Me.sreVoucherNotice.Name = "sreVoucherNotice"
             Me.sreVoucherNotice.Report = Nothing
             Me.sreVoucherNotice.ReportName = "SubReport1"
-            Me.sreVoucherNotice.Top = 8.251921!
+            Me.sreVoucherNotice.Top = 8.125!
             Me.sreVoucherNotice.Width = 7.3125!
             '
             'TextBox3
@@ -499,7 +499,7 @@
             Me.TextBox3.Name = "TextBox3"
             Me.TextBox3.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox3.Text = "确认所提供的个人资料真确性及完整性；"
-            Me.TextBox3.Top = 3.448554!
+            Me.TextBox3.Top = 3.417804!
             Me.TextBox3.Width = 6.6875!
             '
             'TextBox4
@@ -509,7 +509,7 @@
             Me.TextBox4.Name = "TextBox4"
             Me.TextBox4.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox4.Text = "(b)"
-            Me.TextBox4.Top = 3.448554!
+            Me.TextBox4.Top = 3.417804!
             Me.TextBox4.Width = 0.3125!
             '
             'TextBox5
@@ -519,7 +519,7 @@
             Me.TextBox5.Name = "TextBox5"
             Me.TextBox5.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox5.Text = "处理就本同意书所衍生的一切争议。"
-            Me.TextBox5.Top = 4.218553!
+            Me.TextBox5.Top = 4.187803!
             Me.TextBox5.Width = 6.6875!
             '
             'TextBox6
@@ -529,7 +529,7 @@
             Me.TextBox6.Name = "TextBox6"
             Me.TextBox6.Style = "font-family: 新細明體; font-size: 12pt; text-align: justify; ddo-char-set: 0"
             Me.TextBox6.Text = "(e)"
-            Me.TextBox6.Top = 4.218553!
+            Me.TextBox6.Top = 4.187803!
             Me.TextBox6.Width = 0.3125!
             '
             'txtTransactionTo

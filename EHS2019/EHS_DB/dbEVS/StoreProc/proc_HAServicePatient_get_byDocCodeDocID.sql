@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HAServicePatient_get_byDocCodeDocID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HAServicePatient_get_byDocCodeDocID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_HAServicePatient_get_byDocCodeDocID]
 GO
 
@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- CR No.:			
--- Modified by:		
--- Modified date:	
--- Description:		
+-- CR No.:			CRE20-015-08 (HA Scheme)	
+-- Modified by:		Chris YIM
+-- Modified date:	01 Dec 2020
+-- Description:		Only check doc. num.
 -- =============================================
 -- =============================================
 -- CR No.:		CRE20-015 (HA Scheme)
@@ -61,8 +61,10 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 	FROM 
 		[HAServicePatient] 
 	WHERE
-		[Doc_Code] = @In_Doc_Code AND [Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity)
-		
+		--[Doc_Code] = @In_Doc_Code AND 
+		[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity)
+	ORDER BY
+		[Serial_No]
 
 CLOSE SYMMETRIC KEY sym_Key
 

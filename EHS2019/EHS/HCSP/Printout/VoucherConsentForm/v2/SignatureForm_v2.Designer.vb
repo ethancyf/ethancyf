@@ -154,7 +154,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtRecipientIlliterateComplete.Text = "I confirm that this document and the ""Consent of Voucher Recipient to Transfer Pe" & _
         "rsonal Data"" and its Appendix have been read and explained to the voucher recipi" & _
         "ent in my presence.  "
-            Me.txtRecipientIlliterateComplete.Top = 2.051969!
+            Me.txtRecipientIlliterateComplete.Top = 1.937!
             Me.txtRecipientIlliterateComplete.Width = 7.375197!
             '
             'txtWitnessSignatureText
@@ -164,7 +164,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtWitnessSignatureText.Name = "txtWitnessSignatureText"
             Me.txtWitnessSignatureText.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.txtWitnessSignatureText.Text = "Signature of witness:"
-            Me.txtWitnessSignatureText.Top = 2.664567!
+            Me.txtWitnessSignatureText.Top = 2.549598!
             Me.txtWitnessSignatureText.Width = 3.625!
             '
             'txtWitnessNameText
@@ -174,7 +174,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtWitnessNameText.Name = "txtWitnessNameText"
             Me.txtWitnessNameText.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.txtWitnessNameText.Text = "Name of witness:"
-            Me.txtWitnessNameText.Top = 2.920374!
+            Me.txtWitnessNameText.Top = 2.805405!
             Me.txtWitnessNameText.Width = 3.625!
             '
             'txtWitnessHKIDText
@@ -184,7 +184,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtWitnessHKIDText.Name = "txtWitnessHKIDText"
             Me.txtWitnessHKIDText.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.txtWitnessHKIDText.Text = "Hong Kong Identity Card No.:"
-            Me.txtWitnessHKIDText.Top = 3.176673!
+            Me.txtWitnessHKIDText.Top = 3.061704!
             Me.txtWitnessHKIDText.Width = 3.625!
             '
             'txtWitnessDateText
@@ -194,7 +194,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtWitnessDateText.Name = "txtWitnessDateText"
             Me.txtWitnessDateText.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.txtWitnessDateText.Text = "Date:"
-            Me.txtWitnessDateText.Top = 3.176674!
+            Me.txtWitnessDateText.Top = 3.061705!
             Me.txtWitnessDateText.Width = 0.5!
             '
             'txtRecipientSignature
@@ -247,7 +247,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtWitnessSignature.Name = "txtWitnessSignature"
             Me.txtWitnessSignature.Style = "font-size: 11.25pt; text-align: left"
             Me.txtWitnessSignature.Text = Nothing
-            Me.txtWitnessSignature.Top = 2.664567!
+            Me.txtWitnessSignature.Top = 2.549598!
             Me.txtWitnessSignature.Width = 3.75!
             '
             'TextBox38
@@ -258,7 +258,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox38.Name = "TextBox38"
             Me.TextBox38.Style = "font-size: 11.25pt; text-align: left"
             Me.TextBox38.Text = Nothing
-            Me.TextBox38.Top = 2.920374!
+            Me.TextBox38.Top = 2.805405!
             Me.TextBox38.Width = 3.75!
             '
             'txtWitnessHKID
@@ -269,7 +269,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.txtWitnessHKID.Name = "txtWitnessHKID"
             Me.txtWitnessHKID.Style = "font-size: 11.25pt; text-align: left"
             Me.txtWitnessHKID.Text = Nothing
-            Me.txtWitnessHKID.Top = 3.176674!
+            Me.txtWitnessHKID.Top = 3.061705!
             Me.txtWitnessHKID.Width = 1.59375!
             '
             'TextBox40
@@ -279,7 +279,8 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox40.Left = 5.750394!
             Me.TextBox40.Name = "TextBox40"
             Me.TextBox40.Style = "font-size: 11.25pt; text-align: left"
-            Me.TextBox40.Top = 3.176674!
+            Me.TextBox40.Text = Nothing
+            Me.TextBox40.Top = 3.061705!
             Me.TextBox40.Width = 1.624606!
             '
             'txtTelephoneNoText
@@ -311,7 +312,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox9.Style = "font-size: 11.25pt; font-style: italic; text-align: justify; text-decoration: und" & _
         "erline"
             Me.TextBox9.Text = "#Complete only if voucher recipient is mentally incapacitated"
-            Me.TextBox9.Top = 3.583071!
+            Me.TextBox9.Top = 3.385031!
             Me.TextBox9.Width = 7.375!
             '
             'TextBox10
@@ -321,7 +322,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox10.Name = "TextBox10"
             Me.TextBox10.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.TextBox10.Text = "Signature of guardian:"
-            Me.TextBox10.Top = 4.239861!
+            Me.TextBox10.Top = 4.041821!
             Me.TextBox10.Width = 3.625!
             '
             'TextBox11
@@ -331,7 +332,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox11.Name = "TextBox11"
             Me.TextBox11.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.TextBox11.Text = "Name of guardian:"
-            Me.TextBox11.Top = 4.495767!
+            Me.TextBox11.Top = 4.297727!
             Me.TextBox11.Width = 3.625!
             '
             'TextBox12
@@ -341,7 +342,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox12.Name = "TextBox12"
             Me.TextBox12.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.TextBox12.Text = "Hong Kong Identity Card No.:"
-            Me.TextBox12.Top = 4.751673!
+            Me.TextBox12.Top = 4.553633!
             Me.TextBox12.Width = 3.625!
             '
             'TextBox13
@@ -351,7 +352,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox13.Name = "TextBox13"
             Me.TextBox13.Style = "font-size: 11.25pt; font-style: italic; text-align: right; ddo-char-set: 1"
             Me.TextBox13.Text = "Date:"
-            Me.TextBox13.Top = 4.751673!
+            Me.TextBox13.Top = 4.553633!
             Me.TextBox13.Width = 0.5!
             '
             'TextBox14
@@ -362,7 +363,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox14.Name = "TextBox14"
             Me.TextBox14.Style = "font-size: 11.25pt; text-align: left"
             Me.TextBox14.Text = Nothing
-            Me.TextBox14.Top = 4.239861!
+            Me.TextBox14.Top = 4.041821!
             Me.TextBox14.Width = 3.75!
             '
             'TextBox15
@@ -373,7 +374,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox15.Name = "TextBox15"
             Me.TextBox15.Style = "font-size: 11.25pt; text-align: left"
             Me.TextBox15.Text = Nothing
-            Me.TextBox15.Top = 4.495768!
+            Me.TextBox15.Top = 4.297728!
             Me.TextBox15.Width = 3.75!
             '
             'TextBox16
@@ -384,7 +385,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox16.Name = "TextBox16"
             Me.TextBox16.Style = "font-size: 11.25pt; text-align: left"
             Me.TextBox16.Text = Nothing
-            Me.TextBox16.Top = 4.751673!
+            Me.TextBox16.Top = 4.553633!
             Me.TextBox16.Width = 1.59375!
             '
             'TextBox17
@@ -395,7 +396,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox17.Name = "TextBox17"
             Me.TextBox17.Style = "font-size: 11.25pt; text-align: left"
             Me.TextBox17.Text = Nothing
-            Me.TextBox17.Top = 4.751673!
+            Me.TextBox17.Top = 4.553633!
             Me.TextBox17.Width = 1.625197!
             '
             'TextBox1
@@ -406,7 +407,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox1.Style = "font-size: 11.25pt; font-style: italic; text-align: justify; text-decoration: und" & _
         "erline"
             Me.TextBox1.Text = "Complete only if voucher recipient has mental capacity but is illiterate"
-            Me.TextBox1.Top = 1.833366!
+            Me.TextBox1.Top = 1.718397!
             Me.TextBox1.Width = 7.375!
             '
             'SubReport1
@@ -440,7 +441,7 @@ Namespace PrintOut.VoucherConsentForm
         "hite-space: inherit; ddo-char-set: 0; ddo-wrap-mode: inherit"
             Me.TextBox2.Text = "I have also read the ""Consent of Witness/ Guardian to Transfer Personal Data"" and" & _
         " hereby give my consent as described therein."
-            Me.TextBox2.Top = 2.445768!
+            Me.TextBox2.Top = 2.330799!
             Me.TextBox2.Width = 7.375197!
             '
             'TextBox3
@@ -452,7 +453,7 @@ Namespace PrintOut.VoucherConsentForm
         "do-char-set: 1"
             Me.TextBox3.Text = "I confirm that I give consent and sign on behalf of the voucher recipient as his/" & _
         "her guardian."
-            Me.TextBox3.Top = 3.801969!
+            Me.TextBox3.Top = 3.603929!
             Me.TextBox3.Width = 7.364567!
             '
             'TextBox4
@@ -464,7 +465,7 @@ Namespace PrintOut.VoucherConsentForm
         "hite-space: inherit; ddo-char-set: 1; ddo-wrap-mode: inherit"
             Me.TextBox4.Text = "I have also read the ""Consent of Witness/ Guardian to Transfer Personal Data"" and" & _
         " hereby give my consent as described therein."
-            Me.TextBox4.Top = 4.020866!
+            Me.TextBox4.Top = 3.822826!
             Me.TextBox4.Width = 7.364961!
             '
             'SignatureForm_v2

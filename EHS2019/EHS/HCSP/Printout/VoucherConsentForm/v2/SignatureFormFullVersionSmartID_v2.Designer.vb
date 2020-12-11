@@ -568,7 +568,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox3.Style = "font-size: 9pt; text-align: justify; ddo-char-set: 1"
             Me.TextBox3.Text = "Personal data are limited to Hong Kong Identity Card Number, name (in English and" & _
         " Chinese), date of birth and date of issue of Hong Kong Identity Card."
-            Me.TextBox3.Top = 6.208268!
+            Me.TextBox3.Top = 6.0315!
             Me.TextBox3.Width = 7.0625!
             '
             'TextBox4
@@ -578,7 +578,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.TextBox4.Name = "TextBox4"
             Me.TextBox4.Style = "font-size: 7pt; text-align: right"
             Me.TextBox4.Text = "Note"
-            Me.TextBox4.Top = 6.145768!
+            Me.TextBox4.Top = 5.969!
             Me.TextBox4.Width = 0.25!
             '
             'TextBox1

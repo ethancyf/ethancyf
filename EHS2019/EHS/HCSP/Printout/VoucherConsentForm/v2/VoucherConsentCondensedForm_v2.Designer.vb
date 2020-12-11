@@ -17,22 +17,22 @@
         <System.Diagnostics.DebuggerStepThrough()> _
         Private Sub InitializeComponent()
             Dim resources As System.Resources.ResourceManager = New System.Resources.ResourceManager(GetType(VoucherConsentCondensedForm_v2))
-            Me.detConsentForm = New GrapeCity.ActiveReports.SectionReportModel.Detail
-            Me.txtTransactionNumberText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtVoidTransactionNumberText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtTransactionNumber = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtVoidTransactionNumber = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtTransactionToText = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtTransactionTo = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.srSignatureForm = New GrapeCity.ActiveReports.SectionReportModel.SubReport
-            Me.sreVoucherNotice = New GrapeCity.ActiveReports.SectionReportModel.SubReport
-            Me.txtTitleEng = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.PageHeader1 = New GrapeCity.ActiveReports.SectionReportModel.PageHeader
-            Me.txtPreprint = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.PageFooter1 = New GrapeCity.ActiveReports.SectionReportModel.PageFooter
-            Me.txtPrintDetail = New GrapeCity.ActiveReports.SectionReportModel.TextBox
-            Me.txtPageName = New GrapeCity.ActiveReports.SectionReportModel.TextBox
+            Me.detConsentForm = New GrapeCity.ActiveReports.SectionReportModel.Detail()
+            Me.txtTransactionNumberText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtVoidTransactionNumberText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtTransactionNumber = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtVoidTransactionNumber = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtTransactionToText = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtTransactionTo = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.TextBox1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.srSignatureForm = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
+            Me.sreVoucherNotice = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
+            Me.txtTitleEng = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.PageHeader1 = New GrapeCity.ActiveReports.SectionReportModel.PageHeader()
+            Me.txtPreprint = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.PageFooter1 = New GrapeCity.ActiveReports.SectionReportModel.PageFooter()
+            Me.txtPrintDetail = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtPageName = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             CType(Me.txtTransactionNumberText, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtVoidTransactionNumberText, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtTransactionNumber, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -48,7 +48,6 @@
             '
             'detConsentForm
             '
-            Me.detConsentForm.ColumnSpacing = 0.0!
             Me.detConsentForm.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.txtTransactionNumberText, Me.txtVoidTransactionNumberText, Me.txtTransactionNumber, Me.txtVoidTransactionNumber, Me.txtTransactionToText, Me.txtTransactionTo, Me.TextBox1, Me.srSignatureForm, Me.sreVoucherNotice})
             Me.detConsentForm.Height = 7.71875!
             Me.detConsentForm.KeepTogether = True
@@ -56,54 +55,31 @@
             '
             'txtTransactionNumberText
             '
-            Me.txtTransactionNumberText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtTransactionNumberText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionNumberText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtTransactionNumberText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionNumberText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtTransactionNumberText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionNumberText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtTransactionNumberText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtTransactionNumberText.Height = 0.21875!
             Me.txtTransactionNumberText.Left = 2.5625!
             Me.txtTransactionNumberText.Name = "txtTransactionNumberText"
-            Me.txtTransactionNumberText.Style = "text-align: left; font-size: 11.25pt; "
+            Me.txtTransactionNumberText.Style = "font-size: 11.25pt; text-align: left"
             Me.txtTransactionNumberText.Text = "Transaction No.:"
             Me.txtTransactionNumberText.Top = 0.0!
             Me.txtTransactionNumberText.Width = 1.8125!
             '
             'txtVoidTransactionNumberText
             '
-            Me.txtVoidTransactionNumberText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumberText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtVoidTransactionNumberText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumberText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtVoidTransactionNumberText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumberText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtVoidTransactionNumberText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumberText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtVoidTransactionNumberText.Height = 0.21875!
             Me.txtVoidTransactionNumberText.Left = 2.5625!
             Me.txtVoidTransactionNumberText.Name = "txtVoidTransactionNumberText"
-            Me.txtVoidTransactionNumberText.Style = "color: Gray; text-align: left; font-weight: normal; font-size: 11.25pt; "
+            Me.txtVoidTransactionNumberText.Style = "color: Gray; font-size: 11.25pt; font-weight: normal; text-align: left"
             Me.txtVoidTransactionNumberText.Text = "Void Transaction No.:"
             Me.txtVoidTransactionNumberText.Top = 0.25!
             Me.txtVoidTransactionNumberText.Width = 1.8125!
             '
             'txtTransactionNumber
             '
-            Me.txtTransactionNumber.Border.BottomColor = System.Drawing.Color.Black
             Me.txtTransactionNumber.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.txtTransactionNumber.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtTransactionNumber.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionNumber.Border.RightColor = System.Drawing.Color.Black
-            Me.txtTransactionNumber.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionNumber.Border.TopColor = System.Drawing.Color.Black
-            Me.txtTransactionNumber.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtTransactionNumber.Height = 0.21875!
             Me.txtTransactionNumber.Left = 4.375!
             Me.txtTransactionNumber.Name = "txtTransactionNumber"
-            Me.txtTransactionNumber.Style = "text-align: justify; font-size: 11.25pt; "
+            Me.txtTransactionNumber.Style = "font-size: 11.25pt; text-align: justify"
             Me.txtTransactionNumber.Text = Nothing
             Me.txtTransactionNumber.Top = 0.0!
             Me.txtTransactionNumber.Width = 3.0!
@@ -112,85 +88,47 @@
             '
             Me.txtVoidTransactionNumber.Border.BottomColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer))
             Me.txtVoidTransactionNumber.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.txtVoidTransactionNumber.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumber.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtVoidTransactionNumber.Border.RightColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumber.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtVoidTransactionNumber.Border.TopColor = System.Drawing.Color.Black
-            Me.txtVoidTransactionNumber.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtVoidTransactionNumber.Height = 0.21875!
             Me.txtVoidTransactionNumber.Left = 4.375!
             Me.txtVoidTransactionNumber.Name = "txtVoidTransactionNumber"
-            Me.txtVoidTransactionNumber.Style = "color: Gray; text-align: justify; font-size: 11.25pt; "
+            Me.txtVoidTransactionNumber.Style = "color: Gray; font-size: 11.25pt; text-align: justify"
             Me.txtVoidTransactionNumber.Text = Nothing
             Me.txtVoidTransactionNumber.Top = 0.25!
             Me.txtVoidTransactionNumber.Width = 3.0!
             '
             'txtTransactionToText
             '
-            Me.txtTransactionToText.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtTransactionToText.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionToText.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtTransactionToText.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionToText.Border.RightColor = System.Drawing.Color.Black
-            Me.txtTransactionToText.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionToText.Border.TopColor = System.Drawing.Color.Black
-            Me.txtTransactionToText.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtTransactionToText.Height = 0.21875!
             Me.txtTransactionToText.Left = 0.0!
             Me.txtTransactionToText.Name = "txtTransactionToText"
-            Me.txtTransactionToText.Style = "text-align: justify; font-size: 11.25pt; "
+            Me.txtTransactionToText.Style = "font-size: 11.25pt; text-align: justify"
             Me.txtTransactionToText.Text = "To:"
             Me.txtTransactionToText.Top = 0.5625!
             Me.txtTransactionToText.Width = 0.3125!
             '
             'txtTransactionTo
             '
-            Me.txtTransactionTo.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtTransactionTo.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionTo.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtTransactionTo.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionTo.Border.RightColor = System.Drawing.Color.Black
-            Me.txtTransactionTo.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtTransactionTo.Border.TopColor = System.Drawing.Color.Black
-            Me.txtTransactionTo.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtTransactionTo.Height = 0.21875!
             Me.txtTransactionTo.Left = 0.3125!
             Me.txtTransactionTo.Name = "txtTransactionTo"
-            Me.txtTransactionTo.Style = "text-decoration: none; ddo-char-set: 0; font-size: 11.25pt; "
+            Me.txtTransactionTo.Style = "font-size: 11.25pt; text-decoration: none; ddo-char-set: 0"
             Me.txtTransactionTo.Text = Nothing
             Me.txtTransactionTo.Top = 0.5625!
             Me.txtTransactionTo.Width = 7.0625!
             '
             'TextBox1
             '
-            Me.TextBox1.Border.BottomColor = System.Drawing.Color.Black
-            Me.TextBox1.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox1.Border.LeftColor = System.Drawing.Color.Black
-            Me.TextBox1.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox1.Border.RightColor = System.Drawing.Color.Black
-            Me.TextBox1.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.TextBox1.Border.TopColor = System.Drawing.Color.Black
-            Me.TextBox1.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.TextBox1.Height = 0.25!
             Me.TextBox1.Left = 0.3125!
             Me.TextBox1.LineSpacing = 3.0!
             Me.TextBox1.Name = "TextBox1"
-            Me.TextBox1.Style = "text-align: justify; font-size: 11.25pt; "
+            Me.TextBox1.Style = "font-size: 11.25pt; text-align: justify"
             Me.TextBox1.Text = "The Director of Health, HKSAR Government (""the Government"")"
             Me.TextBox1.Top = 0.78125!
             Me.TextBox1.Width = 7.0625!
             '
             'srSignatureForm
             '
-            Me.srSignatureForm.Border.BottomColor = System.Drawing.Color.Black
-            Me.srSignatureForm.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.srSignatureForm.Border.LeftColor = System.Drawing.Color.Black
-            Me.srSignatureForm.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.srSignatureForm.Border.RightColor = System.Drawing.Color.Black
-            Me.srSignatureForm.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.srSignatureForm.Border.TopColor = System.Drawing.Color.Black
-            Me.srSignatureForm.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.srSignatureForm.CanGrow = False
             Me.srSignatureForm.CanShrink = False
             Me.srSignatureForm.CloseBorder = False
@@ -204,38 +142,26 @@
             '
             'sreVoucherNotice
             '
-            Me.sreVoucherNotice.Border.BottomColor = System.Drawing.Color.Black
-            Me.sreVoucherNotice.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.sreVoucherNotice.Border.LeftColor = System.Drawing.Color.Black
-            Me.sreVoucherNotice.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.sreVoucherNotice.Border.RightColor = System.Drawing.Color.Black
-            Me.sreVoucherNotice.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.sreVoucherNotice.Border.TopColor = System.Drawing.Color.Black
-            Me.sreVoucherNotice.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.sreVoucherNotice.CloseBorder = False
             Me.sreVoucherNotice.Height = 0.46875!
             Me.sreVoucherNotice.Left = 0.0!
             Me.sreVoucherNotice.Name = "sreVoucherNotice"
             Me.sreVoucherNotice.Report = Nothing
             Me.sreVoucherNotice.ReportName = "SubReport2"
-            Me.sreVoucherNotice.Top = 7.25!
+            Me.sreVoucherNotice.Top = 7.062!
             Me.sreVoucherNotice.Width = 7.40625!
             '
             'txtTitleEng
             '
-            Me.txtTitleEng.Border.BottomColor = System.Drawing.Color.Black
             Me.txtTitleEng.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.txtTitleEng.Border.LeftColor = System.Drawing.Color.Black
             Me.txtTitleEng.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.txtTitleEng.Border.RightColor = System.Drawing.Color.Black
             Me.txtTitleEng.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.txtTitleEng.Border.TopColor = System.Drawing.Color.Black
             Me.txtTitleEng.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
             Me.txtTitleEng.Height = 0.21875!
             Me.txtTitleEng.Left = 1.65!
             Me.txtTitleEng.Name = "txtTitleEng"
-            Me.txtTitleEng.Style = "text-decoration: none; text-align: center; font-weight: bold; font-size: 12.25pt;" & _
-                " vertical-align: middle; "
+            Me.txtTitleEng.Style = "font-size: 12.25pt; font-weight: bold; text-align: center; text-decoration: none;" & _
+        " vertical-align: middle"
             Me.txtTitleEng.Text = "Consent of Voucher Recipient to Use Vouchers"
             Me.txtTitleEng.Top = 0.02!
             Me.txtTitleEng.Width = 4.1!
@@ -248,18 +174,10 @@
             '
             'txtPreprint
             '
-            Me.txtPreprint.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtPreprint.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPreprint.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtPreprint.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPreprint.Border.RightColor = System.Drawing.Color.Black
-            Me.txtPreprint.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPreprint.Border.TopColor = System.Drawing.Color.Black
-            Me.txtPreprint.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtPreprint.Height = 0.21875!
             Me.txtPreprint.Left = 6.4375!
             Me.txtPreprint.Name = "txtPreprint"
-            Me.txtPreprint.Style = "ddo-char-set: 0; text-align: justify; font-weight: bold; font-size: 9pt; "
+            Me.txtPreprint.Style = "font-size: 9pt; font-weight: bold; text-align: justify; ddo-char-set: 0"
             Me.txtPreprint.Text = "Preprint Form"
             Me.txtPreprint.Top = 0.0!
             Me.txtPreprint.Width = 0.9375!
@@ -273,37 +191,21 @@
             '
             'txtPrintDetail
             '
-            Me.txtPrintDetail.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtPrintDetail.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPrintDetail.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtPrintDetail.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPrintDetail.Border.RightColor = System.Drawing.Color.Black
-            Me.txtPrintDetail.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPrintDetail.Border.TopColor = System.Drawing.Color.Black
-            Me.txtPrintDetail.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtPrintDetail.Height = 0.1875!
             Me.txtPrintDetail.HyperLink = Nothing
             Me.txtPrintDetail.Left = 0.0!
             Me.txtPrintDetail.Name = "txtPrintDetail"
-            Me.txtPrintDetail.Style = "ddo-char-set: 1; text-align: center; font-size: 10pt; font-family: Arial; "
+            Me.txtPrintDetail.Style = "font-family: Arial; font-size: 10pt; text-align: center; ddo-char-set: 1"
             Me.txtPrintDetail.Text = Nothing
             Me.txtPrintDetail.Top = 0.09375!
             Me.txtPrintDetail.Width = 7.46875!
             '
             'txtPageName
             '
-            Me.txtPageName.Border.BottomColor = System.Drawing.Color.Black
-            Me.txtPageName.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPageName.Border.LeftColor = System.Drawing.Color.Black
-            Me.txtPageName.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPageName.Border.RightColor = System.Drawing.Color.Black
-            Me.txtPageName.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.None
-            Me.txtPageName.Border.TopColor = System.Drawing.Color.Black
-            Me.txtPageName.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.None
             Me.txtPageName.Height = 0.1875!
             Me.txtPageName.Left = 0.0!
             Me.txtPageName.Name = "txtPageName"
-            Me.txtPageName.Style = "ddo-char-set: 1; font-size: 10pt; font-family: Arial; "
+            Me.txtPageName.Style = "font-family: Arial; font-size: 10pt; ddo-char-set: 1"
             Me.txtPageName.Text = "DH_HCV103(9/09)"
             Me.txtPageName.Top = 0.09375!
             Me.txtPageName.Width = 2.75!
@@ -322,11 +224,11 @@
             Me.Sections.Add(Me.detConsentForm)
             Me.Sections.Add(Me.PageFooter1)
             Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Arial; font-style: normal; text-decoration: none; font-weight: norma" & _
-                        "l; font-size: 10pt; color: Black; ", "Normal"))
-            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 16pt; font-weight: bold; ", "Heading1", "Normal"))
+                "l; font-size: 10pt; color: Black", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 16pt; font-weight: bold", "Heading1", "Normal"))
             Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-family: Times New Roman; font-size: 11.25pt; font-weight: bold; font-style: " & _
-                        "italic; ", "Heading2", "Normal"))
-            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 11.25pt; font-weight: bold; ", "Heading3", "Normal"))
+                "italic", "Heading2", "Normal"))
+            Me.StyleSheet.Add(New DDCssLib.StyleSheetRule("font-size: 11.25pt; font-weight: bold", "Heading3", "Normal"))
             CType(Me.txtTransactionNumberText, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtVoidTransactionNumberText, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtTransactionNumber, System.ComponentModel.ISupportInitialize).EndInit()
