@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSW0006_Report_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSW0006_Report_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_EHS_eHSW0006_Report_get]
 GO
 
@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:	    
--- Modified date:	
--- CR No.:			
--- Description:	  	
+-- Modified by:	    Chris YIM
+-- Modified date:	14 Dec 2020
+-- CR No.:			INT20-0060
+-- Description:	  	Performance tuning
 -- =============================================
 -- =============================================
 -- Author:			Chris YIM
@@ -37,6 +37,18 @@ AS BEGIN
 	DECLARE @GenerationDtm VARCHAR(50)  
 
 	DECLARE @Date_Range INT
+
+	CREATE TABLE #StudentFileEntryBase(
+		Transaction_ID			CHAR(20),
+		Non_immune_to_measles	VARCHAR(2),
+		Ethnicity				VARCHAR(100),
+		Category1				VARCHAR(100),
+		Category2				VARCHAR(100),
+		Lot_Number				VARCHAR(15)
+	)   
+
+	CREATE NONCLUSTERED INDEX IX_StudentFileEntryBase_Transaction_ID
+		ON #StudentFileEntryBase (Transaction_ID); 
   
 	CREATE TABLE #Tran(
 		Transaction_ID			CHAR(20),
@@ -155,6 +167,30 @@ AS BEGIN
 	-- Prepare Data
 	-- =============================================  
 
+	-- Retrieve Student File Data    
+	INSERT INTO #StudentFileEntryBase(
+		Transaction_ID,
+		Non_immune_to_measles,
+		Ethnicity,
+		Category1,
+		Category2,
+		Lot_Number
+	)
+	SELECT
+		SFE.Transaction_ID,
+		SFEMMRF.Non_immune_to_measles,
+		SFEMMRF.Ethnicity,
+		SFEMMRF.Category1,
+		SFEMMRF.Category2,
+		SFEMMRF.Lot_Number
+	FROM
+		StudentFileEntry SFE WITH (NOLOCK)
+			LEFT JOIN StudentFileEntryMMRField SFEMMRF WITH (NOLOCK)
+				ON SFE.Student_File_ID = SFEMMRF.Student_File_ID 
+					AND SFE.Student_Seq = SFEMMRF.Student_Seq
+	WHERE
+		SFE.Transaction_ID IS NOT NULL
+
 	-- Retrieve Transaction Data     
 	INSERT INTO #Tran(          
 		Transaction_ID,          
@@ -185,7 +221,7 @@ AS BEGIN
 		VT.SP_ID,    
 		VT.Service_Receive_Dtm,          
 		SGC.Display_Code_For_Claim [Vaccine],
-		td.Scheme_Seq,
+		TD.Scheme_Seq,
 		TD.Subsidize_Item_Code,          
 		TD.Available_Item_Code AS [Dose],          
 		ISNULL(VT.Voucher_Acc_ID, ''),          
@@ -202,18 +238,20 @@ AS BEGIN
 		[Category2]=SFEMMRF.Category2,
 		[Lot_Number]=SFEMMRF.Lot_Number
 	FROM          
-		VoucherTransaction VT          
-			INNER JOIN TransactionDetail TD          
-				ON VT.Transaction_ID = TD.Transaction_ID                     
-			LEFT JOIN SubsidizeGroupClaim SGC
+		VoucherTransaction VT WITH (NOLOCK)
+			INNER JOIN TransactionDetail TD WITH (NOLOCK)
+				ON VT.Transaction_ID = TD.Transaction_ID
+			LEFT JOIN SubsidizeGroupClaim SGC WITH (NOLOCK)
 				ON	TD.Scheme_Code = SGC.Scheme_Code
 					AND	TD.Scheme_Seq = SGC.Scheme_Seq
 					AND TD.Subsidize_Code = SGC.Subsidize_Code     
-			LEFT JOIN StudentFileEntry SFE
-				ON VT.Transaction_ID = SFE.Transaction_ID
-			LEFT JOIN StudentFileEntryMMRField SFEMMRF
-				ON SFE.Student_File_ID = SFEMMRF.Student_File_ID 
-					AND SFE.Student_Seq = SFEMMRF.Student_Seq
+			LEFT JOIN #StudentFileEntryBase SFEMMRF
+				ON VT.Transaction_ID = SFEMMRF.Transaction_ID
+			--LEFT JOIN StudentFileEntry SFE
+			--	ON VT.Transaction_ID = SFE.Transaction_ID
+			--LEFT JOIN StudentFileEntryMMRField SFEMMRF
+			--	ON SFE.Student_File_ID = SFEMMRF.Student_File_ID 
+			--		AND SFE.Student_Seq = SFEMMRF.Student_Seq
 	WHERE          
 		VT.Scheme_Code = 'VSS'          
 		AND TD.Subsidize_Code = 'VNIAMMR' 
@@ -621,7 +659,7 @@ AS BEGIN
 	ORDER BY
 		Display_Seq
 
-
+	DROP TABLE #StudentFileEntryBase
 	DROP TABLE #Tran
 	DROP TABLE #Account
 	DROP TABLE #Report_01

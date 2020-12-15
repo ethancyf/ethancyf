@@ -35,7 +35,7 @@ Partial Public Class ucInputSSSCMC
     End Sub
 
     Private Sub RegisterJSScript(ByVal strHAPatientType As String, ByVal intRegistrationFee As Integer, ByVal decSubsidyBeforeUse As Decimal)
-        
+
         Dim strJS As String
 
         strJS = "var PatientType = '" & strHAPatientType & "';"
@@ -72,7 +72,7 @@ Partial Public Class ucInputSSSCMC
         'strJS += "var objTotalAmt = "
         'strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "
         strJS += "var objActualTotalAmt = "
-        strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "        
+        strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "
         strJS += "var objNetServiceAmt = "
         strJS += "document.getElementById('" & Me.lblNetServiceFee.ClientID & "'); "
         strJS += "var objCoPaymentAmt = "
@@ -399,7 +399,7 @@ Partial Public Class ucInputSSSCMC
         ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
         'RegFeeChargedDate
         Me.calRegFeeChargedDate.Format = _udtFormatter.EnterDateFormat(_udtSubPlatformBLL.GetDateFormatLocale())
-        
+
         If chkExemptRegFee.Checked Then
             txtRegFeeChargedDate.Enabled = True
             ibtnRegFeeChargedDate.Enabled = True
@@ -418,7 +418,7 @@ Partial Public Class ucInputSSSCMC
         End If
         ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
 
-        RegisterJSScript(Me.PatientType, Me.RegistrationFee, _decAvailableSubidy)                
+        RegisterJSScript(Me.PatientType, Me.RegistrationFee, _decAvailableSubidy)
 
     End Sub
 
@@ -451,6 +451,7 @@ Partial Public Class ucInputSSSCMC
         Me.imgOtherFeeError.Visible = blnVisible
         Me.imgOtherFeeRemarkError.Visible = blnVisible
         Me.ImageNetServiceFeeError.Visible = blnVisible
+        Me.ImageTotalServiceFeeError.Visible = blnVisible
 
     End Sub
 
@@ -811,16 +812,29 @@ Partial Public Class ucInputSSSCMC
             blnRes = False
         End If
 
-        'Net Service Fee
-        udtMsg = ValidateNetServiceFeeValue(blnShowErrorImage)
+        ' CRE20-015-11 (Special Support Scheme) [Start][Winnie]
+        'Total Service Fee ( 1 - 4 items)
+        udtMsg = ValidateTotalServiceFeeValue(blnShowErrorImage)
         If udtMsg IsNot Nothing Then
             If udtMsgBox IsNot Nothing Then
                 udtMsgBox.AddMessage(udtMsg, _
                                      New String() {"%s", "%d"}, _
-                                     New String() {lblNetServiceFeeText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
+                                     New String() {lblTotalAmountText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
             End If
             blnRes = False
         End If
+
+        ''Net Service Fee
+        'udtMsg = ValidateNetServiceFeeValue(blnShowErrorImage)
+        'If udtMsg IsNot Nothing Then
+        '    If udtMsgBox IsNot Nothing Then
+        '        udtMsgBox.AddMessage(udtMsg, _
+        '                             New String() {"%s", "%d"}, _
+        '                             New String() {lblNetServiceFeeText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
+        '    End If
+        '    blnRes = False
+        'End If
+        ' CRE20-015-11 (Special Support Scheme) [End][Winnie]
 
         Return blnRes
 
@@ -915,9 +929,55 @@ Partial Public Class ucInputSSSCMC
             Return New ComObject.SystemMessage("990000", "E", "00029") ' The "%s" is invalid.
         End If
 
-            Return Nothing
+        Return Nothing
 
     End Function
+
+    ' CRE20-015-11 (Special Support Scheme) [Start][Winnie]
+    Public Function ValidateTotalServiceFeeValue(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
+        ImageTotalServiceFeeError.Visible = False
+
+        Dim decConsultAndRegFee As Decimal
+        Dim decDrugFee As Decimal
+        Dim decInvestigationFee As Decimal
+        Dim decOtherFee As Decimal
+        Dim decTotalServiceFee As Decimal
+
+        If txtConsultAndRegFee.Text = String.Empty Then
+            decConsultAndRegFee = 0
+        Else
+            Decimal.TryParse(txtConsultAndRegFee.Text, decConsultAndRegFee)
+        End If
+
+        If txtDrugFee.Text = String.Empty Then
+            decDrugFee = 0
+        Else
+            Decimal.TryParse(txtDrugFee.Text, decDrugFee)
+        End If
+
+        If txtInvestigationFee.Text = String.Empty Then
+            decInvestigationFee = 0
+        Else
+            Decimal.TryParse(txtInvestigationFee.Text, decInvestigationFee)
+        End If
+
+        If txtOtherFee.Text = String.Empty Then
+            decOtherFee = 0
+        Else
+            Decimal.TryParse(txtOtherFee.Text, decOtherFee)
+        End If
+
+        decTotalServiceFee = Math.Floor((Math.Floor((decConsultAndRegFee + decDrugFee + decInvestigationFee + decOtherFee) * 100) / 100.0) * 10) / 10.0
+
+        If decTotalServiceFee <= 0 Then
+            ImageTotalServiceFeeError.Visible = blnShowErrorImage
+            Return New ComObject.SystemMessage("990000", "E", "00446") ' The "%s" should be greater than %d.
+        End If
+
+        Return Nothing
+
+    End Function
+    ' CRE20-015-11 (Special Support Scheme) [End][Winnie]
 
     Public Function ValidateNetServiceFeeValue(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
         ImageNetServiceFeeError.Visible = False
@@ -987,7 +1047,7 @@ Partial Public Class ucInputSSSCMC
     ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
     Public Function ValidateRegFeeChargedDate(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
         Dim udtValidator As Validator = New Validator
-        
+
         imgRegFeeChargedDateError.Visible = False
 
         If chkExemptRegFee.Checked Then
