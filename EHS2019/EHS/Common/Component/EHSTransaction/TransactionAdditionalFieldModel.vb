@@ -45,6 +45,7 @@ Namespace Component.EHSTransaction
             ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             ' SSSCMC
+            Public Const SubSpecialities As String = "SubSpecialities"
             Public Const ClaimedPaymentType As String = "ClaimedPaymentType"
             Public Const RegistrationFeeRMB As String = "RegistrationFeeRMB"
             Public Const ConsultAndRegFeeRMB As String = "ConsultAndRegFeeRMB"

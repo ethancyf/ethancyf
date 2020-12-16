@@ -862,9 +862,9 @@ Partial Public Class MyProfileV2
 
                 For Each r As GridViewRow In gvPracticeSchemeInfo.Rows
                     If DirectCast(r.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "N" _
-                            AndAlso DirectCast(r.FindControl("hfMScheme"), HiddenField).Value = strSchemeCode _
-                            AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
-                            AndAlso r.Visible Then
+                        AndAlso DirectCast(r.FindControl("hfMScheme"), HiddenField).Value = strSchemeCode _
+                        AndAlso DirectCast(r.FindControl("hfGCategoryName"), HiddenField).Value = strCategoryName _
+                        AndAlso r.Visible Then
                         blnVisible = True
                         Exit For
                     End If
@@ -992,7 +992,7 @@ Partial Public Class MyProfileV2
             Dim lblScheme As Label = r.FindControl("lblScheme")
 
             If Not IsNothing(lblScheme) Then
-                Dim dt As DataTable = udtSchemeBackOfficeBLL.GetSubsidizeItemDetailsBySubsidizeCode(CType(r.FindControl("hfScheme"), HiddenField).Value)
+                Dim dt As DataTable = udtSchemeBackOfficeBLL.GetSubsidizeBySubsidizeCode(CType(r.FindControl("hfScheme"), HiddenField).Value) ' CRE20-015-10 (Special Support Scheme) [Martin]
                 CType(r.FindControl("lblScheme"), Label).ToolTip = GetSubSchemeDesc(dt, strLang)
             End If
 

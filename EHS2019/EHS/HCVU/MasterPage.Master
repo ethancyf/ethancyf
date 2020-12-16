@@ -151,7 +151,24 @@
 
                 }
             });
+
+            //update the preventDuplicatePostBack function to relink html element when screen dom reload
+            $('#ctl00_UpdatePanelMaster').bind('DOMSubtreeModified', function () {
+                preventDuplicatePostBack();
+            });
+            
+            //run the preventDuplicatePostBack function when onload.
+            preventDuplicatePostBack();
+
         });
+
+        //prevent the parent or child html element triggered event cause mulitple postback
+        function preventDuplicatePostBack() {
+            $("#ctl00_UpdatePanelMaster a[href*='doPostBack']").click(function (event) {
+                event.stopPropagation();
+            });
+
+        }
 
         $(document).click(function (event) {
             if (!$(event.target).closest('nav').length) {
@@ -172,8 +189,9 @@
                   else {
                       return false;
                   }
-          }
-        });
+              }
+          });
+
     </script>
 
 
@@ -184,27 +202,30 @@
             setTimeout("document.getElementById('ctl00_pnlPleaseWait').style.visibility='visible'", 1000);
             setTimeout("window.location = '" + url + "'", 4000);
         }
+
+
+
     </script>
 
     <script type="text/javascript">
 
-        //var Page;
+        var Page;
 
-        //window.onload = function () {
-        //    pageLoad();
-        //}
+        window.onload = function () {
+            pageLoad();
+        }
 
-        //function pageLoad() {
-        //    Page = Sys.WebForms.PageRequestManager.getInstance();
-        //    Page.add_initializeRequest(OnInitializeRequest);
-        //}
+        function pageLoad() {
+            Page = Sys.WebForms.PageRequestManager.getInstance();
+            Page.add_initializeRequest(OnInitializeRequest);
+        }
 
-        //function OnInitializeRequest(sender, args) {
-        //    var postBackElement = args.get_postBackElement();
-        //    if (Page.get_isInAsyncPostBack()) {
-        //        args.set_cancel(true);
-        //    }
-        //}
+        function OnInitializeRequest(sender, args) {
+            var postBackElement = args.get_postBackElement();
+            if (Page.get_isInAsyncPostBack()) {
+                args.set_cancel(true);
+            }
+        }
 
     </script>
     <asp:ContentPlaceHolder ID="ContentPlaceHolderHead" runat="server"></asp:ContentPlaceHolder>

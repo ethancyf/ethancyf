@@ -7,26 +7,30 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Validation
 Imports Common.Component.HAServicePatient
-Imports HCSP.BLL
+Imports HCVU.BLL
 
 Partial Public Class ucInputSSSCMC
     Inherits ucInputEHSClaimBase
 
     Public Const FunctCode As String = Common.Component.FunctCode.FUNT020201
-    Private _udtSessionHandler As New SessionHandler
+
+    Private _udtSessionHandler As New SessionHandlerBLL
     Private _udtFormatter As New Format.Formatter
-    Private _udtSubPlatformBLL As New SubPlatformBLL
     Private _udtEHSTransactionBLL As New EHSTransactionBLL
 
     ' CRE20-015-06 (Special Support Scheme) [Start][Koala]
     Private _dtmMinRegFeeChargedDate As New Date(2020, 11, 18)
     ' CRE20-015-06 (Special Support Scheme) [Start][Koala]
+
 #Region "Private member"
     Private _dtHAPatient As DataTable
     Private _decAvailableSubidy As Decimal
 #End Region
 
-#Region "Must Override Function"
+#Region "Overrides Mehtod"
+    Protected Overrides Sub Setup()
+        Setup(False)
+    End Sub
 
     Protected Overrides Sub RenderLanguage()
         'Me.lblVoucherRedeemText.Text = Me.GetGlobalResourceObject("Text", "RedeemAmount")
@@ -36,7 +40,7 @@ Partial Public Class ucInputSSSCMC
     End Sub
 
     Private Sub RegisterJSScript(ByVal strHAPatientType As String, ByVal intRegistrationFee As Integer, ByVal decSubsidyBeforeUse As Decimal)
-        
+
         Dim strJS As String
 
         strJS = "var PatientType = '" & strHAPatientType & "';"
@@ -73,7 +77,7 @@ Partial Public Class ucInputSSSCMC
         'strJS += "var objTotalAmt = "
         'strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "
         strJS += "var objActualTotalAmt = "
-        strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "        
+        strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "
         strJS += "var objNetServiceAmt = "
         strJS += "document.getElementById('" & Me.lblNetServiceFee.ClientID & "'); "
         strJS += "var objCoPaymentAmt = "
@@ -263,13 +267,14 @@ Partial Public Class ucInputSSSCMC
 
     End Sub
 
-    Protected Overrides Sub Setup()
+    Protected Overrides Sub Setup(ByVal blnPostbackRebuild As Boolean)
         If MyBase.EHSAccount Is Nothing Then Exit Sub
 
-        Dim udtSessionHandler As New BLL.SessionHandler
+        Dim udtSessionHandler As New BLL.SessionHandlerBLL
         Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
         Dim udtEHSClaimBLL As BLL.EHSClaimBLL = New BLL.EHSClaimBLL()
         Dim udtSchemeClaimBLL As SchemeClaimBLL = New SchemeClaimBLL()
+        Dim udtEHSTransactionBLL As New EHSTransactionBLL
         Dim udtHAServicePatientBLL As New HAServicePatientBLL
         Dim strSubidizeCode As String = String.Empty
 
@@ -285,6 +290,15 @@ Partial Public Class ucInputSSSCMC
                 Throw New Exception(String.Format("Document No.({0}) of Document type({1}) is not found in DB table HAServicePatient.", _
                                                   udtEHSPersonalInfo.IdentityNum, _
                                                   MyBase.EHSAccount.SearchDocCode))
+
+                ''If patient is not on list, set dummy value for claim
+                'Dim dr As DataRow = _dtHAPatient.NewRow
+                'dr("Claimed_Payment_Type") = "GP"
+                'dr("Patient_Type") = "A"
+
+                '_dtHAPatient.Rows.Add(dr)
+
+                'udtSessionHandler.HAPatientSaveToSession(_dtHAPatient)
             End If
         Else
             _dtHAPatient = udtSessionHandler.HAPatientGetFromSession()
@@ -313,7 +327,7 @@ Partial Public Class ucInputSSSCMC
         BindSubSpecialities()
 
         ' Available subsidy
-        _decAvailableSubidy = _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+        _decAvailableSubidy = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
 
         If _decAvailableSubidy <= 0.0 Then
             _decAvailableSubidy = 0.0
@@ -339,31 +353,32 @@ Partial Public Class ucInputSSSCMC
             txtOtherFee.Text = udtTAFList.OtherFeeRMB.ToString
             txtOtherFeeRemarkText.Text = udtTAFList.OtherFeeRMBRemark.ToString
 
-            ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+            ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]            
             If udtTAFList.ExemptRegFee Then
                 chkExemptRegFee.Checked = True
-                Dim strChargedDate As String = _udtFormatter.formatInputDate(udtTAFList.RegFeeChargedDate.ToString, _udtSubPlatformBLL.GetDateFormatLocale())
-                txtRegFeeChargedDate.Text = _udtFormatter.formatInputTextDate(strChargedDate, _udtSubPlatformBLL.GetDateFormatLocale())
+                Dim strChargedDate As String = _udtFormatter.formatInputDate(udtTAFList.RegFeeChargedDate.ToString, CultureLanguage.SimpChinese)
+                txtRegFeeChargedDate.Text = _udtFormatter.formatInputTextDate(strChargedDate)
             Else
                 chkExemptRegFee.Checked = False
                 txtRegFeeChargedDate.Text = String.Empty
             End If
             ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
-        Else
-            _udtSessionHandler.ClaimForSamePatientSaveToSession(False, FunctCode)
         End If
 
-        If _udtSessionHandler.ClaimForSamePatientGetFromSession(FunctCode) Then
+        If udtSessionHandler.NewClaimTransactionGetFromSession() = True Then
             ddlSubSpecialities.SelectedIndex = 0
             txtConsultAndRegFee.Text = String.Empty
             txtDrugFee.Text = String.Empty
             txtInvestigationFee.Text = String.Empty
             txtOtherFee.Text = String.Empty
             txtOtherFeeRemarkText.Text = String.Empty
+
             ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
             chkExemptRegFee.Checked = False
             txtRegFeeChargedDate.Text = String.Empty
             ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
+
+            udtSessionHandler.NewClaimTransactionRemoveFromSession()
         End If
 
         ' Initial Value
@@ -412,14 +427,15 @@ Partial Public Class ucInputSSSCMC
 
         ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
         'RegFeeChargedDate
-        Me.calRegFeeChargedDate.Format = _udtFormatter.EnterDateFormat(_udtSubPlatformBLL.GetDateFormatLocale())
+        Me.calRegFeeChargedDate.Format = _udtFormatter.EnterDateFormat(CultureLanguage.English)
+        Me.calRegFeeChargedDate.StartDate = _dtmMinRegFeeChargedDate
 
         If chkExemptRegFee.Checked Then
             txtRegFeeChargedDate.Enabled = True
             ibtnRegFeeChargedDate.Enabled = True
             ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
             txtConsultAndRegFee.Enabled = False
-            tblExemptRegFeeReason.Style("display") = "inline-block"
+            tblExemptRegFeeReason.Style.Remove("display")
             ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
         Else
             txtRegFeeChargedDate.Text = String.Empty
@@ -427,7 +443,7 @@ Partial Public Class ucInputSSSCMC
             ibtnRegFeeChargedDate.Enabled = False
             ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
             txtConsultAndRegFee.Enabled = True
-            tblExemptRegFeeReason.Style("display") = "none"
+            tblExemptRegFeeReason.Style.Add("display", "none")
             ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
         End If
         ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
@@ -435,11 +451,6 @@ Partial Public Class ucInputSSSCMC
         RegisterJSScript(Me.PatientType, Me.RegistrationFee, _decAvailableSubidy)
 
     End Sub
-
-    'Vaccine not apply
-    Public Overrides Function SetEHSVaccineModelDoseSelectedFromUIInput(ByVal udtEHSClaimVaccine As EHSClaimVaccineModel) As EHSClaimVaccineModel
-        Return Nothing
-    End Function
 
     Public Overrides Sub SetupTableTitle(ByVal width As Integer)
 
@@ -715,7 +726,7 @@ Partial Public Class ucInputSSSCMC
         Dim strChargedDate As String = String.Empty
         If chkExemptRegFee.Checked AndAlso txtRegFeeChargedDate.Text.Trim <> String.Empty Then
             ' CRE20-015-07 (Special Support Scheme) [Start][Koala]
-            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text, _udtSubPlatformBLL.GetDateFormatLocale())
+            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text, CultureLanguage.English)
             Dim dtmRegFeeChargedDate As DateTime = Nothing
             dtmRegFeeChargedDate = Date.ParseExact(strCheckDate, "dd-MM-yyyy", Nothing)
             strChargedDate = dtmRegFeeChargedDate.ToString("yyyy-MM-dd")
@@ -761,20 +772,23 @@ Partial Public Class ucInputSSSCMC
                     Case MsgCode.MSG00449
                         udtMsgBox.AddMessage(udtMsg, _
                                              New String() {"%s", "%d"}, _
-                                             New String() {lblConsultAndRegFeeText.Text, String.Format("{0} {1}", "¥", Me.UpperLimitFee)})
+                                             New String() {lblConsultAndRegFeeText.Text.Replace("&nbsp;", "").Replace("<br>", " "), _
+                                                           String.Format("{0} {1}", "¥", Me.UpperLimitFee)})
                     Case Else
-                        udtMsgBox.AddMessage(udtMsg, "%s", lblConsultAndRegFeeText.Text)
+                        udtMsgBox.AddMessage(udtMsg, "%s", lblConsultAndRegFeeText.Text.Replace("&nbsp;", "").Replace("<br>", " "))
                 End Select
             End If
             blnRes = False
         End If
 
-
         If blnRes Then
             udtMsg = ValidateRegistrationFeeValue(blnShowErrorImage, txtConsultAndRegFee, imgConsultAndRegFeeError)
             If udtMsg IsNot Nothing Then
                 If udtMsgBox IsNot Nothing Then
-                    udtMsgBox.AddMessage(udtMsg, New String() {"%s", "%q", "%d"}, New String() {lblConsultAndRegFeeText.Text, Me.RegistrationFee.ToString, "¥ 0"})
+                    udtMsgBox.AddMessage(udtMsg, _
+                                         New String() {"%s", "%q", "%d"}, _
+                                         New String() {lblConsultAndRegFeeText.Text.Replace("&nbsp;", "").Replace("<br>", " "), _
+                                                       Me.RegistrationFee.ToString, "¥ 0"})
                 End If
                 blnRes = False
             End If
@@ -1089,7 +1103,7 @@ Partial Public Class ucInputSSSCMC
 
         If chkExemptRegFee.Checked Then
             ' General date validation, no future date
-            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text, _udtSubPlatformBLL.GetDateFormatLocale())
+            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text, CultureLanguage.English)
             Dim sm As ComObject.SystemMessage = udtValidator.chkInputDate(strCheckDate, True, True)
 
             If sm IsNot Nothing Then
@@ -1189,17 +1203,31 @@ Partial Public Class ucInputSSSCMC
         Me.ddlSubSpecialities.SelectedValue = Nothing
         Me.ddlSubSpecialities.ClearSelection()
 
-        Dim dtSubSpecialities As DataTable = _udtEHSTransactionBLL.GetActiveSubSpecialitiesByPractice(Me.CurrentPractice.PracticeID)
-        If dtSubSpecialities.Rows.Count > 0 Then
-            ddlSubSpecialities.DataSource = dtSubSpecialities
+        Dim dtSubSpecialities As DataTable = _udtEHSTransactionBLL.GetAllSubSpecialitiesByPractice(Me.CurrentPractice.PracticeID)
+
+        If dtSubSpecialities Is Nothing Then
+            'Selected practice without any sub-specialities
+            ddlSubSpecialities.DataSource = _udtEHSTransactionBLL.GetAllSubSpecialitiesByPractice(0)
             ddlSubSpecialities.DataTextField = "Name_CN"
             ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
             ddlSubSpecialities.DataBind()
-        End If
+        Else
+            If dtSubSpecialities.Rows.Count > 0 Then
+                ddlSubSpecialities.DataSource = dtSubSpecialities
+                ddlSubSpecialities.DataTextField = "Name_CN"
+                ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
+                ddlSubSpecialities.DataBind()
+            Else
+                ddlSubSpecialities.DataSource = _udtEHSTransactionBLL.GetAllSubSpecialitiesByPractice(0)
+                ddlSubSpecialities.DataTextField = "Name_CN"
+                ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
+                ddlSubSpecialities.DataBind()
+            End If
 
-        'If Sub-Specialities is more than 1, then add "Please Select" at the top of dropdownlist
-        If dtSubSpecialities.Rows.Count > 1 Then
-            ddlSubSpecialities.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+            'If Sub-Specialities is more than 1, then add "Please Select" at the top of dropdownlist
+            If dtSubSpecialities.Rows.Count > 1 Then
+                ddlSubSpecialities.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+            End If
         End If
 
         ddlSubSpecialities.SelectedIndex = 0
@@ -1214,4 +1242,5 @@ Partial Public Class ucInputSSSCMC
         End If
 
     End Sub
+
 End Class

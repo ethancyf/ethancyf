@@ -152,6 +152,8 @@
     <None Include="Template\eHSM0009-VSS_OCSSS_Template.xlsx" />
     <None Include="Template\eHSM0010-Voucher_OCSSS_Template.xlsx" />
     <None Include="Template\eHSM0011-Voucher_Claim_DHC_Template.xlsx" />
+    <None Include="Template\eHSM0013-PreAuthorizationSSSCMC_Template.xlsx" />
+    <None Include="Template\eHSM0014-SUPER_TemplateSSSCMC.xlsx" />
     <None Include="Template\eHSU0006-Non_Clinic_Claim_Template.xlsx" />
     <None Include="Template\eHSU0007-SP_First_Claim_Under_HCVS_Template.xlsx" />
     <None Include="Template\eHSU0008-SP_Most_Daily_Claim_Template.xlsx" />
@@ -159,6 +161,7 @@
     <None Include="Template\eHSU0010-SP_Claim_Pattern_Template.xlsx" />
     <None Include="Template\eHSU0011_MeansOfInput_Rank_Template.xlsx" />
     <None Include="Template\eHSU0012_Inspection_Record_Template.xlsx" />
+    <None Include="Template\eHSU0015-SSSCMC_Transaction_Raw_Data_Template.xlsx" />
     <None Include="Template\eHSVF000-VaccinationFileTemplate.xlsx" />
     <None Include="Template\eHSVF001-VaccinationFileTemplate-MMR.xlsx" />
     <None Include="Template\eHSVF001-VaccinationFileTemplate-PV.xlsx" />

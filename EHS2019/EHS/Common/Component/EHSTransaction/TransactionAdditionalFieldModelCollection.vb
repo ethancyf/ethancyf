@@ -154,6 +154,17 @@ Namespace Component.EHSTransaction
 
         ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property SubSpecialities() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.SubSpecialities)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Public ReadOnly Property ConsultAndRegFeeRMB() As Decimal
             Get
                 Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.ConsultAndRegFeeRMB)

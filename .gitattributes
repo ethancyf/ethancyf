@@ -860,6 +860,8 @@ EHS2019/EHS/ExcelGenerator/Template/eHSM0008-Pneumo_Statistics_Claim_VO_Report_T
 EHS2019/EHS/ExcelGenerator/Template/eHSM0009-VSS_OCSSS_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSM0010-Voucher_OCSSS_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSM0011-Voucher_Claim_DHC_Template.xlsx -text
+EHS2019/EHS/ExcelGenerator/Template/eHSM0013-PreAuthorizationSSSCMC_Template.xlsx -text
+EHS2019/EHS/ExcelGenerator/Template/eHSM0014-SUPERSSSCMC_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSSF001-StudentFileTemplate.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSSF001B-StudentFileTemplate.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSSF002A-StudentFileTemplate.xlsx -text
@@ -880,6 +882,7 @@ EHS2019/EHS/ExcelGenerator/Template/eHSU0010-SP_Claim_Pattern_Template.xlsx -tex
 EHS2019/EHS/ExcelGenerator/Template/eHSU0011_MeansOfInput_Rank_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSU0012_Inspection_Record_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSU0013-CSSA_Claim_Template.xlsx -text
+EHS2019/EHS/ExcelGenerator/Template/eHSU0015-SSSCMC_Transaction_Raw_Data_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSVF000-VaccinationFileTemplate.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSVF001-VaccinationFileTemplate-MMR.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSVF001-VaccinationFileTemplate-PV.xlsx -text
@@ -4732,6 +4735,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputPPP.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVP.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVP.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVP.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputSSSCMC.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputSSSCMC.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputSSSCMC.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputVSS.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputVSS.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputVSS.ascx.vb -text
@@ -8574,6 +8580,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0008_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0010_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0012_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0013_Report_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSU0015_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0002.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0003_01_Report.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0003_02_Report.sql -text
@@ -8634,6 +8641,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_FunctionInformation_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_GovSIVPatient_get_byDocCodeDocID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServicePatient_bulkcopy.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServicePatient_get_byDocCodeDocID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_HAServiceSubSpecialitiesMapping_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSDUtilStringToTable.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSD_DistrictBoard_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSD_SDSPPracticeFee_add.sql -text
@@ -8982,6 +8990,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementAuthorise_insert_update.sql -te
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementCancelAuthorization_get_byReimbursementID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementDetail_get_byTransactionID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementFiles_get_byReimbID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementFiles_get_byReimbID_SSSCMC.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementFirstAuthorise_add_update.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementGeneratePaymentFile_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ReimbursementHoldSummary_get.sql -text
@@ -9312,6 +9321,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeWriteOffGeneratorQueue_gen_hcvs_ehc
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeWriteOffGeneratorQueue_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeWriteOffGeneratorQueue_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Subsidize_get_all.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_Subsidize_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SuperDownload_get_byReimbID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SystemDateTime_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SystemLogHCSP_add.sql -text

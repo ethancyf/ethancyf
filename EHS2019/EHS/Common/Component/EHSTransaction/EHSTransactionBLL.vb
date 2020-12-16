@@ -4017,5 +4017,151 @@ Namespace Component.EHSTransaction
             Return udtTransactionDetailVaccineModel
 
         End Function
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve all sub-specialities mapping, and put in cache
+        ''' </summary>
+        ''' <param name="udtDB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function GetAllSubSpecialitiesMapCache(Optional ByVal udtDB As Database = Nothing) As DataTable
+
+            Dim CACHE_ALL_SubSpecialitiesMap As String = "EHSTransactionBLL_ALL_HAServiceSubSpecialitiesMapping"
+
+            Dim dt As DataTable = Nothing
+
+            If Not IsNothing(HttpRuntime.Cache(CACHE_ALL_SubSpecialitiesMap)) Then
+                dt = CType(HttpRuntime.Cache(CACHE_ALL_SubSpecialitiesMap), DataTable)
+            Else
+
+                If udtDB Is Nothing Then udtDB = New Database()
+                dt = New DataTable()
+                Try
+                    udtDB.RunProc("proc_HAServiceSubSpecialitiesMapping_get", dt)
+                    If dt.Rows.Count > 0 Then
+                        Common.ComObject.CacheHandler.InsertCache(CACHE_ALL_SubSpecialitiesMap, dt)
+                    End If
+                Catch ex As Exception
+                    Throw
+                End Try
+            End If
+
+            Return dt
+
+        End Function
+
+        ''' <summary>
+        ''' Retrieve all active sub-specialities mapping, and put in cache
+        ''' </summary>
+        ''' <param name="udtDB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function GetActiveSubSpecialitiesMapCache(Optional ByVal udtDB As Database = Nothing) As DataTable
+
+            Dim CACHE_ACTIVE_HAServiceSubSpecialitiesMapping As String = "EHSTransactionBLL_ACTIVE_HAServiceSubSpecialitiesMapping"
+
+            Dim dtRes As DataTable = Nothing
+
+            If Not IsNothing(HttpRuntime.Cache(CACHE_ACTIVE_HAServiceSubSpecialitiesMapping)) Then
+                dtRes = CType(HttpRuntime.Cache(CACHE_ACTIVE_HAServiceSubSpecialitiesMapping), DataTable)
+            Else
+
+                If udtDB Is Nothing Then udtDB = New Database()
+                Dim dt As DataTable = Me.GetAllSubSpecialitiesMapCache
+
+                If dt.Rows.Count > 0 Then
+                    Dim dr() As DataRow = dt.Select("Record_Status = 'A'")
+                    If dr.Length > 0 Then
+                        dtRes = dr.CopyToDataTable
+                        Common.ComObject.CacheHandler.InsertCache(CACHE_ACTIVE_HAServiceSubSpecialitiesMapping, dtRes)
+                    End If
+                End If
+
+            End If
+
+            Return dtRes
+
+        End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve list of sub-specialities mapping by practice display seq.
+        ''' </summary>
+        ''' <param name="intPracticeDisplaySeq"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function GetActiveSubSpecialitiesByPractice(ByVal intPracticeDisplaySeq As Integer) As DataTable
+            Dim dtRes As DataTable = Nothing
+            Dim dt As DataTable = Me.GetActiveSubSpecialitiesMapCache
+
+            Dim dr() As DataRow = dt.Select(String.Format("Practice_Display_Seq = {0}", intPracticeDisplaySeq))
+
+            If dr.Length > 0 Then
+                dtRes = dr.CopyToDataTable
+            End If
+
+            Return dtRes
+
+        End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve list of sub-specialities mapping by practice display seq.
+        ''' </summary>
+        ''' <param name="intPracticeDisplaySeq"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function GetAllSubSpecialitiesByPractice(ByVal intPracticeDisplaySeq As Integer) As DataTable
+            Dim dtRes As DataTable = Nothing
+            Dim dt As DataTable = Me.GetAllSubSpecialitiesMapCache
+
+            Dim dr() As DataRow = dt.Select(String.Format("Practice_Display_Seq = {0}", intPracticeDisplaySeq))
+
+            If dr.Length > 0 Then
+                dtRes = dr.CopyToDataTable
+            End If
+
+            Return dtRes
+
+        End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve a sub-specialities by code
+        ''' </summary>
+        ''' <param name="strCode"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function GetSubSpecialitiesByCode(ByVal strCode As String, Optional ByVal strLang As String = CultureLanguage.SimpChinese) As String
+            Dim strRes As String = String.Empty
+            Dim dt As DataTable = Me.GetAllSubSpecialitiesMapCache
+
+            Dim dr() As DataRow = dt.Select(String.Format("SubSpecialities_Code = '{0}'", strCode))
+
+            If dr.Length = 1 Then
+                Select Case strLang
+                    Case CultureLanguage.TradChinese
+                        strRes = dr(0)("Name_CHI")
+                    Case CultureLanguage.SimpChinese
+                        strRes = dr(0)("Name_CN")
+                    Case Else
+                        strRes = dr(0)("Name_CN")
+                End Select
+
+            End If
+
+            Return strRes
+
+        End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
     End Class
 End Namespace

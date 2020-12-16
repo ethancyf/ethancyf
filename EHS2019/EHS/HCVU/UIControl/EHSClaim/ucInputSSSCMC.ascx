@@ -1,7 +1,11 @@
-﻿<%@ Control Language="vb" AutoEventWireup="false" Codebehind="ucReadOnlySSSCMC.ascx.vb"
-    Inherits="HCSP.ucReadOnlySSSCMC" %>
+﻿<%@ Control Language="vb" AutoEventWireup="false" Codebehind="ucInputSSSCMC.ascx.vb"
+    Inherits="HCVU.ucInputSSSCMC" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
-<table cellpadding="0" cellspacing="0" style="width: 900px" >
+<script type="text/javascript">
+</script>
+
+<table cellpadding="0" cellspacing="0" style="width: 1000px" >
     <tr>
         <td colspan="3" style="padding-bottom:2px">
             <hr />
@@ -40,12 +44,22 @@
             <hr />
         </td>
     </tr>
-    <tr id="trSubSpecialities" runat="server">
+    <tr>
         <td class="tableCellStyle" style="width:200px;padding-top:7px;padding-bottom:10px">
             <asp:Label ID="lblSubSpecialitiesText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_SubSpecialities%>" />
         </td>
         <td class="tableCellStyle" colspan="2" style="width:400px">
-            <asp:Label ID="lblSubSpecialities" runat="server" CssClass="tableText" />
+            <table style="display: block;">
+                <tr>
+                    <td style="width:70px;text-align:right">
+                        <asp:DropDownList ID="ddlSubSpecialities" runat="server" Width="300px" AutoPostBack="false" style="text-align:right" />                           
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgSubSpecialitiesError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
+                    </td>                                          
+                </tr>
+            </table>
         </td>
     </tr>
     <tr>
@@ -61,39 +75,61 @@
         <td class="tableCellStyle" style="width:150px">
             <table style="display: block;">
                 <tr>
-                    <td style="width:10px">
+                    <td style="width:26px">
                         <asp:Label ID="lblConsultAndRegFeeRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
                     </td>
-                    <td style="width:84px;text-align:right">
-                        <asp:Label ID="lblConsultAndRegFee" runat="server" CssClass="tableText" />                        
-                    </td>                                      
+                    <td style="width:70px;text-align:right">
+                        <asp:TextBox ID="txtConsultAndRegFee" runat="server" Width="64px" AutoPostBack="false" style="text-align:right" MaxLength="8"/>                        
+                        <cc1:FilteredTextBoxExtender ID="fteConsultAndRegFee" runat="server" FilterType="numbers, custom"
+                            ValidChars="." TargetControlID="txtConsultAndRegFee">
+                        </cc1:FilteredTextBoxExtender>  
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgConsultAndRegFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
+                    </td>                                          
                 </tr>
             </table>
         </td>
         <td class="tableCellStyle" rowspan="2" style="vertical-align:top;">
-            <table style="display: block;" id="tblExemptRegFee" runat="server">
-                <tr>
-                    <td style="width:160px;">
-                        <asp:Label ID="lblExemptRegFeeText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFee%>" />
-                    </td>
-                    <td style="width:50px; text-align:right;">
-                        <asp:Label ID="lblExemptRegFeeReasonText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason%>" />
-                    </td>
-                    <td style="width:300px;" colspan="2">
-                        <asp:Label ID="lblExemptRegFeeReason1Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason1%>" />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <asp:Label ID="lblExemptRegFeeReason2Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason2%>" />                        
-                    </td>     
-                    <td>
-                        <asp:Label ID="lblRegFeeChargedDate" runat="server" CssClass="tableText" />
-                    </td>
-                </tr>
-            </table>         
+            <div style="display: inline-block; vertical-align:top;">
+                <table style="display: inline-block; border-spacing:0px;">
+                    <tr>
+                        <td style="width:180px;">
+                            <asp:CheckBox ID="chkExemptRegFee" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFee%>"
+                                onclick="changeExemptRegFee(this);"></asp:CheckBox>                        
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="display: inline-block; vertical-align:top;">
+                <table id="tblExemptRegFeeReason" runat="server" style="display: none;">
+                    <tr>
+                        <td style="text-align:right;">
+                            <asp:Label ID="lblExemptRegFeeReasonText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason%>" />
+                        </td>
+                        <td style="width:350px;" colspan="2">
+                            <asp:Label ID="lblExemptRegFeeReason1Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason1%>" />
+                        </td>
+                        <td />
+                    </tr>
+                    <tr>
+                        <td />
+                        <td>
+                            <asp:Label ID="lblExemptRegFeeReason2Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_ExemptRegFeeReason2%>" style="vertical-align:top;" />
+                            <asp:TextBox ID="txtRegFeeChargedDate" runat="server" Width="70px" MaxLength="10" onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);" style="vertical-align:top;"></asp:TextBox>
+                            <asp:ImageButton ID="ibtnRegFeeChargedDate" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" style="position:relative;top:1px"/>
+                            <cc1:CalendarExtender ID="calRegFeeChargedDate" CssClass="ajax_cal" runat="server" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy" TargetControlID="txtRegFeeChargedDate" PopupButtonID="ibtnRegFeeChargedDate" />
+                            <cc1:FilteredTextBoxExtender ID="filtereditRegFeeChargedDate" runat="server" FilterType="Custom, Numbers" TargetControlID="txtRegFeeChargedDate" ValidChars="-" />
+                        </td> 
+                        <td style="vertical-align:top">
+                            &nbsp<asp:Image ID="imgRegFeeChargedDateError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
+                        </td>     
+                    </tr>
+                </table>
+            </div>          
         </td>
     </tr>
     <tr>
@@ -103,11 +139,18 @@
         <td class="tableCellStyle" colspan="2" style="width:150px">
             <table style="display: block;">
                 <tr>
-                    <td style="width:10px">
+                    <td style="width:26px">
                         <asp:Label ID="lblDrugFeeRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
                     </td>
-                    <td style="width:84px;text-align:right">
-                        <asp:Label ID="lblDrugFee" runat="server" CssClass="tableText" />   
+                    <td style="width:70px;text-align:right">
+                        <asp:TextBox ID="txtDrugFee" runat="server" Width="64px" AutoPostBack="false" style="text-align:right" MaxLength="8"/>                        
+                        <cc1:FilteredTextBoxExtender ID="fteDrugFee" runat="server" FilterType="numbers, custom"
+                            ValidChars="." TargetControlID="txtDrugFee">
+                        </cc1:FilteredTextBoxExtender>  
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgDrugFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
                     </td>                                          
                 </tr>
             </table>
@@ -120,11 +163,18 @@
         <td class="tableCellStyle" colspan="2" style="width:150px">
             <table style="display: block;">
                 <tr>
-                    <td style="width:10px">
+                    <td style="width:26px">
                         <asp:Label ID="lblInvestigationFeeRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
                     </td>
-                    <td style="width:84px;text-align:right">
-                        <asp:Label ID="lblInvestigationFee" runat="server" CssClass="tableText" />   
+                    <td style="width:70px;text-align:right">
+                        <asp:TextBox ID="txtInvestigationFee" runat="server" Width="64px" AutoPostBack="false" style="text-align:right" MaxLength="8"/>                        
+                        <cc1:FilteredTextBoxExtender ID="fteInvestigationFee" runat="server" FilterType="numbers, custom"
+                            ValidChars="." TargetControlID="txtInvestigationFee">
+                        </cc1:FilteredTextBoxExtender>  
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgInvestigationFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
                     </td>                                          
                 </tr>
             </table>
@@ -137,11 +187,18 @@
         <td class="tableCellStyle" style="width:150px">
             <table style="display: block;">
                 <tr>
-                    <td style="width:10px">
+                    <td style="width:26px">
                         <asp:Label ID="lblOtherFeeRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
                     </td>
-                    <td style="width:84px;text-align:right">
-                        <asp:Label ID="lblOtherFee" runat="server" CssClass="tableText" />   
+                    <td style="width:70px;text-align:right">
+                        <asp:TextBox ID="txtOtherFee" runat="server" Width="64px" AutoPostBack="false" style="text-align:right" MaxLength="8"/>                        
+                        <cc1:FilteredTextBoxExtender ID="fteOtherFee" runat="server" FilterType="numbers, custom"
+                            ValidChars="." TargetControlID="txtOtherFee">
+                        </cc1:FilteredTextBoxExtender>  
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgOtherFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
                     </td>                                          
                 </tr>
             </table>
@@ -149,11 +206,15 @@
         <td class="tableCellStyle">
             <table style="display: block;">
                 <tr>
-                    <td style="width:70px">
+                    <td>
                         <asp:Label ID="lblOtherFeeRemarkText" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_OtherFeeRemark%>" />
                     </td>
-                    <td style="text-align:left;width:370px">
-                        <asp:Label ID="lblOtherFeeRemark" runat="server" CssClass="tableText" />   
+                    <td style="text-align:right">
+                        <asp:TextBox ID="txtOtherFeeRemarkText" runat="server" Width="200px" AutoPostBack="false" MaxLength="255" /> 
+                    </td> 
+                    <td style="vertical-align:top">
+                        &nbsp<asp:Image ID="imgOtherFeeRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
                     </td>     
                 </tr>
             </table>         
@@ -172,11 +233,11 @@
         </td>
     </tr>
     <tr>
-        <td class="tableCellStyle" style="width:200px">
+        <td class="tableCellStyle" style="width:200px;padding-bottom:8px">
             <asp:Label ID="lblTotalAmountText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_TotalAmount%>" />
         </td>
         <td class="tableCellStyle" style="width:150px">
-            <table>
+            <table style="display:inline-block;">
                 <tr>
                     <td style="width:10px">
                         <asp:Label ID="lblTotalAmountRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
@@ -186,6 +247,8 @@
                     </td>
                 </tr>
             </table>
+            <div style="display:inline-block;position:relative;top:-6px">&nbsp<asp:Image ID="ImageTotalServiceFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False"/></div>
         </td>
         <td class="tableCellStyle">
             <asp:Label ID="lblTotalAmountRemark" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_TotalAmountRemark%>" />
@@ -225,13 +288,13 @@
             </table>
         </td>
         <td class="tableCellStyle" rowspan="3">
-            <table style="width:420px;border-color:black;border-style:dotted;border-width:3px;padding:10px">
+            <table style="width:500px;border-color:black;border-style:dotted;border-width:3px;padding:10px">
                 <tr>
-                    <td style="width:300px">
+                    <td style="width:360px">
                         <asp:Label ID="lblTotalSupportFee1Text" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_TotalSupportFee1%>" />
                     </td>
                     <%--<td style="width:10px">
-                        <asp:Label ID="lblTotalSupportRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
+                        <asp:Label ID="lblTotalSupportFeeRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
                     </td>--%>
                     <td style="width:114px;text-align:right">
                         <asp:Label ID="lblTotalSupportFee" runat="server" CssClass="tableText" />
@@ -250,7 +313,7 @@
             <asp:Label ID="lblNetServiceFeeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_NetServiceFee%>" />
         </td>
         <td class="tableCellStyle" style="width:150px">
-            <table style="border-color:black;border-top-style:solid;border-top-width:thin;border-bottom-style:double;border-bottom-width:medium">
+            <table style="border-color:black;border-top-style:solid;border-top-width:thin;border-bottom-style:double;border-bottom-width:medium;display:inline-block">
                 <tr>
                     <td style="width:10px">
                         <asp:Label ID="lblNetServiceFeeRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
@@ -260,6 +323,8 @@
                     </td>
                 </tr>
             </table>
+            <div style="display:inline-block;position:relative;top:-6px">&nbsp<asp:Image ID="ImageNetServiceFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" /></div>
         </td>
     </tr>
     <tr>
@@ -343,4 +408,5 @@
         </td>
     </tr>
 </table>
+
 

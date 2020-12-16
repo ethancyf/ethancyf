@@ -68,6 +68,33 @@ Partial Public Class ucReadOnlySSSCMC
     Protected WithEvents lblRegistrationFeeWarning As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trSubSpecialities control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trSubSpecialities As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblSubSpecialitiesText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSubSpecialitiesText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSubSpecialities control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSubSpecialities As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblMedicalServiceInfoText control.
     '''</summary>
     '''<remarks>

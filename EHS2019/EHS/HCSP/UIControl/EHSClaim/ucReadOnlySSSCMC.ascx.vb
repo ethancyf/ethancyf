@@ -6,6 +6,8 @@ Imports Common.Format
 Partial Public Class ucReadOnlySSSCMC
     Inherits ucReadOnlyEHSClaimBase
 
+    Private _udtEHSTransactionBLL As New EHSTransactionBLL
+
 #Region "Must Override Function"
 
     Protected Overrides Sub RenderLanguage()
@@ -57,6 +59,14 @@ Partial Public Class ucReadOnlySSSCMC
             Case SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_B
                 Me.lblRegistrationFeeRemark.Text = Me.GetGlobalResourceObject("Text", "SSSCMC_PatientFree")
         End Select
+
+        trSubSpecialities.Style.Remove("display")
+
+        If udtTAFList.SubSpecialities Is Nothing Then
+            Me.lblSubSpecialities.Text = _udtEHSTransactionBLL.GetSubSpecialitiesByCode("00_00")
+        Else
+            Me.lblSubSpecialities.Text = _udtEHSTransactionBLL.GetSubSpecialitiesByCode(udtTAFList.SubSpecialities.Trim)
+        End If
 
         ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
         If udtTAFList.PaymentTypeMatch IsNot Nothing AndAlso udtTAFList.PaymentTypeMatch.ToString <> Common.Component.YesNo.Yes Then

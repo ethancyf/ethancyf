@@ -1,6 +1,7 @@
 Imports Common.ComFunction
 Imports Common.DataAccess
 Imports System.Data.SqlClient
+Imports Common.ComObject
 
 Namespace Component.Scheme
 
@@ -11,6 +12,8 @@ Namespace Component.Scheme
         Public Class SESSION_TYPE
             Public Const SESS_SchemeBackOffice As String = "SchemeBackOfficeBLL_SchemeBackOffice"
             Public Const SESS_SubsidizeGroupBackOffice As String = "SchemeBackOfficeBLL_SubsidizeGroupBackOffice"
+            Public Const SESS_SubsidizeItemDetails As String = "SchemeBackOfficeBLL_SubsidizeItemDetails" ' CRE20-015-10 (Special Support Scheme) [Martin]
+
         End Class
 
 #Region "Session"
@@ -394,6 +397,36 @@ Namespace Component.Scheme
                 Throw ex
             End Try
         End Function
+
+
+        ' CRE20-015-10 (Special Support Scheme) [Start][Martin]
+        Public Function GetSubsidizeItemDetails(ByVal strSubsidizeCode As String, Optional ByVal udtDB As Database = Nothing) As DataTable
+            If udtDB Is Nothing Then udtDB = New Database()
+
+            Dim dt As DataTable = HttpRuntime.Cache(SESSION_TYPE.SESS_SubsidizeItemDetails)
+            If IsNothing(dt) Then
+                dt = New DataTable
+                If IsNothing(udtDB) Then udtDB = New Database
+
+                udtDB.RunProc("proc_Subsidize_get_all_cache", dt)
+                CacheHandler.InsertCache(SESSION_TYPE.SESS_SubsidizeItemDetails, dt)
+            End If
+
+            Return dt
+        End Function
+
+        Public Function GetSubsidizeBySubsidizeCode(ByVal strSubsidizeCode As String) As DataTable
+            Dim dt As DataTable = GetSubsidizeItemDetails(strSubsidizeCode)
+
+            dt = (From Subsidize In dt.AsEnumerable
+            Where Subsidize.Field(Of String)("Subsidize_code").Trim = strSubsidizeCode
+                Select Subsidize).CopyToDataTable()
+
+            Return dt
+        End Function
+        ' CRE20-015-10 (Special Support Scheme) [End][Martin]
+
+
 
         '''' <summary>
         '''' Get the Effective SchemeBackOffice by scheme code
