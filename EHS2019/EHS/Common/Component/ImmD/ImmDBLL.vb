@@ -295,6 +295,8 @@ Namespace Component.ImmD
             ' 3. Mark [TempVoucherAccount].Record_Status = 'V' (Validated)
             ' 4. Mark [TempVoucherAccount].Record_Status = 'D' (Removed) for Temp account which account purpose = 'O' 
             ' 5. Update [TempPersionalInformation].Validating To 'N' and check_Dtm = GetDate()
+            ' 6. Mark [PersonalInfoAmendHistory].Record_Status = 'A' (Active)  (By Vocuher_Acc_ID & SubmitToVerify = 'Y')
+            ' 7. Update [VoucherTransaction].Voucher_Acc_ID = [VoucherAccount].Voucher_Acc_ID Where Temp_Voucher_Acc_ID = [TempVoucherAccount].Voucher_Acc_ID
             If blnReturn Then
                 blnReturn = Me.UpdatePersonalInformationStatusErase(udtDB, dtAmendedTempVoucherAccount.Rows(0)("Validated_Acc_ID").ToString().Trim(), dtAmendedTempPersonalInfo.Rows(0)("Doc_Code").ToString().Trim())
             End If
@@ -318,16 +320,25 @@ Namespace Component.ImmD
 
                 udtSubsidizeWriteOffBLL.DeleteAccountWriteOff(udtEHSAccountModel.EHSPersonalInformationList, eHASubsidizeWriteOff_CreateReason.PersonalInfoRemoval, udtDB)
 
+                ' INT20-0063 (Fix display fullWidth characters in SP Claim Transaction Maintenance) [Start][Koala]
+                ' -----------------------------------------------------------------------------------------
+                ' 7. Update [VoucherTransaction].Voucher_Acc_ID = [VoucherAccount].Voucher_Acc_ID Where Temp_Voucher_Acc_ID = [TempVoucherAccount].Voucher_Acc_ID
+                If blnReturn Then
+                    blnReturn = Me.UpdateVoucherTransactionVoucherAccIDByTempVoucherAccID(udtDB, udtEHSAccountModel.ValidatedAccID, strTempVoucherAccID, strUserID.Trim())
+                End If
+                ' INT20-0063 (Fix display fullWidth characters in SP Claim Transaction Maintenance) [Endt][Koala]
+
             End If
 
             If blnReturn Then
                 blnReturn = Me.UpdateTempPersonalInformationValidated(udtDB, dtAmendedTempPersonalInfo.Rows(0)("Voucher_Acc_ID").ToString().Trim(), strUserID.Trim())
             End If
 
-            ' Mark [PersonalInfoAmendHistory].Record_Status = 'A' (Active)  (By Vocuher_Acc_ID & SubmitToVerify = 'Y')
+            ' 6. Mark [PersonalInfoAmendHistory].Record_Status = 'A' (Active)  (By Vocuher_Acc_ID & SubmitToVerify = 'Y')
             If blnReturn Then
                 blnReturn = Me.UpdatePersonalInfoAmendHistory(udtDB, dtAmendedTempVoucherAccount.Rows(0)("Validated_Acc_ID").ToString().Trim(), dtAmendedTempPersonalInfo.Rows(0)("Voucher_Acc_ID").ToString().Trim(), Common.Component.PersonalInfoRecordStatus.Active, dtAmendedTempPersonalInfo.Rows(0)("Doc_Code").ToString().Trim())
             End If
+
 
             Return blnReturn
         End Function

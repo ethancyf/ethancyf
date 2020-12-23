@@ -601,8 +601,6 @@ Partial Public Class spProfile
                                 Me.MultiViewDataEntry.ActiveViewIndex = 1
                             End If
 
-
-
                         Else
                             blnBackToDataEntryPage = True
                         End If
@@ -705,9 +703,13 @@ Partial Public Class spProfile
                     gvBankInfo.EditIndex = -1
                     gvBankInfo.DataBind()
 
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Scheme Information")
                     gvSI.DataSource = udtServiceProviderBLL.GetSP.PracticeList.Values
                     gvSI.EditIndex = -1
                     gvSI.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Scheme Information Completed")
 
                 End If
             Else
@@ -793,6 +795,8 @@ Partial Public Class spProfile
         intBusinessAddressFrom = udtSPProfileBLL.GetBusinessAddressFrom
         intBusinessAddressTo = udtSPProfileBLL.GetBusinessAddressTo
 
+        'udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00107, "Load Completed.")
+
     End Sub
 
     Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
@@ -862,8 +866,12 @@ Partial Public Class spProfile
             'Active tab is not in scheme information
             If Me.tablSchemeInfo.Visible Then
                 If Not IsNothing(udtPracticeBLL.GetPracticeCollection) Then
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Scheme Information")
                     gvSI.DataSource = udtPracticeBLL.GetPracticeCollection.Values
                     gvSI.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Scheme Information Completed")
                 End If
             End If
         ElseIf Me.TabContainer1.ActiveTabIndex = 4 Then
@@ -875,6 +883,10 @@ Partial Public Class spProfile
     '
 
     Private Sub BindServiceFeeGridview()
+        udtAuditLogEntry = New AuditLogEntry(Me.FunctionCode, Me)
+        udtAuditLogEntry.ResetActionTime()
+        udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00094, "Bind Service Fee")
+
         Dim udtSchemeBackOfficeList As SchemeBackOfficeModelCollection = Nothing
         Dim udtSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = Nothing
 
@@ -907,11 +919,8 @@ Partial Public Class spProfile
                     udtSchemeBackOffice = udtSchemeBackOfficeList.Filter(strSchemeCode)
                     udtSubsidizeGroupBackOffice = udtSubsidizeGroupBackOfficeList.Filter(strSchemeCode, strSubsidizeCode)
 
-
-                    'CRE15-004 TIV & QIV [Start][Winnie]
                     Dim chkEditSelectSubsidize As CheckBox = CType(gvrO.FindControl("chkEditSelectSubsidize"), CheckBox)
                     Dim imgEditSelectSubsidizeAlert As Image = CType(gvrO.FindControl("imgEditSelectSubsidizeAlert"), Image)
-
 
                     If imgEditSelectSubsidizeAlert.Visible Then
                         strTempdisplaySubsidizeAlert.Add("Y")
@@ -928,7 +937,6 @@ Partial Public Class spProfile
                             strTempSelectSubsidize.Add("N")
                         End If
                     End If
-                    'CRE15-004 TIV & QIV [End][Winnie]
 
                     ' Non-clinic
                     Dim chkGNonClinic As CheckBox = gvrO.FindControl("chkGNonClinic")
@@ -939,11 +947,6 @@ Partial Public Class spProfile
 
                     Dim txttemp As TextBox = CType(gvrO.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
                     Dim chkTemp As CheckBox = CType(gvrO.FindControl("chkEditNotProvideServiceFee"), CheckBox)
-                    'CRE14-008 - Range of service fee [Start][Chris YIM]
-                    '-----------------------------------------------------------------------------------------
-                    'Dim pnlTemp As Panel = CType(gvrO.FindControl("pnlEditPracticeSchemeServiceFee"), Panel)
-                    'CRE14-008 - Range of service fee [End][Chris YIM]
-
                     Dim tempImage As Image = CType(gvrO.FindControl("imgEditServiceFeeAlert"), Image)
 
                     If tempImage.Visible Then
@@ -972,24 +975,22 @@ Partial Public Class spProfile
                     End If
                 Next
 
+                'udtAuditLogEntry.ResetActionTime()
+                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Edit PracticeSchemeInfo")
                 gvEditPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
                 gvEditPracticeSchemeInfo.DataBind()
+                'udtAuditLogEntry.EndEvent()
+                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Edit PracticeSchemeInfo Completed")
 
                 For Each gvrN As GridViewRow In gvEditPracticeSchemeInfo.Rows
                     Dim chkEditSelect As CheckBox
-                    'CRE15-004 TIV & QIV [Start][Winnie]
+
                     Dim pnlEditPracticeSchemeSubsidize As Panel = DirectCast(gvrN.FindControl("pnlEditPracticeSchemeSubsidize"), Panel)
                     Dim pnlEditPracticeSchemeServiceFeeDisplay As Panel = DirectCast(gvrN.FindControl("pnlEditPracticeSchemeServiceFeeDisplay"), Panel)
-                    'CRE15-004 TIV & QIV [End][Winnie]
-
-                    'CRE14-008 - Range of service fee [Start][Chris YIM]
-                    '-----------------------------------------------------------------------------------------
-                    'Dim pnlEditPracticeSchemeServiceFee As Panel
-                    'CRE14-008 - Range of service fee [End][Chris YIM]
-
                     Dim txtEditPracticeSchemeServiceFee As TextBox = DirectCast(gvrN.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
                     Dim chkEditNotProvideServiceFee As CheckBox = DirectCast(gvrN.FindControl("chkEditNotProvideServiceFee"), CheckBox)
                     Dim imgEditServiceFeeAlert As Image
+
                     chkEditSelect = CType(gvrN.FindControl("chkSelect"), CheckBox)
 
                     Dim strSchemeCode As String = gvrN.Cells(0).Text.Trim
@@ -1018,7 +1019,6 @@ Partial Public Class spProfile
 
                         End If
 
-                        'CRE15-004 TIV & QIV [Start][Winnie]  
                         Dim imgEditSelectSubsidizeAlert As Image = CType(gvrN.FindControl("imgEditSelectSubsidizeAlert"), Image)
                         Dim chkEditSelectSubsidize As CheckBox = CType(gvrN.FindControl("chkEditSelectSubsidize"), CheckBox)
 
@@ -1037,13 +1037,6 @@ Partial Public Class spProfile
                         End If
 
                         If chkEditSelectSubsidize.Checked Then
-                            'CRE15-004 TIV & QIV [End][Winnie]
-
-                            'CRE14-008 - Range of service fee [Start][Chris YIM]
-                            '-----------------------------------------------------------------------------------------
-                            'pnlEditPracticeSchemeServiceFee = CType(gvrN.FindControl("pnlEditPracticeSchemeServiceFee"), Panel)
-                            'CRE14-008 - Range of service fee [End][Chris YIM]
-
                             txtEditPracticeSchemeServiceFee = CType(gvrN.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
                             chkEditNotProvideServiceFee = CType(gvrN.FindControl("chkEditNotProvideServiceFee"), CheckBox)
                             imgEditServiceFeeAlert = CType(gvrN.FindControl("imgEditServiceFeeAlert"), Image)
@@ -1053,35 +1046,23 @@ Partial Public Class spProfile
 
                             If udtSubsidizeGroupBackOffice.ServiceFeeEnabled Then
                                 If udtSubsidizeGroupBackOffice.ServiceFeeCompulsory Then
-                                    'CRE14-008 - Range of service fee [Start][Chris YIM]
-                                    '-----------------------------------------------------------------------------------------
-                                    'chkEditNotProvideServiceFee.Checked = False
-                                    'chkEditNotProvideServiceFee.Enabled = True
-                                    'CRE14-008 - Range of service fee [End][Chris YIM]
                                     txtEditPracticeSchemeServiceFee.Text = strTempSF(gvrN.RowIndex).Trim
-
                                     txtEditPracticeSchemeServiceFee.BackColor = Nothing
                                     txtEditPracticeSchemeServiceFee.Attributes.Remove("readonly")
                                 Else
                                     If strTempNotProvider(gvrN.RowIndex).Trim.Equals("Y") Then
                                         chkEditNotProvideServiceFee.Checked = True
-                                        'CRE14-008 - Range of service fee [Start][Chris YIM]
-                                        '-----------------------------------------------------------------------------------------
                                         chkEditNotProvideServiceFee.Enabled = True
-                                        'CRE14-008 - Range of service fee [End][Chris YIM]
-                                        txtEditPracticeSchemeServiceFee.Text = String.Empty
 
+                                        txtEditPracticeSchemeServiceFee.Text = String.Empty
                                         txtEditPracticeSchemeServiceFee.BackColor = Drawing.Color.WhiteSmoke
                                         txtEditPracticeSchemeServiceFee.Attributes.Add("readonly", "readonly")
 
                                     ElseIf strTempNotProvider(gvrN.RowIndex).Trim.Equals("N") Then
-                                        'CRE14-008 - Range of service fee [Start][Chris YIM]
-                                        '-----------------------------------------------------------------------------------------
                                         chkEditNotProvideServiceFee.Enabled = True
-                                        'CRE14-008 - Range of service fee [End][Chris YIM]
                                         chkEditNotProvideServiceFee.Checked = False
-                                        txtEditPracticeSchemeServiceFee.Text = strTempSF(gvrN.RowIndex).Trim
 
+                                        txtEditPracticeSchemeServiceFee.Text = strTempSF(gvrN.RowIndex).Trim
                                         txtEditPracticeSchemeServiceFee.BackColor = Nothing
                                         txtEditPracticeSchemeServiceFee.Attributes.Remove("readonly")
                                     End If
@@ -1099,24 +1080,21 @@ Partial Public Class spProfile
                                 End If
                             End If
 
-                            'CRE15-004 TIV & QIV [Start][Winnie]                            
                             pnlEditPracticeSchemeServiceFeeDisplay.Enabled = True
-                            'CRE15-004 TIV & QIV [End][Winnie]
 
                             ApplyPracticeSchemeChangeIndicator(row, True)
                         Else
-                            'CRE15-004 TIV & QIV [Start][Winnie]                            
                             pnlEditPracticeSchemeServiceFeeDisplay.Enabled = False
                             chkEditNotProvideServiceFee.Checked = False
                             txtEditPracticeSchemeServiceFee.Text = String.Empty
-                            'CRE15-004 TIV & QIV [End][Winnie]
+
                         End If
-                        'CRE15-004 TIV & QIV [Start][Winnie]  
+
                         pnlEditPracticeSchemeSubsidize.Enabled = True
                     Else
                         pnlEditPracticeSchemeSubsidize.Enabled = False
                     End If 'End of chkEditSelect
-                    'CRE15-004 TIV & QIV [End][Winnie]  
+
                 Next
             End If
         Next
@@ -1124,14 +1102,38 @@ Partial Public Class spProfile
         For Each gvr As GridViewRow In gvSI.Rows
             Dim gvPracticeSchemeInfo As GridView = CType(gvr.FindControl("gvPracticeSchemeInfo"), GridView)
             If Not IsNothing(gvPracticeSchemeInfo) Then
-                gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                Dim lblSchemeDispalySeq As Label = CType(gvr.FindControl("lblSchemeDispalySeq"), Label)
+                Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = udtPracticeBLL.GetPracticeCollection.Item(CInt(lblSchemeDispalySeq.Text.Trim)).PracticeSchemeInfoList
+                Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
+
+                'gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
                 gvPracticeSchemeInfo.DataBind()
 
                 ApplyPracticeSchemeChangeIndicator(gvr)
             End If
 
         Next
+
+        udtAuditLogEntry.EndEvent()
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00095, "Bind Service Fee Completed")
+
     End Sub
+
+    Private Function FilterSubsidizeGroupBackOfficeList(ByVal udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection) As SubsidizeGroupBackOfficeModelCollection
+        Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = New SubsidizeGroupBackOfficeModelCollection
+        Dim udtOriSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache
+
+        For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
+            Dim udtOriSubsidizeGroupBackOffice As SubsidizeGroupBackOfficeModel = udtOriSubsidizeGroupBackOfficeList.Filter(udtPracticeSchemeInfo.SchemeCode, udtPracticeSchemeInfo.SubsidizeCode)
+
+            If udtOriSubsidizeGroupBackOffice IsNot Nothing Then
+                udtResSubsidizeGroupBackOfficeList.Add(New SubsidizeGroupBackOfficeModel(udtOriSubsidizeGroupBackOffice))
+            End If
+        Next
+
+        Return udtResSubsidizeGroupBackOfficeList
+    End Function
 
     Private Sub SetActionImg()
         Dim blnAbleToUpdate As Boolean = False
@@ -1691,14 +1693,24 @@ Partial Public Class spProfile
 #End Region
 
     Private Sub BindSPProfile()
+
         If udtServiceProviderBLL.Exist Then
+            'udtAuditLogEntry.ResetActionTime()
+            'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Personal Particulars")
+
+            'Bind Personal Particulars
             Dim udtServiceProviderCollection As ServiceProviderModelCollection = New ServiceProviderModelCollection
             Dim udtSP As ServiceProviderModel = udtServiceProviderBLL.GetSP
             udtServiceProviderCollection.Add(udtSP.EnrolRefNo, udtSP)
             fvPersonalParticulars.DataSource = udtServiceProviderCollection.Values
             fvPersonalParticulars.ChangeMode(FormViewMode.ReadOnly)
             fvPersonalParticulars.DataBind()
+            'udtAuditLogEntry.EndEvent()
+            'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Personal Particulars Completed.")
 
+            'udtAuditLogEntry.ResetActionTime()
+            'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Medical Organization")
+            'Bind Medical Organization
             If udtSP.MOList.Count = 0 Then
                 gvMOInfo.DataSource = udtSPProfileBLL.EmptyMOCollection.Values
                 gvMOInfo.DataBind()
@@ -1709,39 +1721,79 @@ Partial Public Class spProfile
 
                 gvMOInfo.DataBind()
             End If
+            'udtAuditLogEntry.EndEvent()
+            'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Medical Organization Completed.")
 
+
+            'Bind Practice, Bank, Scheme Info
             If IsNothing(udtSP.PracticeList) Then
+                'udtAuditLogEntry.ResetActionTime()
+                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Practice")
                 gvPracticeInfo.DataSource = udtSPProfileBLL.EmptyPracticeCollection.Values
                 gvPracticeInfo.DataBind()
+                'udtAuditLogEntry.EndEvent()
+                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Practice Completed.")
 
+                'udtAuditLogEntry.ResetActionTime()
+                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Bank")
                 gvBankInfo.DataSource = Nothing
                 gvBankInfo.DataBind()
+                'udtAuditLogEntry.EndEvent()
+                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Bank Completed.")
 
+                'udtAuditLogEntry.ResetActionTime()
+                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Scheme Information")
                 gvSI.DataSource = Nothing
                 gvSI.DataBind()
+                'udtAuditLogEntry.EndEvent()
+                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Scheme Information Completed.")
             Else
                 If udtSP.PracticeList.Count = 0 Then
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Practice")
                     gvPracticeInfo.DataSource = udtSPProfileBLL.EmptyPracticeCollection.Values
                     gvPracticeInfo.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Practice Completed.")
 
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Bank")
                     gvBankInfo.DataSource = Nothing
                     gvBankInfo.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Bank Completed.")
 
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Scheme Information")
                     gvSI.DataSource = Nothing
                     gvSI.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Scheme Information Completed.")
                 Else
 
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Practice")
                     gvPracticeInfo.DataSource = udtPracticeBLL.GetPracticeCollection.Values
                     gvPracticeInfo.EditIndex = Me.setEditIndexPracticeGridview
                     gvPracticeInfo.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Practice Completed.")
 
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Bank")
                     gvBankInfo.DataSource = udtPracticeBLL.GetPracticeCollection.Values
                     gvBankInfo.EditIndex = Me.setEditIndexBankGridview
                     gvBankInfo.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Bank Completed.")
 
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Scheme Information")
                     gvSI.DataSource = udtPracticeBLL.GetPracticeCollection.Values
                     gvSI.EditIndex = Me.setEditIndexSchemeGridview
                     gvSI.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Scheme Information Completed.")
 
                 End If
 
@@ -1751,6 +1803,8 @@ Partial Public Class spProfile
             LoadPracticeOthersInfo()
             SetPracticeAdditionalInfo(False)
             ' CRE15-019 (Rename PPI-ePR to eHRSS) [End][Winnie]
+
+            udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00090, "Bind SP Completed.")
         End If
 
     End Sub
@@ -2584,7 +2638,7 @@ Partial Public Class spProfile
             '    BindServiceFeeGridview()
             'End If
         Catch ex As Exception
-            Throw ex
+            Throw
         End Try
 
     End Sub
@@ -6388,8 +6442,12 @@ Partial Public Class spProfile
 
                 Dim gvEditPracticeSchemeInfo As GridView = CType(e.Row.FindControl("gvEditPracticeSchemeInfo"), GridView)
 
+                'udtAuditLogEntry.ResetActionTime()
+                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind Edit PracticeSchemeInfo")
                 gvEditPracticeSchemeInfo.DataSource = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache.ToSPProfileDataTable
                 gvEditPracticeSchemeInfo.DataBind()
+                'udtAuditLogEntry.EndEvent()
+                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind Edit PracticeSchemeInfo Completed")
 
                 ApplyPracticeSchemeChangeIndicator(e.Row, True)
 
@@ -6512,11 +6570,17 @@ Partial Public Class spProfile
                     gvPracticeSchemeInfo.Visible = False
                     lblSchemeInfoNA.Visible = True
                 Else
+                    Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
+
                     gvPracticeSchemeInfo.Visible = True
                     lblSchemeInfoNA.Visible = False
-
-                    gvPracticeSchemeInfo.DataSource = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache.ToSPProfileDataTable
+                    'udtAuditLogEntry.ResetActionTime()
+                    'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind PracticeSchemeInfo")
+                    'gvPracticeSchemeInfo.DataSource = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache.ToSPProfileDataTable
+                    gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
                     gvPracticeSchemeInfo.DataBind()
+                    'udtAuditLogEntry.EndEvent()
+                    'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind PracticeSchemeInfo Completed")
 
                 End If
 
@@ -6527,6 +6591,7 @@ Partial Public Class spProfile
     End Sub
 
     Protected Sub gvSI_RowEditing(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewEditEventArgs)
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00091, "Click - Edit Scheme Information")
         gvSI.EditIndex = e.NewEditIndex
         gvSI.DataSource = udtPracticeBLL.GetPracticeCollection.Values
         gvSI.DataBind()
@@ -7125,7 +7190,7 @@ Partial Public Class spProfile
 
     Protected Sub gvSI_RowCancelingEdit(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCancelEditEventArgs)
         Me.msgBox.Visible = False
-
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00092, "Click - Cancel Edit Scheme Information")
         gvSI.EditIndex = -1
         gvSI.DataSource = udtPracticeBLL.GetPracticeCollection.Values
         gvSI.DataBind()
@@ -7272,44 +7337,43 @@ Partial Public Class spProfile
             If gvServiceFee.ID.Trim.Equals("gvPracticeSchemeInfo") Then
                 ' --- ReadOnly Mode ---
 
+                ' Find Control
                 Dim chkSelect As CheckBox = CType(e.Row.FindControl("chkSelect"), CheckBox)
                 Dim lblPracticeSchemeServiceFee As Label = CType(e.Row.FindControl("lblPracticeSchemeServiceFee"), Label)
                 Dim lblPracticeSchemeStatus As Label = CType(e.Row.FindControl("lblPracticeSchemeStatus"), Label)
                 Dim lblPracticeSchemeRemark As Label = CType(e.Row.FindControl("lblPracticeSchemeRemark"), Label)
-                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
-                'Dim hfPracticeSchemeStatus As HiddenField = e.Row.FindControl("hfPracticeSchemeStatus")
-                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                 Dim lblPracticeSchemeEffectiveDtm As Label = CType(e.Row.FindControl("lblPracticeSchemeEffectiveDtm"), Label)
                 Dim lblPracticeSchemeDelistDtm As Label = CType(e.Row.FindControl("lblPracticeSchemeDelistDtm"), Label)
 
-                strSchemeCode = e.Row.Cells(0).Text.Trim
-                strSubsidizeCode = e.Row.Cells(1).Text.Trim
+                'strSchemeCode = e.Row.Cells(0).Text.Trim
+                'strSubsidizeCode = e.Row.Cells(1).Text.Trim
+                strSchemeCode = e.Row.DataItem("SchemeCode").ToString.Trim
+                strSubsidizeCode = e.Row.DataItem("SubsidizeCode").ToString.Trim
 
                 strHealthProf = CType(gvr_Parent.FindControl("hfSchemeHealthProf"), HiddenField).Value.Trim
                 intPracticeDisplaySeq = CInt(CType(gvr_Parent.FindControl("lblSchemeDispalySeq"), Label).Text.Trim)
-                udtPracticeSchemeInfoList = udtPracticeBLL.GetPracticeCollection.Item(intPracticeDisplaySeq).PracticeSchemeInfoList
-
-                udtSchemeBackOffice = udtSchemeBackOfficeList.Filter(strSchemeCode)
-                udtSubsidizeGroupBackOffice = udtSubsidizeGroupBackOfficeList.Filter(strSchemeCode, strSubsidizeCode)
 
                 e.Row.Visible = False
 
+                'Check Professional
+                udtSchemeBackOffice = udtSchemeBackOfficeList.Filter(strSchemeCode)
+
                 If udtSchemeBackOffice.EligibleProfesional(strHealthProf) = False Then
-                    Return
+                    Exit Sub
                 End If
 
+                'Check PracticeSchemeInfo
+                udtPracticeSchemeInfoList = udtPracticeBLL.GetPracticeCollection.Item(intPracticeDisplaySeq).PracticeSchemeInfoList
+
                 If IsNothing(udtPracticeSchemeInfoList) OrElse udtPracticeSchemeInfoList.Count = 0 Then
-                    Return
+                    Exit Sub
                 End If
+
+                udtSubsidizeGroupBackOffice = udtSubsidizeGroupBackOfficeList.Filter(strSchemeCode, strSubsidizeCode)
 
                 udtPracticeSchemeInfo = udtPracticeSchemeInfoList.Item(intPracticeDisplaySeq, strSubsidizeCode, udtSchemeBackOffice.DisplaySeq, udtSubsidizeGroupBackOffice.DisplaySeq, udtSubsidizeGroupBackOffice.SchemeCode)
 
                 ' Hide the row if not enrolled or not providing service
-
-                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
-                'If DirectCast(e.Row.FindControl("hfGIsCategoryHeader"), HiddenField).Value = "Y" Then
                 If DirectCast(e.Row.FindControl("chkSelect"), CheckBox).Attributes("IsCategoryHeader") = "Y" Then
                     For Each udtPSINode As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
                         If udtPSINode.SchemeCode = strSchemeCode Then
@@ -7319,12 +7383,12 @@ Partial Public Class spProfile
                     Next
 
                     If IsNothing(udtPracticeSchemeInfo) Then
-                        Return
+                        Exit Sub
                     End If
 
                 Else
                     If IsNothing(udtPracticeSchemeInfoList.Filter(strSchemeCode)) Then
-                        Return
+                        Exit Sub
                     End If
 
                     ' Check all not provide service
@@ -7343,15 +7407,12 @@ Partial Public Class spProfile
 
                     Else
                         If IsNothing(udtPracticeSchemeInfo) OrElse udtPracticeSchemeInfo.ProvideService = False Then
-                            Return
-
+                            Exit Sub
                         End If
 
                     End If
 
                 End If
-                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
-
 
                 e.Row.Visible = True
 
@@ -7396,22 +7457,15 @@ Partial Public Class spProfile
                 End If
 
                 If Not IsNothing(udtPracticeSchemeInfo) Then
-                    ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
-                    'hfPracticeSchemeStatus.Value = udtPracticeSchemeInfo.RecordStatus.Trim
                     lblPracticeSchemeStatus.Attributes.Add("Status", udtPracticeSchemeInfo.RecordStatus.Trim)
-                    ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
                     lblPracticeSchemeStatus.Text = udtSPProfileBLL.GetPracticeSchemeInfoStatus(udtServiceProviderBLL.GetSP.PracticeList.Item(intPracticeDisplaySeq), strSchemeCode, Me.hfTableLocation.Value.Trim)
 
-                    'CRE15-004 TIV & QIV [Start][Winnie]
                     'Clear Remark if scheme is under admendment
                     If hfTableLocation.Value.Trim.Equals(TableLocation.Staging) AndAlso lblPracticeSchemeStatus.Text = PracticeSchemeInfoStagingStatus.Update Then
                         lblPracticeSchemeRemark.Text = String.Empty
                     Else
                         lblPracticeSchemeRemark.Text = udtPracticeSchemeInfo.Remark.Trim
                     End If
-                    'lblPracticeSchemeRemark.Text = udtPracticeSchemeInfo.Remark.Trim
-                    'CRE15-004 TIV & QIV [End][Winnie]
                 Else
                     lblPracticeSchemeStatus.Text = String.Empty
                     lblPracticeSchemeRemark.Text = String.Empty
@@ -7451,33 +7505,27 @@ Partial Public Class spProfile
                 If lblPracticeSchemeDelistDtm.Text.Equals(String.Empty) Then
                     lblPracticeSchemeDelistDtm.Text = Me.GetGlobalResourceObject("Text", "N/A")
                 End If
-                'CRE15-004 TIV & QIV [End][Winnie]
 
             ElseIf gvServiceFee.ID.Trim.Equals("gvEditPracticeSchemeInfo") Then
                 ' --- Edit Mode ---
 
                 Dim chkEditSelect As CheckBox = CType(e.Row.FindControl("chkSelect"), CheckBox)
-                'CRE15-004 TIV & QIV [Start][Winnie]
                 Dim chkEditSelectSubsidize As CheckBox = CType(e.Row.FindControl("chkEditSelectSubsidize"), CheckBox)
+
                 Dim pnlEditPracticeSchemeSubsidize As Panel = CType(e.Row.FindControl("pnlEditPracticeSchemeSubsidize"), Panel)
                 Dim pnlEditPracticeSchemeServiceFeeDisplay As Panel = CType(e.Row.FindControl("pnlEditPracticeSchemeServiceFeeDisplay"), Panel)
+
                 Dim lblEditPracticeSchemeSubsidizeCode As Label = CType(e.Row.FindControl("lblEditPracticeSchemeSubsidizeCode"), Label)
-                'CRE15-004 TIV & QIV [End][Winnie]
                 Dim lblEditPracticeSchemeServiceFee As Label = CType(e.Row.FindControl("lblEditPracticeSchemeServiceFee"), Label)
                 Dim pnlEditPracticeSchemeServiceFee As Panel = CType(e.Row.FindControl("pnlEditPracticeSchemeServiceFee"), Panel)
-                'CRE14-008 - Range of service fee [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
+
                 Dim pnlEditPracticeSchemeServiceFeeCompulsory As Panel = CType(e.Row.FindControl("pnlEditPracticeSchemeServiceFeeCompulsory"), Panel)
-                'CRE14-008 - Range of service fee [End][Chris YIM]
                 Dim txtEditPracticeSchemeServiceFee As TextBox = CType(e.Row.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
                 Dim chkEditNotProvideServiceFee As CheckBox = CType(e.Row.FindControl("chkEditNotProvideServiceFee"), CheckBox)
 
                 Dim lblEditPracticeSchemeStatus As Label = CType(e.Row.FindControl("lblEditPracticeSchemeStatus"), Label)
                 Dim lblEditPracticeSchemeRemark As Label = CType(e.Row.FindControl("lblEditPracticeSchemeRemark"), Label)
-                ' CRE16-022 (Add optional field "Remarks") [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
-                'Dim hfEditPracticeSchemeStatus As HiddenField = e.Row.FindControl("hfEditPracticeSchemeStatus")
-                ' CRE16-022 (Add optional field "Remarks") [End][Chris YIM]
+
                 Dim lblEditPracticeSchemeEffectiveDtm As Label = CType(e.Row.FindControl("lblEditPracticeSchemeEffectiveDtm"), Label)
                 Dim lblEditPracticeSchemeDelistDtm As Label = CType(e.Row.FindControl("lblEditPracticeSchemeDelistDtm"), Label)
 
@@ -7531,7 +7579,6 @@ Partial Public Class spProfile
 
                 chkEditNotProvideServiceFee.Attributes.Add("onclick", "javascript:enableSeviceFeeTextbox('" + chkEditNotProvideServiceFee.ClientID + "', '" + txtEditPracticeSchemeServiceFee.ClientID + "')")
 
-                'CRE15-004 TIV & QIV [Start][Winnie]
                 Dim panGNonClinic As Panel = e.Row.FindControl("panGNonClinic")
 
                 chkEditSelect.InputAttributes.Add("scheme", strSchemeCode.Trim)
@@ -7541,7 +7588,6 @@ Partial Public Class spProfile
 
                 pnlEditPracticeSchemeSubsidize.Attributes.Add("subsidize", strSubsidizeCode.Trim)
                 pnlEditPracticeSchemeServiceFeeDisplay.Attributes.Add("subsidizedepend", strSubsidizeCode.Trim)
-                'CRE15-004 TIV & QIV [End][Winnie]
 
                 If udtSchemeBackOffice.EligibleProfesional(strHealthProf) Then
 
@@ -8020,14 +8066,6 @@ Partial Public Class spProfile
         udtSchemeBackOfficeList = udtSchemeBackOfficeBLL.GetAllEffectiveSchemeBackOfficeWithSubsidizeGroupFromCache
         udtSubsidizeGroupBackOfficeList = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache
 
-        'If udtSchemeBackOfficeBLL.ExistSession_SchemeBackOfficeWithSubsidizeGroup Then
-        '    udtSchemeBackOfficeList = udtSchemeBackOfficeBLL.GetSession_SchemeBackOfficeWithSubsidizeGroup
-        'End If
-
-        'If udtSchemeBackOfficeBLL.ExistSession_SubsidizeGroupBackOffice Then
-        '    udtSubsidizeGroupBackOfficeList = udtSchemeBackOfficeBLL.GetSession_SubsidizeGroupBackOffice
-        'End If
-
         Dim dtCheckedScheme As New DataTable
         dtCheckedScheme = Session(SESS_CheckedScheme)
 
@@ -8039,49 +8077,9 @@ Partial Public Class spProfile
         Dim udtSchemeBackOffice As SchemeBackOfficeModel
         Dim udtSubsidizeGroupBackOffice As SubsidizeGroupBackOfficeModel
 
-        'CRE15-004 TIV & QIV [Start][Winnie]
         Dim strPreviousScheme As String = String.Empty
         Dim blnSelectSubsidize As Boolean = False
-        'CRE15-004 TIV & QIV [End][Winnie]
 
-        'CRE15-004 TIV & QIV [Start][Winnie] Remark
-        'For Each gvr As GridViewRow In gv.Rows
-        '    Dim strSchemeCode As String = gvr.Cells(0).Text.Trim
-        '    Dim strSubsidizeCode As String = gvr.Cells(1).Text.Trim
-
-        '    udtSchemeBackOffice = udtSchemeBackOfficeList.Filter(strSchemeCode)
-        '    udtSubsidizeGroupBackOffice = udtSubsidizeGroupBackOfficeList.Filter(strSchemeCode, strSubsidizeCode)
-
-        '    Dim txttemp As TextBox = CType(gvr.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
-        '    Dim chkTemp As CheckBox = CType(gvr.FindControl("chkEditNotProvideServiceFee"), CheckBox)
-        '    'CRE14-008 - Range of service fee [Start][Chris YIM]
-        '    '-----------------------------------------------------------------------------------------
-        '    'Dim pnlTemp As Panel = CType(gvr.FindControl("pnlEditPracticeSchemeServiceFee"), Panel)
-        '    'CRE14-008 - Range of service fee [End][Chris YIM]
-
-        '    If udtSubsidizeGroupBackOffice.ServiceFeeEnabled Then
-        '        If udtSubsidizeGroupBackOffice.ServiceFeeCompulsory Then
-        '            strTempNotProvider.Add("N")
-        '            strTempSF.Add(txttemp.Text.Trim)
-        '        Else
-        '            If chkTemp.Checked Then
-        '                strTempNotProvider.Add("Y")
-        '                strTempSF.Add(String.Empty)
-        '            Else
-        '                strTempNotProvider.Add("N")
-        '                strTempSF.Add(txttemp.Text.Trim)
-        '            End If
-        '        End If
-        '    Else
-        '        strTempNotProvider.Add(String.Empty)
-        '        strTempSF.Add(String.Empty)
-        '    End If
-
-        'Next
-
-        'gv.DataSource = udtSubsidizeGroupBackOfficeList
-        'gv.DataBind()
-        'CRE15-004 TIV & QIV [End][Winnie] Remark
 
         Dim strPreviousSchemeCode As String = String.Empty
 
@@ -8093,16 +8091,10 @@ Partial Public Class spProfile
 
             For Each row As GridViewRow In gv.Rows
                 Dim chkEditSelect As CheckBox
-                'CRE14-008 - Range of service fee [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
-                'Dim pnlEditPracticeSchemeServiceFee As Panel
-                'CRE14-008 - Range of service fee [End][Chris YIM]
                 Dim txtEditPracticeSchemeServiceFee As TextBox
                 Dim chkEditNotProvideServiceFee As CheckBox
                 Dim imgEditServiceFeeAlert As Image
-                'CRE15-004 TIV & QIV [Start][Winnie]
                 Dim imgEditSelectSubsidizeAlert As Image
-                'CRE15-004 TIV & QIV [End][Winnie]
 
                 chkEditSelect = CType(row.FindControl("chkSelect"), CheckBox)
 
@@ -8123,7 +8115,6 @@ Partial Public Class spProfile
 
                 If chkEditSelect.Checked Then
 
-                    'CRE15-004 TIV & QIV [Start][Winnie]  
                     imgEditSelectSubsidizeAlert = CType(row.FindControl("imgEditSelectSubsidizeAlert"), Image)
                     imgEditSelectSubsidizeAlert.Visible = False
 
@@ -8148,43 +8139,12 @@ Partial Public Class spProfile
 
                     Dim chkEditSelectSubsidize As CheckBox = CType(row.FindControl("chkEditSelectSubsidize"), CheckBox)
                     If chkEditSelectSubsidize.Checked Then
-                        'CRE15-004 TIV & QIV [End][Winnie]
-
-                        'CRE14-008 - Range of service fee [Start][Chris YIM]
-                        '-----------------------------------------------------------------------------------------
-                        'pnlEditPracticeSchemeServiceFee = CType(row.FindControl("pnlEditPracticeSchemeServiceFee"), Panel)
-                        'CRE14-008 - Range of service fee [End][Chris YIM]
                         txtEditPracticeSchemeServiceFee = CType(row.FindControl("txtEditPracticeSchemeServiceFee"), TextBox)
                         chkEditNotProvideServiceFee = CType(row.FindControl("chkEditNotProvideServiceFee"), CheckBox)
                         imgEditServiceFeeAlert = CType(row.FindControl("imgEditServiceFeeAlert"), Image)
                         imgEditServiceFeeAlert.Visible = False
 
                         If udtSubsidizeGroupBackOffice.ServiceFeeEnabled Then
-                            '    'CRE15-004 TIV & QIV [Start][Winnie] Remark
-                            '    If udtSubsidizeGroupBackOffice.ServiceFeeCompulsory Then
-                            '        chkEditNotProvideServiceFee.Checked = False
-                            '        txtEditPracticeSchemeServiceFee.Text = strTempSF(row.RowIndex).Trim
-
-                            '        txtEditPracticeSchemeServiceFee.BackColor = Nothing
-                            '        txtEditPracticeSchemeServiceFee.Attributes.Remove("readonly")
-                            '    Else
-                            '        If strTempNotProvider(row.RowIndex).Trim.Equals("Y") Then
-                            '            chkEditNotProvideServiceFee.Checked = True
-                            '            txtEditPracticeSchemeServiceFee.Text = String.Empty
-
-                            '            txtEditPracticeSchemeServiceFee.BackColor = Drawing.Color.WhiteSmoke
-                            '            txtEditPracticeSchemeServiceFee.Attributes.Add("readonly", "readonly")
-
-                            '        ElseIf strTempNotProvider(row.RowIndex).Trim.Equals("N") Then
-                            '            chkEditNotProvideServiceFee.Checked = False
-                            '            txtEditPracticeSchemeServiceFee.Text = strTempSF(row.RowIndex).Trim
-
-                            '            txtEditPracticeSchemeServiceFee.BackColor = Nothing
-                            '            txtEditPracticeSchemeServiceFee.Attributes.Remove("readonly")
-                            '        End If
-                            '    End If
-                            'CRE15-004 TIV & QIV [End][Winnie] Remark
-
                             If Not chkEditNotProvideServiceFee.Checked Then
                                 SM = Validator.chkServiceFee(txtEditPracticeSchemeServiceFee.Text.Trim)
                                 If Not IsNothing(SM) Then
@@ -8194,45 +8154,29 @@ Partial Public Class spProfile
                             End If
                         End If
 
-                        'If Not strPerviousMScheme.Trim.Equals(strMasterSchemeCode.Trim) Then
-                        '    Dim blnHadServiceFee As Boolean = False
-                        '    For Each gvrTemp As GridViewRow In gv.Rows
-                        '        Dim chkTemp As CheckBox = CType(gvrTemp.FindControl("chkEditNotProvideServiceFee"), CheckBox)
-                        '        If strMasterSchemeCode.Trim.Equals(gvrTemp.Cells(0).Text.Trim) Then
-                        '            If Not chkTemp.Checked Then
-                        '                blnHadServiceFee = True
-                        '            End If
-                        '        End If
-                        '    Next
 
-                        '    If Not blnHadServiceFee Then
-                        '        strTempMSchemeCode.Add(strMasterSchemeCode.Trim)
-                        '    End If
-
-                        '    strPerviousMScheme = strMasterSchemeCode
-                        'End If
 
                     End If
-                    'CRE15-004 TIV & QIV [Start][Winnie]
+
                 End If
-                'CRE15-004 TIV & QIV [End][Winnie]
+
             Next
         End If
-
-        'For Each row As GridViewRow In gv.Rows
-        '    Dim imgEditServiceFeeAlert As Image = CType(row.FindControl("imgEditServiceFeeAlert"), Image)
-        '    For j As Integer = 0 To strTempMSchemeCode.Count - 1
-        '        If row.Cells(0).Text.Trim.Equals(strTempMSchemeCode(j).Trim) Then
-        '            imgEditServiceFeeAlert.Visible = True
-        '        End If
-        '    Next
-        'Next
 
         For Each gvr As GridViewRow In gvSI.Rows
             Dim gvPracticeSchemeInfo As GridView = CType(gvr.FindControl("gvPracticeSchemeInfo"), GridView)
             If Not IsNothing(gvPracticeSchemeInfo) Then
-                gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                Dim lblSchemeDispalySeq As Label = CType(gvr.FindControl("lblSchemeDispalySeq"), Label)
+                Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = udtPracticeBLL.GetPracticeCollection.Item(CInt(lblSchemeDispalySeq.Text.Trim)).PracticeSchemeInfoList
+                Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
+
+                'udtAuditLogEntry.ResetActionTime()
+                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind PracticeSchemeInfo")
+                'gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
                 gvPracticeSchemeInfo.DataBind()
+                'udtAuditLogEntry.EndEvent()
+                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind PracticeSchemeInfo Completed")
 
                 ApplyPracticeSchemeChangeIndicator(gvr)
             Else
@@ -8669,7 +8613,7 @@ Partial Public Class spProfile
 
         Catch ex As Exception
             Throw
-        End Try        
+        End Try
     End Sub
     ' CRE17-016 Checking of PCD status during VSS enrolment [End][Winnie]
 

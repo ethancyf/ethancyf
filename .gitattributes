@@ -8301,6 +8301,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_AccountChangeMaintenance_get_byUpdType.sql -
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_AccountChangeMaintenance_upd.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_AccountChangeMaintenance_upd_ForceReject.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_AlterViewYear.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_ApplicationLogSSO_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Area_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_AuditLOGIVRSHCSP_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_AuditLOGIVRSPublic_add.sql -text
@@ -9323,6 +9324,8 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_SubsidizeWriteOffGeneratorQueue_upd.sql -tex
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Subsidize_get_all.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Subsidize_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SuperDownload_get_byReimbID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_SymmetricKey_close.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_SymmetricKey_open.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SystemDateTime_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SystemLogHCSP_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_SystemLogHCVR_add.sql -text
@@ -9666,12 +9669,17 @@ EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_Statistics_STAT00004_GetReport.sql -
 EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_Statistics_STAT00005_GetReport.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/StoreProc/proc_SystemDateTime_get.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_AlterInterfaceViewYear.sql -text
+EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_AuditLogInterface_add.sql -text
+EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_AuditlogSSO_add.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_EHR_ConnectFail_Check.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_InterfaceLog_GetTimeDiff_ByDtm.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_InterfaceLog_GetTimeDiff_ByMinuteBefore.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_Interface_VersionControl_get_cache.sql -text
+EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_SymmetricKey_close.sql -text
+EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_SymmetricKey_open.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_SystemDateTime_get.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_SystemLogInterface_add.sql -text
+EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_ins_sso_audit_logs.sql -text
 EHS2019/EHS_Tool/ConnectionStringEditor/App.config -text
 EHS2019/EHS_Tool/ConnectionStringEditor/AppMySetting.config -text
 EHS2019/EHS_Tool/ConnectionStringEditor/ApplyChangesForm.Designer.vb -text

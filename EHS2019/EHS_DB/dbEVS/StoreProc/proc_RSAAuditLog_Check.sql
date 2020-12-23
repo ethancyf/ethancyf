@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	6 March 2017
 -- CR No.			CRE16-019 (To implement token sharing between eHS(S) and eHRSS)
@@ -101,8 +108,7 @@ AS BEGIN
 	SELECT Parm_Value2, 'Sub' FROM SystemParameters WHERE Parameter_Name = 'RSAAPIVersion' AND Scheme_Code = 'ALL' AND Parm_Value2 IS NOT NULL
 
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 
 -- =============================================
@@ -194,7 +200,7 @@ AS BEGIN
 			AND E_Function_Code = EncryptByKey(KEY_GUID('sym_Key'), @RSA_Function_Code_Sub)
 	
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	
 -- =============================================

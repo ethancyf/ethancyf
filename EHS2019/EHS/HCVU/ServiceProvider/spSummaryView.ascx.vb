@@ -904,8 +904,23 @@ Partial Public Class spSummaryView
             Else
                 Session(SESS_SPSummaryViewPracticeSchemeInfoList) = udtPracticeSchemeInfoList
 
-                gvPracticeSchemeInfo.DataSource = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache.ToSPProfileDataTable
+                ' INT20-0059 (Performance tuning in VU data entry) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = New SubsidizeGroupBackOfficeModelCollection
+                Dim udtOriSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache
+
+                For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
+                    Dim udtOriSubsidizeGroupBackOffice As SubsidizeGroupBackOfficeModel = udtOriSubsidizeGroupBackOfficeList.Filter(udtPracticeSchemeInfo.SchemeCode, udtPracticeSchemeInfo.SubsidizeCode)
+
+                    If udtOriSubsidizeGroupBackOffice IsNot Nothing Then
+                        udtResSubsidizeGroupBackOfficeList.Add(New SubsidizeGroupBackOfficeModel(udtOriSubsidizeGroupBackOffice))
+                    End If
+                Next
+
+                'gvPracticeSchemeInfo.DataSource = udtSchemeBackOfficeBLL.GetAllEffectiveSubsidizeGroupFromCache.ToSPProfileDataTable
+                gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
                 gvPracticeSchemeInfo.DataBind()
+                ' INT20-0059 (Performance tuning in VU data entry) [End][Chris YIM]
 
             End If
 

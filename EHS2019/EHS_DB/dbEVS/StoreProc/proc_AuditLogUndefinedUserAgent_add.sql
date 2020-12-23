@@ -10,6 +10,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Created by:		Chris YIM
 -- Created date:	24 Oct 2016
 -- CR No.			I-CRE16-006
@@ -37,11 +44,11 @@ DECLARE @IN_Platform varchar(20)
 
 SET @System_Dtm = getdate()
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
+
 SET @E_Session_ID = EncryptByKey(KEY_GUID('sym_Key'), @session_id)
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 SET @IN_User_Agent = @user_agent
 SET @IN_Platform = @platform

@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Modified by:		Derek Leung
 -- Modified date: 	25-01-2011
 -- Description:		Insert log with view  CRE11-001
@@ -85,8 +92,8 @@ declare @E_Acc_ID varbinary(50)
 declare @E_Doc_Code varbinary(50)
 declare @E_Doc_No varbinary(100)
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
+
 select @E_System_Dtm = EncryptByKey(KEY_GUID('sym_Key'), convert(varchar(23), @System_Dtm, 21))
 select @E_Action_Dtm = EncryptByKey(KEY_GUID('sym_Key'), @action_time_str)
 select @E_End_Dtm = EncryptByKey(KEY_GUID('sym_Key'), @end_time_str)
@@ -106,7 +113,7 @@ select @E_Acc_ID = EncryptByKey(KEY_GUID('sym_Key'), @Acc_ID)
 select @E_Doc_Code = EncryptByKey(KEY_GUID('sym_Key'), @Doc_Code)
 select @E_Doc_No = EncryptByKey(KEY_GUID('sym_Key'), @Doc_No)
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 -- =============================================
 -- Insert Transcation

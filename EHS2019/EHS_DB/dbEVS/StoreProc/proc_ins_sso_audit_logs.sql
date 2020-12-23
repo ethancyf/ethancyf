@@ -9,10 +9,10 @@ GO
 
 -- =============================================
 -- Modification History
--- CR No.:			    
--- Modified by:		
--- Modified date:	    
--- Description:		
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
 -- =============================================
 -- =============================================
 -- Modification History
@@ -57,10 +57,9 @@ BEGIN
 		
 declare @E_plain_assertion varbinary(8000)
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 select @E_plain_assertion = EncryptByKey(KEY_GUID('sym_Key'), @v_in_plain_assertion)
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 INSERT INTO sso_audit_logs (
 	txn_id,

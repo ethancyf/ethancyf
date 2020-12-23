@@ -226,7 +226,7 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblSchemeCode" runat="server" Text='<%# Bind("Scheme_Code") %>'></asp:Label><br />
                                                             <asp:LinkButton ID="lbtn_transactionNum" runat="server" Text='<%# Eval("Transaction_ID") %>' CommandArgument='<%# Eval("Transaction_ID") %>'></asp:LinkButton>
-                                                            <asp:HiddenField ID="hfSchemeCode" runat="server" Value='<%# Bind("Scheme_Code") %>' />
+                                                            <%--<asp:HiddenField ID="hfSchemeCode" runat="server" Value='<%# Bind("Scheme_Code") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, TransactionDate %>" SortExpression="Transaction_Dtm">
@@ -234,7 +234,7 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblTranListTranDtm" runat="server" Text='<%# Bind("Transaction_Dtm") %>'></asp:Label>
                                                             <asp:Label ID="lblTranListTranTime" runat="server"/>
-                                                            <asp:HiddenField ID="hfTranListTranDtm" runat="server" Value='<%# Bind("Transaction_Dtm") %>' />
+                                                            <%--<asp:HiddenField ID="hfTranListTranDtm" runat="server" Value='<%# Bind("Transaction_Dtm") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, TransactionDate %>" SortExpression="Transaction_Dtm">
@@ -253,9 +253,9 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblDocCode" runat="server" Text='<%# Bind("Doc_Display_Code") %>'></asp:Label><br />
                                                             <asp:Label ID="lblTranListHKID" runat="server"></asp:Label>
-                                                            <asp:HiddenField ID="hfDocCode" runat="server" Value='<%# Bind("Doc_Code") %>' />
+                                                            <%--<asp:HiddenField ID="hfDocCode" runat="server" Value='<%# Bind("Doc_Code") %>' />
                                                             <asp:HiddenField ID="hfTranListIDNo1" runat="server" Value='<%# Bind("IDNo") %>' />
-                                                            <asp:HiddenField ID="hfTranListIDNo2" runat="server" Value='<%# Bind("IDNo2") %>' />
+                                                            <asp:HiddenField ID="hfTranListIDNo2" runat="server" Value='<%# Bind("IDNo2") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, IdentityDocNo %>" SortExpression="IDNo" Visible="false">
@@ -308,8 +308,8 @@
                                                         <ItemStyle Width="175px" />
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblTranListTranStatusEng" runat="server" Text='<%# Bind("Record_Status") %>'></asp:Label>
-                                                            <asp:HiddenField ID="hfTranListTranStatusEng" runat="server" Value='<%# Bind("Record_Status") %>' />
-                                                            <asp:HiddenField ID="hfTranListManualReimburse" runat="server" Value='<%# Bind("Manual_Reimburse") %>' />
+                                                            <%--<asp:HiddenField ID="hfTranListTranStatusEng" runat="server" Value='<%# Bind("Record_Status") %>' />--%>
+                                                            <%--<asp:HiddenField ID="hfTranListManualReimburse" runat="server" Value='<%# Bind("Manual_Reimburse") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, Status %>" SortExpression="Record_Status">
@@ -331,8 +331,8 @@
                                                                 ForeColor="Blue"></asp:Label>
                                                             <%--<asp:HiddenField ID="hfTranListServiceType" runat="server" Value='<%# Bind("Service_Type") %>' />
                                                             <asp:HiddenField ID="hfTranListSubsidizeType" runat="server" Value='<%# Bind("Subsidize_Type") %>' />--%>
-                                                            <asp:HiddenField ID="hfTranListInformationCode" runat="server" Value='<%# Bind("Information_Code") %>' />
-                                                            <asp:HiddenField ID="hfTranListInformationCodeChi" runat="server" Value='<%# Bind("Information_Code_Chi") %>' />
+                                                            <%--<asp:HiddenField ID="hfTranListInformationCode" runat="server" Value='<%# Bind("Information_Code") %>' />
+                                                            <asp:HiddenField ID="hfTranListInformationCodeChi" runat="server" Value='<%# Bind("Information_Code_Chi") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, OtherInformationNL %>">
@@ -347,7 +347,7 @@
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblTranListOtherInformationCN" runat="server" Text="<%$ Resources:Text, Details %>"
                                                                 ForeColor="Blue"></asp:Label>
-                                                            <asp:HiddenField ID="hfTranListInformationCodeCN" runat="server" Value='<%# Bind("Information_Code_CN") %>' />
+                                                            <%--<asp:HiddenField ID="hfTranListInformationCodeCN" runat="server" Value='<%# Bind("Information_Code_CN") %>' />--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="<%$ Resources:Text, PracticeName %>" SortExpression="Practice_Name">

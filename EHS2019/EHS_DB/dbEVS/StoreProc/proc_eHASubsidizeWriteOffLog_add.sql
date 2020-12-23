@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
 -- Modified by:	    Winnie SUEN
 -- Modified date:   23 Nov 2017
@@ -55,12 +62,11 @@ AS BEGIN
 -- Initialization
 -- ============================================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SET @encrypt_field1 = EncryptByKey(KEY_GUID('sym_Key'), @doc_id)
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 -- ============================================================
 -- Return results

@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Modified by:		Derek Leung
 -- Modified date: 	25-01-2011
 -- Description:		Insert log with view  CRE11-001
@@ -58,8 +65,8 @@ select @application_server = host_name()
   
 select @year = convert(varchar(2), @system_dtm, 12)  
   
-OPEN SYMMETRIC KEY sym_Key  
-DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
+
 select @E_Client_IP = EncryptByKey(KEY_GUID('sym_Key'), @client_ip)  
 select @E_User_ID = EncryptByKey(KEY_GUID('sym_Key'), @user_id)  
 select @E_Description = EncryptByKey(KEY_GUID('sym_Key'), @description)  
@@ -72,7 +79,7 @@ select @E_Log_Type = EncryptByKey(KEY_GUID('sym_Key'), @log_type)
 select @E_Browser = EncryptByKey(KEY_GUID('sym_Key'), @browser)  
 select @E_OS = EncryptByKey(KEY_GUID('sym_Key'), @os)  
   
-CLOSE SYMMETRIC KEY sym_Key  
+EXEC [proc_SymmetricKey_close]
   
 -- =============================================  
 -- Insert transaction  

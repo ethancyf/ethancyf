@@ -16,10 +16,11 @@ GO
 
 -- =============================================  
 -- Modification History  
--- Modified by:       
--- Modified date:   
--- CR No.:     
--- Description:      
+-- Modified by:     Koala CHENG  
+-- Modified date:   21 Dec 2020
+-- CR No.:			INT20-0064 Fix eHSW0008 HAD filtering)
+-- Description:     1. [01-Summary] Fix HAD and DHC filtering with SP + practice no.
+--					2. Add WITH(NOLOCK)
 -- =============================================  
 -- =============================================
 -- Author:			Raiman Chong
@@ -143,6 +144,7 @@ AS
          Exact_DOB           CHAR(1), 
          Dose                CHAR(20), 
          SP_ID               CHAR(8), 
+		 Practice_Display_Seq SMALLINT,
          Subsidize_Code      VARCHAR(10), 
          Subsidize_Item_Code CHAR(10), 
          identity_num        VARCHAR(20), 
@@ -332,7 +334,7 @@ AS
 
         SELECT @Current_Season_Start_Dtm = MIN(SG.Claim_Period_From)
         FROM SubsidizeGroupClaim AS SG WITH(NOLOCK)
-             INNER JOIN SubsidizeGroupClaimItemDetails AS SGD
+             INNER JOIN SubsidizeGroupClaimItemDetails AS SGD WITH(NOLOCK)
              ON SG.Scheme_Code = SGD.Scheme_Code
                 AND SG.Scheme_Seq = SGD.Scheme_Seq
                 AND SG.Subsidize_Code = SGD.Subsidize_Code
@@ -352,7 +354,7 @@ AS
                    CONVERT(VARCHAR, DECRYPTBYKEY(p.Encrypt_Field1)), 
                    p.doc_code, 
                    p.dob
-            FROM voucheraccount AS va, 
+            FROM voucheraccount AS va WITH(NOLOCK), 
                  personalinformation AS p WITH(NOLOCK)
             WHERE va.voucher_acc_id = p.voucher_acc_id
                   AND va.create_dtm < @Cutoff_Dtm
@@ -371,7 +373,7 @@ AS
                    CONVERT(VARCHAR, DECRYPTBYKEY(p.Encrypt_Field1)), 
                    p.doc_code, 
                    p.dob
-            FROM tempvoucheraccount AS va, 
+            FROM tempvoucheraccount AS va WITH(NOLOCK), 
                  temppersonalinformation AS p WITH(NOLOCK)
             WHERE va.voucher_acc_id = p.voucher_acc_id
                   AND va.create_dtm < @Cutoff_Dtm
@@ -387,6 +389,7 @@ AS
                 Exact_DOB, 
                 Dose, 
                 SP_ID, 
+				Practice_Display_Seq,
                 Subsidize_Code, 
                 Subsidize_Item_Code, 
                 IsSIV, 
@@ -401,6 +404,7 @@ AS
                VR.Exact_DOB, 
                D.Available_Item_Code, 
                VT.SP_ID, 
+			   VT.Practice_Display_Seq,
                D.Subsidize_Code, 
                D.Subsidize_Item_Code,
                CASE
@@ -421,7 +425,7 @@ AS
                 AND VT.Doc_Code = VR.Doc_Code
                 AND VT.Voucher_Acc_ID IS NOT NULL
                 AND VT.Voucher_Acc_ID <> ''
-             INNER JOIN VoucherAccount AS A
+             INNER JOIN VoucherAccount AS A WITH(NOLOCK)
              ON VT.Voucher_Acc_ID = A.Voucher_Acc_ID
         WHERE VT.Scheme_Code = @Scheme_Code
               AND VT.Transaction_Dtm <= @Cutoff_Dtm
@@ -458,6 +462,7 @@ AS
                 Exact_DOB, 
                 Dose, 
                 SP_ID, 
+				Practice_Display_Seq,
                 Subsidize_Code, 
                 Subsidize_Item_Code, 
                 IsSIV, 
@@ -472,6 +477,7 @@ AS
                TVR.Exact_DOB, 
                D.Available_Item_Code, 
                VT.SP_ID, 
+			   VT.Practice_Display_Seq,
                D.Subsidize_Code, 
                D.Subsidize_Item_Code,
                CASE
@@ -533,6 +539,7 @@ AS
                 Exact_DOB, 
                 Dose, 
                 SP_ID, 
+				Practice_Display_Seq,
                 Subsidize_Code, 
                 Subsidize_Item_Code, 
                 IsSIV, 
@@ -547,6 +554,7 @@ AS
                TVR.Exact_DOB, 
                D.Available_Item_Code, 
                VT.SP_ID, 
+			   VT.Practice_Display_Seq,
                D.Subsidize_Code, 
                D.Subsidize_Item_Code,
                CASE
@@ -956,8 +964,9 @@ AS
                       AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'A'
                 )));    
                 -- LAIV --  
@@ -970,8 +979,9 @@ AS
                       AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'A'
                 )));
 
@@ -990,8 +1000,9 @@ AS
                                          AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'A'
                 )))
                                END;
@@ -1010,8 +1021,9 @@ AS
                 AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'A'
                 )));
 
@@ -1066,8 +1078,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+			      AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'A'
         )))
         WHERE _display_seq = 36;
@@ -1081,8 +1094,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+			      AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'A'
         )))
         WHERE _display_seq = 36;
@@ -1098,8 +1112,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+			      AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'A'
         )))
         WHERE _display_seq = 36;
@@ -1112,8 +1127,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+			      AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'A'
         )))
         WHERE _display_seq = 36;
@@ -1208,8 +1224,9 @@ AS
                       AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'B'
                 )));    
                 -- LAIV --  
@@ -1222,8 +1239,9 @@ AS
                       AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'B'
                 )));
 
@@ -1242,8 +1260,9 @@ AS
                                          AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'B'
                 )))
                                END;
@@ -1262,8 +1281,9 @@ AS
                 AND (EXISTS
                 (
                     SELECT 1
-                    FROM GovSIVHAD AS gs
+                    FROM GovSIVHAD AS gs WITH(NOLOCK)
                     WHERE gs.SP_ID = ts.SP_ID
+						  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                           AND gs.[GROUP] LIKE 'B'
                 )));
 
@@ -1318,8 +1338,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+			      AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'B'
         )))
         WHERE _display_seq = 55;
@@ -1333,8 +1354,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+				  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'B'
         )))
         WHERE _display_seq = 55;
@@ -1350,8 +1372,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+				  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'B'
         )))
         WHERE _display_seq = 55;
@@ -1364,8 +1387,9 @@ AS
                     AND (EXISTS
         (
             SELECT 1
-            FROM GovSIVHAD AS gs
+            FROM GovSIVHAD AS gs WITH(NOLOCK)
             WHERE gs.SP_ID = ts.SP_ID
+				  AND gs.Practice_Display_Seq = ts.Practice_Display_Seq
                   AND gs.[GROUP] LIKE 'B'
         )))
         WHERE _display_seq = 55;
@@ -1773,7 +1797,7 @@ AS
         SELECT 
                SP_ID, 
                Practice_Display_Seq
-        FROM GovSIVHAD where [GROUP] like 'A';
+        FROM GovSIVHAD WITH(NOLOCK) where [GROUP] like 'A';
 
 		INSERT INTO #WS04
                (
@@ -1805,7 +1829,7 @@ AS
         SELECT  
                SP_ID, 
                Practice_Display_Seq
-        FROM GovSIVHAD where [GROUP] like 'B';
+        FROM GovSIVHAD WITH(NOLOCK) where [GROUP] like 'B';
 
         -- =============================================  
         -- Initialization for #WS04 end

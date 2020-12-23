@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Pak Ho LEE
 -- Create date:		19-11-2008
 -- Description:		Add AuditLOGIVRSPublic
@@ -78,8 +85,7 @@ select @application_server = host_name()
 
 select @year = convert(varchar(2), @system_dtm, 12)
 
-OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 SELECT @E_System_Dtm = EncryptByKey(KEY_GUID('sym_Key'), @system_dtm_str)
 SELECT @E_Action_Dtm = EncryptByKey(KEY_GUID('sym_Key'), @action_time_str)
@@ -91,7 +97,7 @@ SELECT @E_Log_ID = EncryptByKey(KEY_GUID('sym_Key'), @log_id)
 SELECT @E_Description = EncryptByKey(KEY_GUID('sym_Key'), @description)
 SELECT @E_Application_Server = EncryptByKey(KEY_GUID('sym_Key'), @application_server)
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 -- =============================================
 -- Insert transaction

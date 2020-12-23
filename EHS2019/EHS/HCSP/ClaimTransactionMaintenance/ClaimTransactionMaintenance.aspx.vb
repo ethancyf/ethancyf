@@ -1934,9 +1934,9 @@ Partial Public Class ClaimTransactionMaintenance
 
             ' Identity Document No. + Remark
             Dim lblTranListHKID As Label = e.Row.FindControl("lblTranListHKID")
-            Dim hfDocCode As HiddenField = e.Row.FindControl("hfDocCode")
-            Dim hfTranListIDNo1 As HiddenField = e.Row.FindControl("hfTranListIDNo1")
-            Dim hfTranListIDNo2 As HiddenField = e.Row.FindControl("hfTranListIDNo2")
+            'Dim hfDocCode As HiddenField = e.Row.FindControl("hfDocCode")
+            'Dim hfTranListIDNo1 As HiddenField = e.Row.FindControl("hfTranListIDNo1")
+            'Dim hfTranListIDNo2 As HiddenField = e.Row.FindControl("hfTranListIDNo2")
 
             ' Name (Chi)
             Dim lblTranListCname As Label = e.Row.FindControl("lblTranListCname")
@@ -1991,15 +1991,19 @@ Partial Public Class ClaimTransactionMaintenance
             Dim lblTranListTranStatusEng As Label = e.Row.FindControl("lblTranListTranStatusEng")
             Dim lblTranListTranStatusChi As Label = e.Row.FindControl("lblTranListTranStatusChi")
             Dim lblTranListTranStatusCN As Label = e.Row.FindControl("lblTranListTranStatusCN")
-            Dim hfTranListTranStatusEng As HiddenField = e.Row.FindControl("hfTranListTranStatusEng")
+            'Dim hfTranListTranStatusEng As HiddenField = e.Row.FindControl("hfTranListTranStatusEng")
+            Dim strTranListTranStatusEng As String = e.Row.DataItem("Record_Status").ToString.Trim
 
             Dim lblInvalidation As Label = e.Row.FindControl("lblInvalidation")
 
-            Status.GetDescriptionFromDBCode(ClaimTransStatus.ClassCode, hfTranListTranStatusEng.Value.Trim, _
+            'Status.GetDescriptionFromDBCode(ClaimTransStatus.ClassCode, hfTranListTranStatusEng.Value.Trim, _
+            '        lblTranListTranStatusEng.Text, lblTranListTranStatusChi.Text, lblTranListTranStatusCN.Text)
+            Status.GetDescriptionFromDBCode(ClaimTransStatus.ClassCode, strTranListTranStatusEng, _
                     lblTranListTranStatusEng.Text, lblTranListTranStatusChi.Text, lblTranListTranStatusCN.Text)
 
             ' Reimbursment Method
-            Dim hfTranListManualReimburse As HiddenField = e.Row.FindControl("hfTranListManualReimburse")
+            'Dim hfTranListManualReimburse As HiddenField = e.Row.FindControl("hfTranListManualReimburse")
+            Dim strTranListManualReimburse As string = e.Row.DataItem("Manual_Reimburse").ToString.Trim
             Dim udtStaticDataBLL As StaticData.StaticDataBLL = New StaticData.StaticDataBLL
             Dim udtStaticDataModel As StaticData.StaticDataModel
 
@@ -2025,8 +2029,8 @@ Partial Public Class ClaimTransactionMaintenance
 
             End If
 
-            'If hfTranListManualReimburse.Value.Trim() = "Y"  Then
-            If hfTranListManualReimburse.Value.Trim() = "Y" AndAlso blnReimbursementAvailable = True Then
+            'If hfTranListManualReimburse.Value.Trim() = "Y" AndAlso blnReimbursementAvailable = True Then
+            If strTranListManualReimburse = YesNo.Yes AndAlso blnReimbursementAvailable = True Then
                 ' CRE13-001 EHAPP [End][Karl]
                 udtStaticDataModel = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("ReimbursementMethod", "O") ' O-Outsidehs I-In EHS
                 lblTranListTranStatusEng.Text = lblTranListTranStatusEng.Text + "<br>(" + udtStaticDataModel.DataValue.ToString.Trim() + ")"
@@ -2071,7 +2075,10 @@ Partial Public Class ClaimTransactionMaintenance
                 lblTranListTranStatusCN.Text = lblTranListTranStatusCN.Text + " (" + strInvalidationStatus_CN + ")"
 
             Else
-                lblTranListHKID.Text = udtFormatter.FormatDocIdentityNoForDisplay(hfDocCode.Value.Trim, hfTranListIDNo1.Value.Trim, True, hfTranListIDNo2.Value.Trim)
+                lblTranListHKID.Text = udtFormatter.FormatDocIdentityNoForDisplay(e.Row.DataItem("Doc_Code").ToString.Trim, _
+                                                                                  e.Row.DataItem("IDNo").ToString.Trim, _
+                                                                                  True, _
+                                                                                  e.Row.DataItem("IDNo2").ToString.Trim)
                 lblTranListCname.Text = udtFormatter.formatChineseName(lblTranListCname.Text.Trim)
                 Status.GetDescriptionFromDBCode(EHealthAccountType.ClassCode, lblTranListAccountType.Text.Trim, _
                                                     lblTranListAccountType.Text, lblTranListAccountType_Chi.Text, lblTranListAccountType_CN.Text)
@@ -2087,13 +2094,17 @@ Partial Public Class ClaimTransactionMaintenance
             Dim lblTranListOtherInformationChi As Label = e.Row.FindControl("lblTranListOtherInformationChi")
             Dim lblTranListOtherInformationCN As Label = e.Row.FindControl("lblTranListOtherInformationCN")
 
-            Dim hfTranListInformationCode As HiddenField = e.Row.FindControl("hfTranListInformationCode")
-            Dim hfTranListInformationCodeChi As HiddenField = e.Row.FindControl("hfTranListInformationCodeChi")
-            Dim hfTranListInformationCodeCN As HiddenField = e.Row.FindControl("hfTranListInformationCodeCN")
+            'Dim hfTranListInformationCode As HiddenField = e.Row.FindControl("hfTranListInformationCode")
+            'Dim hfTranListInformationCodeChi As HiddenField = e.Row.FindControl("hfTranListInformationCodeChi")
+            'Dim hfTranListInformationCodeCN As HiddenField = e.Row.FindControl("hfTranListInformationCodeCN")
 
-            lblTranListOtherInformation.ToolTip = hfTranListInformationCode.Value
-            lblTranListOtherInformationChi.ToolTip = hfTranListInformationCodeChi.Value
-            lblTranListOtherInformationCN.ToolTip = hfTranListInformationCodeCN.Value
+            'lblTranListOtherInformation.ToolTip = hfTranListInformationCode.Value
+            'lblTranListOtherInformationChi.ToolTip = hfTranListInformationCodeChi.Value
+            'lblTranListOtherInformationCN.ToolTip = hfTranListInformationCodeCN.Value
+
+            lblTranListOtherInformation.ToolTip = e.Row.DataItem("Information_Code").ToString
+            lblTranListOtherInformationChi.ToolTip = e.Row.DataItem("Information_Code_Chi").ToString
+            lblTranListOtherInformationCN.ToolTip = e.Row.DataItem("Information_Code_CN").ToString
 
             ' Data Entry Account (Eng / Chi)
             Dim lblTranListDataEntry_By As Label = e.Row.FindControl("lblTranListDataEntry_By")

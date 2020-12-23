@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	20 Dec 2020
+-- CR No.			INT20-00633 (Fix display fullWidth characters in SP Claim Transaction Maintenance)
+-- Description:		Fix filtering of current/previous season
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	13 Aug 2020
 -- CR No.			CRE20-003 (Batch Upload)
@@ -123,7 +130,7 @@ AS BEGIN
 	-- ---------------------------------------------
 	IF @IN_USERID IS NULL
 		BEGIN
-			SET @MinDate = CONVERT(DATETIME,(SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'Batch_Upload_MinDate'),121)
+			SET @MinDate = CONVERT(DATETIME,(SELECT Parm_Value1 FROM SystemParameters WITH (NOLOCK) WHERE Parameter_Name = 'Batch_Upload_MinDate'),121)
 		END
 
 	-- ---------------------------------------------
@@ -159,7 +166,7 @@ AS BEGIN
 	-- ---------------------------------------------
 	-- Change Season Date
 	-- ---------------------------------------------
-	SET @ChangeSeasonDate = CONVERT(DATETIME,(SELECT CONVERT(VARCHAR(4),YEAR(GETDATE())) + Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'Batch_Upload_ChangeSeasonDate'),121)
+	SET @ChangeSeasonDate = CONVERT(DATETIME,(SELECT CONVERT(VARCHAR(4),YEAR(GETDATE())) + Parm_Value1 FROM SystemParameters WITH (NOLOCK) WHERE Parameter_Name = 'Batch_Upload_ChangeSeasonDate'),121)
 
 	IF @IN_CurrentSeason IS NOT NULL
 		BEGIN
@@ -471,16 +478,22 @@ AS BEGIN
 				S.Original_Student_File_ID,
 				S.Request_Rectify_Status
 			FROM
-				StudentFileHeader S
+				StudentFileHeader S WITH (NOLOCK) 
 					LEFT OUTER JOIN (SELECT 
 										Student_File_ID, 
 										SUM(CASE WHEN Injected IS NULL THEN 1 ELSE 0 END) AS [Complete] 
-									FROM StudentFileEntryStaging GROUP BY Student_File_ID) SFE 
+									FROM StudentFileEntryStaging WITH (NOLOCK)  GROUP BY Student_File_ID) SFE 
 										ON S.Student_File_ID = SFE.Student_File_ID AND S.Record_Status = 'ST'
 					LEFT JOIN @tblSchemeCode tblSC
 						ON LTRIM(RTRIM(S.Scheme_Code)) = LTRIM(RTRIM(tblSC.Scheme_Code))
 					LEFT JOIN @tblRecordStatus tblRS
 						ON LTRIM(RTRIM(S.Record_Status)) = LTRIM(RTRIM(tblRS.Record_Status))
+					LEFT JOIN (SELECT 
+										Student_File_ID, 
+										MIN(Service_Receive_Dtm) AS Service_Dtm_From,
+										MAX(Service_Receive_Dtm) AS Service_Dtm_To
+									FROM StudentFileEntry WITH (NOLOCK)  GROUP BY Student_File_ID) SFED 
+						ON S.Student_File_ID = SFED.Student_File_ID
 			WHERE
 				(@Student_File_ID IS NULL OR S.Student_File_ID = @IN_Student_File_ID)
 				AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
@@ -488,14 +501,38 @@ AS BEGIN
 				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
 				AND (
 						(
-							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
-							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo) 
+							S.Service_Receive_Dtm IS NOT NULL AND
+							((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo))
 						)
 						OR
 						(
-							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm_2 IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
-							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo) 
+							S.Service_Receive_Dtm_2 IS NOT NULL AND
+							((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo))
 						)
+						OR
+						(	
+							-- VSS MMR-NIA - Both service date is null
+							S.Service_Receive_Dtm IS NULL AND S.Service_Receive_Dtm_2 IS NULL
+							AND 
+							(
+								((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= SFED.Service_Dtm_From)
+								AND (@IN_VaccinationDateTo IS NULL OR SFED.Service_Dtm_From <= @IN_VaccinationDateTo))
+								OR
+								((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= SFED.Service_Dtm_To)
+								AND (@IN_VaccinationDateTo IS NULL OR SFED.Service_Dtm_To <= @IN_VaccinationDateTo))
+							)
+						)
+						--(
+						--	(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
+						--	AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo) 
+						--)
+						--OR
+						--(
+						--	(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm_2 IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
+						--	AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo) 
+						--)
 					)
 				AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
 				AND S.Record_Status <> 'R'
@@ -556,16 +593,22 @@ AS BEGIN
 				S.Original_Student_File_ID,
 				S.Request_Rectify_Status
 			FROM
-				StudentFileHeaderStaging S
+				StudentFileHeaderStaging S WITH (NOLOCK) 
 					LEFT OUTER JOIN (SELECT 
 										Student_File_ID, 
 										SUM(CASE WHEN Injected IS NULL THEN 1 ELSE 0 END) AS [Complete] 
-									FROM StudentFileEntryStaging GROUP BY Student_File_ID) SFE 
+									FROM StudentFileEntryStaging WITH (NOLOCK) GROUP BY Student_File_ID) SFE 
 										ON S.Student_File_ID = SFE.Student_File_ID AND S.Record_Status = 'ST'
 					LEFT JOIN @tblSchemeCode tblSC
 						ON LTRIM(RTRIM(S.Scheme_Code)) = LTRIM(RTRIM(tblSC.Scheme_Code))
 					LEFT JOIN @tblRecordStatus tblRS
 						ON LTRIM(RTRIM(S.Record_Status)) = LTRIM(RTRIM(tblRS.Record_Status))
+					LEFT JOIN (SELECT 
+										Student_File_ID, 
+										MIN(Service_Receive_Dtm) AS Service_Dtm_From,
+										MAX(Service_Receive_Dtm) AS Service_Dtm_To
+									FROM StudentFileEntryStaging WITH (NOLOCK) GROUP BY Student_File_ID) SFED 
+						ON S.Student_File_ID = SFED.Student_File_ID
 			WHERE
 				(@IN_Student_File_ID IS NULL OR S.Student_File_ID = @IN_Student_File_ID)
 				AND (@IN_School_Code IS NULL OR S.School_Code = @IN_School_Code)
@@ -573,76 +616,100 @@ AS BEGIN
 				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
 				AND (
 						(
-							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
-							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo) 
+							S.Service_Receive_Dtm IS NOT NULL AND
+							((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo))
 						)
 						OR
 						(
-							(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm_2 IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
-							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo) 
+							S.Service_Receive_Dtm_2 IS NOT NULL AND
+							((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
+							AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo))
 						)
+						OR
+						(	
+							-- VSS MMR-NIA - Both service date is null
+							S.Service_Receive_Dtm IS NULL AND S.Service_Receive_Dtm_2 IS NULL
+							AND 
+							(
+								((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= SFED.Service_Dtm_From)
+								AND (@IN_VaccinationDateTo IS NULL OR SFED.Service_Dtm_From <= @IN_VaccinationDateTo))
+								OR
+								((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= SFED.Service_Dtm_To)
+								AND (@IN_VaccinationDateTo IS NULL OR SFED.Service_Dtm_To <= @IN_VaccinationDateTo))
+							)
+						)
+						--(
+						--	(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
+						--	AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm <= @IN_VaccinationDateTo) 
+						--)
+						--OR
+						--(
+						--	(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm_2 IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm_2) 
+						--	AND (@IN_VaccinationDateTo IS NULL OR S.Service_Receive_Dtm_2 <= @IN_VaccinationDateTo) 
+						--)
 					)
 				AND (@IN_PreCheck IS NULL OR S.Upload_Precheck = @IsPreCheck)
 				AND S.Record_Status <> 'R'
 				AND S.Student_File_ID NOT IN (
-					SELECT Student_File_ID FROM StudentFileHeader WHERE Record_Status <> 'R'
+					SELECT Student_File_ID FROM StudentFileHeader WITH (NOLOCK) WHERE Record_Status <> 'R'
 				)
 				AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)	
 				AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)		
 					
 		) S
-		LEFT OUTER JOIN SubsidizeGroupClaim SGC ON
+		LEFT OUTER JOIN SubsidizeGroupClaim SGC WITH (NOLOCK) ON
 			S.Scheme_Code = SGC.Scheme_Code AND S.Scheme_Seq = SGC.Scheme_Seq AND S.Subsidize_Code = SGC.Subsidize_Code
-		LEFT OUTER JOIN Subsidize SUB ON 
+		LEFT OUTER JOIN Subsidize SUB WITH (NOLOCK) ON 
 			S.Subsidize_Code = SUB.Subsidize_Code
-		LEFT OUTER JOIN VaccineSeason VS ON 
+		LEFT OUTER JOIN VaccineSeason VS WITH (NOLOCK) ON 
 			VS.Scheme_Code = S.Scheme_Code
 				AND VS.Scheme_Seq = S.Scheme_Seq
 				AND VS.Subsidize_Item_Code = SUB.Subsidize_Item_Code
-		LEFT OUTER JOIN SchemeClaim SC ON
+		LEFT OUTER JOIN SchemeClaim SC WITH (NOLOCK) ON
 			S.Scheme_Code = SC.Scheme_Code
-		LEFT OUTER JOIN FileGenerationQueue FGQ ON
+		LEFT OUTER JOIN FileGenerationQueue FGQ WITH (NOLOCK) ON
 			S.Vaccination_Report_File_ID = FGQ.Generation_ID AND FGQ.[Status] = 'C'
-		LEFT OUTER JOIN FileGenerationQueue FGQ2 ON
+		LEFT OUTER JOIN FileGenerationQueue FGQ2 WITH (NOLOCK) ON
 			S.Onsite_Vaccination_File_ID = FGQ2.Generation_ID AND FGQ2.[Status] = 'C'
-		LEFT OUTER JOIN FileGenerationQueue FGQ3 ON
+		LEFT OUTER JOIN FileGenerationQueue FGQ3 WITH (NOLOCK) ON
 			S.Claim_Creation_Report_File_ID = FGQ3.Generation_ID AND FGQ3.[Status] = 'C'
-		LEFT OUTER JOIN FileGenerationQueue FGQ4 ON
+		LEFT OUTER JOIN FileGenerationQueue FGQ4 WITH (NOLOCK)  ON
 			S.Name_List_File_ID = FGQ4.Generation_ID AND FGQ4.[Status] = 'C'
-		LEFT OUTER JOIN FileGenerationQueue FGQ5 ON
+		LEFT OUTER JOIN FileGenerationQueue FGQ5 WITH (NOLOCK) ON
 			S.Vaccination_Report_File_ID_2 = FGQ5.Generation_ID AND FGQ5.[Status] = 'C'
-		LEFT OUTER JOIN FileGenerationQueue FGQ6 ON
+		LEFT OUTER JOIN FileGenerationQueue FGQ6 WITH (NOLOCK) ON
 			S.Onsite_Vaccination_File_ID_2 = FGQ6.Generation_ID AND FGQ6.[Status] = 'C'
-		LEFT OUTER JOIN FileGeneration FG ON
+		LEFT OUTER JOIN FileGeneration FG WITH (NOLOCK) ON
 			FGQ.[File_ID] = FG.[File_ID]
-		LEFT OUTER JOIN FileGeneration FG2 ON
+		LEFT OUTER JOIN FileGeneration FG2 WITH (NOLOCK) ON
 			FGQ2.[File_ID] = FG2.[File_ID]
-		LEFT OUTER JOIN FileGeneration FG3 ON
+		LEFT OUTER JOIN FileGeneration FG3 WITH (NOLOCK) ON
 			FGQ3.[File_ID] = FG3.[File_ID]
-		LEFT OUTER JOIN FileGeneration FG4 ON
+		LEFT OUTER JOIN FileGeneration FG4 WITH (NOLOCK) ON
 			FGQ4.[File_ID] = FG4.[File_ID]
-		LEFT OUTER JOIN FileGeneration FG5 ON
+		LEFT OUTER JOIN FileGeneration FG5 WITH (NOLOCK) ON
 			FGQ5.[File_ID] = FG5.[File_ID]
-		LEFT OUTER JOIN FileGeneration FG6 ON
+		LEFT OUTER JOIN FileGeneration FG6 WITH (NOLOCK) ON
 			FGQ6.[File_ID] = FG6.[File_ID]
-		LEFT OUTER JOIN School Sch ON
+		LEFT OUTER JOIN School Sch WITH (NOLOCK) ON
 			S.School_Code = Sch.School_Code
-		LEFT OUTER JOIN RVPHomeList RCH ON
+		LEFT OUTER JOIN RVPHomeList RCH WITH (NOLOCK) ON
 			S.School_Code = RCH.RCH_code
-		LEFT OUTER JOIN DataEntryPracticeMapping DEPM ON 
+		LEFT OUTER JOIN DataEntryPracticeMapping DEPM WITH (NOLOCK) ON 
 			S.SP_ID = DEPM.SP_ID AND S.Practice_Display_Seq = DEPM.SP_Practice_Display_Seq AND DEPM.Data_Entry_Account = @IN_DataEntryAccount
-		LEFT OUTER JOIN (SELECT DISTINCT Student_File_ID FROM StudentFileEntryPrecheckSubsidizeInject) SFEPCSI_1 ON
+		LEFT OUTER JOIN (SELECT DISTINCT Student_File_ID FROM StudentFileEntryPrecheckSubsidizeInject WITH (NOLOCK)) SFEPCSI_1 ON
 			S.Student_File_ID = SFEPCSI_1.Student_File_ID AND S.Record_Status IN ('PC','CR','PR')			
 		LEFT OUTER JOIN (SELECT 
 							Student_File_ID, 
 							SUM(CASE WHEN Mark_Injection IS NOT NULL THEN 1 ELSE 0 END) AS [Complete] 
-						FROM StudentFileEntryPrecheckSubsidizeInject GROUP BY Student_File_ID) SFEPCSI_2
+						FROM StudentFileEntryPrecheckSubsidizeInject WITH (NOLOCK) GROUP BY Student_File_ID) SFEPCSI_2
 							ON S.Student_File_ID = SFEPCSI_2.Student_File_ID AND S.Record_Status IN ('PC','CR','PR')	
 		LEFT OUTER JOIN (SELECT 
 							SFHPCD.Student_File_ID, 
 							COUNT(1) AS [Total_Client] 
-						FROM StudentFileHeaderPrecheckDate SFHPCD
-								INNER JOIN StudentFileEntry SFE
+						FROM StudentFileHeaderPrecheckDate SFHPCD WITH (NOLOCK)
+								INNER JOIN StudentFileEntry SFE WITH (NOLOCK)
 									ON SFHPCD.Student_File_ID = SFE.Student_File_ID AND SFHPCD.Class_Name = SFE.Class_Name
 						GROUP BY SFHPCD.Student_File_ID) SFEPCSI_3
 							ON S.Student_File_ID = SFEPCSI_3.Student_File_ID AND S.Record_Status IN ('PC','CR','PR')
@@ -651,13 +718,13 @@ AS BEGIN
 
 		WHERE
 			(@IN_DataEntryAccount IS NULL OR DEPM.Data_Entry_Account IS NOT NULL)
-			AND (@IN_USERID IS NULL OR EXISTS (SELECT DISTINCT Scheme_Code from UserRole where [User_ID] = @IN_USERID AND Scheme_Code = S.Scheme_Code))
+			AND (@IN_USERID IS NULL OR EXISTS (SELECT DISTINCT Scheme_Code from UserRole WITH (NOLOCK) where [User_ID] = @IN_USERID AND Scheme_Code = S.Scheme_Code))
 			AND (@IN_PreCheckCompleted IS NULL 
 				OR (@IsIncludePreCheckCompleted = 'Y' 
 					OR NOT EXISTS (SELECT 
 										Student_File_ID 
 									FROM 
-										StudentFileHeader 
+										StudentFileHeader WITH (NOLOCK) 
 									WHERE 
 										Student_File_ID = S.Student_File_ID
 										AND Upload_Precheck = 'Y' 
