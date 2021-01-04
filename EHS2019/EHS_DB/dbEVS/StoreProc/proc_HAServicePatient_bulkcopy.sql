@@ -1,4 +1,4 @@
-
+﻿
 IF EXISTS
          (
              SELECT *
@@ -15,6 +15,13 @@ SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			INT20-0066
+-- Modified by:		Chris YIM
+-- Modified date:	28 Dec 2020
+-- Description:		Upper HKIC
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-015 (HA Scheme) 
@@ -58,7 +65,7 @@ AS
                )
         SELECT Serial_No, 
                Doc_Code, 
-               ENCRYPTBYKEY(KEY_GUID('sym_Key'), HKID_Code), 
+               ENCRYPTBYKEY(KEY_GUID('sym_Key'), UPPER(HKID_Code)), 
                HKIC_Symbol, 
 			   Claimed_Payment_Type_Code,
                Claimed_Payment_Type, 
@@ -74,3 +81,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_HAServicePatient_bulkcopy] TO HCVU;
 GO
+

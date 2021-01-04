@@ -500,6 +500,7 @@ AS BEGIN
 				AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
 				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
 				AND (
+						@IsPreCheck = 'Y' OR (
 						(
 							S.Service_Receive_Dtm IS NOT NULL AND
 							((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
@@ -523,6 +524,7 @@ AS BEGIN
 								((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= SFED.Service_Dtm_To)
 								AND (@IN_VaccinationDateTo IS NULL OR SFED.Service_Dtm_To <= @IN_VaccinationDateTo))
 							)
+						)
 						)
 						--(
 						--	(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
@@ -615,6 +617,7 @@ AS BEGIN
 				AND (@IN_SPID IS NULL OR S.SP_ID = @IN_SPID)
 				AND (@IN_Subsidize_Code IS NULL OR LTRIM(RTRIM(S.Subsidize_Code)) = @IN_Subsidize_Code)
 				AND (
+						@IsPreCheck = 'Y' OR (
 						(
 							S.Service_Receive_Dtm IS NOT NULL AND
 							((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
@@ -638,6 +641,7 @@ AS BEGIN
 								((@IN_VaccinationDateFrom IS NULL OR @IN_VaccinationDateFrom <= SFED.Service_Dtm_To)
 								AND (@IN_VaccinationDateTo IS NULL OR SFED.Service_Dtm_To <= @IN_VaccinationDateTo))
 							)
+						)
 						)
 						--(
 						--	(@IN_VaccinationDateFrom IS NULL OR S.Service_Receive_Dtm IS NULL OR @IN_VaccinationDateFrom <= S.Service_Receive_Dtm) 
