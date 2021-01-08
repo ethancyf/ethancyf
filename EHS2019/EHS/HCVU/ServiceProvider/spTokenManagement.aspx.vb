@@ -460,7 +460,10 @@ Partial Public Class spTokenManagement
 
             Dim dr As DataRow = dt.Rows(0)
 
-            BuildDetail(dr("Enrolment_Ref_No").ToString.Trim, dr("Record_Status").ToString.Trim)
+            ' INT20-0054 (Fix select record on gridview in token management) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            BuildDetail(dr("Enrolment_Ref_No").ToString.Trim, dr("Record_Status").ToString.Trim, dr("SP_ID").ToString.Trim)
+            ' INT20-0054 (Fix select record on gridview in token management) [End][Chris YIM]
 
         Else
             lblResultERN.Text = FillAnyToEmptyString(txtEnrolRefNo.Text.Trim)
@@ -532,9 +535,15 @@ Partial Public Class spTokenManagement
         If TypeOf e.CommandSource Is LinkButton Then
             Dim strERN As String = e.CommandArgument.ToString.Trim
             Dim row As GridViewRow = DirectCast(e.CommandSource, Control).NamingContainer
-            Dim strStatus As String = DirectCast(row.FindControl("lblRStatusCode"), Label).Text.Trim
+            ' INT20-0054 (Fix select record on gridview in token management) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strStatus As String = DirectCast(row.FindControl("lblRStatusCode"), Label).Text.Trim()
+            Dim strSPID As String = DirectCast(row.FindControl("lblRSPID"), LinkButton).Text.Trim()
+            strSPID = IIf(strSPID = "N/A", String.Empty, strSPID)
 
-            BuildDetail(strERN, strStatus)
+            BuildDetail(strERN, strStatus, strSPID)
+            ' INT20-0054 (Fix select record on gridview in token management) [End][Chris YIM]
+
 
         End If
 
@@ -565,8 +574,11 @@ Partial Public Class spTokenManagement
     End Sub
 
     '
-
-    Private Sub BuildDetail(strERN As String, strRowStatus As String)
+    ' INT20-0054 (Fix select record on gridview in token management) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    'Private Sub BuildDetail(strERN As String, strRowStatus As String)
+    ' INT20-0054 (Fix select record on gridview in token management) [End][Chris YIM]
+    Private Sub BuildDetail(ByVal strERN As String, ByVal strRowStatus As String, ByVal strRowSPID As String)
         Session(SESS_ERN) = strERN
 
         Dim udtSP As ServiceProviderModel = Nothing
@@ -615,7 +627,10 @@ Partial Public Class spTokenManagement
         rblDIsShareToken.ClearSelection()
 
         Dim dt As DataTable = Session(SESS_TokenRecordResult)
-        Dim drs() As DataRow = dt.Select(String.Format("Enrolment_Ref_No = '{0}' AND Record_Status = '{1}'", strERN, strRowStatus))
+        ' INT20-0054 (Fix select record on gridview in token management) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim drs() As DataRow = dt.Select(String.Format("Enrolment_Ref_No = '{0}' AND Record_Status = '{1}' AND SP_ID = '{2}'", strERN, strRowStatus, strRowSPID))
+        ' INT20-0054 (Fix select record on gridview in token management) [End][Chris YIM]
 
         If drs.Length <> 1 Then
             Throw New Exception(String.Format("spTokenManagement.BuildDetail: Unexpected value (drs.Length={0})", drs.Length))

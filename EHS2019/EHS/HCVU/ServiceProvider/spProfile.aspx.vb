@@ -1104,11 +1104,16 @@ Partial Public Class spProfile
             If Not IsNothing(gvPracticeSchemeInfo) Then
                 Dim lblSchemeDispalySeq As Label = CType(gvr.FindControl("lblSchemeDispalySeq"), Label)
                 Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = udtPracticeBLL.GetPracticeCollection.Item(CInt(lblSchemeDispalySeq.Text.Trim)).PracticeSchemeInfoList
-                Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
 
-                'gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
-                gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
-                gvPracticeSchemeInfo.DataBind()
+                ' INT20-0067 (Fix add scheme for new practice in VU data entry) [Start][Winnie SUEN]
+                ' bind grid only if the practice has scheme
+                If Not IsNothing(udtPracticeSchemeInfoList) Then
+                    Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
+                    'gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                    gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                    gvPracticeSchemeInfo.DataBind()
+                End If
+                ' INT20-0067 (Fix add scheme for new practice in VU data entry) [End][Winnie SUEN]
 
                 ApplyPracticeSchemeChangeIndicator(gvr)
             End If
@@ -8168,15 +8173,16 @@ Partial Public Class spProfile
             If Not IsNothing(gvPracticeSchemeInfo) Then
                 Dim lblSchemeDispalySeq As Label = CType(gvr.FindControl("lblSchemeDispalySeq"), Label)
                 Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = udtPracticeBLL.GetPracticeCollection.Item(CInt(lblSchemeDispalySeq.Text.Trim)).PracticeSchemeInfoList
-                Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
 
-                'udtAuditLogEntry.ResetActionTime()
-                'udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00105, "Bind PracticeSchemeInfo")
-                'gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
-                gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
-                gvPracticeSchemeInfo.DataBind()
-                'udtAuditLogEntry.EndEvent()
-                'udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00106, "Bind PracticeSchemeInfo Completed")
+                ' INT20-0067 (Fix add scheme for new practice in VU data entry) [Start][Winnie SUEN]
+                ' bind grid only if the practice has scheme
+                If Not IsNothing(udtPracticeSchemeInfoList) Then
+                    Dim udtResSubsidizeGroupBackOfficeList As SubsidizeGroupBackOfficeModelCollection = FilterSubsidizeGroupBackOfficeList(udtPracticeSchemeInfoList)
+                    'gvPracticeSchemeInfo.DataSource = udtSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                    gvPracticeSchemeInfo.DataSource = udtResSubsidizeGroupBackOfficeList.ToSPProfileDataTable
+                    gvPracticeSchemeInfo.DataBind()
+                End If
+                ' INT20-0067 (Fix add scheme for new practice in VU data entry) [End][Winnie SUEN]
 
                 ApplyPracticeSchemeChangeIndicator(gvr)
             Else

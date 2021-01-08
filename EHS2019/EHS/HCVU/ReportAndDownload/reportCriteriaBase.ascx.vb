@@ -20,6 +20,13 @@ Partial Public Class reportCriteriaBase
     End Sub
 
     Public Sub ValidateCriteriaInput(ByVal strReportID As String, ByVal udtUserControlList As FileGenerationUserControlModelCollection, ByRef lstError As List(Of Common.ComObject.SystemMessage), ByRef lstErrorParam1 As List(Of String), ByRef lstErrorParam2 As List(Of String))
+        ' INT20-0055 (Fix concurrent browser submit in report submission) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        If phReportCriteria.Controls.Count = 0 Then
+            Throw New Exception("Error under concurrent browser.")
+        End If
+        ' INT20-0055 (Fix concurrent browser submit in report submission) [End][Chris YIM]
+
         For Each con As Control In phReportCriteria.Controls
             CType(con, IReportCriteriaUC).ValidateCriteriaInput(strReportID, udtUserControlList.Filter(con.ID).UserControlSetting, lstError, lstErrorParam1, lstErrorParam2)
         Next

@@ -218,7 +218,7 @@
             <asp:Label ID="lblTotalAmountText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_TotalAmount%>" />
         </td>
         <td class="tableCellStyle" style="width:150px">
-            <table>
+            <table style="display:inline-block;">
                 <tr>
                     <td style="width:10px">
                         <asp:Label ID="lblTotalAmountRMB" runat="server" CssClass="tableText" Text="<%$ Resources:Text, RMBDollarSign%>" />
@@ -228,6 +228,8 @@
                     </td>
                 </tr>
             </table>
+            <div style="display:inline-block;position:relative;top:-6px">&nbsp<asp:Image ID="ImageTotalServiceFeeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></div>
         </td>
         <td class="tableCellStyle">
             <asp:Label ID="lblTotalAmountRemark" runat="server" CssClass="tableText" Text="<%$ Resources:Text, SSSCMC_TotalAmountRemark%>" />

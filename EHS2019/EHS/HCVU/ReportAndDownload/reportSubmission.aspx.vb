@@ -177,7 +177,18 @@ Partial Public Class reportSubmission
         Dim lstSysMsgParam1 As New List(Of String)
         Dim lstSysMsgParam2 As New List(Of String)
 
-        ucReportCriteriaBase.ValidateCriteriaInput(strReportID, udtUserControlList, lstSysMsg, lstSysMsgParam1, lstSysMsgParam2)
+        ' INT20-0055 (Fix concurrent browser submit in report submission) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Try
+            ucReportCriteriaBase.ValidateCriteriaInput(strReportID, udtUserControlList, lstSysMsg, lstSysMsgParam1, lstSysMsgParam2)
+        Catch ex As Exception
+            Dim udtCommonAuditLogEntry As AuditLogEntry = New AuditLogEntry(Common.Component.FunctCode.FUNT029901)
+
+            udtCommonAuditLogEntry.WriteLog(LogID.LOG00001, "Redirect to invalid access error page")
+
+            Response.Redirect("~/ImproperAccess.aspx")
+        End Try
+        ' INT20-0055 (Fix concurrent browser submit in report submission) [End][Chris YIM]
 
         If lstSysMsg.Count > 0 Then
             ' Validation Fail

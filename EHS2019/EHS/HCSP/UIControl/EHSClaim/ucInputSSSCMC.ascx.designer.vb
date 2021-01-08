@@ -401,6 +401,15 @@ Partial Public Class ucInputSSSCMC
     Protected WithEvents lblTotalAmount As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''ImageTotalServiceFeeError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ImageTotalServiceFeeError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblTotalAmountRemark control.
     '''</summary>
     '''<remarks>
