@@ -12,7 +12,6 @@ GO
 -- Modified date:	15 Jul 2020
 -- CR. No			INT20-0024
 -- Description:		(1) Add WITH (NOLOCK)
---					(2) Add index to temp tables
 -- =============================================
 -- =============================================
 -- Modification History
@@ -110,8 +109,6 @@ AS BEGIN
 		Exact_DOD				char(1)  --CRE14-016
 	)
 
-	CREATE CLUSTERED INDEX PK_EHS01_AllAccount_1 ON #EHS01_AllAccount (Doc_Code, Encrypt_Field1) 
-
 	CREATE TABLE #EHS01_GroupAccount (
 		Account_Type			char(1),
 		Doc_Code				char(10),
@@ -122,8 +119,6 @@ AS BEGIN
 		Deceased				char(1), --CRE14-016
 		DOD						datetime --CRE14-016
 	)
-	
-	CREATE CLUSTERED INDEX PK_EHS01_GroupAccount_1 ON #EHS01_GroupAccount (Doc_Code, Encrypt_Field1) 
 
 	DECLARE @ResultTableAccount table (
 		CountType							varchar(10),

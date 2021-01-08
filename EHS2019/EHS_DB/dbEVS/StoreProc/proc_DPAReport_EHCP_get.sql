@@ -1,11 +1,11 @@
 
 IF EXISTS
-(
-    SELECT *
-    FROM dbo.sysobjects
-    WHERE id = OBJECT_ID(N'[dbo].[proc_DPAReport_EHCP_get]')
-          AND OBJECTPROPERTY(id, N'IsProcedure') = 1
-)
+         (
+             SELECT *
+             FROM dbo.sysobjects
+             WHERE id = OBJECT_ID(N'[dbo].[proc_DPAReport_EHCP_get]')
+                   AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+          )
     BEGIN
         DROP PROCEDURE [dbo].[proc_DPAReport_EHCP_get];
     END;
@@ -14,7 +14,13 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Martin Tang
+-- Modified date:	03 Nov 2020
+-- CR No.:			CRE20-015
+-- Description:		Fixed bug @ReportDate
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Martin Tang
@@ -84,21 +90,25 @@ AS
               AND Authorised_Status = 'P'
               AND Record_Status = 'A';
 
-        SELECT @ReportDate = Create_Dtm
-        FROM ReimbursementAuthorisation
-        WHERE Reimburse_ID = @reimburse_id
-              AND Scheme_Code = @scheme_code;
+        SELECT @ReportDate = ra.Authorised_Dtm
+        FROM ReimbursementAuthTran AS rt
+             INNER JOIN ReimbursementAuthorisation AS ra
+             ON RT.Reimburse_ID = @reimburse_id
+                AND RT.Scheme_Code = @scheme_code
+                AND RT.Authorised_Status = RA.Authorised_Status
+                AND ra.Record_Status = 'A'
+        GROUP BY ra.Authorised_Dtm;
 
         SELECT @TotalSPPractice = SUM(PracticeCount)
         FROM
-        (
-            SELECT RAT.SP_ID, 
-                   COUNT(DISTINCT RAT.Practice_Display_Seq) AS PracticeCount
-            FROM ReimbursementAuthTran AS RAT
-            WHERE RAT.Reimburse_ID = @reimburse_id
-                  AND RAT.Scheme_Code = @scheme_code
-            GROUP BY SP_ID
-        ) AS T1;
+            (
+                SELECT RAT.SP_ID, 
+                       COUNT(DISTINCT RAT.Practice_Display_Seq) AS PracticeCount
+                FROM ReimbursementAuthTran AS RAT
+                WHERE RAT.Reimburse_ID = @reimburse_id
+                      AND RAT.Scheme_Code = @scheme_code
+                GROUP BY SP_ID
+             ) AS T1;
         -- =============================================
         -- Initialization
         -- =============================================
@@ -158,20 +168,20 @@ AS
                       Total_Amount = totalAmount, 
                       Total_Amount_RMB = totalAmountRMB
                 FROM
-                (
-                    SELECT VT.SP_ID, 
-                           COUNT(DISTINCT VT.Transaction_ID) AS totalTran, 
-                           SUM(Total_Amount) AS totalAmount, 
-                           SUM(Total_Amount_RMB) AS totalAmountRMB
-                    FROM ReimbursementAuthTran AS RAT
-                         INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
-                         ON RAT.Transaction_ID = VT.Transaction_ID
-                         INNER JOIN TransactionDetail AS TD WITH(NOLOCK)
-                         ON RAT.Transaction_ID = TD.Transaction_ID
-                    WHERE RAT.Reimburse_ID = @reimburse_id
-                          AND RAT.Scheme_Code = @scheme_code
-                    GROUP BY VT.SP_ID
-                ) T2
+                    (
+                        SELECT VT.SP_ID, 
+                               COUNT(DISTINCT VT.Transaction_ID) AS totalTran, 
+                               SUM(Total_Amount) AS totalAmount, 
+                               SUM(Total_Amount_RMB) AS totalAmountRMB
+                        FROM ReimbursementAuthTran AS RAT
+                             INNER JOIN VoucherTransaction AS VT WITH(NOLOCK)
+                             ON RAT.Transaction_ID = VT.Transaction_ID
+                             INNER JOIN TransactionDetail AS TD WITH(NOLOCK)
+                             ON RAT.Transaction_ID = TD.Transaction_ID
+                        WHERE RAT.Reimburse_ID = @reimburse_id
+                              AND RAT.Scheme_Code = @scheme_code
+                        GROUP BY VT.SP_ID
+                     ) T2
                 WHERE #Result.SP_ID = T2.SP_ID;
             END;
 
@@ -188,7 +198,7 @@ AS
 
         SELECT *
         FROM #Result
-		ORDER BY Seq_No;
+        ORDER BY Seq_No;
 
         SELECT @cutoff_Date_str AS [CutoffDate], 
                @reimburse_id AS [ReimburseID], 

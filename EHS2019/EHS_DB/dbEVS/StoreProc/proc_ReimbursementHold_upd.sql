@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	21 Oct 2020
+-- CR No.:			CRE20-015-02 (Special Support Scheme)
+-- Description:		Clear [Verification_Case] for scheme [SSSCMC]
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	17 Aug 2020
 -- CR No.:			CRE17-004
@@ -130,6 +137,9 @@ AS
         DECLARE @ExistNumOfVerifyCase SMALLINT;
         DECLARE @SchemeHCVSDHC CHAR(10);
         DECLARE @SchemeHCVSCHN CHAR(10);
+		DECLARE @SchemeSSSCMC CHAR(10);
+        DECLARE @ClearVerificationCase CHAR(1);
+		
         DECLARE @strStatus CHAR(1);
         DECLARE @strStatusOriginal CHAR(1);
         DECLARE @strStatusNewSelected CHAR(1);
@@ -196,10 +206,18 @@ AS
 
         SET @SchemeHCVSDHC = 'HCVSDHC';
         SET @SchemeHCVSCHN = 'HCVSCHN';
+        SET @SchemeSSSCMC = 'SSSCMC';
+
         SET @MinNumOfVerifyCase = 10;
         SET @RandomPercent = 0.1;
         SET @strStatusOriginal = 'O';
         SET @strStatusNewSelected = 'N';
+
+		-- The value of 'Verification_Case' is always null in HCVSCHN or HCVSDHC or SSSCMC
+		IF @In_scheme_code IN (@SchemeHCVSDHC, @SchemeHCVSCHN, @SchemeSSSCMC)
+			SET @ClearVerificationCase = 'Y';
+		ELSE
+			SET @ClearVerificationCase = 'N';
 
         -- =============================================
         -- Return results
@@ -390,9 +408,8 @@ AS
         WHERE TRSP.Reimburse_ID = @In_reimburse_id
               AND TRSP.Scheme_Code = @In_scheme_code;
 
-        --The value of 'Verification_Case' is always null in HCVSCHN or HCVSDHC
-        IF @In_scheme_code = @SchemeHCVSCHN
-           OR @In_scheme_code = @SchemeHCVSDHC
+        -- Set the value of 'Verification_Case' to null
+        IF @ClearVerificationCase = 'Y'
             BEGIN
                 UPDATE ReimbursementServiceProvider
                   SET Verification_Case = NULL

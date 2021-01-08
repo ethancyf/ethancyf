@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-015 special Support Scheme
+-- Modified by:	    Martin Tang
+-- Modified date:	10 Nov 2020     
+-- Description:	  	1. Handle Reimbursement_Mode = 2 (SSSCMC)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Dickson LAW
@@ -141,10 +147,28 @@ AS BEGIN
 			INNER JOIN TransactionDetail TD ON R.Transaction_ID = TD.Transaction_ID
 	WHERE	R.Reimburse_ID = @reimburse_id AND R.Scheme_Code = @scheme_code
 
-	SELECT	@total_amount = SUM(TD.Total_Amount) 
-	FROM	ReimbursementAuthTran R 
-			INNER JOIN TransactionDetail TD ON R.Transaction_ID = TD.Transaction_ID
-	WHERE	R.Reimburse_ID = @reimburse_id AND R.Scheme_Code = @scheme_code
+	SELECT @Reimbursement_Mode = Reimbursement_Mode FROM SchemeClaim WHERE Scheme_Code = @scheme_code
+	
+	IF @Reimbursement_Mode = '2'
+		BEGIN
+			SELECT @total_amount = SUM(TD.Total_Amount_RMB)
+			FROM ReimbursementAuthTran AS R
+				 INNER JOIN TransactionDetail AS TD
+				 ON R.Transaction_ID = TD.Transaction_ID
+			WHERE R.Reimburse_ID = @reimburse_id
+				  AND R.Scheme_Code = @scheme_code;
+		END;
+		ELSE
+		BEGIN
+			SELECT @total_amount = SUM(TD.Total_Amount)
+			FROM ReimbursementAuthTran AS R
+				 INNER JOIN TransactionDetail AS TD
+				 ON R.Transaction_ID = TD.Transaction_ID
+			WHERE R.Reimburse_ID = @reimburse_id
+				  AND R.Scheme_Code = @scheme_code;
+		END;
+
+	
 
 	SELECT @cutoff_dtm = Cutoff_Date FROM ReimbursementAuthorisation WHERE Reimburse_ID = @reimburse_id AND Authorised_Status = 'S'	
 
@@ -154,8 +178,6 @@ AS BEGIN
 */
 												
 	SELECT @overflow_total_amt_instruction = RIGHT('000000000000' + CONVERT(varchar, @total_amount) + '00', 12)
-												
-	SELECT @Reimbursement_Mode = Reimbursement_Mode FROM SchemeClaim WHERE Scheme_Code = @scheme_code
 												
 	--	GET Verification Case Available or not
 	SELECT 
@@ -171,7 +193,7 @@ AS BEGIN
 -- =============================================
 
 -- Step 1: Insert into table [BankInDataFile]
-	IF @Reimbursement_Mode = '99' BEGIN
+	IF @Reimbursement_Mode = '99'  BEGIN
 		INSERT INTO BankInDataFile
 				   ([Reimburse_ID]
 				   ,[Record_Seq]
@@ -256,19 +278,20 @@ AS BEGIN
 				,@current_dtm
 				,@current_user
 				,@rowcount
-				,@voucher_claim
+				,ISNULL(@voucher_claim, 0)
 				,@total_amount
 				,@bank_payment_dtm
 				,@scheme_code
 				,CASE @Reimbursement_Mode
 					WHEN '99' THEN 'P'
+					WHEN '2' THEN 'N'
 					WHEN '1' THEN 'N'
 					ELSE NULL
 				 END AS [Record_Status]
 
 -- Step 3: Insert into table [BankInHeaderFile]
 	
-	IF @Reimbursement_Mode = '99' BEGIN
+	IF @Reimbursement_Mode = '99'  BEGIN
 		INSERT INTO [BankInHeaderFile]
 					([Reimburse_ID]
 					,[Auto_Plan_Code]

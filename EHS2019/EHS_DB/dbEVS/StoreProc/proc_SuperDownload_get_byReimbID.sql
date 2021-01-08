@@ -1,11 +1,26 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_SuperDownload_get_byReimbID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	DROP PROCEDURE [proc_SuperDownload_get_byReimbID]
+
+IF EXISTS
+         (
+             SELECT *
+             FROM dbo.sysobjects
+             WHERE id = OBJECT_ID(N'[dbo].[proc_SuperDownload_get_byReimbID]')
+                   AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+          )
+    BEGIN
+        DROP PROCEDURE [proc_SuperDownload_get_byReimbID];
+    END;
 GO
 
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-015 special Support Scheme
+-- Modified by:	    Martin Tang
+-- Modified date:	10 Nov 2020     
+-- Description:	  	1. Handle SSSCMC
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE13-018 Change Voucher Amount to 1 Dollar
@@ -120,20 +135,37 @@ GO
 -- Modified date:     
 -- Description:       
 -- =============================================  
-  
-CREATE PROCEDURE  [dbo].[proc_SuperDownload_get_byReimbID]   
-     @reimburse_id  char(15),   
-     @cutoff_Date_str char(11),  
-     @scheme_code  char(10)  
-  
-as  
-BEGIN  
-	 
-	EXEC [proc_ReimbursementFiles_get_byReimbID] @reimburse_id, @cutoff_Date_str, @scheme_code, 'SUPER'
-  
-END  
+
+CREATE PROCEDURE [dbo].[proc_SuperDownload_get_byReimbID] @reimburse_id    CHAR(15), 
+                                                          @cutoff_Date_str CHAR(11), 
+                                                          @scheme_code     CHAR(10)
+AS
+    BEGIN
+
+        DECLARE @strReimbursementMode VARCHAR(2);
+        DECLARE @strReimbursementModeHAFinance VARCHAR(2)= '2';
+
+        SELECT @strReimbursementMode = Reimbursement_Mode
+        FROM SchemeClaim
+        WHERE Scheme_Code = @scheme_code;
+
+        IF @strReimbursementMode = @strReimbursementModeHAFinance
+            BEGIN
+                EXEC [proc_ReimbursementFiles_get_byReimbID_SSSCMC] @reimburse_id, 
+                                                                    @cutoff_Date_str, 
+                                                                    @scheme_code, 
+                                                                    'SUPER';
+            END;
+            ELSE
+            BEGIN
+                EXEC [proc_ReimbursementFiles_get_byReimbID] @reimburse_id, 
+                                                             @cutoff_Date_str, 
+                                                             @scheme_code, 
+                                                             'SUPER';
+            END;
+    END;
 
 GO
 
-GRANT EXECUTE ON [dbo].[proc_SuperDownload_get_byReimbID] TO HCVU
+GRANT EXECUTE ON [dbo].[proc_SuperDownload_get_byReimbID] TO HCVU;
 GO

@@ -1,11 +1,27 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_PreAuthorizationCheck_get_byReimbID]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
-	DROP PROCEDURE [proc_PreAuthorizationCheck_get_byReimbID]
+
+IF EXISTS
+         (
+             SELECT *
+             FROM dbo.sysobjects
+             WHERE id = OBJECT_ID(N'[dbo].[proc_PreAuthorizationCheck_get_byReimbID]')
+                   AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+          )
+    BEGIN
+        DROP PROCEDURE [proc_PreAuthorizationCheck_get_byReimbID];
+    END;
 GO
 
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-015 special Support Scheme
+-- Modified by:	    Martin Tang
+-- Modified date:	10 Nov 2020     
+-- Description:	  	1.  Handle Reimbursement_Mode = 2 (SSSCMC)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE13-018 Change Voucher Amount to 1 Dollar
@@ -58,18 +74,34 @@ GO
 -- Create date:  28 June 2010      
 -- Description:        
 -- =============================================        
-CREATE PROCEDURE  [dbo].[proc_PreAuthorizationCheck_get_byReimbID]         
-     @reimburse_id  char(15),         
-     @cutoff_Date_str char(11),        
-     @scheme_code  char(10)        
-as        
-BEGIN        
+CREATE PROCEDURE [dbo].[proc_PreAuthorizationCheck_get_byReimbID] @reimburse_id    CHAR(15), 
+                                                                  @cutoff_Date_str CHAR(11), 
+                                                                  @scheme_code     CHAR(10)
+AS
+    BEGIN
 
-	EXEC proc_ReimbursementFiles_get_byReimbID @reimburse_id, @cutoff_Date_str, @scheme_code, 'PreAuthorizationCheck'
+        DECLARE @strReimbursement_Mode VARCHAR(2);
+        SELECT @strReimbursement_Mode = Reimbursement_Mode
+        FROM SchemeClaim
+        WHERE Scheme_Code = @scheme_code;
 
-END        
+        IF @strReimbursement_Mode = '2'
+            BEGIN
+                EXEC proc_ReimbursementFiles_get_byReimbID_SSSCMC @reimburse_id, 
+                                                                  @cutoff_Date_str, 
+                                                                  @scheme_code, 
+                                                                  'PreAuthorizationCheck';
+            END;
+            ELSE
+            BEGIN
+                EXEC proc_ReimbursementFiles_get_byReimbID @reimburse_id, 
+                                                           @cutoff_Date_str, 
+                                                           @scheme_code, 
+                                                           'PreAuthorizationCheck';
+            END;
+    END;
 
 GO
 
-GRANT EXECUTE ON [dbo].[proc_PreAuthorizationCheck_get_byReimbID] TO HCVU
+GRANT EXECUTE ON [dbo].[proc_PreAuthorizationCheck_get_byReimbID] TO HCVU;
 GO
