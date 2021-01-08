@@ -42,7 +42,7 @@
                     <HeaderTemplate>
                         <asp:Label ID="lblCHeader" runat="server" Text="<%$ Resources: Text, CurrentReimbursement %>"></asp:Label>
                     </HeaderTemplate>
-                    <ContentTemplate>
+                    <ContentTemplate>                         
                         <table class="TableStyle1">
                             <tr>
                                 <td style="width: 150px">
@@ -54,6 +54,7 @@
                             </tr>
                             <tr style="height: 14px"></tr>
                         </table>
+                        <asp:Panel ID="panlCP" runat="server">
                         <div class="headingText">
                             <asp:Label ID="lblCPaymentFileRequired" runat="server" Text="<%$ Resources:Text, PaymentFileRequired %>">
                             </asp:Label>
@@ -140,6 +141,8 @@
                             </Columns>
                         </asp:GridView>
                         <div style="height: 24px"></div>
+                        </asp:Panel>
+                        <asp:Panel ID="panlCN" runat="server">
                         <div class="headingText">
                             <asp:Label ID="lblCNoPaymentFileRequired" runat="server" Text="<%$ Resources:Text, NoPaymentFileRequired %>">
                             </asp:Label>
@@ -224,7 +227,96 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
+                        </asp:GridView>                       
+                         <div style="height: 24px"></div>
+                         </asp:Panel>
+                        <asp:Panel ID="panlHA" runat="server">
+                        <div class="headingText">
+                            <asp:Label ID="lblHAPaymentFileRequired" runat="server" Text="<%$ Resources:Text, NoPaymentFileRequiredHA %>">
+                            </asp:Label>
+                        </div>
+                        <table class="TableStyle1">
+                            <tr style="height: 2px"></tr>
+                            <tr>
+                                <td style="width: 100px">
+                                    <asp:Label ID="lblHAStatusText" runat="server" Text="<%$ Resources:Text, Status %>"></asp:Label>
+                                </td>
+                                <td style="width: 250px">
+                                    <asp:Label ID="lblHAStatus" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                                <td style="width: 180px">
+                                    <asp:Label ID="lblHABankPaymentDateText" runat="server" Text="<%$ Resources:Text, BankPaymentDay %>"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblHABankPaymentDate" runat="server" CssClass="tableText"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr style="height: 4px"></tr>
+                        </table>
+                        <asp:GridView ID="gvHA" runat="server" AutoGenerateColumns="False" AllowPaging="False"
+                            AllowSorting="True" Width="945px" OnRowDataBound="gvHA_RowDataBound" OnPreRender="gvHA_PreRender"
+                            OnSorting="gvHA_Sorting">
+                            <Columns>
+                                <asp:TemplateField>
+                                    <ItemStyle VerticalAlign="Top" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblIndex" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="Display_Code" HeaderText="<%$ Resources:Text, Scheme %>">
+                                    <ItemStyle VerticalAlign="Top" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSchemeCode" runat="server" Text='<%# Eval("Display_Code") %>'>
+                                        </asp:Label>
+                                        <asp:HiddenField ID="hfSchemeCode" runat="server" Value='<%# Eval("Scheme_Code") %>' />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="Hold_Dtm" HeaderText="<%$ Resources:Text, AuthorizationHoldTime %>">
+                                    <ItemStyle VerticalAlign="Top" Width="130px" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblHoldTime" runat="server" Text='<%# Eval("Hold_Dtm") %>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="Hold_By" HeaderText="<%$ Resources:Text, AuthorizationHoldBy %>">
+                                    <ItemStyle VerticalAlign="Top" Width="120px" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblHoldBy" runat="server" Text='<%# Eval("Hold_By") %>'>
+                                        </asp:Label>
+                                        <asp:HiddenField ID="hfHoldBy" runat="server" Value='<%# Eval("Hold_By") %>' />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="First_Authorised_Dtm" HeaderText="<%$ Resources:Text, FirstAuthorizedTime %>">
+                                    <ItemStyle VerticalAlign="Top" Width="130px" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblFirstAuthTime" runat="server" Text='<%# Eval("First_Authorised_Dtm") %>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="First_Authorised_By" HeaderText="<%$ Resources:Text, FirstAuthorizedBy %>">
+                                    <ItemStyle VerticalAlign="Top" Width="120px" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblFirstAuthBy" runat="server" Text='<%# Eval("First_Authorised_By") %>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="Second_Authorised_Dtm" HeaderText="<%$ Resources:Text, SecondAuthorizedTime %>">
+                                    <ItemStyle VerticalAlign="Top" Width="130px" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSecondAuthTime" runat="server" Text='<%# Eval("Second_Authorised_Dtm") %>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField SortExpression="Second_Authorised_By" HeaderText="<%$ Resources:Text, SecondAuthorizedBy %>">
+                                    <ItemStyle VerticalAlign="Top" Width="120px" />
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSecondAuthBy" runat="server" Text='<%# Eval("Second_Authorised_By") %>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
                         </asp:GridView>
+                        </asp:Panel>
                         <div style="height: 10px"></div>
                     </ContentTemplate>
                 </cc1:TabPanel>
@@ -408,10 +500,12 @@
                                             SortExpression="noTran">
                                             <ItemStyle HorizontalAlign="Right" />
                                         </asp:BoundField>
-                                        <asp:BoundField DataField="totalAmount" HeaderText="<%$ Resources:Text, TotalRedeemAmountSign %>"
-                                            SortExpression="totalAmount" DataFormatString="{0:#,###}">
+                                        <asp:TemplateField HeaderText="<%$ Resources:Text, TotalRedeemAmountSign %>" SortExpression="totalAmount">
                                             <ItemStyle HorizontalAlign="Right" />
-                                        </asp:BoundField>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblAmountClaimed" runat="server" Text='<%# Eval("totalAmount")%>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                         <asp:TemplateField HeaderText="<%$ Resources:Text, AmountClaimedRMB %>" SortExpression="totalAmountRMB">
                                             <ItemStyle HorizontalAlign="Right" />
                                             <ItemTemplate>

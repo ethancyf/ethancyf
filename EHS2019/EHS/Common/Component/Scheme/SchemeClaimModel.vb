@@ -81,6 +81,7 @@ Namespace Component.Scheme
         Public Enum EnumReimbursementMode
             NoReimbursement = 0
             FirstAuthAndSecondAuth = 1
+            HAFinance = 2  'CRE20-015 (Special Support Scheme) [Martin]
             All = 99
         End Enum
 

@@ -6,6 +6,8 @@ Imports Common.Format
 Imports Common.Validation
 Imports CustomControls
 Imports HCVU.ReimbursementBLL
+Imports Common.Component.HCVUUser
+Imports Common.Component.UserRole
 
 Partial Public Class reimbursementGeneratePaymentFile
     Inherits BasePageWithGridView
@@ -38,6 +40,7 @@ Partial Public Class reimbursementGeneratePaymentFile
 
     Private Const SESS_RAuthorizationSummaryDataTable As String = "010408_RAuthorizationSummaryDataTable"
     Private Const SESS_NAuthorizationSummaryDataTable As String = "010408_NAuthorizationSummaryDataTable"
+    Private Const SESS_NHAAuthorizationSummaryDataTable As String = "010408_NHAAuthorizationSummaryDataTable" ' CRE20-015 (Special Support Scheme) [Winnie]
 
 #End Region
 
@@ -121,6 +124,26 @@ Partial Public Class reimbursementGeneratePaymentFile
         ' Reimbursement ID
         mvCore.SetActiveView(vScheme)
         lblReimID.Text = strReimID
+
+
+        ' --- Hide Show tab ---
+        ' CRE20-015 (Special Support Scheme) [Start][Winnie]
+        ' DH User: All tabs
+        ' SSSCMC User: Only "No Payment File Required (HA)"
+        Dim udtHCVUUserBLL As New HCVUUserBLL
+        Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser()
+        Dim blnIsSSSCMCUser As Boolean = udtHCVUUserBLL.IsSSSCMCUser(udtHCVUUser)
+
+        If blnIsSSSCMCUser Then
+            tpRequire.Visible = False
+            tpNoRequire.Visible = False
+            tpNoRequireHA.Visible = True
+        Else
+            tpRequire.Visible = True
+            tpNoRequire.Visible = True
+            tpNoRequireHA.Visible = True
+        End If
+        ' CRE20-015 (Special Support Scheme) [End][Winnie]
 
         ' --- Payment File Required ---
         Dim dtR As ReimbursementDataTable = dtResult.FilterByReimbursementMode(EnumReimbursementMode.All)
@@ -314,6 +337,123 @@ Partial Public Class reimbursementGeneratePaymentFile
         End If
 
         dtN = Nothing
+        ' --- No Payment File Required ---
+
+        ' CRE20-015 (Special Support Scheme) [Start][Winnie]
+        ' --- No Payment File Required (HA) ---
+        Dim dtNHA As ReimbursementDataTable = dtResult.FilterByReimbursementMode(EnumReimbursementMode.HAFinance)
+
+        If dtNHA.AtLeastOneSchemeHold = False Then
+            ' Message: No records found.
+            udcNHAInfoBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)
+            udcNHAInfoBox.BuildMessageBox()
+            udcNHAInfoBox.Type = CustomControls.InfoMessageBoxType.Information
+
+            udtAuditLogEntry.AddDescripton("NoPaymentFileRequired (HA)", "No schemes have started reimbursement")
+
+            mvNHA.SetActiveView(vNHANoRecord)
+
+        Else
+            mvNHA.SetActiveView(vNHAContent)
+            mvNHAPaymentDate.SetActiveView(vNHAPEnter)
+            udcNHAInfoBox.Visible = False
+            udcNHAErrorBox.Visible = False
+
+            GridViewDataBind(gvNHA, dtNHA, "Display_Seq", "Asc", False)
+            Session(SESS_NHAAuthorizationSummaryDataTable) = dtNHA
+
+            If dtNHA.AllSchemeIsReimbursed Then
+                ' Message: The reimbursement process for the following schemes is completed.
+                udcNHAInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00006)
+                udcNHAInfoBox.BuildMessageBox()
+                udcNHAInfoBox.Type = InfoMessageBoxType.Information
+
+                txtNHAPEPaymentDate.Visible = False
+                ibtnNHAPEPaymentDate.Visible = False
+                lblNHAPEPaymentDate.Visible = True
+                imgNHAPEPaymentDate.Visible = False
+
+                Dim strSchemeCode As String = String.Empty
+
+                For Each dr As DataRow In dtNHA.Rows
+                    If Not IsDBNull(dr("Reimbursed")) AndAlso dr("Reimbursed") = "Y" Then
+                        strSchemeCode = dr("Scheme_Code")
+                        Exit For
+                    End If
+                Next
+
+                Dim dtmValueDate As DateTime = udtReimbursementBLL.GetBankIn(strReimID, strSchemeCode).Rows(0)("Value_Date")
+
+                lblNHAPEPaymentDate.Text = (New Formatter).formatDisplayDate(dtmValueDate)
+
+                ibtnNHAPECompleteReimbursement.Enabled = False
+                ibtnNHAPECompleteReimbursement.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CompleteReimbursementDisableBtn")
+
+                udtAuditLogEntry.AddDescripton("NoPaymentFileRequired (HA)", String.Format("Reimbursement completed with payment date {0}", lblNHAPEPaymentDate.Text))
+
+            ElseIf dtNHA.AbleToGenerateBankFile = False Then
+                ' Message: The reimbursement process is still in progress.
+                udcNHAInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00005)
+                udcNHAInfoBox.BuildMessageBox()
+                udcNHAInfoBox.Type = InfoMessageBoxType.Information
+
+                txtNHAPEPaymentDate.Visible = True
+                ibtnNHAPEPaymentDate.Visible = True
+                lblNHAPEPaymentDate.Visible = False
+                imgNHAPEPaymentDate.Visible = False
+
+                txtNHAPEPaymentDate.Enabled = False
+                ibtnNHAPEPaymentDate.Enabled = False
+                ibtnNHAPECompleteReimbursement.Enabled = False
+                ibtnNHAPECompleteReimbursement.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CompleteReimbursementDisableBtn")
+
+                txtNHAPEPaymentDate.Text = String.Empty
+
+                udtAuditLogEntry.AddDescripton("NoPaymentFileRequired (HA)", "Reimbursement still in progress")
+
+            ElseIf blnIsSSSCMCUser = False Then
+                ' Message: The reimbursement process can be proceeded by SSSCMC user only.
+                udcNHAInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00007)
+                udcNHAInfoBox.BuildMessageBox()
+                udcNHAInfoBox.Type = InfoMessageBoxType.Information
+
+                txtNHAPEPaymentDate.Visible = True
+                ibtnNHAPEPaymentDate.Visible = True
+                lblNHAPEPaymentDate.Visible = False
+                imgNHAPEPaymentDate.Visible = False
+
+                txtNHAPEPaymentDate.Enabled = False
+                ibtnNHAPEPaymentDate.Enabled = False
+                ibtnNHAPECompleteReimbursement.Enabled = False
+                ibtnNHAPECompleteReimbursement.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CompleteReimbursementDisableBtn")
+
+                txtNHAPEPaymentDate.Text = String.Empty
+
+                udtAuditLogEntry.AddDescripton("NoPaymentFileRequired (HA)", String.Format("Reimbursement cannot be proceeded without SSSCMC user role with user {0}", udtHCVUUser.UserID))
+
+            Else
+                txtNHAPEPaymentDate.Visible = True
+                ibtnNHAPEPaymentDate.Visible = True
+                lblNHAPEPaymentDate.Visible = False
+                imgNHAPEPaymentDate.Visible = False
+
+                txtNHAPEPaymentDate.Enabled = True
+                ibtnNHAPEPaymentDate.Enabled = True
+                ibtnNHAPECompleteReimbursement.Enabled = True
+                ibtnNHAPECompleteReimbursement.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CompleteReimbursementBtn")
+
+                txtNHAPEPaymentDate.Text = String.Empty
+
+                udtAuditLogEntry.AddDescripton("NoPaymentFileRequired (HA)", "Ready to complete reimbursement")
+
+            End If
+
+        End If
+
+        dtNHA = Nothing
+        ' --- No Payment File Required (HA) ---
+        ' CRE20-015 (Special Support Scheme) [End][Winnie]
+
 
         udtAuditLogEntry.WriteEndLog(LogID.LOG00003, AuditLogDescription.GetAuthorizationSummarySuccessful)
 
@@ -649,6 +789,184 @@ Partial Public Class reimbursementGeneratePaymentFile
             Dim strSchemeDisplayCode As String = CType(r.FindControl("lblSchemeCode"), Label).Text.Trim
             Dim strReimburseID As String = lblReimID.Text.Trim
             Dim dtmPaymentDate As DateTime = DateTime.ParseExact(lblNPCPaymentDate.Text.Trim, udtFormatter.DisplayDateFormat, Nothing)
+
+            udtReimbursementBLL.GeneratePaymentFile(strSchemeCode, strSchemeDisplayCode, strReimburseID, dtmPaymentDate)
+
+            strSchemeSubmitted += ", " + strSchemeCode
+            intGenerated += 1
+        Next
+
+        If strSchemeSubmitted <> String.Empty Then strSchemeSubmitted = strSchemeSubmitted.Substring(2)
+
+        udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001, "%s", strSchemeSubmitted)
+        udcInfoBox.BuildMessageBox()
+        udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
+
+        lblNoPaymentFileGeneratedText.Visible = False
+        lblNoPaymentFileGenerated.Visible = False
+
+        udtAuditLogEntry.AddDescripton("Scheme", strSchemeSubmitted)
+        udtAuditLogEntry.WriteEndLog(LogID.LOG00016, "Complete Reimbursement - Confirm click success")
+
+        mvCore.SetActiveView(vComplete)
+
+    End Sub
+
+#End Region
+
+#Region "No Payment File Required (HA)"
+
+    Protected Sub gvNHA_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim udtFormatter As New Formatter
+
+            ' Hold Time
+            Dim lblHoldTime As Label = CType(e.Row.FindControl("lblHoldTime"), Label)
+            If lblHoldTime.Text.Trim = String.Empty Then
+                lblHoldTime.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblHoldTime.Enabled = False
+            Else
+                lblHoldTime.Text = udtFormatter.convertDateTime(lblHoldTime.Text.Trim)
+            End If
+
+            ' Hold By
+            Dim lblHoldBy As Label = CType(e.Row.FindControl("lblHoldBy"), Label)
+            If lblHoldBy.Text.Trim = String.Empty Then
+                lblHoldBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblHoldBy.Enabled = False
+            End If
+
+            ' First Authorized Time
+            Dim lblFirstAuthTime As Label = CType(e.Row.FindControl("lblFirstAuthTime"), Label)
+            If lblFirstAuthTime.Text.Trim = String.Empty Then
+                lblFirstAuthTime.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblFirstAuthTime.Enabled = False
+            Else
+                lblFirstAuthTime.Text = udtFormatter.convertDateTime(lblFirstAuthTime.Text.Trim)
+            End If
+
+            ' First Authorized By
+            Dim lblFirstAuthBy As Label = CType(e.Row.FindControl("lblFirstAuthBy"), Label)
+            If lblFirstAuthBy.Text.Trim = String.Empty Then
+                lblFirstAuthBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblFirstAuthBy.Enabled = False
+            End If
+
+            ' Second Authorized Time
+            Dim lblSecondAuthTime As Label = CType(e.Row.FindControl("lblSecondAuthTime"), Label)
+            If lblSecondAuthTime.Text.Trim = String.Empty Then
+                lblSecondAuthTime.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblSecondAuthTime.Enabled = False
+            Else
+                lblSecondAuthTime.Text = udtFormatter.convertDateTime(lblSecondAuthTime.Text.Trim)
+            End If
+
+            ' Second Authorized By
+            Dim lblSecondAuthBy As Label = CType(e.Row.FindControl("lblSecondAuthBy"), Label)
+            If lblSecondAuthBy.Text.Trim = String.Empty Then
+                lblSecondAuthBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblSecondAuthBy.Enabled = False
+            End If
+
+        End If
+    End Sub
+
+    Protected Sub gvNHA_PreRender(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        GridViewPreRenderHandler(sender, e, SESS_NHAAuthorizationSummaryDataTable)
+    End Sub
+
+    Protected Sub gvNHA_Sorting(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs)
+        GridViewSortingHandler(sender, e, SESS_NHAAuthorizationSummaryDataTable)
+    End Sub
+
+    '
+
+    Protected Sub ibtnNHAPECompleteReimbursement_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        udcNHAInfoBox.Visible = False
+        udcNHAErrorBox.Visible = False
+
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.AddDescripton("Payment Day", txtNHAPEPaymentDate.Text)
+        udtAuditLogEntry.WriteStartLog(LogID.LOG00011, "Complete Reimbursement click")
+
+        ' Data validation
+        imgNHAPEPaymentDate.Visible = False
+
+        ' Format the input date
+        Dim udtFormatter As New Formatter
+
+        Dim strNHAPEPaymentDate As String = IIf(udtFormatter.formatInputDate(txtNHAPEPaymentDate.Text.Trim) <> String.Empty, udtFormatter.formatInputDate(txtNHAPEPaymentDate.Text.Trim), txtNHAPEPaymentDate.Text.Trim)
+
+        Dim udtSysMessage As SystemMessage = (New Validator).chkInputDate(strNHAPEPaymentDate, True, False)
+
+        If Not IsNothing(udtSysMessage) Then
+            udcNHAErrorBox.AddMessage(udtSysMessage, "%s", Me.GetGlobalResourceObject("Text", "BankPaymentDay"))
+            imgNHAPEPaymentDate.Visible = True
+        End If
+
+        If IsNothing(udtSysMessage) Then
+            txtNHAPEPaymentDate.Text = strNHAPEPaymentDate
+        End If
+
+        If udcNHAErrorBox.GetCodeTable.Rows.Count = 0 Then
+            ' Bank Payment Date should not be earlier than Cutoff Date
+            Dim dt As DataTable = (New ReimbursementBLL).GetReimbursementAuthorisationByIDStatus(Nothing, ReimbursementStatus.StartReimbursement, ReimbursementAuthorisationStatus.Active, Nothing)
+            Dim dtmCutoffDate As DateTime = dt.Rows(0)("Cutoff_Date")
+
+            If CDate(udtFormatter.convertDate(txtNHAPEPaymentDate.Text, String.Empty)).Subtract(dtmCutoffDate).Days < 0 Then
+                ' Error: The "Bank Payment Date" should not be earlier than the Reimbursement Cutoff Date.
+                udcNHAErrorBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00030))
+                imgNHAPEPaymentDate.Visible = True
+            End If
+
+        End If
+
+        If udcNHAErrorBox.GetCodeTable.Rows.Count <> 0 Then
+            udcNHAErrorBox.BuildMessageBox(ErrorMessageBoxHeaderKey.ValidationFail, udtAuditLogEntry, LogID.LOG00013, "Complete Reimbursement click fail")
+
+            Return
+        End If
+
+        lblNHAPCPaymentDate.Text = udtFormatter.convertDate(txtNHAPEPaymentDate.Text.Trim, String.Empty)
+
+        udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00003)
+        udcInfoBox.BuildMessageBox()
+        udcInfoBox.Type = CustomControls.InfoMessageBoxType.Information
+
+        udtAuditLogEntry.AddDescripton("Payment Day", lblNHAPCPaymentDate.Text)
+        udtAuditLogEntry.WriteEndLog(LogID.LOG00012, "Complete Reimbursement click success")
+
+        mvNHAPaymentDate.SetActiveView(vNHAPConfirm)
+
+    End Sub
+
+    Protected Sub ibtnNHAPCBack_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        udcInfoBox.Visible = False
+
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteLog(LogID.LOG00014, "Complete Reimbursement - Back click")
+
+        mvNHAPaymentDate.SetActiveView(vNHAPEnter)
+
+    End Sub
+
+    Protected Sub ibtnNHAPCConfirm_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteStartLog(LogID.LOG00015, "Complete Reimbursement - Confirm click")
+
+        Dim intGenerated As Integer = 0
+        Dim strSchemeSubmitted As String = String.Empty
+
+        Dim udtReimbursementBLL As New ReimbursementBLL
+        Dim udtFormatter As New Formatter
+
+        For Each r As GridViewRow In gvNHA.Rows
+            If CType(r.FindControl("hfHoldBy"), HiddenField).Value = String.Empty Then Continue For
+
+            Dim strSchemeCode As String = CType(r.FindControl("hfSchemeCode"), HiddenField).Value.Trim
+            Dim strSchemeDisplayCode As String = CType(r.FindControl("lblSchemeCode"), Label).Text.Trim
+            Dim strReimburseID As String = lblReimID.Text.Trim
+            Dim dtmPaymentDate As DateTime = DateTime.ParseExact(lblNHAPCPaymentDate.Text.Trim, udtFormatter.DisplayDateFormat, Nothing)
 
             udtReimbursementBLL.GeneratePaymentFile(strSchemeCode, strSchemeDisplayCode, strReimburseID, dtmPaymentDate)
 

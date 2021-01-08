@@ -738,6 +738,81 @@ Namespace BLL
             udtEHSTransactionModel.ClaimAmount = udtEHSTransactionDetail.TotalAmount
         End Sub
         ' CRE13-001 - EHAPP [End][Tommy L]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Construct EHS Transaction Detail For SSSCMC
+        ''' </summary>
+        ''' <param name="udtEHSTransactionModel"></param>
+        ''' <param name="udtEHSAccount"></param>
+        ''' <param name="strBOUserID"></param>
+        ''' <param name="dtHAPatient"></param>
+        ''' <remarks></remarks>
+        Public Sub ConstructEHSTransactionDetail_SSSCMC(ByRef udtEHSTransactionModel As EHSTransactionModel, _
+                                                        ByVal udtEHSAccount As EHSAccountModel,
+                                                        ByVal strBOUserID As String,
+                                                        ByVal dtHAPatient As DataTable)
+
+            Dim udtSchemeClaimModel As SchemeClaimModel = Me._udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransactionModel.SchemeCode, udtEHSTransactionModel.ServiceDate.AddDays(1).AddMinutes(-1))
+
+            ' VoucherTransaction
+            udtEHSTransactionModel.RecordStatus = udtSchemeClaimModel.ConfirmedTransactionStatus
+            udtEHSTransactionModel.VoucherAccID = udtEHSAccount.VoucherAccID
+
+            udtEHSTransactionModel.CreateBy = strBOUserID
+            udtEHSTransactionModel.UpdateBy = strBOUserID
+            udtEHSTransactionModel.DataEntryBy = String.Empty
+
+            udtEHSTransactionModel.ManualReimburse = True
+
+            'udtEHSTransactionModel.TransactionDtm = Now
+            udtEHSTransactionModel.DocCode = udtEHSAccount.SearchDocCode
+
+            'Sub-Patient Type
+            Dim strSubsidizeCode As String = String.Empty
+
+            Select Case dtHAPatient.Rows(0)("Patient_Type").ToString.Trim
+                Case "A"
+                    strSubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_A
+                Case "B"
+                    strSubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_B
+                Case Else
+                    Throw New Exception(String.Format("Invalid Patient Type({0}) is found in DB table HAServicePatient.", dtHAPatient.Rows(0)("Patient_Type").ToString.Trim))
+            End Select
+
+            udtEHSTransactionModel.TransactionDetails = New TransactionDetailModelCollection()
+
+            ' ------------------------------------------------------------------------
+            ' Construct the Detail usign the Active Scheme & Subsidize By Service date 
+            ' ------------------------------------------------------------------------
+            Dim udtEHSTransactionDetail As New EHSTransaction.TransactionDetailModel()
+            udtEHSTransactionDetail.SchemeCode = udtSchemeClaimModel.SchemeCode
+            udtEHSTransactionDetail.SchemeSeq = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SchemeSeq
+            udtEHSTransactionDetail.SubsidizeCode = strSubsidizeCode
+            udtEHSTransactionDetail.SubsidizeItemCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode
+
+            Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+            udtEHSTransactionDetail.AvailableItemCode = udtSubsidizeItemDetailList(0).AvailableItemCode
+            udtEHSTransactionDetail.Unit = Nothing
+            udtEHSTransactionDetail.PerUnitValue = Nothing
+            udtEHSTransactionDetail.TotalAmount = Nothing
+            udtEHSTransactionDetail.Remark = String.Empty
+            udtEHSTransactionDetail.ExchangeRate_Value = udtEHSTransactionModel.ExchangeRate
+            udtEHSTransactionDetail.TotalAmountRMB = udtEHSTransactionModel.VoucherClaimRMB
+
+            udtEHSTransactionModel.TransactionDetails.Add(udtEHSTransactionDetail)
+
+            udtEHSTransactionModel.VoucherBeforeRedeem = 0
+            udtEHSTransactionModel.VoucherAfterRedeem = 0
+            udtEHSTransactionModel.ClaimAmount = Nothing
+
+        End Sub
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+
+
+
 #End Region
 
 #Region "Other Supporting Function"

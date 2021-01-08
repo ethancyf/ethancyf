@@ -143,6 +143,22 @@ Partial Public Class UserAccountMaint
             Dim dtMenuItem As DataTable
             Dim udtMenuBLL As New MenuBLL
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim udtHCVUUserBLL As New HCVUUserBLL
+            Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser
+            Dim blnShowSSSCMCOnly As Boolean = True
+
+            For Each udtUserRole As UserRoleModel In udtHCVUUser.UserRoleCollection.Values()
+                If udtUserRole.RoleType <> RoleType.SSSCMCReimbursement And _
+                    udtUserRole.RoleType <> RoleType.SSSCMCAdmin And _
+                    udtUserRole.RoleType <> RoleType.SSSCMCEnquiry Then
+
+                    blnShowSSSCMCOnly = False
+                End If
+            Next
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             dtMenuGroup = udtMenuBLL.GetMenuGroupTable
             dtMenuItem = udtMenuBLL.GetMenuItemTable
 
@@ -202,6 +218,23 @@ Partial Public Class UserAccountMaint
 
             dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If blnShowSSSCMCOnly Then
+                Dim dtRoleTypeSSSCMC As DataTable = dtRoleType.Clone
+
+                Dim drRoleTypeSSSCMC() As DataRow = dtRoleType.Select("Role_Type IN (23,24,25)")
+
+                If drRoleTypeSSSCMC.Length > 0 Then
+                    For intCt As Integer = 0 To drRoleTypeSSSCMC.Length - 1
+                        dtRoleTypeSSSCMC.ImportRow(drRoleTypeSSSCMC(intCt))
+                    Next
+
+                    dtRoleType = dtRoleTypeSSSCMC
+                End If
+            End If
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             Me.chklRole.DataSource = dtRoleType
             Me.chklRole.DataBind()
 
@@ -211,28 +244,24 @@ Partial Public Class UserAccountMaint
             udtGeneralFunction.UpdateImageURL(ibtnEdit, False)
             udtGeneralFunction.UpdateImageURL(ibtnResetPassword, False)
 
-            'Load Scheme List
-            'Dim udtVoucherSchemeBLL As New VoucherScheme.VoucherSchemeBLL
-            'Dim udtSchemeModelCollection As VoucherScheme.VoucherSchemeModelCollection
-            'udtSchemeModelCollection = udtVoucherSchemeBLL.LoadActiveVoucheSchemeModelCollection()
-
-            'Dim udtSchemeBackOfficeBLL As New Scheme.SchemeBackOfficeBLL
-            'Dim udtSchemeBackOfficeModelCollection As Scheme.SchemeBackOfficeModelCollection
-            'udtSchemeBackOfficeModelCollection = udtSchemeBackOfficeBLL.getAllSchemeBackOfficeWithSubsidizeGroup
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Dim udtSchemeClaimBLL As New Scheme.SchemeClaimBLL
-            Dim udtSchemeClaimModelCollection As Scheme.SchemeClaimModelCollection
-            ' CRE13-001 - EHAPP [Start][Koala]
-            ' -------------------------------------------------------------------------------------
-            udtSchemeClaimModelCollection = udtSchemeClaimBLL.getAllSchemeClaim_WithSubsidizeGroup()
-            'udtSchemeClaimModelCollection = udtSchemeClaimBLL.getAllDistinctSchemeClaim()
-            ' CRE13-001 - EHAPP [End][Koala]
+            Dim udtSchemeClaimModelCollection As Scheme.SchemeClaimModelCollection = Nothing
+
+            If blnShowSSSCMCOnly Then
+                udtSchemeClaimModelCollection = New Scheme.SchemeClaimModelCollection
+                'Dim udtSchemeClaimList As Scheme.SchemeClaimModelCollection = udtSchemeClaimBLL.getAllSchemeClaim_WithSubsidizeGroup()
+
+                udtSchemeClaimModelCollection.Add(udtSchemeClaimBLL.getAllSchemeClaim_WithSubsidizeGroup().Filter(Common.Component.Scheme.SchemeClaimModel.SSSCMC))
+            Else
+                udtSchemeClaimModelCollection = udtSchemeClaimBLL.getAllSchemeClaim_WithSubsidizeGroup()
+            End If
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             ckbScheme.DataTextField = "DisplayCode"
             ckbScheme.DataValueField = "SchemeCode"
-            'Dim udtSchemeBLL As New Scheme.SchemeBLL
-            'Dim udtMSchemeList As Scheme.MasterSchemeModelCollection
-            'udtMSchemeList = udtSchemeBLL.getAllMasterSchemeWithSubScheme()
-            'ckbScheme.DataTextField = "ExternalCode"
-            'ckbScheme.DataValueField = "MSchemeCode"
+
             Me.ckbScheme.DataSource = udtSchemeClaimModelCollection
             Me.ckbScheme.DataBind()
 
@@ -272,9 +301,15 @@ Partial Public Class UserAccountMaint
     End Sub
 
     Private Sub BindUserList()
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Dim udtHCVUUserBLL As New HCVUUserBLL
+        Dim strUserID As String = udtHCVUUserBLL.GetHCVUUser.UserID.Trim
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         Dim dtUser As DataTable
         Dim udtHCVUBLL As New HCVUUserBLL
-        dtUser = udtHCVUBLL.GetHCVUUserList(Me.chkDisplayInactive.Checked)
+        dtUser = udtHCVUBLL.GetHCVUUserList(Me.chkDisplayInactive.Checked, strUserID)
 
         dtUser.Columns.Add(New DataColumn("Display_Text"))
 
@@ -655,6 +690,10 @@ Partial Public Class UserAccountMaint
         blnUserListIndexChange = False
 
         Me.ClearUserInfo()
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.ClearUserScheme()
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         Me.ClearUserRole()
         Me.ClearAccessRight()
         Me.ClearFileGenerationRight()
@@ -1155,33 +1194,109 @@ Partial Public Class UserAccountMaint
         '    Me.imgTokenSNAlert.Visible = True
         'End If
 
-        'Check for at least one scheme selected
-        Dim bSchemeSelected As Boolean = False
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        '--------------------------------------
+        'Check "Scheme"
+        '--------------------------------------
+        Dim blnSchemeSelected As Boolean = False
         Dim liScheme As ListItem
+
+        Dim blnSelectedSchemeSSSCMC As Boolean = False
+        Dim blnSelectedSchemeNotSSSCMC As Boolean = False
+        Dim strSelectedSchemeDesc As String = String.Empty
+
         For Each liScheme In Me.ckbScheme.Items
             If liScheme.Selected Then
-                bSchemeSelected = True
-                Exit For
+                blnSchemeSelected = True
+
+                If liScheme.Value = Scheme.SchemeClaimModel.SSSCMC Then
+                    blnSelectedSchemeSSSCMC = True
+                    strSelectedSchemeDesc = liScheme.Text
+                Else
+                    blnSelectedSchemeNotSSSCMC = True
+                End If
+
             End If
         Next
-        If bSchemeSelected = False Then
+
+        If Not blnSchemeSelected Then
+            'Please select at least one scheme. [990000-E-00183]
             Me.udcMessageBox.AddMessage("990000", "E", "00183")
             Me.imgSchemeAlert.Visible = True
         End If
 
-        'Check for at least one role selected
+        If blnSelectedSchemeSSSCMC And blnSelectedSchemeNotSSSCMC Then
+            Me.udcMessageBox.AddMessage("010501", "E", "00019", "%s", strSelectedSchemeDesc)
+            Me.imgSchemeAlert.Visible = True
+        End If
+
+        '--------------------------------------
+        'Check "User Roles"
+        '--------------------------------------
         Dim blnSelected As Boolean = False
         Dim liRole As ListItem
+
+        Dim blnSelectedRoleSSSCMC As Boolean = False
+        Dim blnSelectedRoleNotSSSCMC As Boolean = False
+        Dim strSelectedRoleDesc As String = String.Empty
+
         For Each liRole In Me.chklRole.Items
             If liRole.Selected Then
                 blnSelected = True
-                Exit For
+
+                If liRole.Value = RoleType.SSSCMCReimbursement OrElse liRole.Value = RoleType.SSSCMCAdmin OrElse liRole.Value = RoleType.SSSCMCEnquiry Then
+                    blnSelectedRoleSSSCMC = True
+                    strSelectedRoleDesc = liRole.Text
+                Else
+                    blnSelectedRoleNotSSSCMC = True
+                End If
             End If
         Next
+
         If blnSelected = False Then
+            'Please select at least one Role. [010501-E-00004]
             Me.udcMessageBox.AddMessage("010501", "E", "00004")
             Me.imgRoleAlert.Visible = True
         End If
+
+        If blnSelectedRoleSSSCMC And blnSelectedRoleNotSSSCMC Then
+            Me.udcMessageBox.AddMessage("010501", "E", "00018", "%s", strSelectedRoleDesc)
+            Me.imgRoleAlert.Visible = True
+        End If
+
+        '--------------------------------------
+        'Check "Scheme" with "User Roles"
+        '--------------------------------------
+        If blnSelectedSchemeSSSCMC And blnSelectedRoleNotSSSCMC Then
+            Dim lstItem1 As ListItem = chklRole.Items().FindByValue(RoleType.SSSCMCReimbursement)
+            Dim lstItem2 As ListItem = chklRole.Items().FindByValue(RoleType.SSSCMCAdmin)
+            Dim lstItem3 As ListItem = chklRole.Items().FindByValue(RoleType.SSSCMCEnquiry)
+            Dim strRole1 As String = String.Empty
+            Dim strRole2 As String = String.Empty
+            Dim strRole3 As String = String.Empty
+
+            If lstItem1 Is Nothing OrElse lstItem2 Is Nothing OrElse lstItem3 Is Nothing Then
+                strRole1 = "SSSCMC Reimbursement"
+                strRole2 = "SSSCMC Admin"
+                strRole3 = "SSSCMC Enquiry"
+            Else
+                strRole1 = lstItem1.Text
+                strRole2 = lstItem2.Text
+                strRole3 = lstItem3.Text
+            End If
+
+            Me.udcMessageBox.AddMessage("010501", "E", "00021", New String() {"%s", "%UserRole"}, New String() {strSelectedSchemeDesc, String.Format("{0} / {1} / {2}", strRole1, strRole2, strRole3)})
+            Me.imgSchemeAlert.Visible = True
+            Me.imgRoleAlert.Visible = True
+        End If
+
+        If blnSelectedSchemeNotSSSCMC And blnSelectedRoleSSSCMC Then
+            Me.udcMessageBox.AddMessage("010501", "E", "00020", New String() {"%s", "%Scheme"}, New String() {strSelectedRoleDesc, Scheme.SchemeClaimModel.SSSCMC})
+            Me.imgSchemeAlert.Visible = True
+            Me.imgRoleAlert.Visible = True
+        End If
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
         'Check Gender whether must be provided
         If rdlGender.SelectedValue = Gender.NotProvided Then

@@ -113,6 +113,15 @@ Partial Public Class reimbursement_enquiry
     Protected WithEvents lblCReimbursementID As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panlCP control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panlCP As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''lblCPaymentFileRequired control.
     '''</summary>
     '''<remarks>
@@ -167,6 +176,15 @@ Partial Public Class reimbursement_enquiry
     Protected WithEvents gvCP As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
+    '''panlCN control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panlCN As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''lblCNoPaymentFileRequired control.
     '''</summary>
     '''<remarks>
@@ -219,6 +237,69 @@ Partial Public Class reimbursement_enquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents gvCN As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''panlHA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panlHA As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblHAPaymentFileRequired control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHAPaymentFileRequired As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblHAStatusText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHAStatusText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblHAStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHAStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblHABankPaymentDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHABankPaymentDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblHABankPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHABankPaymentDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvHA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvHA As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
     '''tpPrevious control.

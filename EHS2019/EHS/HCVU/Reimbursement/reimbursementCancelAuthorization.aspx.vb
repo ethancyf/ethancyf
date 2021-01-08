@@ -124,26 +124,20 @@ Partial Public Class reimbursement_void
 
         Session(SESS_ReimCancelAuthTransactionSummaryDataTable) = dtSummary
 
+        'CRE20-015-02 (Special Support Scheme) [Start][Martin]
         If dtSummary.Rows.Count = 0 Then
             udcInfoBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)
             udcInfoBox.BuildMessageBox()
             udcInfoBox.Type = CustomControls.InfoMessageBoxType.Information
-
             MultiViewReimCancelAuthorization.ActiveViewIndex = ViewIndex.NoRecord
-
         Else
             GridViewDataBind(gvTransactionSummary, dtSummary, "Display_Code", "ASC", False)
-
-            ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-            gvTransactionSummary.Columns(8).Visible = IsRMBAvailable(dtSummary)
-            ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
-
+            gvTransactionSummary.Columns(8).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dtSummary) OrElse udtReimbursementBLL.IsRMBAvailable(dtSummary)
+            gvTransactionSummary.Columns(7).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dtSummary) OrElse udtReimbursementBLL.IsHKDAvailable(dtSummary)
             hfReimID.Value = strReimID
-
             MultiViewReimCancelAuthorization.ActiveViewIndex = ViewIndex.TransactionSummary
-
         End If
-
+        'CRE20-015-02 (Special Support Scheme) [End][Martin]
     End Sub
 
     Private Sub EnablePreviousNextButton()
@@ -153,28 +147,7 @@ Partial Public Class reimbursement_void
 
 #End Region
 
-#Region "Supporting Functions"
 
-    ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-    Private Function IsRMBAvailable(ByVal dt As DataTable) As Boolean
-        Dim udtSchemeClaimList As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
-
-        For Each dr As DataRow In dt.Rows
-            If udtSchemeClaimList.Filter(dr("Scheme_Code")).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
-                Return True
-            End If
-        Next
-
-        Return False
-
-    End Function
-
-    Private Function IsRMBAvailable(ByVal strSchemeCode As String) As Boolean
-        Return (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB
-    End Function
-    ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
-
-#End Region
 
     Private Sub BackToCancelAuthorizePage()
         BuildDrillCriteriaReview(DrillLevel.None)
@@ -315,22 +288,26 @@ Partial Public Class reimbursement_void
             Dim lblAuthorisedDtm As Label = e.Row.FindControl("lblAuthorisedDtm")
             lblAuthorisedDtm.Text = udtFormatter.convertDateTime(lblAuthorisedDtm.Text.Trim)
 
+            'CRE20-015-02 (Special Support Scheme) [Start][Martin]
             ' Total Amount ($)
             Dim lblTotalAmount As Label = e.Row.FindControl("lblTotalAmount")
-            lblTotalAmount.Text = Format(CDbl(lblTotalAmount.Text), "#,###")
-
-            ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
             ' Amount Claimed (RMB)
             Dim lblTotalAmountRMB As Label = e.Row.FindControl("lblTotalAmountRMB")
             Dim strScheme As String = DirectCast(e.Row.FindControl("hfSchemeCode"), HiddenField).Value
 
-            If (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strScheme).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
+            If udtReimbursementBLL.IsHKDRMBAvailable(strScheme) Then
                 lblTotalAmountRMB.Text = udtFormatter.formatMoneyRMB(lblTotalAmountRMB.Text, False)
-            Else
+                lblTotalAmount.Text = Format(CDbl(lblTotalAmount.Text), "#,###")
+            ElseIf udtReimbursementBLL.IsRMBAvailable(strScheme) Then
+                lblTotalAmountRMB.Text = udtFormatter.formatMoneyRMB(lblTotalAmountRMB.Text, False)
+                lblTotalAmount.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblTotalAmount.Enabled = False
+            Else 'hkd
                 lblTotalAmountRMB.Text = Me.GetGlobalResourceObject("Text", "N/A")
                 lblTotalAmountRMB.Enabled = False
+                lblTotalAmount.Text = Format(CDbl(lblTotalAmount.Text), "#,###")
             End If
-            ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+            'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
             ' Transaction Status
             Dim lblAuthorisedStatus As Label = e.Row.FindControl("lblAuthorisedStatus")
@@ -397,10 +374,12 @@ Partial Public Class reimbursement_void
 
                 Session(SESS_ReimCancelAuthTransactionDrillSPIDDataTable) = dtSPID
 
-                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
                 gvDrillSPID.PageIndex = 0
-                gvDrillSPID.Columns(6).Visible = IsRMBAvailable(strSchemeCode)
-                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+                gvDrillSPID.Columns(6).Visible = udtReimbursementBLL.IsHKDRMBAvailable(strSchemeCode) OrElse udtReimbursementBLL.IsRMBAvailable(strSchemeCode)
+                gvDrillSPID.Columns(5).Visible = udtReimbursementBLL.IsHKDRMBAvailable(strSchemeCode) OrElse udtReimbursementBLL.IsHKDAvailable(strSchemeCode)
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]
+
                 GridViewDataBind(gvDrillSPID, dtSPID, "spNum", "ASC", False)
 
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00011, "Select Cancel Authorization successful")
@@ -458,21 +437,17 @@ Partial Public Class reimbursement_void
 
             Session(SESS_ReimCancelAuthTransactionSummarySelectedRowDataTable) = dtSelected
 
-            ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+            'CRE20-015-02 (Special Support Scheme) [Start][Martin]
             ' Determine whether cancelling this scheme will cause the reimbursement to complete
             If IsFinalScheme(strReimbursementID, strScheme) Then
-                If (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strScheme).ReimbursementMode = EnumReimbursementMode.All Then
-                    udcErrorBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00003), "%s", strReimbursementID)
-                Else
-                    udcErrorBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00004), "%s", strReimbursementID)
-                End If
-
+                udcErrorBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00003), "%s", strReimbursementID)
                 udcErrorBox.BuildMessageBox("Note")
-
             End If
 
-            gvConfirmCancel.Columns(8).Visible = IsRMBAvailable(dtSelected)
-            ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+            gvConfirmCancel.Columns(8).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dtSelected) OrElse udtReimbursementBLL.IsRMBAvailable(dtSelected)
+            gvConfirmCancel.Columns(7).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dtSelected) OrElse udtReimbursementBLL.IsHKDAvailable(dtSelected)
+            'CRE20-015-02 (Special Support Scheme) [End][Martin]
+
 
             gvConfirmCancel.DataSource = dtSelected
             gvConfirmCancel.DataBind()
@@ -494,7 +469,7 @@ Partial Public Class reimbursement_void
         GridViewPageIndexChangingHandler(sender, e, SESS_ReimCancelAuthTransactionSummaryDataTable)
     End Sub
 
-    ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+    'CRE20-015-02 (Special Support Scheme) [Start][Martin]
     Private Function IsFinalScheme(ByVal strReimbursementID As String, ByVal strSchemeCode As String) As Boolean
         Dim udtReimbursementBLL As New ReimbursementBLL
 
@@ -502,23 +477,38 @@ Partial Public Class reimbursement_void
 
         Dim dtPaymentFile As ReimbursementDataTable = dt.FilterByReimbursementMode(EnumReimbursementMode.All)
         Dim dtNoPaymentFile As ReimbursementDataTable = dt.FilterByReimbursementMode(EnumReimbursementMode.FirstAuthAndSecondAuth)
+        Dim dtNoPaymentFileWithHAFinance As ReimbursementDataTable = dt.FilterByReimbursementMode(EnumReimbursementMode.HAFinance)
 
         ' If neither section has completed the reimbursement, no need to perform further checking
-        If dtPaymentFile.AllSchemeIsReimbursed = False AndAlso dtNoPaymentFile.AllSchemeIsReimbursed = False Then
+        If dtPaymentFile.AllSchemeIsReimbursed = False AndAlso dtNoPaymentFile.AllSchemeIsReimbursed = False AndAlso dtNoPaymentFileWithHAFinance.AllSchemeIsReimbursed = False Then
             Return False
         End If
 
         If (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementMode = EnumReimbursementMode.All Then
             If dtPaymentFile.HoldSchemeCount = 1 _
                     AndAlso Not IsDBNull(dtPaymentFile.FindByScheme(strSchemeCode)("Hold_By")) _
-                    AndAlso dtNoPaymentFile.AllSchemeIsReimbursed Then
+                    AndAlso ((dtNoPaymentFile.AllSchemeIsReimbursed And dtNoPaymentFileWithHAFinance.AllSchemeIsReimbursed) _
+                        Or ((dtNoPaymentFile.AtLeastOneSchemeHold = False Or dtNoPaymentFileWithHAFinance.AtLeastOneSchemeHold = False) _
+                            And (dtNoPaymentFile.AllSchemeIsReimbursed Or dtNoPaymentFileWithHAFinance.AllSchemeIsReimbursed))) Then
+
                 Return True
             End If
-
-        Else
+        ElseIf (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementMode = EnumReimbursementMode.FirstAuthAndSecondAuth Then
             If dtNoPaymentFile.HoldSchemeCount = 1 _
-                    AndAlso Not IsDBNull(dtNoPaymentFile.FindByScheme(strSchemeCode)("Hold_By")) _
-                    AndAlso dtPaymentFile.AllSchemeIsReimbursed Then
+                   AndAlso Not IsDBNull(dtNoPaymentFile.FindByScheme(strSchemeCode)("Hold_By")) _
+                   AndAlso ((dtPaymentFile.AllSchemeIsReimbursed And dtNoPaymentFileWithHAFinance.AllSchemeIsReimbursed) _
+                       Or ((dtPaymentFile.AtLeastOneSchemeHold = False Or dtNoPaymentFileWithHAFinance.AtLeastOneSchemeHold = False) _
+                           And (dtPaymentFile.AllSchemeIsReimbursed Or dtNoPaymentFileWithHAFinance.AllSchemeIsReimbursed))) Then
+
+                Return True
+            End If
+        Else 'HAFinance
+            If dtNoPaymentFileWithHAFinance.HoldSchemeCount = 1 _
+                    AndAlso Not IsDBNull(dtNoPaymentFileWithHAFinance.FindByScheme(strSchemeCode)("Hold_By")) _
+                    AndAlso ((dtPaymentFile.AllSchemeIsReimbursed And dtNoPaymentFile.AllSchemeIsReimbursed) _
+                        Or ((dtPaymentFile.AtLeastOneSchemeHold = False Or dtNoPaymentFile.AtLeastOneSchemeHold = False) _
+                            And (dtPaymentFile.AllSchemeIsReimbursed Or dtNoPaymentFile.AllSchemeIsReimbursed))) Then
+
                 Return True
             End If
 
@@ -577,8 +567,11 @@ Partial Public Class reimbursement_void
 
             ' Total Amount ($)
             Dim lblTotalAmount As Label = e.Row.FindControl("lblTotalAmount")
-            lblTotalAmount.Text = Format(CDbl(lblTotalAmount.Text), "#,###")
-
+            'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+            If lblTotalAmount.Visible = True Then
+                lblTotalAmount.Text = Format(CDbl(lblTotalAmount.Text), "#,###")
+            End If
+            'CRE20-015-02 (Special Support Scheme) [End][Martin]
             ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
             ' Amount Claimed (RMB)
             Dim lblTotalAmountRMB As Label = e.Row.FindControl("lblTotalAmountRMB")
@@ -691,10 +684,11 @@ Partial Public Class reimbursement_void
 
                 Session(SESS_ReimCancelAuthTransactionDrillBankAccountDataTable) = dt
 
-                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
                 gvDrillBankAccount.PageIndex = 0
-                gvDrillBankAccount.Columns(6).Visible = IsRMBAvailable(udtSearchCriteria.SchemeCode)
-                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+                gvDrillBankAccount.Columns(6).Visible = udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsRMBAvailable(udtSearchCriteria.SchemeCode)
+                gvDrillBankAccount.Columns(5).Visible = udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDAvailable(udtSearchCriteria.SchemeCode)
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
                 GridViewDataBind(gvDrillBankAccount, dt, "bankAccount", "ASC", False)
 
@@ -788,10 +782,11 @@ Partial Public Class reimbursement_void
 
                 Dim dtTrans As DataTable = udtReimbursementBLL.GetAuthorizationSummaryByTxn(udtSearchCriteria, hfAuthorisedStatus.Value, udtSearchCriteria.SchemeCode, hfAuthorisedStatus.Value = ReimbursementStatus.FirstAuthorised)
 
-                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
                 gvDrillTransaction.PageIndex = 0
-                gvDrillTransaction.Columns(10).Visible = IsRMBAvailable(udtSearchCriteria.SchemeCode)
-                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+                gvDrillTransaction.Columns(10).Visible = udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsRMBAvailable(udtSearchCriteria.SchemeCode)
+                gvDrillTransaction.Columns(9).Visible = udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDAvailable(udtSearchCriteria.SchemeCode)
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
                 GridViewDataBind(gvDrillTransaction, dtTrans, "transNum", "ASC", False)
 
@@ -1067,7 +1062,7 @@ Partial Public Class reimbursement_void
         Catch ex As Exception
             udtAuditLogEntry.WriteEndLog(LogID.LOG00018, "Previous record fail")
             Throw ex
-       
+
         End Try
     End Sub
 
@@ -1157,5 +1152,5 @@ Partial Public Class reimbursement_void
 
         Return objAuditLogInfo
     End Function
-   
+
 End Class

@@ -1454,6 +1454,15 @@ Partial Public Class claimTransManagement
             BuildRecordSummary(dtTransaction)
             'CRE13-012 (RCH Code sorting) [End][Chris YIM]
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtHCVUUserBLL.IsSSSCMCUser(udtHCVUUserBLL.GetHCVUUser) Then
+                panRecordSummary.Visible = False
+            Else
+                panRecordSummary.Visible = True
+            End If
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             MultiViewReimClaimTransManagement.ActiveViewIndex = ViewIndex.Transaction
         End If
 
@@ -2327,7 +2336,7 @@ Partial Public Class claimTransManagement
             If IsDBNull(dr.Item("totalAmountRMB")) = True Then
                 strTotalAmountRMB = Me.GetGlobalResourceObject("Text", "ServiceFeeN/A")
             Else
-                strTotalAmountRMB = CDbl(dr.Item("totalAmountRMB")).ToString("#,##0")
+                strTotalAmountRMB = udtFormatter.formatMoneyRMB(dr.Item("totalAmountRMB").ToString, False)
             End If
 
             lblTotalAmountRMB.Text = strTotalAmountRMB
@@ -2482,6 +2491,20 @@ Partial Public Class claimTransManagement
             ibtnCancelInvalidation.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", IIf(ibtnCancelInvalidation.Enabled, "CancelInvalidationBtn", "CancelInvalidationDisableBtn"))
             ibtnMarkInvalid.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", IIf(ibtnMarkInvalid.Enabled, "MarkInvalidBtn", "MarkInvalidDisableBtn"))
             ibtnConfirmInvalid.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", IIf(ibtnConfirmInvalid.Enabled, "ConfirmInvalidBtn", "ConfirmInvalidDisableBtn"))
+
+            ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' SSSCMC user: No right to invalid tx
+            If udtHCVUUserBLL.IsSSSCMCUser(udtHCVUUserBLL.GetHCVUUser) Then
+                ibtnCancelInvalidation.Visible = False
+                ibtnMarkInvalid.Visible = False
+                ibtnConfirmInvalid.Visible = False
+            Else
+                ibtnCancelInvalidation.Visible = True
+                ibtnMarkInvalid.Visible = True
+                ibtnConfirmInvalid.Visible = True
+            End If
+            ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
         End If
 
     End Sub

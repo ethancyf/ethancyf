@@ -109,14 +109,19 @@ Namespace Component.HCVUUser
 
         End Sub
 
-        Public Function GetHCVUUserList(ByVal blnDisplayInactive As Boolean) As DataTable
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function GetHCVUUserList(ByVal blnDisplayInactive As Boolean, ByVal strUserID As String) As DataTable
             Dim db As New Database
             Dim dt As New DataTable
             Dim parms() As SqlParameter = { _
-                db.MakeInParam("@inactive_flag", SqlDbType.Bit, 1, IIf(blnDisplayInactive, 1, 0))}
+                db.MakeInParam("@Inactive_Flag", SqlDbType.Bit, 1, IIf(blnDisplayInactive, 1, 0)), _
+                db.MakeInParam("@UserID", SqlDbType.VarChar, 20, strUserID)
+                }
             db.RunProc("proc_HCVUUserACList_get", parms, dt)
             Return dt
         End Function
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
         Public Function GetHCVUUserInfo(ByVal strUserID As String) As HCVUUserModel
             Dim udtHCVUUser As New HCVUUserModel
@@ -256,6 +261,24 @@ Namespace Component.HCVUUser
         End Function
         ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [End][Koala]
 
+        ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+        Public Function IsSSSCMCUser(ByVal udtUser As HCVUUserModel) As Boolean
+            Dim blnRes As Boolean = False
+
+            For Each key As String In udtUser.UserRoleCollection.Keys
+                Dim userRole As UserRoleModel = CType(udtUser.UserRoleCollection.Item(key), UserRoleModel)
+                Select Case userRole.RoleType.ToString()
+                    Case RoleType.SSSCMCReimbursement, RoleType.SSSCMCAdmin, RoleType.SSSCMCEnquiry
+                        blnRes = True
+                        Exit For
+                    Case Else
+                        blnRes = False
+                End Select
+            Next
+
+            Return blnRes
+        End Function
+        ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
 
     End Class
 End Namespace

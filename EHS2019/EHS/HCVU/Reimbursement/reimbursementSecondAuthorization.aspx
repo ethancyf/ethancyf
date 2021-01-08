@@ -159,10 +159,13 @@
                                 SortExpression="noSP">
                                 <ItemStyle HorizontalAlign="Right" Width="100px" />
                             </asp:BoundField>
-                            <asp:BoundField DataField="totalAmount" HeaderText="<%$ Resources:Text, TotalRedeemAmountSign %>"
-                                DataFormatString="{0:#,###}" HtmlEncode="False" SortExpression="totalAmount">
+                            <asp:TemplateField HeaderText="<%$ Resources:Text, TotalRedeemAmountSign %>" SortExpression="totalAmount">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblGAmountClaimed" runat="server" Text='<%# Eval("totalAmount")%>'>
+                                    </asp:Label>
+                                </ItemTemplate>
                                 <ItemStyle HorizontalAlign="Right" />
-                            </asp:BoundField>
+                            </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Text, AmountClaimedRMB %>" SortExpression="totalAmountRMB">
                                 <ItemTemplate>
                                     <asp:Label ID="lblGAmountClaimedRMB" runat="server" Text='<%# Eval("totalAmountRMB") %>'>

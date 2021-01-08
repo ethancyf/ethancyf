@@ -59,6 +59,15 @@ Partial Public Class ucInputEHSClaim
     Protected WithEvents ucInputEHSClaim_PPP As Global.HCVU.ucInputPPP
 
     '''<summary>
+    '''ucInputEHSClaim_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucInputEHSClaim_SSSCMC As Global.HCVU.ucInputSSSCMC
+
+    '''<summary>
     '''PlaceHolder1 control.
     '''</summary>
     '''<remarks>

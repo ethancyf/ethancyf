@@ -347,6 +347,161 @@
                                 </div>
                             </ContentTemplate>
                         </cc1:TabPanel>
+						<cc1:TabPanel ID="tpNoRequireHA" runat="server">
+                            <HeaderTemplate>
+                                <asp:Label ID="lblNHAHeader" runat="server" Text="<%$ Resources:Text, NoPaymentFileRequiredHA %>"></asp:Label>
+                            </HeaderTemplate>
+                            <ContentTemplate>
+                                <div style="padding: 8px 0 8px 8px">
+                                    <cc2:MessageBox ID="udcNHAErrorBox" runat="server" Visible="False" Width="945px"></cc2:MessageBox>
+                                    <cc2:InfoMessageBox ID="udcNHAInfoBox" runat="server" Visible="False" Width="945px">
+                                    </cc2:InfoMessageBox>
+                                    <asp:MultiView ID="mvNHA" runat="server">
+                                        <asp:View ID="vNHANoRecord" runat="server"></asp:View>
+                                        <asp:View ID="vNHAContent" runat="server">
+                                            <asp:GridView ID="gvNHA" runat="server" AutoGenerateColumns="False" AllowPaging="False"
+                                                AllowSorting="True" Width="945px" OnRowDataBound="gvNHA_RowDataBound" OnPreRender="gvNHA_PreRender"
+                                                OnSorting="gvNHA_Sorting">
+                                                <Columns>
+                                                    <asp:TemplateField>
+                                                        <ItemStyle VerticalAlign="Top" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblIndex" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="Display_Code" HeaderText="<%$ Resources:Text, Scheme %>">
+                                                        <ItemStyle VerticalAlign="Top" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblSchemeCode" runat="server" Text='<%# Eval("Display_Code") %>'>
+                                                            </asp:Label>
+                                                            <asp:HiddenField ID="hfSchemeCode" runat="server" Value='<%# Eval("Scheme_Code") %>' />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="Hold_Dtm" HeaderText="<%$ Resources:Text, AuthorizationHoldTime %>">
+                                                        <ItemStyle VerticalAlign="Top" Width="130px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblHoldTime" runat="server" Text='<%# Eval("Hold_Dtm") %>'>
+                                                            </asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="Hold_By" HeaderText="<%$ Resources:Text, AuthorizationHoldBy %>">
+                                                        <ItemStyle VerticalAlign="Top" Width="120px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblHoldBy" runat="server" Text='<%# Eval("Hold_By") %>'>
+                                                            </asp:Label>
+                                                            <asp:HiddenField ID="hfHoldBy" runat="server" Value='<%# Eval("Hold_By") %>' />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="First_Authorised_Dtm" HeaderText="<%$ Resources:Text, FirstAuthorizedTime %>">
+                                                        <ItemStyle VerticalAlign="Top" Width="130px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblFirstAuthTime" runat="server" Text='<%# Eval("First_Authorised_Dtm") %>'>
+                                                            </asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="First_Authorised_By" HeaderText="<%$ Resources:Text, FirstAuthorizedBy %>">
+                                                        <ItemStyle VerticalAlign="Top" Width="120px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblFirstAuthBy" runat="server" Text='<%# Eval("First_Authorised_By") %>'>
+                                                            </asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="Second_Authorised_Dtm" HeaderText="<%$ Resources:Text, SecondAuthorizedTime %>">
+                                                        <ItemStyle VerticalAlign="Top" Width="130px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblSecondAuthTime" runat="server" Text='<%# Eval("Second_Authorised_Dtm") %>'>
+                                                            </asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="Second_Authorised_By" HeaderText="<%$ Resources:Text, SecondAuthorizedBy %>">
+                                                        <ItemStyle VerticalAlign="Top" Width="120px" />
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblSecondAuthBy" runat="server" Text='<%# Eval("Second_Authorised_By") %>'>
+                                                            </asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+                                            <br />
+                                            <asp:MultiView ID="mvNHAPaymentDate" runat="server">
+                                                <asp:View ID="vNHAPEnter" runat="server">
+                                                    <table style="width: 100%">
+                                                        <tr style="height: 30px">
+                                                            <td style="width: 20%">
+                                                                <asp:Label ID="lblNHAPEPaymentDateText" runat="server" Text="<%$ Resources:Text, EnterBankPaymentDay %>">
+                                                                </asp:Label>
+                                                                #
+                                                            </td>
+                                                            <td>
+                                                                <asp:TextBox ID="txtNHAPEPaymentDate" runat="server" MaxLength="10" Width="70px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                                                                    onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
+                                                                    onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
+                                                                <asp:ImageButton ID="ibtnNHAPEPaymentDate" runat="server" ImageUrl="<%$ Resources:ImageUrl, CalenderBtn %>"
+                                                                    AlternateText="<%$ Resources:AlternateText, CalenderBtn %>" />
+                                                                <asp:Image ID="imgNHAPEPaymentDate" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
+                                                                    AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" />
+                                                                <cc1:CalendarExtender ID="calNHAPEPaymentDate" CssClass="ajax_cal" runat="server" PopupButtonID="ibtnNHAPEPaymentDate"
+                                                                    TargetControlID="txtNHAPEPaymentDate" Format="dd-MM-yyyy" TodaysDateFormat="d MMMM, yyyy" />
+                                                                <asp:Label ID="lblNHAPEPaymentDate" runat="server" CssClass="tableText"></asp:Label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 10px">
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">#<asp:Label ID="lblNHAPEPaymentDateTips" runat="server" Text="<%$ Resources:Text, BankPaymentDayTipsNoPaymentFile %>"></asp:Label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 10px">
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="text-align: center">
+                                                                <asp:ImageButton ID="ibtnNHAPECompleteReimbursement" runat="server" ImageUrl="<%$ Resources: ImageUrl, CompleteReimbursementBtn %>"
+                                                                    AlternateText="<%$ Resources: AlternateText, CompleteReimbursementBtn %>" OnClick="ibtnNHAPECompleteReimbursement_Click" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </asp:View>
+                                                <asp:View ID="vNHAPConfirm" runat="server">
+                                                    <table style="width: 100%">
+                                                        <tr style="height: 30px">
+                                                            <td style="width: 20%">
+                                                                <asp:Label ID="lblNHAPCPaymentDateText" runat="server" Text="<%$ Resources:Text, BankPaymentDay %>">
+                                                                </asp:Label>**
+                                                            </td>
+                                                            <td>
+                                                                <asp:Label ID="lblNHAPCPaymentDate" runat="server" CssClass="tableText"></asp:Label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 10px">
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">**<asp:Label ID="lblNHAPCPaymentDateTips" runat="server" Text="<%$ Resources:Text, BankPaymentDayTipsNoPaymentFile %>">
+                                                            </asp:Label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td style="text-align: left; padding-top: 30px; width: 5%">
+                                                                            <asp:ImageButton ID="ibtnNHAPCBack" runat="server" ImageUrl="<%$ Resources:ImageUrl, BackBtn %>"
+                                                                                AlternateText="<%$ Resources:AlternateText, BackBtn %>" OnClick="ibtnNHAPCBack_Click" />
+                                                                        </td>
+                                                                        <td style="text-align: center; padding-top: 30px">
+                                                                            <asp:ImageButton ID="ibtnNHAPCConfirm" runat="server" ImageUrl="<%$ Resources:ImageUrl, ConfirmBtn %>"
+                                                                                AlternateText="<%$ Resources:AlternateText, ConfirmBtn %>" OnClick="ibtnNHAPCConfirm_Click" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </asp:View>
+                                            </asp:MultiView>
+                                        </asp:View>
+                                    </asp:MultiView>
+                                </div>
+                            </ContentTemplate>
+                        </cc1:TabPanel>
                     </cc1:TabContainer>
                 </asp:View>
                 <asp:View ID="vComplete" runat="server">

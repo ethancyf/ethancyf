@@ -16,7 +16,6 @@ Partial Public Class ucInputSSSCMC
     Private _udtSessionHandler As New SessionHandler
     Private _udtFormatter As New Format.Formatter
     Private _udtSubPlatformBLL As New SubPlatformBLL
-    Private _udtEHSTransactionBLL As New EHSTransactionBLL
 
     ' CRE20-015-06 (Special Support Scheme) [Start][Koala]
     Private _dtmMinRegFeeChargedDate As New Date(2020, 11, 18)
@@ -270,6 +269,7 @@ Partial Public Class ucInputSSSCMC
         Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
         Dim udtEHSClaimBLL As BLL.EHSClaimBLL = New BLL.EHSClaimBLL()
         Dim udtSchemeClaimBLL As SchemeClaimBLL = New SchemeClaimBLL()
+        Dim udtEHSTransactionBLL As New EHSTransactionBLL
         Dim udtHAServicePatientBLL As New HAServicePatientBLL
         Dim strSubidizeCode As String = String.Empty
 
@@ -309,11 +309,8 @@ Partial Public Class ucInputSSSCMC
         End If
         ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
-        'Bind DropDownList Sub-specialities
-        BindSubSpecialities()
-
         ' Available subsidy
-        _decAvailableSubidy = _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+        _decAvailableSubidy = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
 
         If _decAvailableSubidy <= 0.0 Then
             _decAvailableSubidy = 0.0
@@ -322,16 +319,6 @@ Partial Public Class ucInputSSSCMC
         ' Fill value by temp save
         If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
             Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
-
-            ddlSubSpecialities.SelectedIndex = 0
-
-            If udtTAFList.SubSpecialities IsNot Nothing Then
-                For Each li As ListItem In ddlSubSpecialities.Items
-                    If udtTAFList.SubSpecialities.ToString.Trim = li.Value Then
-                        ddlSubSpecialities.SelectedValue = li.Value
-                    End If
-                Next
-            End If
 
             txtConsultAndRegFee.Text = udtTAFList.ConsultAndRegFeeRMB.ToString
             txtDrugFee.Text = udtTAFList.DrugFeeRMB.ToString
@@ -354,7 +341,6 @@ Partial Public Class ucInputSSSCMC
         End If
 
         If _udtSessionHandler.ClaimForSamePatientGetFromSession(FunctCode) Then
-            ddlSubSpecialities.SelectedIndex = 0
             txtConsultAndRegFee.Text = String.Empty
             txtDrugFee.Text = String.Empty
             txtInvestigationFee.Text = String.Empty
@@ -413,7 +399,7 @@ Partial Public Class ucInputSSSCMC
         ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
         'RegFeeChargedDate
         Me.calRegFeeChargedDate.Format = _udtFormatter.EnterDateFormat(_udtSubPlatformBLL.GetDateFormatLocale())
-
+        
         If chkExemptRegFee.Checked Then
             txtRegFeeChargedDate.Enabled = True
             ibtnRegFeeChargedDate.Enabled = True
@@ -432,7 +418,7 @@ Partial Public Class ucInputSSSCMC
         End If
         ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
 
-        RegisterJSScript(Me.PatientType, Me.RegistrationFee, _decAvailableSubidy)
+        RegisterJSScript(Me.PatientType, Me.RegistrationFee, _decAvailableSubidy)                
 
     End Sub
 
@@ -458,7 +444,6 @@ Partial Public Class ucInputSSSCMC
 #Region "Set Up Error Image"
 
     Public Sub SetError(ByVal blnVisible As Boolean)
-        Me.imgSubSpecialitiesError.Visible = blnVisible
         Me.imgConsultAndRegFeeError.Visible = blnVisible
         Me.imgRegFeeChargedDateError.Visible = blnVisible
         Me.imgDrugFeeError.Visible = blnVisible
@@ -466,7 +451,6 @@ Partial Public Class ucInputSSSCMC
         Me.imgOtherFeeError.Visible = blnVisible
         Me.imgOtherFeeRemarkError.Visible = blnVisible
         Me.ImageNetServiceFeeError.Visible = blnVisible
-        Me.ImageTotalServiceFeeError.Visible = blnVisible
 
     End Sub
 
@@ -582,15 +566,6 @@ Partial Public Class ucInputSSSCMC
         'Save TransactionAdditionalField model
         Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
         udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
-
-        udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-        udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.SubSpecialities
-        udtTransactAdditionfield.AdditionalFieldValueCode = ddlSubSpecialities.SelectedValue.ToString.Trim()
-        udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
-        udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
-        udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
-        udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
-        udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
         udtTransactAdditionfield = New TransactionAdditionalFieldModel()
         udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ClaimedPaymentType
@@ -740,19 +715,6 @@ Partial Public Class ucInputSSSCMC
 
         Me.SetError(False)
 
-        'Sub-Specialities
-        If ddlSubSpecialities.SelectedIndex = 0 Then
-            If ddlSubSpecialities.Items.Count > 1 Then
-                imgSubSpecialitiesError.Visible = blnShowErrorImage
-                udtMsg = New ComObject.SystemMessage("990000", "E", "00367") ' Please select "%s".
-
-                If udtMsgBox IsNot Nothing Then
-                    udtMsgBox.AddMessage(udtMsg, "%s", lblSubSpecialitiesText.Text)
-                End If
-                blnRes = False
-            End If
-        End If
-
         'ConsultAndRegFee
         udtMsg = ValidateFee(blnShowErrorImage, txtConsultAndRegFee, imgConsultAndRegFeeError)
         If udtMsg IsNot Nothing Then
@@ -849,29 +811,16 @@ Partial Public Class ucInputSSSCMC
             blnRes = False
         End If
 
-        ' CRE20-015-11 (Special Support Scheme) [Start][Winnie]
-        'Total Service Fee ( 1 - 4 items)
-        udtMsg = ValidateTotalServiceFeeValue(blnShowErrorImage)
+        'Net Service Fee
+        udtMsg = ValidateNetServiceFeeValue(blnShowErrorImage)
         If udtMsg IsNot Nothing Then
             If udtMsgBox IsNot Nothing Then
                 udtMsgBox.AddMessage(udtMsg, _
                                      New String() {"%s", "%d"}, _
-                                     New String() {lblTotalAmountText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
+                                     New String() {lblNetServiceFeeText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
             End If
             blnRes = False
         End If
-
-        ''Net Service Fee
-        'udtMsg = ValidateNetServiceFeeValue(blnShowErrorImage)
-        'If udtMsg IsNot Nothing Then
-        '    If udtMsgBox IsNot Nothing Then
-        '        udtMsgBox.AddMessage(udtMsg, _
-        '                             New String() {"%s", "%d"}, _
-        '                             New String() {lblNetServiceFeeText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
-        '    End If
-        '    blnRes = False
-        'End If
-        ' CRE20-015-11 (Special Support Scheme) [End][Winnie]
 
         Return blnRes
 
@@ -966,55 +915,9 @@ Partial Public Class ucInputSSSCMC
             Return New ComObject.SystemMessage("990000", "E", "00029") ' The "%s" is invalid.
         End If
 
-        Return Nothing
+            Return Nothing
 
     End Function
-
-    ' CRE20-015-11 (Special Support Scheme) [Start][Winnie]
-    Public Function ValidateTotalServiceFeeValue(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
-        ImageTotalServiceFeeError.Visible = False
-
-        Dim decConsultAndRegFee As Decimal
-        Dim decDrugFee As Decimal
-        Dim decInvestigationFee As Decimal
-        Dim decOtherFee As Decimal
-        Dim decTotalServiceFee As Decimal
-
-        If txtConsultAndRegFee.Text = String.Empty Then
-            decConsultAndRegFee = 0
-        Else
-            Decimal.TryParse(txtConsultAndRegFee.Text, decConsultAndRegFee)
-        End If
-
-        If txtDrugFee.Text = String.Empty Then
-            decDrugFee = 0
-        Else
-            Decimal.TryParse(txtDrugFee.Text, decDrugFee)
-        End If
-
-        If txtInvestigationFee.Text = String.Empty Then
-            decInvestigationFee = 0
-        Else
-            Decimal.TryParse(txtInvestigationFee.Text, decInvestigationFee)
-        End If
-
-        If txtOtherFee.Text = String.Empty Then
-            decOtherFee = 0
-        Else
-            Decimal.TryParse(txtOtherFee.Text, decOtherFee)
-        End If
-
-        decTotalServiceFee = Math.Floor((Math.Floor((decConsultAndRegFee + decDrugFee + decInvestigationFee + decOtherFee) * 100) / 100.0) * 10) / 10.0
-
-        If decTotalServiceFee <= 0 Then
-            ImageTotalServiceFeeError.Visible = blnShowErrorImage
-            Return New ComObject.SystemMessage("990000", "E", "00446") ' The "%s" should be greater than %d.
-        End If
-
-        Return Nothing
-
-    End Function
-    ' CRE20-015-11 (Special Support Scheme) [End][Winnie]
 
     Public Function ValidateNetServiceFeeValue(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
         ImageNetServiceFeeError.Visible = False
@@ -1173,45 +1076,5 @@ Partial Public Class ucInputSSSCMC
         decCoPayemtFee = IIf(decNetServiceFee > decSubsidyBeforeUse, decNetServiceFee - decSubsidyBeforeUse, 0)
         decTotalSupportFee = decBaseTotalSupportFee + decSubsidyUsed '+ IIf(strPatientType = "B", decCoPayemtFee, 0)
         'decCoPayemtFee = IIf(strPatientType = "B", 0, decCoPayemtFee)
-    End Sub
-
-    Private Sub BindSubSpecialities()
-        Dim strSelectedValue As String = Nothing
-
-        'Temporary save the selected value
-        If ddlSubSpecialities.Items.Count > 0 Then
-            strSelectedValue = ddlSubSpecialities.SelectedValue
-        End If
-
-        'Bind Sub-Specialities into dropdownlist
-        Me.ddlSubSpecialities.Items.Clear()
-        Me.ddlSubSpecialities.SelectedIndex = -1
-        Me.ddlSubSpecialities.SelectedValue = Nothing
-        Me.ddlSubSpecialities.ClearSelection()
-
-        Dim dtSubSpecialities As DataTable = _udtEHSTransactionBLL.GetActiveSubSpecialitiesByPractice(Me.CurrentPractice.PracticeID)
-        If dtSubSpecialities.Rows.Count > 0 Then
-            ddlSubSpecialities.DataSource = dtSubSpecialities
-            ddlSubSpecialities.DataTextField = "Name_CN"
-            ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
-            ddlSubSpecialities.DataBind()
-        End If
-
-        'If Sub-Specialities is more than 1, then add "Please Select" at the top of dropdownlist
-        If dtSubSpecialities.Rows.Count > 1 Then
-            ddlSubSpecialities.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
-        End If
-
-        ddlSubSpecialities.SelectedIndex = 0
-
-        'Restore the selected value if has value
-        If strSelectedValue IsNot Nothing Then
-            For Each li As ListItem In ddlSubSpecialities.Items
-                If strSelectedValue = li.Value Then
-                    ddlSubSpecialities.SelectedValue = li.Value
-                End If
-            Next
-        End If
-
     End Sub
 End Class

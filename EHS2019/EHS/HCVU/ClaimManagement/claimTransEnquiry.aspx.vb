@@ -1088,6 +1088,15 @@ Partial Public Class claimTransEnquiry
 
             BuildRecordSummary(dtTransaction)
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            If udtHCVUUserBLL.IsSSSCMCUser(udtHCVUUserBLL.GetHCVUUser) Then
+                panRecordSummary.Visible = False
+            Else
+                panRecordSummary.Visible = True
+            End If
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             MultiViewClaimTransEnquiry.ActiveViewIndex = ViewIndex.Transaction
         End If
 
@@ -1613,7 +1622,9 @@ Partial Public Class claimTransEnquiry
         Dim udtSchemeClaimList As SchemeClaimModelCollection = Session(SESS_SchemeClaimListFilteredByUserRole)
 
         For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
-            If udtSchemeClaim.ReimbursementCurrency = SchemeClaimModel.EnumReimbursementCurrency.HKDRMB Then
+            If udtSchemeClaim.ReimbursementCurrency = SchemeClaimModel.EnumReimbursementCurrency.HKDRMB OrElse _
+               udtSchemeClaim.ReimbursementCurrency = SchemeClaimModel.EnumReimbursementCurrency.RMB Then
+
                 blnShowRMB = True
             End If
         Next
@@ -1901,7 +1912,7 @@ Partial Public Class claimTransEnquiry
             If IsDBNull(dr.Item("totalAmountRMB")) = True Then
                 strTotalAmountRMB = Me.GetGlobalResourceObject("Text", "ServiceFeeN/A")
             Else
-                strTotalAmountRMB = CDbl(dr.Item("totalAmountRMB")).ToString("#,##0")
+                strTotalAmountRMB = udtFormatter.formatMoneyRMB(dr.Item("totalAmountRMB").ToString, False)
             End If
 
             lblTotalAmountRMB.Text = strTotalAmountRMB

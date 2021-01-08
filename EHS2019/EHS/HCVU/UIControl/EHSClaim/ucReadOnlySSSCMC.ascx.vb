@@ -6,8 +6,6 @@ Imports Common.Format
 Partial Public Class ucReadOnlySSSCMC
     Inherits System.Web.UI.UserControl
 
-    Private _udtEHSTransactionBLL As New EHSTransactionBLL
-
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
     End Sub
@@ -51,14 +49,6 @@ Partial Public Class ucReadOnlySSSCMC
             Case SubsidizeGroupClaimModel.SubsidizeCodeClass.HAS_B
                 Me.lblRegistrationFeeRemark.Text = Me.GetGlobalResourceObject("Text", "SSSCMC_PatientFree")
         End Select
-
-        trSubSpecialities.Style.Remove("display")
-
-        If udtTAFList.SubSpecialities Is Nothing Then
-            Me.lblSubSpecialities.Text = _udtEHSTransactionBLL.GetSubSpecialitiesByCode("00_00")
-        Else
-            Me.lblSubSpecialities.Text = _udtEHSTransactionBLL.GetSubSpecialitiesByCode(udtTAFList.SubSpecialities.Trim)
-        End If
 
         ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
         If udtTAFList.PaymentTypeMatch IsNot Nothing AndAlso udtTAFList.PaymentTypeMatch.ToString <> Common.Component.YesNo.Yes Then
@@ -169,8 +159,8 @@ Partial Public Class ucReadOnlySSSCMC
         decSubsidyUsed = IIf(decNetServiceFee > decSubsidyBeforeUse, decSubsidyBeforeUse, decNetServiceFee)
         decSubsidyAfterUse = decSubsidyBeforeUse - decSubsidyUsed
         decCoPayemtFee = IIf(decNetServiceFee > decSubsidyBeforeUse, decNetServiceFee - decSubsidyBeforeUse, 0)
-        decTotalSupportFee = decBaseTotalSupportFee + decSubsidyUsed '+ IIf(strPatientType = "B", decCoPayemtFee, 0)
-        'decCoPayemtFee = IIf(strPatientType = "B", 0, decCoPayemtFee)
+        decTotalSupportFee = decBaseTotalSupportFee + decSubsidyUsed + IIf(strPatientType = "B", decCoPayemtFee, 0)
+        decCoPayemtFee = IIf(strPatientType = "B", 0, decCoPayemtFee)
     End Sub
 
 End Class

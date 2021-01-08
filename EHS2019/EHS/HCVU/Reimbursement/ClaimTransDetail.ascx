@@ -38,7 +38,7 @@
                             <tr>
                                 <td style="vertical-align: top; width: 200px">
                                     <asp:Label ID="lblTTransactionNoText" runat="server" Text="<%$ Resources:Text, TransactionNo %>"></asp:Label></td>
-                                <td style="vertical-align: top; width: 700px">
+                                <td style="vertical-align: top">
                                     <asp:Label ID="lblTTransactionNo" runat="server" CssClass="tableText"></asp:Label>
                                     <asp:Label ID="lblTTransactionTime" runat="server" CssClass="tableText"></asp:Label></td>
                             </tr>

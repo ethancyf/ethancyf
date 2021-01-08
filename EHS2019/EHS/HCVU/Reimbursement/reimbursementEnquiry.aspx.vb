@@ -51,6 +51,7 @@ Partial Public Class reimbursement_enquiry
     ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
     Private Const SESS_ReimbursementEnquiryPaymentFileRequiredDataTable As String = "SESS_ReimbursementEnquiryPaymentFileRequiredDataTable"
     Private Const SESS_ReimbursementEnquiryNoPaymentFileRequiredDataTable As String = "SESS_ReimbursementEnquiryNoPaymentFileRequiredDataTable"
+    Private Const SESS_ReimbursementEnquiryNoPaymentFileRequiredHADataTable As String = "SESS_ReimbursementEnquiryNoPaymentFileRequiredHADataTable" 'CRE20-015 (Special Support Scheme) [Martin]
     ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
     Private Const SESS_ReimbursementEnquirySearchCriteria As String = "ReimbursementEnquirySearchCriteria"
     Private Const SESS_ReimbursementEnquiryDrillSPIDDataTable As String = "ReimbursementEnquiryDrillSPIDDataTable"
@@ -109,7 +110,7 @@ Partial Public Class reimbursement_enquiry
             If MultiViewReimbursementEnquiry.ActiveViewIndex = ViewIndex.TransactionDetail Then
                 LoadDetail(hfCurrentDetailTransactionNo.Value)
             End If
-		' CRE17-006 Add eHA ID to eHA enquiry-scheme information [End][Dickson]
+            ' CRE17-006 Add eHA ID to eHA enquiry-scheme information [End][Dickson]
         End If
     End Sub
 
@@ -123,6 +124,7 @@ Partial Public Class reimbursement_enquiry
 
         Session(SESS_ReimbursementEnquiryPaymentFileRequiredDataTable) = Nothing
         Session(SESS_ReimbursementEnquiryNoPaymentFileRequiredDataTable) = Nothing
+        Session(SESS_ReimbursementEnquiryNoPaymentFileRequiredHADataTable) = Nothing
         Session(SESS_ReimbursementEnquirySearchCriteria) = Nothing
         Session(SESS_ReimbursementEnquiryDrillSPIDDataTable) = Nothing
         Session(SESS_ReimbursementEnquiryDrillBankAccountDataTable) = Nothing
@@ -197,6 +199,18 @@ Partial Public Class reimbursement_enquiry
 
         ' Reimbursement ID
         lblCReimbursementID.Text = strReimbursementID
+
+        ' CRE20-015-02 (Special Support Scheme) [Start][Martin]
+        'Only display "No Payment File Required (HA)" if HA user
+        Dim udtHCVUUser As HCVUUserModel
+        Dim udtHCVUUserBLL As New HCVUUserBLL
+        udtHCVUUser = udtHCVUUserBLL.GetHCVUUser
+        If udtHCVUUserBLL.IsSSSCMCUser(udtHCVUUser) Then
+            panlCP.Visible = False
+            panlCN.Visible = False
+        End If
+        ' CRE20-015-02 (Special Support Scheme) [End][Martin]
+
 
         ' --- Payment File Required ---
         Dim dtR As ReimbursementDataTable = dtResult.FilterByReimbursementMode(EnumReimbursementMode.All)
@@ -289,10 +303,55 @@ Partial Public Class reimbursement_enquiry
 
         dtN = Nothing
 
+        ' CRE20-015-02 (Special Support Scheme) [Start][Martin]
+        ' --- No Payment File Required (HA) ---
+        Dim dtHA As ReimbursementDataTable = dtResult.FilterByReimbursementMode(EnumReimbursementMode.HAFinance)
+
+        GridViewDataBind(gvHA, dtHA, "Display_Seq", "Asc", False)
+        Session(SESS_ReimbursementEnquiryNoPaymentFileRequiredHADataTable) = dtHA
+
+        If dtHA.AtLeastOneSchemeHold = False Then
+            lblHAStatus.Text = Me.GetGlobalResourceObject("Text", "NotYetStart")
+            lblHABankPaymentDate.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+        Else
+            If dtHA.AllSchemeIsReimbursed Then
+                lblHAStatus.Text = Me.GetGlobalResourceObject("Text", "Completed")
+
+                Dim strSchemeCode As String = String.Empty
+
+                For Each dr As DataRow In dtHA.Rows
+                    If Not IsDBNull(dr("Reimbursed")) AndAlso dr("Reimbursed") = "Y" Then
+                        strSchemeCode = dr("Scheme_Code")
+                        Exit For
+                    End If
+                Next
+
+                Dim dtmValueDate As DateTime = udtReimbursementBLL.GetBankIn(strReimbursementID, strSchemeCode).Rows(0)("Value_Date")
+
+
+                lblHABankPaymentDate.Text = udtFormatter.formatDisplayDate(dtmValueDate)
+
+            ElseIf dtHA.AbleToGenerateBankFile = False Then
+                lblHAStatus.Text = Me.GetGlobalResourceObject("Text", "InProgress")
+                lblHABankPaymentDate.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+            Else
+                lblHAStatus.Text = Me.GetGlobalResourceObject("Text", "InProgress")
+                lblHABankPaymentDate.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+            End If
+
+        End If
+
+
+        dtHA = Nothing
+
         udtAuditLogEntry.AddDescripton("PaymentFileRequired", String.Format("Status: {0}, BankPaymentDate: {1}", lblCPStatus.Text, lblCPBankPaymentDate.Text))
         udtAuditLogEntry.AddDescripton("NoPaymentFileRequired", String.Format("Status: {0}, BankPaymentDate: {1}", lblCNStatus.Text, lblCNBankPaymentDate.Text))
+        udtAuditLogEntry.AddDescripton("NoPaymentFileRequired(HA)", String.Format("Status: {0}, BankPaymentDate: {1}", lblHAStatus.Text, lblHABankPaymentDate.Text))
         udtAuditLogEntry.WriteLog(LogID.LOG00030, "Current reimbursement is in progress")
-
+        ' CRE20-015-02 (Special Support Scheme) [End][Martin]
     End Sub
     ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
@@ -300,29 +359,6 @@ Partial Public Class reimbursement_enquiry
         ibtnDetailPrevious.Enabled = lblCurrentRecordNo.Text <> "1"
         ibtnDetailNext.Enabled = lblCurrentRecordNo.Text <> lblMaxRecordNo.Text
     End Sub
-
-#End Region
-
-#Region "Supporting Functions"
-
-    ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-    Private Function IsRMBAvailable(ByVal dt As DataTable) As Boolean
-        Dim udtSchemeClaimList As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
-
-        For Each dr As DataRow In dt.Rows
-            If udtSchemeClaimList.Filter(dr("Scheme_Code")).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
-                Return True
-            End If
-        Next
-
-        Return False
-
-    End Function
-
-    Private Function IsRMBAvailable(ByVal strSchemeCode As String) As Boolean
-        Return (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB
-    End Function
-    ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
 #End Region
 
@@ -583,6 +619,7 @@ Partial Public Class reimbursement_enquiry
         End If
     End Sub
 
+
     Protected Sub gvCN_PreRender(ByVal sender As System.Object, ByVal e As System.EventArgs)
         GridViewPreRenderHandler(sender, e, SESS_ReimbursementEnquiryNoPaymentFileRequiredDataTable)
     End Sub
@@ -590,7 +627,71 @@ Partial Public Class reimbursement_enquiry
     Protected Sub gvCN_Sorting(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs)
         GridViewSortingHandler(sender, e, SESS_ReimbursementEnquiryNoPaymentFileRequiredDataTable)
     End Sub
-    ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
+    'CRE20-015 (Special Support Scheme) [Start][Martin]
+    Protected Sub gvHA_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim udtFormatter As New Formatter
+
+            ' Hold Time
+            Dim lblHoldTime As Label = CType(e.Row.FindControl("lblHoldTime"), Label)
+            If lblHoldTime.Text.Trim = String.Empty Then
+                lblHoldTime.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblHoldTime.Enabled = False
+            Else
+                lblHoldTime.Text = udtFormatter.convertDateTime(lblHoldTime.Text.Trim)
+            End If
+
+            ' Hold By
+            Dim lblHoldBy As Label = CType(e.Row.FindControl("lblHoldBy"), Label)
+            If lblHoldBy.Text.Trim = String.Empty Then
+                lblHoldBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblHoldBy.Enabled = False
+            End If
+
+            ' First Authorized Time
+            Dim lblFirstAuthTime As Label = CType(e.Row.FindControl("lblFirstAuthTime"), Label)
+            If lblFirstAuthTime.Text.Trim = String.Empty Then
+                lblFirstAuthTime.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblFirstAuthTime.Enabled = False
+            Else
+                lblFirstAuthTime.Text = udtFormatter.convertDateTime(lblFirstAuthTime.Text.Trim)
+            End If
+
+            ' First Authorized By
+            Dim lblFirstAuthBy As Label = CType(e.Row.FindControl("lblFirstAuthBy"), Label)
+            If lblFirstAuthBy.Text.Trim = String.Empty Then
+                lblFirstAuthBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblFirstAuthBy.Enabled = False
+            End If
+
+            ' Second Authorized Time
+            Dim lblSecondAuthTime As Label = CType(e.Row.FindControl("lblSecondAuthTime"), Label)
+            If lblSecondAuthTime.Text.Trim = String.Empty Then
+                lblSecondAuthTime.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblSecondAuthTime.Enabled = False
+            Else
+                lblSecondAuthTime.Text = udtFormatter.convertDateTime(lblSecondAuthTime.Text.Trim)
+            End If
+
+            ' Second Authorized By
+            Dim lblSecondAuthBy As Label = CType(e.Row.FindControl("lblSecondAuthBy"), Label)
+            If lblSecondAuthBy.Text.Trim = String.Empty Then
+                lblSecondAuthBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblSecondAuthBy.Enabled = False
+            End If
+
+        End If
+    End Sub
+
+    Protected Sub gvHA_PreRender(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        GridViewPreRenderHandler(sender, e, SESS_ReimbursementEnquiryNoPaymentFileRequiredHADataTable)
+    End Sub
+
+    Protected Sub gvHA_Sorting(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs)
+        GridViewSortingHandler(sender, e, SESS_ReimbursementEnquiryNoPaymentFileRequiredHADataTable)
+    End Sub
+    'CRE20-015 (Special Support Scheme) [End][Martin]
 
 #End Region
 
@@ -746,9 +847,10 @@ Partial Public Class reimbursement_enquiry
             udcInfoBox.Type = CustomControls.InfoMessageBoxType.Information
             udcInfoBox.AddMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00001)
         Else
-            ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-            gvPaymentFile.Columns(6).Visible = IsRMBAvailable(dt)
-            ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+            ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+            gvPaymentFile.Columns(5).Visible = udtReimbursementBLL.IsHKDAvailable(dt) OrElse udtReimbursementBLL.IsHKDRMBAvailable(dt)
+            gvPaymentFile.Columns(6).Visible = udtReimbursementBLL.IsRMBAvailable(dt) OrElse udtReimbursementBLL.IsHKDRMBAvailable(dt)
+            ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
 
             GridViewDataBind(gvPaymentFile, dt, "reimburseID", "DESC", False)
 
@@ -797,18 +899,31 @@ Partial Public Class reimbursement_enquiry
             Dim lbl_submissionDate As Label = e.Row.FindControl("lbl_submissionDate")
             lbl_submissionDate.Text = udtFormatter.formatDateTime(lbl_submissionDate.Text.Trim)
 
-            ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-            ' Amount Claimed (RMB)
-            Dim lblAmountClaimedRMB As Label = e.Row.FindControl("lblAmountClaimedRMB")
+            ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+            ' Amount Claimed (HKD) 
+            Dim lblAmountClaimed As Label = e.Row.FindControl("lblAmountClaimed")
 
-            If udtSchemeClaim.ReimbursementCurrency <> EnumReimbursementCurrency.HKDRMB Then
-                lblAmountClaimedRMB.Text = Me.GetGlobalResourceObject("Text", "N/A")
-                lblAmountClaimedRMB.Enabled = False
+            If udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.HKD OrElse _
+                udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
+                lblAmountClaimed.Text = udtFormatter.formatMoney(lblAmountClaimed.Text, False)
 
             Else
+                lblAmountClaimed.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblAmountClaimed.Enabled = False
+            End If
+
+            ' Amount Claimed(RMB)
+            Dim lblAmountClaimedRMB As Label = e.Row.FindControl("lblAmountClaimedRMB")
+
+            If udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.RMB OrElse _
+                udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
                 lblAmountClaimedRMB.Text = udtFormatter.formatMoneyRMB(lblAmountClaimedRMB.Text, False)
 
+            Else                
+                lblAmountClaimedRMB.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblAmountClaimedRMB.Enabled = False
             End If
+            ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
 
             ' Completion Time
             If lblCompletionTime.Text.Trim = String.Empty Then
@@ -819,8 +934,10 @@ Partial Public Class reimbursement_enquiry
             End If
 
             ' Detailed Payment Analysis Report
-            ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
-            If dr("Verification_Case_Available") = ReimbursementVerificationCaseAvailable.Available Then
+            ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+            If dr("Verification_Case_Available") = ReimbursementVerificationCaseAvailable.Available _
+                AndAlso udtSchemeClaim.ReimbursementMode <> EnumReimbursementMode.HAFinance Then
+                ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
                 e.Row.FindControl("div_EHCP").Visible = True
                 e.Row.FindControl("div_Practice").Visible = True
             Else
@@ -828,7 +945,7 @@ Partial Public Class reimbursement_enquiry
                 e.Row.FindControl("div_Practice").Visible = True
             End If
             ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
-            ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
 
         End If
     End Sub
@@ -924,9 +1041,10 @@ Partial Public Class reimbursement_enquiry
 
                     If dt.Rows.Count > 0 Then
                         gvDrillSPID.PageIndex = 0
-                        ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-                        gvDrillSPID.Columns(6).Visible = IsRMBAvailable(udtSearchCriteria.SchemeCode)
-                        ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+                        ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+                        gvDrillSPID.Columns(5).Visible = udtReimbursementBLL.IsHKDAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode)
+                        gvDrillSPID.Columns(6).Visible = udtReimbursementBLL.IsRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode)
+                        ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
 
                         GridViewDataBind(gvDrillSPID, dt, "spNum", "ASC", False)
                         gvDrillSPID.Visible = True
@@ -1011,9 +1129,11 @@ Partial Public Class reimbursement_enquiry
                 Session(SESS_ReimbursementEnquiryDrillBankAccountDataTable) = dt
 
                 gvDrillBankAccount.PageIndex = 0
-                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-                gvDrillBankAccount.Columns(6).Visible = IsRMBAvailable(udtSearchCriteria.SchemeCode)
-                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+                ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+                gvDrillBankAccount.Columns(5).Visible = udtReimbursementBLL.IsHKDAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode)
+                gvDrillBankAccount.Columns(6).Visible = udtReimbursementBLL.IsRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode)
+                ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
+
                 GridViewDataBind(gvDrillBankAccount, dt, "bankAccount", "ASC", False)
 
                 MultiViewReimbursementEnquiry.ActiveViewIndex = ViewIndex.DrillBankAccount
@@ -1105,9 +1225,11 @@ Partial Public Class reimbursement_enquiry
                 Session(SESS_ReimbursementEnquiryDrillTransactionDataTable) = dt
 
                 gvDrillTransaction.PageIndex = 0
-                ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
-                gvDrillTransaction.Columns(10).Visible = IsRMBAvailable(udtSearchCriteria.SchemeCode)
-                ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+                ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+                gvDrillTransaction.Columns(9).Visible = udtReimbursementBLL.IsHKDAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode)
+                gvDrillTransaction.Columns(10).Visible = udtReimbursementBLL.IsRMBAvailable(udtSearchCriteria.SchemeCode) OrElse udtReimbursementBLL.IsHKDRMBAvailable(udtSearchCriteria.SchemeCode)
+                ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
+
                 GridViewDataBind(gvDrillTransaction, dt, "transNum", "ASC", False)
 
                 MultiViewReimbursementEnquiry.ActiveViewIndex = ViewIndex.DrillTransaction

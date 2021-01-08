@@ -2555,6 +2555,7 @@ Namespace Component
         Public Const BankPaymentFile As String = "BANK"
         Public Const SuperDownload As String = "SUPER"
         Public Const SuperDownloadRMB As String = "SUPERRMB" ' CRE13-019-02 Extend HCVS to China [Lawrence]
+        Public Const SuperDownloadSSSCMC As String = "SUPERSSSCMC" 'CRE20-015 (Special Support Scheme) [Martin]
         Public Const BoardAndCouncil As String = "BNC"
         Public Const EnrolmentDownload As String = "Enrolment"
         Public Const RMPDownload As String = "RMPDownload"
@@ -2582,7 +2583,7 @@ Namespace Component
         Public Const eHSD0014 As String = "eHSD0014"
         Public Const PreAuthorizationChecking As String = "PreAuthorizationCheck"
         Public Const PreAuthorizationCheckingRMB As String = "PreAuthorizationCheckRMB" ' CRE13-019-02 Extend HCVS to China [Lawrence]
-
+        Public Const PreAuthorizationCheckingSSSCMC As String = "PreAuthorizationCheckSSSCMC" 'CRE20-015 (Special Support Scheme) [Martin]
         ' Aberrant Report
         Public Const SPFrequentRejectionFile As String = "eHSW0001"
         Public Const VoucherRecipientAberrantPatternFile As String = "eHSD0015"
@@ -3150,6 +3151,12 @@ Namespace Component
         Public Const InspectionOfficer As String = "20"
         Public Const InspectionEndorser As String = "21"
         Public Const InspectionSEO As String = "22"
+
+        ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+        Public Const SSSCMCReimbursement As String = "23"
+        Public Const SSSCMCAdmin As String = "24"
+        Public Const SSSCMCEnquiry As String = "25"
+        ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
     End Class
 
     Public Class InspectionReportType

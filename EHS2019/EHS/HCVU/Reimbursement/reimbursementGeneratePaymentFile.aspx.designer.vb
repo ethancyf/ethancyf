@@ -554,6 +554,222 @@ Partial Public Class reimbursementGeneratePaymentFile
     Protected WithEvents ibtnNPCConfirm As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''tpNoRequireHA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tpNoRequireHA As Global.AjaxControlToolkit.TabPanel
+
+    '''<summary>
+    '''lblNHAHeader control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAHeader As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''udcNHAErrorBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcNHAErrorBox As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''udcNHAInfoBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcNHAInfoBox As Global.CustomControls.InfoMessageBox
+
+    '''<summary>
+    '''mvNHA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mvNHA As Global.System.Web.UI.WebControls.MultiView
+
+    '''<summary>
+    '''vNHANoRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vNHANoRecord As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''vNHAContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vNHAContent As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''gvNHA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvNHA As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''mvNHAPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mvNHAPaymentDate As Global.System.Web.UI.WebControls.MultiView
+
+    '''<summary>
+    '''vNHAPEnter control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vNHAPEnter As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''lblNHAPEPaymentDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAPEPaymentDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtNHAPEPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNHAPEPaymentDate As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnNHAPEPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnNHAPEPaymentDate As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgNHAPEPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgNHAPEPaymentDate As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''calNHAPEPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents calNHAPEPaymentDate As Global.AjaxControlToolkit.CalendarExtender
+
+    '''<summary>
+    '''lblNHAPEPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAPEPaymentDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNHAPEPaymentDateTips control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAPEPaymentDateTips As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnNHAPECompleteReimbursement control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnNHAPECompleteReimbursement As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''vNHAPConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vNHAPConfirm As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''lblNHAPCPaymentDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAPCPaymentDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNHAPCPaymentDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAPCPaymentDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNHAPCPaymentDateTips control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNHAPCPaymentDateTips As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ibtnNHAPCBack control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnNHAPCBack As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ibtnNHAPCConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnNHAPCConfirm As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''vComplete control.
     '''</summary>
     '''<remarks>

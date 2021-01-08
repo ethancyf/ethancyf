@@ -321,6 +321,7 @@
     <Content Include="UIControl\EHSClaim\ucInputPIDVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputPPP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
@@ -612,6 +613,12 @@
       <DependentUpon>DetailedPaymentAnalysisRptEHCPBasis.vb</DependentUpon>
     </Compile>
     <Compile Include="Reimbursement\DetailedPaymentAnalysisRptEHCPBasis.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reimbursement\DetailedPaymentAnalysisSSSCMCRpt.Designer.vb" >
+		<DependentUpon>DetailedPaymentAnalysisSSSCMCRpt.vb</DependentUpon>	
+	</Compile>
+    <Compile Include="Reimbursement\DetailedPaymentAnalysisSSSCMCRpt.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="RestrictAccess.aspx.designer.vb">
@@ -1558,6 +1565,13 @@
       <DependentUpon>ucInputPPP.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputSSSCMC.ascx.designer.vb">
+      <DependentUpon>ucInputSSSCMC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputSSSCMC.ascx.vb">
+      <DependentUpon>ucInputSSSCMC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSS.ascx.designer.vb">
       <DependentUpon>ucInputVSS.ascx</DependentUpon>
     </Compile>
@@ -2051,6 +2065,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reimbursement\DetailedPaymentAnalysisRptEHCPBasis.resx">
       <DependentUpon>DetailedPaymentAnalysisRptEHCPBasis.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reimbursement\DetailedPaymentAnalysisSSSCMCRpt.resx" >
+	 <DependentUpon>DetailedPaymentAnalysisSSSCMCRpt.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ServiceProvider\spEnrolmentPrintOutEHCVS.resx">
       <DependentUpon>spEnrolmentPrintOutEHCVS.vb</DependentUpon>

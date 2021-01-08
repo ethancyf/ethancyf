@@ -68,33 +68,6 @@ Partial Public Class ucInputSSSCMC
     Protected WithEvents lblRegistrationFeeWarning As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblSubSpecialitiesText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblSubSpecialitiesText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''ddlSubSpecialities control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlSubSpecialities As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''imgSubSpecialitiesError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgSubSpecialitiesError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
     '''lblMedicalServiceInfoText control.
     '''</summary>
     '''<remarks>
@@ -426,15 +399,6 @@ Partial Public Class ucInputSSSCMC
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTotalAmount As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''ImageTotalServiceFeeError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ImageTotalServiceFeeError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblTotalAmountRemark control.

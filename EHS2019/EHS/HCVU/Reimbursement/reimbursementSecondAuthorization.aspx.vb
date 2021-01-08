@@ -5,6 +5,7 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.HCVUUser
 Imports Common.Component.Scheme
 Imports Common.Component.Scheme.SchemeClaimModel
+Imports Common.Format
 
 Partial Public Class reimbursementSecondAuthorization
     Inherits BasePageWithGridView
@@ -65,13 +66,15 @@ Partial Public Class reimbursementSecondAuthorization
 
         Session("AuthorizationTxnListSummaryByFirstAuthorization") = dt
 
+
+        'CRE20-015-02 (Special Support Scheme) [Start][Martin]
         If dt.Rows.Count > 0 Then
             gvGroupByScheme.PageIndex = 0
-            gvGroupByScheme.Columns(8).Visible = IsRMBAvailable(dt)
+            gvGroupByScheme.Columns(8).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dt) Or udtReimbursementBLL.IsRMBAvailable(dt)
+            gvGroupByScheme.Columns(7).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dt) Or udtReimbursementBLL.IsHKDAvailable(dt)
             Me.GridViewDataBind(gvGroupByScheme, dt, "Display_Code", "ASC", False)
-
             mvCore.SetActiveView(vGroupByScheme)
-
+            'CRE20-015-02 (Special Support Scheme) [End][Martin]
         Else
             ' Message: No record found
             udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Information
@@ -88,22 +91,25 @@ Partial Public Class reimbursementSecondAuthorization
 
 #Region "Supporting Functions"
 
-    Private Function IsRMBAvailable(ByVal dt As DataTable) As Boolean
-        Dim udtSchemeClaimList As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
+    'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+    Protected Sub CompleteReimbursement(ByVal strReimburseID As String, ByVal strSchemeCode As String, ByVal strSchemeDisplayCode As String)
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        udtAuditLogEntry.WriteStartLog(LogID.LOG00015, "Complete Reimbursement - Confirm click") 'add log id later
 
-        For Each dr As DataRow In dt.Rows
-            If udtSchemeClaimList.Filter(dr("Scheme_Code")).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
-                Return True
-            End If
-        Next
+        Dim udtReimbursementBLL As New ReimbursementBLL
+        Dim udtFormatter As New Formatter
+        Dim dtmPaymentDate As DateTime = DateTime.Now.Date
+        udtReimbursementBLL.GeneratePaymentFile(strSchemeCode, strSchemeDisplayCode, strReimburseID, dtmPaymentDate)
 
-        Return False
+        udcInfoMessageBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00004, "%s", strSchemeCode)
+        udcInfoMessageBox.BuildMessageBox()
+        udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
+        udtAuditLogEntry.AddDescripton("Scheme", strSchemeCode)
+        udtAuditLogEntry.WriteEndLog(LogID.LOG00016, "Complete Reimbursement - Confirm click success")
+        mvCore.SetActiveView(vComplete)
 
-    End Function
-
-    Private Function IsRMBAvailable(ByVal strSchemeCode As String) As Boolean
-        Return (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB
-    End Function
+    End Sub
+    'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
 #End Region
 
@@ -316,7 +322,11 @@ Partial Public Class reimbursementSecondAuthorization
                 Session("Criteria") = criteria
 
                 gvGroupBySP.PageIndex = 0
-                gvGroupBySP.Columns(6).Visible = IsRMBAvailable(hfSchemeCode.Value)
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+                gvGroupBySP.Columns(6).Visible = udtReimbursementBLL.IsHKDRMBAvailable(hfSchemeCode.Value) OrElse udtReimbursementBLL.IsRMBAvailable(hfSchemeCode.Value)
+                gvGroupBySP.Columns(5).Visible = udtReimbursementBLL.IsHKDRMBAvailable(hfSchemeCode.Value) OrElse udtReimbursementBLL.IsHKDAvailable(hfSchemeCode.Value)
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]
+
                 Me.GridViewDataBind(gvGroupBySP, dt, "spNum", "ASC", False)
 
                 mvCore.SetActiveView(vGroupBySP)
@@ -328,7 +338,7 @@ Partial Public Class reimbursementSecondAuthorization
             End Try
         End If
     End Sub
-
+    'CRE20-015-02 (Special Support Scheme) [Start][Martin]
     Protected Sub gvGroupByScheme_RowDataBound(ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             e.Row.Attributes.Add("onclick", Me.Page.ClientScript.GetPostBackEventReference(sender, "Select$" + e.Row.RowIndex.ToString(), False))
@@ -341,16 +351,24 @@ Partial Public Class reimbursementSecondAuthorization
             ' Amount Claimed RMB
             Dim strScheme As String = DirectCast(e.Row.FindControl("hfSchemeCode"), HiddenField).Value
             Dim lblGAmountClaimedRMB As Label = e.Row.FindControl("lblGAmountClaimedRMB")
+            Dim lblGAmountClaimed As Label = e.Row.FindControl("lblGAmountClaimed")
 
-            If IsRMBAvailable(strScheme) Then
+            If udtReimbursementBLL.IsHKDRMBAvailable(strScheme) Then
                 lblGAmountClaimedRMB.Text = formater.formatMoneyRMB(lblGAmountClaimedRMB.Text, False)
-            Else
+                lblGAmountClaimed.Text = formater.formatMoney(lblGAmountClaimed.Text, False)
+            ElseIf udtReimbursementBLL.IsRMBAvailable(strScheme) Then
+                lblGAmountClaimedRMB.Text = formater.formatMoneyRMB(lblGAmountClaimedRMB.Text, False)
+                lblGAmountClaimed.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                lblGAmountClaimed.Enabled = False
+            Else 'HKD
                 lblGAmountClaimedRMB.Text = Me.GetGlobalResourceObject("Text", "N/A")
                 lblGAmountClaimedRMB.Enabled = False
+                lblGAmountClaimed.Text = formater.formatMoney(lblGAmountClaimed.Text, False)
             End If
 
         End If
     End Sub
+    'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
     Protected Sub gvGroupByScheme_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Me.udcInfoMessageBox.BuildMessageBox()
@@ -454,9 +472,13 @@ Partial Public Class reimbursementSecondAuthorization
             dr("v1Date") = DirectCast(r.FindControl("lbtn_v1Date"), LinkButton).Text.Trim
             dr("noTran") = r.Cells(5).Text
             dr("noSP") = r.Cells(6).Text
-            dr("totalAmount") = r.Cells(7).Text
 
-            If IsRMBAvailable(DirectCast(r.FindControl("hfSchemeCode"), HiddenField).Value) Then
+            'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+            If udtReimbursementBLL.IsHKDRMBAvailable(DirectCast(r.FindControl("hfSchemeCode"), HiddenField).Value) OrElse udtReimbursementBLL.IsHKDAvailable(DirectCast(r.FindControl("hfSchemeCode"), HiddenField).Value) Then
+                dr("totalAmount") = DirectCast(r.FindControl("lblGAmountClaimed"), Label).Text
+            End If
+
+            If udtReimbursementBLL.IsHKDRMBAvailable(DirectCast(r.FindControl("hfSchemeCode"), HiddenField).Value) OrElse udtReimbursementBLL.IsRMBAvailable(DirectCast(r.FindControl("hfSchemeCode"), HiddenField).Value) Then
                 dr("totalAmountRMB") = DirectCast(r.FindControl("lblGAmountClaimedRMB"), Label).Text
             End If
 
@@ -464,7 +486,9 @@ Partial Public Class reimbursementSecondAuthorization
             dr("Scheme_Code") = DirectCast(r.FindControl("hfSchemeCode"), HiddenField).Value.Trim
             dt.Rows.Add(dr)
 
-            gvConfirmSecondAuthorization.Columns(8).Visible = IsRMBAvailable(dt)
+            gvConfirmSecondAuthorization.Columns(8).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dt) OrElse udtReimbursementBLL.IsRMBAvailable(dt)
+            gvConfirmSecondAuthorization.Columns(7).Visible = udtReimbursementBLL.IsHKDRMBAvailable(dt) OrElse udtReimbursementBLL.IsHKDAvailable(dt)
+            'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
             gvConfirmSecondAuthorization.DataSource = dt
             gvConfirmSecondAuthorization.DataBind()
@@ -524,7 +548,12 @@ Partial Public Class reimbursementSecondAuthorization
                 Session("Criteria") = criteria
 
                 gvGroupByBankAccount.PageIndex = 0
-                gvGroupByBankAccount.Columns(6).Visible = IsRMBAvailable(hfSchemeCode.Value)
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+                gvGroupByBankAccount.Columns(6).Visible = udtReimbursementBLL.IsHKDRMBAvailable(hfSchemeCode.Value) OrElse udtReimbursementBLL.IsRMBAvailable(hfSchemeCode.Value)
+                gvGroupByBankAccount.Columns(5).Visible = udtReimbursementBLL.IsHKDRMBAvailable(hfSchemeCode.Value) OrElse udtReimbursementBLL.IsHKDAvailable(hfSchemeCode.Value)
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]
+
+
                 Me.GridViewDataBind(gvGroupByBankAccount, dt, "bankAccount", "ASC", False)
 
                 mvCore.SetActiveView(vGroupByBankAccount)
@@ -591,7 +620,12 @@ Partial Public Class reimbursementSecondAuthorization
                 Session("AuthorizationTxnList") = dt
 
                 gvGroupByTransaction.PageIndex = 0
-                gvGroupByTransaction.Columns(10).Visible = IsRMBAvailable(hfSchemeCode.Value)
+
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+                gvGroupByTransaction.Columns(10).Visible = udtReimbursementBLL.IsHKDRMBAvailable(hfSchemeCode.Value) OrElse udtReimbursementBLL.IsRMBAvailable(hfSchemeCode.Value)
+                gvGroupByTransaction.Columns(9).Visible = udtReimbursementBLL.IsHKDRMBAvailable(hfSchemeCode.Value) OrElse udtReimbursementBLL.IsHKDAvailable(hfSchemeCode.Value)
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]
+
                 Me.GridViewDataBind(gvGroupByTransaction, dt, "transNum", "ASC", False)
 
                 mvCore.SetActiveView(vGroupByTransaction)
@@ -831,7 +865,7 @@ Partial Public Class reimbursementSecondAuthorization
             ' Amount Claimed RMB
             Dim strScheme As String = DirectCast(e.Row.FindControl("hfSchemeCode"), HiddenField).Value
 
-            If IsRMBAvailable(strScheme) Then
+            If udtReimbursementBLL.IsHKDRMBAvailable(strScheme) OrElse udtReimbursementBLL.IsRMBAvailable(strScheme) Then
                 Dim lblGAmountClaimedRMB As Label = e.Row.FindControl("lblGAmountClaimedRMB")
                 lblGAmountClaimedRMB.Text = formater.formatMoneyRMB(lblGAmountClaimedRMB.Text, False)
             End If
@@ -858,10 +892,17 @@ Partial Public Class reimbursementSecondAuthorization
             udtAuditLogEntry.WriteStartLog(LogID.LOG00007, "Confirm Second Authorization")
 
             If udtReimbursementBLL.ReimbursementSecondAuthorization((New HCVUUserBLL).GetHCVUUser.UserID, lblSCRReimbursementID.Text, hfSchemeCode.Value.Trim) Then
-                ' Message: Second Authorization is successful
-                udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
-                udcInfoMessageBox.AddMessage(FUNCTION_CODE, "I", "00001")
-                udcInfoMessageBox.Visible = True
+
+                'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+                If udtReimbursementBLL.IsRMBAvailable(hfSchemeCode.Value.Trim) Then 'only for SSSCMC (Auto Reimbursement)
+                    CompleteReimbursement(lblSCRReimbursementID.Text, lblSCRScheme.Text, hfSchemeCode.Value.Trim)
+                Else
+                    ' Message: Second Authorization is successful
+                    udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Complete
+                    udcInfoMessageBox.AddMessage(FUNCTION_CODE, "I", "00001")
+                    udcInfoMessageBox.Visible = True
+                End If
+                'CRE20-015-02 (Special Support Scheme) [End][Martin]                
 
                 mvCore.SetActiveView(vComplete)
 

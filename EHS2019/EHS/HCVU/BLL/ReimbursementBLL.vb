@@ -13,6 +13,7 @@ Imports Common.Format
 Imports Common.SearchCriteria
 Imports System.Data
 Imports System.Data.SqlClient
+Imports Common.Component.UserRole
 
 Public Class ReimbursementBLL
 
@@ -891,6 +892,8 @@ Public Class ReimbursementBLL
 
             If udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
                 strSuperFileID = DataDownloadFileID.SuperDownloadRMB
+            ElseIf udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.RMB Then 'CRE20-015 (Special Support Scheme) [Martin]
+                strSuperFileID = DataDownloadFileID.SuperDownloadSSSCMC
             Else
                 strSuperFileID = DataDownloadFileID.SuperDownload
             End If
@@ -945,6 +948,8 @@ Public Class ReimbursementBLL
 
         If udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
             strFileID = DataDownloadFileID.PreAuthorizationCheckingRMB
+        ElseIf udtSchemeClaim.ReimbursementCurrency = EnumReimbursementCurrency.RMB Then 'CRE20-015 (Special Support Scheme) [Martin]
+            strFileID = DataDownloadFileID.PreAuthorizationCheckingSSSCMC
         Else
             strFileID = DataDownloadFileID.PreAuthorizationChecking
         End If
@@ -998,12 +1003,16 @@ Public Class ReimbursementBLL
         udtSpParamCollection.AddParam("@scheme_code", SqlDbType.Char, 10, strScheme)
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
+        'CRE20-015 (Special Support Scheme) [Start][Martin]
         If strFileID.Equals(DataDownloadFileID.SuperDownload) _
                 OrElse strFileID.Equals(DataDownloadFileID.SuperDownloadRMB) _
                 OrElse strFileID.Equals(DataDownloadFileID.PreAuthorizationChecking) _
-                OrElse strFileID.Equals(DataDownloadFileID.PreAuthorizationCheckingRMB) Then
+                OrElse strFileID.Equals(DataDownloadFileID.PreAuthorizationCheckingRMB) _
+                OrElse strFileID.Equals(DataDownloadFileID.PreAuthorizationCheckingSSSCMC) _
+                OrElse strFileID.Equals(DataDownloadFileID.SuperDownloadSSSCMC) Then
             udtSpParamCollection.AddParam("@cutoff_Date_str", SqlDbType.Char, 11, udtFormatter.convertDateTime(strCutoffDate))
         End If
+        'CRE20-015 (Special Support Scheme) [End][Martin]
         ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
         udtFileGenerationQueueModel.GenerationID = udtCommon.generateFileSeqNo()
@@ -2115,5 +2124,57 @@ Public Class ReimbursementBLL
         Return dt
 
     End Function
+
+    ' CRE20-015-02 (Special Support Scheme) [Start][Martin]
+    Public Function IsRMBAvailable(ByVal strSchemeCode As String) As Boolean
+        Return (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementCurrency = EnumReimbursementCurrency.RMB
+    End Function
+
+    Public Function IsRMBAvailable(ByVal dt As DataTable) As Boolean
+        Dim udtSchemeClaimList As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
+
+        For Each dr As DataRow In dt.Rows
+            If udtSchemeClaimList.Filter(dr("Scheme_Code")).ReimbursementCurrency = EnumReimbursementCurrency.RMB Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
+
+    Public Function IsHKDRMBAvailable(ByVal strSchemeCode As String) As Boolean
+        Return (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB
+    End Function
+
+    Public Function IsHKDRMBAvailable(ByVal dt As DataTable) As Boolean
+        Dim udtSchemeClaimList As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
+
+        For Each dr As DataRow In dt.Rows
+            If udtSchemeClaimList.Filter(dr("Scheme_Code")).ReimbursementCurrency = EnumReimbursementCurrency.HKDRMB Then
+                Return True
+            End If
+        Next
+        Return False
+
+    End Function
+
+    ' CRE20-015-02 (Special Support Scheme) [End][Martin]
+
+    ' CRE20-015-02 (Special Support Scheme) [Start][Winnie]
+    Public Function IsHKDAvailable(ByVal strSchemeCode As String) As Boolean
+        Return (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strSchemeCode).ReimbursementCurrency = EnumReimbursementCurrency.HKD
+    End Function
+
+    Public Function IsHKDAvailable(ByVal dt As DataTable) As Boolean
+        Dim udtSchemeClaimList As SchemeClaimModelCollection = (New SchemeClaimBLL).getAllDistinctSchemeClaim
+
+        For Each dr As DataRow In dt.Rows
+            If udtSchemeClaimList.Filter(dr("Scheme_Code")).ReimbursementCurrency = EnumReimbursementCurrency.HKD Then
+                Return True
+            End If
+        Next
+        Return False
+
+    End Function
+    ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
 
 End Class

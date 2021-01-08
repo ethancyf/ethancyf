@@ -2,9 +2,11 @@
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
+Imports Common.Component.ClaimRules
 Imports Common.Component.DocType
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSTransaction
+Imports Common.Component.HAServicePatient
 Imports Common.Component.HATransaction
 Imports Common.Component.HCVUUser
 Imports Common.Component.InputPicker
@@ -76,6 +78,7 @@ Partial Public Class ClaimCreation
 
         ' - Select Account
         Public Const NewClaimTransaction_SelectAccount = "New Claim Transaction - Select Account" '00017
+        Public Const NewClaimTransaction_SelectAccount_Fail = "New Claim Transaction - Select Account Fail" '00041
         Public Const NewClaimTransaction_SelectAccount_Back = "New Claim Transaction - Select Account - Back Click" '00018
 
         ' - Vaccination Record
@@ -836,6 +839,12 @@ Partial Public Class ClaimCreation
         Me.udtSessionHandlerBLL.EHSTransactionRemoveFromSession(FunctionCode)
         ' CRE19-006 (DHC) [End][Winnie]
 
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.udtSessionHandlerBLL.HAPatientRemoveFromSession()
+        Me.udtSessionHandlerBLL.NewClaimTransactionSaveToSession(True)
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         ' Clear all message boxes
         Me.udcMessageBox.Visible = False
         Me.udcInfoMessageBox.Visible = False
@@ -954,7 +963,6 @@ Partial Public Class ClaimCreation
                 Me.udcMessageBox.AddMessage(udtSM, "%s", lblEnterCreationDetailPaymentRemarksText.Text)
                 blnError = True
             End If
-
         End If
 
         If blnError Then
@@ -1170,6 +1178,34 @@ Partial Public Class ClaimCreation
 
                     End If
                 End If
+
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                ' Check Patient whether is on list
+                If udtManualEHSTransaction.SchemeCode = SchemeClaimModel.SSSCMC Then
+                    If Not dtResValidated Is Nothing AndAlso dtResValidated.Rows.Count > 0 Then
+                        Dim blnFoundHAPatient As Boolean = False
+
+                        For Each drResValidated As DataRow In dtResValidated.Rows
+                            Dim strDocCode As String = drResValidated("Doc_Code").ToString.Trim
+                            Dim strIdentityNum As String = drResValidated("IdentityNum").ToString.Trim
+
+                            If (New ClaimRulesBLL).CheckIsHAPatient(udtManualEHSTransaction.SchemeCode, strDocCode, strIdentityNum) = String.Empty Then
+                                blnFoundHAPatient = True
+                                Exit For
+                            End If
+                        Next
+
+                        If Not blnFoundHAPatient Then
+                            dtRes = Nothing
+                        End If
+
+                    Else
+                        dtRes = Nothing
+                    End If
+
+                End If
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
             End If
 
             If IsNothing(dtRes) Then
@@ -1211,21 +1247,36 @@ Partial Public Class ClaimCreation
                     End If
                 End If
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
                 '-----------------------------------
                 ' No account retrieved
                 '-----------------------------------
                 If Not blnMatched Then
-                    If udtManualEHSTransaction.SchemeCode = SchemeClaimModel.PPP Then
-                        'Info: No eHealth (Subsidies) Account found.
-                        Me.udcInfoMessageBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00002))
-                    Else
-                        'Info: No validated eHealth (Subsidies) Account found. Please create an account before making claim.
-                        Me.udcInfoMessageBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00004))
-                    End If
+
+                    Select Case udtManualEHSTransaction.SchemeCode
+                        Case SchemeClaimModel.PPP
+                            'Info: No eHealth (Subsidies) Account found.
+                            Me.udcInfoMessageBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00002))
+
+                        Case SchemeClaimModel.SSSCMC
+                            'Error: The service recipient is not eligible for the selected scheme.
+                            Me.udcMessageBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00004))
+
+                        Case Else
+                            'Info: No validated eHealth (Subsidies) Account found. Please create an account before making claim.
+                            Me.udcInfoMessageBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00004))
+
+                    End Select
+
+
                 End If
+
+                Me.udcMessageBox.BuildMessageBox("ValidationFail", udtAuditLogEntry, Common.Component.LogID.LOG00013, AuditLogDescription.NewClaimTransaction_EnterCreationDetail_Fail, udtAuditLogInfo)
 
                 Me.udcInfoMessageBox.BuildMessageBox()
                 Me.udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Information
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
                 udtAuditLogEntry.AddDescripton("Doc Type", Me.ddlEnterCreationDetaileHSAccountType.SelectedValue.Trim)
                 udtAuditLogEntry.AddDescripton("Doc ID", Me.txtEnterCreationDetaileHSAccountDocNo.Text.Trim)
@@ -1336,6 +1387,25 @@ Partial Public Class ClaimCreation
             udtAuditLogEntry.AddDescripton("Account ID", IIf(strAccountType = AccountType.Validated, strEHSAccountID, String.Empty))
             udtAuditLogEntry.AddDescripton("Ref No", IIf(strAccountType = AccountType.Temporary, strEHSAccountID, String.Empty))
             udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00017, AuditLogDescription.NewClaimTransaction_SelectAccount)
+
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim udtManualEHSTransaction As EHSTransactionModel = Me.udtSessionHandlerBLL.EHSTransactionWithoutTransactionDetailGetFromSession(FunctionCode)
+
+            ' Check Patient whether is on list
+            If udtManualEHSTransaction.SchemeCode = SchemeClaimModel.SSSCMC Then
+                Dim udtAuditLogInfo As AuditLogInfo = New AuditLogInfo(Me.txtEnterCreationDetailSPID.Text.Trim, Nothing, Nothing, Nothing, Nothing, Me.txtEnterCreationDetaileHSAccountDocNo.Text.Trim)
+
+                If (New ClaimRulesBLL).CheckIsHAPatient(udtManualEHSTransaction.SchemeCode, strDocCode, strIdentityNum) <> String.Empty Then
+                    Me.udcMessageBox.AddMessage(New SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00004))
+                    Me.udcMessageBox.BuildMessageBox("ValidationFail", udtAuditLogEntry, Common.Component.LogID.LOG00041, AuditLogDescription.NewClaimTransaction_SelectAccount_Fail, udtAuditLogInfo)
+
+                    Return
+
+                End If
+
+            End If
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             Me.GetReadyEHSAccount(strEHSAccountID, strDocCode, udtEHSAccount)
 
@@ -2023,8 +2093,6 @@ Partial Public Class ClaimCreation
         ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
         If blnIsValid Then
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Select Case udtSchemeClaim.ControlType
                 Case SchemeClaimModel.EnumControlType.CIVSS
                     blnIsValid = Me.CIVSSValidation(udtEHSTransaction)
@@ -2059,16 +2127,19 @@ Partial Public Class ClaimCreation
                 Case SchemeClaimModel.EnumControlType.PPP
                     blnIsValid = Me.PPPValidation(udtEHSTransaction)
 
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case SchemeClaimModel.EnumControlType.SSSCMC
+                    blnIsValid = Me.SSSCMCValidation(udtEHSTransaction)
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             End Select
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
         End If
 
         Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel
         udtEHSClaimVaccine = Me.udtSessionHandlerBLL.EHSClaimVaccineGetFromSession(FunctionCode)
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Select Case udtSchemeClaim.ControlType
             Case SchemeClaimModel.EnumControlType.VOUCHER
                 Me.AuditLogVoucher(udtAuditLogEntry, udtSchemeClaim.SchemeCode, dtmServiceDate)
@@ -2085,8 +2156,14 @@ Partial Public Class ClaimCreation
             Case SchemeClaimModel.EnumControlType.EHAPP
                 Me.AuditLogEHAPP(udtAuditLogEntry, udtSchemeClaim.SchemeCode, dtmServiceDate)
 
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                Me.AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction, dtmServiceDate)
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
 
         Dim udtValidationResults As EHSClaim.EHSClaimBLL.EHSClaimBLL.ValidationResults 'OutsideClaimValidation.OutsideClaimValidationModel
         Dim udtBlockMessage As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResultList = Nothing
@@ -2147,6 +2224,16 @@ Partial Public Class ClaimCreation
                 ' Registration Type
                 '-------------------
                 Me.udtEHSClaimBLL.ConstructEHSTransDetail_Registration(udtEHSTransaction, udtEHSAccount, udtHCVUUser.UserID)
+
+                ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            ElseIf udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeType_HAService Then
+                '-------------------
+                ' HA Service Type
+                '-------------------
+                Me.udtEHSClaimBLL.ConstructEHSTransactionDetail_SSSCMC(udtEHSTransaction, udtEHSAccount, udtHCVUUser.UserID, Me.udtSessionHandlerBLL.HAPatientGetFromSession())
+
+                ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
             Else
                 '-------------------
@@ -3267,6 +3354,40 @@ Partial Public Class ClaimCreation
                     Case SchemeClaimModel.EnumControlType.EHAPP
                         blnNotAvailableForClaim = False
 
+                        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                    Case SchemeClaimModel.EnumControlType.SSSCMC
+                        Dim blnValid As Boolean = True
+                        Dim udtPersonalInformation As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
+
+                        ' Check Patient whether is on list
+                        If (New ClaimRulesBLL).CheckIsHAPatient(udtSchemeClaim.SchemeCode, udtEHSAccount.SearchDocCode, udtPersonalInformation.IdentityNum) <> String.Empty Then
+                            blnValid = False
+                        End If
+
+                        ' Check Patient whether has available subsidy
+                        If Not udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList) > 0 Then
+                            blnValid = False
+                        End If
+
+                        If blnValid Then
+                            blnNotAvailableForClaim = False
+
+                            'Sub-Patient Type
+                            Dim dtHAPatient As DataTable = (New HAServicePatientBLL).getHAServicePatientByIdentityNum(udtPersonalInformation.DocCode, udtPersonalInformation.IdentityNum)
+
+                            If dtHAPatient.Rows.Count = 0 Then
+                                Throw New Exception(String.Format("Document No.({0}) of Document type({1}) is not found in DB table HAServicePatient.", _
+                                                                  udtPersonalInformation.IdentityNum, _
+                                                                  udtPersonalInformation.DocCode))
+                            End If
+
+                            Me.udtSessionHandlerBLL.HAPatientSaveToSession(dtHAPatient)
+
+                        End If
+
+                        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
                 End Select
 
                 Me.udcMessageBox.Clear()
@@ -3291,6 +3412,13 @@ Partial Public Class ClaimCreation
                          SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP
 
                         If udtClaimCategory Is Nothing OrElse blnNotAvailableForClaim OrElse blnNoCategory Then
+                            Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, False)
+                        Else
+                            Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, True)
+                        End If
+
+                    Case SchemeClaimModel.EnumControlType.SSSCMC
+                        If blnNotAvailableForClaim Then
                             Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, False)
                         Else
                             Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, True)
@@ -3343,8 +3471,6 @@ Partial Public Class ClaimCreation
         Dim udtSchemeClaim As SchemeClaimModel
         udtSchemeClaim = Me.udtSessionHandlerBLL.SelectSchemeGetFromSession(FunctionCode)
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         If Not udtSchemeClaim Is Nothing Then
             Select Case udtSchemeClaim.ControlType
                 Case SchemeClaimModel.EnumControlType.CIVSS
@@ -3421,9 +3547,19 @@ Partial Public Class ClaimCreation
                         udcInputPPP.SetDoseErrorImage(False)
                     End If
 
+                    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case SchemeClaimModel.EnumControlType.SSSCMC
+                    Dim udcInputSSSCMC As ucInputSSSCMC = Me.udInputEHSClaim.GetSSSCMCControl()
+                    If Not udcInputSSSCMC Is Nothing Then
+                        udcInputSSSCMC.SetError(False)
+                    End If
+                    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
             End Select
         End If
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+
 
     End Sub
 
@@ -4154,6 +4290,103 @@ Partial Public Class ClaimCreation
     End Function
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function SSSCMCValidation(ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
+
+        ' ---------------------------------------------
+        ' Init
+        '----------------------------------------------
+        Dim isValid As Boolean = True
+        Dim strDOB As String = String.Empty
+        Dim udtEligibleResult As Common.Component.ClaimRules.ClaimRulesBLL.EligibleResult = Nothing
+        Dim udtSystemMessage As SystemMessage = Nothing
+
+        Dim udcInputSSSCMC As ucInputSSSCMC = Me.udInputEHSClaim.GetSSSCMCControl()
+
+        Dim udtValidator As Validator = New Validator()
+
+        Dim udtEHSAccount As EHSAccountModel = Me.udtSessionHandlerBLL.EHSAccountGetFromSession(FunctionCode)
+        Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
+        Dim udtSchemeClaim As SchemeClaimModel = Me.udtSessionHandlerBLL.SelectSchemeGetFromSession(FunctionCode)
+
+        Dim decAvailableAmount As Decimal = 0
+
+        udcInputSSSCMC.SetError(False)
+
+        Me.udcMessageBox.Clear()
+
+        ' -----------------------------------------------
+        ' UI Input Validation
+        '------------------------------------------------
+        If Not udcInputSSSCMC.Validate(True, Me.udcMessageBox) Then
+            isValid = False
+        End If
+
+        'If isValid Then
+        '    ' --------------------------------------------------------------
+        '    ' Check Eligibility:
+        '    ' --------------------------------------------------------------
+        '    If udtEHSPersonalInfo.DocCode = DocTypeModel.DocTypeCode.EC AndAlso udtEHSPersonalInfo.ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration Then
+        '        strDOB = udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, udtEHSPersonalInfo.ECAge, udtEHSPersonalInfo.ECDateOfRegistration)
+        '    Else
+        '        strDOB = udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, Nothing, Nothing)
+        '    End If
+
+        '    udtSystemMessage = udtEHSClaimBLL.CheckEligibilityForEnterClaim(udtSchemeClaim, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo, Nothing, udtEligibleResult)
+
+        '    If Not udtSystemMessage Is Nothing Then
+        '        ' If Check Eligibility Block Show Error
+        '        isValid = False
+        '        Me.udcMessageBox.AddMessage(udtSystemMessage)
+        '    End If
+        'End If
+
+        'If isValid Then
+        '    ' --------------------------------------------------------------
+        '    ' Check Document Limit:
+        '    ' --------------------------------------------------------------
+        '    udtSystemMessage = Me.udtEHSClaimBLL.CheckExceedDocumentLimitForEnterClaim(udtSchemeClaim.SchemeCode, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo)
+
+        '    If Not udtSystemMessage Is Nothing Then
+        '        isValid = False
+        '        Me.udcMessageBox.AddMessage(udtSystemMessage)
+        '    End If
+        'End If
+
+        If isValid Then
+            ' --------------------------------------------------------------
+            ' Check Benefit:
+            ' --------------------------------------------------------------
+            Dim udtEHSTransactionBLL As New EHSTransactionBLL
+
+            decAvailableAmount = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+
+            If decAvailableAmount > 0 AndAlso decAvailableAmount >= udcInputSSSCMC.UsedRMB Then
+                ' Subsidies for SSSCMC is available
+            Else
+                ' No available subsidies for SSSCMC
+                isValid = False
+                Me.udcMessageBox.AddMessage(New SystemMessage("990000", "E", "00107"))
+            End If
+
+        End If
+
+        If isValid Then
+            udtEHSTransaction.VoucherBeforeRedeem = Nothing
+            udtEHSTransaction.VoucherAfterRedeem = Nothing
+            udtEHSTransaction.VoucherClaim = Nothing
+            udtEHSTransaction.ExchangeRate = udcInputSSSCMC.ExchangeRate
+            udtEHSTransaction.VoucherClaimRMB = udcInputSSSCMC.UsedRMB
+
+            udcInputSSSCMC.Save(udtEHSTransaction)
+
+        End If
+
+        Return isValid
+    End Function
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
 #End Region
 
 #Region "Scheme Audit Log"
@@ -4374,6 +4607,37 @@ Partial Public Class ClaimCreation
         'CRE13-018 Change Voucher Amount to 1 Dollar [End][Karl]      
     End Sub
     ' CRE13-001 - EHAPP [End][Tommy L]
+
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub AuditLogSSSCMC(ByRef udtAuditLogEntry As AuditLogEntry, ByVal udtEHSTransaction As EHSTransactionModel, ByVal dtmServiceDate As Date)
+        If udtEHSTransaction.TransactionAdditionFields Is Nothing OrElse udtEHSTransaction.TransactionAdditionFields(0) Is Nothing Then
+            Return
+        End If
+
+        Dim udtTAF As TransactionAdditionalFieldModel = udtEHSTransaction.TransactionAdditionFields(0)
+
+        Dim udtSchemeClaimBLL As New SchemeClaimBLL
+        Dim udtSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode.Trim, dtmServiceDate.AddDays(1).AddMinutes(-1))
+
+        Dim udtSchemeDetailBLL As New SchemeDetails.SchemeDetailBLL
+        Dim udtSubsidizeItemDetailList As SchemeDetails.SubsidizeItemDetailsModelCollection = udtSchemeDetailBLL.getSubsidizeItemDetails(udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+
+        udtAuditLogEntry.AddDescripton("Scheme", udtEHSTransaction.SchemeCode.Trim)
+        udtAuditLogEntry.AddDescripton("Scheme Seq", udtTAF.SchemeSeq)
+        udtAuditLogEntry.AddDescripton("Subsidize Code", udtTAF.SubsidizeCode)
+        udtAuditLogEntry.AddDescripton("Subsidize Item Code", udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeItemCode)
+        udtAuditLogEntry.AddDescripton("Available Item Code", udtSubsidizeItemDetailList(0).AvailableItemCode)
+
+        udtAuditLogEntry.AddDescripton("ExchangeRate", udtEHSTransaction.ExchangeRate)
+        udtAuditLogEntry.AddDescripton("VoucherRedeemRMB", udtEHSTransaction.VoucherClaimRMB)
+
+        For Each udtTransactAdditionfield As TransactionAdditionalFieldModel In udtEHSTransaction.TransactionAdditionFields
+            udtAuditLogEntry.AddDescripton(udtTransactAdditionfield.AdditionalFieldID, udtTransactAdditionfield.AdditionalFieldValueCode)
+        Next
+
+    End Sub
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
 #End Region
 

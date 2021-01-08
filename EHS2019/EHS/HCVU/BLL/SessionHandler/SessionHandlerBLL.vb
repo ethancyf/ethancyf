@@ -52,6 +52,12 @@ Namespace BLL
             Public Const SESS_EHSAccount As String = "SESS_EHSACCOUNT"
             ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
+            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Const SESS_HAPatient As String = "SESS_HA_PATIENT"
+            Public Const SESS_NewClaim As String = "SESS_NEW_CLAIM"
+            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         End Class
 
 #Region "Claim Transaction"
@@ -364,6 +370,48 @@ Namespace BLL
         End Sub
 #End Region
         ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "HA Patient (For SSSCMC Claim Only)"
+        Public Sub HAPatientSaveToSession(ByVal dtHAPatient As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_HAPatient) = dtHAPatient
+        End Sub
+
+        Public Function HAPatientGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_HAPatient) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_HAPatient), DataTable)
+            End If
+        End Function
+
+        Public Sub HAPatientRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_HAPatient)
+        End Sub
+#End Region
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Make New Claim Transaction"
+        Public Sub NewClaimTransactionSaveToSession(ByVal blnNewClaim As Boolean)
+            HttpContext.Current.Session(SessionName.SESS_NewClaim) = blnNewClaim
+        End Sub
+
+        Public Function NewClaimTransactionGetFromSession() As Boolean
+            If HttpContext.Current.Session(SessionName.SESS_NewClaim) Is Nothing Then
+                Return False
+            Else
+                Return HttpContext.Current.Session(SessionName.SESS_NewClaim)
+            End If
+        End Function
+
+        Public Sub NewClaimTransactionRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_NewClaim)
+        End Sub
+#End Region
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
     End Class
 End Namespace

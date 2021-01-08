@@ -154,8 +154,8 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Type="Complete" Width="780px" />
-                        <cc2:MessageBox ID="udcMessageBox" runat="server" Width="780px" />
+                        <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Type="Complete" Width="980px" />
+                        <cc2:MessageBox ID="udcMessageBox" runat="server" Width="980px" />
                     </td>
                 </tr>
                 <tr>

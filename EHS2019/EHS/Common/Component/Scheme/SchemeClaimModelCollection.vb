@@ -158,7 +158,10 @@ Namespace Component.Scheme
 
             For Each udtSchemeClaimModel As SchemeClaimModel In Me
                 If udtSchemeClaimModel.ReimbursementMode = SchemeClaimModel.EnumReimbursementMode.All _
-                        OrElse udtSchemeClaimModel.ReimbursementMode = SchemeClaimModel.EnumReimbursementMode.FirstAuthAndSecondAuth Then
+                        Or udtSchemeClaimModel.ReimbursementMode = SchemeClaimModel.EnumReimbursementMode.FirstAuthAndSecondAuth _
+                        Or udtSchemeClaimModel.ReimbursementMode = SchemeClaimModel.EnumReimbursementMode.HAFinance Then 'CRE20-015 (Special Support Scheme) [Martin]
+
+
                     udtResSchemeClaimModel = New SchemeClaimModel(udtSchemeClaimModel)
                     udtResSchemeClaimModelCollection.Add(udtResSchemeClaimModel)
                 End If

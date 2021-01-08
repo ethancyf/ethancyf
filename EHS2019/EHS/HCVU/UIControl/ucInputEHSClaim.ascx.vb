@@ -46,8 +46,6 @@ Partial Public Class ucInputEHSClaim
 
     Public Const FunctCode As String = Common.Component.FunctCode.FUNT010404
 
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-    ' --------------------------------------------------------------------------------------
     Private Class EHSClaimControlID
         Public Const HCVS As String = "ucInputEHSClaim_HCVS"
         Public Const EVSS As String = "ucInputEHSClaim_EVSS"
@@ -61,9 +59,13 @@ Partial Public Class ucInputEHSClaim
         Public Const VSS As String = "ucInputEHSClaim_VSS"
         Public Const ENHVSSO As String = "ucInputEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucInputEHSClaim_PPP"
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
 
     End Class
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
 #Region "Setup Function"
     Public Sub Built(ByVal blnPostbackRebulid As Boolean)
@@ -83,14 +85,16 @@ Partial Public Class ucInputEHSClaim
 
         strFolderPath = "~/UIControl/EHSClaim"
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         ' Reset static control visible before build
         ucInputEHSClaim_HCVS.Visible = False
         ucInputEHSClaim_HCVSChina.Visible = False
         ucInputEHSClaim_VSS.Visible = False
         ucInputEHSClaim_ENHVSSO.Visible = False
         ucInputEHSClaim_PPP.Visible = False
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ucInputEHSClaim_SSSCMC.Visible = False
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
         Select Case New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
             Case SchemeClaimModel.EnumControlType.VOUCHER
@@ -170,15 +174,18 @@ Partial Public Class ucInputEHSClaim
                     AddHandler udcInputPPP.SearchButtonClick, AddressOf udcInputPPPKG_SearchButtonClick
                 End If
 
+                'CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+                '---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.SSSCMC
+                udcInputEHSClaim = Me.ucInputEHSClaim_SSSCMC
+                udcInputEHSClaim.ID = EHSClaimControlID.SSSCMC
+                'CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
         If Not IsNothing(udcInputEHSClaim) Then
             udcInputEHSClaim.FunctionCode = Me.FunctionCode
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             udcInputEHSClaim.SchemeClaim = New SchemeClaimBLL().getAllActiveSchemeClaimWithSubsidizeGroupBySchemeCodeSchemeSeq(_strSchemeCode)
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
             udcInputEHSClaim.ActiveViewChanged = Me.ActiveViewChanged
             udcInputEHSClaim.IsSupportedDevice = Me.IsSupportedDevice
             udcInputEHSClaim.AvaliableForClaim = Me._blnAvaliableForClaim
@@ -190,20 +197,18 @@ Partial Public Class ucInputEHSClaim
             udcInputEHSClaim.ClaimCategorys = Me._udtClaimCategorys
             udcInputEHSClaim.SetupTableTitle(Me._intTableTitleWidth)
             udcInputEHSClaim.ShowLegend = Me._blnShowLegend
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             udcInputEHSClaim.NonClinic = Me._blnNonClinic
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
             Me.Built(udcInputEHSClaim)
         End If
 
     End Sub
 
     Private Sub Built(ByVal udcControl As ucInputEHSClaimBase)
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
+        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         Select Case udcControl.ID
-            Case EHSClaimControlID.HCVS, EHSClaimControlID.HCVS_CHINA, EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP
+            Case EHSClaimControlID.HCVS, EHSClaimControlID.HCVS_CHINA, EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, EHSClaimControlID.SSSCMC
                 'Show Input Control
                 udcControl.Visible = True
 
@@ -224,7 +229,7 @@ Partial Public Class ucInputEHSClaim
         End Select
 
         _blnIsControlBuilt = True
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
     End Sub
 
@@ -556,6 +561,18 @@ Partial Public Class ucInputEHSClaim
         End If
     End Function
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+    ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetSSSCMCControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.SSSCMC)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputSSSCMC)
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
 #End Region
 

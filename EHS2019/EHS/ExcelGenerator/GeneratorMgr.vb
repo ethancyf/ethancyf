@@ -94,11 +94,13 @@ Public Class GeneratorMgr
                         excelGenerator = New BNCGenerator(udtQueue, udtFileGenerationModel)
 
                     Case DataDownloadFileID.SuperDownload,
-                         DataDownloadFileID.SuperDownloadRMB
+                         DataDownloadFileID.SuperDownloadRMB,
+                         DataDownloadFileID.SuperDownloadSSSCMC 'CRE20-015 (Special Support Scheme) [Martin]
                         excelGenerator = New SuperDownloadGenerator(udtQueue, udtFileGenerationModel)
 
                     Case DataDownloadFileID.PreAuthorizationChecking,
-                         DataDownloadFileID.PreAuthorizationCheckingRMB
+                         DataDownloadFileID.PreAuthorizationCheckingRMB,
+                         DataDownloadFileID.PreAuthorizationCheckingSSSCMC 'CRE20-015 (Special Support Scheme) [Martin]
                         excelGenerator = New PreAuthorizationCheckingFileGenerator(udtQueue, udtFileGenerationModel)
 
                     Case DataDownloadFileID.EnrolmentDownload

@@ -3,6 +3,8 @@ Imports Common.Component.Scheme
 Imports Common.Component.Scheme.SchemeClaimModel
 Imports Common.Format
 Imports Common.Component
+Imports Common.Component.HCVUUser
+
 
 Partial Public Class DPAViewer
     Inherits System.Web.UI.Page
@@ -33,6 +35,11 @@ Partial Public Class DPAViewer
                 rpt = New DetailedPaymentAnalysisRpt(Me.GetReportSource(strRID, strCutoffDate, strDPAScheme), bWatermark)
                 strReportFileName = "DetailedPaymentAnalysisRptPractice.PDF"
             End If
+            'CRE20-015-02 (Special Support Scheme) [Start][Martin]
+        ElseIf (New SchemeClaimBLL).getAllDistinctSchemeClaim.Filter(strDPAScheme).ReimbursementCurrency = EnumReimbursementCurrency.RMB Then
+            rpt = New DetailedPaymentAnalysisSSSCMCRpt(Me.GetReportSource(strRID, strCutoffDate, strDPAScheme), bWatermark)
+            strReportFileName = "DetailedPaymentAnalysisRptPractice.PDF"
+            'CRE20-015-02 (Special Support Scheme) [End][Martin]
         Else
             If strReportSelected = DPAReportType.EHCP Then
                 rpt = New DetailedPaymentAnalysisRmbRptEHCPBasis(Me.GetEHCPBasisReportSource(strRID, strCutoffDate, strDPAScheme), bWatermark)
@@ -86,33 +93,55 @@ Partial Public Class DPAViewer
         Response.End()
     End Sub
 
+    'CRE20-015-02 (Special Support Scheme) [Start][Martin]
     Private Function GetReportSource(ByVal strRimbeID As String, ByVal strCutoffDate As String, ByVal strSchemeCode As String) As DataSet
         Dim dsData As New DataSet()
 
         Dim udtDB As New Common.DataAccess.Database()
         udtDB.CommandTimeout = 300
 
+        Dim udtHCVUUser As HCVUUserModel
+        Dim udtHCVUUserBLL As New HCVUUserBLL
+        udtHCVUUser = udtHCVUUserBLL.GetHCVUUser
+
+
+
         Dim params() As SqlParameter = New SqlParameter() { _
             udtDB.MakeInParam("@reimburse_id", SqlDbType.Char, 15, strRimbeID), _
             udtDB.MakeInParam("@cutoff_Date_str", SqlDbType.Char, 11, strCutoffDate), _
-            udtDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode)}
+            udtDB.MakeInParam("@scheme_code", SqlDbType.Char, 10, strSchemeCode), _
+            udtDB.MakeInParam("@User_ID", SqlDbType.Char, 20, udtHCVUUser.UserID)}
         udtDB.RunProc("proc_DPAReport_get", params, dsData)
 
         ' Format Total Amount RMB
         Dim udtFormatter As New Formatter
 
         dsData.Tables(0).Columns.Add("Total_Amount_RMB_Text", GetType(String))
+        dsData.Tables(0).Columns.Add("Total_Reduction_Fee_Text", GetType(String))
+        dsData.Tables(0).Columns.Add("Total_Support_Fee_Text", GetType(String))
 
         For Each dr As DataRow In dsData.Tables(0).Rows
             If Not IsDBNull(dr("Total_Amount_RMB")) Then
                 dr("Total_Amount_RMB_Text") = udtFormatter.formatMoneyRMB(dr("Total_Amount_RMB"), False)
                 dr.AcceptChanges()
             End If
+
+            If Not IsDBNull(dr("Total_Reduction_Fee")) Then
+                dr("Total_Reduction_Fee_Text") = udtFormatter.formatMoneyRMB(dr("Total_Reduction_Fee"), False)
+                dr.AcceptChanges()
+            End If
+
+            If Not IsDBNull(dr("Total_Support_Fee")) Then
+                dr("Total_Support_Fee_Text") = udtFormatter.formatMoneyRMB(dr("Total_Support_Fee"), False)
+                dr.AcceptChanges()
+            End If
+
         Next
 
         Return dsData
 
     End Function
+    'CRE20-015-02 (Special Support Scheme) [End][Martin]
 
     ' CRE17-004 Generate a new DPAR on EHCP basis [Start][Dickson]
     Private Function GetEHCPBasisReportSource(ByVal strRimbeID As String, ByVal strCutoffDate As String, ByVal strSchemeCode As String) As DataSet

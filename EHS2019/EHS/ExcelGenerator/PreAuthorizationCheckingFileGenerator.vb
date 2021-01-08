@@ -99,6 +99,15 @@ Public Class PreAuthorizationCheckingFileGenerator
         End If
         'dsResult.AcceptChanges()
         ' CRE17-004 Generate a new DPAR on EHCP basis [End][Dickson]
+        'CRE20-015 (Special Support Scheme) [Start][Martin]
+        If dsData.Tables(3).Columns.Contains("Transaction ID") Then
+            For Each drRow As DataRow In dsData.Tables(3).Rows
+                drRow.BeginEdit()
+                drRow("Transaction ID") = udtFormatter.formatSystemNumber(drRow("Transaction ID").ToString().Trim())
+                drRow.EndEdit()
+            Next
+        End If
+        'CRE20-015 (Special Support Scheme) [End][Martin]
 
         Return dsData
         ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]

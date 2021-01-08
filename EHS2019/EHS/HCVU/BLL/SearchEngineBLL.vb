@@ -1478,7 +1478,7 @@ Public Class SearchEngineBLL
         dt.Columns.Add(New DataColumn("totalAmount", GetType(Integer)))
         ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
-        dt.Columns.Add(New DataColumn("totalAmountRMB", GetType(Integer)))
+        dt.Columns.Add(New DataColumn("totalAmountRMB", GetType(Decimal)))
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         dt.Columns.Add(New DataColumn("authorizedStatus", GetType(String)))
         dt.Columns.Add(New DataColumn("transStatus", GetType(String)))
