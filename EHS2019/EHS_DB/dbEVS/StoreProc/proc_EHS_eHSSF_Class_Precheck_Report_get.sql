@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	17 Sep 2020
 -- CR No.			CRE20-003-02 (Batch Upload - Phase 2 Vacc Check Report)
@@ -142,8 +149,7 @@ AS BEGIN
 -- Initialization
 -- =============================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 	
 	--DECLARE @Input_Student_File_ID	varchar(15)
 	--SET @Input_Student_File_ID = 'SF2018081700003'
@@ -814,7 +820,7 @@ AS BEGIN
 
 	--
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 	DROP TABLE #StudentTT
 	DROP TABLE #Last3VaccineSIVTT

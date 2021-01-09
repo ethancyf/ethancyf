@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Koala CHENG
+-- Modified date:	22 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	2 May 2019
 -- CR No.:			CRE18-021 (Voucher balance Enquiry show forfeited)
@@ -207,8 +214,7 @@ IF LTRIM(RTRIM(@In_Doc_Code)) = 'HKBC'
 -- Return results  
 -- =============================================  
   
-OPEN SYMMETRIC KEY sym_Key   
-DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
    
 -- Retrieve VoucherAccount By Identity in different PersonalInformation Tables  
    
@@ -249,7 +255,7 @@ INSERT INTO @tmpInvalidAcct
 		AND ([Doc_Code] = @In_Doc_Code OR (@blnOtherDoc_Code = 1 AND [Doc_Code] = @OtherDoc_Code))  
 		AND IV.[Count_Benefit] = 'Y'  
   
-CLOSE SYMMETRIC KEY sym_Key   
+EXEC [proc_SymmetricKey_close] 
    
 -- Retrieve Transaction Related to the [Voucher_Acc_ID](s)  
    

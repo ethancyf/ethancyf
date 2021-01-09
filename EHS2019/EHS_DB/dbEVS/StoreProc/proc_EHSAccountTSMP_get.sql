@@ -34,8 +34,7 @@ BEGIN
 -- =============================================
 -- Declaration
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Validation 
 -- =============================================	
@@ -53,7 +52,7 @@ OPEN SYMMETRIC KEY sym_Key
 	WHERE
 		[Doc_Code] = @Doc_Code AND Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @identity) 	
 	
-CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 		
 END
 GO

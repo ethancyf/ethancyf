@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -538,8 +545,7 @@ SET NOCOUNT ON;
 			'Transaction Status', 'Reimbursement Status', 'Claim through Internet (Manual/ Card Reader)', 'Claim through IVRS', 'DHC-related Services')
 
 
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO @ResultTable_02 (Result_Value1,Result_Value2,Result_Value3,Result_Value4,Result_Value5,Result_Value6,Result_Value7,Result_Value8,Result_Value9,Result_Value10,
 								Result_value11,Result_value12,Result_value13,Result_value14,Result_value15,Result_value16,Result_value17,Result_value18,Result_value19,Result_value20,
@@ -605,7 +611,7 @@ SET NOCOUNT ON;
 		VT.Transaction_Dtm
 
 		
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 	-- -----------------------------------------

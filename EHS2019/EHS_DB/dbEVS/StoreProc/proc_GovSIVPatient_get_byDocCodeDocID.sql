@@ -14,6 +14,13 @@ GO
 -- Description:		
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- CR No.:		CRE20-0XX (Gov SIV 2020/21)
 -- Author:		Chris YIM
 -- Create date: 28 Oct 2020
@@ -48,8 +55,7 @@ BEGIN
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 	SELECT
 		[SP_ID],
@@ -63,7 +69,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 		AND [Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @In_Identity)
 		AND [SP_ID] = @SP_ID
 		
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

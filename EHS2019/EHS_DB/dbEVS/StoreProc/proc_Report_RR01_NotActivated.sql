@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.			CRE16-026 (Change email for locked SP)
 -- Modified by:		Winnie SUEN
 -- Modified date:	12 Sep 2017
@@ -66,8 +73,7 @@ SET @end_dtm = @To_Date
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 select '''' + s.sp_id as [SP ID],
 	   convert(varchar(40), DecryptByKey(s.[Encrypt_Field2])) as [English Name],
@@ -85,7 +91,7 @@ and (s.effective_dtm >= @start_dtm and s.effective_dtm <  @end_dtm )
 order by s.effective_dtm
 
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 
 -- Report Parameters Summary

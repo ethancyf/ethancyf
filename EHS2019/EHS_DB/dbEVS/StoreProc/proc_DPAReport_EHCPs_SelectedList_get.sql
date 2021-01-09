@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	21 Oct 2020
 -- CR No.:			CRE20-015 (HA Scheme)
@@ -132,7 +139,7 @@ AS
         -- Result Table 2: Verification List    
         -----------------------------------   
         --result table
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+        EXEC [proc_SymmetricKey_open]
 
         -- Insert this reimbursement exist SP
         INSERT INTO #ResultEHCP
@@ -165,7 +172,7 @@ AS
         WHERE Reimburse_ID = @In_reimburse_id
               AND Scheme_Code = @In_scheme_code;
         --AND Verification_Case = 'Y'              
-        CLOSE SYMMETRIC KEY sym_Key;
+        EXEC [proc_SymmetricKey_close]
 
         -- Insert this reimbursement exist SP total tran and amount
         UPDATE #ResultEHCP

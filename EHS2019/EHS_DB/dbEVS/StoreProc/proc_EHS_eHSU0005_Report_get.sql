@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.			CRE20-014-02 (Gov SIV 2020_21 - Phase 2)
 -- Modified by:		Koala CHENG
 -- Modified date:	06 Nov 2020
@@ -442,8 +449,7 @@ AS BEGIN
 -- Retrieve Data
 -- =============================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 -- ---------------------------------------------
 -- #SP_Filtered
@@ -1463,7 +1469,7 @@ AS BEGIN
 	INSERT INTO #WS07 (Seq, Seq2, Col01, Col02)
 	VALUES (@seq, NULL, '1. Dummy Service Provider accounts are excluded from the statistic', '')
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	DROP TABLE #SP_Filtered
 	DROP TABLE #Practice_Filtered

@@ -8,6 +8,27 @@ GO
   
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	26 Nov 2020
+-- CR No.:			INT20-0052
+-- Description:		Fix temp table column for "Display_Code_For_Claim" 
+-- =============================================
+  -- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	24 Sep 2020
+-- CR. No			INT20-0031
+-- Description:		Fix eHSD0028 truncate error of category name
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
 -- CR. No			INT20-0025
@@ -64,8 +85,7 @@ DECLARE @Str_NA varchar(10)
 -- =============================================    
 -- Initialization    
 -- =============================================    
-OPEN SYMMETRIC KEY sym_Key     
- DECRYPTION BY ASYMMETRIC KEY asym_Key    
+EXEC [proc_SymmetricKey_open] 
 
 SET @Report_Dtm = DATEADD(dd, -1, @Cutoff_Dtm)              
 SET @system_Dtm = getdate()        
@@ -101,7 +121,7 @@ SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType 
   Reimbursement_Status  char(1),        
   Create_By_SmartID	char(1),       
   Row				int,
-  Vaccine			char(20),
+  Vaccine			varchar(25),
   Category_Code		varchar(10),
   HKIC_Symbol		char(1)
  )        
@@ -120,28 +140,28 @@ SELECT @Str_NA = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType 
   Transaction_Status	char(1),          
   Reimbursement_Status	char(1),            
   Row				int,
-  Vaccine			char(20),
+  Vaccine			varchar(25),
   Category_Code		varchar(10)      
  )          
            
  DECLARE @ResultTable table (          
   Result_Seq     int,          
-  Result_Value1    varchar(100),          
-  Result_Value2    varchar(100),          
-  Result_Value3    varchar(100),          
-  Result_Value4    varchar(100),          
-  Result_Value5    varchar(100),          
-  Result_Value6    varchar(100),          
-  Result_Value7    varchar(100),          
-  Result_Value8    varchar(100),          
-  Result_Value9    varchar(100),          
-  Result_Value10    varchar(100),          
-  Result_Value11    varchar(100),          
-  Result_Value12    varchar(100),          
-  Result_Value13    varchar(100),          
-  Result_Value14    varchar(100),          
-  Result_Value15    varchar(100),
-  Result_Value16	varchar(100)          
+  Result_Value1    varchar(200),          
+  Result_Value2    varchar(200),          
+  Result_Value3    varchar(200),          
+  Result_Value4    varchar(200),          
+  Result_Value5    varchar(200),          
+  Result_Value6    varchar(200),          
+  Result_Value7    varchar(200),          
+  Result_Value8    varchar(200),          
+  Result_Value9    varchar(200),          
+  Result_Value10    varchar(200),          
+  Result_Value11    varchar(200),          
+  Result_Value12    varchar(200),          
+  Result_Value13    varchar(200),          
+  Result_Value14    varchar(200),          
+  Result_Value15    varchar(200),
+  Result_Value16	varchar(200)          
  )          
     
           
@@ -521,7 +541,7 @@ INSERT INTO [RpteHSD0028_04_VSS_Tx_Raw] (
 ORDER BY 
 	Result_Seq        
           
-CLOSE SYMMETRIC KEY sym_Key    
+EXEC [proc_SymmetricKey_close] 
     
 END    
 GO

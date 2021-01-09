@@ -6,20 +6,20 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
   
-  -- =============================================
+-- =============================================
 -- Modification History
--- Modified by:		Koala CHENG
--- Modified date:	16 Nov 2020
--- CR. No			CRE20-014-02 (GOV SIV - Phase 2)
--- Description:		(1) Rectify [Vaccine] column data type to VARCHAR(25)
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
 -- =============================================
 -- =============================================
 -- Modification History
--- Modified by:		Chris YIM
--- Modified date:	16 Nov 2020
--- CR No.:			INT20-0050
+-- Modified by:		Winnie SUEN
+-- Modified date:	26 Nov 2020
+-- CR No.:			INT20-0052
 -- Description:		Fix temp table column for "Display_Code_For_Claim" 
--- =============================================  
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -60,8 +60,7 @@ BEGIN
 	-- =============================================    
 	-- Initialization    
 	-- =============================================    
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SET @Report_Dtm = DATEADD(dd, -1, @Cutoff_Dtm)         
 	SET @Date_Range = 7
@@ -534,7 +533,7 @@ BEGIN
 	ORDER BY 
 		Result_Seq        
           
-	CLOSE SYMMETRIC KEY sym_Key    
+	EXEC [proc_SymmetricKey_close]
     
 	DROP TABLE #Transaction
 	DROP TABLE #Account

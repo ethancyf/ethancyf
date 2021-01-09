@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No:			INT18-0007
 -- Modified by:		Chris YIM
 -- Modified date:	21 Jun 2018
@@ -46,8 +53,7 @@ BEGIN
 -- Validation 
 -- =============================================
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 IF (SELECT COUNT(1) FROM eHASubsidizeWriteOff 
 	WHERE	Doc_Code = @Doc_Code
@@ -82,7 +88,7 @@ END
 	AND		Scheme_Seq = @Scheme_Seq
 	AND		TSMP = @tsmp
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

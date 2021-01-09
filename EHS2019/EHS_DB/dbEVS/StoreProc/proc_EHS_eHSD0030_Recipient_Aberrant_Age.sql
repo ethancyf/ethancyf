@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	12 Sep 2019
 -- CR No.			CRE19-006
@@ -370,8 +377,7 @@ AS BEGIN
 		VALUES ('S/N', 'Age (at the year of service date)', 'Recipient Name (In English)',  'Gender', 'eH(S)A ID / Reference No.', 'Transaction No.', 'Amount Claimed ($)', 'Service Date', 'DHC-Related Services', 'Net Service Fee Charged ($)', 'SP Name (In English)', 'SP Name (In Chinese)', 'SPID', 'Profession', 'Practice No.', 'Practice Name (In English)', 'Practice Name (In Chinese)', 'Practice Address (In English)', 'Practice Address (In Chinese)', 'Practice District')
 
 	-- Report Content
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO @WS03 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19, Result_Value20)
 	SELECT
@@ -414,7 +420,7 @@ AS BEGIN
 	ORDER BY
 		[S/N]
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 -- ---------------------------------------------
 -- For Excel Sheet (04): 03-HCVS Summary
@@ -485,8 +491,7 @@ AS BEGIN
 		VALUES ('S/N', 'Age (at the year of service date)', 'Recipient Name (In English)',  'Gender', 'eH(S)A ID / Reference No.', 'Transaction No.', 'Amount Claimed ($)', 'Service Date', 'Net Service Fee Charged ($)', 'SP Name (In English)', 'SP Name (In Chinese)', 'SPID', 'Profession', 'Practice No.', 'Practice Name (In English)', 'Practice Name (In Chinese)', 'Practice Address (In English)', 'Practice Address (In Chinese)', 'Practice District')
 
 	-- Report Content
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO @WS05 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT
@@ -528,7 +533,7 @@ AS BEGIN
 	ORDER BY
 		[S/N]
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 -- ---------------------------------------------
 -- For Excel Sheet (06): 05-HCVSCHN Summary
@@ -599,8 +604,7 @@ AS BEGIN
 		VALUES ('S/N', 'Age (at the year of service date)', 'Recipient Name (In English)',  'Gender', 'eH(S)A ID / Reference No.', 'Transaction No.', 'Amount Claimed ($)', N'Voucher Amount Claimed (¥)', 'Service Date', N'Net Service Fee Charged (¥)', 'SP Name (In English)', 'SP Name (In Chinese)', 'SPID', 'Profession', 'Practice No.', 'Practice Name (In English)', 'Practice Name (In Chinese)', 'Practice Address (In English)', 'Practice Address (In Chinese)', 'Practice District')
 
 	-- Report Content
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO @WS07 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19, Result_Value20)
 	SELECT
@@ -643,7 +647,7 @@ AS BEGIN
 	ORDER BY
 		[S/N]
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 -- ---------------------------------------------

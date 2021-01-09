@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	7 Aug 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
@@ -185,8 +192,7 @@ SET NOCOUNT ON;
 	ORDER BY CC.Display_Seq, SGC.Display_Seq
 
 
-OPEN SYMMETRIC KEY sym_Key     
- DECRYPTION BY ASYMMETRIC KEY asym_Key    
+EXEC [proc_SymmetricKey_open] 
 
 	-- =============================================    
 	-- Table
@@ -2879,7 +2885,7 @@ OPEN SYMMETRIC KEY sym_Key
 		_display_seq     
 	   
 	    
-	CLOSE SYMMETRIC KEY sym_Key    
+	EXEC [proc_SymmetricKey_close] 
 
 	DROP TABLE #account
 	DROP TABLE #temp_HCVS

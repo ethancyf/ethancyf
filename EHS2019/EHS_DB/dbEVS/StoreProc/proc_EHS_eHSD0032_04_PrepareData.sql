@@ -6,6 +6,20 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
  
+ -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Winnie SUEN
+-- Modified date:	26 Nov 2020
+-- CR No.:			INT20-0052
+-- Description:		Fix temp table column for "Display_Code_For_Claim" 
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -60,8 +74,7 @@ BEGIN
 	-- =============================================    
 	-- Initialization    
 	-- =============================================    
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SET @Report_Dtm = DATEADD(dd, -1, @Cutoff_Dtm)         
 	SET @Date_Range = 7
@@ -92,7 +105,7 @@ BEGIN
 		Reimbursement_Status	CHAR(1),
 		Create_By_SmartID		CHAR(1),
 		Row						INT,
-		Vaccine					CHAR(20),
+		Vaccine					VARCHAR(25),
 		Category_Code			VARCHAR(10),
 		SchoolCode				VARCHAR(30)
 	 )        
@@ -113,7 +126,7 @@ BEGIN
 		Reimbursement_Status	CHAR(1),
 		Create_By_SmartID		CHAR(1),
 		Row						INT,
-		Vaccine					CHAR(20),
+		Vaccine					VARCHAR(25),
 		Category_Code			VARCHAR(10),
 		SchoolCode				VARCHAR(30)
 	)          
@@ -534,7 +547,7 @@ BEGIN
 	ORDER BY 
 		Result_Seq        
           
-	CLOSE SYMMETRIC KEY sym_Key    
+	EXEC [proc_SymmetricKey_close] 
     
 	DROP TABLE #Transaction
 	DROP TABLE #Account

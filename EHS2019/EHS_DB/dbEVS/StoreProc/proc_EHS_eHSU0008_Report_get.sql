@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -294,8 +301,7 @@ AS BEGIN
 	WHERE R.SP_Rank <= @TargetRank
 
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	--Get SP daily claim with detail
 	INSERT INTO #Daily_Claim_MasterList_Practice
@@ -369,7 +375,7 @@ AS BEGIN
 			ON P.District = D.district_code
 
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 	--Get SP daily claim with detail

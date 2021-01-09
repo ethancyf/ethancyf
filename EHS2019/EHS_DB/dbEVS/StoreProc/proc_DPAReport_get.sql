@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	03 Nov 2020
 -- CR No.:			CRE20-015 
@@ -133,15 +140,11 @@ AS
         FROM SchemeClaim
         WHERE Scheme_Code = @scheme_code;
 
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+        EXEC [proc_SymmetricKey_open]
 
         SELECT @UserName = CONVERT(VARCHAR(MAX), DECRYPTBYKEY(Encrypt_Field2))
         FROM HCVUUserAC
         WHERE User_ID = @lsUser_ID;
-
-        CLOSE SYMMETRIC KEY sym_Key;
-
-        --
 
         INSERT INTO @TransactionSum
                (Transaction_ID, 
@@ -184,8 +187,6 @@ AS
         -- =============================================
         -- Return results
         -- =============================================
-
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
 
         SELECT CAST(B.SP_ID AS VARCHAR) + ' (' + CAST(B.SP_Practice_Display_Seq AS VARCHAR) + ')' AS [SP_ID_PRACTICE], 
                B.Display_Seq AS [Bank_Acc_Display_Seq],
@@ -251,7 +252,7 @@ AS
                  B.SP_Practice_Display_Seq ASC, 
                  B.Display_Seq ASC;
 
-        CLOSE SYMMETRIC KEY sym_Key;
+        EXEC [proc_SymmetricKey_close]
 
         SELECT @cutoff_Date_str AS [CutoffDate], 
                @reimburse_id AS [ReimburseID], 

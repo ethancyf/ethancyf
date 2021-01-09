@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	03 Nov 2020
 -- CR No.:			CRE20-015
@@ -124,7 +131,7 @@ AS
 
         IF @Verification_Case_Available = 'Y'
             BEGIN
-                OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+                EXEC [proc_SymmetricKey_open]
 
                 INSERT INTO #Result
                        (Seq_No, 
@@ -161,7 +168,7 @@ AS
                       AND Scheme_Code = @scheme_code
                       AND RSP.Seq_No > 0;
 
-                CLOSE SYMMETRIC KEY sym_Key;
+                EXEC [proc_SymmetricKey_close]
 
                 UPDATE #Result
                   SET Total_Transaction = totalTran, 

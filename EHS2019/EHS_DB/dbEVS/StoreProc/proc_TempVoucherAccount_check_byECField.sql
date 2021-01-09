@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	Derek LEUNG
 -- Modified date:	09 Nov 2010
 -- Description:	Grant execute permission to WSEXT	
@@ -43,8 +50,7 @@ BEGIN
 -- =============================================
 -- Declaration
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Validation 
 -- =============================================
@@ -73,7 +79,7 @@ BEGIN
 			( [Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @identity) AND NOT (ISNULL([EC_Serial_No], '') = @EC_Serial_No AND [EC_Reference_No] = @EC_Reference_No))
 		)
 				
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

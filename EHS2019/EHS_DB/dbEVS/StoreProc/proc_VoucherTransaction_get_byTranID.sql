@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE19-006 (DHC)
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Jun 2019
@@ -179,9 +186,7 @@ declare @reason_for_visit_L2	varchar(50)
 -- =============================================
 -- Initialization
 -- =============================================
-
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 select @first_authorised_by = First_Authorised_By from ReimbursementAuthTran where transaction_id = @tran_id
 select @first_authorised_date = First_Authorised_dtm from ReimbursementAuthTran where transaction_id = @tran_id
@@ -283,7 +288,7 @@ select @reason_for_visit_l2 = AdditionalFieldValueCode from [TransactionAddition
 			and t.sp_id = p.sp_id 
 			and t.practice_display_seq = p.display_seq
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 END
 GO

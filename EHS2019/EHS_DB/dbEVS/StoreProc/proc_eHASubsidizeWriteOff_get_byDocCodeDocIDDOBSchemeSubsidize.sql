@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
 -- Modified by:	    Winnie SUEN
 -- Modified date:   23 Nov 2017
@@ -65,8 +72,7 @@ BEGIN
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	SELECT 	Doc_Code,
 			Doc_ID = CONVERT(varchar(20), DecryptByKey(Encrypt_Field1)),  
@@ -97,7 +103,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 	AND		(Subsidize_Code = @In_Subsidize_Code or isnull(@In_Subsidize_Code,'') = '')
 	ORDER BY Scheme_Code,Subsidize_Code, Scheme_Seq ASC
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 	IF (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'EnableSProcPerformCapture' AND Scheme_Code = 'ALL') = 'Y' BEGIN
 		DECLARE @Performance_End_Dtm datetime

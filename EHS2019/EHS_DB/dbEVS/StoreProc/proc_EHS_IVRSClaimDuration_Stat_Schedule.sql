@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE18-001: Performance tuning on internal statistic reports generation in eHS(S)
 -- Modified by:		Koala CHENG
 -- Modified date:	15 May 2018
@@ -43,8 +50,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 	
-	OPEN SYMMETRIC KEY sym_Key
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	--declare @start_time as datetime
 	--declare @end_time as datetime
@@ -696,7 +702,7 @@ BEGIN
 	--order by second desc
 
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 	drop table #temp
 	drop table #result

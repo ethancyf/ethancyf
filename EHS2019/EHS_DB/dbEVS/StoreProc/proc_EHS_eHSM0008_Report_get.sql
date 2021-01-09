@@ -6,12 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
--- =============================================    
--- Modification History    
--- Modified by:      
--- Modified date:     
--- Description:      
--- =============================================    
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Koala CHENG
+-- Modified date:	4 Jan 2021
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================    
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
 -- Author:			Dickson Law
@@ -769,8 +770,6 @@ SET NOCOUNT ON;
 		,_result_value3 = (SELECT COUNT(1) FROM #statNoOfAcc_withPVClaim__byDoc_distinct_all WHERE _deceased ='Y')
 		,_result_value4= (SELECT COUNT(1) FROM #statNoOfAcc_withPVClaim__byDoc_distinct_all)
 	WHERE _display_seq = 53
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
 
 
 -- =============================================

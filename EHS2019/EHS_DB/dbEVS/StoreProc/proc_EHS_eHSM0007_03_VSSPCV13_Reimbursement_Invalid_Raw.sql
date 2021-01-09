@@ -14,6 +14,13 @@ GO
 -- Description:		
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Marco CHOI
 -- Create date:		24 Aug 2017
 -- Description:		VSS PCV13 Reimbursement Report 
@@ -288,7 +295,7 @@ BEGIN
 		AND IR.Practice_Display_Seq = P.Display_Seq
 		--
 	
-		OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		INSERT INTO @ResultTable (Value1, Value2, Value3, Value4, Value5, Value6, Value7, 	
 								  Value8, Value9, Value10, Value11, Value12, Value13, Value14,
@@ -312,7 +319,7 @@ BEGIN
 		FROM #SP
 		ORDER BY Invalid_Confirm_Time DESC, Transaction_Dtm DESC, SP_ID ASC, Practice_No ASC
 	
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 	END
 	ELSE
 	BEGIN

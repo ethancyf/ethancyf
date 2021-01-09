@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Koala CHENG
+-- Modified date:	22 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	    Chris YIM
 -- Modified date:   20 Feb 2019
 -- CR No.:			CRE20-005
@@ -38,8 +45,7 @@ BEGIN
 -- Return results    
 -- =============================================    
 
-	OPEN SYMMETRIC KEY sym_Key     
-		DECRYPTION BY ASYMMETRIC KEY asym_Key    
+	EXEC [proc_SymmetricKey_open]   
 						      
 	-- Retrieve Voucher Refund By Doc No.
     
@@ -64,7 +70,7 @@ BEGIN
 		AND VR.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @identity) 
 	ORDER BY VR.Refund_Dtm    
 
-	CLOSE SYMMETRIC KEY sym_Key    
+	EXEC [proc_SymmetricKey_close]  
 
 END  
 GO

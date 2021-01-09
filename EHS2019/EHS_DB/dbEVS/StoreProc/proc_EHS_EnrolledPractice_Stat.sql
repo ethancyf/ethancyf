@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Tommy TSE
 -- Modified date:	9 Sep 2011
 -- CR No.:			CRE11-024-01 (Enhancement on HCVS Extension Part 1)
@@ -23,8 +30,6 @@ GO
 CREATE PROCEDURE [dbo].[proc_EHS_EnrolledPractice_Stat]
 AS
 BEGIN
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
 
 	SET NOCOUNT ON;
 	
@@ -68,8 +73,7 @@ create table #tmpEVS
 	phone_daytime varchar(20)
 )
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_close]
 
 insert into #tmpEVS
 (
@@ -120,7 +124,7 @@ where	s.sp_id = p.sp_id
 	and ([profession].[Enrol_Period_From] IS NULL OR DATEDIFF(SECOND, [profession].[Enrol_Period_From], GETDATE()) >= 0 )
 	and ([profession].[Enrol_Period_To] IS NULL OR DATEDIFF(SECOND, GETDATE(), [profession].[Enrol_Period_To]) > 0 )
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 DECLARE avail_cursor cursor 
 FOR	SELECT address_code, display_seq, enrolment_ref_no

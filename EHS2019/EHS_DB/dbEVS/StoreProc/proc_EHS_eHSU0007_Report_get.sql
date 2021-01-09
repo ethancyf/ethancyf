@@ -7,6 +7,14 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -278,7 +286,7 @@ AS BEGIN
 		FC.Scheme_Code
 	FROM (
 			SELECT
-				ROW_NUMBER() OVER(PARTITION BY SP_ID ORDER BY Authorised_Dtm,Transaction_Dtm ASC) AS claim_seq,
+				ROW_NUMBER() OVER(PARTITION BY VT.SP_ID ORDER BY Authorised_Dtm,Transaction_Dtm ASC) AS claim_seq,
 				VT.SP_ID,
 				RA.Authorised_Dtm AS Reimbursed_Date,
 				VT.Transaction_Dtm AS Transaction_Date,
@@ -338,8 +346,7 @@ AS BEGIN
 	WHERE FC.claim_seq = 1 ORDER BY FC.SP_ID
 
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	--Get all SP first claim with detail
 	INSERT INTO #FC_MasterList
@@ -493,7 +500,7 @@ AS BEGIN
 				(@period_type = 'T' AND FCML.Transaction_Date >= @From_Dtm AND FCML.Transaction_Date < @To_Dtm)  
 				)
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 -- ---------------------------------------------
 -- For Excel Sheet (02): Criteria

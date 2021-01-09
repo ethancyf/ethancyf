@@ -14,6 +14,13 @@ GO
 -- Description:		
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Chris YIM
 -- Create date:		05 Dec 2019
 -- CR No.			CRE19-013
@@ -289,13 +296,12 @@ BEGIN
 		-- ---------------------------------------------
 
 		-- Service Provider Name
-		OPEN SYMMETRIC KEY sym_Key
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		SET @varSPName = (SELECT CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field2)) FROM ServiceProvider WITH (NOLOCK) WHERE SP_ID = @IN_chrSPID)
 		SET @varSPNameCHI = (SELECT CONVERT(NVARCHAR(MAX), DecryptByKey(Encrypt_Field3)) FROM ServiceProvider WITH (NOLOCK) WHERE SP_ID = @IN_chrSPID)
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 
 		-- Type of Date
 		IF @IN_chrPeriod_Type = 'S'

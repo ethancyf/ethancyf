@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	30 August 2016
 -- CR No.:			CRE16-002
@@ -737,8 +744,7 @@ BEGIN
 	-- To Excel Sheet (03): Imported Supplementary List
 	-- ---------------------------------------------
 		
-		OPEN SYMMETRIC KEY sym_Key
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		SELECT 
 			'SPID' = SPList.SP_ID,
@@ -756,7 +762,7 @@ BEGIN
 				LEFT JOIN (SELECT DISTINCT SP_ID FROM #VoucherTransactionBase) VTB
 					ON SPList.SP_ID = VTB.SP_ID
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 	-- ---------------------------------------------
 	-- To Excel Sheet (04): 01-Number of Transaction
 	-- ---------------------------------------------
@@ -767,8 +773,7 @@ BEGIN
 	-- To Excel Sheet (05): 02-Post Payment Check Report
 	-- -------------------------------------------------
 
-		OPEN SYMMETRIC KEY sym_Key
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		SELECT
 			'SPID' = RT.Col01,
@@ -840,7 +845,7 @@ BEGIN
 
 		ORDER BY RT.Col01, VT.Practice_Display_Seq,RT.Col02
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 
 	-- ---------------------------------------------
 	-- To Excel Sheet (06): Remarks

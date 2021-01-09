@@ -9,6 +9,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	01 Sep 2020
 -- CR No.:			INT20-0028 (Fix eVaccination result)
@@ -340,8 +347,7 @@ BEGIN
 END
  
   
- OPEN SYMMETRIC KEY sym_Key   
- DECRYPTION BY ASYMMETRIC KEY asym_Key  
+ EXEC [proc_SymmetricKey_open]
   
   
  -- ****************************************************************  
@@ -723,7 +729,7 @@ FROM
   ELSE
     BEGIN SET @Out_VaccineResultCode =  1 END -- Partial record returned
   
- CLOSE SYMMETRIC KEY sym_Key   
+ EXEC [proc_SymmetricKey_close]  
   
  -- Return result  
  DECLARE @CurrentSeasonStartDate AS DATETIME  

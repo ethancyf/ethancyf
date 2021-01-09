@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -151,8 +159,7 @@ SET NOCOUNT ON;
 		AND (S.[Subsidize_Item_Code] = 'SIV' AND SGC.[Scheme_Seq] = @current_scheme_Seq)
 	ORDER BY S.Display_Seq
 
-OPEN SYMMETRIC KEY sym_Key     
- DECRYPTION BY ASYMMETRIC KEY asym_Key    
+    EXEC [proc_SymmetricKey_open]
 
 	-- =============================================    
 	-- Table
@@ -963,7 +970,7 @@ OPEN SYMMETRIC KEY sym_Key
 		_display_seq     
 	   
 	    
-	CLOSE SYMMETRIC KEY sym_Key    
+	EXEC [proc_SymmetricKey_close]
 
 	DROP TABLE #account
 	DROP TABLE #Transaction 

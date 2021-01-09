@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Mattie LO
 -- Create date: 16 Oct 2009
 -- Description:	Retrieve eHealth Accout with Claim by DOC Type Statistic
@@ -65,8 +72,7 @@ DECLARE @system_Dtm as datetime
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -381,7 +387,7 @@ FROM
 ORDER BY
 	_display_seq
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 DROP TABLE #statNoOfAcc_withClaim_byDoc
 DROP TABLE #statNoOfAcc_withClaim_byDoc_distinct

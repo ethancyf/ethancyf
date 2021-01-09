@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-020 (HKIC Symbol Others)
 -- Modified by:		Winnie SUEN
 -- Modified date:	25 Feb 2019
@@ -242,8 +249,7 @@ SET NOCOUNT ON;
 	-- Patch Doc No.
 	-- ==================================
 
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 			
 	-- Validated Acct
 	UPDATE #VT
@@ -286,7 +292,7 @@ SET NOCOUNT ON;
 		AND T.Invalid_Acc_ID = ''
 		
 			
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	-- ===========================================
 	-- (iii) Searching with HKIC Symbol C or U Code with invalid result
@@ -529,8 +535,7 @@ SET NOCOUNT ON;
 	INSERT INTO @ResultTable_02 (Result_Value1,Result_Value2,Result_Value3,Result_Value4,Result_Value5,Result_Value6,Result_Value7,Result_Value8)
 	VALUES ('Seq no.', 'HKIC No.', 'Transaction ID', 'Transaction Time', 'Scheme', 'SPID (Practice No.)', 'HKIC Symbol', 'OCSSS Checking Result')
 	
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 				
 	INSERT INTO @ResultTable_02 (Result_Value1,Result_Value2,Result_Value3,Result_Value4,Result_Value5,Result_Value6,Result_Value7,Result_Value8)
 	SELECT 
@@ -561,7 +566,7 @@ SET NOCOUNT ON;
 	ORDER BY
 		SeqNo, Transaction_Dtm, SP_ID, Practice_Display_Seq
 
-	CLOSE SYMMETRIC KEY sym_Key 
+	EXEC [proc_SymmetricKey_close]
 
 	-- -----------------------------------------
 	-- Excel worksheet (Remark)

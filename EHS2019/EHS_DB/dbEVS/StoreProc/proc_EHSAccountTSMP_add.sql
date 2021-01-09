@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	Karl LAM
 -- Modified date:	15 Aug 2013
 -- Description:	Grant execute permission to HCVU
@@ -33,8 +40,7 @@ BEGIN
 -- =============================================
 -- Declaration
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Validation 
 -- =============================================
@@ -55,7 +61,7 @@ OPEN SYMMETRIC KEY sym_Key
 	INSERT [EHSAccountTSMP] ([Encrypt_Field1], [Doc_Code], [Update_Dtm], [Update_By])
 	VALUES (EncryptByKey(KEY_GUID('sym_Key'), @identity), @Doc_Code, GetDate(), @update_by)
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 		
 END
 GO

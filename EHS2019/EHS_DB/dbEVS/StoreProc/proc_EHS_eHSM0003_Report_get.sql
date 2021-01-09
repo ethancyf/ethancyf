@@ -11,7 +11,14 @@ GO
 -- Modified by:      
 -- Modified date:     
 -- Description:      
--- =============================================    
+-- =============================================  
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- CR No.:			CRE16-010
 -- Author:			Winnie SUEN
@@ -309,8 +316,7 @@ SET NOCOUNT ON;
 	Reimbursable SI Claims with the same ending period 
 	(a-c) / c*')
 
-	OPEN SYMMETRIC KEY sym_Key     
-	DECRYPTION BY ASYMMETRIC KEY asym_Key    
+	EXEC [proc_SymmetricKey_open]    
  
 	-- Report Content
 	INSERT INTO @TempResultTable (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)
@@ -336,7 +342,7 @@ SET NOCOUNT ON;
 		T.SP_ID ASC, T.Display_Seq ASC
 
 	
-	CLOSE SYMMETRIC KEY sym_Key   
+	EXEC [proc_SymmetricKey_close]
 	
 	SELECT @ResultCount = COUNT(1) FROM #TempFilteredSPTransaction
 

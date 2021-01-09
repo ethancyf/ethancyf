@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-020 (HKIC Symbol Others)
 -- Modified by:		Winnie SUEN
 -- Modified date:	25 Feb 2019
@@ -1345,8 +1352,7 @@ BEGIN
 
 			FETCH NEXT FROM RT02_RESULT_Cursor INTO @RT02_RESULT_SP_ID
 
-			OPEN SYMMETRIC KEY sym_Key
-			DECRYPTION BY ASYMMETRIC KEY asym_Key
+			EXEC [proc_SymmetricKey_open]
 
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
@@ -1646,7 +1652,7 @@ BEGIN
 			FETCH NEXT FROM RT02_RESULT_Cursor INTO @RT02_RESULT_SP_ID
 			END
 
-			CLOSE SYMMETRIC KEY sym_Key
+			EXEC [proc_SymmetricKey_close]
 
 			CLOSE RT02_RESULT_Cursor
 			DEALLOCATE RT02_RESULT_Cursor

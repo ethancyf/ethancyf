@@ -1,31 +1,31 @@
-﻿		IF EXISTS
-		(
-			SELECT *
-			FROM dbo.sysobjects
-			WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSU0015_Report_get]')
-				  AND OBJECTPROPERTY(id, N'IsProcedure') = 1
-		)
-			BEGIN
-				DROP PROCEDURE [dbo].[proc_EHS_eHSU0015_Report_get];
-			END;
-		GO
-		SET ANSI_NULLS ON;
-		SET QUOTED_IDENTIFIER ON;
-		GO
-        -- =============================================  
-        -- Modification History  
-        -- Modified by:       
-        -- Modified date:   
-        -- CR No.:     
-        -- Description:      
-        -- =============================================  
-        -- =============================================
-        -- Author:			Raiman Chong
-        -- Create date: 	05 Nov 2020
-        -- CR. No			CRE20-015 (HA Scheme)
-        -- Description:		Claim_Report_for_Guangdong_Province_HA_Patient
-        -- =============================================
-        -- exec [proc_EHS_eHSU0015_Report_get]
+﻿IF EXISTS
+(
+	SELECT *
+	FROM dbo.sysobjects
+	WHERE id = OBJECT_ID(N'[dbo].[proc_EHS_eHSU0015_Report_get]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1
+)
+	BEGIN
+		DROP PROCEDURE [dbo].[proc_EHS_eHSU0015_Report_get];
+	END;
+GO
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Author:			Raiman Chong
+-- Create date: 	05 Nov 2020
+-- CR. No			CRE20-015 (HA Scheme)
+-- Description:		Claim_Report_for_Guangdong_Province_HA_Patient
+-- =============================================
+
  CREATE PROCEDURE [dbo].[proc_EHS_eHSU0015_Report_get]  @request_time DATETIME = NULL,
 														@From_Date DATETIME = NULL,
 														@To_Date DATETIME = NULL 
@@ -160,7 +160,9 @@
             'Transaction status',
 			'Reimbursement Status'
         ) --next line
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key
+       
+	EXEC [proc_SymmetricKey_open]
+
     insert into
         #WS02 (_result_value1, 
         _result_value2,
@@ -285,7 +287,10 @@
         and vt.Transaction_Dtm < @In_To_Date
 		order by vt.Transaction_id;
     --select * from TransactionAdditionalField where Transaction_ID= 'TB20B18000000084'
-    CLOSE SYMMETRIC KEY sym_Key -- =============================================  
+
+    EXEC [proc_SymmetricKey_close]
+	
+	-- =============================================  
     --  Validation for #WS02 end
     -- ============================================= 
     -- =============================================  

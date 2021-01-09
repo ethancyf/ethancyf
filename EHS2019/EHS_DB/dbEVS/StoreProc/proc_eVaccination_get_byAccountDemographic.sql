@@ -9,6 +9,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	28 Oct 2019
 -- CR No.:			CRE19-005-02 (Share MMR between DH CIMS and eHS(S) - Phase 2 - Interface)
@@ -253,8 +260,7 @@ SET @In_Target_System = @Target_System
  from @xml.nodes('//root/r') as a(t)  
   
   
- OPEN SYMMETRIC KEY sym_Key   
-  DECRYPTION BY ASYMMETRIC KEY asym_Key  
+ EXEC [proc_SymmetricKey_open]
   
   
  -- ****************************************************************  
@@ -669,7 +675,7 @@ SET @In_Target_System = @Target_System
  BEGIN SET @Out_VaccineResultCode =  2 END -- No record returned  
 -- BEGIN SET @Out_VaccineResultCode =  1 END -- No 'partial record returned' for single demographic enquiry  
   
- CLOSE SYMMETRIC KEY sym_Key   
+ EXEC [proc_SymmetricKey_close]
   
  -- Return result  
  DECLARE @CurrentSeasonStartDate AS DATETIME  

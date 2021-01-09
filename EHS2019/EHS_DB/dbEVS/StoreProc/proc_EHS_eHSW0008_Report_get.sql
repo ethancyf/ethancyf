@@ -14,6 +14,13 @@ SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	30 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modification History  
 -- Modified by:     Koala CHENG  
@@ -1407,7 +1414,7 @@ AS
         -- Initialization for #WS03
         -- =============================================  
 
-        OPEN SYMMETRIC KEY sym_key DECRYPTION BY ASYMMETRIC KEY asym_key;
+        EXEC [proc_SymmetricKey_open]
         SET @Report_Dtm = DATEADD(dd, -1, @Cutoff_Dtm);
         SET @system_Dtm = GETDATE();
         SET @Date_Range = 7;
@@ -1768,7 +1775,7 @@ AS
              ON t.hkic_symbol = sd3.status_value
                 AND sd3.enum_class = 'HKICSymbol';
 
-        CLOSE SYMMETRIC KEY sym_key;
+        EXEC [proc_SymmetricKey_close]
 
         -- =============================================  
         -- Initialization for #WS03 end

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	23 Oct 2019
 -- CR No.:			INT19-021
@@ -302,8 +309,7 @@ SELECT @ws01_ct=@ws01_ct + 1
 -- =============================================  
 -- Prepare Data for eHSU0003-01  
 -- =============================================  
-OPEN SYMMETRIC KEY sym_Key  
-DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
   
  INSERT INTO #WorkBook (WorkSheetID, Result01, Result02, Result03, Result04, Result05, Result06, Result07, Result08, DisplaySeq)   
   
@@ -349,7 +355,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
  ORDER BY t.Last_replacement_Dtm, SP_ID, [Profession], sp.Record_Status  
   
   
-CLOSE SYMMETRIC KEY sym_Key  
+EXEC [proc_SymmetricKey_close]
   
   
 -- =============================================  

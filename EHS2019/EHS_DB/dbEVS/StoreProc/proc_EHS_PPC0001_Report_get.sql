@@ -14,6 +14,13 @@ GO
 -- Description:		
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Chris YIM
 -- Create date:		27 May 2016
 -- CR No.			CRE15-016
@@ -445,8 +452,7 @@ BEGIN
 	-- To Excel Sheet (03): 01-Service Provider
 	-- ---------------------------------------------
 
-		OPEN SYMMETRIC KEY sym_Key
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		SELECT
 			'Order of Selection' = RT.DisplaySeq,
@@ -486,7 +492,7 @@ BEGIN
 					ON P.Record_Status = SD.Status_Value AND Enum_Class = 'PracticeStatus'
 		ORDER BY RT.DisplaySeq, P.Display_Seq
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 
 	-- ---------------------------------------------
 	-- To Excel Sheet (04): Remarks

@@ -12,6 +12,13 @@ IF EXISTS
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Martin Tang
 -- Create date:		21 July 2020
 -- CR No.:			CRE19-022 
@@ -127,7 +134,7 @@ AS
         SET @DisplayFollowPeriod = 'Follow-up Date: ' + CONVERT(CHAR(10), @In_Period_From, 111) + ' to ' + CONVERT(CHAR(10), @In_Period_To, 111);
         SET @current_dtm = GETDATE();
         --OPEN SYMMETRIC KEY
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+        EXEC [proc_SymmetricKey_open]
 
         -- -----------------------------------------  
         -- Excel worksheet (Remark)  
@@ -609,8 +616,7 @@ AS
         ORDER BY r1.File_Reference_No, 
                  r1.Inspection_ID;
 
-        --CLOSE SYMMETRIC KEY
-        CLOSE SYMMETRIC KEY sym_Key;
+       EXEC [proc_SymmetricKey_close]
 
         -- =============================================  
         -- Return results  

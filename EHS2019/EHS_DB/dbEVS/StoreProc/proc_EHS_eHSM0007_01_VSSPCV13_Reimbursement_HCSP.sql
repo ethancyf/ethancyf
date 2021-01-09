@@ -14,6 +14,13 @@ GO
 -- Description:		
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Marco CHOI
 -- Create date:		24 Aug 2017
 -- Description:		VSS PCV13 Reimbursement Report 
@@ -257,7 +264,7 @@ BEGIN
 		-- Content
 		SET @R = @R + 1	
 
-		OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		DECLARE Cursor3 CURSOR FOR 
 		SELECT SP_ID, Practice_No
@@ -334,7 +341,7 @@ BEGIN
 		CLOSE Cursor3
 		DEALLOCATE Cursor3
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 
 	END
 	ELSE

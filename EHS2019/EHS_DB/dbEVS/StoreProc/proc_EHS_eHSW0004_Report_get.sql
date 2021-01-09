@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -213,8 +221,7 @@ AS BEGIN
 
 
 ---
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	-- Vaccination Period
 	INSERT INTO @ResultTable (Col01)
@@ -299,7 +306,7 @@ AS BEGIN
 	ORDER BY
 		SF.Vaccine_Date, SF.Student_File_ID
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 
 -- =============================================

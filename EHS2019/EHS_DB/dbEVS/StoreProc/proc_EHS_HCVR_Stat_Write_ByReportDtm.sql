@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	30 December 2009
 -- Description:		Handle cross-year 2009 to 2028
@@ -60,8 +67,7 @@ AS BEGIN
 -- Retrieve data
 -- ---------------------------------------------
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 	
 	IF @Year = '09' BEGIN
 
@@ -505,7 +511,7 @@ AS BEGIN
 	
 	END	
 				
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 -- ---------------------------------------------
 -- Build data

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	    Chris YIM
 -- Modified date:	02 Nov 2018
 -- CR No.:			CRE18-012 (Revise eHSD0018)
@@ -728,8 +735,7 @@ AS BEGIN
 
 -- 
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 	
 	INSERT INTO @EnquiryEHS_AuditLog (
 			System_Dtm,
@@ -1161,7 +1167,7 @@ AS BEGIN
 			OR E_Log_ID IN (SELECT EncryptByKey(KEY_GUID('sym_Key'), Log_ID) FROM @EHSToCIMSAllErrorLogIDMaster))
 		AND CONVERT(nvarchar(MAX), DecryptByKey(E_Description)) NOT LIKE @Get_From_Session
 
-	CLOSE SYMMETRIC KEY sym_Key	
+	EXEC [proc_SymmetricKey_close]
 -- =============================================  
 -- Process data
 -- ============================================= 	
