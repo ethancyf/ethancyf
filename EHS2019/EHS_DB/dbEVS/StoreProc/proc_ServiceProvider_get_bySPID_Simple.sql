@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE16-007-02 (Refine system from CheckMarx findings)
 -- Modified by:		Winnie SUEN
 -- Modified date:	20 Jun 2017
@@ -33,8 +40,7 @@ AS BEGIN
 
 	SET NOCOUNT ON;
 
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT 
 		SP_ID,
@@ -78,7 +84,7 @@ AS BEGIN
 	WHERE
 		SP_ID = @SP_ID
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 END

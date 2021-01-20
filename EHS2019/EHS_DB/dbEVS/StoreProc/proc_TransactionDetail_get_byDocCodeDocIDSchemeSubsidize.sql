@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	25 August 2016
 -- CR No.:			CRE16-002
@@ -192,8 +199,7 @@ WHERE
 -- Return results  
 -- =============================================  
   
-OPEN SYMMETRIC KEY sym_Key   
- DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
    
 -- Retrieve VoucherAccount By Identity in different PersonalInformation Tables  
   
@@ -240,7 +246,7 @@ OPEN SYMMETRIC KEY sym_Key
     [Doc_Code] = @Doc_Code OR (@blnOtherDoc_Code = 1 AND [Doc_Code] = @OtherDoc_Code)  
    ) AND IV.[Count_Benefit] = 'Y'  
   
-CLOSE SYMMETRIC KEY sym_Key   
+EXEC [proc_SymmetricKey_close]  
   
    
 -- Retrieve Transaction Related to the [Voucher_Acc_ID](s)  

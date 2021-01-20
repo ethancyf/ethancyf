@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Marco CHOI
 -- Modified date:	15 Jun 2017
 -- CR No.			I-CRE16-007-02 (Refine system from CheckMarx findings)
@@ -84,8 +91,7 @@ and d.SP_ID = s.SP_ID
 and (s.SP_ID = @SP_ID or s.Alias_Account = @SP_ID)
 
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 select @SP_Record_Status = Record_Status
 , @SP_Eng_Name = convert(varchar(40), DecryptByKey(Encrypt_Field2))
@@ -93,7 +99,7 @@ select @SP_Record_Status = Record_Status
 from ServiceProvider
 where SP_ID = @DE_SPID
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 /*
 select @Practice_Cnt = count(1)

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Marco CHOI
 -- Modified date:	19 Jul 2018
 -- CR No.			CRE17-016
@@ -80,8 +87,7 @@ CREATE PROCEDURE [dbo].[proc_ServiceProviderSPAccMaintenance_get_bySPID]
 	@sp_id	char(8)
 AS
 BEGIN
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SET NOCOUNT ON;
 
@@ -245,7 +251,7 @@ BEGIN
 				INNER JOIN HCSPUserAC HCSPAC
 					ON HCSPAC.SP_ID = S.SP_ID
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

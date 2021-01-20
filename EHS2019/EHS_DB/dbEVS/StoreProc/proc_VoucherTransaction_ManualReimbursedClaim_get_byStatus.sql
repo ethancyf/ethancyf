@@ -8,6 +8,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -136,8 +144,7 @@ AS BEGIN
 -- Retrieve data
 -- =============================================	
 
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 	
 -- ---------------------------------------------
 -- Validated Account
@@ -362,13 +369,12 @@ AS BEGIN
 	END CATCH 
 
 --
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 -- =============================================
 -- Return results
 -- =============================================
 
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT
 		T.Transaction_ID AS [tranNum],
@@ -414,7 +420,7 @@ AS BEGIN
 	ORDER BY
 		T.Transaction_Dtm
 		
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 END
 

@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.			CRE16-022 (SDIR Remark)
@@ -235,8 +243,7 @@ create table #tmpPractice (
 -- Retrieve data
 -- ---------------------------------------------
 
-OPEN SYMMETRIC KEY sym_Key  
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 insert into #tmpPractice 
 (
@@ -296,7 +303,7 @@ select sp.sp_id,
 		and SDprMap.service_category_code = pr.service_category_code  -- join to retrieve the SD professional
 		AND psi.scheme_code IS NULL -- Filter out the practice which has 'EHAPP' indicator
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 declare	
 	@sp_id CHAR(8)

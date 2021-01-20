@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
@@ -131,8 +137,7 @@ DECLARE  @tmpVoucherTransaction TABLE
 -- Initialization
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -338,7 +343,7 @@ OPEN SYMMETRIC KEY sym_Key
 	FROM
 		@tmpPersonalInformation 
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

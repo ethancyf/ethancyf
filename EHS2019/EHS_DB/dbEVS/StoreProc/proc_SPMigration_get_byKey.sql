@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Clark YIP
 -- Create date: 10 June 2009
@@ -44,8 +52,7 @@ declare @encrypt_field1 varbinary(100)
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 IF (@SP_ID <> '') OR (@ERN <> '')
 BEGIN
@@ -71,7 +78,7 @@ BEGIN
 	WHERE	EncryptByKey(KEY_GUID('sym_Key'), @HK_ID) = Encrypt_Field1	
 END
 END
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 GO
 
 GRANT EXECUTE ON [dbo].[proc_SPMigration_get_byKey] TO HCVU

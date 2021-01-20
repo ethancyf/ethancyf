@@ -14,6 +14,14 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -346,7 +354,7 @@ AS
         -- Retrieve data  
         -- =============================================   
 
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+        EXEC [proc_SymmetricKey_open]
 
         -- ---------------------------------------------  
         -- Validated Account  
@@ -554,7 +562,7 @@ AS
                     --if upper limit is not enabled, throw error if lower limit is reached
                     --if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
                     RAISERROR(@row_cnt_error, 16, 1);
-                    CLOSE SYMMETRIC KEY sym_Key;
+                    EXEC [proc_SymmetricKey_close]
                     RETURN;
                 END;
         END CATCH;
@@ -742,7 +750,7 @@ AS
                     --if upper limit is not enabled, throw error if lower limit is reached
                     --if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
                     RAISERROR(@row_cnt_error, 16, 1);
-                    CLOSE SYMMETRIC KEY sym_Key;
+                    EXEC [proc_SymmetricKey_close]
                     RETURN;
                 END;
         END CATCH;
@@ -948,7 +956,7 @@ AS
                     --if upper limit is not enabled, throw error if lower limit is reached
                     --if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
                     RAISERROR(@row_cnt_error, 16, 1);
-                    CLOSE SYMMETRIC KEY sym_Key;
+                    EXEC [proc_SymmetricKey_close]
                     RETURN;
                 END;
         END CATCH;
@@ -1157,7 +1165,7 @@ AS
                     --if upper limit is not enabled, throw error if lower limit is reached
                     --if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
                     RAISERROR(@row_cnt_error, 16, 1);
-                    CLOSE SYMMETRIC KEY sym_Key;
+                    EXEC [proc_SymmetricKey_close]
                     RETURN;
                 END;
         END CATCH;
@@ -1168,7 +1176,7 @@ AS
         IF ISNULL(@row_cnt_error, '') = @errCode_lower
             BEGIN
                 RAISERROR(@row_cnt_error, 16, 1);
-                CLOSE SYMMETRIC KEY sym_Key;
+                EXEC [proc_SymmetricKey_close]
                 RETURN;
             END;
 
@@ -1221,7 +1229,7 @@ AS
              ON T.Special_Acc_ID = SA.Special_Acc_ID
         ORDER BY T.Transaction_Dtm;
 
-        CLOSE SYMMETRIC KEY sym_Key;
+        EXEC [proc_SymmetricKey_close]
     END;  
 GO
 

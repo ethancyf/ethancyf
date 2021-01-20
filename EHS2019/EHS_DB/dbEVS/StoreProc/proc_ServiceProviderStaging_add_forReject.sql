@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	03 Jul 2018
 -- CR No.			CRE17-016
@@ -52,8 +59,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Declaration
 -- =============================================
@@ -129,7 +135,7 @@ if @enrolment_dtm is NULL
 				 getdate(),
 				 @update_By)
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

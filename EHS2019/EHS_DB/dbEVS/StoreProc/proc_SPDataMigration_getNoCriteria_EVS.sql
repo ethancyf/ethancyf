@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Lawrence TSANG
 -- Create date: 17 July 2009
 -- Description:	Search the SP Migration record in dbEVS
@@ -53,8 +60,7 @@ BEGIN
 -- =============================================
 -- Return results
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 	
 	INSERT INTO @TempMigration 
 	SELECT	CONVERT(varchar, DecryptByKey(Encrypt_Field1)) AS SP_HKID,
@@ -83,7 +89,7 @@ BEGIN
 	FROM		@TempMigration
 	ORDER BY	Source
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 END
 

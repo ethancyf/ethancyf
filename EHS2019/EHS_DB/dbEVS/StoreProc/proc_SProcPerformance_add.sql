@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Lawrence TSANG
 -- Create date:		21 January 2015
 -- CR No.:			CRE14-019
@@ -39,8 +46,9 @@ AS BEGIN
 -- Return results
 -- =============================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	
+	EXEC [proc_SymmetricKey_open]
+
 
 	INSERT INTO SProcPerformance (
 		System_Dtm,
@@ -56,7 +64,7 @@ AS BEGIN
 		@End_Dtm
 	)
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 END

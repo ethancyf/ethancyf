@@ -135,6 +135,7 @@ CREATE PROCEDURE [dbo].[proc_TransactionDetail_get_byDocCodeDocIDSchemeSubsidize
 	@Period_From	DATETIME,
 	@Period_To		DATETIME,
 	@Service_Category_Code	VARCHAR(3)
+WITH RECOMPILE
 AS  
 BEGIN  
   
@@ -365,3 +366,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_TransactionDetail_get_byDocCodeDocIDSchemeSubsidizeAll] TO WSEXT
 Go
+

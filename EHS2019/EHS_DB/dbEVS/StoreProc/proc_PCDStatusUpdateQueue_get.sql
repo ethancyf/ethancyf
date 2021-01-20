@@ -13,6 +13,13 @@ GO
 -- Modified date:   
 -- Description:		
 -- ==========================================================================================
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- ==========================================================================================
 -- Author:	Koala CHENG
 -- CR No.:	CRE17-016
@@ -36,8 +43,7 @@ AS BEGIN
 -- Return results
 -- ============================================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT
 		[SP_ID],
@@ -50,7 +56,7 @@ AS BEGIN
 	WHERE
 		[Record_Status] = @record_status
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 END
 GO
 

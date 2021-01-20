@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- =============================================  
 -- Modification History      
@@ -162,8 +168,7 @@ SELECT Scheme_Code, Display_Code, Display_Seq FROM SchemeBackOffice WHERE GETDAT
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 
 IF @status = 'U'
@@ -212,7 +217,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close] 
 		RETURN
 	END CATCH  
 	
@@ -288,7 +293,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]
 		RETURN
 	END CATCH  
 	
@@ -363,7 +368,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]
 		RETURN
 	END CATCH  
 	
@@ -507,7 +512,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]  
 		RETURN
 	END CATCH  
 	
@@ -577,7 +582,7 @@ BEGIN
 	ORDER By Enrolment_Dtm ASC 
 END
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

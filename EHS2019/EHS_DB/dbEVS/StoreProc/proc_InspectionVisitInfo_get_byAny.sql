@@ -9,7 +9,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modified by:   James CAI
 -- Modified date: 10 Jul 2020  
@@ -89,8 +95,7 @@ SET @errCode_upper = '00017'
 -- Retrieve data  
 -- =============================================   
 
-OPEN SYMMETRIC KEY sym_Key 
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 -- ---------------------------------------------  
 -- Query Inspection Record
@@ -187,7 +192,7 @@ BEGIN CATCH
 			--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 			--DROP TABLE #TempTransaction
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END
 END CATCH  		
@@ -199,10 +204,10 @@ IF isnull(@row_cnt_error,'') = @errCode_lower
 		BEGIN		
 			--DROP TABLE #TempTransaction
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close] 
 			RETURN
 		END
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]  
  
 -- =============================================  
 -- Return results  

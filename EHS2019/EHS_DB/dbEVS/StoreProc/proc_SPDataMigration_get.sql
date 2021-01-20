@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Clark Yip
 -- Create date: 23 June 2009
@@ -89,8 +95,7 @@ DECLARE @tmp_data_migration_staging table ( enrolment_ref_no char(15),
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
@@ -230,7 +235,7 @@ insert into @tmp_data_migration_staging
 	FROM	@tmp_data_migration_staging
 	Where enrolment_ref_no in (select distinct enrolment_ref_no from PracticeStaging where record_status not in ('D','I','V'))
 	
-	CLOSE SYMMETRIC KEY sym_Key	
+	EXEC [proc_SymmetricKey_close]
 END
 GO
 

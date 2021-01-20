@@ -14,7 +14,13 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	30 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT20-0066
@@ -44,7 +50,7 @@ AS
         -- =============================================
         -- Initialization
         -- =============================================
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+        EXEC [proc_SymmetricKey_open]
         -- =============================================
         -- Return results
         -- =============================================
@@ -75,7 +81,7 @@ AS
                GETDATE()
         FROM @PatientTable;
 
-        CLOSE SYMMETRIC KEY sym_Key;
+        EXEC [proc_SymmetricKey_close]
     END;
 GO
 

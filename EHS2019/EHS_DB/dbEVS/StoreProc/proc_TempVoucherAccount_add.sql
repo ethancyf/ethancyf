@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			INT20-0068
+-- Modified by:	    Koala CHENG
+-- Modified date:	11 Jan 2021
+-- Description:		WITH RECOMPILE
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE17-018 (New initiatives for VSS and RVP in 2018-19)
 -- Modified by:	    Winnie SUEN
 -- Modified date:	26 Aug 2018
@@ -68,6 +75,7 @@ CREATE PROCEDURE [dbo].[proc_TempVoucherAccount_add]
 	@Create_By_BO char(1),
 	@Deceased	char(1),
 	@SourceApp	VARCHAR(10)
+WITH RECOMPILE
 AS
 BEGIN
 	

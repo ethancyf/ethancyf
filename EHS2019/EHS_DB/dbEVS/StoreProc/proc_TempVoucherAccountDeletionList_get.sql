@@ -7,6 +7,12 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modification History      
 -- CR No.:		   CRE12-014  
@@ -103,8 +109,7 @@ DECLARE @tmp_VR_Delete table ( Voucher_Acc_ID char(15),
 -- =============================================
 	SET NOCOUNT ON;
 
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	insert into @tmp_VR_Delete ( Voucher_Acc_ID ,
 							Scheme_Code,
@@ -205,12 +210,12 @@ DECLARE @tmp_VR_Delete table ( Voucher_Acc_ID char(15),
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]
 		RETURN
 	END CATCH 
 
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 -- =============================================
 -- Return results

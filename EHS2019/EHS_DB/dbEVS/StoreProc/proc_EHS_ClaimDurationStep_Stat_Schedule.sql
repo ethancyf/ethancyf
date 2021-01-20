@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	5 November 2010
 -- Description:		(1) Exclude Invoke CMS Web service in Search Account
@@ -131,8 +138,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 	
-	OPEN SYMMETRIC KEY sym_Key
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	--declare @start_time as datetime
 	--declare @end_time as datetime
@@ -4594,7 +4600,7 @@ INSERT INTO @AuditLogSearchAccountSystem (
 	FROM
 		@InvokeCMSTimeRaw
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 	drop table #claim_temp
 	drop table #claim_result

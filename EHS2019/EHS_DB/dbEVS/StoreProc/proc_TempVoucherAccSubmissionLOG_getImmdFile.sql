@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	30 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Pak Ho LEE
 -- Create date: 26 Aug 2008
@@ -35,8 +41,7 @@ BEGIN
 
 --DECLARE @tempStatus as char(1)
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 -- =============================================
 -- Validation 
@@ -97,7 +102,7 @@ OPEN SYMMETRIC KEY sym_Key
 			--AND DATEPART(YEAR,TVASL.System_Dtm) = DATEPART(YEAR,TVASH.System_Dtm) AND DATEPART(MONTH,TVASL.System_Dtm) = DATEPART(MONTH,TVASH.System_Dtm) AND DATEPART(DAY,TVASL.System_Dtm) = DATEPART(DAY,TVASH.System_Dtm)
 		ORDER BY Voucher_Acc_ID ASC			
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 

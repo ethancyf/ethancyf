@@ -15,6 +15,13 @@ GO
 -- =============================================
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Created by:		Chris YIM		
 -- Created date:	17 Sep 2020
 -- CR No.			CRE20-003
@@ -101,8 +108,7 @@ AS BEGIN
 -- Return results
 -- =============================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	--
 
@@ -545,7 +551,7 @@ AS BEGIN
 	
 	--
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 	
 	DROP TABLE #tblAcc

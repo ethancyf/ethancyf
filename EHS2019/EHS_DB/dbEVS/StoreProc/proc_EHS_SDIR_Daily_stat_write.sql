@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified By:		Mattie LO
 -- Modified date: 30 December 2009
 -- Description:	handle the cross year issue of reading the table [AuditLogVR99] from Year 2009 to 2028
@@ -51,7 +58,7 @@ BEGIN
 	SET @end_Dtm = convert(varchar(12), dateadd(dd, -1, getdate()), 106) + ' 23:59:59'
 	SET @year = convert(varchar(2), @start_Dtm, 12)
 
-OPEN SYMMETRIC KEY sym_Key  DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 CREATE TABLE #tmplog
 (
@@ -406,6 +413,8 @@ INSERT INTO [_EHS_SDIR_Daily_stat](
 		@sessionCnt as total_sessionID
 )
 drop table #tmplog
+
+EXEC [proc_SymmetricKey_close]
 
 END
 

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-015 (HA Scheme)
 -- Modified by:		Winnie SUEN
 -- Modified date:	16 Oct 2020
@@ -1369,8 +1376,7 @@ AS BEGIN
 -- =============================================
 -- Return results
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT
 		T.Transaction_ID,
@@ -1404,7 +1410,7 @@ AS BEGIN
 	ORDER BY
 		T.Transaction_Dtm
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	--
 

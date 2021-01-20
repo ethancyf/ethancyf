@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	15 Jul 2020
 -- CR No.			CRE19-031 (VSS MMR Upload)
@@ -39,8 +46,7 @@ AS BEGIN
 -- Return results
 -- =============================================
 	
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO StudentFileEntryMMRFieldStaging (
 		Student_File_ID,
@@ -61,7 +67,7 @@ AS BEGIN
 		@Lot_Number
 	)
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 
 END

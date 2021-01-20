@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Paul Yip
 -- Create date: 14 Dec 2009
 -- Description:	Retrieve all service provider information
@@ -17,8 +24,7 @@ CREATE PROCEDURE [dbo].[proc_ServiceProvider_get_all]
 AS
 BEGIN
 	SET NOCOUNT ON;
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	select SP_ID, 
 			convert(varchar, DecryptByKey(Encrypt_Field1)) as SP_HKID, 
@@ -27,7 +33,7 @@ OPEN SYMMETRIC KEY sym_Key
 
 
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

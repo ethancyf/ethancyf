@@ -1,9 +1,17 @@
 IF EXISTS (SELECT * FROM sysobjects WHERE type = 'TR' AND name = 'tri_PracticeStaging_after_del')
-	DROP TRIGGER [dbo].[tri_PracticeStaging_after_del] + Environment.NewLineGO
+	DROP TRIGGER [dbo].[tri_PracticeStaging_after_del] 
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Clark YIP
 -- Create date: 23 Jun 2009
@@ -32,9 +40,6 @@ BEGIN
 	Declare @record_status char(1)
 	Declare @counter as smallint
 	Declare @spid as char(8)
-
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
 
 	select @enrolment_ref_no = Enrolment_Ref_No from deleted
 	
@@ -90,8 +95,6 @@ BEGIN
 			
 	END	
 END
-
-CLOSE SYMMETRIC KEY sym_Key
 
 END
 GO

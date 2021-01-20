@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
  
+ -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Author:   Stanley Chan  
 -- Create date:  14 Oct 2008  
@@ -41,8 +48,7 @@ declare @reason_for_visit_L2 varchar(50)
 -- Initialization  
 -- =============================================  
   
-OPEN SYMMETRIC KEY sym_Key   
- DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
   
 select @first_authorised_by = First_Authorised_By from ReimbursementAuthTran where transaction_id = @Partial_Trans_No  
 select @first_authorised_date = First_Authorised_dtm from ReimbursementAuthTran where transaction_id = @Partial_Trans_No  
@@ -118,7 +124,7 @@ select @reason_for_visit_l2 = AdditionalFieldValueCode from [TransactionAddition
    and t.sp_id = p.sp_id   
    and t.practice_display_seq = p.display_seq  
   
- CLOSE SYMMETRIC KEY sym_Key  
+ EXEC [proc_SymmetricKey_close]
    
 END
 GO

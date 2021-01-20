@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -146,8 +154,7 @@ END
 -- Return results
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 	SELECT T.Enrolment_Ref_No, T.Enrolment_Dtm, T.SP_ID, convert(varchar, DecryptByKey(T.Encrypt_Field1)) as SP_HKID, 
 		convert(varchar(40), DecryptByKey(T.Encrypt_Field2)) as SP_Eng_Name, convert(nvarchar, DecryptByKey(T.Encrypt_Field3)) as SP_Chi_Name, T.Room, T.[Floor],
@@ -157,7 +164,7 @@ OPEN SYMMETRIC KEY sym_Key
 	FROM	@tmp_sp T, ServicePRoviderStaging S
 	WHERE	T.Enrolment_Ref_No = S.Enrolment_Ref_No
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

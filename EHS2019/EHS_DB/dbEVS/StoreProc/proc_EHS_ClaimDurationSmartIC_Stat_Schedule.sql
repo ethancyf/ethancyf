@@ -8,6 +8,13 @@ go
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Tony FUNG
 -- Modified date:	8 September 2011
 -- CR No.:		INT11-0038 (Claim Duration Statistic report)
@@ -157,8 +164,7 @@ AS BEGIN
 -- =============================================
 	SET @Year = CONVERT(varchar(2), @Start_Dtm, 12)	-- Extract the Calendar Year: "12" gives the format YYMMDD
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 
 -- =============================================
@@ -686,7 +692,7 @@ AS BEGIN
 
 	END
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 -- =============================================

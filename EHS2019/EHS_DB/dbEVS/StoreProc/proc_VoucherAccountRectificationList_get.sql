@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	22 Jan 2019
 -- CR No.:			INT18-0030
@@ -136,8 +143,7 @@ declare @result as table
    
  set @strIdentityNum2 = ' ' + @strIdentityNum    
   
- OPEN SYMMETRIC KEY sym_Key   
- DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
     
  --Raiserror('00016', 16, 1)   
 -- =============================================  
@@ -232,7 +238,7 @@ select TVA.Validated_Acc_ID, P.Doc_Code, TVA.Last_Fail_Validate_Dtm, TVA.Record_
 				--if upper limit is not enabled, throw error if lower limit is reached
 				--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 				RAISERROR (@row_cnt_error,16,1)    
-				CLOSE SYMMETRIC KEY sym_Key  
+				EXEC [proc_SymmetricKey_close]  
 				RETURN
 			END
 	END CATCH   
@@ -314,7 +320,7 @@ select  TOP ([dbo].[func_get_top_row](@result_limit_1st_enable,@result_limit_ove
 				--if upper limit is not enabled, throw error if lower limit is reached
 				--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 				RAISERROR (@row_cnt_error,16,1)    
-				CLOSE SYMMETRIC KEY sym_Key  
+				EXEC [proc_SymmetricKey_close]
 				RETURN
 			END
 	END CATCH   
@@ -396,7 +402,7 @@ BEGIN
 				--if upper limit is not enabled, throw error if lower limit is reached
 				--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 				RAISERROR (@row_cnt_error,16,1)    
-				CLOSE SYMMETRIC KEY sym_Key  
+				EXEC [proc_SymmetricKey_close]
 				RETURN
 			END
 	END CATCH   
@@ -411,7 +417,7 @@ END
 IF isnull(@row_cnt_error,'') = @errCode_lower 
 		BEGIN		
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END
 
@@ -441,7 +447,7 @@ select  voucher_acc_id,
  where DT.Doc_code = r.Doc_Code  
  order by convert(varchar, DecryptByKey(Encrypt_Field1))  
    
- CLOSE SYMMETRIC KEY sym_Key  
+ EXEC [proc_SymmetricKey_close]  
 END  
 GO
 

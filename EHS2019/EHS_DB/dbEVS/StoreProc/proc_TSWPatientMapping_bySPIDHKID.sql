@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Modified by:	Derek LEUNG
 -- Modified date:	09 Nov 2010
 -- Description:	Grant execute permission to WSEXT	
@@ -53,8 +60,7 @@ BEGIN
 -- =============================================
 -- Return results
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	if @Read_Transit = 'Y' 
 	begin
@@ -73,7 +79,7 @@ BEGIN
 		Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @HKID)
 	end
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 END
 GO

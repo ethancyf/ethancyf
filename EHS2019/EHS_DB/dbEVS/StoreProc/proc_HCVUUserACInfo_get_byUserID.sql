@@ -3,6 +3,13 @@ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[proc_HCVUUserACI
 	DROP PROCEDURE [proc_HCVUUserACInfo_get_byUserID]
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modification History  
 -- Modified by:  Golden Yang  
@@ -33,8 +40,7 @@ as
 -- Return results  
 -- =============================================  
   
-OPEN SYMMETRIC KEY sym_Key  
-DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
   
 select User_ID  
 , convert(varchar(40), DecryptByKey(Encrypt_Field2)) User_Name  
@@ -52,7 +58,7 @@ from HCVUUserAC
 where User_ID = @User_ID  
 order by User_ID  
   
-CLOSE SYMMETRIC KEY sym_Key  
+EXEC [proc_SymmetricKey_close]
   
   
 

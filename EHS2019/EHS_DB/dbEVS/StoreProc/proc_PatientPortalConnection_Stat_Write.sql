@@ -14,6 +14,13 @@ GO
 -- Description:	  	
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Chris YIM
 -- Create date:		12 Jun 2020
 -- CR No.			CRE20-005
@@ -138,8 +145,7 @@ AS BEGIN
 	-- =============================================  
 
 	-- Retrieve Interface Auditlog
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 	
 	INSERT INTO @EnquiryEHS_AuditLog (
 			System_Dtm,
@@ -183,7 +189,7 @@ AS BEGIN
 				AND E_Function_Code IN (SELECT EncryptByKey(KEY_GUID('sym_Key'), Function_Code) FROM @EHRSSToEHSFunctionCodeMaster)
 				AND E_Log_ID IN (SELECT EncryptByKey(KEY_GUID('sym_Key'), Log_ID) FROM @EHRSSToEHSLogIDMaster)
 	
-	CLOSE SYMMETRIC KEY sym_Key	
+	EXEC [proc_SymmetricKey_close]
 
 	-- =============================================  
 	-- Process data

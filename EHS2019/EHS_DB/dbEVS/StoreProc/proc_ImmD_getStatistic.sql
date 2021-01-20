@@ -14,6 +14,13 @@ GO
 -- =============================================
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Dickson Law
 -- Modified date:	8 Jan 2018
 -- Description:		Add HKIC for eHSD0013-02: No. of Temporary eHealth Account (Manual)
@@ -149,8 +156,7 @@ Set @temp_CountDay = 0
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -675,7 +681,7 @@ SELECT _date, _hkic, _ec,  _hkbc, _di, _repmt, _visa, _adopc, _total FROM #immdR
 SELECT _date, _success, _fail FROM #immdRecordResult ORDER BY _datetime ASC
 
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 

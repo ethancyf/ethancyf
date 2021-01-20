@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	09 Jul 2019
 -- CR No.			CRE19-001
@@ -40,8 +47,7 @@ BEGIN
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -69,7 +75,7 @@ FROM [dbo].[FileGenerationQueue] As FGQ, [dbEVS_File].[dbo].[FileGenerationQueue
 WHERE
 	FGQ.[Generation_ID] = @Generation_ID AND FGQ.[Generation_ID] = DD.[Generation_ID]
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 

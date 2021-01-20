@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Tommy TSE
 -- Modified date:	9 Sep 2011
 -- CR No.:			CRE11-024-01 (Enhancement on HCVS Extension Part 1)
@@ -42,8 +49,7 @@ BEGIN
 -- Initialization
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 -- =============================================
 -- Return results
@@ -118,7 +124,7 @@ FROM
 WHERE
 	PV.Enrolment_Ref_No = @Enrolment_Ref_No AND SPAU.Progress_Status = 'P'
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 END
 

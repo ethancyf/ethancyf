@@ -13,6 +13,13 @@ GO
 -- Description:		
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Chris YIM
 -- Create date:		27 Sep 2018
 -- CR No.:			CRE17-010-02 (OCSSS integration - IVRS)
@@ -38,8 +45,7 @@ BEGIN
 	-- =============================================
 	-- Return results
 	-- =============================================
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT TOP 1
 		[System_Dtm],
@@ -53,7 +59,7 @@ BEGIN
 	ORDER BY
 		[System_Dtm] DESC
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 END
 

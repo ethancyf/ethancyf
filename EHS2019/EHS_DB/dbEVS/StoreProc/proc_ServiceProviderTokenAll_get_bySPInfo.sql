@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	12 Feb 2016
 -- CR No.			CRE16-019 (To implement token sharing between eHS(S) and eHRSS)
@@ -191,8 +198,7 @@ BEGIN
 -- =============================================
 -- Declaration
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 DECLARE @schemeList VARCHAR(100)
 DECLARE @row_cnt_error varchar(max)	
@@ -370,7 +376,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END CATCH  
 
@@ -416,7 +422,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END CATCH  
 
@@ -528,7 +534,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close] 
 			RETURN
 		END CATCH  
 
@@ -575,7 +581,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close] 
 			RETURN
 		END CATCH  
 
@@ -838,7 +844,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]  
 			RETURN
 		END CATCH  
 
@@ -931,7 +937,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END CATCH  
 
@@ -1124,7 +1130,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END CATCH  
 	
@@ -1184,7 +1190,7 @@ BEGIN
 			SET @row_cnt_error = ERROR_MESSAGE()    
 
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close] 
 			RETURN
 		END CATCH  
 	
@@ -1225,7 +1231,7 @@ BEGIN
 	END
 END
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

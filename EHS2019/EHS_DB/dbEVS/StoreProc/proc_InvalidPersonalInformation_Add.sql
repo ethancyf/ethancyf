@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
 -- Modified by:		Winnie SUEN
 -- Modified date:	5 Dec 2018
@@ -75,8 +82,7 @@ AS BEGIN
 -- =============================================
 -- Process data
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO InvalidPersonalInformation (
 		Invalid_Acc_ID,
@@ -146,7 +152,7 @@ AS BEGIN
 		@SmartID_Ver
 	)
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 
 END

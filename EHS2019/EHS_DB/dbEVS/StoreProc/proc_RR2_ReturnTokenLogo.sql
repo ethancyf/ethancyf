@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Pak Ho LEE
 -- Create date: 14 Aug 2008
 -- Description:	Retrieve RR2-Weekly Log of Return of the Tokens and Logos
@@ -27,8 +34,7 @@ BEGIN
 -- Declaration
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 -- =============================================
 -- Validation 
@@ -73,7 +79,7 @@ ORDER BY SP.SP_ID ASC
 
 SELECT @PeriodFrom as [Period From], @PeriodTo as [Period To], GetDate() as [Generate Date]
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 

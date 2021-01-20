@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- ============================================
+-- =============================================
 -- Author:		Dedrick Ng
 -- Create date: 27 Sep 2009
 -- Description:	Retrieve SpecialPersonalInformation By Special Account ID 
@@ -31,8 +38,7 @@ BEGIN
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -83,7 +89,7 @@ OPEN SYMMETRIC KEY sym_Key
 	WHERE 
 		Special_Acc_ID = @Special_Acc_ID
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 

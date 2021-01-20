@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	15 Aug 2014
 -- CR No.:			CRE13-029
@@ -32,8 +39,7 @@ CREATE  procedure [dbo].[proc_SystemParametersPassword_update]
 @Update_By varchar(20)
 AS
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 -- =============================================
 -- Initialization
@@ -59,7 +65,7 @@ WHERE
 	[Parameter_name] = @Parameter_Name
 	AND [Scheme_Code] = @Scheme_Code
 
-CLOSE SYMMETRIC KEY sym_Key	
+EXEC [proc_SymmetricKey_close]
 GO
 
 GRANT EXECUTE ON [dbo].[proc_SystemParametersPassword_update] TO HCPUBLIC

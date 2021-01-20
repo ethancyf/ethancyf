@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	22 Jan 2018
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
@@ -42,8 +49,7 @@ BEGIN
 	IF	(@Doc_Code = 'HKIC') SET @Other_Doc_Code = 'HKBC'
 	IF	(@Doc_Code = 'HKBC') SET @Other_Doc_Code = 'HKIC' 
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
         
     --Get Validated Account
 		SELECT
@@ -101,7 +107,7 @@ OPEN SYMMETRIC KEY sym_Key
 		     OR
 		     (@Other_Doc_Code <> '' AND P.[Doc_Code] = @Other_Doc_Code AND P.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @identity))		     
 			
-CLOSE SYMMETRIC KEY sym_Key						
+EXEC [proc_SymmetricKey_close]						
 
 END
 GO

@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_TempPersonalInformaion_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_TempPersonalInformaion_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_TempPersonalInformaion_add]
 GO
 
@@ -107,6 +107,7 @@ CREATE PROCEDURE [dbo].[proc_TempPersonalInformaion_add]
 	@DOD		datetime, 
 	@Exact_DOD	char(1),
 	@SmartID_Ver	varchar(5)
+WITH RECOMPILE
 AS
 BEGIN
 
@@ -191,3 +192,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_TempPersonalInformaion_add] TO WSEXT
 Go
+

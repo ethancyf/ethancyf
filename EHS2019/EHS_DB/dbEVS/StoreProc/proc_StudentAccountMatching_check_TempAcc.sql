@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	16 Oct 2019
 -- CR No.:			INT19-0017
@@ -112,8 +119,7 @@ AS BEGIN
 		AND ST.Temp_Voucher_Acc_ID IS NOT NULL
 
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 
 	-- Get Validated acct person info if converted to Validated Account
@@ -248,7 +254,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 			AND SE.Temp_Voucher_Acc_ID = R.Temp_Voucher_Acc_ID	
 		
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

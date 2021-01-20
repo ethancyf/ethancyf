@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	14 October 2016
 -- CR No.			CRE16-019 (To implement token sharing between eHS(S) and eHRSS)
@@ -42,8 +49,7 @@ BEGIN
 -- Initialization
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 SELECT	SP_ID, 
 		convert(varchar, DecryptByKey(Encrypt_Field1)) as SP_HKID,
@@ -53,7 +59,7 @@ SELECT	SP_ID,
 FROM	ServiceProvider
 WHERE	EncryptByKey(KEY_GUID('sym_Key'), @hkid) = Encrypt_Field1
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

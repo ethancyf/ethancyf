@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	8 June 2020
 -- CR No.:			INT20-0018 (Fix timeout on reimbursement report generation)
@@ -70,8 +77,7 @@ BEGIN
 		)
 	SELECT Item FROM func_split_string(@File_Type_List, @delimiter)
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -101,8 +107,7 @@ WHERE
 					WHERE FD.Generation_ID = FGQ.Generation_ID AND (FD.Download_Status <> 'I'))) -- for other reports, at least one user is waiting
 	AND (FGQ.[Schedule_Gen_Dtm] IS NULL	OR FGQ.[Schedule_Gen_Dtm] <= GETDATE())
 						
-CLOSE SYMMETRIC KEY sym_Key
-
+EXEC [proc_SymmetricKey_close]
 
 END
 

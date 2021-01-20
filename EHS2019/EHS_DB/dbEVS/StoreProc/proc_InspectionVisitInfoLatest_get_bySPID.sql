@@ -16,6 +16,13 @@ GO
 -- Description:	
 -- =============================================
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		James
 -- Create date: 10 Jul 2020
 -- CR No.:		CRE19-022 (Inspection Module)
@@ -28,8 +35,7 @@ CREATE PROCEDURE 	[dbo].[proc_InspectionVisitInfoLatest_get_bySPID]
 	@Inspection_ID varchar(30) = ''
 AS BEGIN
 
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT Top 1
 		ins.Inspection_ID,
@@ -121,7 +127,7 @@ GROUP BY Inspection_ID ) instype on instype.Inspection_ID = ins.Inspection_ID
 
 ORDER BY 
 		ins.Visit_Date DESC,ins.Visit_End_Dtm Desc, ins.Create_Dtm DESC
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 END
 GO

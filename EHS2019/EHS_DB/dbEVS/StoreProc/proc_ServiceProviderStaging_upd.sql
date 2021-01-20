@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Kathy LEE
 -- Create date: 24 May 2008
 -- Description:	Update Service Provider Infomation in
@@ -42,8 +49,7 @@ BEGIN
 -- Return results
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	UPDATE	ServiceProviderStaging
 	SET		-- SP_HKID = @sp_hkid,
@@ -70,7 +76,7 @@ OPEN SYMMETRIC KEY sym_Key
 
 	 WHERE Enrolment_Ref_No = @enrolment_ref_no
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

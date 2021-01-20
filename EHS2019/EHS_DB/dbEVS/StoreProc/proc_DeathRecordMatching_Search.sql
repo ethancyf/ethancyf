@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- =============================================  
 -- Modification History      
 -- CR No.:		   CRE12-014  
@@ -102,12 +109,11 @@ AS BEGIN
 		SET @E_Doc_No = NULL
 	
 	END ELSE BEGIN
-		OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+		EXEC [proc_SymmetricKey_open]
 
 		SET @E_Doc_No = EncryptByKey(KEY_GUID('sym_Key'), @Doc_No)
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 		
 	END
 	
@@ -269,8 +275,7 @@ AS BEGIN
 -- Return results
 -- =============================================
 	
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT
 		Account_ID,
@@ -290,7 +295,7 @@ AS BEGIN
 	ORDER BY
 		Account_ID
 		
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 END
 GO

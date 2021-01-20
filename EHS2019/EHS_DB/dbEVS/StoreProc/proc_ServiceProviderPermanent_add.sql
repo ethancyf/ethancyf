@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	07 Aug 2018
 -- CR No.			CRE17-016 - Checking of PCD status during VSS enrolment
@@ -63,8 +70,7 @@ BEGIN
 
 	declare @current_dtm datetime
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Validation 
 -- =============================================
@@ -148,7 +154,7 @@ OPEN SYMMETRIC KEY sym_Key
 				 @PCD_Status_Last_Check_Dtm
 				)
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

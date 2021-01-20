@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Tommy Cheung
 -- Create date:		11 Nov 2008
 -- Description:		Retrieve Voidable transaction by Partial Transaction No
@@ -26,8 +33,7 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
     -- Insert statements for procedure here
 	Select Transaction_ID,
@@ -90,7 +96,7 @@ OPEN SYMMETRIC KEY sym_Key
 	)[VoucherTran]
 	order by [VoucherTran].Transaction_Dtm
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

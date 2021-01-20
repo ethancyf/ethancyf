@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	03 Jul 2018
 -- CR No.			CRE17-016
@@ -82,8 +89,7 @@ DECLARE @tmp_SP table ( Enrolment_Ref_No char(15),
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 INSERT INTO @tmp_SP ( Enrolment_Ref_No ,
 						Enrolment_Dtm ,
@@ -141,7 +147,7 @@ END
 			Fax, Email,	Already_Joined_EHR, Join_PCD, Application_Printed
 	FROM	@tmp_sp
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 END
 GO
 

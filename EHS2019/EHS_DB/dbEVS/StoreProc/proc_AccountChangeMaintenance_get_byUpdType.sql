@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No:			CRE14-002 - PPI-ePR Migration
 -- Modified by:		Chris YIM
 -- Modified date:	11 Jul 2014
@@ -99,8 +106,7 @@ AS BEGIN
 -- =============================================
 -- Select Table
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT	M.SP_ID SP_ID,
 			CONVERT(varchar(40), DecryptByKey(s.Encrypt_Field2)) SP_Eng_Name,
@@ -132,7 +138,7 @@ AS BEGIN
 						
 	ORDER BY SP_ID ASC
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 END 
 GO
 

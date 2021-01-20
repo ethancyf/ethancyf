@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	12 Sep 2019
 -- CR No.			CRE19-006
@@ -247,8 +254,7 @@ AS BEGIN
 		SET @target_period_to = CONVERT(datetime, CONVERT(varchar(10), @target_period_to, 105), 105)
 
 
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	------------------------------------------------------------------------------------------
 	-- Prepare Table for the Target Recipient (Group by Document Type, Document Id as a Aberrant Group, document type "HKBC" is treated as "HKIC")
@@ -751,7 +757,7 @@ AS BEGIN
 
 		SET @TotalNumberOfRecord = @@rowcount
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	IF @TotalNumberOfRecord IS NULL
 		SET @TotalNumberOfRecord = 0 

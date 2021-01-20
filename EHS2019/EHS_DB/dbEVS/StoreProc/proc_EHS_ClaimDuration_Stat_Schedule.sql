@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Lawrence TSANG
@@ -76,8 +82,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 
-OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	--declare @start_time as datetime
 	--declare @end_time as datetime
@@ -1855,7 +1860,7 @@ OPEN SYMMETRIC KEY sym_Key
 	from #acc_result
 
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 	drop table #temp
 	drop table #result

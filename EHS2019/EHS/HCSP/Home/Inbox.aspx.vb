@@ -735,7 +735,13 @@ Partial Public Class Inbox
         For Each row As GridViewRow In Me.GridView1.Rows
             cb = CType(row.Cells(0).FindControl("chk_selected"), CheckBox)
             If cb.Checked = True Then
-                selectedRow.Add(Convert.ToInt32(CType(row.Cells(0).FindControl("lblMessageID"), Label).Text))
+
+                ' INT20-0071 (Fix delete inbox message error) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+                'selectedRow.Add(Convert.ToInt32(CType(row.Cells(0).FindControl("lblMessageID"), Label).Text))
+                selectedRow.Add(Convert.ToString(CType(row.Cells(0).FindControl("lblMessageID"), Label).Text))
+                ' INT20-0071 (Fix delete inbox message error) [End][Winnie SUEN]
+
                 'selectedRow.Add(Me.GridView1.PageSize * Me.GridView1.PageIndex + i)
                 'selectedRow.Add(i)
             End If
@@ -770,7 +776,10 @@ Partial Public Class Inbox
                     Me.GetAllSelectedRowMsgID(selectedRow)
 
                     For i = 0 To selectedRow.Count - 1
-                        Dim arrDrRow As DataRow() = dt.Select("MessageID=" + selectedRow(i).ToString() + "")
+                        ' INT20-0071 (Fix delete inbox message error) [Start][Winnie SUEN]
+                        Dim arrDrRow As DataRow() = dt.Select("MessageID= '" + selectedRow(i).ToString() + "'")
+                        ' INT20-0071 (Fix delete inbox message error) [End][Winnie SUEN]
+
                         If arrDrRow.Length <= 0 Then
                             'Throw New Exception("Message Row: " + selectedRow(i).ToString() + " Not Found!")
                             LoadEnqDownloadGrid(EmailStatus.Read)
@@ -921,8 +930,10 @@ Partial Public Class Inbox
                 Me.GetAllSelectedRowMsgID(selectedRow)
 
                 For i = 0 To selectedRow.Count - 1
+                    ' INT20-0071 (Fix delete inbox message error) [Start][Winnie SUEN]
+                    Dim arrDrRow As DataRow() = dt.Select("MessageID= '" + selectedRow(i).ToString() + "'")
+                    ' INT20-0071 (Fix delete inbox message error) [End][Winnie SUEN]
 
-                    Dim arrDrRow As DataRow() = dt.Select("MessageID=" + selectedRow(i).ToString() + "")
                     If arrDrRow.Length <= 0 Then
                         LoadEnqDownloadGrid(EmailStatus.Deleted)
                         'Throw New Exception("Message Row: " + selectedRow(i).ToString() + " Not Found!")
@@ -1072,8 +1083,10 @@ Partial Public Class Inbox
                 Me.GetAllSelectedRowMsgID(selectedRow)
 
                 For i = 0 To selectedRow.Count - 1
+                    ' INT20-0071 (Fix delete inbox message error) [Start][Winnie SUEN]
+                    Dim arrDrRow As DataRow() = dt.Select("MessageID= '" + selectedRow(i).ToString() + "'")
+                    ' INT20-0071 (Fix delete inbox message error) [End][Winnie SUEN]
 
-                    Dim arrDrRow As DataRow() = dt.Select("MessageID=" + selectedRow(i).ToString() + "")
                     If arrDrRow.Length <= 0 Then
                         LoadEnqDownloadGrid(EmailStatus.Read)
                     End If

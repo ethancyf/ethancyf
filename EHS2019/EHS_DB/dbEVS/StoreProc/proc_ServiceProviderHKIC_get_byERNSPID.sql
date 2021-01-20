@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Kathy LEE
 -- Create date: 16 June 2009
@@ -41,8 +47,7 @@ declare @ern as char(15)
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	SELECT	@hkid = convert(varchar, DecryptByKey(Encrypt_Field1)), @ern = enrolment_ref_no
 	FROM	ServiceProviderEnrolment
@@ -70,7 +75,7 @@ OPEN SYMMETRIC KEY sym_Key
 	--Final Result
 	select @ern as enrolment_ref_no, @hkid as HKID
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

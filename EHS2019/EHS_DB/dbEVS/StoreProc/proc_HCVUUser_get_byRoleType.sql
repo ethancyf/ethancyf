@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Paul YIP
 -- Create date: 13 Oct 2010
 -- Description:	Retrieve accessable user by role type
@@ -35,8 +42,7 @@ BEGIN
 -- Return results
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
  SELECT distinct ur.[User_ID]
  , convert(varchar(40), DecryptByKey(Encrypt_Field2)) AS [User_Name]
@@ -58,7 +64,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 
  WHERE[Role_Type] = @intRoleType
 
- CLOSE SYMMETRIC KEY sym_Key
+ EXEC [proc_SymmetricKey_close]
 
 END
 

@@ -8,8 +8,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modified by:   James CAI
 -- Modified date: 10 Jul 2020  
@@ -131,8 +136,7 @@ AS BEGIN
     Insert into #LatestRecord
     EXEC proc_InspectionVisitInfoLatest_get_bySPID @SP_ID=@SP_ID,@Filter_Date =null,@Inspection_ID = @Inspection_ID
 
-    OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+    EXEC [proc_SymmetricKey_open]
 
 	select top 1 @Visit_Date = Visit_Date,@File_Reference_No=File_Reference_No from #LatestRecord WITH(NOLOCK)
 
@@ -315,7 +319,7 @@ AS BEGIN
 	WHERE 
 		ins.Inspection_ID = @Inspection_ID
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	DROP TABLE #LatestRecord
 

@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Clark YIP
 -- Create date: 07 Jul 2009
 -- Description:	Search the SP Migration record from IVSS
@@ -45,8 +52,7 @@ DECLARE @tmp_data table ( Enrolment_Ref_No char(15),
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key	
+	EXEC [proc_SymmetricKey_open]
 		
 	Select @reccount = count(1) from SPMigration_IVSS
 	where Encrypt_field1 =EncryptByKey(KEY_GUID('sym_Key'), @HK_ID) and record_status='P'
@@ -83,7 +89,7 @@ OPEN SYMMETRIC KEY sym_Key
 	From @tmp_data
 		
 
-CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 END
 

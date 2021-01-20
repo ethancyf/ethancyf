@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Clark Yip
 -- Create date: 9 July 2008
@@ -31,8 +37,7 @@ BEGIN
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+    EXEC [proc_SymmetricKey_open]
 -- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
@@ -71,7 +76,7 @@ WHERE	b.Enrolment_ref_no = sp.Enrolment_ref_no and p.Enrolment_ref_no = prof.Enr
 		and u.progress_status='B'		
 		AND b.Enrolment_ref_no = @enrolment_ref_no
 
-		CLOSE SYMMETRIC KEY sym_Key
+		EXEC [proc_SymmetricKey_close]
 END
 GO
 

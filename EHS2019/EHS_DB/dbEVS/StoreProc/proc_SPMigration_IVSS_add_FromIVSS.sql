@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Clark YIP
 -- Create date: 10 Jul 2009
 -- Description:	Insert the SPMigration_IVSS Table
@@ -51,8 +58,7 @@ BEGIN
 -- Return results
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	IF (SELECT COUNT(1) FROM [SPMigration_IVSS] WHERE Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @HK_ID)) = 0 BEGIN
 
@@ -74,7 +80,7 @@ OPEN SYMMETRIC KEY sym_Key
 	
 	END
 				
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 				
 END
 GO

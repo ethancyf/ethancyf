@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:		Clark YIP
 -- Create date: 10 June 2009
@@ -43,8 +51,7 @@ BEGIN
 -- =============================================
 -- Validation 
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	IF (SELECT TSMP FROM SPMigration
 		WHERE encrypt_field1 = encryptByKey(KEY_GUID('sym_Key'), @HK_ID)  ) != @tsmp
@@ -63,7 +70,7 @@ OPEN SYMMETRIC KEY sym_Key
 			Enrolment_Ref_No = @enrolment_ref_no			
 	WHERE	EncryptByKey(KEY_GUID('sym_Key'), @HK_ID) = Encrypt_Field1
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

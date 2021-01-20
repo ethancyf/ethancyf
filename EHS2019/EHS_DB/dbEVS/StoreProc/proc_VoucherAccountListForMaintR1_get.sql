@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Lawrence TSANG
 -- Modified date:	31 October 2014
 -- CR No.:			INT14-0027
@@ -71,8 +78,7 @@ BEGIN
 
 SET NOCOUNT ON;
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Initialization
 -- =============================================
@@ -136,7 +142,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]
 		RETURN
 	END CATCH 
 
@@ -262,7 +268,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]
 		RETURN
 	END CATCH 
 
@@ -385,7 +391,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]  
 		RETURN
 	END CATCH 
 
@@ -517,7 +523,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]  
 		RETURN
 	END CATCH 
 	
@@ -653,7 +659,7 @@ BEGIN
 		SET @row_cnt_error = ERROR_MESSAGE()    
 
 		RAISERROR (@row_cnt_error,16,1)    
-		CLOSE SYMMETRIC KEY sym_Key  
+		EXEC [proc_SymmetricKey_close]  
 		RETURN
 	END CATCH 
 
@@ -855,7 +861,7 @@ END
 --	
 --END
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 END
 GO
 

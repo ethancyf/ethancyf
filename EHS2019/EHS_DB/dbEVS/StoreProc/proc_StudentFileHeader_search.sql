@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	30 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	20 Dec 2020
 -- CR No.			INT20-00633 (Fix display fullWidth characters in SP Claim Transaction Maintenance)
@@ -321,8 +328,7 @@ AS BEGIN
 -- Return results
 -- =============================================
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT
 		S.Student_File_ID,
@@ -737,7 +743,7 @@ AS BEGIN
 		ORDER BY
 			S.Upload_Dtm
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 END
 GO

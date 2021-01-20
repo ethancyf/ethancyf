@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	Derek LEUNG
 -- Modified date:	09 Nov 2010
 -- Description:	Grant execute permission to WSEXT	
@@ -29,8 +36,7 @@ CREATE  procedure [dbo].[proc_SystemParametersPassword_get]
 @Scheme_Code char(10)
 AS
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 -- =============================================
 -- Initialization
@@ -53,7 +59,7 @@ WHERE
 	AND [External_Use] = 'N'
 	AND [Scheme_Code] = @Scheme_Code
 	
-CLOSE SYMMETRIC KEY sym_Key	
+EXEC [proc_SymmetricKey_close]
 
 GO
 
@@ -68,3 +74,7 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_SystemParametersPassword_get] TO WSEXT
 GO
+
+GRANT EXECUTE ON [dbo].[proc_SystemParametersPassword_get] TO WSINT
+GO
+

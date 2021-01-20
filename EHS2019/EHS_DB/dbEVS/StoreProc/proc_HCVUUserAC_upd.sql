@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modification History  
 -- Modified by:  Golden Yang  
@@ -66,8 +73,7 @@ end
 -- =============================================  
 -- Initialization  
 -- =============================================  
-OPEN SYMMETRIC KEY sym_Key  
-DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
   
  select @Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @HKID)  
  select @Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @User_Name)  
@@ -76,8 +82,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
  select @Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chinese_Name)  
  --Golden 20200611 End  
   
-   
-CLOSE SYMMETRIC KEY sym_Key  
+EXEC [proc_SymmetricKey_close] 
   
 select @tmp_Suspended = Suspended  
 , @tmp_Account_Locked = Account_Locked  

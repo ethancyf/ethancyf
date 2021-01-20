@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
 -- Modified by:	    Winnie SUEN
 -- Modified date:   15 Nov 2017
@@ -219,8 +226,7 @@ where record_status <> 'I'
 and sp_id = @In_SP_ID
 and isnull(temp_voucher_acc_id,'') <> ''
 
-OPEN SYMMETRIC KEY sym_Key
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 insert into #tempVoucherAcc
 (
@@ -319,7 +325,7 @@ select	c.Transaction_Dtm,
 	and (@In_Available_HCSP_SubPlatform is null or sc.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
 
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 update #tempVoucherAcc
 set original_TSMP = t.TSMP,

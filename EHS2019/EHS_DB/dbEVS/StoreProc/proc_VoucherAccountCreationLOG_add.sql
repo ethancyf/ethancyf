@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_VoucherAccountCreationLOG_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_VoucherAccountCreationLOG_add]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_VoucherAccountCreationLOG_add]
 GO
 
@@ -61,7 +61,7 @@ CREATE PROCEDURE [dbo].[proc_VoucherAccountCreationLOG_add]
 	@Create_by_SmartID char(1),
 	@Create_by_BO char(1),
 	@SmartID_Ver varchar(5)
-
+WITH RECOMPILE
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -123,3 +123,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_VoucherAccountCreationLOG_add] TO WSEXT
 Go
+

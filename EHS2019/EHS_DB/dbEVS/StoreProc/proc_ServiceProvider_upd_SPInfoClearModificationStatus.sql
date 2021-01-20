@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Clark YIP
 -- Create date: 09 Jul 2009
 -- Description:	Clear the Service Provider Info in
@@ -38,8 +45,7 @@ BEGIN
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 		UPDATE	ServiceProvider
 		Set		UnderModification = Null,
@@ -47,7 +53,7 @@ OPEN SYMMETRIC KEY sym_Key
 				Update_By = @update_by
 		WHERE	SP_ID = @sp_id	
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	12 Feb 2016
 -- CR No.			CRE15-019
@@ -174,8 +181,7 @@ END
 -- =============================================
 -- Return results
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 	SELECT T.Enrolment_Ref_No, T.Enrolment_Dtm, T.SP_ID, -- T.SP_HKID, T.SP_Eng_Name, T.SP_Chi_Name, 
 		convert(varchar, DecryptByKey(T.Encrypt_Field1)) as SP_HKID,
@@ -190,7 +196,7 @@ OPEN SYMMETRIC KEY sym_Key
 	WHERE	T.SP_ID = S.SP_ID
 	order by S.effective_dtm desc
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

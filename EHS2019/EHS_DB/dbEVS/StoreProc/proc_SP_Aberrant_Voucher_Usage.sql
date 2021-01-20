@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM		
 -- Modified date:	12 Sep 2019
 -- CR No.			CRE19-006
@@ -165,8 +172,7 @@ AS BEGIN
 
 	------------------------------------------------------------------------------------------
 	-- Prepare Transaction inforamtion Table (without Personal information)
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO #VoucherTransaction (Transaction_ID, Transaction_Dtm, Service_Receive_Dtm, Voucher_Acc_ID, Temp_Voucher_Acc_ID, Special_Acc_ID, Invalid_Acc_ID, SP_ID, SP_Name, Practice_Display_Seq, Practice_Name, Practice_Profession, Practice_District, Reason_of_Visit_L1, Reason_of_Visit_L2, No_Voucher_Claimed)
 		SELECT		VT.Transaction_ID,
@@ -307,7 +313,7 @@ AS BEGIN
 
 	SET @SummaryTotalRecordValue = @@rowcount
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 	-- Report Summary

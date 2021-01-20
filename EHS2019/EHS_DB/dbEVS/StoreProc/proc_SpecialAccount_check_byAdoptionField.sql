@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Pak Ho LEE
 -- Create date: 08 Sep 2008
 -- Description:	Check If the Adoption Number is different with any other same Identity num account
@@ -23,8 +30,7 @@ BEGIN
 -- =============================================
 -- Declaration
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Validation 
 -- =============================================
@@ -50,7 +56,7 @@ OPEN SYMMETRIC KEY sym_Key
 			[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @identity) AND [Encrypt_Field11] <> EncryptByKey(KEY_GUID('sym_Key'), @Adoption_PrefixNum)
 		)
 				
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

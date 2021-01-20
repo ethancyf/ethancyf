@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Author:			Clark Yip
 -- Create date:		19 Jun 2008
@@ -36,8 +42,7 @@ where [Parameter_Name] = 'ActiveInboxIntrayHour'and [Record_Status] = 'A' AND [S
 -- =============================================
 -- Initialization
 -- =============================================
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 -- =============================================
 -- Return results
 -- =============================================
@@ -79,7 +84,7 @@ and f.[Is_SelfAccess]='Y'
 and q.request_by = @create_by
 and ((q.[Complete_dtm] is not null and DATEDIFF(hh, q.[Complete_dtm], getdate()) <= @hr) or q.[Complete_dtm] is null)
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

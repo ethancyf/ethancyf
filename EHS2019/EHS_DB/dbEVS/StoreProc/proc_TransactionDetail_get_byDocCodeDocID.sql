@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Koala CHENG
+-- Modified date:	06 Jan 2021
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :		
 -- Modified by:	Koala CHENG
 -- Modified date:	09 Oct 2020
@@ -210,8 +217,7 @@ END
 -- =============================================    
     
     
-OPEN SYMMETRIC KEY sym_Key     
- DECRYPTION BY ASYMMETRIC KEY asym_Key    
+EXEC [proc_SymmetricKey_open]    
      
 -- Retrieve VoucherAccount By Identity in different PersonalInformation Tables    
     
@@ -259,7 +265,7 @@ OPEN SYMMETRIC KEY sym_Key
    )    
    AND IV.[Count_Benefit] = 'Y'    
        
-CLOSE SYMMETRIC KEY sym_Key    
+EXEC [proc_SymmetricKey_close]
     
 -- Retrieve Transaction Related to the [Voucher_Acc_ID](s)    
     

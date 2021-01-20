@@ -9,6 +9,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:	    Chris YIM
 -- Modified date:	08 Oct 2020
 -- CR No.:			
@@ -196,8 +203,7 @@ END
 -- =============================================
 
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 -- Retrieve VoucherAccount By Identity in different PersonalInformation Tables
 
@@ -279,7 +285,7 @@ OPEN SYMMETRIC KEY sym_Key
 			)
 			AND IV.[Count_Benefit] = 'Y'
 			
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 -- Retrieve Transaction Related to the [Voucher_Acc_ID](s)
 
@@ -435,8 +441,7 @@ CLOSE SYMMETRIC KEY sym_Key
 	where REPLACE(R.Scheme_Code + '|' + STR(R.Scheme_Seq) + '|' + R.Subsidize_Code,' ','') = s.[Vaccine_Code_Source] 
 
 
-OPEN SYMMETRIC KEY sym_Key 
-DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
  select convert(varchar(11), R.[Service_Receive_Dtm], 113) as Service_Receive_Dtm,
 		R.[Display_Code],
@@ -473,7 +478,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 			AND I.Subsidize_Type = 'VACCINE'
 		order by R.[Service_Receive_Dtm]
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 	
 END
 GO

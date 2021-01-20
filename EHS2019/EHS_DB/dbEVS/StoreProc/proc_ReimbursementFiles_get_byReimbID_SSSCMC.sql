@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	7 Dec 2020
 -- CR No.			CRE20-015 (HA Scheme)
@@ -117,7 +124,7 @@ AS
         -- initial Transaction Pool
         -----------------------------------       
 
-        OPEN SYMMETRIC KEY sym_Key DECRYPTION BY ASYMMETRIC KEY asym_Key;
+        EXEC [proc_SymmetricKey_open]
 
         SELECT CAST(VT.SP_ID AS VARCHAR) + ' (' + CAST(VT.practice_display_seq AS VARCHAR) + ')' AS [SP_ID_Practice], 
                CONVERT(VARCHAR(40), DECRYPTBYKEY(SP.[Encrypt_Field2])) AS [SP_Name], 
@@ -172,7 +179,7 @@ AS
                  VT.practice_display_seq ASC, 
                  RAT.Transaction_ID ASC, 
                  VT.transaction_dtm ASC;
-        CLOSE SYMMETRIC KEY sym_Key;
+        EXEC [proc_SymmetricKey_close]
 
         -----------------------------------    
         -- Result Table 1: Content    

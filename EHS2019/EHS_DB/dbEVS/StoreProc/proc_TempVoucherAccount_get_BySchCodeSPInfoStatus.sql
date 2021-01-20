@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
 -- Modified by:	    Winnie SUEN
 -- Modified date:   15 Nov 2017
@@ -331,8 +338,7 @@ BEGIN
 -- =============================================
 
 -- Final Result
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 	select
 		t.voucher_acc_id,
@@ -378,7 +384,7 @@ drop table #temp_account
 drop table #transaction
 
 		
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 END
 GO
 

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE19-006 (DHC)
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Jun 2019
@@ -114,8 +121,7 @@ BEGIN
 -- =============================================  
 -- Initialization  
 -- =============================================  
-	OPEN SYMMETRIC KEY sym_Key   
-		DECRYPTION BY ASYMMETRIC KEY asym_Key   
+	EXEC [proc_SymmetricKey_open] 
 -- =============================================  
 -- Return results  
 -- =============================================  
@@ -219,7 +225,7 @@ BEGIN
 		VT.[Transaction_ID] IN   
 			( SELECT Distinct([Transaction_ID]) FROM @tmpTransaction )  
   
-	CLOSE SYMMETRIC KEY sym_Key  
+	EXEC [proc_SymmetricKey_close]
   
 END  
 GO

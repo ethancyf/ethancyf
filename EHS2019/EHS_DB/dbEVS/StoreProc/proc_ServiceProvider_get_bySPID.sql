@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	12 Feb 2016
 -- CR No.			CRE15-019
@@ -73,8 +80,7 @@ CREATE PROCEDURE [dbo].[proc_ServiceProvider_get_bySPID]
 AS
 BEGIN
 	SET NOCOUNT ON;
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 
 -- =============================================
 -- Declaration
@@ -211,7 +217,7 @@ END
 	WHERE	T.SP_ID = @In_SP_ID and T.SP_ID = S.SP_ID
 	
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 IF (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'EnableSProcPerformCapture' AND Scheme_Code = 'ALL') = 'Y' BEGIN
 	DECLARE @Performance_End_Dtm datetime

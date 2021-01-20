@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	11 October 2018
 -- CR No.:			CRE17-018-07
@@ -73,8 +80,7 @@ BEGIN
 -- =============================================  
 -- Initialization  
 -- =============================================  
-OPEN SYMMETRIC KEY sym_Key   
-DECRYPTION BY ASYMMETRIC KEY asym_Key  
+EXEC [proc_SymmetricKey_open]
 -- =============================================  
 -- Return results  
 -- =============================================                 
@@ -119,7 +125,7 @@ DECRYPTION BY ASYMMETRIC KEY asym_Key
 	ORDER BY
 		P.[Doc_Code]
 	
-CLOSE SYMMETRIC KEY sym_Key  
+EXEC [proc_SymmetricKey_close] 
         
 END
 GO

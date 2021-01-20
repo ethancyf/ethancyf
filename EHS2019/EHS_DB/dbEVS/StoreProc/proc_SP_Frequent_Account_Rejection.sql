@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Oct 2018
 -- CR No.:			INT18-0019
@@ -234,8 +241,7 @@ AS BEGIN
 		VALUES ('Service Provider ID', 'Service Provider Name', ' Practice No.', 'Practice Name', 'Practice Address', 'Practice Phone No.', 'No. of Rejection Episodes')
 
 	-- Report Content
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 		INSERT INTO #ResultTable (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Is_Data)   
 			SELECT		PracticeRejectCount.SP_ID, 
@@ -255,7 +261,7 @@ AS BEGIN
 
 		SET @ResultCount = @@rowcount
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 	-- Report Summary

@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================
 -- Modification History
 
@@ -94,8 +102,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	create table #temptable
 	(
@@ -243,7 +250,7 @@ BEGIN
 				--if upper limit is not enabled, throw error if lower limit is reached
 				--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 				RAISERROR (@row_cnt_error,16,1)    
-				CLOSE SYMMETRIC KEY sym_Key  
+				EXEC [proc_SymmetricKey_close]
 				RETURN
 			END
 	END CATCH  
@@ -363,7 +370,7 @@ BEGIN
 				--if upper limit is not enabled, throw error if lower limit is reached
 				--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 				RAISERROR (@row_cnt_error,16,1)    
-				CLOSE SYMMETRIC KEY sym_Key  
+				EXEC [proc_SymmetricKey_close]
 				RETURN
 			END
 	END CATCH  
@@ -474,7 +481,7 @@ BEGIN
 				--if upper limit is not enabled, throw error if lower limit is reached
 				--if the error is not related to upper / lower limit, there must be sth wrong in the try block, throw the error immediately
 				RAISERROR (@row_cnt_error,16,1)    
-				CLOSE SYMMETRIC KEY sym_Key  
+				EXEC [proc_SymmetricKey_close]
 				RETURN
 			END
 	END CATCH  
@@ -578,7 +585,7 @@ BEGIN
 IF isnull(@row_cnt_error,'') = @errCode_lower 
 		BEGIN		
 			RAISERROR (@row_cnt_error,16,1)    
-			CLOSE SYMMETRIC KEY sym_Key  
+			EXEC [proc_SymmetricKey_close]
 			RETURN
 		END
 
@@ -624,7 +631,7 @@ IF isnull(@row_cnt_error,'') = @errCode_lower
 	where t.doc_code = dt.doc_code collate database_default
 	--and (@Doc_Code = '' or T.Doc_Code = @Doc_Code)
 	Order by convert(varchar, DecryptByKey(t.Encrypt_Field1)) ASC	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 END
 GO

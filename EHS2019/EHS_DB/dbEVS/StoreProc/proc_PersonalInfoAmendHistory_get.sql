@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
 -- Modified by:		Winnie SUEN
 -- Modified date:	5 Dec 2018
@@ -43,8 +50,7 @@ CREATE PROCEDURE [dbo].[proc_PersonalInfoAmendHistory_get]
 AS
 BEGIN
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SET NOCOUNT ON;
 
@@ -91,7 +97,7 @@ OPEN SYMMETRIC KEY sym_Key
 			P.Doc_Code = @doc_code		
 	order by P.system_dtm desc
 
-CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 END
 GO
 

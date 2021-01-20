@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:		Clark YIP
 -- Create date: 2008 10 27
 -- Description:	Retrieve the deleted validated Temp Voucher Account list
@@ -62,8 +69,7 @@ DECLARE @tmp_VR_Delete table ( Voucher_Acc_ID char(15),
 -- =============================================
 	SET NOCOUNT ON;
 
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 insert into @tmp_VR_Delete ( Voucher_Acc_ID ,
 						Scheme_Code,
@@ -131,7 +137,7 @@ select
 	and VA.Record_Status='D' and (VA.Account_Purpose='C' or VA.Account_Purpose='V')
 	and P.Doc_Code = DT.Doc_Code
 	order by convert(varchar, DecryptByKey(P.Encrypt_Field1)) 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 	select	tvr.Voucher_Acc_ID ,
 			tvr.Scheme_Code,

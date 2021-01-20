@@ -7,6 +7,13 @@ set QUOTED_IDENTIFIER ON
 go
 
 -- =============================================
+-- Modification History
+-- CR# :			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	30 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- ============================================
+-- =============================================
 -- Author:		Dedrick Ng
 -- Create date: 2 Nov 2009
 -- Description:	Get Prepared Record to generate ImmD File 
@@ -22,8 +29,7 @@ BEGIN
 -- =============================================
 
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 -- =============================================
 -- Validation 
@@ -65,7 +71,7 @@ OPEN SYMMETRIC KEY sym_Key
 			--AND TVASL.Doc_Code = TVASH.Doc_Code
 		ORDER BY Voucher_Acc_ID ASC			
 
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 END
 GO

@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Winnie SUEN
 -- Create date:		22 Feb 2017
 -- CR No.:			CRE16-019
@@ -60,8 +67,7 @@ AS BEGIN
 	)
 
 
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 
 -- =============================================
@@ -100,7 +106,7 @@ AS BEGIN
 					) -- Exclude all end point fail for same action key
 		
 		
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 
 
 	-- Extract Data

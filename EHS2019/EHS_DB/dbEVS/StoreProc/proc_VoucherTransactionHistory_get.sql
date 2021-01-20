@@ -13,6 +13,13 @@ GO
 -- CR No.:			
 -- Description:		
 -- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Created by:		Winnie SUEN
 -- Created date:	29 Jan 2020
@@ -143,8 +150,7 @@ BEGIN
 -- Preparing Data 
 -- =============================================  
   
-	OPEN SYMMETRIC KEY sym_Key   
-	DECRYPTION BY ASYMMETRIC KEY asym_Key  
+	EXEC [proc_SymmetricKey_open] 
    
 	-- Retrieve VoucherAccount By Identity in different PersonalInformation Tables  
 
@@ -197,7 +203,7 @@ BEGIN
 				--AND IV.[Count_Benefit] = 'Y'  
 	END
   
-	CLOSE SYMMETRIC KEY sym_Key   
+	EXEC [proc_SymmetricKey_close]
    
 	-- Retrieve Transaction Related to the [Voucher_Acc_ID](s)  
    
@@ -236,8 +242,7 @@ BEGIN
 -- Return results  
 -- =============================================   
     
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	SELECT
 		TD.[Transaction_ID],
@@ -311,6 +316,7 @@ BEGIN
 									   @Performance_End_Dtm
 	END         
    
+   EXEC [proc_SymmetricKey_close]
 END  
 GO
 

@@ -8,13 +8,19 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Tommy TSE
 -- Modified date:	9 Sep 2011
 -- CR No.:			CRE11-024-01 (Enhancement on HCVS Extension Part 1)
 -- Description:		Profession related data is
 --					retrieved from table [profession]
 -- =============================================
-
 -- =============================================
 -- Author:		Pak Ho LEE
 -- Create date: 26 May 2008
@@ -42,8 +48,7 @@ BEGIN
 -- Initialization
 -- =============================================
 
-OPEN SYMMETRIC KEY sym_Key 
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+EXEC [proc_SymmetricKey_open]
 	
 -- =============================================
 -- Return results
@@ -89,7 +94,7 @@ WHERE
 
 ORDER BY SPS.Enrolment_Dtm ASC
 
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 END
 

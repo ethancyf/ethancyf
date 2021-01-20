@@ -9677,6 +9677,7 @@ EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_AuditlogSSO_add.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_EHR_ConnectFail_Check.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_InterfaceLog_GetTimeDiff_ByDtm.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_InterfaceLog_GetTimeDiff_ByMinuteBefore.sql -text
+EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_Interface_SystemParameters_Get.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_Interface_VersionControl_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_SymmetricKey_close.sql -text
 EHS2019/EHS_DB/dbEVS_InterfaceLog/StoreProc/proc_SymmetricKey_open.sql -text

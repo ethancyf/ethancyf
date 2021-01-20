@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	20 Aug 2020
 -- CR No.			CRE20-003 (Batch Upload)
@@ -130,8 +137,7 @@ AS BEGIN
 -- Return results
 -- =============================================
 	
-	OPEN SYMMETRIC KEY sym_Key
-	DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 
 	INSERT INTO StudentFileEntryStaging (
 		Student_File_ID,
@@ -254,7 +260,7 @@ AS BEGIN
 		@Manual_Add
 	)
 	
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	
 
 END

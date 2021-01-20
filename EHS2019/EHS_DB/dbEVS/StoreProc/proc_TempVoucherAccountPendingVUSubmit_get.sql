@@ -7,6 +7,12 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
 -- =============================================  
 -- Modification History      
 -- CR No.:		   CRE12-014  
@@ -266,8 +272,7 @@ end
 -- =============================================
 -- Return results
 -- =============================================
-	OPEN SYMMETRIC KEY sym_Key 
-		DECRYPTION BY ASYMMETRIC KEY asym_Key
+	EXEC [proc_SymmetricKey_open]
 		
 		
 select TOP ([dbo].[func_get_top_row](@result_limit_1st_enable,@result_limit_override_enable)) 
@@ -331,7 +336,7 @@ END TRY
 
 BEGIN CATCH    	    
 	SET @row_cnt_error = ERROR_MESSAGE()    
-	CLOSE SYMMETRIC KEY sym_Key
+	EXEC [proc_SymmetricKey_close]
 	RAISERROR (@row_cnt_error,16,1)    
 	RETURN
 END CATCH 
@@ -370,7 +375,7 @@ SELECT
 	create_by_bo
 From #tempResult
 	
-CLOSE SYMMETRIC KEY sym_Key
+EXEC [proc_SymmetricKey_close]
 
 drop table #tempAccount
 drop table #tempResult
