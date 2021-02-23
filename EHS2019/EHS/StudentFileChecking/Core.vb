@@ -1561,7 +1561,7 @@ Public Class ScheduleJob
         ' Clear existing eHS reocrd in [StudentFileEntryVaccine]
         BLL.StudentFileBLL.DeleteStudentFileEntryVaccine(eStudentFileLocation, TransactionDetailVaccineModel.ProviderClass.Private, udtStudent)
         ' Get vaccination record - eHS
-        cllnTranDetailVaccineEHS = (New EHSTransactionBLL).getTransactionDetailVaccine(udtStudent.PersonalInformation)
+        cllnTranDetailVaccineEHS = (New EHSTransactionBLL).getTransactionDetailVaccine(udtStudent.PersonalInformation, EHSTransactionBLL.Source.NoSession).Copy
 
         ' Get vaccination record - HA + DH (For Bar Only)
         ' CRE19-025 (Display of unmatched PV for batch upload under RVP) [Start][Winnie]
@@ -2069,7 +2069,7 @@ Public Class ScheduleJob
         ' Clear existing eHS reocrd in [StudentFileEntryVaccine]
         BLL.StudentFileBLL.DeleteStudentFileEntryVaccine(eStudentFileLocation, TransactionDetailVaccineModel.ProviderClass.Private, udtStudent)
         ' Get vaccination record - eHS
-        cllnTranDetailVaccineEHS = (New EHSTransactionBLL).getTransactionDetailVaccine(udtStudent.PersonalInformation)
+        cllnTranDetailVaccineEHS = (New EHSTransactionBLL).getTransactionDetailVaccine(udtStudent.PersonalInformation, EHSTransactionBLL.Source.NoSession).Copy
 
         ' Get vaccination record - HA + DH (For Bar Only)
         ' CRE19-025 (Display of unmatched PV for batch upload under RVP) [Start][Winnie]

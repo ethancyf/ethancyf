@@ -38,17 +38,16 @@ Namespace BLL
             Dim drRoleType As DataRow()
 
             For Each udtUserRole In udtHCVUUser.UserRoleCollection.Values
-
-                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-                ' ------------------------------------------------------------------------
                 ' Check User Role Type which is available in SubPlatform
                 dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
 
-                drRoleType = dtRoleType.Select("(Available_HCVU_SubPlatform = 'ALL' OR Available_HCVU_SubPlatform = '" + enumHCVUSubPlatform.ToString + "')" _
-                                                                 + "AND Role_Type = '" & udtUserRole.RoleType & "'")
+                ' CRE20-0XX (Immu record) [Start][Raiman]
+                ' ------------------------------------------------------------------------
+                ' change All setting in SubPlatform
+                Dim udtLoginBLL As New BLL.LoginBLL
 
-                If drRoleType.Length = 0 Then Continue For
-                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+                If udtLoginBLL.FilterRoleTypeByUser(dtRoleType, enumHCVUSubPlatform, udtUserRole.RoleType).Length = 0 Then Continue For
+                ' CRE20-0XX (Immu record) [End][Raiman]
 
                 drRoleTypeTaskList = dtRoleTypeTaskList.Select("Role_Type = '" & udtUserRole.RoleType & "'")
                 For Each dr In drRoleTypeTaskList

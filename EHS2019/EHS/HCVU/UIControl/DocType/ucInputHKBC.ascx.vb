@@ -65,24 +65,17 @@ Partial Public Class ucInputHKBC
         'Me.txtENameTips.Text = Me.GetGlobalResourceObject("Text", "EnameHint")
 
         'Get Documnet type full name
-        Dim strDocumentTypeFullName As String
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
         Dim udtDocTypeModelList As DocTypeModelCollection
         udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.HKBC).DocNameChi
-        Else
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.HKBC).DocName
-        End If
-        'lblDocumentType.Text = strDocumentTypeFullName
-        lblDocumentTypeOriginal.Text = strDocumentTypeFullName
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.lblDocumentTypeOriginal.Text = udtDocTypeModelList.Filter(DocTypeCode.HKBC).DocName(Session("Language").ToString())
 
         ' -------------------------- Creation ------------------------------
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            Me.lblNewRegNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.HKBC).DocIdentityDescChi
-        Else
-            Me.lblNewRegNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.HKBC).DocIdentityDesc
-        End If
+        Me.lblNewRegNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.HKBC).DocIdentityDesc(Session("Language").ToString())
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")

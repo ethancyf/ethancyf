@@ -10,6 +10,7 @@ Imports CustomControls
 Imports Common.ComObject
 Imports System.Data
 Imports Common.Component
+Imports HCSP.BLL
 
 Public MustInherit Class BasePage
     Inherits Common.ComObject.MasterPage
@@ -74,6 +75,53 @@ Public MustInherit Class BasePage
             Return _FunctCodeCommon
         End Get
     End Property
+
+    '' CRE20-0022 (Immu record) [Start][Chris YIM]
+    '' ---------------------------------------------------------------------------------------------------------
+    'Public ReadOnly Property IsClaimCOVID19() As Boolean
+    '    Get
+    '        Return (New SessionHandler).ClaimCOVID19GetFromSession()
+    '    End Get
+    'End Property
+    '' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property ClaimMode() As ClaimMode
+        Get
+            Dim enumClaimMode As ClaimMode = Common.Component.ClaimMode.All
+
+            If (New SessionHandler).ClaimCOVID19GetFromSession() Then
+                enumClaimMode = Common.Component.ClaimMode.COVID19
+            End If
+
+            Return enumClaimMode
+
+        End Get
+    End Property
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Nichole]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property ClaimFunctCode() As String
+        Get
+            Return (New SessionHandler).ClaimFunctCodeGetFromSession()
+        End Get
+    End Property
+    ' CRE20-0022 (Immu record) [End][Nichole]
+    
+    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property IsSkipClaimCompletePage() As Boolean
+        Get
+            If Me.ClaimMode = ClaimMode.COVID19 Then
+                Return False
+            End If
+
+            Return False
+        End Get
+    End Property
+    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
 #End Region
 

@@ -2107,6 +2107,22 @@ Namespace ComFunction
 
         Public Function generateTransactionNumber(ByVal strSchemeCode As String, Optional ByVal blnManualReimburse As Boolean = False) As String
 
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Overrides the scheme code to get the specific profile no.
+            Select Case strSchemeCode
+                Case Common.Component.Scheme.SchemeClaimModel.COVID19CVC, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
+                     Common.Component.Scheme.SchemeClaimModel.CIVSS
+
+                    strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC
+
+                Case Else
+                    'Nothing to do
+            End Select
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             Dim strRes As String = String.Empty
             Dim strDBPrefix As String = String.Empty
 

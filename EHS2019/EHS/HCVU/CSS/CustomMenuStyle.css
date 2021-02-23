@@ -106,7 +106,7 @@ nav li ul  {
 }
 .nav > li > ul {
     left: auto;    
-    min-width: 100%;
+    min-width: 125%;
     display: none;
 	border-right: #cccccc 1px solid;
 	border-top: #cccccc 1px solid;
@@ -161,7 +161,7 @@ nav li ul  {
 	background-image: url(../Images/menu/menu-item-middle.png);
 	background-repeat: repeat-y;
 	background-color: #ffffff;
-    padding: 3px 10px 4px 22px;     
+    padding: 3px 20px 4px 22px;    
     color: #666666; 
 }
      
@@ -171,7 +171,7 @@ nav li ul  {
 	background-image: url(../Images/menu/menu-item-middle.png);
 	background-repeat: repeat-y;
     background-color: #ffffff;
-    padding: 3px 10px 4px 22px;
+    padding: 3px 20px 4px 22px;
 	color: #C0C0C0;
 }
 

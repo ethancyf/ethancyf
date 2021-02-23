@@ -39,6 +39,12 @@ Partial Public Class ucReadOnlyDocumnetType
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
         Public Const OTHER As String = "ucReadOnlyDocumentType_OTHER"
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+        ' CRE20-0022 (Immu record) [Start][Martin]
+        Public Const CCIC As String = "ucReadOnlyDocumentType_CCIC"
+        Public Const ROP140 As String = "ucReadOnlyDocumentType_ROP140"
+        Public Const PASS As String = "ucReadOnlyDocumentType_PASS"
+
+        ' CRE20-0022 (Immu record) [End][Martin]
     End Class
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -140,6 +146,23 @@ Partial Public Class ucReadOnlyDocumnetType
                     udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyOTHER.ascx", strFolderPath))
                     udcReadOnlyDocumentType.ID = DocumentControlID.OTHER
                     udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(Me._documentType)
+
+                    ' CRE20-0022 (Immu record) [Start][Martin]
+                Case DocTypeModel.DocTypeCode.CCIC
+                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyCCIC.ascx", strFolderPath))
+                    udcReadOnlyDocumentType.ID = DocumentControlID.CCIC
+                    udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
+
+                Case DocTypeModel.DocTypeCode.ROP140
+                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyROP140.ascx", strFolderPath))
+                    udcReadOnlyDocumentType.ID = DocumentControlID.ROP140
+                    udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+
+                Case DocTypeModel.DocTypeCode.PASS
+                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyPASS.ascx", strFolderPath))
+                    udcReadOnlyDocumentType.ID = DocumentControlID.PASS
+                    udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
+                    ' CRE20-0022 (Immu record) [End][Martin]
 
             End Select
             udcReadOnlyDocumentType.EHSAccount = Me._udtEHSAccount

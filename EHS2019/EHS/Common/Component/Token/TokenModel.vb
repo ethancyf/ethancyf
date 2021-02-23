@@ -1,3 +1,5 @@
+Imports Common.ComFunction
+
 Namespace Component.Token
     <Serializable()> Public Class TokenModel
 
@@ -363,21 +365,36 @@ Namespace Component.Token
                 If blnShowDesc Then
                     ' To get the description of Token Issue By from [StaticData]
                     udtStaticDataBLL = New Common.Component.StaticData.StaticDataBLL()
-                    udtStaticData = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strProject)
-                    Select Case strCultureLanguage
-                        Case Common.Component.CultureLanguage.English
-                            strIssueBy = CStr(udtStaticData.DataValue)
 
-                        Case Common.Component.CultureLanguage.TradChinese
-                            strIssueBy = CStr(udtStaticData.DataValueChi)
+                    'CRE20-018 Stop Token Sharing [Start][Nichole]
+                    If (New TokenBLL).CheckToken(strTokenSN.Trim()) Then
+                        Select Case strCultureLanguage
+                            Case Common.Component.CultureLanguage.English
+                                strIssueBy = HttpContext.GetGlobalResourceObject("Text", "TokenEHR", New System.Globalization.CultureInfo(CultureLanguage.English))
+                            Case Common.Component.CultureLanguage.TradChinese
+                                strIssueBy = HttpContext.GetGlobalResourceObject("Text", "TokenEHR", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+                            Case ""
+                                strIssueBy = HttpContext.GetGlobalResourceObject("Text", "TokenEHR", New System.Globalization.CultureInfo(CultureLanguage.English))
+                        End Select
+                    Else
+                        'CRE20-018 Stop Token Sharing [End][Nichole]
+                        udtStaticData = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strProject)
+                        Select Case strCultureLanguage
+                            Case Common.Component.CultureLanguage.English
+                                strIssueBy = CStr(udtStaticData.DataValue)
 
-                        Case ""
-                            strIssueBy = CStr(udtStaticData.DataValue)
+                            Case Common.Component.CultureLanguage.TradChinese
+                                strIssueBy = CStr(udtStaticData.DataValueChi)
 
-                        Case Else
-                            Throw New Exception("Error: Class = [Common.Component.Token.TokenModel], Method = [DisplayTokenSerialNo], Message = Input Param - [strCultureLanguage] is invalid")
+                            Case ""
+                                strIssueBy = CStr(udtStaticData.DataValue)
 
-                    End Select
+                            Case Else
+                                Throw New Exception("Error: Class = [Common.Component.Token.TokenModel], Method = [DisplayTokenSerialNo], Message = Input Param - [strCultureLanguage] is invalid")
+
+                        End Select
+                    End If
+
 
                     'CRE15-019 (Rename PPI-ePR to eHRSS) [Start][Chris YIM]
                     '-----------------------------------------------------------------------------------------
@@ -389,12 +406,13 @@ Namespace Component.Token
                         strTokenSN_Result += " " + strDesc
                     Else
                         ' To apply the format of the description
-                        strDesc = HttpContext.GetGlobalResourceObject("Text", "TokenIssueBy_Desc")
-                        strDesc = strDesc.Replace("%s", strIssueBy)
-                        strTokenSN_Result += " " + strDesc
+                        If strIssueBy.Trim() IsNot String.Empty Then 'CRE20-018 Stop Token Sharing  
+                            strDesc = HttpContext.GetGlobalResourceObject("Text", "TokenIssueBy_Desc")
+                            strDesc = strDesc.Replace("%s", strIssueBy)
+                            strTokenSN_Result += " " + strDesc
+                        End If
                     End If
-
-                End If
+            End If
             End If
 
             Return strTokenSN_Result
@@ -432,6 +450,7 @@ Namespace Component.Token
                     ' To get the description of Token Issue By from [StaticData]
                     udtStaticDataBLL = New Common.Component.StaticData.StaticDataBLL()
                     udtStaticData = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strProject)
+
                     Select Case strCultureLanguage
                         Case Common.Component.CultureLanguage.English
                             strIssueBy = CStr(udtStaticData.DataValue)
@@ -453,6 +472,7 @@ Namespace Component.Token
 
                     End Select
 
+                    
                     ' To apply the format of the description
                     strDesc = HttpContext.GetGlobalResourceObject("Text", "TokenIssueBy_Desc")
                     strDesc = strDesc.Replace("%s", strIssueBy)

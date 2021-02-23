@@ -3941,11 +3941,16 @@ Partial Public Class VaccinationFileRectification ' 010414
         Dim lstSFDocType As List(Of StudentFileDocumentType) = (New JavaScriptSerializer).Deserialize(Of List(Of StudentFileDocumentType))(strMapping)
         Dim udtStudentFileSetting As StudentFileSetting = StudentFileBLL.GetSetting(udtStudentFileHeader.SchemeCode)
         Dim udtStudentFileUploadErrorDesc As StudentFileUploadErrorDesc = StudentFileBLL.GetUploadErrorDesc
-        Dim udtDocTypeList As DocTypeModelCollection = (New DocTypeBLL).getAllDocType
+
         Dim dtPerm As DataTable = Session(SESS.DetailEntryDT)
         Dim dicClassNameNoCount As New Dictionary(Of String, Integer)
         Dim udtValidator As New Common.Validation.Validator
         Dim dtmNow As Date = (New GeneralFunction).GetSystemDateTime.Date
+
+        ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
+        ' -------------------------------------------------------------------------------
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeByScheme(udtStudentFileHeader.SchemeCode)
+        ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[End][Raiman]
 
         For Each n As StudentFileDocumentType In lstSFDocType
             n.SFDocCode = Regex.Replace(n.SFDocCode, "[^a-zA-Z]", String.Empty).ToLower
@@ -4271,11 +4276,14 @@ Partial Public Class VaccinationFileRectification ' 010414
             '------------------------
             If dtmServiceReceiveDtm.HasValue Then
                 If Not IsDBNull(dr("DOB")) AndAlso strDocCode <> String.Empty Then
-                    Dim udtDocType As DocTypeModel = udtDocTypeList.Filter(strDocCode)
+                    ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
+                    ' -------------------------------------------------------------------------------
+                    Dim udtSchemeDocType As SchemeDocTypeModel = udtSchemeDocTypeList.FilterDocCode(strDocCode)(0)
 
-                    If Not IsNothing(udtDocType) AndAlso udtDocType.IsExceedAgeLimit(dr("DOB"), dtmServiceReceiveDtm.Value) Then
+                    If Not IsNothing(udtSchemeDocType) AndAlso udtSchemeDocType.IsExceedAgeLimit(dr("DOB"), dtmServiceReceiveDtm.Value) Then
                         lstUploadWarning.Add(udtStudentFileUploadErrorDesc.DocType_ExceedAgeLimit)
                     End If
+                    ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[End][Raiman]
 
                 End If
             End If
@@ -4444,10 +4452,14 @@ Partial Public Class VaccinationFileRectification ' 010414
 
                     If Not IsDBNull(drPerm("DOB")) Then
                         If dtmServiceReceiveDtm.HasValue Then
-                            Dim udtDocType As DocTypeModel = udtDocTypeList.Filter(strDocCode)
-                            If Not IsNothing(udtDocType) AndAlso udtDocType.IsExceedAgeLimit(drPerm("DOB"), dtmServiceReceiveDtm.Value) Then
+                            ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
+                            ' -------------------------------------------------------------------------------
+                            Dim udtSchemeDocType As SchemeDocTypeModel = udtSchemeDocTypeList.FilterDocCode(strDocCode)(0)
+                            If Not IsNothing(udtSchemeDocType) AndAlso udtSchemeDocType.IsExceedAgeLimit(drPerm("DOB"), dtmServiceReceiveDtm.Value) Then
                                 lstUploadWarning.Add(udtStudentFileUploadErrorDesc.DocType_ExceedAgeLimit)
                             End If
+                            ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[End][Raiman]
+
                         End If
                     End If
 

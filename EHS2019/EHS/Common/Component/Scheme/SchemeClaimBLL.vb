@@ -3,8 +3,12 @@ Imports Common.DataAccess
 Imports Common.ComFunction
 Imports Common.Component.ClaimCategory
 Imports Common.Component.EHSTransaction
+Imports Common.Component.PracticeSchemeInfo
+Imports Common.Component.Practice
 Imports Common.Component.SchemeInformation
 Imports System.Xml
+Imports Common.Component.DocType
+Imports Common.Component.EHSAccount.EHSAccountModel
 
 Namespace Component.Scheme
     Public Class SchemeClaimBLL
@@ -14,13 +18,9 @@ Namespace Component.Scheme
             Public Const CACHE_ALL_SubsidizeGroupClaim As String = "SchemeClaimBLL_ALL_SubsidizeGroupClaim"
             Public Const CACHE_ALL_SchemeEnrolClaimMap As String = "SchemeClaimBLL_ALL_SchemeEnrolClaimMap"
             Public Const CACHE_ALL_SubsidizeEnrolClaimMap As String = "SchemeClaimBLL_ALL_SubsidizeEnrolClaimMap"
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
             Public Const CACHE_ALL_SubsidizeFee As String = "SchemeClaimBLL_ALL_SubsidizeFee"
-            ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
-            'INT13-0033 Missed cache insert [Start][Karl]
             Public Const CACHE_ALL_SubsidizeGroupClaimAll As String = "SchemeClaimBLL_ALL_SubsidizeGroupClaimAll"
             Public Const CACHE_ALL_SchemeClaimAll As String = "SchemeClaimBLL_ALL_SchemeClaimAll"
-            'INT13-0033 Missed cache insert [End][Karl]
         End Class
 
 #Region "Table Schema Field"
@@ -285,6 +285,34 @@ Namespace Component.Scheme
             Return udtSchemeClaimModelList
         End Function
 
+        ''' <summary>
+        ''' Convert Subsidize Enrol to Subsidize Claim List (Sort by Display Seq)
+        ''' </summary>
+        ''' <param name="strSchemeCodeForEnrol"></param>
+        ''' <param name="strSubsidizeCodeForEnrol"></param>
+        ''' <param name="lstSchemeCodeForClaim"></param>
+        ''' <param name="lstSubsidizeCodeForClaim"></param>
+        ''' <remarks></remarks>
+        Public Sub ConvertSubsidizeClaimCodeFromSubsidizeEnrolCode(ByVal strSchemeCodeForEnrol As String, _
+                                                                        ByVal strSubsidizeCodeForEnrol As String, _
+                                                                        ByRef lstSchemeCodeForClaim As List(Of String), _
+                                                                        ByRef lstSubsidizeCodeForClaim As List(Of String))
+
+            Dim dtSubsidizeMap As DataTable = Me.getAllActiveSubsidizeEnrolClaimMapCache()
+
+            Dim drSubsidizeMap As DataRow() = dtSubsidizeMap.Select(tableSubsidizeEnrolClaimMap.Scheme_Code_Enrol + "='" + strSchemeCodeForEnrol.Trim() + "' AND " + _
+                                                           tableSubsidizeEnrolClaimMap.Subsidize_Code_Enrol + "= '" + strSubsidizeCodeForEnrol.Trim() + "'")
+
+            For Each dr As DataRow In drSubsidizeMap
+                Dim strSchemeCode As String = dr(tableSubsidizeEnrolClaimMap.Scheme_Code_Claim).ToString().Trim()
+                Dim strSubsidizeCode As String = dr(tableSubsidizeEnrolClaimMap.Subsidize_Code_Claim).ToString().Trim()
+
+                lstSchemeCodeForClaim.Add(strSchemeCode)
+                lstSubsidizeCodeForClaim.Add(strSubsidizeCode)
+            Next
+
+        End Sub
+
 #Region "Search Function"
 
         ''' <summary>
@@ -297,7 +325,7 @@ Namespace Component.Scheme
         ''' <param name="udtSchemeClaimModelCollection"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function searchEligibleClaimScheme(ByVal udtEHSAccount As EHSAccount.EHSAccountModel, ByVal strDocCode As String, ByVal udtSchemeClaimModelCollection As SchemeClaimModelCollection) As SchemeClaimModelCollection
+        Public Function searchEligibleAndExceedDocumentClaimScheme(ByVal udtEHSAccount As EHSAccount.EHSAccountModel, ByVal strDocCode As String, ByVal udtSchemeClaimModelCollection As SchemeClaimModelCollection) As SchemeClaimModelCollection
 
             Dim udtGenFunct As New GeneralFunction()
             Dim dtmCurrentDateTime As Date = udtGenFunct.GetSystemDateTime()
@@ -325,7 +353,7 @@ Namespace Component.Scheme
                     udtGenFunct.getSystemParameter("CheckEligibilityTransDate", strCheckPeriod, strDummy)
                     Dim dtmCheckDate As DateTime = CDate(strCheckPeriod)
 
-                    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
+                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                     ' --------------------------------------------------------------------------------------
                     If (udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.CIVSS OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.EVSS OrElse _
@@ -334,13 +362,16 @@ Namespace Component.Scheme
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.PIDVSS OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.VSS OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.ENHVSSO OrElse _
-                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.PPP _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.PPP OrElse _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19 OrElse _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19CBD OrElse _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP _
                         ) AndAlso dtmCheckDate <= dtmCurrentDateTime Then
 
                         udtTranBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(strDocCode, udtEHSAccount.getPersonalInformation(strDocCode).IdentityNum)
 
                     End If
-                    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                     Dim udtEligibleResult As ClaimRules.ClaimRulesBLL.EligibleResult = udtClaimRulesBLL.CheckEligibilityFromEHSClaimSearch(udtSchemeClaimModel, udtEHSAccount.getPersonalInformation(strDocCode), dtmCurrentDate, udtTranBenefitList)
 
@@ -360,7 +391,42 @@ Namespace Component.Scheme
                             End If
                         Next
 
-                        udtReturnSchemeClaimModelList.Add(udtResSchemeClaimModel)
+                        ' CRE20-0XX (Immu record) [Start][Raiman] --the scheme must IsEligible and ExceedDocumentLimit
+                        ' -----------------------------------------------------------------------------------------
+                        'Dim blnExceedDocument As Boolean = udtClaimRulesBLL.CheckExceedDocumentLimit(udtSchemeClaimModel.SchemeCode, strDocCode, udtEHSAccount.getPersonalInformation(strDocCode).DOB, udtEHSAccount.getPersonalInformation(strDocCode).ExactDOB, dtmCurrentDate)
+
+                        Dim personalInformation As EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(strDocCode)
+                        Dim blnExceedDocument As Boolean = False
+
+                        Select Case strDocCode
+                            Case DocTypeModel.DocTypeCode.HKIC, _
+                                DocTypeModel.DocTypeCode.HKBC, _
+                                DocTypeModel.DocTypeCode.ADOPC, _
+                                DocTypeModel.DocTypeCode.REPMT, _
+                                DocTypeModel.DocTypeCode.ID235B, _
+                                DocTypeModel.DocTypeCode.VISA, _
+                                DocTypeModel.DocTypeCode.DI, _
+                                DocTypeModel.DocTypeCode.OW, _
+                                DocTypeModel.DocTypeCode.CCIC, _
+                                DocTypeModel.DocTypeCode.RFNo8, _
+                                DocTypeModel.DocTypeCode.PASS
+                                'non EC case
+                                blnExceedDocument = udtClaimRulesBLL.CheckExceedDocumentLimitFromEHSClaimSearch(udtSchemeClaimModel.SchemeCode, strDocCode, personalInformation.DOB, personalInformation.ExactDOB, dtmCurrentDate)
+
+                            Case DocTypeModel.DocTypeCode.EC
+                                'EC case
+                                If personalInformation.ExactDOB = Common.Component.EHSAccount.EHSAccountModel.ExactDOBClass.AgeAndRegistration AndAlso personalInformation.ECAge.HasValue Then
+                                    blnExceedDocument = udtClaimRulesBLL.CheckExceedDocumentLimitFromEHSClaimSearch(udtSchemeClaimModel.SchemeCode, strDocCode, personalInformation.ECAge.Value, personalInformation.ECDateOfRegistration.Value, dtmCurrentDate)
+                                Else
+                                    blnExceedDocument = udtClaimRulesBLL.CheckExceedDocumentLimitFromEHSClaimSearch(udtSchemeClaimModel.SchemeCode, strDocCode, personalInformation.DOB, personalInformation.ExactDOB, dtmCurrentDate)
+                                End If
+                        End Select
+
+                        If Not (blnExceedDocument) Then
+                            udtReturnSchemeClaimModelList.Add(udtResSchemeClaimModel)
+                        End If
+                        ' CRE20-0XX (Immu record) [End][Raiman]
+
                     End If
                 End If
             Next
@@ -1294,7 +1360,7 @@ Namespace Component.Scheme
             Return udtSchemeClaimModelCollection
         End Function
         ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
-        
+
 #End Region
 
 #Region "Cache Function"
@@ -1816,6 +1882,175 @@ Namespace Component.Scheme
             End If
             Return dt
         End Function
+#End Region
+
+#Region "Filter Function"
+        Public Function FilterPracticeSchemeInfo(ByVal udtPracticeList As PracticeModelCollection, _
+                                                   ByVal intPracticeID As Integer, _
+                                                   ByVal enumClaimMode As ClaimMode) As PracticeSchemeInfoModelCollection
+
+            Dim udtFilterPracticeSchemeInfoList As New PracticeSchemeInfoModelCollection
+
+            Select Case enumClaimMode
+                Case ClaimMode.COVID19
+                    udtFilterPracticeSchemeInfoList = FilterPracticeSchemeInfoForCOVID19(udtPracticeList, intPracticeID, enumClaimMode)
+
+                Case ClaimMode.DHC
+                    udtFilterPracticeSchemeInfoList = FilterPracticeSchemeInfoForDHC(udtPracticeList, intPracticeID)
+
+                Case ClaimMode.All
+                    udtFilterPracticeSchemeInfoList = FilterPracticeSchemeInfoForCOVID19(udtPracticeList, intPracticeID, enumClaimMode)
+
+            End Select
+
+            Return udtFilterPracticeSchemeInfoList
+
+        End Function
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function FilterPracticeSchemeInfoForCOVID19(ByVal udtPracticeList As PracticeModelCollection, _
+                                                           ByVal intPracticeID As Integer, _
+                                                           ByVal enumClaimMode As ClaimMode) As PracticeSchemeInfoModelCollection
+            Dim udtSubsidizeBLL As New SubsidizeBLL
+            Dim udtFilterPracticeSchemeInfoList As New PracticeSchemeInfoModelCollection
+
+            If enumClaimMode = ClaimMode.COVID19 Then
+                For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeList(intPracticeID).PracticeSchemeInfoList.Values
+                    Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtPracticeSchemeInfo.SubsidizeCode).ToString.Trim
+
+                    If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                        If udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                                udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist OrElse _
+                                udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend Then
+
+                            udtFilterPracticeSchemeInfoList.Add(New PracticeSchemeInfoModel(udtPracticeSchemeInfo))
+
+                        End If
+                    End If
+                Next
+            Else
+                For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeList(intPracticeID).PracticeSchemeInfoList.Values
+                    Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtPracticeSchemeInfo.SubsidizeCode).ToString.Trim
+
+                    If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                        If udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                                udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist OrElse _
+                                udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend Then
+
+                            udtFilterPracticeSchemeInfoList.Add(New PracticeSchemeInfoModel(udtPracticeSchemeInfo))
+
+                        End If
+                    End If
+                Next
+            End If
+
+            Return udtFilterPracticeSchemeInfoList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function FilterPracticeSchemeInfoForDHC(ByVal udtPracticeList As PracticeModelCollection, _
+                                                        ByVal intPracticeID As Integer) As PracticeSchemeInfoModelCollection
+
+            Dim udtSubsidizeBLL As New SubsidizeBLL
+            Dim udtFilterPracticeSchemeInfoList As New PracticeSchemeInfoModelCollection
+
+            For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeList(intPracticeID).PracticeSchemeInfoList.Values
+                Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtPracticeSchemeInfo.SubsidizeCode).ToString.Trim
+
+                If udtPracticeSchemeInfo.ProvideService AndAlso strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.EHCVS Then
+                    If udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.Active OrElse _
+                            udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingDelist OrElse _
+                            udtPracticeSchemeInfo.RecordStatus = PracticeSchemeInfoMaintenanceDisplayStatus.ActivePendingSuspend Then
+
+                        udtFilterPracticeSchemeInfoList.Add(New PracticeSchemeInfoModel(udtPracticeSchemeInfo))
+
+                    End If
+                End If
+            Next
+
+            Return udtFilterPracticeSchemeInfoList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterSubsidizeGroupClaim(ByVal udtSchemeClaim As SchemeClaimModel, _
+                                                  ByVal enumClaimMode As ClaimMode) As SubsidizeGroupClaimModelCollection
+
+            Dim udtFilterSubsidizeGroupClaimList As New SubsidizeGroupClaimModelCollection
+
+            Select Case enumClaimMode
+                Case ClaimMode.COVID19
+                    udtFilterSubsidizeGroupClaimList = FilterSubsidizeGroupClaimForCOVID19(udtSchemeClaim, enumClaimMode)
+
+                Case ClaimMode.DHC
+                    udtFilterSubsidizeGroupClaimList = FilterSubsidizeGroupClaimForDHC(udtSchemeClaim)
+
+                Case ClaimMode.All
+                    udtFilterSubsidizeGroupClaimList = FilterSubsidizeGroupClaimForCOVID19(udtSchemeClaim, enumClaimMode)
+
+            End Select
+
+            Return udtFilterSubsidizeGroupClaimList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function FilterSubsidizeGroupClaimForCOVID19(ByVal udtSchemeClaim As SchemeClaimModel,
+                                                             ByVal enumClaimMode As ClaimMode) As SubsidizeGroupClaimModelCollection
+
+            Dim udtSubsidizeBLL As New SubsidizeBLL
+            Dim udtFilterSubsidizeGroupClaimList As New SubsidizeGroupClaimModelCollection
+
+            If enumClaimMode = ClaimMode.COVID19 Then
+                For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
+                    Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtSubsidizeGroupClaim.SubsidizeCode).ToString.Trim
+
+                    If strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                        udtFilterSubsidizeGroupClaimList.Add(New SubsidizeGroupClaimModel(udtSubsidizeGroupClaim))
+                    End If
+                Next
+            Else
+                For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
+                    Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtSubsidizeGroupClaim.SubsidizeCode).ToString.Trim
+
+                    If strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                        udtFilterSubsidizeGroupClaimList.Add(New SubsidizeGroupClaimModel(udtSubsidizeGroupClaim))
+                    End If
+                Next
+            End If
+
+            Return udtFilterSubsidizeGroupClaimList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Function FilterSubsidizeGroupClaimForDHC(ByVal udtSchemeClaim As SchemeClaimModel) As SubsidizeGroupClaimModelCollection
+
+            Dim udtSubsidizeBLL As New SubsidizeBLL
+            Dim udtFilterSubsidizeGroupClaimList As New SubsidizeGroupClaimModelCollection
+
+            For Each udtSubsidizeGroupClaim As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
+                Dim strSubsidizeItemCode As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtSubsidizeGroupClaim.SubsidizeCode).ToString.Trim
+
+                If strSubsidizeItemCode IsNot Nothing AndAlso strSubsidizeItemCode.ToString.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.EHCVS Then
+                    udtFilterSubsidizeGroupClaimList.Add(New SubsidizeGroupClaimModel(udtSubsidizeGroupClaim))
+                End If
+            Next
+
+            Return udtFilterSubsidizeGroupClaimList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
     End Class

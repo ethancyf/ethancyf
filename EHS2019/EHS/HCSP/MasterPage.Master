@@ -13,6 +13,7 @@
     <link href="CSS/ComboBoxStyle.css" rel="stylesheet" type="text/css" />
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
 
+    <script language="javascript" src="../JS/jquery-3.4.1.min.js" type="text/javascript"></script>   
     <script language="javascript" src="../JS/Common.js?ver=2" type="text/javascript" ></script>
     <script language="Javascript" src="../JS/ideasComboLib4Ra.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -33,6 +34,14 @@
             if (Page.get_isInAsyncPostBack()) {
                 args.set_cancel(true);
             }
+        }
+
+        function RemoveUsedBlockScript(guid) {
+            $("script").each(function () {
+                var _this = $(this);
+                if (_this.html().indexOf(guid) > -1)
+                    _this.remove();
+            });
         }
 
     </script>

@@ -26,6 +26,8 @@ Partial Public Class _Error
         Select Case strSubPlatform
             Case EnumHCVUSubPlatform.CC.ToString
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBannerCallCentre").ToString + ")"
+            Case EnumHCVUSubPlatform.VC
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBannerVaccinationCentre").ToString + ")"
             Case Else
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBanner").ToString + ")"
         End Select

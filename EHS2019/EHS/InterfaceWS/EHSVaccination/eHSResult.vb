@@ -97,6 +97,11 @@ Namespace EHSVaccination
         Private Const TAG_VACCINE_CODE As String = "vaccine_code"
         Private Const TAG_VACCINE_DESC As String = "vaccine_desc"
         Private Const TAG_VACCINE_DESC_CHINESE As String = "vaccine_desc_chinese"
+        ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+        ' ----------------------------------------------------------
+        Private Const TAG_VACCINE_LOT_NO As String = "vaccine_lot_no"
+        ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
         Private Const TAG_DOSE_SEQ_CODE As String = "dose_seq_code"
         Private Const TAG_DOSE_SEQ_DESC As String = "dose_seq_desc"
         Private Const TAG_DOSE_SEQ_DESC_CHINESE As String = "dose_seq_desc_chinese"
@@ -105,6 +110,7 @@ Namespace EHSVaccination
         Private Const TAG_LOCATION_CHINESE As String = "location_chinese"
         Private Const TAG_SOURCE_SYSTEM As String = "source_system"
         Private Const TAG_ONSITE As String = "onsite"
+
         ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
         ' ----------------------------------------------------------
         Private Const TAG_PATIENT_LIST As String = "patient_list"
@@ -673,6 +679,17 @@ Namespace EHSVaccination
                 nodeVR.AppendChild(nodeTmp)
             End If
 
+            ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+            ' ----------------------------------------------------------
+            ' vaccine lot no.
+            Dim strVaccinLotNo As String = drVaccinationRecord(TAG_VACCINE_LOT_NO)
+            If strVaccinLotNo <> String.Empty Then
+                nodeTmp = xml.CreateElement(TAG_VACCINE_LOT_NO)
+                nodeTmp.InnerText = strVaccinLotNo
+                nodeVR.AppendChild(nodeTmp)
+            End If
+            ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
             ' dose_seq_code
             nodeTmp = xml.CreateElement(TAG_DOSE_SEQ_CODE)
             nodeTmp.InnerText = drVaccinationRecord(TAG_DOSE_SEQ_CODE)
@@ -706,7 +723,7 @@ Namespace EHSVaccination
             nodeTmp.InnerText = drVaccinationRecord(TAG_LOCATION_CHINESE)
             nodeVR.AppendChild(nodeTmp)
 
-            ' location_chinese
+            ' on site
             nodeTmp = xml.CreateElement(TAG_ONSITE)
             nodeTmp.InnerText = drVaccinationRecord(TAG_ONSITE)
             nodeVR.AppendChild(nodeTmp)

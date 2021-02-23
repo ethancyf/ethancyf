@@ -9,10 +9,25 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	05 Jan 2021
+-- CR No.:			CRE20-022 (Immu record)
+-- Description:		Add [VaccineLotNo]
+--					Add share of benefit under doc. HKIC, EC, HKBC, CCIC, ROP140
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
 -- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	17 Nov 2020
+-- CR No.:			CRE20-0XX (CIMS2)
+-- Description:		Support source system CIMS2
 -- =============================================
 -- =============================================
 -- Modification History
@@ -149,9 +164,14 @@ DECLARE @IdentityNum2 varchar(20)
  -- Filter not support document type (HA CMS Support HKIC/HKID/HKBC/CE only)  
  -- Filter not support document type (DH CIMS Support HKIC/HKID/HKBC/CE/"Doc/I"/REPMT/VISA/ADOPC only )  
   -- =============================================  
+IF LTRIM(RTRIM(@In_Target_System)) = 'CIMS2'
+BEGIN
+	SET @In_Target_System = 'CIMS'
+END
+
  IF LTRIM(RTRIM(@In_Target_System)) = 'CMS' 
  BEGIN	
-	IF @In_Doc_Code<>'HKID' AND @In_Doc_Code<>'HKIC' AND @In_Doc_Code<>'HKBC' AND @In_Doc_Code<>'EC' 
+	IF @In_Doc_Code<>'HKID' AND @In_Doc_Code<>'HKIC' AND @In_Doc_Code<>'HKBC' AND @In_Doc_Code<>'EC' AND @In_Doc_Code<>'CCIC' AND @In_Doc_Code<>'ROP140' 
 	BEGIN   
 		SET @Out_PatientResultCode = 1 -- Patient NOT found  
 		SET @Out_VaccineResultCode = 2 -- No record returned  
@@ -159,9 +179,9 @@ DECLARE @IdentityNum2 varchar(20)
 		RETURN
 	END
  END
- ELSE IF LTRIM(RTRIM(@In_Target_System)) = 'CIMS' 
+ ELSE IF LTRIM(RTRIM(@In_Target_System)) = 'CIMS'
  BEGIN
-	IF @In_Doc_Code NOT IN ('HKID','HKIC','HKBC','EC','DOCI','REPMT','VISA','ADOPC')
+	IF @In_Doc_Code NOT IN ('HKID','HKIC','HKBC','EC','DOCI','REPMT','VISA','ADOPC','OC','HKP','CCIC','ROP140','PASS')
 	BEGIN   
 		SET @Out_PatientResultCode = 1 -- Patient NOT found  
 		SET @Out_VaccineResultCode = 2 -- No record returned  
@@ -229,7 +249,7 @@ DECLARE  @temptable TABLE
 	Sex char(1),  
 	Date_of_Issue datetime,  
 	Account_Status char(1),  
-	Doc_Code char(20) COLLATE Chinese_Taiwan_Stroke_CI_AS,
+	Doc_Code char(20),
 	WithClaim bit,
 	DemographicUnmatched bit
 )  
@@ -237,8 +257,8 @@ DECLARE  @temptable TABLE
  -- Create table for exact match account ID  
 DECLARE @Account TABLE  
 (   
-	Acc_Type CHAR(1),  
-	Voucher_Acc_ID char(15) COLLATE Chinese_Taiwan_Stroke_CI_AS  
+	Acc_Type		CHAR(1),  
+	Voucher_Acc_ID	CHAR(15)
 )  
  --CREATE INDEX IX_VAT on @temptable (Voucher_Acc_ID, Doc_Code)  
   
@@ -246,19 +266,21 @@ DECLARE @Account TABLE
  -- Create table for processing vaccine records  
 CREATE TABLE #tempVaccine   
  (  
-	Acc_Type CHAR(1),  
-	Voucher_Acc_ID char(15) COLLATE Chinese_Taiwan_Stroke_CI_AS,
-	record_creation_dtm DATETIME NOT NULL,  
-	injection_date DATETIME NOT NULL,  
-	vaccine_code VARCHAR(25)NOT NULL,  
-	vaccine_desc VARCHAR(100)NOT NULL,  
-	vaccine_desc_chinese NVARCHAR(100)NOT NULL,  
-	dose_seq_code VARCHAR(20)NOT NULL,  
-	dose_seq_desc VARCHAR(100)NOT NULL,  
-	dose_seq_desc_chinese NVARCHAR(100)NOT NULL,  
-	provider NVARCHAR(20) NOT NULL,  
-	location NVARCHAR(100)NOT NULL,  
-	location_chinese NVARCHAR(100)NOT NULL  
+	Acc_Type				CHAR(1),  
+	Voucher_Acc_ID			CHAR(15),
+	Record_Creation_Dtm		DATETIME		NOT NULL,  
+	Injection_Date			DATETIME		NOT NULL,  
+	Vaccine_Code			VARCHAR(25)		NOT NULL,  
+	Vaccine_Desc			VARCHAR(100)	NOT NULL,  
+	Vaccine_Desc_Chinese	NVARCHAR(100)	NOT NULL,  
+	Dose_Seq_Code			VARCHAR(20)		NOT NULL,  
+	Dose_Seq_Desc			VARCHAR(100)	NOT NULL,  
+	Dose_Seq_Desc_Chinese	NVARCHAR(100)	NOT NULL,  
+	[Provider]				NVARCHAR(20)	NOT NULL,  
+	[Location]				NVARCHAR(100)	NOT NULL,  
+	Location_Chinese		NVARCHAR(100)	NOT NULL,
+	Vaccine_Brand			VARCHAR(50),
+	Vaccine_Lot_No			VARCHAR(50)
  )  
   
  DECLARE @AvailableDocCode TABLE  
@@ -268,11 +290,47 @@ CREATE TABLE #tempVaccine
 
  IF LTRIM(RTRIM(@In_Target_System)) = 'CIMS'
  BEGIN
-	IF @In_Doc_Code='HKID' OR @In_Doc_Code='HKIC' OR @In_Doc_Code='HKBC'  OR @In_Doc_Code='EC' 
+	IF @In_Doc_Code='HKID' OR @In_Doc_Code='HKIC' OR @In_Doc_Code='HKBC' OR @In_Doc_Code='EC' OR @In_Doc_Code='ROP140'
 	BEGIN
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKIC')  
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKBC')  
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('EC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('CCIC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('ROP140')
+	END
+	ELSE IF @In_Doc_Code='CCIC'
+	BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKIC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKBC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('EC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('CCIC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('ROP140')
+
+		IF LEN(@In_IdentityNum) = 8 
+		BEGIN
+			SET @In_IdentityNum = ' ' +  @In_IdentityNum
+		END
+	END
+	ELSE IF @In_Doc_Code='HKP'
+	BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKP')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('PASS')
+	END
+	ELSE IF @In_Doc_Code='VISA'
+	BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('VISA')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('PASS')
+	END
+	ELSE IF @In_Doc_Code='PASS'
+	BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKP')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('VISA')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('PASS')
+	END
+	ELSE IF @In_Doc_Code='OC'
+	BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('OC')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('PASS')
 	END
 	ELSE
 	BEGIN 	  
@@ -281,17 +339,19 @@ CREATE TABLE #tempVaccine
 	END
  END
  ELSE IF LTRIM(RTRIM(@In_Target_System)) = 'CMS'
- BEGIN
-	INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKIC')  
-	INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKBC')  
-	INSERT INTO @AvailableDocCode (Doc_Code) VALUES('EC')  
- END
+	 BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKIC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKBC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('EC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('CCIC')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('ROP140')
+	 END
   
  -- =============================================  
  -- Initialization  
  -- =============================================  
  
- IF @In_Doc_Code='HKID' OR @In_Doc_Code='HKIC' OR @In_Doc_Code='HKBC'  OR @In_Doc_Code='EC' 
+ IF @In_Doc_Code='HKID' OR @In_Doc_Code='HKIC' OR @In_Doc_Code='HKBC'  OR @In_Doc_Code='EC' OR @In_Doc_Code='CCIC' OR @In_Doc_Code='ROP140'
  BEGIN
 	 SET @In_IdentityNum = REPLACE(@In_IdentityNum,' ','') 
 	 SET @IdentityNum2 = ' ' + @In_IdentityNum
@@ -501,7 +561,9 @@ SELECT
 	VDSCM.Vaccine_Dose_Seq_Code_Desc_Chi AS dose_seq_desc_chinese,  
 	VCM.Provider AS provider,  
 	P.Practice_Name AS location,  
-	ISNULL(P.Practice_Name_chi, '') AS location_chinese  
+	ISNULL(P.Practice_Name_chi, '') AS location_chinese,
+	T.Vaccine_Brand,
+	T.Vaccine_Lot_No
 FROM  
 	(
 	-- +++++++++++++++++++++
@@ -519,7 +581,9 @@ FROM
 		Invalid_Acc_ID,  
 		Transaction_ID,  
 		SP_ID,  
-		Practice_Display_Seq  
+		Practice_Display_Seq,
+		ISNULL(Vaccine_Brand,'') AS Vaccine_Brand,
+		ISNULL(Vaccine_Lot_No,'') AS Vaccine_Lot_No
 	FROM   
 		(
 		-- +++++++++++++++++++++
@@ -537,13 +601,21 @@ FROM
 			VVT.Invalid_Acc_ID,  
 			VVT.Transaction_ID,  
 			VVT.SP_ID,  
-			VVT.Practice_Display_Seq  
-		FROM VoucherTransaction VVT WITH (NOLOCK) , @Account VVR  
+			VVT.Practice_Display_Seq,
+			TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
+			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
+		FROM 
+			VoucherTransaction VVT WITH (NOLOCK)
+				INNER JOIN @Account VVR  
+					ON VVT.Voucher_Acc_Id = VVR.Voucher_Acc_ID 
+				LEFT OUTER JOIN TransactionAdditionalField TAF_Brand
+					ON VVT.Transaction_ID = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
+				LEFT OUTER JOIN TransactionAdditionalField TAF_LotNo
+					ON VVT.Transaction_ID = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
 		WHERE 
-			VVT.Record_Status NOT IN ('I','W','D') and  
-			(@In_InjectionDateStart IS NULL OR VVT.Service_Receive_Dtm >= @In_InjectionDateStart) AND  
-			(@In_InjectionDateEnd IS NULL OR VVT.Service_Receive_Dtm <= @In_InjectionDateEnd)    
-			and VVT.Voucher_Acc_Id = VVR.Voucher_Acc_ID  
+			VVT.Record_Status NOT IN ('I','W','D') 
+			AND	(@In_InjectionDateStart IS NULL OR VVT.Service_Receive_Dtm >= @In_InjectionDateStart) 
+			AND (@In_InjectionDateEnd IS NULL OR VVT.Service_Receive_Dtm <= @In_InjectionDateEnd)    
 			AND VVR.Acc_Type = 'V'  
 			AND VVT.Voucher_Acc_ID <> ''  
 			AND VVT.Invalid_Acc_ID IS NULL  
@@ -563,13 +635,20 @@ FROM
 			TVT.Invalid_Acc_ID,  
 			TVT.Transaction_ID,  
 			TVT.SP_ID,  
-			TVT.Practice_Display_Seq  
-		FROM VoucherTransaction TVT WITH (NOLOCK) , @Account TVR  
+			TVT.Practice_Display_Seq,
+			TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
+			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
+		FROM VoucherTransaction TVT WITH (NOLOCK)
+				INNER JOIN @Account TVR  
+					ON TVT.Temp_Voucher_Acc_ID = TVR.Voucher_Acc_ID 
+				LEFT OUTER JOIN TransactionAdditionalField TAF_Brand
+					ON TVT.Transaction_ID = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
+				LEFT OUTER JOIN TransactionAdditionalField TAF_LotNo
+					ON TVT.Transaction_ID = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
 		WHERE 
-			TVT.Record_Status NOT IN ('I','W','D') and  
-			(@In_InjectionDateStart IS NULL OR TVT.Service_Receive_Dtm >= @In_InjectionDateStart) AND  
-			(@In_InjectionDateEnd IS NULL OR TVT.Service_Receive_Dtm <= @In_InjectionDateEnd)    
-			and TVT.Temp_Voucher_Acc_ID = TVR.Voucher_Acc_ID   
+			TVT.Record_Status NOT IN ('I','W','D') 
+			AND	(@In_InjectionDateStart IS NULL OR TVT.Service_Receive_Dtm >= @In_InjectionDateStart) 
+			AND	(@In_InjectionDateEnd IS NULL OR TVT.Service_Receive_Dtm <= @In_InjectionDateEnd)    
 			AND TVR.Acc_Type = 'T'  
 			AND TVT.Temp_Voucher_Acc_ID <> ''   
 			AND TVT.Voucher_Acc_ID = ''  
@@ -590,13 +669,20 @@ FROM
 			SVT.Invalid_Acc_ID,  
 			SVT.Transaction_ID,  
 			SVT.SP_ID,  
-			SVT.Practice_Display_Seq  
-		FROM VoucherTransaction SVT WITH (NOLOCK) , @Account SVR  
+			SVT.Practice_Display_Seq,
+			TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
+			TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
+		FROM VoucherTransaction SVT WITH (NOLOCK)
+				INNER JOIN @Account SVR  
+					ON SVT.Special_Acc_ID = SVR.Voucher_Acc_ID 
+				LEFT OUTER JOIN TransactionAdditionalField TAF_Brand
+					ON SVT.Transaction_ID = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
+				LEFT OUTER JOIN TransactionAdditionalField TAF_LotNo
+					ON SVT.Transaction_ID = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
 		WHERE 
-			SVT.Record_Status NOT IN ('I','W','D') and  
-			(@In_InjectionDateStart IS NULL OR SVT.Service_Receive_Dtm >= @In_InjectionDateStart) AND  
-			(@In_InjectionDateEnd IS NULL OR SVT.Service_Receive_Dtm <= @In_InjectionDateEnd)    
-			and SVT.Special_Acc_ID = SVR.Voucher_Acc_ID   
+			SVT.Record_Status NOT IN ('I','W','D')
+			AND	(@In_InjectionDateStart IS NULL OR SVT.Service_Receive_Dtm >= @In_InjectionDateStart) 
+			AND	(@In_InjectionDateEnd IS NULL OR SVT.Service_Receive_Dtm <= @In_InjectionDateEnd)    
 			AND SVR.Acc_Type = 'S'  
 			AND SVT.Special_Acc_ID is not null  
 			AND SVT.Voucher_Acc_ID = ''  
@@ -625,12 +711,12 @@ FROM
 	INNER JOIN Practice P WITH (NOLOCK)  
 	ON T.SP_ID = P.SP_ID  
     AND T.Practice_Display_Seq = P.Display_Seq  
-	INNER JOIN (SELECT Vaccine_Code_Target, Vaccine_Code_Source, Vaccine_Code_Common, Vaccine_Code_Desc, Vaccine_Code_Desc_Chi, Provider  
+	INNER JOIN (SELECT Vaccine_Code_Target, Vaccine_Code_Source, Vaccine_Code_Common, Vaccine_Code_Desc, Vaccine_Code_Desc_Chi, [Provider], Vaccine_Brand_ID_Source  
 				FROM VaccineCodeMapping WITH (NOLOCK)  
-				WHERE Source_System=@In_Source_System AND Target_System=@In_Target_System
-				AND For_Enquiry = 'Y'
+				WHERE Source_System = @In_Source_System AND Target_System = @In_Target_System AND For_Enquiry = 'Y'
 				) VCM  
-	ON REPLACE(TD.Scheme_Code + '|' + STR(TD.Scheme_Seq) + '|' + TD.Subsidize_Code,' ','') = VCM.Vaccine_Code_Source  
+	ON REPLACE(TD.Scheme_Code + '|' + STR(TD.Scheme_Seq) + '|' + TD.Subsidize_Code,' ','') = VCM.Vaccine_Code_Source 
+		AND (VCM.Vaccine_Brand_ID_Source = '' OR VCM.Vaccine_Brand_ID_Source = T.Vaccine_Brand)
 	AND EXISTS (SELECT * FROM #tempVaccineCode   
 				WHERE VCM.Vaccine_Code_Target = Vaccine_Code_CMS OR SUBSTRING(VCM.Vaccine_Code_Target, 1,LEN(Vaccine_Code_CMS)) = Vaccine_Code_CMS)  
 	INNER JOIN (SELECT Vaccine_dose_seq_code_Target, Vaccine_Dose_Seq_Code_Source, Vaccine_Dose_Seq_Code_Desc, Vaccine_Dose_Seq_Code_Desc_Chi  
@@ -733,39 +819,50 @@ FROM
   
  -- Return result  
  DECLARE @CurrentSeasonStartDate AS DATETIME  
- SELECT @CurrentSeasonStartDate = Parm_Value1 FROM systemparameters   
-  WHERE Parameter_Name = 'EHS_Get_Vaccine_WS_SeasonDateStart'  
+
+ SELECT @CurrentSeasonStartDate = Parm_Value1 FROM systemparameters WHERE Parameter_Name = 'EHS_Get_Vaccine_WS_SeasonDateStart'  
     
- SELECT @RowCount = COUNT(injection_date) FROM #tempVaccine  
- WHERE injection_date >= @CurrentSeasonStartDate  
+ SELECT @RowCount = COUNT(injection_date) FROM #tempVaccine WHERE injection_date >= @CurrentSeasonStartDate  
    
  IF @RowCount = 0  
-  SELECT record_creation_dtm,  
-	injection_date,  
-	vaccine_code,  
-	vaccine_desc,  
-	vaccine_desc_chinese,  
-	dose_seq_code,  
-	dose_seq_desc,  
-	dose_seq_desc_chinese,  
-	provider,  
-	location,  
-	location_chinese, 
-	@OnSite AS onsite FROM #tempVaccine  
-  WHERE injection_date >= @CurrentSeasonStartDate  
+	BEGIN
+		SELECT 
+			Record_Creation_Dtm,  
+			Injection_Date,  
+			Vaccine_Code,  
+			Vaccine_Desc,  
+			Vaccine_Desc_Chinese,  
+			Dose_Seq_Code,  
+			Dose_Seq_Desc,  
+			Dose_Seq_Desc_Chinese,  
+			[Provider],  
+			[Location],  
+			Location_Chinese, 
+			@OnSite AS Onsite,
+			Vaccine_Brand,
+			Vaccine_Lot_No
+		FROM #tempVaccine  
+		WHERE injection_date >= @CurrentSeasonStartDate  
+	END
  ELSE  
-  SELECT record_creation_dtm,  
-	injection_date,  
-	vaccine_code,  
-	vaccine_desc,  
-	vaccine_desc_chinese,  
-	dose_seq_code,  
-	dose_seq_desc,  
-	dose_seq_desc_chinese,  
-	provider,  
-	location,  
-	location_chinese,
-	@OnSite AS onsite FROM #tempVaccine  
+	BEGIN
+		SELECT 
+			Record_Creation_Dtm,  
+			Injection_Date,  
+			Vaccine_Code,  
+			Vaccine_Desc,  
+			Vaccine_Desc_Chinese,  
+			Dose_Seq_Code,  
+			Dose_Seq_Desc,  
+			Dose_Seq_Desc_Chinese,  
+			Provider,  
+			Location,  
+			Location_Chinese,
+			@OnSite AS Onsite,
+			Vaccine_Brand,
+			Vaccine_Lot_No
+		FROM #tempVaccine  
+	END
 
 -- Housekeeping
 DROP TABLE #tempVaccineCode 

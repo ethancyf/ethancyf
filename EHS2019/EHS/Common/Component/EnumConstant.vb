@@ -701,6 +701,7 @@ Namespace Component
         Public Const FUNT010416 As String = "010416" ' Claim Management - Student File - Student File Confirmation
         Public Const FUNT010417 As String = "010417" ' Claim Management - Student File - Student File Enquiry
         Public Const FUNT010418 As String = "010418" ' Claim Management - Claim Creation
+        Public Const FUNT010421 As String = "010421" ' Claim Management - Reprint Vaccination Record
         Public Const FUNT010501 As String = "010501"
         Public Const FUNT010601 As String = "010601"
         Public Const FUNT010701 As String = "010701"
@@ -2466,6 +2467,8 @@ Namespace Component
         ' ---------------------------------------------------------------------------------------------------------
         Public Const PatientPortalDoctorListGenerator As String = "PatientPortalDoctorListGenerator"
         ' CRE20-005 (Providing users' data in HCVS to eHR Patient Portal) [End][Chris YIM]	
+        Public Const COVID19Exporter As String = "COVID19Exporter" 'CRE20-0022 (Immu record)[Martin Tang]
+        Public Const COVID19eHRIntegration As String = "COVID19eHRIntegration"  'CRE20-0022 (Immu record)[Martin Tang]
 
     End Class
 
@@ -2489,6 +2492,8 @@ Namespace Component
         Public Const StudentAccountMatching As String = "019920"  ' CRE17-018 (New initiatives for VSS and RVP in 2018-19)
         Public Const PatientPortalDoctorListGenerator As String = "019921" ' CRE18-XXX (Provide data to eHR Portal) [Chris YIM]
         Public Const HAServicePatientImporter As String = "019922" ' CRE20-015 (HA Scheme)[Raiman]
+        Public Const COVID19Exporter As String = "019923" 'CRE20-0022 (Immu record)[Martin Tang]
+        Public Const COVID19eHRIntegration As String = "019924" 'CRE20-0022 (Immu record)[Martin Tang]
     End Class
 
     Public Class ScheduleJobLogStatus
@@ -3056,8 +3061,6 @@ Namespace Component
     End Class
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-    ' --------------------------------------------------------------------------------------
     Public Class CategoryCode
         Public Const VSS_CHILD As String = "VSSCHILD"
         Public Const VSS_DA As String = "VSSDA"
@@ -3068,8 +3071,12 @@ Namespace Component
         Public Const EVSSO_CHILD As String = "EVSSOCHILD"
         Public Const PPP_CHILD As String = "PPPCHILD"
         Public Const PPPKG_CHILD As String = "PPPKGCHILD"
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const VSS_NIA As String = "VSSNIA"
+        Public Const VSS_VC As String = "VSSVC"
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
     End Class
-    ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
     Public Enum Aspect
         Transaction
@@ -3108,6 +3115,7 @@ Namespace Component
         NA
         BO  'Back Office
         CC  'Call Centre
+        VC  'Vaccination Centre
     End Enum
     ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
@@ -3166,4 +3174,14 @@ Namespace Component
     End Class
 
     ' CRE19-022 (Inspection management) [End][Golden]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Enum ClaimMode
+        All = 1
+        DHC = 2
+        COVID19 = 3
+    End Enum
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
 End Namespace

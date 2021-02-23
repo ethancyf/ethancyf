@@ -665,6 +665,12 @@ Public MustInherit Class EHSClaimBasePage
                 udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+                udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
@@ -837,6 +843,12 @@ Public MustInherit Class EHSClaimBasePage
                 udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+                udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
@@ -913,6 +925,12 @@ Public MustInherit Class EHSClaimBasePage
             Case SchemeClaimModel.EnumControlType.SSSCMC
                 udtAuditLogEntry = AuditLogSSSCMC(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+                udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
@@ -1490,6 +1508,34 @@ Public MustInherit Class EHSClaimBasePage
         Return udtAuditLogEntry
     End Function
     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+    ' --------------------------------------------------------------------------------------
+    'COVID19
+    Public Shared Function AuditLogCOVID19(ByVal udtAuditLogEntry As AuditLogEntry, ByVal udtEHSTransaction As EHSTransactionModel) As AuditLogEntry
+        udtAuditLogEntry.AddDescripton("Scheme", udtEHSTransaction.SchemeCode.Trim)
+        udtAuditLogEntry.AddDescripton("Category", udtEHSTransaction.CategoryCode)
+
+        For Each udtEHSTransactionDetail As TransactionDetailModel In udtEHSTransaction.TransactionDetails
+            udtAuditLogEntry.AddDescripton("Subsidize Code", udtEHSTransactionDetail.SubsidizeCode.Trim)
+            udtAuditLogEntry.AddDescripton("Total Amount", udtEHSTransactionDetail.TotalAmount)
+        Next
+
+        'Transaction Addition Fields
+        If Not udtEHSTransaction Is Nothing AndAlso Not udtEHSTransaction.TransactionAdditionFields Is Nothing Then
+            For Each udtTransactAdditionfield As TransactionAdditionalFieldModel In udtEHSTransaction.TransactionAdditionFields
+
+                If udtTransactAdditionfield.AdditionalFieldValueDesc Is Nothing OrElse udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty Then
+                    udtAuditLogEntry.AddDescripton(udtTransactAdditionfield.AdditionalFieldID, udtTransactAdditionfield.AdditionalFieldValueCode)
+                Else
+                    udtAuditLogEntry.AddDescripton(udtTransactAdditionfield.AdditionalFieldID, udtTransactAdditionfield.AdditionalFieldValueCode + " - " + udtTransactAdditionfield.AdditionalFieldValueDesc)
+                End If
+            Next
+        End If
+
+        Return udtAuditLogEntry
+    End Function
+    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
 #End Region
 

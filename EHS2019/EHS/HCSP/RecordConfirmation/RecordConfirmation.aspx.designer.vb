@@ -392,6 +392,15 @@ Partial Public Class RecordConfirmation
     Protected WithEvents ibtnConfirmSelection As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''ibtnConfirmAll control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnConfirmAll As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''vSelectedRecord control.
     '''</summary>
     '''<remarks>

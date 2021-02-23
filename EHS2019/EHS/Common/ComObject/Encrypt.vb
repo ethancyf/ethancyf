@@ -195,7 +195,7 @@ Namespace Encryption
         Public Shared Function Excel_ChangePassword(ByVal strPasswordOld As String, ByVal strPasswordNew As String, ByVal strFilePath As String) As Boolean
             Dim xlApp As Microsoft.Office.Interop.Excel.Application
             Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook
-            Dim blnResult As Boolean
+            Dim blnResult As Boolean = False
 
             ' CRE16-020 - Excel Upgrade 2007 to 2013 [Start][Marco]
             'xlApp = New Microsoft.Office.Interop.Excel.ApplicationClass
@@ -751,6 +751,69 @@ Namespace Encryption
 
         End Function
 
+        Public Shared Function EncryptWinRARWithPassword(ByVal strPassword As String, ByVal strFilePath As String, ByVal strFilename As String, ByVal strOutputPath As String, ByVal strOutputFilename As String, ByVal isAES256 As Boolean) As Boolean
+            Dim strArgument As String
+            Dim strPath As String
+            Dim strZipParameter As String = String.Empty
+
+            Dim strAppPath As String = String.Empty
+            Dim udtcomfunct As New ComFunction.GeneralFunction
+
+            udtcomfunct.getSystemParameter("WinRARAppPath", strAppPath, String.Empty)
+            strPath = strAppPath & "Winrar.exe"
+
+            If Not isAES256 Then
+                strZipParameter = strZipParameter + " -mezl"
+            End If
+
+
+
+            'sample: "c:\Program Files\winrar\Rar.exe" a -ep -y -p[password] -ibck -sfx -df OutFilename.txt InFilename.txt
+            'Output: OutFilename.txt.exe
+
+            strArgument = "a " & strOutputPath & "/" & strOutputFilename & " -p" & strPassword & " " & strFilePath & "/" & strFilename & " -inul -ep -ibck -y" & strZipParameter
+
+            Dim info As New System.Diagnostics.ProcessStartInfo(strPath)
+
+            info.WorkingDirectory = strFilePath
+            info.Arguments = strArgument
+
+            info.RedirectStandardOutput = True
+            ''To redirect, we must not use shell execute.
+            info.UseShellExecute = False
+            ''Create and execute the process.
+
+            info.RedirectStandardError = True
+
+            Dim p As Process = Nothing
+            Try
+
+                p = Process.Start(info)
+
+                Dim strError As String = p.StandardError.ReadToEnd()
+
+                p.WaitForExit()
+
+                If strError <> String.Empty Then
+                    Throw New Exception(strError)
+                End If
+
+                If p.ExitCode = 0 Then
+                    Return True
+                Else
+                    Return False
+                End If
+            Catch ex As Exception
+                Throw ex
+            Finally
+                p.Close()
+                p.Dispose()
+                GC.Collect(GCCollectionMode.Optimized)
+            End Try
+
+        End Function
+
+
         Public Shared Function DecryptWinRARWithPassword(ByVal strPassword As String, ByVal strFilePath As String, ByVal strFilename As String, ByVal strOutputPath As String) As Boolean
             Dim strArgument As String
             Dim strPath As String
@@ -808,8 +871,6 @@ Namespace Encryption
                 p.Dispose()
                 GC.Collect(GCCollectionMode.Optimized)
             End Try
-            ' I-CRE15-001 Run exe directly instead of bat [End][Winnie]
-
         End Function
 
 

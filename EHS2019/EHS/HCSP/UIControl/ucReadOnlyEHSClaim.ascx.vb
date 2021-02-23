@@ -36,6 +36,9 @@ Partial Public Class ucReadOnlyEHSClaim
         ' ---------------------------------------------------------------------------------------------------------
         Public Const SSSCMC As String = "ucReadOnlyEHSClaim_SSSCMC"
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+        Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"     ' CRE20-0022 (Immu record) [Winnie SUEN]
+        Public Const COVID19CBD As String = "ucReadOnlyEHSClaim_COVID19CBD"     ' CRE20-0022 (Immu record) [Winnie SUEN]
+        Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"     ' CRE20-0022 (Immu record) [Winnie SUEN]
     End Class
 
 
@@ -144,6 +147,25 @@ Partial Public Class ucReadOnlyEHSClaim
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.SSSCMC
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19
+                'If Me._textOnlyVersion Then
+                '    AddHandler CType(udcReadOnlyEHSClaim, UIControl.EHCClaimText.ucReadOnlyCOVID19).VaccineRemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
+                'Else
+                '    AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyCOVID19).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
+                'End If
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
+            Case SchemeClaimModel.EnumControlType.COVID19CBD
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19CBD.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19CBD
+
+            Case SchemeClaimModel.EnumControlType.COVID19RVP
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19RVP.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19RVP
         End Select
 
         udcReadOnlyEHSClaim.EHSClaimVaccine = Me._udtEHSClaimVaccine

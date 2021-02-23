@@ -9,14 +9,129 @@
 <head id="Head1" runat="server">
     <title id="PageTitle" runat="server"></title>
     <base id="basetag" href="http://localhost/hcvu/" runat="server" />
+
     <link href="CSS/CommonStyle.css" rel="stylesheet" type="text/css" />
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="JS/Common.js"></script>
 
+    <script type="text/javascript" src="JS/Common.js"></script>
+    <script type="text/javascript" src="JS/ideasComboLib4Ra.js"></script>
+    <script type="text/javascript" src="JS/ideasComboVersion.js"></script>
+
+    <script type="text/javascript">
+        function fnTrapKD(e) {
+            var btn = document.getElementById('ibtnLogin')
+            if (document.all) {
+                if (event.keyCode == 13) {
+                    event.returnValue = false;
+                    event.cancel = true;
+                    try {
+                        btn.focus();
+                        btn.click();
+                    } catch (err) {
+                        // Do Nothing
+                    }
+
+                }
+            }
+            else {
+                /*
+                    if (e.which == 13)
+                    { 
+                      e.returnValue=false;
+                      e.cancel = true;
+                      btn.focus();
+                      btn.click();
+                    }
+                */
+            }
+        }
+    </script>
+    
+    <script type="text/javascript">
+        //function displayIDEASResult() {
+        //    document.getElementById("btnDisplayResultComboiframe").click();
+        //}
+
+        // TODO _param to be confirmed
+        function checkIdeasComboClientSuccessEHS(_param) {
+            //var param = { result: _param, ideasVer: "", artifactId: "" };
+            //checkIdeasComboClientSuccessCallback(param);
+            //document.getElementById("btnReadSmartICCombo").disabled = false;
+            //document.getElementById("btnReadSmartICComboiframe").disabled = false;
+            //console.log('Success:' + _param.result);
+            //console.log(_param);
+            //alert(_param.result);
+            var obj = document.getElementById("txtIDEASComboResult")
+            obj.value = _param.result
+            //updateIdeasComboClientResult(_param.result);
+        }
+
+        // TODO _param to be confirmed
+        function checkIdeasComboClientFailureEHS(_param) {
+            //var param = { result: _param, ideasVer: "", artifactId: "" };
+            //checkIdeasComboClientFailureCallback(param);
+            //document.getElementById("btnReadSmartICCombo").disabled = true;
+            //document.getElementById("btnReadSmartICComboiframe").disabled = true;
+            //console.log('Failure:' + _param.result);
+            //console.log(_param);
+            //alert(_param.result);
+            var obj = document.getElementById("txtIDEASComboResult")
+            obj.value = _param.result
+            //updateIdeasComboClientResult(_param.result);
+        }
+
+        //checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);
+
+        <%--function updateIdeasComboClientResult(result) {
+            xmlHttpRequestIdeasResult = new XMLHttpRequest();
+            xmlHttpRequestIdeasResult.open("POST", "<%=GetUpdateIdeaResultPath()%>", true);
+            xmlHttpRequestIdeasResult.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xmlHttpRequestIdeasResult.timeout = 5000;
+            xmlHttpRequestIdeasResult.onreadystatechange = function () {
+                //if (xmlHttpRequestIdeasResult != null) {
+                //    if (xmlHttpRequestIdeasResult.readyState == IC4RA_HTTP_READYSTATE_LOADED) {
+                //        var status = xmlHttpRequestIdeasResult.status;
+                //        xmlHttpRequestIdeasResult = null;
+                //        if (status == IC4RA_HTTP_STATUS_OK) {
+                //            checkIdeasComboClientSuccess(IC4RA_ERRORCODE_SUCCESS);
+                //        } else {
+                //            checkIdeasComboClientFailure(IC4RA_ERRORCODE_NOCLIENT);
+                //        }
+                //    } else {
+                //    }
+                //}
+            };
+            xmlHttpRequestIdeasResult.ontimeout = function () {
+                console.log("Update Result Timeout");
+            };
+            xmlHttpRequestIdeasResult.send(JSON.stringify({ "result": result }));
+        }--%>
+
+        function eHSSuccessCallbackFunc(IDEASComboVersion) { //Success get IDEAS Version
+            //alert(IDEASComboVersion);
+            var obj = document.getElementById("txtIDEASComboVersion")
+            obj.value = IDEASComboVersion
+        }
+        function eHSFailCallbackFunc() { //IDEAS Combo not yet be installed
+            //alert("eHS IDEAS Combo is not available.");
+            var obj = document.getElementById("txtIDEASComboVersion")
+            obj.value = ""
+        }
+
+        function checkIDEASComboClientAndVersion() {
+            <%--eHR: http://127.0.0.1:44827, eHS: http://127.0.0.1:44927--%>
+            <%--Return:<html><head><title>IDEAS Client Info</title></head><body><h1>IDEAS Client Information</h1>Version: 1.0</body></html>--%>
+
+            checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);
+            getIDEASComboVersion();
+        }
+    </script>
 </head>
 <body>
     <form id="form1" runat="server" defaultbutton="ibtnLogin">
         <div>
+            <asp:TextBox ID="txtIDEASComboResult" runat="server" Style="display: none;" />
+            <asp:TextBox ID="txtIDEASComboVersion" runat="server" Style="display: none;" />
             <asp:Button ID="btnHiddenPleaseWait" runat="server" Style="display: none;" />
             <asp:Panel ID="pnlPleaseWait" runat="server" Style="display: none; visibility: hidden">
                 <table style="width: 150px; height: 150px; background-color: #ffffff" border="0"
@@ -35,7 +150,6 @@
             <cc2:ModalPopupExtender ID="ModalPopupExtender1" runat="server" PopupControlID="pnlPleaseWait"
                 TargetControlID="btnHiddenPleaseWait" BackgroundCssClass="modalBackgroundTransparent" />
 
-            <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start--->
             <asp:Button runat="server" ID="btnHiddenLoginConfirmMsg" Style="display: none" />
             <asp:Panel ID="panLoginConfirmMsg" runat="server" Style="display: none;">
                 <asp:Panel ID="panLoginConfirmMsgHeading" runat="server" Style="cursor: move;">
@@ -85,7 +199,6 @@
             <cc2:ModalPopupExtender ID="ModalPopupExtenderConfirm" runat="server" TargetControlID="btnHiddenLoginConfirmMsg"
             PopupControlID="panLoginConfirmMsg" BehaviorID="mdlPopupConcurrentBrowser" BackgroundCssClass="modalBackgroundTransparent"
             DropShadow="False" RepositionMode="None" PopupDragHandleControlID="panLoginConfirmMsgHeading" />
-        <!---[CRE11-016] Concurrent Browser Handling [2010-02-01] End--->
 
             <table border="0" cellpadding="0" cellspacing="0" style="background-image: url(Images/master/banner_header.jpg); width: 994px; background-repeat: no-repeat; height: 100px" id="tblBanner" runat="server">
                 <tr>

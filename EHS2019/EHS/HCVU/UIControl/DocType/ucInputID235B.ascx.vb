@@ -59,26 +59,19 @@ Partial Public Class ucInputID235B
         Me.imgPermitRemainError.AlternateText = strErrorImageALT
 
         'Get Documnet type full name
-        Dim strDocumentTypeFullName As String
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
         Dim udtDocTypeModelList As DocTypeModelCollection
         udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocNameChi
-            Me.lblBirthEntryNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocIdentityDescChi
-        Else
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocName
-            Me.lblBirthEntryNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocIdentityDesc
-        End If
-        'lblDocumentType.Text = strDocumentTypeFullName
-        lblDocumentTypeOriginal.Text = strDocumentTypeFullName
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.lblDocumentTypeOriginal.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocName(Session("Language").ToString())
+        Me.lblBirthEntryNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocIdentityDesc(Session("Language").ToString())
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         ' -------------------------- Creation ------------------------------
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            Me.lblNewBirthEntryNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocIdentityDescChi
-        Else
-            Me.lblNewBirthEntryNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocIdentityDesc
-        End If
+        Me.lblNewBirthEntryNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.ID235B).DocIdentityDesc(Session("Language").ToString())
+
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")
         Me.lblNewENameGivenNameTips.Text = Me.GetGlobalResourceObject("Text", "Givenname")

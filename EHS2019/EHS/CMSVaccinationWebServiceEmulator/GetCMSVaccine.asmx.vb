@@ -103,18 +103,21 @@ Public Class WebService1
 
                         For Each drVaccination As DataRow In drPatients(0).GetChildRows(ds.Tables(0).ChildRelations(0))
 
-                            udtHAPatient.VaccineList.Add(New HATransaction.HAVaccineModel(GetAttributeDate(drVaccination, "service_date"), _
-                                                                                             GetAttributeDate(drVaccination, "service_date"), _
-                                                                                             GetAttributeString(drVaccination, "vaccine_code"), _
-                                                                                             GetAttributeString(drVaccination, "vaccine_desc"), _
-                                                                                             GetAttributeString(drVaccination, "vaccine_desc_chinese"), _
-                                                                                             GetAttributeString(drVaccination, "dose_seq_code"), _
-                                                                                             GetAttributeString(drVaccination, "dose_seq_desc"), _
-                                                                                             GetAttributeString(drVaccination, "dose_seq_desc_chinese"), _
-                                                                                             GetAttributeString(drVaccination, "provider"), _
-                                                                                             GetAttributeString(drVaccination, "location"), _
-                                                                                             GetAttributeString(drVaccination, "location_chinese"), _
-                                                                                             GetAttributeString(drVaccination, "onsite")))
+                            udtHAPatient.VaccineList.Add(New HATransaction.HAVaccineModel(GetAttributeDate(drVaccination, "Service_Date"), _
+                                                                                             GetAttributeDate(drVaccination, "Service_Date"), _
+                                                                                             GetAttributeString(drVaccination, "Vaccine_Code"), _
+                                                                                             GetAttributeString(drVaccination, "Vaccine_Desc"), _
+                                                                                             GetAttributeString(drVaccination, "Vaccine_Desc_Chinese"), _
+                                                                                             GetAttributeString(drVaccination, "Dose_Seq_Code"), _
+                                                                                             GetAttributeString(drVaccination, "Dose_Seq_Desc"), _
+                                                                                             GetAttributeString(drVaccination, "Dose_Seq_Desc_Chinese"), _
+                                                                                             GetAttributeString(drVaccination, "Provider"), _
+                                                                                             GetAttributeString(drVaccination, "Location"), _
+                                                                                             GetAttributeString(drVaccination, "Location_Chinese"), _
+                                                                                             GetAttributeString(drVaccination, "Onsite"), _
+                                                                                             String.Empty, _
+                                                                                             String.Empty _
+                                                                                             ))
                         Next
                     End If
 
@@ -252,18 +255,31 @@ Public Class WebService1
 
                             For Each drVaccination As DataRow In drPatients(0).GetChildRows(ds.Tables(0).ChildRelations(0))
 
+                                'Dim strBrandID As String = String.Empty
+                                'Select Case GetAttributeString(drVaccination, "vaccine_code")
+                                '    Case "005-0001"
+                                '        strBrandID = "1"
+                                '    Case "005-0002"
+                                '        strBrandID = "2"
+                                '    Case "005-0003"
+                                '        strBrandID = "3"
+                                'End Select
+
                                 udtHAPatient.VaccineList.Add(New HATransaction.HAVaccineModel(GetAttributeDate(drVaccination, "service_date"), _
-                                                                                                 GetAttributeDate(drVaccination, "service_date"), _
-                                                                                                 GetAttributeString(drVaccination, "vaccine_code"), _
-                                                                                                 GetAttributeString(drVaccination, "vaccine_desc"), _
-                                                                                                 GetAttributeString(drVaccination, "vaccine_desc_chinese"), _
-                                                                                                 GetAttributeString(drVaccination, "dose_seq_code"), _
-                                                                                                 GetAttributeString(drVaccination, "dose_seq_desc"), _
-                                                                                                 GetAttributeString(drVaccination, "dose_seq_desc_chinese"), _
-                                                                                                 GetAttributeString(drVaccination, "provider"), _
-                                                                                                 GetAttributeString(drVaccination, "location"), _
-                                                                                                 GetAttributeString(drVaccination, "location_chinese"), _
-                                                                                                 GetAttributeString(drVaccination, "onsite")))
+                                                                                             GetAttributeDate(drVaccination, "service_date"), _
+                                                                                             GetAttributeString(drVaccination, "vaccine_code"), _
+                                                                                             GetAttributeString(drVaccination, "vaccine_desc"), _
+                                                                                             GetAttributeString(drVaccination, "vaccine_desc_chinese"), _
+                                                                                             GetAttributeString(drVaccination, "dose_seq_code"), _
+                                                                                             GetAttributeString(drVaccination, "dose_seq_desc"), _
+                                                                                             GetAttributeString(drVaccination, "dose_seq_desc_chinese"), _
+                                                                                             GetAttributeString(drVaccination, "provider"), _
+                                                                                             GetAttributeString(drVaccination, "location"), _
+                                                                                             GetAttributeString(drVaccination, "location_chinese"), _
+                                                                                             GetAttributeString(drVaccination, "onsite"), _
+                                                                                             String.Empty, _
+                                                                                             GetAttributeString(drVaccination, "vaccine_lot_no") _
+                                                                                             ))
                             Next
 
                             intPatientExactMatchCount = intPatientExactMatchCount + 1
@@ -306,6 +322,9 @@ Public Class WebService1
                             strXMLVaccinationRecord += "<vaccine_desc>" + udtHAVaccine.VaccineDesc + "</vaccine_desc>"
                             strXMLVaccinationRecord += "<dose_seq_code>" + udtHAVaccine.DoseSeqCode + "</dose_seq_code>"
                             strXMLVaccinationRecord += "<dose_seq_desc>" + udtHAVaccine.DoseSeqDesc + "</dose_seq_desc>"
+                            If udtHAVaccine.VaccineLotNo IsNot Nothing AndAlso udtHAVaccine.VaccineLotNo <> String.Empty Then
+                                strXMLVaccinationRecord += "<vaccine_lot_no>" + udtHAVaccine.VaccineLotNo + "</vaccine_lot_no>"
+                            End If
                             strXMLVaccinationRecord += "<provider>" + udtHAVaccine.Provider + "</provider>"
                             strXMLVaccinationRecord += "<location>" + udtHAVaccine.Location + "</location>"
                             strXMLVaccinationRecord += "<location_chinese>" + udtHAVaccine.LocationChinese + "</location_chinese>"

@@ -174,13 +174,10 @@ Partial Public Class ucReadOnlyHKIC
             Me.lblReadonlyHKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
             'Me.lblReadonlyHKIDModificationText.Text = Me.GetGlobalResourceObject("Text", "HKID")
 
-            If MyBase.SessionHandler().Language = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDescChi
-            ElseIf MyBase.SessionHandler().Language = Common.Component.CultureLanguage.SimpChinese Then
-                Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDescCN
-            Else
-                Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Else
             Me.lblReadonlyHorizontalDocumentTypeText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
@@ -189,13 +186,10 @@ Partial Public Class ucReadOnlyHKIC
             'Me.lblReadonlyHorizontalHKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
             Me.lblReadonlyHorizontalHKIDIssueDateText.Text = Me.GetGlobalResourceObject("Text", "DateOfIssue")
 
-            If MyBase.SessionHandler().Language = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblReadonlyHorizontalHKIDText.Text = udtDocTypeModel.DocIdentityDescChi
-            ElseIf MyBase.SessionHandler().Language = Common.Component.CultureLanguage.SimpChinese Then
-                Me.lblReadonlyHorizontalHKIDText.Text = udtDocTypeModel.DocIdentityDescCN
-            Else
-                Me.lblReadonlyHorizontalHKIDText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblReadonlyHorizontalHKIDText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
             ' ----------------------------------------------------------

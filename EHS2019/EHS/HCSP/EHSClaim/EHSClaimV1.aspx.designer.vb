@@ -1175,13 +1175,103 @@ Partial Public Class EHSClaimV1
     Protected WithEvents udcStep2aReadOnlyDocumnetType As Global.HCSP.ucReadOnlyDocumnetType
 
     '''<summary>
-    '''Label1 control.
+    '''panStep2aVaccinationRecord control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Label1 As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents panStep2aVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCVaccinationRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panNoVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNoVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCInjectionDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCInjectionDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccines control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccines As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDose As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCInformationProvider control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCInformationProvider As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCRemarks control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCRemarks As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCNoRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNoRecord As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvCVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvCVaccinationRecord As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''lblStep2aClaimInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aClaimInfo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2aPracticeText control.
@@ -1400,6 +1490,276 @@ Partial Public Class EHSClaimV1
     Protected WithEvents udcStep2aInputEHSClaim As Global.HCSP.ucInputEHSClaim
 
     '''<summary>
+    '''panStep2aRecipinetContactInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aRecipinetContactInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trStep2aContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2aContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblStep2aContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtStep2aContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtStep2aContactNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgStep2aContactNoError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgStep2aContactNoError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''fteStep2aContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteStep2aContactNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblStep2aMobile control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aMobile As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkStep2aMobile control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkStep2aMobile As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblStep2aRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtStep2aRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtStep2aRemark As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgStep2aRemarkError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgStep2aRemarkError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''panStep2aPrintClaimConsentForm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aPrintClaimConsentForm As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panlblStep2aPrintConsent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panlblStep2aPrintConsent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''btnStep2aPrintClaimConsentForm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnStep2aPrintClaimConsentForm As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''hfStep2aCurrentPrintOption control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfStep2aCurrentPrintOption As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''rbStep2aPrintClaimConsentFormLanguage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rbStep2aPrintClaimConsentFormLanguage As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''panStep2aPerprintFormNotice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aPerprintFormNotice As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblStep2aPerprintFormNotice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aPerprintFormNotice As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnStep2aChangePrintOption control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnStep2aChangePrintOption As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''panStep2aAdhocPrint control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aAdhocPrint As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''btnStep2aPrintAdhocClaimConsentForm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnStep2aPrintAdhocClaimConsentForm As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''panStep2aDeclareClaim control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aDeclareClaim As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trStep2aDeclareClaim control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2aDeclareClaim As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblStep2aDeclareClaim1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aDeclareClaim1 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkStep2aDeclareClaim control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkStep2aDeclareClaim As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblStep2aDeclareClaim2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aDeclareClaim2 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep2aDeclareJoineHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aDeclareJoineHRSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkStep2aDeclareJoineHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkStep2aDeclareJoineHRSS As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''lblStep2aDeclareJoineHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aDeclareJoineHRSS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgStep2aDeclareClaimError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgStep2aDeclareClaimError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''btnStep2aCancel control.
     '''</summary>
     '''<remarks>
@@ -1454,13 +1814,13 @@ Partial Public Class EHSClaimV1
     Protected WithEvents udcStep2bReadOnlyDocumnetType As Global.HCSP.ucReadOnlyDocumnetType
 
     '''<summary>
-    '''lbllblStep2bClaimInfo control.
+    '''lblStep2bClaimInfo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lbllblStep2bClaimInfo As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblStep2bClaimInfo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2bSchemeText control.
@@ -1499,13 +1859,13 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblNonClinicSettingStep2b As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lbllblStep2bServiceDateText control.
+    '''lblStep2bServiceDateText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lbllblStep2bServiceDateText As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblStep2bServiceDateText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2bServiceDate control.
@@ -1517,13 +1877,13 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblStep2bServiceDate As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lbllblStep2bPracticeText control.
+    '''lblStep2bPracticeText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lbllblStep2bPracticeText As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblStep2bPracticeText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2bPractice control.
@@ -1533,6 +1893,15 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep2bPractice As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trStep2bBankAcct control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2bBankAcct As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''lblStep2bBankAcctText control.
@@ -1553,13 +1922,22 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblStep2bBankAcct As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lbllblStep2bServiceTypeText control.
+    '''trStep2bServiceType control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lbllblStep2bServiceTypeText As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents trStep2bServiceType As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblStep2bServiceTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bServiceTypeText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2bServiceType control.
@@ -1578,6 +1956,87 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udcStep2bReadOnlyEHSClaim As Global.HCSP.ucReadOnlyEHSClaim
+
+    '''<summary>
+    '''panStep2bRecipinetContactInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2bRecipinetContactInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trStep2bContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2bContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblStep2bContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2bContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2bRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2bRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bRemark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep2bJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2bJoinEHRSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblStep2bJoinEHRSSText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bJoinEHRSSText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2bJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bJoinEHRSS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''panStep2bPrintClaimConsentForm control.
@@ -1868,6 +2327,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblNonClinicSettingStep3 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trStep3TransactionStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep3TransactionStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblTransactionStatusText control.
     '''</summary>
     '''<remarks>
@@ -1922,6 +2390,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents lblStep3Practice As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trStep3BankAcct control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep3BankAcct As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblStep3BankAcctText control.
     '''</summary>
     '''<remarks>
@@ -1938,6 +2415,15 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep3BankAcct As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trStep3ServiceType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep3ServiceType As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''lblStep3ServiceTypeText control.
@@ -1965,6 +2451,96 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udcStep3ReadOnlyEHSClaim As Global.HCSP.ucReadOnlyEHSClaim
+
+    '''<summary>
+    '''panStep3RecipinetContactInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep3RecipinetContactInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trStep3ContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep3ContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblStep3ContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3ContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep3ContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3ContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep3RemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3RemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep3Remark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3Remark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panStep3JoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep3JoinEHRSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblStep3JoinEHRSSText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3JoinEHRSSText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep3JoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep3JoinEHRSS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnStep3Reprint control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnStep3Reprint As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''btnStep3NextClaim control.

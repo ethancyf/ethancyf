@@ -406,9 +406,9 @@
                             </tr>
                         </table>
                         <asp:Panel ID="panDExistingToken" runat="server" GroupingText="" Style="width: 70%">
-                            <table>
+                            <table class="TableStyle1">
                                 <tr class="TrStyle1">
-                                    <td style="padding-top: 3px; vertical-align: top">
+                                    <td style="width: 175px;">
                                         <asp:Label ID="lblDTokenSerialNoText" runat="server" Text="<%$ Resources: Text, TokenSerialNo %>"></asp:Label>
                                     </td>
                                     <td>
@@ -428,7 +428,7 @@
                                     </td>
                                 </tr>
                                 <tr id="trDEHRSSReplacementToken" runat="server" class="TrStyle1">
-                                    <td style="padding-top: 3px; vertical-align: top">
+                                    <td >
                                         <asp:Label ID="lblDEHRSSReplacementTokenText" runat="server" Text="<%$ Resources: Text, ReplacementTokenSerialNo %>"></asp:Label>
                                     </td>
                                     <td>
@@ -442,8 +442,8 @@
                                         <asp:Label ID="lblDUserDeclareEHRSSUser" runat="server" CssClass="tableText" Text="<%$ Resources: Text, UserDeclaredAsEHRSSUser %>"></asp:Label>
                                     </td>
                                 </tr>
-                                <tr class="TrStyle1">
-                                    <td class="TdStyle1">
+                                <tr id="trTokenIssueBy" runat="server" class="TrStyle1">
+                                    <td >
                                         <asp:Label ID="lblDTokenIssuedByText" runat="server" Text="<%$ Resources: Text, TokenIssueBy %>"></asp:Label>
                                     </td>
                                     <td>
@@ -463,8 +463,8 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <tr class="TrStyle1">
-                                    <td>
+                                <tr  id="trDShareTokenStatus" runat="server"  class="TrStyle1">
+                                    <td >
                                         <asp:Label ID="lblDIsShareTokenText" runat="server" Text="<%$ Resources: Text, IsShareToken %>"></asp:Label>
                                     </td>
                                     <td>
@@ -485,7 +485,7 @@
                                     </td>
                                 </tr>
                                 <tr id="trDTokenStatus" runat="server" class="TrStyle1">
-                                    <td>
+                                    <td  >
                                         <asp:Label ID="lblDTokenStatusText" runat="server" Text="<%$ Resources: Text, TokenStatus %>"></asp:Label></td>
                                     <td>
                                         <asp:Label ID="lblDTokenStatus" runat="server" CssClass="tableText"></asp:Label>

@@ -12,6 +12,7 @@ Imports Common.Component.Scheme
 Imports Common.PCD
 Imports Common.Component.Professional
 Imports Common.PCD.WebService.Interface
+Imports Common.ComFunction
 
 
 Partial Public Class spVetting
@@ -172,6 +173,7 @@ Partial Public Class spVetting
 
         'ibtnReject.OnClientClick = "showConfirm(this,'" + SM.GetMessage + "'); return false;"
 
+      
     End Sub
 
     Private Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
@@ -647,6 +649,14 @@ Partial Public Class spVetting
                             Case JoinEHRSSStatus.NA
                                 panEHRSS.Visible = False
                         End Select
+
+                        'CRE20-018 Stop Token Sharing [Start][Nichole]
+                        Dim udtGeneralFunction As New GeneralFunction
+                        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+                        If streHRSSToken = YesNo.No Then
+                            panEHRSS.Visible = False
+                        End If
+                        'CRE20-018 Stop Token Sharing [End][Nichole]
 
                         ' Show PCD Q&A
                         Select Case udtSP.JoinPCD
@@ -1380,7 +1390,7 @@ Partial Public Class spVetting
         Dim blnPCDStatusChecked As Boolean = False
 
         Dim blnResInValid As Boolean = False
-        
+
         ' PCD Warning Popup Confirm Click
         If Session(SESS_PCDProfessionalChecked) = YesNo.Yes Then
             blnPCDProfessionalChecked = True

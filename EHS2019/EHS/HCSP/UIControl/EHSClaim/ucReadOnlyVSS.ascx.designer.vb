@@ -14,6 +14,15 @@ Option Explicit On
 Partial Public Class ucReadOnlyVSS
 
     '''<summary>
+    '''panNormalVSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNormalVSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''tdCategory control.
     '''</summary>
     '''<remarks>
@@ -246,4 +255,94 @@ Partial Public Class ucReadOnlyVSS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRecipientCondition As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panVSSForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panVSSForCovid19 As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''tdCategoryForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdCategoryForCovid19 As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblCategoryTextForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCategoryTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCategoryForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCategoryForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVaccineTextForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccineTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVaccineForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccineForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVaccineLotNumTextForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccineLotNumTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVaccineLotNumForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccineLotNumForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDoseTextForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDoseTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDoseForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDoseForCovid19 As Global.System.Web.UI.WebControls.Label
 End Class

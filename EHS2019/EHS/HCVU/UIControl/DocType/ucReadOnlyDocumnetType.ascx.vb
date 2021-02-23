@@ -70,6 +70,11 @@ Partial Public Class ucReadOnlyDocumnetType
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
         Public Const OTHER As String = "ucReadOnlyOTHER.ascx" ' 
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+        ' CRE20-0022 (Immu record) [Start][Martin]
+        Public Const CCIC As String = "ucReadOnlyCCIC.ascx"
+        Public Const ROP140 As String = "ucReadOnlyROP140.ascx"
+        Public Const PASS As String = "ucReadOnlyPASS.ascx"
+        ' CRE20-0022 (Immu record) [End][Martin]
 
     End Class
 
@@ -281,6 +286,42 @@ Partial Public Class ucReadOnlyDocumnetType
                             SetNormal(udcReadOnlyOTHER)
                         End If
                         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+
+                        ' CRE20-0022 (Immu record) [Start][Martin]
+                    Case DocTypeCode.CCIC
+                        Dim udcReadOnlyCCIC As ucReadOnlyCCIC = LoadControl(UserControlPath.CCIC)
+                        udcReadOnlyCCIC.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyCCIC)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyCCIC)
+                        End If
+
+                    Case DocTypeCode.ROP140
+                        Dim udcReadOnlyROP140 As ucReadOnlyROP140 = LoadControl(UserControlPath.ROP140)
+                        udcReadOnlyROP140.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyROP140)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyROP140)
+                        End If
+
+                    Case DocTypeCode.PASS
+                        Dim udcReadOnlyPASS As ucReadOnlyPASS = LoadControl(UserControlPath.PASS)
+                        udcReadOnlyPASS.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyPASS)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyPASS)
+                        End If
+                        ' CRE20-0022 (Immu record) [End][Martin]
+
                 End Select
             Case EnumDisplayFormat.EnquiryFormat
                 Dim udcReadOnlyCommon As ucReadOnlyCommon = LoadControl(UserControlPath.Common)

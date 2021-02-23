@@ -50,6 +50,24 @@ Partial Public Class login
     Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
 
     '''<summary>
+    '''txtIDEASComboResult control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIDEASComboResult As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtIDEASComboVersion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtIDEASComboVersion As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''btnHiddenPleaseWait control.
     '''</summary>
     '''<remarks>

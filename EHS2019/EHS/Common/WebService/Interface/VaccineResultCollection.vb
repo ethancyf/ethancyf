@@ -8,6 +8,8 @@ Namespace WebService.Interface
         Private _enumHAReturnStatus As VaccinationBLL.EnumVaccinationRecordReturnStatus
         Private _enumDHReturnStatus As VaccinationBLL.EnumVaccinationRecordReturnStatus
 
+        Private _udtTranDetailVaccineList As TransactionDetailVaccineModelCollection
+
         Property HAVaccineResult() As HAVaccineResult
             Get
                 Return _udtHAVaccineResult
@@ -23,6 +25,16 @@ Namespace WebService.Interface
             End Get
             Set(value As DHVaccineResult)
                 _udtDHVaccineResult = value
+            End Set
+        End Property
+
+
+        Property EHSTranDetailVaccineList() As TransactionDetailVaccineModelCollection
+            Get
+                Return _udtTranDetailVaccineList
+            End Get
+            Set(value As TransactionDetailVaccineModelCollection)
+                _udtTranDetailVaccineList = value
             End Set
         End Property
 
@@ -47,6 +59,7 @@ Namespace WebService.Interface
         Public Sub New()
             _udtHAVaccineResult = Nothing
             _udtDHVaccineResult = Nothing
+            _udtTranDetailVaccineList = Nothing
         End Sub
 
     End Class

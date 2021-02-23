@@ -1,3 +1,5 @@
+Imports Common.Component.Scheme
+
 Namespace Component.ClaimCategory
     <Serializable()> Public Class ClaimCategoryModelCollection
         Inherits System.Collections.ArrayList
@@ -98,6 +100,23 @@ Namespace Component.ClaimCategory
             Next
             Return udtResClaimCategoryModelCollection
         End Function
+
+        ' CRE20-0022 (Immu record) [Start][Martin]
+        Public Function FilterOutBySubsidizeItemCodeReturnCollection(ByVal strSubsidizeItemCode As String) As ClaimCategoryModelCollection
+            Dim udtResClaimCategoryModelCollection As New ClaimCategoryModelCollection
+            Dim udtSubsidizeBLL As New SubsidizeBLL
+
+            For Each udtClaimCategoryModel As ClaimCategoryModel In Me
+                Dim strSubsidizeItemCodeFromCategory As String = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(udtClaimCategoryModel.SubsidizeCode.Trim)
+
+                If Not strSubsidizeItemCodeFromCategory.Trim.ToUpper().Equals(strSubsidizeItemCode.Trim().ToUpper()) Then
+                    udtResClaimCategoryModelCollection.Add(udtClaimCategoryModel)
+                End If
+            Next
+            Return udtResClaimCategoryModelCollection
+        End Function
+        ' CRE20-0022 (Immu record) [End][Martin]
+
         'CRE16-026 (Add PCV13) [End][Chris YIM]
 
         Public Function Filter(ByVal strCategoryCode As String) As ClaimCategoryModel

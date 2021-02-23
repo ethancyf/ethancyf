@@ -202,7 +202,7 @@ Namespace UIControl.DocTypeText
             ' HKIC No.
             ' Me.lblECHKID.Text = Me.GetGlobalResourceObject("Text", "HKID")
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.EC)
-            lblECHKID.Text = IIf(SessionHandler.Language() = CultureLanguage.English, udtDocTypeModel.DocIdentityDesc, udtDocTypeModel.DocIdentityDescChi)
+            lblECHKID.Text = udtDocTypeModel.DocIdentityDesc(SessionHandler().Language)
 
             ' Date of Birth
             Me.lblECDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")

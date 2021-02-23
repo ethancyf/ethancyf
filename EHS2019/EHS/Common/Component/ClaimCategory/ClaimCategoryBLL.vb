@@ -49,19 +49,17 @@ Namespace Component.ClaimCategory
         End Sub
 
         Public Shared Function ConvertCategoryToDatatable(ByVal udtClaimCategoryModelCollection As ClaimCategoryModelCollection, Optional ByVal strVersion As String = "") As DataTable
-            'CRE20-009 Change the style of rbCategorySelection [Start][Nichole]
             Dim strCategoryName As String = Nothing
 
-
-            'CRE20-009 Change the style of rbCategorySelection [End][Nichole]
-
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             Dim dtCategory As New DataTable()
             dtCategory.Columns.Add(ClaimCategoryModel._Category_Code, GetType(String))
             dtCategory.Columns.Add(ClaimCategoryModel._Category_Name, GetType(String))
             dtCategory.Columns.Add(ClaimCategoryModel._Category_Name_Chi, GetType(String))
             dtCategory.Columns.Add(ClaimCategoryModel._Category_Name_CN, GetType(String))
             dtCategory.Columns.Add(ClaimCategoryModel._IsMedicalCondition, GetType(String))
-
+            dtCategory.Columns.Add(ClaimCategoryModel._Subsidize_Code, GetType(String))
 
             For Each udtClaimCategoryModel As ClaimCategoryModel In udtClaimCategoryModelCollection
                 Dim dr As DataRow = dtCategory.NewRow()
@@ -70,14 +68,15 @@ Namespace Component.ClaimCategory
                 dr(ClaimCategoryModel._Category_Name_Chi) = udtClaimCategoryModel.CategoryNameChi
                 dr(ClaimCategoryModel._Category_Name_CN) = udtClaimCategoryModel.CategoryNameCN
                 dr(ClaimCategoryModel._IsMedicalCondition) = udtClaimCategoryModel.IsMedicalCondition
+                dr(ClaimCategoryModel._Subsidize_Code) = udtClaimCategoryModel.SubsidizeCode
 
-                'CRE20-009 Change the style of rbCategorySelection [Start][Nichole]
                 If udtClaimCategoryModel.CategoryCode = "VSSDA" And strVersion = "" Then
                     dr(ClaimCategoryModel._Category_Name) = "<span style='position:absolute;width:700px'>" + udtClaimCategoryModel.CategoryName + "</span><br><br>"
                 End If
-                'CRE20-009 Change the style of rbCategorySelection [End][Nichole]
+
                 dtCategory.Rows.Add(dr)
             Next
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Return dtCategory
 

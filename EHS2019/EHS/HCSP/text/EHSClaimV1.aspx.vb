@@ -1110,10 +1110,10 @@ Namespace Text
                             ' ----------------------------------------------
                             If strSearchDocCode = DocTypeModel.DocTypeCode.ADOPC Then
                                 udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(strSchemeCode, strSearchDocCode, strIdentityNo, strDOB, _
-                                    udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, strIdentityNoPrefix, FunctionCode)
+                                    udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, strIdentityNoPrefix, FunctionCode, ClaimMode.All)
                             Else
                                 udtSystemMessage = Me._udtEHSClaimBLL.SearchEHSAccount(strSchemeCode, strSearchDocCode, strIdentityNo, strDOB, _
-                                    udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, String.Empty, FunctionCode)
+                                    udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, String.Empty, FunctionCode, ClaimMode.All)
                             End If
 
                             ' INT18-XXX (Refine auditlog) [Start][Chris YIM]
@@ -1203,7 +1203,7 @@ Namespace Text
                             Dim udtSysMsgValidateEC As SystemMessage = Nothing
                             If Me.udcStep1ClaimSearch.ECDOBSelected Then
                                 udtSysMsgValidateEC = _udtEHSClaimBLL.SearchEHSAccount(strSchemeCode, strSearchDocCode, strIdentityNo, strDOB, _
-                                    udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, String.Empty, FunctionCode)
+                                    udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, String.Empty, FunctionCode, ClaimMode.All)
 
                             Else
                                 Dim strDOADay As String = udcStep1ClaimSearch.ECDOADay
@@ -3821,7 +3821,7 @@ Namespace Text
                     If udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.ADOPC Then
                         udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                             udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, _
-                            udtEHSPersonalInfo.AdoptionPrefixNum, FunctionCode)
+                            udtEHSPersonalInfo.AdoptionPrefixNum, FunctionCode, ClaimMode.All)
                     Else
                         If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
 
@@ -3876,7 +3876,7 @@ Namespace Text
                         Else
                             udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                                 udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, _
-                                String.Empty, FunctionCode)
+                                String.Empty, FunctionCode, ClaimMode.All)
 
                             ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
                             ' -------------------------------------------------------------------------------
@@ -3916,7 +3916,7 @@ Namespace Text
                     Else
                         udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                             udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, _
-                            String.Empty, FunctionCode)
+                            String.Empty, FunctionCode, ClaimMode.All)
 
                     End If
 
@@ -4332,7 +4332,7 @@ Namespace Text
                     If Not udtEHSAccount Is Nothing Then '<- come from Step2a
 
                         ' Get all Eligible Scheme form available List <- for EHS Account
-                        udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchEligibleClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaimModelCollection)
+                        udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchEligibleAndExceedDocumentClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaimModelCollection)
 
                         Me.SessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaimModelCollection, FunctionCode)
                     End If
@@ -5946,7 +5946,7 @@ Namespace Text
                         'Get all available Scheme <- for SP
                         udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(SessionSP.PracticeList(udtSelectedPracticeDisplay.PracticeID).PracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
                         'Get all Eligible Scheme form available List <- for EHS Account
-                        udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchEligibleClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaimModelCollection)
+                        udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchEligibleAndExceedDocumentClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaimModelCollection)
 
                         Me.SessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaimModelCollection, FunctionCode)
                     End If

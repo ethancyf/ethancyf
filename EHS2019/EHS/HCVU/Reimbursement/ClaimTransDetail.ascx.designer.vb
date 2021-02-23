@@ -14,6 +14,33 @@ Option Explicit On
 Partial Public Class ClaimTransDetail
 
     '''<summary>
+    '''panMessageBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panMessageBox As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''udcErrorMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcErrorMessage As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''udcInfoMessageBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcInfoMessageBox As Global.CustomControls.InfoMessageBox
+
+    '''<summary>
     '''lblVVoucherRecipientHeading control.
     '''</summary>
     '''<remarks>
@@ -30,6 +57,87 @@ Partial Public Class ClaimTransDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udcReadOnlyDocumentType As Global.HCVU.ucReadOnlyDocumnetType
+
+    '''<summary>
+    '''panVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCVaccinationRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccinationRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panNoVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panNoVaccinationRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCInjectionDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCInjectionDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccines control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccines As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDose As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCInformationProvider control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCInformationProvider As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCNoRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNoRecord As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''gvCVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvCVaccinationRecord As Global.System.Web.UI.WebControls.GridView
 
     '''<summary>
     '''lblTTransactionHeading control.
@@ -59,13 +167,13 @@ Partial Public Class ClaimTransDetail
     Protected WithEvents lblTTransactionNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblTTransactionTime control.
+    '''lblTTransactionNoTime control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblTTransactionTime As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblTTransactionNoTime As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''trTConfirmTime control.
@@ -93,6 +201,33 @@ Partial Public Class ClaimTransDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTConfirmTime As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trTTransactionTime control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trTTransactionTime As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblTTransactionTimeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTTransactionTimeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblTTransactionTime control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTTransactionTime As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblTSchemeText control.
@@ -129,6 +264,15 @@ Partial Public Class ClaimTransDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents hfTScheme As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''trTransactionStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trTransactionStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''lblTTransactionStatusText control.
@@ -201,6 +345,15 @@ Partial Public Class ClaimTransDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgTServiceDate As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trServiceProvider control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trServiceProvider As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''lblTServiceProviderText control.
@@ -311,6 +464,15 @@ Partial Public Class ClaimTransDetail
     Protected WithEvents lblTBankAccountNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trServiceType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trServiceType As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblTServiceTypeText control.
     '''</summary>
     '''<remarks>
@@ -329,6 +491,15 @@ Partial Public Class ClaimTransDetail
     Protected WithEvents lblTServiceType As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trReadOnlyEHSClaim control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trReadOnlyEHSClaim As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''udcReadOnlyEHSClaim control.
     '''</summary>
     '''<remarks>
@@ -336,6 +507,87 @@ Partial Public Class ClaimTransDetail
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udcReadOnlyEHSClaim As Global.HCVU.ucReadOnlyEHSClaim
+
+    '''<summary>
+    '''trContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblContactText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblContact control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContact As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRemark As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trJoinEHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblJoinEHRSSText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblJoinEHRSSText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblJoinEHRSS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''trTMeansOfInput control.

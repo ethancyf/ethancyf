@@ -123,7 +123,11 @@ Public MustInherit Class BasePageWithGridView
     Public Sub GridViewPreRenderHandler(ByVal sender As Object, ByVal e As System.EventArgs, ByVal strDataSource As String)
         Dim gvSort As GridView = CType(sender, GridView)
         SetSortImg(gvSort)
-        SetPageInfo(gvSort, strDataSource)
+        'CRE20-0022 (Immu record) [Start][martin]
+        If gvSort.AllowPaging = True Then
+            SetPageInfo(gvSort, strDataSource)
+        End If
+        'CRE20-0022 (Immu record) [End][martin]
     End Sub
 
     Public Sub GridViewCustomPreRenderHandler(ByVal sender As Object, ByVal e As System.EventArgs, ByVal strDataSource As String, ByRef lstTblCell As List(Of TableCell))

@@ -376,9 +376,12 @@ Partial Public Class SchemeSelection
 
         If Not IsPostBack Then
             LoadPCDChoice()
+
+
         End If
 
         ' CRE12-001 eHS and PCD integration [End][Tommy]
+
 
         If Not Me.IsPostBack Or Me.LanguageChanged Then
 
@@ -437,6 +440,17 @@ Partial Public Class SchemeSelection
 
         End If
 
+
+
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        'Dim streHRSSToken As String = Page.Request.Params.Get("eHRSS_Token")
+        'If streHRSSToken = YesNo.No Then
+
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+        If streHRSSToken = YesNo.No Then
+            Me.panEHRSS.Visible = False
+        End If
+        'CRE20-018 Stop Token Sharing [End][Nichole]
     End Sub
 
     Protected Sub ibtnSchemeSelectBack_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -1835,7 +1849,11 @@ Partial Public Class SchemeSelection
             strProf = CStr(dtPractice.Rows(0).Item("ServiceCategoryCode")).Trim
         End If
 
-        If udtEFormBLL.AskHadJoinedEHRSSProfCode(strProf) Then
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        Dim streHRSSToken As String = Page.Request.Params.Get("eHRSS_Token")
+
+        If udtEFormBLL.AskHadJoinedEHRSSProfCode(strProf) And streHRSSToken = YesNo.Yes Then
+            'CRE20-018 Stop Token Sharing [End][Nichole]
             panEHRSS.Visible = True
             If udtSPBLL.Exist Then
 

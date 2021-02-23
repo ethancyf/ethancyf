@@ -18,7 +18,7 @@ Imports Common.ComFunction.ParameterFunction
 Partial Public Class EHSAccountCreationV1
     Inherits BasePage
 
-    Public Const FunctCode As String = Common.Component.FunctCode.FUNT020201
+    Public FunctCode As String = String.Empty   'CRE20-0xx for COVID19 claim [Nichole]
     Public Const EHSClaim As String = "EHSClaimV1.aspx"
 
     Private _udtEHSAccount As EHSAccountModel
@@ -67,14 +67,40 @@ Partial Public Class EHSAccountCreationV1
         'Smart IC Consent
         Public Const Step1b3 As Integer = 5
     End Class
+    'CRE20-0xx Immu Record [Start][Nichole]
+    Private Sub Page_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
+
+        If Me.ClaimMode = ClaimMode.COVID19 Then
+            If _udtSessionHandler.Language = CultureLanguage.TradChinese Then
+                Me.imgHeaderClaimVoucher.AlternateText = HttpContext.GetGlobalResourceObject("AlternateText", "ClaimCOVID19Banner", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+                Me.imgHeaderClaimVoucher.ImageUrl = HttpContext.GetGlobalResourceObject("ImageUrl", "ClaimCOVID19Banner", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+                Me.lblClaimVoucherStep1b.Text = HttpContext.GetGlobalResourceObject("Text", "ClaimStep3Complete", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+            ElseIf _udtSessionHandler.Language = CultureLanguage.SimpChinese Then
+                Me.imgHeaderClaimVoucher.AlternateText = HttpContext.GetGlobalResourceObject("AlternateText", "ClaimCOVID19Banner", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))
+                Me.imgHeaderClaimVoucher.ImageUrl = HttpContext.GetGlobalResourceObject("ImageUrl", "ClaimCOVID19Banner", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))
+                Me.lblClaimVoucherStep1b.Text = HttpContext.GetGlobalResourceObject("Text", "ClaimStep3Complete", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))
+            Else
+                Me.imgHeaderClaimVoucher.AlternateText = HttpContext.GetGlobalResourceObject("AlternateText", "ClaimCOVID19Banner", New System.Globalization.CultureInfo(CultureLanguage.English))
+                Me.imgHeaderClaimVoucher.ImageUrl = HttpContext.GetGlobalResourceObject("ImageUrl", "ClaimCOVID19Banner", New System.Globalization.CultureInfo(CultureLanguage.English))
+                Me.lblClaimVoucherStep1b.Text = HttpContext.GetGlobalResourceObject("Text", "ClaimStep3Complete", New System.Globalization.CultureInfo(CultureLanguage.English))
+
+            End If
+        End If
+    End Sub
+    'CRE20-0xx Immu Record [End][Nichole]
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+        FunctCode = Me.ClaimFunctCode
 
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
         If Not IsPostBack Then
             ' Init the Active View in Page Load only
             Me.mvAccountCreation.ActiveViewIndex = 0
+
+          
         End If
 
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] End
@@ -128,13 +154,17 @@ Partial Public Class EHSAccountCreationV1
                             Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
 
                         Case SmartIDHandler.SmartIDResultStatus.TempAccountExist_SameDetail
-                            If _udtEHSAccount.IsNew Then
+                            If Me.ClaimMode = ClaimMode.COVID19 Then
                                 ' Create new account
                                 mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
                             Else
-                                mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2
+                                If _udtEHSAccount.IsNew Then
+                                    ' Create new account
+                                    mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
+                                Else
+                                    mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2
+                                End If
                             End If
-
                     End Select
                     '==================================================================================================================================================================
 
@@ -201,6 +231,43 @@ Partial Public Class EHSAccountCreationV1
 
             Me.BackToClaim(False)
         End If
+
+        'CRE20-xxx COVID-19 [Start][Nichole] 
+        If Not IsPostBack Then
+            If Me.ClaimMode = ClaimMode.COVID19 Then
+                lblVRACreationStep1c.Visible = False
+                ' lblClaimVoucherStep1b.Visible = False
+
+                If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
+                    '-------------------------------
+                    '--- smart IC
+                    If Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2 Then
+                        '-Validate smart IC
+                        Me.btnStep1a2Confirm_Click(Nothing, Nothing)
+                    ElseIf Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1 Then
+                        Me.btnstep1a1CreateAccount_Click(Nothing, Nothing)
+                    End If
+                Else
+                    '------------------------------
+                    '--- manual input
+
+                    If Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a2 Then
+                        Me._udtSessionHandler.ExceedDocTypeLimitRemoveFromSession()
+                        Me._udtSessionHandler.NotMatchAccountExistRemoveFromSession()
+                        Me._udtSessionHandler.CCCodeRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.AccountCreationProceedClaimSaveToSession(True)
+
+                        Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1a1
+                    Else
+
+                    End If
+
+                    Me.btnstep1a1CreateAccount_Click(Nothing, Nothing)
+                End If
+            End If
+        End If
+
+        'CRE20-xxx COVID-19 [End][Nichole]
     End Sub
 
     Private Sub StepRenderLanguage(ByVal udtEHSAccount As EHSAccountModel)
@@ -298,7 +365,6 @@ Partial Public Class EHSAccountCreationV1
             confirmButton.Enabled = enable
             confirmButton.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ConfirmDisableBtn")
         End If
-
     End Sub
 
 #Region "Modal Popup Extender"
@@ -414,7 +480,7 @@ Partial Public Class EHSAccountCreationV1
         Dim udtSchemeClaimBLL As Scheme.SchemeClaimBLL = New Scheme.SchemeClaimBLL()
         Dim udtSchemeClaim As Scheme.SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
 
-        udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession()
+        udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
         udtSelectedPracticedisplay = udtPracticeDisplays.Filter(intBankAccountDisplaySeqas)
         Me._udtSessionHandler.PracticeDisplaySaveToSession(udtSelectedPracticedisplay, FunctCode)
 
@@ -428,7 +494,14 @@ Partial Public Class EHSAccountCreationV1
                 'if Selected practice is not same as the current practice
                 If Not udtPracticedisplay.PracticeID.Equals(intBankAccountDisplaySeqas) Then
 
-                    udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(Me._udtSP.PracticeList(intBankAccountDisplaySeqas).PracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    ' Practice Scheme Info List Filter by COVID-19
+                    Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfo.PracticeSchemeInfoModelCollection = (New Scheme.SchemeClaimBLL).FilterPracticeSchemeInfo(Me._udtSP.PracticeList, intBankAccountDisplaySeqas, Me.ClaimMode)
+
+                    udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(udtFilterPracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
                     udtSchemeClaim = udtSchemeClaimModelCollection.Filter(udtSchemeClaim.SchemeCode)
 
                     'Practice do not have this scheme for creation account -> show pop up message message
@@ -510,6 +583,7 @@ Partial Public Class EHSAccountCreationV1
         Me._udtEHSAccount = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
 
         Dim udtVREEHSAccount As EHSAccountModel = _udtSessionHandler.VREEHSAccountGetFromSession
+
         If Not IsNothing(udtVREEHSAccount) Then
             _udtEHSAccount = udtVREEHSAccount
             _udtSessionHandler.EHSAccountSaveToSession(_udtEHSAccount, FunctCode)
@@ -678,16 +752,12 @@ Partial Public Class EHSAccountCreationV1
         If Not udtEHSAccount Is Nothing Then
             'Get Documnet type full name
             udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-            If Me._udtSessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
-                strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocNameChi
-                strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDescChi
-            ElseIf Me._udtSessionHandler.Language = Common.Component.CultureLanguage.SimpChinese Then
-                strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocNameCN
-                strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDescCN
-            Else
-                strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocName
-                strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDesc
-            End If
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocName(Me._udtSessionHandler.Language)
+            strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDesc(Me._udtSessionHandler.Language)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Me.lblstep1a1DocumentType.Text = strDocumentTypeFullName
             Me.lblstep1a1HKIDText.Text = strDocIdentityDesc
@@ -695,7 +765,7 @@ Partial Public Class EHSAccountCreationV1
             Select Case strDocCode
                 Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC
                     Me.lblstep1a1HKID.Text = Me._udtFormatter.formatHKID(udtEHSAccountPersonalInfo.IdentityNum, False)
-                Case DocType.DocTypeModel.DocTypeCode.HKBC
+                Case DocType.DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                     'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "RegistrationNo")
                     Me.lblstep1a1HKID.Text = Me._udtFormatter.formatHKID(udtEHSAccountPersonalInfo.IdentityNum, False)
 
@@ -715,7 +785,7 @@ Partial Public Class EHSAccountCreationV1
                     ' Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "NoOfEntry")
                     Me.lblstep1a1HKID.Text = Me._udtFormatter.FormatDocIdentityNoForDisplay(udtEHSAccountPersonalInfo.DocCode, udtEHSAccountPersonalInfo.IdentityNum, False, udtEHSAccountPersonalInfo.AdoptionPrefixNum)
 
-                Case DocTypeModel.DocTypeCode.DI
+                Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                     'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "IdentityDocNo")
                     Me.lblstep1a1HKID.Text = Me._udtFormatter.FormatDocIdentityNoForDisplay(udtEHSAccountPersonalInfo.DocCode, udtEHSAccountPersonalInfo.IdentityNum, False)
                     'Me.lblstep1a1HKID.Text = udtEHSAccountPersonalInfo.IdentityNum
@@ -992,13 +1062,34 @@ Partial Public Class EHSAccountCreationV1
             Case DocTypeModel.DocTypeCode.ADOPC
                 'Fields checking for Adoption only
                 blnProceed = Me.Step1b1AdoptionValidation(Me._udtEHSAccount)
+
+            Case DocTypeModel.DocTypeCode.OW
+                'Fields checking for One-Way Permit only
+                blnProceed = Me.Step1b1OWValidation(Me._udtEHSAccount)
+
+            Case DocTypeModel.DocTypeCode.RFNo8
+                'Fields checking for RFNo8 only
+                blnProceed = Me.Step1b1RFNo8Validation(Me._udtEHSAccount)
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+                'Fields checking for CCIC only
+                blnProceed = Me.Step1b1CCICValidation(Me._udtEHSAccount)
+            Case DocTypeModel.DocTypeCode.ROP140
+                'Fields checking for ROP140 only
+                blnProceed = Me.Step1b1ROP140Validation(Me._udtEHSAccount)
+            Case DocTypeModel.DocTypeCode.PASS
+                'Fields checking for PASS only
+                blnProceed = Me.Step1b1PASSValidation(Me._udtEHSAccount)
+                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
         If blnProceed Then
             Me._udtSessionHandler.EHSAccountSaveToSession(Me._udtEHSAccount, FunctCode)
 
             EHSAccountCreationBase.AuditLogStep1b1Complete(_udtAuditLogEntry, Me._udtEHSAccount)
-
+       
             Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1b2
         End If
 
@@ -1121,20 +1212,41 @@ Partial Public Class EHSAccountCreationV1
             Case DocType.DocTypeModel.DocTypeCode.VISA
                 'Input Tips 
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoVISA")
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocType.DocTypeModel.DocTypeCode.CCIC
+                'Input Tips 
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoCCIC")
+
+            Case DocType.DocTypeModel.DocTypeCode.ROP140
+                'Input Tips 
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoROP140")
+
+            Case DocType.DocTypeModel.DocTypeCode.PASS
+                'Input Tips 
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoPASS")
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
         'Format: Practice Name (Practice display Seq/Practice ID) [Practice Address]
         If createPopupPractice Then
 
             'Set up practice selection popup Box
-            udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession()
+            udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
             Me.udcPracticeRadioButtonGroup.VerticalScrollBar = True
             ' CRE20-0XX (HA Scheme) [Start][Winnie]
             Me.udcPracticeRadioButtonGroup.SchemeSelection = IIf(Me.SubPlatform = EnumHCSPSubPlatform.CN, True, False)
             Me.udcPracticeRadioButtonGroup.SelectedScheme = Me._udtSessionHandler.SchemeSelectedForPracticeGetFromSession(FunctCode)
             ' CRE20-0XX (HA Scheme) [End][Winnie]
-            Me.udcPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, Me._udtSP.PracticeList, Me._udtSP.SchemeInfoList, Me._udtSessionHandler.Language, PracticeRadioButtonGroup.DisplayMode.Address)
-
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.udcPracticeRadioButtonGroup.BuildRadioButtonGroup(udtPracticeDisplays, _
+                                                                 Me._udtSP.PracticeList, _
+                                                                 Me._udtSP.SchemeInfoList, _
+                                                                 Me._udtSessionHandler.Language, _
+                                                                 PracticeRadioButtonGroup.DisplayMode.Address, _
+                                                                 Me.ClaimMode)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
             Me.udcStep1b1InputDocumentType.EHSAccount = udtEHSAccount
             Me.udcStep1b1InputDocumentType.DocType = udtEHSAccount.SearchDocCode
             Me.udcStep1b1InputDocumentType.Mode = ucInputDocTypeBase.BuildMode.Creation
@@ -1177,6 +1289,20 @@ Partial Public Class EHSAccountCreationV1
 
             Case DocTypeModel.DocTypeCode.ADOPC
                 ucInputDocType = Me.udcStep1b1InputDocumentType.GetADOPCControl()
+
+            Case DocTypeModel.DocTypeCode.OW
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetOWControl()
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetCCICControl()
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetROP140Control()
+
+            Case DocTypeModel.DocTypeCode.PASS
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetPASSControl()
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
         If Not ucInputDocType Is Nothing Then
@@ -1632,7 +1758,7 @@ Partial Public Class EHSAccountCreationV1
             udtEHSAccountPersonalInfo.DateofIssue = dtDateOfIssue
             udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
 
-            Me._systemMessage = Me.EHSAccountBasicValidation(DocTypeModel.DocTypeCode.ID235B, udtEHSAccount)
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocTypeModel.DocTypeCode.REPMT, udtEHSAccount)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
@@ -1747,6 +1873,210 @@ Partial Public Class EHSAccountCreationV1
 
         Return isValid
     End Function
+
+    'For OW
+    Private Function Step1b1OWValidation(ByRef udtEHSAccount As EHSAccountModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputOW As ucInputOW = Me.udcStep1b1InputDocumentType.GetOWControl()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+
+        udcInputOW.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputOW.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputOW.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputOW.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputOW.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputOW.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputOW.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputOW.Gender
+            udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.OW
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.OW, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+
+    'For RFNo8
+    Private Function Step1b1RFNo8Validation(ByRef udtEHSAccount As EHSAccountModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputRFNo8 As ucInputRFNo8 = Me.udcStep1b1InputDocumentType.GetRFNo8Control()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+
+        udcInputRFNo8.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputRFNo8.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputRFNo8.ENameSurName, udcInputRFNo8.ENameFirstName)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputRFNo8.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputRFNo8.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputRFNo8.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputRFNo8.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputRFNo8.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputRFNo8.Gender
+            udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.RFNo8
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocTypeModel.DocTypeCode.RFNo8, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+
+    ' CRE20-0022 (Immu record) [Start][Martin]
+    'For CCIC
+    Private Function Step1b1CCICValidation(ByRef udtEHSAccount As EHSAccountModel) As Boolean
+
+        Dim isValid As Boolean = True
+        Dim udcInputCCIC As ucInputCCIC = Me.udcStep1b1InputDocumentType.GetCCICControl()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+        Dim strDOI As String = String.Empty
+        udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputCCIC.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputCCIC.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputCCIC.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputCCIC.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputCCIC.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputCCIC.Gender
+            udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.CCIC
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.CCIC, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+
+    'For ROP140
+    Private Function Step1b1ROP140Validation(ByRef udtEHSAccount As EHSAccountModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputROP140 As ucInputROP140 = Me.udcStep1b1InputDocumentType.GetROP140Control()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+        Dim strDOI As String = String.Empty
+        udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputROP140.ENameSurName, udcInputROP140.ENameFirstName)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputROP140.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputROP140.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputROP140.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputROP140.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputROP140.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputROP140.Gender
+            udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.ROP140
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.ROP140, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+
+    'For PASS
+    Private Function Step1b1PASSValidation(ByRef udtEHSAccount As EHSAccountModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputPASS As ucInputPASS = Me.udcStep1b1InputDocumentType.GetPASSControl()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+        Dim strDOI As String = String.Empty
+        udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputPASS.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputPASS.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputPASS.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputPASS.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputPASS.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputPASS.Gender
+            udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.PASS
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.PASS, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+
+    ' CRE20-0022 (Immu record) [End][Martin]
 
     Private Function EHSAccountBasicValidation(ByVal strDocCode As String, ByVal udtEHSAccount As EHSAccountModel) As SystemMessage
         Return Me._udtClaimRulesBLL.CheckCreateEHSAccount(udtEHSAccount.SchemeCode, strDocCode, udtEHSAccount, ClaimRules.ClaimRulesBLL.Eligiblity.Check)
@@ -1930,7 +2260,13 @@ Partial Public Class EHSAccountCreationV1
 
             EHSAccountCreationBase.AuditLogStep1b2Complete(_udtAuditLogEntry, udtEHSAccount)
 
-            Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1c
+            'CRE20-0xx Immue record [Start][Nichole]
+            If Me.ClaimMode = ClaimMode.COVID19 Then
+                btnStep1cProceedToClaim_Click(Nothing, Nothing)
+            Else
+                Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1c
+            End If
+            'CRE20-00x Immu Record [End][Nichole]
         Else
             ' To Do: Display Error!
             Me.udcMsgBoxErr.AddMessage(udtSystemMessage)
@@ -2084,6 +2420,15 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail, _udtAuditLogEntry, Common.Component.LogID.LOG00058, "Confirm SmartID Detail Failed")
 
         End If
+
+        'CRE20-00xx Immue record SmartIC card [Start][Nichole]
+        If Me.ClaimMode = ClaimMode.COVID19 Then
+            If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
+
+                Me.btnStep1cProceedToClaim_Click(Nothing, Nothing)
+            End If
+        End If
+        'CRE20-00xx Immue record SmartIC card [End][Nichole]
     End Sub
 
     'Private Sub chkStep1b3Declare_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkStep1b3Declare.CheckedChanged
@@ -2172,6 +2517,7 @@ Partial Public Class EHSAccountCreationV1
         'Me.lblStep1b3Consent.Text = Me.GetGlobalResourceObject("Text", "ValidatedACWithDiffInfo")
         Me.btnStep1b3Cancel.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CancelBtn")
         Me.btnStep1b3Cancel.AlternateText = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
+        
         Me.btnStep1b3Confirm.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
         Me.btnStep1b3Confirm.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
 
@@ -2258,7 +2604,7 @@ Partial Public Class EHSAccountCreationV1
             Return
         End If
 
-        Me._systemMessage = New Common.ComObject.SystemMessage("020201", "I", "00001")
+        Me._systemMessage = New Common.ComObject.SystemMessage(FunctCode, "I", "00001")
         Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Complete
         Me.udcInfoMsgBox.AddMessage(Me._systemMessage)
         Me.udcInfoMsgBox.BuildMessageBox()
@@ -2296,7 +2642,7 @@ Partial Public Class EHSAccountCreationV1
     ''' Show Change Practice button
     ''' </summary>
     Private Sub ShowChangePracticeButton(ByVal imageButton As ImageButton)
-        Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Me._udtSessionHandler.PracticeDisplayListGetFromSession()
+        Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
         If udtPracticeDisplays.Count > 1 Then
             imageButton.Visible = True
         Else

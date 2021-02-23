@@ -115,6 +115,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PatientPortalDoctorListGene
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "HAServicePatientImporter", "HAServicePatientImporter\HAServicePatientImporter.vbproj", "{C48A11AB-1740-4D83-83E5-F19CA4C4D077}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "COVID19Exporter", "COVID19Exporter\COVID19Exporter.vbproj", "{891CE58F-5B06-437E-AF88-896A04A85579}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -675,6 +677,26 @@ Global
 		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C48A11AB-1740-4D83-83E5-F19CA4C4D077}.Release|Win32.ActiveCfg = Release|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{891CE58F-5B06-437E-AF88-896A04A85579}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5EEED799-93BF-4AC4-A9F1-1CC006B56E33}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -313,12 +313,15 @@ Partial Public Class ucInputEC
 
         ' -------------------------- Creation --------------------------------------------------------------------------------------------
         'Get Documnet identity no name
+
+
         Dim strDocIdentityNoName As String
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            strDocIdentityNoName = udtDocTypeModelList.Filter(DocTypeCode.EC).DocIdentityDescChi
-        Else
-            strDocIdentityNoName = udtDocTypeModelList.Filter(DocTypeCode.EC).DocIdentityDesc
-        End If
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        strDocIdentityNoName = udtDocTypeModelList.Filter(DocTypeCode.EC).DocIdentityDesc(Session("Language").ToString())
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         Me.lblNewHKICText.Text = strDocIdentityNoName
         Me.lblECHKIDOriginalText.Text = strDocIdentityNoName
 

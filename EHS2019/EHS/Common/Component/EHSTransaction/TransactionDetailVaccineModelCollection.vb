@@ -76,7 +76,8 @@ Namespace Component.EHSTransaction
                 ' Retrieve vaccine code mapping information
                 udtCodeModel = cCode.GetMappingByCode(VaccineCodeMappingModel.SourceSystemClass.CMS, _
                                                             VaccineCodeMappingModel.TargetSystemClass.EHS, _
-                                                            udtCurrentHAVaccineModel.VaccineCode)
+                                                            udtCurrentHAVaccineModel.VaccineCode, _
+                                                            udtCurrentHAVaccineModel.VaccineBrand)
                 If udtCodeModel Is Nothing Then
                     Throw New Exception(String.Format("TransactionDetailModelCollection: HA Vaccine Record miss VaccineCodeMapping({0})", udtCurrentHAVaccineModel.VaccineCode))
                 End If
@@ -386,7 +387,8 @@ Namespace Component.EHSTransaction
                 ' Retrieve vaccine code mapping information
                 udtCodeModel = cCode.GetMappingByCode(VaccineCodeMappingModel.SourceSystemClass.CMS, _
                                                             VaccineCodeMappingModel.TargetSystemClass.EHS, _
-                                                            udtCurrentHAVaccineModel.VaccineCode)
+                                                            udtCurrentHAVaccineModel.VaccineCode, _
+                                                            udtCurrentHAVaccineModel.VaccineBrand)
                 If udtCodeModel Is Nothing Then
                     Throw New Exception(String.Format("TransactionDetailModelCollection: HA Vaccine Record miss VaccineCodeMapping({0})", udtCurrentHAVaccineModel.VaccineCode))
                 End If
@@ -825,5 +827,59 @@ Namespace Component.EHSTransaction
                 End Select
             End Function
         End Class
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterFindNearestRecord(Optional ByVal strInfoProvider As String = "") As TransactionDetailVaccineModel
+            Dim udtResTranDetailVaccineModel As TransactionDetailVaccineModel = Nothing
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If strInfoProvider.Trim.ToUpper = udtTranDetailVaccineModel.Provider.Trim.ToUpper OrElse strInfoProvider = String.Empty Then
+                    If udtResTranDetailVaccineModel Is Nothing Then
+                        udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                    Else
+                        If udtResTranDetailVaccineModel.ServiceReceiveDtm < udtTranDetailVaccineModel.ServiceReceiveDtm Then
+                            udtResTranDetailVaccineModel = udtTranDetailVaccineModel
+                        End If
+                    End If
+                End If
+            Next
+
+            Return udtResTranDetailVaccineModel
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterIncludeBySubsidizeItemCode(ByVal strSubsidizeItemCode As String) As TransactionDetailVaccineModelCollection
+            Dim udtResTranDetailVaccineList As New TransactionDetailVaccineModelCollection
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtTranDetailVaccineModel.SubsidizeItemCode = strSubsidizeItemCode Then
+                    udtResTranDetailVaccineList.Add(udtTranDetailVaccineModel)
+                End If
+            Next
+
+            Return udtResTranDetailVaccineList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterExcludeBySubsidizeItemCode(ByVal strSubsidizeItemCode As String) As TransactionDetailVaccineModelCollection
+            Dim udtResTranDetailVaccineList As New TransactionDetailVaccineModelCollection
+
+            For Each udtTranDetailVaccineModel As TransactionDetailVaccineModel In Me
+                If udtTranDetailVaccineModel.SubsidizeItemCode <> strSubsidizeItemCode Then
+                    udtResTranDetailVaccineList.Add(udtTranDetailVaccineModel)
+                End If
+            Next
+
+            Return udtResTranDetailVaccineList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
     End Class
 End Namespace

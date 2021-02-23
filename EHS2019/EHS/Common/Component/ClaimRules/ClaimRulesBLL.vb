@@ -14,6 +14,7 @@ Imports Common.Component.SchemeDetails
 Imports Common.Component.StudentFile
 Imports Common.DataAccess
 Imports Common.Component.VoucherInfo
+Imports Common.Component.COVID19
 
 Namespace Component.ClaimRules
     Public Class ClaimRulesBLL
@@ -2453,8 +2454,6 @@ Namespace Component.ClaimRules
                 End If
             End If
 
-
-
             ' 2. Vaccine Checking 
             If enumCheckEligiblity = Eligiblity.Check Then
                 If blnWithTransaction AndAlso udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
@@ -2463,6 +2462,18 @@ Namespace Component.ClaimRules
 
                     ' Exclude the current transaction
                     Dim udtFilterEHSClaimTranDetail As TransactionDetailModelCollection = udtTranDetailVaccineList.RemoveByTransactionID(udtEHSTransaction.TransactionID)
+
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    Dim udtFilterTransactionDetailVaccineList As New TransactionDetailVaccineModelCollection()
+
+                    For Each udtTransactionDetailVaccine As TransactionDetailModel In udtTranDetailVaccineList
+                        If udtTransactionDetailVaccine.TransactionID.Trim().ToUpper() <> udtEHSTransaction.TransactionID.Trim().ToUpper() Then
+                            udtFilterTransactionDetailVaccineList.Add(New TransactionDetailVaccineModel(udtTransactionDetailVaccine))
+                        End If
+                    Next
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
 
                     ' -------------------------------------------------------------------------------
                     ' SubsidizeItemDetailRule Checking & Available Entitlement
@@ -2528,6 +2539,7 @@ Namespace Component.ClaimRules
 
                         Dim strRCHCode As String = String.Empty
                         Dim strSchoolCode As String = String.Empty
+                        Dim strBrand As String = String.Empty
 
                         If Not IsNothing(udtEHSTransaction.TransactionAdditionFields) AndAlso Not IsNothing(udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode")) Then
                             strRCHCode = udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode").AdditionalFieldValueCode
@@ -2537,16 +2549,22 @@ Namespace Component.ClaimRules
                             strSchoolCode = udtEHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("SchoolCode").AdditionalFieldValueCode
                         End If
 
+                        If Not IsNothing(udtEHSTransaction.TransactionAdditionFields) AndAlso Not IsNothing(udtEHSTransaction.TransactionAdditionFields.VaccineBrand) Then
+                            strBrand = udtEHSTransaction.TransactionAdditionFields.VaccineBrand
+                        End If
+
                         udtInputPicker.RCHCode = strRCHCode
                         udtInputPicker.HighRisk = udtEHSTransaction.HighRisk
                         udtInputPicker.SchoolCode = strSchoolCode
+                        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        udtInputPicker.Brand = strBrand
+                        udtInputPicker.VaccinationRecord = udtFilterTransactionDetailVaccineList
+                        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-                        ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                        ' -----------------------------------------------------------------------------------------
                         lstClaimResult = udtClaimRulesBLL.CheckClaimRuleForClaim(udtEHSAccount.getPersonalInformation(strDocCode), _
                             dtmServiceDate, strSchemeCode, lstIntSchemeSeq, lstStrSubsidizeCode, lstStrSubsidizeItemCode, _
                             lstStrAvailableCode, udtFilterEHSClaimTranDetail, blnInvalidScheme, udtInputPicker)
-                        ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
                         ' Handle Block only
                         For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResult
@@ -3156,10 +3174,10 @@ Namespace Component.ClaimRules
 
             Dim blnError As Boolean = False
             Dim udtEHSTransactionBLL As New EHSTransactionBLL()
-            ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
-            ' -----------------------------------------------------------------------------------------
-            Dim udtTranBenefit As TransactionDetailModelCollection = udtEHSTransactionBLL.getTransactionDetailBenefit(strDocCode, strIdentity, udtDB)
-            ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim udtTranBenefit As TransactionDetailModelCollection = udtEHSTransactionBLL.getTransactionDetailBenefit(strDocCode, strIdentity, EHSTransactionBLL.Source.GetFromDB, udtDB)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             For Each udtNewTransactionDetail As TransactionDetailModel In udtNewTransactionDetailList
                 If udtTranBenefit.FilterBySubsidizeItemDetail(udtNewTransactionDetail.SchemeCode, udtNewTransactionDetail.SchemeSeq, _
@@ -3693,7 +3711,10 @@ Namespace Component.ClaimRules
             Dim udtServiceSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(strSchemeCode, dtmServiceDate.AddDays(1).AddMinutes(-1))
 
             Dim udtEHSTransactionBLL As New EHSTransactionBLL()
-            Dim udtTransactionDetailsBenifit As TransactionDetailModelCollection = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtDB)
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim udtTransactionDetailsBenifit As TransactionDetailModelCollection = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, EHSTransactionBLL.Source.GetFromSession, udtDB)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Return CheckClaimRuleForClaim(udtEHSPersonalInfo, dtmServiceDate, _
                                          strSchemeCode, lstIntSchemeSeq, lstStrSubsidizeCode, lstStrSubsidizeItemCode, _
@@ -3874,13 +3895,10 @@ Namespace Component.ClaimRules
         End Function
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Private Function CheckClaimRuleSingleEntry(ByVal dtmServiceDate As Date, ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, ByVal strDoseCode As String, ByRef udtTransactionDetailModel As TransactionDetailModel, _
             ByVal udtTranDetailPrevSeason As TransactionDetailModelCollection, ByVal udtTranDetailNextSeason As TransactionDetailModelCollection, ByVal udtClaimRule As ClaimRuleModel, _
             ByVal udtTransactionDetailsBenifit As TransactionDetailModelCollection, ByVal udtInputPicker As InputPickerModel, _
             ByRef dicResultParam As Dictionary(Of String, Object)) As Boolean
-            ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
             Dim strDBDoseCode As String = String.Empty
             Dim dtmDBDoseDate As Nullable(Of Date)
@@ -3922,8 +3940,6 @@ Namespace Component.ClaimRules
                         Return False
                     End If
 
-                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
                 Case ClaimRuleModel.RuleTypeClass.DOSESEQEXIST
                     If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
 
@@ -3936,7 +3952,6 @@ Namespace Component.ClaimRules
                     Else
                         Return False
                     End If
-                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
                 Case ClaimRuleModel.RuleTypeClass.DOSEPERIOD
                     If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
@@ -4009,19 +4024,10 @@ Namespace Component.ClaimRules
                 Case ClaimRuleModel.RuleTypeClass.INNERSUBSIDIZE
                     If udtTransactionDetailsBenifit Is Nothing Then Return False
 
-
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
                     Dim blnResult As Boolean = CompareInnerSubsidize(dtmServiceDate, udtTransactionDetailsBenifit, _
                                                 udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.Dependence, _
                                                 udtClaimRule.CompareUnit, udtClaimRule.Operator, udtClaimRule.CompareValue, dicResultParam)
                     Return blnResult
-
-
-                    'Return CompareInnerSubsidize(dtmServiceDate, udtTransactionDetailsBenifit, _
-                    '                            udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.Dependence, _
-                    '                            udtClaimRule.CompareUnit, udtClaimRule.Operator, udtClaimRule.CompareValue)
-                    ' CRE19-001-04 (PPP 2019-20 - RVP Pre-check) [Start][Koala]
-
 
                 Case ClaimRuleModel.RuleTypeClass.SUBSIDIZEMUTEX
                     If udtInputPicker Is Nothing Then Return False
@@ -4031,8 +4037,6 @@ Namespace Component.ClaimRules
                     Return CompareSubsidizeAtSameClaim(udtInputPicker.EHSClaimVaccine, _
                                                         udtClaimRule.Operator, udtClaimRule.CompareValue)
 
-                    ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
                 Case ClaimRuleModel.RuleTypeClass.SCHOOLCODE
                     'Only check transaction at the same season
                     If IsNothing(udtTransactionDetailsBenifit) OrElse udtTransactionDetailsBenifit.Count = 0 Then Return False
@@ -4121,10 +4125,7 @@ Namespace Component.ClaimRules
                         End If
 
                     End If
-                    ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
 
-                    ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
                 Case ClaimRuleModel.RuleTypeClass.SERVICEDATE
                     If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
 
@@ -4137,10 +4138,7 @@ Namespace Component.ClaimRules
                         Return False
 
                     End If
-                    ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
-                    ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
                 Case ClaimRuleModel.RuleTypeClass.CHECK_ON_LIST
                     If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
 
@@ -4157,14 +4155,146 @@ Namespace Component.ClaimRules
 
                     End Select
 
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case ClaimRuleModel.RuleTypeClass.VACCINE_BRAND
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtInputPicker Is Nothing Then Return False
+
+                    'If udtTransactionDetailsBenifit Is Nothing Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+                        'If udtTransactionDetailsBenifit.Count = 0 Then Return False
+
+                        Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
+                        udtVaccinationRecordList = udtInputPicker.VaccinationRecord.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                        If udtVaccinationRecordList.Count = 0 Then Return False
+
+                        Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
+
+                        If udtVaccinationRecord.AvailableItemCode.ToUpper.Trim = udtClaimRule.Dependence.ToUpper.Trim Then
+                            Dim udtEHSTran As EHSTransactionModel = (New EHSTransactionBLL).LoadClaimTran(udtVaccinationRecord.TransactionID.Trim)
+
+                            If udtEHSTran Is Nothing Then Return False
+
+                            If udtEHSTran.TransactionAdditionFields.VaccineBrand Is Nothing Then Return False
+
+                            If RuleComparator(udtClaimRule.Operator, udtInputPicker.Brand.ToUpper.Trim, udtEHSTran.TransactionAdditionFields.VaccineBrand.ToUpper.Trim) Then
+                                ' Error
+                                Return True
+                            End If
+                        End If
+
+                    End If
+
+                    Return False
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case ClaimRuleModel.RuleTypeClass.VACCINE_WINDOW
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtInputPicker Is Nothing Then Return False
+
+                    If udtTransactionDetailsBenifit Is Nothing Then
+
+                    End If
+                    'If udtTransactionDetailsBenifit Is Nothing Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+                        'Find the nearest vaccination record
+                        Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
+                        udtVaccinationRecordList = udtInputPicker.VaccinationRecord.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                        If udtVaccinationRecordList.Count = 0 Then Return False
+
+                        Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
+
+                        If udtClaimRule.Dependence.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then Return False
+                        If udtInputPicker.Brand.Trim <> udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then Return False
+
+                        'Dim udtTranDetailBenifitList As TransactionDetailModelCollection = udtVaccinationRecordList
+
+                        Dim dt As DataTable = (New COVID19BLL).GetCOVID19VaccineLotMapping()
+                        Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", udtInputPicker.Brand.Trim))
+
+                        If dr.Length > 0 Then
+                            Dim strCompareValue As String = dr(0)("Vaccination_Window_Min").ToString.Trim
+
+                            If udtClaimRule.CompareValue.Contains("%s") Then
+                                udtClaimRule.CompareValue = udtClaimRule.CompareValue.Replace("%s", strCompareValue)
+                            End If
+
+                            Dim blnResult As Boolean = CheckClaimRuleSingleEntryByInnerDose(dtmServiceDate, _
+                                                                                            udtVaccinationRecord.ServiceReceiveDtm, _
+                                                                                            udtClaimRule, _
+                                                                                            dicResultParam)
+
+                            If blnResult Then
+                                If Not dicResultParam.ContainsKey("%DaysApart") Then
+                                    dicResultParam.Add("%DaysApart", strCompareValue)
+                                End If
+                            End If
+
+                            Return blnResult
+
+                            'Dim blnResult As Boolean = CompareInnerSubsidize(dtmServiceDate, udtTranDetailBenifitList, _
+                            '                            udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.Dependence, _
+                            '                            udtClaimRule.CompareUnit, udtClaimRule.Operator, strCompareValue, dicResultParam)
+
+                            Return blnResult
+
+                        End If
+
+                    End If
+
+                    Return False
+
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case ClaimRuleModel.RuleTypeClass.NO_DOSE_IN_COVID19
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+
+                        If IsNothing(udtTransactionDetailsBenifit) Then Return False
+
+                        If udtTransactionDetailsBenifit.Count = 0 Then Return True
+
+                        ' ---------------------------------------------
+                        ' Only count on one subsidize item (e.g. SIV)
+                        ' ---------------------------------------------
+                        Dim udtFilteredTranDetailBenifitList As New TransactionDetailModelCollection
+
+                        Dim strSubsidizeItemCode As String = (New SubsidizeBLL).GetSubsidizeItemBySubsidize(udtClaimRule.SubsidizeCode)
+
+                        For Each udtTranDetail As TransactionDetailModel In udtTransactionDetailsBenifit
+                            If udtTranDetail.SubsidizeItemCode.Trim.ToUpper = strSubsidizeItemCode.Trim.ToUpper Then
+                                udtFilteredTranDetailBenifitList.Add(udtTranDetail)
+                            End If
+                        Next
+
+                        If udtFilteredTranDetailBenifitList.Count = 0 Then
+                            Return True
+                        Else
+                            Return False
+                        End If
+
+                    End If
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
                 Case Else
                     Throw New Exception(String.Format("ClaimRulesBLL.CheckClaimRuleSingleEntry: Invalid Claim Rule type ({0}).", udtClaimRule.Type.Trim()))
-                    ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
 
             End Select
 
         End Function
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
 
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
         Private Shared Function CheckClaimRuleSingleEntryBySubsidizeSeqDate(ByVal dtmServiceDate As Date, ByVal strOperator As String, ByVal udtTranDetailPrevSeason As TransactionDetailModelCollection, ByVal udtTranDetailNextSeason As TransactionDetailModelCollection) As Boolean
@@ -4260,12 +4390,9 @@ Namespace Component.ClaimRules
 
             End If
 
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             If Not dicResultParam.ContainsKey("%DoseInterval") Then
                 dicResultParam.Add("%DoseInterval", intPassValue)
             End If
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ' Return claim rule result
             ' ----------------------------------------------

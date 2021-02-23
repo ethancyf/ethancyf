@@ -1,5 +1,6 @@
 Imports Common.Component.Scheme.SchemeClaimModel
 Imports System.Globalization
+Imports Common.Component.Scheme.SubsidizeGroupClaimModel 'CRE20-xxx COVID-19 Immue record [Nichole]
 
 Namespace Component.Scheme
     <Serializable()> Public Class SchemeClaimModelCollection
@@ -176,7 +177,7 @@ Namespace Component.Scheme
             For Each udtSchemeClaim As SchemeClaimModel In Me
                 If udtSchemeClaim.AvailableHCSPSubPlatform = EnumAvailableHCSPSubPlatform.ALL _
                         OrElse udtSchemeClaim.AvailableHCSPSubPlatform.ToString = enumSubPlatform.ToString Then
-                    udtSchemeClaimList.Add(New SchemeClaimModel(udtSchemeClaim))
+                     udtSchemeClaimList.Add(New SchemeClaimModel(udtSchemeClaim))
                 End If
 
             Next
@@ -245,5 +246,26 @@ Namespace Component.Scheme
         End Function
         ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+
+        'CRE20-xxx COVID-19 shows practice with VSS or RVP scheme [Start][Nichole]
+        Public Function FilterCOVIDList() As Boolean
+            Dim udtResSchemeClaimModelCollection As SchemeClaimModelCollection = New SchemeClaimModelCollection()
+            Dim udtResSchemeClaimModel As SchemeClaimModel = Nothing
+
+            For Each udtSchemeClaimModel As SchemeClaimModel In Me
+                If udtSchemeClaimModel.SubsidizeGroupClaimList.Count > 0 Then
+                    '--check the subsidize name
+                    For i As Integer = 0 To udtSchemeClaimModel.SubsidizeGroupClaimList.Count - 1
+                        If udtSchemeClaimModel.SubsidizeGroupClaimList.Item(i).SubsidizeItemCode.Trim.ToUpper().Equals(SubsidizeItemCodeClass.C19) Then
+                            Return True
+                        End If
+                    Next
+                    Return False
+                End If
+                'End If
+            Next
+            Return False
+        End Function
+        'CRE20-xxx COVID-19 show practice with VSS or RVP scheme [End][Nichole]
     End Class
 End Namespace

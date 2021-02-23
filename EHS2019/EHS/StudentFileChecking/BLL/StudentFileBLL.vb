@@ -716,19 +716,23 @@ Namespace BLL
             If dt.Rows.Count > 0 Then
                 For Each dr As DataRow In dt.Rows
                     udtTranVaccine = New TransactionDetailVaccineModel( _
-                                String.Empty, _
-                                dr("Scheme_Code").ToString().Trim, _
-                                CInt(dr("Scheme_Seq")), _
-                                dr("Subsidize_Code").ToString().Trim, _
-                                dr("Subsidize_Item_Code").ToString().Trim, _
-                                dr("Available_Item_Code").ToString().Trim, _
-                                0, _
-                                0, _
-                                0, _
-                                String.Empty, _
-                                dr("Service_Receive_Dtm"), _
-                                dr("Available_Item_Desc").ToString(), _
-                                dr("Available_Item_Desc_Chi").ToString())
+                                    String.Empty, _
+                                    dr("Scheme_Code").ToString().Trim, _
+                                    CInt(dr("Scheme_Seq")), _
+                                    dr("Subsidize_Code").ToString().Trim, _
+                                    dr("Subsidize_Item_Code").ToString().Trim, _
+                                    dr("Available_Item_Code").ToString().Trim, _
+                                    0, _
+                                    0, _
+                                    0, _
+                                    String.Empty, _
+                                    dr("Service_Receive_Dtm"), _
+                                    String.Empty, _
+                                    String.Empty, _
+                                    String.Empty, _
+                                    String.Empty, _
+                                    dr("Available_Item_Desc").ToString(), _
+                                    dr("Available_Item_Desc_Chi").ToString())
 
                     udtTranVaccine.ServiceReceiveDtm = dr("Service_Receive_Dtm")
                     udtTranVaccine.SubsidizeDesc = dr("Subsidize_Desc").ToString()

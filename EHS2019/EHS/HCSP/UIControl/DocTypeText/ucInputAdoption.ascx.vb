@@ -30,7 +30,7 @@ Namespace UIControl.DocTypeText
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.ADOPC)
 
             ' Entry No.
-            Me.lblEntryNoText.Text = IIf(SessionHandler().Language = CultureLanguage.English, udtDocTypeModel.DocIdentityDesc, udtDocTypeModel.DocIdentityDescChi)
+            Me.lblEntryNoText.Text = udtDocTypeModel.DocIdentityDesc(SessionHandler().Language)
             Me.lblEntryNoTip.Text = String.Empty
 
             ' English Name

@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_SystemParametersPassword_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_SystemParametersPassword_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_SystemParametersPassword_get]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-022
+-- Modified by:		Chris YIM
+-- Modified date:	10 Feb 2021
+-- Description:		Enlarge the size of return value
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -49,7 +56,9 @@ IF LTRIM(RTRIM(@Scheme_Code)) = ''
 -- Return results
 -- =============================================
 
-SELECT Parameter_Name, CONVERT(VarChar(50), DecryptByKey(Encrypt_Field)) as ParaValue
+SELECT 
+	Parameter_Name, 
+	CONVERT(VARCHAR(MAX), DecryptByKey(Encrypt_Field)) as ParaValue
 
 FROM [dbo].[SystemParameters]
 

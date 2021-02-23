@@ -68,28 +68,23 @@ Partial Public Class ucInputTips
                 End If
                 ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-                'lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "HKICHint")
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
-
                 lblSearchDocDOBText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
                 lblSearchDocDOBHint.Text = Me.GetGlobalResourceObject("Text", "DOBHint")
 
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchECDOB
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-                'lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "HKICHint")
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
                 lblSearchDocDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
@@ -98,13 +93,11 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchECYOB
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-                'lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "HKICHint")
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
                 lblSearchDocDOBText.Text = Me.GetGlobalResourceObject("Text", "YOB")
@@ -113,11 +106,10 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchDI
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.DI).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.DI).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.DI).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
@@ -127,11 +119,10 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchHKBC
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKBC).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKBC).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKBC).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
@@ -141,11 +132,10 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchReentry
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.REPMT).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.REPMT).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.REPMT).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
@@ -155,11 +145,10 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchID235B
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ID235B).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ID235B).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ID235B).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
@@ -169,11 +158,10 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchVisa
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.VISA).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.VISA).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.VISA).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 
@@ -183,11 +171,10 @@ Partial Public Class ucInputTips
                 Me.mvInputTips.ActiveViewIndex = ActiveViewIndex.SearchDocType
 
             Case InputTipsType.SearchAdoption
-                If strLanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDescChi
-                Else
-                    Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblSearchDocIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDesc(strLanguage)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 lblSearchDocIDHint.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
 

@@ -1945,6 +1945,25 @@ Public Class eHSAccountMaintBLL
                     blnRes = True
                     Exit Select
                 End If
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case Else
+                ' Send to ImmD Validation Value, when the DOB is changed
+                ' 1. DOB
+
+                ' 1a. Check Exact DOB
+                If Not udtEHSPersonalInformation.ExactDOB.Trim.Equals(udtEHSPersonalInformation_Amend.ExactDOB.Trim) Then
+                    blnRes = True
+                    Exit Select
+                End If
+
+                ' 1b. Check DOB (Datetime)
+                If DateTime.Compare(udtEHSPersonalInformation.DOB, udtEHSPersonalInformation_Amend.DOB) <> 0 Then
+                    blnRes = True
+                    Exit Select
+                End If
+                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
         Return blnRes

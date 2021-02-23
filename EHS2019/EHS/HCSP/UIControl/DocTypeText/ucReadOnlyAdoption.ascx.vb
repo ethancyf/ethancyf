@@ -90,12 +90,11 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
             Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
-            'Me.lblReadonlyEntryNoText.Text = Me.GetGlobalResourceObject("Text", "NoOfEntry")
-            If MyBase.SessionHandler().Language = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblReadonlyEntryNoText.Text = udtDocTypeModel.DocIdentityDescChi
-            Else
-                Me.lblReadonlyEntryNoText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblReadonlyEntryNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         End Sub
 
         Public Overrides Sub SetupTableTitle(ByVal width As Integer)

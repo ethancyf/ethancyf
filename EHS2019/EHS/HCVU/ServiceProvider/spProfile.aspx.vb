@@ -14,6 +14,7 @@ Imports Common.Format
 Imports Common.Validation
 Imports Common.PCD
 Imports Common.PCD.WebService.Interface
+Imports Common.ComFunction
 
 Partial Public Class spProfile
     Inherits BasePageWithGridView
@@ -5746,6 +5747,15 @@ Partial Public Class spProfile
             End If
         End If
 
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        Dim udtGeneralFunction As New GeneralFunction
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+        If streHRSSToken = YesNo.No Then
+            tbHadJoinedEHRSS.Visible = False
+            rboHadJoinedEHRSS.SelectedValue = "N"
+        End If
+
+        'CRE20-018 Stop token sharing [End][Nichole]
     End Sub
 
     Private Sub setEHRSSPanel(ByVal strMode As String)

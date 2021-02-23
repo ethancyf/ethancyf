@@ -30,14 +30,9 @@ Partial Public Class DocTypeLegend
         For Each udtDocTypeModel As DocTypeModel In udtDocTypeModelCollection
             Dim dr As DataRow = dt.NewRow()
             dr.Item(0) = udtDocTypeModel.DocDisplayCode.Trim
-            If strLang = English Then
-                dr.Item(1) = udtDocTypeModel.DocName.Trim
-                dr.Item(3) = udtDocTypeModel.DocIdentityDesc
-            Else
-                dr.Item(1) = udtDocTypeModel.DocNameChi.Trim
-                dr.Item(3) = udtDocTypeModel.DocIdentityDescChi
-            End If
+            dr.Item(1) = udtDocTypeModel.DocName(strLang).Trim
             dr.Item(2) = udtDocTypeModel.DisplaySeq
+            dr.Item(3) = udtDocTypeModel.DocIdentityDesc(strLang)
             dt.Rows.Add(dr)
         Next
 

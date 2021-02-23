@@ -32,30 +32,13 @@ Partial Public Class ucInputHKIDSmartIDSignal
         'Table title
         Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.HKIC)
 
-        If MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
-            Me.lblDocumentType.Text = udtDocTypeModel.DocNameChi
-        Else
-            Me.lblDocumentType.Text = udtDocTypeModel.DocName
-        End If
-
-        If MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
-            Me.lblHKICNoText.Text = udtDocTypeModel.DocIdentityDescChi
-        Else
-            Me.lblHKICNoText.Text = udtDocTypeModel.DocIdentityDesc
-        End If
-
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.lblDocumentType.Text = udtDocTypeModel.DocName(MyBase.SessionHandler.Language())
+        Me.lblHKICNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.lblDocumentTypeText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
-
-        'If MyBase.Mode = BuildMode.Creation Then
-        '    Me.lblReferenceNoText.Visible = False
-        '    Me.lblReferenceNo.Visible = False
-        'Else
-        '    Me.lblReferenceNoText.Text = Me.GetGlobalResourceObject("Text", "RefNo")
-        '    Me.lblReferenceNoText.Visible = True
-        '    Me.lblReferenceNo.Text = String.Empty
-        '    Me.lblReferenceNo.Visible = True
-        'End If
         Me.lblDOBText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblENameText.Text = Me.GetGlobalResourceObject("Text", "Name")
         Me.lblGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")

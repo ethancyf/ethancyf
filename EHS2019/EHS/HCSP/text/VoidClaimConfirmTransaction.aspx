@@ -425,6 +425,16 @@
                         <td valign="top">
                             <asp:Label ID="lblViewTransactionDetailPractice" runat="server" CssClass="tableText"></asp:Label></td>
                     </tr>
+                    <!-- contact Number -->
+                    <tr ID="trContactNumText" runat="server" style="display:none">
+                        <td valign="top">
+                            <asp:Label ID="Label34" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label></td>
+                    </tr>
+                    <tr  ID="trContactNum" runat="server" style="display:none">
+                        <td valign="top">
+                            <asp:Label ID="lblContactNum" runat="server" CssClass="tableText"></asp:Label></td>
+                    </tr>
+
                     <tr>
                         <td valign="top">
                             <asp:Label ID="Label12" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, BankAccountNo %>"></asp:Label></td>

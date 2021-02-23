@@ -26,7 +26,7 @@ Namespace UIControl.DocTypeText
             'Table title
             'Me.lblRegistrationNoText.Text = Me.GetGlobalResourceObject("Text", "BCRegNo")
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.HKBC)
-            Me.lblRegistrationNoText.Text = IIf(SessionHandler.Language() = CultureLanguage.English, udtDocTypeModel.DocIdentityDesc, udtDocTypeModel.DocIdentityDescChi)
+            Me.lblRegistrationNoText.Text = udtDocTypeModel.DocIdentityDesc(SessionHandler().Language)
 
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
             Me.lblSurname.Text = String.Format("({0})", Me.GetGlobalResourceObject("Text", "Surname"))

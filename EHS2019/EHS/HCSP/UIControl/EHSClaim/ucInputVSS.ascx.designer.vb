@@ -14,6 +14,213 @@ Option Explicit On
 Partial Public Class ucInputVSS
 
     '''<summary>
+    '''panClaimCOVID19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panClaimCOVID19 As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panBooth control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panBooth As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCBoothText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCBoothText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlCBooth control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlCBooth As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgCBoothError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCBoothError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblCCategoryText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCCategoryText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlCCategory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlCCategory As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgCCategoryError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCCategoryError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblCVaccineBrandText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccineBrandText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlCVaccineBrand control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlCVaccineBrand As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''txtCVaccineBrand control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCVaccineBrand As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgCVaccineBrandError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCVaccineBrandError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblCVaccineLotNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccineLotNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlCVaccineLotNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlCVaccineLotNo As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''txtCVaccineLotNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCVaccineLotNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgCVaccineLotNoError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCVaccineLotNoError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''panVaccineName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panVaccineName As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCVaccineText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccineText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCVaccine control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCVaccine As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDoseText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDoseText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlCDose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlCDose As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgCDoseError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCDoseError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''panClaim control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panClaim As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''panVSSCategory control.
     '''</summary>
     '''<remarks>

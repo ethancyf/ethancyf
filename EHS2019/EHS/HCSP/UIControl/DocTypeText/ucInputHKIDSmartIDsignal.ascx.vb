@@ -36,18 +36,11 @@ Namespace UIControl.DocTypeText
             'Table title
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.HKIC)
 
-            If MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblDocumentType.Text = udtDocTypeModel.DocNameChi
-            Else
-                Me.lblDocumentType.Text = udtDocTypeModel.DocName
-            End If
-
-            If MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblHKICNoText.Text = udtDocTypeModel.DocIdentityDescChi
-            Else
-                Me.lblHKICNoText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
-
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblDocumentType.Text = udtDocTypeModel.DocName(MyBase.SessionHandler.Language())
+            Me.lblHKICNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Me.lblDocumentTypeText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
             Me.lblDOBText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")

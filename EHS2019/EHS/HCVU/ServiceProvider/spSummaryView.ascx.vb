@@ -14,6 +14,7 @@ Imports Common.Format
 
 Imports HCVU.AccountChangeMaintenance
 Imports HCVU.spProfile
+Imports Common.ComFunction
 
 Partial Public Class spSummaryView
     Inherits System.Web.UI.UserControl
@@ -432,8 +433,25 @@ Partial Public Class spSummaryView
                     imgTokenActivateDate.Style.Add("vertical-align", "text-top")
                     imgTokenActivateDate.Visible = True
                 Else
-                    strTokenSerialNoDisplay = TokenModel.DisplayTokenSerialNo(udtTokenModel.TokenSerialNo, udtTokenModel.Project, False, True, True)
-                    imgTokenActivateDate.Visible = False
+                    'strTokenSerialNoDisplay = TokenModel.DisplayTokenSerialNo(udtTokenModel.TokenSerialNo, udtTokenModel.Project, False, True, True)
+                    'imgTokenActivateDate.Visible = False
+                    'CRE20-018 Stop Token Sharing [start][Nichole]
+                    Dim udtGeneralFunction As New GeneralFunction
+                    Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+                    If streHRSSToken = YesNo.No Then
+                        If (New SPProfileBLL).CheckToken(udtTokenModel.TokenSerialNo) Then
+                            strTokenSerialNoDisplay = udtTokenModel.TokenSerialNo + " (" + Me.GetGlobalResourceObject("Text", "TokenEHR") + ")"
+                            imgTokenActivateDate.Visible = False
+                        Else
+                            lblTokenSN.Text = udtTokenModel.TokenSerialNo
+                            imgTokenActivateDate.Visible = False
+                        End If
+                    Else
+                        'CRE20-018 Stop Token Sharing [End][Nichole]
+                        strTokenSerialNoDisplay = TokenModel.DisplayTokenSerialNo(udtTokenModel.TokenSerialNo, udtTokenModel.Project, False, True, True)
+                        imgTokenActivateDate.Visible = False
+                    End If
+
                 End If
 
                 If udtTokenModel.IsShareToken Then

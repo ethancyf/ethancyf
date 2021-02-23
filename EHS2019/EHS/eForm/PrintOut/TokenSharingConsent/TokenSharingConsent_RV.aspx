@@ -1,5 +1,5 @@
 <%@ Page Language="vb" AutoEventWireup="false" CodeBehind="TokenSharingConsent_RV.aspx.vb" Inherits="eForm.TokenSharingConsent_RV" %>
-<%@ Register Assembly="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff"
+<%@ Register Assembly="GrapeCity.ActiveReports.Web.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff"
     Namespace="GrapeCity.ActiveReports.Web" TagPrefix="ActiveReportsWeb" %>
 
 

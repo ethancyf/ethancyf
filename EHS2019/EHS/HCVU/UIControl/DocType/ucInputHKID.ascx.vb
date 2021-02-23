@@ -84,31 +84,23 @@ Partial Public Class ucInputHKID
         Me.imgDOIError.AlternateText = strErrorImageALT
 
         'Get Documnet type full name
-        Dim strDocumentTypeFullName As String
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
         Dim udtDocTypeModelList As DocTypeModelCollection
         udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.HKIC).DocNameChi
-        Else
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.HKIC).DocName
-        End If
-        'lblDocumentType.Text = strDocumentTypeFullName
-        lblDocumentTypeOriginal.Text = strDocumentTypeFullName
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        lblDocumentTypeOriginal.Text = udtDocTypeModelList.Filter(DocTypeCode.HKIC).DocName(Session("Language").ToString())
 
         'Creation Method
         lblCreationMethodOriginalText.Text = Me.GetGlobalResourceObject("Text", "CreationMethod")
 
         ' -------------------------- Creation ------------------------------
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            Me.lblNewHKICText.Text = udtDocTypeModelList.Filter(DocTypeCode.HKIC).DocIdentityDescChi
-        Else
-            Me.lblNewHKICText.Text = udtDocTypeModelList.Filter(DocTypeCode.HKIC).DocIdentityDesc
-        End If
 
-        ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Dickson]
+        Me.lblNewHKICText.Text = udtDocTypeModelList.Filter(DocTypeCode.HKIC).DocIdentityDesc(Session("Language").ToString())
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         Me.lblDODText.Text = Me.GetGlobalResourceObject("Text", "DateOfDeath")
-        ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Dickson]
         Me.lblNewDOBText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblNewENameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewCCCodeText.Text = Me.GetGlobalResourceObject("Text", "CCCODE")

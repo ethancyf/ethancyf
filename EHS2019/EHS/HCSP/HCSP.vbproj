@@ -57,15 +57,46 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Html.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Export.Xml.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Extensibility.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="GrapeCity.ActiveReports.Document.v12, Version=12.3.17127.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Document.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Export.Html.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Html.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Pdf.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Extensibility.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Viewer.Win.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.Design.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.v12.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="IdeasRM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\IdeasRM.dll</HintPath>
@@ -108,6 +139,7 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ActiveReports.ReportService.asmx" />
     <Content Include="cn\error.aspx" />
     <Content Include="cn\ImproperAccess.aspx" />
     <Content Include="cn\index.aspx" />
@@ -375,29 +407,41 @@
     <Content Include="text\en\InvalidOS.aspx" />
     <Content Include="text\zh\InvalidOS.aspx" />
     <Content Include="UIControl\DocTypeText\ucReadOnlyOTHER.ascx" />
+    <Content Include="UIControl\DocType\ucInputCCIC.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
+    <Content Include="UIControl\DocType\ucInputPASS.ascx" />
+    <Content Include="UIControl\DocType\ucInputROP140.ascx" />
     <Content Include="UIControl\DocType\ucInputTW.ascx" />
     <Content Include="UIControl\DocType\ucInputRFNo8.ascx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyCCIC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyPASS.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyTW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyRFNo8.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPPP.ascx" />
+    <Content Include="UIControl\EHSClaimText\ucReadOnlyCOVID19.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputPIDVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputENHVSSO.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlySSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx" />
     <Content Include="UIControl\IDEASCombo\IDEASCombo.ascx" />
@@ -2497,11 +2541,32 @@
       <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucInputCCIC.ascx.designer.vb">
+      <DependentUpon>ucInputCCIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputCCIC.ascx.vb">
+      <DependentUpon>ucInputCCIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucInputOW.ascx.designer.vb">
       <DependentUpon>ucInputOW.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\DocType\ucInputOW.ascx.vb">
       <DependentUpon>ucInputOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputPASS.ascx.designer.vb">
+      <DependentUpon>ucInputPASS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputPASS.ascx.vb">
+      <DependentUpon>ucInputPASS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputROP140.ascx.designer.vb">
+      <DependentUpon>ucInputROP140.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputROP140.ascx.vb">
+      <DependentUpon>ucInputROP140.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucInputTW.ascx.designer.vb">
@@ -2523,6 +2588,27 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucInputOTHER.ascx.vb">
       <DependentUpon>ucInputOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCCIC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCCIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCCIC.ascx.vb">
+      <DependentUpon>ucReadOnlyCCIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyPASS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyPASS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyPASS.ascx.vb">
+      <DependentUpon>ucReadOnlyPASS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyROP140.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyROP140.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyROP140.ascx.vb">
+      <DependentUpon>ucReadOnlyROP140.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyTW.ascx.designer.vb">
@@ -2574,6 +2660,13 @@
       <DependentUpon>ucReadOnlyPPP.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaimText\ucReadOnlyCOVID19.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaimText\ucReadOnlyCOVID19.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyVSS.ascx.designer.vb">
       <DependentUpon>ucReadOnlyVSS.ascx</DependentUpon>
     </Compile>
@@ -2586,6 +2679,20 @@
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx.vb">
       <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19CBD.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx.vb">
+      <DependentUpon>ucInputCOVID19CBD.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19RVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.vb">
+      <DependentUpon>ucInputCOVID19RVP.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputEHAPP.ascx.designer.vb">
@@ -2623,6 +2730,13 @@
       <DependentUpon>ucInputENHVSSO.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19.ascx.vb">
+      <DependentUpon>ucInputCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSS.ascx.designer.vb">
       <DependentUpon>ucInputVSS.ascx</DependentUpon>
     </Compile>
@@ -2642,6 +2756,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.vb">
       <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19RVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19RVP.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyEHAPP.ascx.designer.vb">
@@ -2677,6 +2798,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx.vb">
       <DependentUpon>ucReadOnlyPPP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx.designer.vb">
@@ -5597,7 +5725,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2524</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost/HCSP</IISUrl>
+          <IISUrl>http://localhost/HCSP_dev</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
           <IISAppRootUrl>http://localhost/HCSP</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

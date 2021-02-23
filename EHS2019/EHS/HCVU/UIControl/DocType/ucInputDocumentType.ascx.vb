@@ -24,6 +24,12 @@ Partial Public Class ucInputDocumentType
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
         Public Const OTHER As String = "ucInputDocumentType_OTHER"
         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+
+        ' CRE20-0022 (Immu record) [Start][Martin]
+        Public Const CCIC As String = "ucInputDocumentType_CCIC"
+        Public Const ROP140 As String = "ucInputDocumentType_ROP140"
+        Public Const PASS As String = "ucInputDocumentType_PASS"
+        ' CRE20-0022 (Immu record) [End][Martin]
     End Class
 
     Public Event SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -341,6 +347,77 @@ Partial Public Class ucInputDocumentType
                 udcInputOTHER.UseDefaultAmendingHeader = _useDefaultAmendingHeader
                 Me.Built(udcInputOTHER)
 
+
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+
+                Dim udcInputCCIC As ucInputCCIC = Me.LoadControl("~/UIControl/DocType/ucInputCCIC.ascx")
+                udcInputCCIC.ID = DocumentControlID.CCIC
+                If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputCCIC.Visible = Me._fillValue
+                    udcInputCCIC.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
+                    If IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputCCIC.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
+                    Else
+                        udcInputCCIC.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
+                    End If
+                Else
+                    If Not IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputCCIC.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
+                    End If
+                End If
+                udcInputCCIC.Mode = Me._mode
+                udcInputCCIC.ActiveViewChanged = Me.ActiveViewChanged
+                udcInputCCIC.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                Me.Built(udcInputCCIC)
+
+            Case DocTypeModel.DocTypeCode.ROP140
+
+                Dim udcInputROP140 As ucInputROP140 = Me.LoadControl("~/UIControl/DocType/ucInputROP140.ascx")
+                udcInputROP140.ID = DocumentControlID.ROP140
+                If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputROP140.Visible = Me._fillValue
+                    udcInputROP140.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+                    If IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputROP140.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+                    Else
+                        udcInputROP140.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+                    End If
+                Else
+                    If Not IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputROP140.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+                    End If
+                End If
+                udcInputROP140.Mode = Me._mode
+                udcInputROP140.ActiveViewChanged = Me.ActiveViewChanged
+                udcInputROP140.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                Me.Built(udcInputROP140)
+
+            Case DocTypeModel.DocTypeCode.PASS
+
+                Dim udcInputPASS As ucInputPASS = Me.LoadControl("~/UIControl/DocType/ucInputPASS.ascx")
+                udcInputPASS.ID = DocumentControlID.PASS
+                If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputPASS.Visible = Me._fillValue
+                    udcInputPASS.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
+                    If IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputPASS.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
+                    Else
+                        udcInputPASS.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
+                    End If
+                Else
+                    If Not IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputPASS.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
+                    End If
+                End If
+                udcInputPASS.Mode = Me._mode
+                udcInputPASS.ActiveViewChanged = Me.ActiveViewChanged
+                udcInputPASS.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                Me.Built(udcInputPASS)
+
+                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
     End Sub
@@ -466,6 +543,36 @@ Partial Public Class ucInputDocumentType
         End If
     End Function
     ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+
+    ' CRE20-0022 (Immu record) [Start][Martin]
+    Public Function GetCCICControl() As ucInputCCIC
+        Dim control As Control = Me.FindControl(DocumentControlID.CCIC)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCCIC)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function GetROP140Control() As ucInputROP140
+        Dim control As Control = Me.FindControl(DocumentControlID.ROP140)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputROP140)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function GetPASSControl() As ucInputPASS
+        Dim control As Control = Me.FindControl(DocumentControlID.PASS)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputPASS)
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-0022 (Immu record) [End][Martin]
+
 #End Region
 
 #Region "Property"

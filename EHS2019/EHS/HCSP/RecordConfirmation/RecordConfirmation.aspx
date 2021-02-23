@@ -266,6 +266,8 @@
                                                         AlternateText="<%$ Resources:AlternateText, BackBtn %>" />
                                                     <asp:ImageButton ID="ibtnConfirmSelection" ImageUrl='<%$ Resources:ImageUrl, ConfirmSelectedBtn %>'
                                                         AlternateText='<%$ Resources:AlternateText, ConfirmSelectedBtn %>' runat="server" />
+                                                    <asp:ImageButton ID="ibtnConfirmAll" ImageUrl='<%$ Resources:ImageUrl, ConfirmAllBtn %>'
+                                                        AlternateText='<%$ Resources:AlternateText, ConfirmAllBtn %>' runat="server" />
                                                 </td>
                                             </tr>
                                         </table>

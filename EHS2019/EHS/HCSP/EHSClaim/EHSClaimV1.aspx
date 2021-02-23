@@ -1,5 +1,6 @@
 <%@ Page Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPage.Master"
-    CodeBehind="EHSClaimV1.aspx.vb" Inherits="HCSP.EHSClaimV1" Title="<%$ Resources:Title, Claim %>" %>
+    CodeBehind="EHSClaimV1.aspx.vb" Inherits="HCSP.EHSClaimV1" Title="<%$ Resources:Title, Claim %>"
+    EnableEventValidation="False" %>
 
 <%@ Register Src="../UIControl/ucVaccinationRecordProvider.ascx" TagName="ucVaccinationRecordProvider"
     TagPrefix="uc10" %>
@@ -230,7 +231,7 @@
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panSchemeDocTypeLegend" runat="server">
                 <asp:Panel ID="panSchemeDocTypeLegendHeading" runat="server" Style="cursor: move;">
-                    <table border="0" cellpadding="0" cellspacing="0" style="width: 920px">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 960px">
                         <tr>
                             <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
                             <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
@@ -239,7 +240,7 @@
                         </tr>
                     </table>
                 </asp:Panel>
-                <table border="0" cellpadding="0" cellspacing="0" style="width: 920px">
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 960px">
                     <tr>
                         <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
@@ -461,7 +462,7 @@
             <asp:Button ID="btnModalPopupRecipientConditionHelp" runat="server" Style="display: none" />
             <%-- End of Popup for Subsidize Disabled Remark --%>
 
-            <table style="width: 100%; height: 78px" cellspacing="0" cellpadding="0">
+            <table style="width: 965px; height: 78px" cellspacing="0" cellpadding="0">
                 <tbody>
                     <tr>
                         <td style="height: 50px" valign="middle">
@@ -543,7 +544,7 @@
                         </asp:Panel>
                     </table>
                     <table border="0" cellpadding="0" cellspacing="0">
-                        <tr style="height: 90px">
+                        <tr style="min-height:120px">
                             <td style="padding-bottom: 10px; vertical-align: top">
                                 <cc2:DocumentTypeRadioButtonGroup ID="udcStep1DocumentTypeRadioButtonGroup" runat="server"
                                     HeaderCss="eHSTableHeading" AutoPostBack="true" HeaderText="<%$ Resources:Text, DocumentType%>"
@@ -617,15 +618,116 @@
                             </tr>
                     </table>
 
+                    <asp:Panel ID="panStep2aVaccinationRecord" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td class="eHSTableHeading">
+                                    <asp:Label ID="lblCVaccinationRecordHeading" runat="server" Text="<%$ Resources:Text, VaccinationRecordForCOVID19%>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Panel ID="panNoVaccinationRecord" runat="server">
+                                        <table style="border:1px solid;padding:0px;border-spacing:1px;border-collapse:collapse;border-color:#CCCCCC;width:930px">
+                                            <tr style="background-color:#f08000">
+                                                <td style="width:16px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b;height:20px"">
+                                                    &nbsp;
+                                                </td>
+                                                <td style="width:125px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                    <asp:Label ID="lblCInjectionDate" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, InjectionDate %>" />
+                                                </td>
+                                                <td style="width:280px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                    <asp:Label ID="lblCVaccines" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Vaccines %>" />
+                                                </td>
+                                                <td style="width:80px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                    <asp:Label ID="lblCDose" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, DoseSeqShort %>" />
+                                                </td>
+                                                <td style="width:230px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                    <asp:Label ID="lblCInformationProvider" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, InformationProvider %>" />
+                                                </td>
+                                                <td style="vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                    <asp:Label ID="lblCRemarks" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Remarks %>" />
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color:#F7F7DE">
+                                                <td style="vertical-align:middle;border:1px solid;border-color:#61615b;height:20px" colspan="6">
+                                                    <asp:Label ID="lblCNoRecord" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px"
+                                                        Text="<%$ Resources:Text, NoCOVID19VaccinationRecordFound%>" />
+                                                </td>
+                                                <%--<td style="border:1px solid;border-color:#61615b">&nbsp;</td>--%>
+    <%--                                        <td style="border:1px solid;border-color:#61615b">&nbsp;</td>
+                                                <td style="border:1px solid;border-color:#61615b">&nbsp;</td>
+                                                <td style="border:1px solid;border-color:#61615b">&nbsp;</td>--%>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                                    <asp:GridView ID="gvCVaccinationRecord" runat="server" AutoGenerateColumns="False" Width="930px"
+                                        AllowSorting="True"  AllowPaging="False"  OnRowDataBound="gvCVaccinationRecord_RowDataBound"
+                                        OnPreRender="gvCVaccinationRecord_PreRender" OnSorting="gvCVaccinationRecord_Sorting">
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000"/>
+                                                <ItemStyle Width="16px" VerticalAlign="Top" Font-Size="Medium" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCIndex" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="ServiceReceiveDtm" HeaderText="<%$ Resources: Text, InjectionDate %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
+                                                <ItemStyle Width="125px" VerticalAlign="Top" Font-Size="Medium" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCInjectionDate" runat="server" Text='<%# Bind("ServiceReceiveDtm") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="SubsidizeDesc" HeaderText="<%$ Resources: Text, Vaccines %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
+                                                <ItemStyle Width="280px" VerticalAlign="Top" Font-Size="Medium" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCVaccination" runat="server" Text='<%# Bind("SubsidizeDesc") %>'></asp:Label>
+                                                    <asp:Label ID="lblCVaccinationChi" runat="server" Text='<%# Bind("SubsidizeDescChi") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="AvailableItemDesc" HeaderText="<%$ Resources: Text, DoseSeqShort %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
+                                                <ItemStyle Width="80px" VerticalAlign="Top" Font-Size="Medium" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCDose" runat="server"></asp:Label>
+                                                    <asp:Label ID="lblCDoseChi" runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="Provider" HeaderText="<%$ Resources: Text, InformationProvider %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
+                                                <ItemStyle Width="230px" VerticalAlign="Top" Font-Size="Medium" />
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCProvider" runat="server" Text='<%# Bind("Provider") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField SortExpression="Remark" HeaderText="<%$ Resources: Text, Remarks %>">
+                                                <HeaderStyle VerticalAlign="Top" Font-Size="Medium" BackColor="#f08000" />
+                                                <ItemStyle VerticalAlign="Top" Font-Bold="true" Font-Size="Medium"/>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCRemark" runat="server" Text='<%# Bind("Remark") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom:20px">
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
                     <table cellspacing="0" cellpadding="0" border="0" style="width: 100%">
                         <tr>
                             <td>
                                 <table cellspacing="0" cellpadding="0" border="0">
                                     <tr>
                                         <td class="eHSTableHeading" colspan="2">
-                                            <asp:Label ID="Label1" runat="server" Text="<%$ Resources:Text, ClaimInfo%>"></asp:Label></td>
+                                            <asp:Label ID="lblStep2aClaimInfo" runat="server" Text="<%$ Resources:Text, ClaimInfo%>"></asp:Label></td>
                                     </tr>
-                                    </tbody>
                                 </table>
                                 <table cellspacing="0" cellpadding="0" border="0">
                                     <tbody>
@@ -642,18 +744,14 @@
                                     </tbody>
                                 </table>
                                 <asp:Panel ID="panStep2aClaimDetaila" runat="server" Width="100%">
-                                    <table style="width: 630px" cellspacing="0" cellpadding="0">
+                                    <table style="width: 660px" cellspacing="0" cellpadding="0">
                                         <tr>
                                             <td style="width: 205px; height: 25px" valign="top">
                                                 <asp:Label ID="lblStep2aSchemeText" runat="server" CssClass="tableTitle" Width="205px"></asp:Label></td>
                                             <td style="vertical-align: top">
-                                                <asp:Label ID="lblStep2aSchemeSelectedText" runat="server" CssClass="tableText"></asp:Label><asp:DropDownList
-                                                    ID="ddlStep2aScheme" runat="server" Width="430px" AutoPostBack="true">
-                                                    <asp:ListItem Value="HCVS">Elderly Health Care Voucher Scheme</asp:ListItem>
-                                                    <asp:ListItem Value="CIVSS">Childhood Influenza Vaccination Subsidy Scheme</asp:ListItem>
-                                                    <asp:ListItem Value="HVSS">Elderly Vaccination Subsidy Scheme</asp:ListItem>
-                                                    <asp:ListItem Value="HSIS">Human Swine Influenza Vaccination Subsidy Scheme for Chronic Patient</asp:ListItem>
-                                                </asp:DropDownList></td>
+                                                <asp:Label ID="lblStep2aSchemeSelectedText" runat="server" CssClass="tableText"></asp:Label>
+                                                <asp:DropDownList ID="ddlStep2aScheme" runat="server" Width="430px" AutoPostBack="true" />
+                                            </td>
                                         </tr>
                                         <asp:Panel ID="panNonClinicSettingStep2a" runat="server" Visible="false">
                                             <tr style="height: 25px">
@@ -738,6 +836,123 @@
                             </tbody>
                         </table>
                     </asp:Panel>
+
+                    <asp:Panel ID="panStep2aRecipinetContactInfo" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr id="trStep2aContactNo" runat="server" visible="false">
+                                <td height="25" style="width: 205px;vertical-align:top;padding-top:5px">
+                                    <asp:Label ID="lblStep2aContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;padding-top:3px">
+                                    <asp:textbox ID="txtStep2aContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px" Width="100px"/>
+                                    <asp:ImageButton ID="imgStep2aContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                    <cc1:FilteredTextBoxExtender ID="fteStep2aContactNo" runat="server" TargetControlID="txtStep2aContactNo"
+                                                                FilterType="Numbers" />
+                                </td>
+                                <td height="25" style="vertical-align:top;padding-top:3px;padding-left:5px">
+                                    <asp:Label ID="lblStep2aMobile" runat="server" Text="<%$ Resources:Text, Mobile%>" CssClass="tableTitle" style="position:relative;top:-1px" Visible="false"/>
+                                    <asp:checkbox ID="chkStep2aMobile" runat="server" AutoPostBack="false" style="position:relative;left:-1px" Visible="false"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top;padding-top:2px">
+                                    <asp:Label ID="lblStep2aRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;padding-top:3px" colspan="2">
+                                    <asp:textbox ID="txtStep2aRemark" runat="server" MaxLength="200" style="position:relative;left:-1px" Width="660px"/>
+                                    <asp:ImageButton ID="imgStep2aRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
+                    <asp:Panel ID="panStep2aPrintClaimConsentForm" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0" style="min-height: 50px">
+                            <tr>
+                                <td style="width: 200px;padding-right: 5px"></td>
+                                <td>
+                                    <asp:Panel ID="panlblStep2aPrintConsent" runat="server">
+                                        <table border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td>
+                                                    <asp:ImageButton ID="btnStep2aPrintClaimConsentForm" runat="server" AlternateText="<%$ Resources:AlternateText, VRAPrintClaimConsentFormBtn%>"
+                                                        ImageUrl="<%$ Resources:ImageUrl, VRAPrintClaimConsentFormBtn%>" />
+                                                    <asp:HiddenField ID="hfStep2aCurrentPrintOption" runat="server" />
+                                                </td>
+                                                <td>
+                                                    <asp:RadioButtonList ID="rbStep2aPrintClaimConsentFormLanguage" runat="server" RepeatDirection="Horizontal" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                                    <asp:Panel ID="panStep2aPerprintFormNotice" runat="server">
+                                        <table cellspacing="0" cellpadding="0" border="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <img id="imgStep2aPerprintFormNotice" src="../Images/others/ExclamationMark%20.gif" alt="" />&nbsp;</td>
+                                                    <td>
+                                                        <asp:Label ID="lblStep2aPerprintFormNotice" runat="server" Text="<%$ Resources:Text, ReminPreprintOption %>"
+                                                            ForeColor="Black"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </asp:Panel>
+                                </td>
+                                <td valign="top" rowspan="2" style="padding-bottom: 5px; padding-left: 5px;">
+                                    <asp:ImageButton ID="btnStep2aChangePrintOption" runat="server" AlternateText="<%$ Resources:AlternateText, ChangePrintOption%>"
+                                        ImageUrl="~/Images/button/icon_button/btn_change_print_option.png" ImageAlign="AbsMiddle"></asp:ImageButton></td>
+                                <td rowspan="2" style="vertical-align:middle">
+                                    <asp:Panel ID="panStep2aAdhocPrint" runat="server">
+                                        <asp:ImageButton ID="btnStep2aPrintAdhocClaimConsentForm" runat="server" />
+                                    </asp:Panel>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
+                    <asp:Panel ID="panStep2aDeclareClaim" runat="server">
+                        <div style="padding-top:3px"></div>
+                        <table cellspacing="0" cellpadding="0" border="0" style="position:relative;left:-1px">
+                            <tr id="trStep2aDeclareClaim" runat="server">
+                                <%--<td style="width: 200px; padding-right: 5px; height: 16px; padding-top:10px"></td>--%>
+                                <td style="width: 930px; min-height: 48px; vertical-align: top;background-color:white!important" class="checkboxStyle">
+                                    <asp:label ID="lblStep2aDeclareClaim1" runat="server" AssociatedControlID="chkStep2aDeclareClaim" Text="<%$ Resources:Text, VerificationCheckList %>" />
+                                    <table style="width:100%;border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                                        <tr style="min-height :20px;background-color:#fff894">
+                                            <td style="vertical-align:top;width:30px;padding-top:10px;padding-bottom:5px">
+                                                <asp:CheckBox ID="chkStep2aDeclareClaim" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:3px;-ms-transform:scale(1.5)"/>
+                                            </td>
+                                            <td style="text-align:left;padding-top:10px;padding-bottom:5px">
+                                                <asp:label ID="lblStep2aDeclareClaim2" AssociatedControlID="chkStep2aDeclareClaim" runat="server" Text="<%$ Resources:Text, VerificationConfirmStatement %>" />
+                                            </td>
+                                        </tr>
+                                        <asp:Panel ID="panStep2aDeclareJoineHRSS" runat="server">
+                                        <tr style="min-height :4px">
+                                            <td></td>
+                                        </tr>             
+                                        <tr style="min-height :20px;background-color:#fff894">
+                                            <td style="vertical-align:top;width:30px;padding-top:5px;padding-bottom:5px">
+                                                <asp:CheckBox ID="chkStep2aDeclareJoineHRSS" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:3px;-ms-transform:scale(1.5)"/>
+                                            </td>
+                                            <td style="text-align:left;padding-top:5px;padding-bottom:5px">
+                                                <asp:label ID="lblStep2aDeclareJoineHRSS" AssociatedControlID="chkStep2aDeclareJoineHRSS" runat="server" Text="<%$ Resources:Text, VerificationConfirmJoineHRSS %>" />
+                                            </td>
+                                        </tr> 
+                                        </asp:Panel>                                                                                                  
+                                    </table>
+                                </td>
+                                <td style="vertical-align:top;padding-left:5px">
+                                    <asp:ImageButton ID="imgStep2aDeclareClaimError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
@@ -775,7 +990,7 @@
                         <tbody>
                             <tr>
                                 <td class="eHSTableHeading" valign="top" colspan="2">
-                                    <asp:Label ID="lbllblStep2bClaimInfo" runat="server" Text="<%$ Resources:Text, ClaimInfo%>"></asp:Label>
+                                    <asp:Label ID="lblStep2bClaimInfo" runat="server" Text="<%$ Resources:Text, ClaimInfo%>"></asp:Label>
                                 </td>
                             </tr>
                             <tr>
@@ -795,28 +1010,28 @@
                             </asp:Panel>
                             <tr>
                                 <td style="width: 205px;" valign="top" class="tableCellStyle">
-                                    <asp:Label ID="lbllblStep2bServiceDateText" runat="server" Text="<%$ Resources:Text, ServiceDate %>"
+                                    <asp:Label ID="lblStep2bServiceDateText" runat="server" Text="<%$ Resources:Text, ServiceDate %>"
                                         CssClass="tableTitle" Width="160px"></asp:Label></td>
                                 <td valign="top" class="tableCellStyle">
                                     <asp:Label ID="lblStep2bServiceDate" runat="server" CssClass="tableText"></asp:Label></td>
                             </tr>
                             <tr>
                                 <td style="width: 205px;" valign="top" class="tableCellStyle">
-                                    <asp:Label ID="lbllblStep2bPracticeText" runat="server" Text="<%$ Resources:Text, Practice %>"
+                                    <asp:Label ID="lblStep2bPracticeText" runat="server" Text="<%$ Resources:Text, Practice %>"
                                         CssClass="tableTitle" Width="160px"></asp:Label></td>
                                 <td valign="top" class="tableCellStyle">
                                     <asp:Label ID="lblStep2bPractice" runat="server" CssClass="tableTextChi"></asp:Label></td>
                             </tr>
-                            <tr>
+                            <tr id="trStep2bBankAcct" runat="server">
                                 <td class="tableCellStyle" style="width: 205px" valign="top">
                                     <asp:Label ID="lblStep2bBankAcctText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, BankAccountNo %>"
                                         Width="160px"></asp:Label></td>
                                 <td class="tableCellStyle" valign="top">
                                     <asp:Label ID="lblStep2bBankAcct" runat="server" CssClass="tableText"></asp:Label></td>
                             </tr>
-                            <tr>
+                            <tr id="trStep2bServiceType" runat="server">
                                 <td class="tableCellStyle" style="width: 205px" valign="top">
-                                    <asp:Label ID="lbllblStep2bServiceTypeText" runat="server" CssClass="tableTitle"
+                                    <asp:Label ID="lblStep2bServiceTypeText" runat="server" CssClass="tableTitle"
                                         Text="<%$ Resources:Text, ServiceType %>" Width="160px"></asp:Label></td>
                                 <td class="tableCellStyle" valign="top">
                                     <asp:Label ID="lblStep2bServiceType" runat="server" CssClass="tableText"></asp:Label></td>
@@ -830,6 +1045,38 @@
                             </td>
                         </tr>
                     </table>
+
+                    <asp:Panel ID="panStep2bRecipinetContactInfo" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr id="trStep2bContactNo" runat="server" visible="false">
+                                <td height="25" style="width: 205px;vertical-align:top;">
+                                    <asp:Label ID="lblStep2bContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;">
+                                    <asp:Label ID="lblStep2bContactNo" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top;">
+                                    <asp:Label ID="lblStep2bRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;">
+                                    <asp:Label ID="lblStep2bRemark" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
+                                </td>
+                            </tr>
+                            <asp:Panel ID="panStep2bJoinEHRSS" runat="server">
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top;">
+                                    <asp:Label ID="lblStep2bJoinEHRSSText" runat="server" Text="<%$ Resources:Text, JoinEHRSS%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;">
+                                    <asp:Label ID="lblStep2bJoinEHRSS" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
+                                </td>
+                            </tr>
+                            </asp:Panel>
+                        </table>
+                    </asp:Panel>
+
                     <asp:Panel ID="panStep2bPrintClaimConsentForm" runat="server">
                         <table cellspacing="0" cellpadding="0" border="0" style="min-height: 50px">
                             <tbody>
@@ -983,7 +1230,7 @@
                                     </td>
                                 </tr>
                             </asp:Panel>
-                            <tr>
+                            <tr id="trStep3TransactionStatus" runat="server">
                                 <td class="tableCellStyle" style="vertical-align: top">
                                     <asp:Label ID="lblTransactionStatusText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, TransactionStatus %>"></asp:Label>
                                 </td>
@@ -1007,7 +1254,7 @@
                                     <asp:Label ID="lblStep3Practice" runat="server" CssClass="tableTextChi"></asp:Label>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="trStep3BankAcct" runat="server">
                                 <td class="tableCellStyle" valign="top">
                                     <asp:Label ID="lblStep3BankAcctText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, BankAccountNo %>" Width="160px"></asp:Label>
                                 </td>
@@ -1015,7 +1262,7 @@
                                     <asp:Label ID="lblStep3BankAcct" runat="server" CssClass="tableText"></asp:Label>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="trStep3ServiceType" runat="server">
                                 <td class="tableCellStyle" valign="top">
                                     <asp:Label ID="lblStep3ServiceTypeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ServiceType %>" Width="160px"></asp:Label>
                                 </td>
@@ -1026,14 +1273,57 @@
                         </tbody>
                     </table>
                     <uc4:ucReadOnlyEHSClaim ID="udcStep3ReadOnlyEHSClaim" runat="server" />
+
+                    <asp:Panel ID="panStep3RecipinetContactInfo" runat="server">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <%--<tr>
+                                <td class="eHSTableHeading" colspan="2">
+                                    <asp:Label ID="lblStep3aRecipinetContactInfoHeading" runat="server" Text="<%$ Resources:Text, RecipientContactInformation%>" />
+                                </td>
+                            </tr>--%>
+                            <tr id="trStep3ContactNo" runat="server" visible="false">
+                                <td height="25" style="width: 205px;vertical-align:top">
+                                    <asp:Label ID="lblStep3ContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top">
+                                    <asp:Label ID="lblStep3ContactNo" runat="server" CssClass="tableText"/>
+                                </td>
+                            </tr>
+                            <%--<tr>
+                                <td style="padding-bottom:10px">
+                                </td>
+                            </tr>--%>
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top">
+                                    <asp:Label ID="lblStep3RemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top">
+                                    <asp:Label ID="lblStep3Remark" runat="server" CssClass="tableText"/>
+                                </td>
+                            </tr>
+                            <asp:Panel ID="panStep3JoinEHRSS" runat="server">
+                            <tr>
+                                <td height="25" style="width: 205px;vertical-align:top;">
+                                    <asp:Label ID="lblStep3JoinEHRSSText" runat="server" Text="<%$ Resources:Text, JoinEHRSS%>" CssClass="tableTitle" Width="160px" />
+                                </td>
+                                <td height="25" style="vertical-align:top;">
+                                    <asp:Label ID="lblStep3JoinEHRSS" runat="server" CssClass="tableText"/>
+                                </td>
+                            </tr>
+                            </asp:Panel>
+                        </table>
+                    </asp:Panel>
+
                     <table cellspacing="0" cellpadding="0" border="0">
                         <tbody>
                             <tr>
                                 <td style="height: 4px" />
                             </tr>
                             <tr>
-                                <td style="width: 175px; padding-top: 5px" />
+                                <td style="width: 205px; padding-top: 5px" />
                                 <td style="padding-top: 5px">
+                                    <asp:ImageButton ID="btnStep3Reprint" runat="server" Visible = "false" AlternateText="<%$ Resources:AlternateText, ReprintVaccinationRecordBtn%>"
+                                        ImageUrl="<%$ Resources:ImageUrl, ReprintVaccinationRecordBtn%>"></asp:ImageButton>
                                     <asp:ImageButton ID="btnStep3NextClaim" runat="server" AlternateText="<%$ Resources:AlternateText, NextClaimBtn%>"
                                         ImageUrl="<%$ Resources:ImageUrl, NextClaimBtn%>"></asp:ImageButton>
                                     <asp:ImageButton ID="btnStep3ClaimForSamePatient" runat="server" AlternateText="<%$ Resources:AlternateText, ClaimForSamePatientBtn%>"
@@ -1041,6 +1331,7 @@
                             </tr>
                         </tbody>
                     </table>
+
                 </asp:View>
                 <asp:View ID="vSelectPractice" runat="server">
                     <cc3:PracticeRadioButtonGroup runat="server" ID="PracticeRadioButtonGroup" HeaderText="<%$ Resources:Text, SelectPractice%>"
@@ -1098,4 +1389,32 @@
             <%-- End of Popup for Vaccination Record Provider --%>
         </ContentTemplate>
     </asp:UpdatePanel>
+   
+    <script type="text/javascript" language="javascript">
+        $(function(){            
+            $(document).on('change', "[id$='ddlCCategoryCovid19']", function () {
+                disableChkStep2aDeclareClaim()
+            });
+
+            $(document).on('change', "[id$='ddlCVaccineBrandCovid19']", function () {
+                disableChkStep2aDeclareClaim()
+            });
+
+            $(document).on('change', "[id$='ddlCVaccineLotNoCovid19']", function () {
+                disableChkStep2aDeclareClaim()
+            });                      
+
+            $(document).on('change', "[id$='ddlCDoseCovid19']", function () {
+                disableChkStep2aDeclareClaim()
+                
+            });
+        
+        });
+
+        const disableChkStep2aDeclareClaim = function () {
+            //if ($("[id$='btnStep2aPrintClaimConsentForm']").length > 0) $("[id$='chkStep2aDeclareClaim']").attr('disabled', true);
+            $("[id$='chkStep2aDeclareClaim']").prop("checked", false).change();
+        }
+
+    </script> 
 </asp:Content>

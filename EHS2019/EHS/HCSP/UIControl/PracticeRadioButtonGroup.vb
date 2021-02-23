@@ -17,6 +17,8 @@ Imports Common.Component.SchemeInformation
 Imports Common.Component.VoucherScheme
 Imports Common.Format
 Imports Common.Component.Scheme
+Imports HCSP.BLL.SessionHandler
+
 'Imports Common.Component.UserAC
 'Imports Common.Component.DataEntryUser
 'Imports Common.Component.ServiceProvider
@@ -48,6 +50,9 @@ Public Class PracticeRadioButtonGroup
 
     'hide/show
     Private _blnShowCloseButton As Boolean
+    'CRE20-XXX COVID-19 [Start][Nichole]
+    Private _blnCOVIDService As Boolean
+    'CRE20-xxx  COVID-19 [End][Nichole]
 
     ' CRE20-0XX (HA Scheme) [Start][Winnie]
     Private _blnSchemeSelection As Boolean = False
@@ -59,6 +64,11 @@ Public Class PracticeRadioButtonGroup
     Private _strlanguage As String
     Private _displayMode As DisplayMode
     ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private _enumMode As ClaimMode = ClaimMode.All
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
     'Events
     Public Event PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeqas As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -76,13 +86,19 @@ Public Class PracticeRadioButtonGroup
 
     End Sub
 
-    Public Sub BuildRadioButtonGroup(ByVal practiceDisplays As BLL.PracticeDisplayModelCollection, ByVal practices As PracticeModelCollection, ByVal schemeInfoList As SchemeInformationModelCollection, ByVal strlanguage As String, ByVal displayMode As DisplayMode)
+    Public Sub BuildRadioButtonGroup(ByVal practiceDisplays As BLL.PracticeDisplayModelCollection, _
+                                     ByVal practices As PracticeModelCollection, _
+                                     ByVal schemeInfoList As SchemeInformationModelCollection, _
+                                     ByVal strlanguage As String, _
+                                     ByVal displayMode As DisplayMode, _
+                                     Optional ByVal enumMode As ClaimMode = ClaimMode.All)
 
         _practiceDisplays = practiceDisplays
         _practices = practices
         _schemeInfoList = schemeInfoList
         _strlanguage = strlanguage
         _displayMode = displayMode
+        _enumMode = enumMode
 
         ViewState("SchemeSelected") = Me._strSelectedScheme
 
@@ -351,6 +367,18 @@ Public Class PracticeRadioButtonGroup
         End Set
     End Property
     ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property ClaimMode() As ClaimMode
+        Get
+            Return Me._enumMode
+        End Get
+        Set(ByVal value As ClaimMode)
+            Me._enumMode = value
+        End Set
+    End Property
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
     ' CRE20-0XX (HA Scheme) [Start][Winnie]
@@ -366,7 +394,15 @@ Public Class PracticeRadioButtonGroup
             If Not practiceDisplay.Profession.IsClaimPeriod(dtmDate) Then Continue For
             Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Nothing
 
-            udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(practices(practiceDisplay.PracticeID).PracticeSchemeInfoList, schemeInfoList, dtmDate)
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' Practice Scheme Info List Filter by COVID-19
+            Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
+
+            udtFilterPracticeSchemeInfoList = udtSchemeClaimBLL.FilterPracticeSchemeInfo(practices, practiceDisplay.PracticeID, Me.ClaimMode)
+
+            udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(udtFilterPracticeSchemeInfoList, schemeInfoList, dtmDate)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
             ' --------------------------------------------------------------------------------------
@@ -447,7 +483,6 @@ Public Class PracticeRadioButtonGroup
             Dim practiceIndex As Integer = 0
             Dim udtSchemeClaimBLL = New SchemeClaimBLL()
             Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Nothing
-
             Dim contentWidth As Integer = Me.PracticeTabelWidth - 20
 
             Dim udtGF As New Common.ComFunction.GeneralFunction()
@@ -502,6 +537,13 @@ Public Class PracticeRadioButtonGroup
                         formatter.formatAddress(practiceDisplay.Room, practiceDisplay.Floor, practiceDisplay.Block, practiceDisplay.Building, practiceDisplay.District, ""))
                 End If
 
+                'CRE20-xxx COVID-19 Immu record [Start][Nichole]
+                '-- label2 has shown the bank account name + address
+                If Me.ClaimMode = ClaimMode.COVID19 Then
+                    label2.Visible = False
+                End If
+                'CRE20-xxx COVID-19 Immu record [End][Nichole]
+
                 'label.Height = 25
                 'label.Attributes("value") = String.Format("{0}-{1}-{2}", practice.SPID, practice.DisplaySeq, practice.BankAcct.DisplaySeq)
                 If strlanguage = CultureLanguage.TradChinese OrElse strlanguage = CultureLanguage.SimpChinese Then
@@ -523,7 +565,15 @@ Public Class PracticeRadioButtonGroup
                 tableInnerPractice.Rows.Add(tableInnerPracticeRow)
                 '----------------------------------------------------------------------------------------
 
-                udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(practices(practiceDisplay.PracticeID).PracticeSchemeInfoList, schemeInfoList, dtmDate)
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                ' Practice Scheme Info List Filter by COVID-19
+                Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
+
+                udtFilterPracticeSchemeInfoList = udtSchemeClaimBLL.FilterPracticeSchemeInfo(practices, practiceDisplay.PracticeID, _enumMode)
+
+                udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(udtFilterPracticeSchemeInfoList, schemeInfoList, dtmDate)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
                 ' --------------------------------------------------------------------------------------
@@ -541,6 +591,7 @@ Public Class PracticeRadioButtonGroup
 
                     'Create Scheme Label
                     Dim schemeLabel As Label = New Label()
+
                     schemeLabel.Text = String.Format("- {0}", udtSchemeClaimModel.SchemeDesc(strlanguage))
 
                     schemeLabel.Height = 20
@@ -549,7 +600,11 @@ Public Class PracticeRadioButtonGroup
                     'Add Cell for scheme label
                     tableInnerPracticeCell = New TableCell
                     tableInnerPracticeCell.Controls.Add(label)
-                    tableInnerPracticeCell.Controls.Add(schemeLabel)
+                    'CRE20-0xx COVID-19 hidden the scheme info [Start][Nichole]
+                    If Me.ClaimMode = ClaimMode.All Then
+                        tableInnerPracticeCell.Controls.Add(schemeLabel)
+                    End If
+                    'CRE20-0xx COVID-19 hidden the scheme info [End][Nichole]
 
                     tableInnerPracticeRow = New TableRow()
                     tableInnerPracticeRow.Cells.Add(tableInnerPracticeCell)
@@ -639,10 +694,15 @@ Public Class PracticeRadioButtonGroup
                 tableRow.Cells.Add(tableCell)
                 tblPractice.Rows.Add(tableRow)
 
+
                 practiceIndex += 1
             Next
+
         End If
 
     End Sub
     ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+
+
 End Class

@@ -702,7 +702,27 @@ Namespace Component.Token
         End Function
         ' CRE16-004 (Enable SP to unlock account) [End][Winnie]
 
-        '
+        'CRE20-018 Stop Token sharing [Start][Nichole]
+        Public Function CheckToken(ByVal strSerialNo As String) As Boolean
+            Dim udtDB As New Database
+            Dim dt As New DataTable
+
+            Dim parms() As SqlParameter = { _
+                udtDB.MakeInParam("@Serial_No", SqlDbType.VarChar, 20, strSerialNo)}
+            udtDB.RunProc("proc_CheckToken_bySerialNo", parms, dt)
+
+
+            If dt.Rows(0).Item("IsEHR") = YesNo.Yes Then
+
+                Return True
+            Else
+                Return False
+            End If
+
+
+
+        End Function
+        'CRE20-018 Stop Token Sharing [End][Nichole]
 #Region "TokenAction"
 
         Public Enum EnumTokenActionParty

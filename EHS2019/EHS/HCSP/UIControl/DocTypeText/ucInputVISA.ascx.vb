@@ -24,11 +24,11 @@ Namespace UIControl.DocTypeText
             'Table title
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.VISA)
 
-            If MyBase.SessionHandler().Language() = Common.Component.CultureLanguage.English Then
-                Me.lblVISANoText.Text = udtDocTypeModel.DocIdentityDesc
-            Else
-                Me.lblVISANoText.Text = udtDocTypeModel.DocIdentityDescChi
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblVISANoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             'Me.lblVISANo.Text = Me.GetGlobalResourceObject("Text", "VisaRefNo")
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
             Me.lblSurname.Text = String.Format("({0})", Me.GetGlobalResourceObject("Text", "Surname"))

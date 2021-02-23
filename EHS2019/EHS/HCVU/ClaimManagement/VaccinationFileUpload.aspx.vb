@@ -3554,8 +3554,13 @@ Partial Public Class VaccinationFileUpload ' 010413
 
         Dim udtStudentFileSetting As StudentFileSetting = StudentFileBLL.GetSetting(hfScheme.Value)
         Dim udtStudentFileUploadErrorDesc As StudentFileUploadErrorDesc = StudentFileBLL.GetUploadErrorDesc
-        Dim udtDocTypeList As DocTypeModelCollection = (New DocTypeBLL).getAllDocType
         Dim dicClassNameNoCount As New Dictionary(Of String, Integer)
+
+        ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
+        ' -------------------------------------------------------------------------------
+        Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = (New DocTypeBLL).getSchemeDocTypeByScheme(hfScheme.Value)
+        ' CRE20-003 (Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Agelimit[End][Raiman]
+
 
         ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
         ' -------------------------------------------------------------------------------
@@ -3841,12 +3846,17 @@ Partial Public Class VaccinationFileUpload ' 010413
             '---------------------
             If dtmServiceReceiveDtm.HasValue Then
                 If Not IsDBNull(dr("DOB")) AndAlso Not IsDBNull(dr("Doc_Code")) Then
-                    Dim udtDocType As DocTypeModel = udtDocTypeList.Filter(dr("Doc_Code"))
+                    ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[Start][Raiman]
+                    ' -------------------------------------------------------------------------------
+                    Dim udtSchemeDocType As SchemeDocTypeModel = udtSchemeDocTypeList.FilterDocCode(dr("Doc_Code"))(0)
 
-                    If Not IsNothing(udtDocType) AndAlso udtDocType.IsExceedAgeLimit(dr("DOB"), dtmServiceReceiveDtm.Value) Then
+                    If Not IsNothing(udtSchemeDocType) AndAlso udtSchemeDocType.IsExceedAgeLimit(dr("DOB"), dtmServiceReceiveDtm.Value) Then
                         lstUploadWarning.Add(udtStudentFileUploadErrorDesc.DocType_ExceedAgeLimit)
 
                     End If
+
+                    ' CRE20-XX(Immu) Change DoctypeModel to schemeDoctypeModel for schemeDoctype Age limit[End][Raiman]
+                    ' -------------------------------------------------------------------------------
 
                 End If
             End If

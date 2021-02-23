@@ -1,11 +1,17 @@
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HCSPMenuItem_get_cache]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_HCSPMenuItem_get_cache]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_HCSPMenuItem_get_cache]
 GO
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	15 Dec 2020
+-- CR No.:			CRE20-00XX
+-- Description:		Immu Record
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Lawrence TSANG
@@ -77,7 +83,7 @@ BEGIN
 -- =============================================
 
 	SELECT
-		[Menu_Name], [Type], [Menu_Name_Chi], [Menu_Name_CN],
+		[Display_Seq], [Menu_Name], [Type], [Menu_Name_Chi], [Menu_Name_CN],
 		[URL], [ImageURL], [Record_Status],
 		[Role], [Effective_date], [PopUp], [Scheme_Code],
 		[Function_Code], [Expiry_Date], [SystemResourceObjectName_ReturnBtn],
@@ -92,3 +98,5 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_HCSPMenuItem_get_cache] TO HCSP
 GO
+
+

@@ -56,6 +56,7 @@ Partial Public Class ucInputEHSClaim
     Public Event SubsidizeDisabledRemarkClicked(ByVal sender As System.Object, ByVal e As System.EventArgs)
     Public Event RecipientConditionHelpClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Public Event RCHCodeTextChanged(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.EventArgs)
 
     Private Class EHSClaimControlID
 
@@ -71,10 +72,10 @@ Partial Public Class ucInputEHSClaim
         Public Const VSS As String = "ucInputEHSClaim_VSS"
         Public Const ENHVSSO As String = "ucInputEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucInputEHSClaim_PPP"
-        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
-        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+        Public Const COVID19 As String = "ucInputEHSClaim_COVID19"  ' CRE20-0022 (Immu record) [Winnie SUEN]
+        Public Const COVID19CBD As String = "ucInputEHSClaim_COVID19CBD"
+        Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
 
     End Class
 
@@ -154,6 +155,17 @@ Partial Public Class ucInputEHSClaim
                 Case SchemeClaimModel.EnumControlType.SSSCMC
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.SSSCMC Then BuiltSchemeControlOnly(True) ' ---------------------------------------------------------------------------------------------------------
                     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                Case SchemeClaimModel.EnumControlType.COVID19
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19 Then BuiltSchemeControlOnly(True)
+                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
+                Case SchemeClaimModel.EnumControlType.COVID19CBD
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19CBD Then BuiltSchemeControlOnly(True)
+
+                Case SchemeClaimModel.EnumControlType.COVID19RVP
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19RVP Then BuiltSchemeControlOnly(True)
 
                 Case Else
                     Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
@@ -329,18 +341,6 @@ Partial Public Class ucInputEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.PPP
-                ' ''udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputPPP.ascx", strFolderPath))
-                ' ''udcInputEHSClaim.ID = EHSClaimControlID.PPP
-                ' ''If Me._textOnlyVersion Then
-                ' ''    'No Input Control
-                ' ''Else
-                ' ''    Dim udcInputVSS As ucInputVSS = CType(udcInputEHSClaim, ucInputVSS)
-                ' ''    AddHandler udcInputVSS.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
-                ' ''    AddHandler udcInputVSS.SearchButtonClick, AddressOf udcInputVSS_SearchButtonClick
-                ' ''    AddHandler udcInputVSS.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
-                ' ''    'AddHandler udcInputVSS.SubsidizeDisabledRemarkClicked, AddressOf udcInputEHSClaim_SubsidizeDisabledRemarkClick
-                ' ''    'AddHandler udcInputVSS.RecipientConditionHelpClick, AddressOf udcInputEHSClaim_RecipientConditionHelpClick
-                ' ''End If
 
                 ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
                 ' ---------------------------------------------------------------------------------------------------------
@@ -355,6 +355,38 @@ Partial Public Class ucInputEHSClaim
                 End If
                 ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19
+                If Me._textOnlyVersion Then
+                    'No Input Control
+                Else
+                    'Nothing to do
+                End If
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
+            Case SchemeClaimModel.EnumControlType.COVID19CBD
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19CBD.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19CBD
+                If Me._textOnlyVersion Then
+                    'No Input Control
+                Else
+                    'Nothing to do
+                End If
+
+            Case SchemeClaimModel.EnumControlType.COVID19RVP
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19RVP.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19RVP
+                If Me._textOnlyVersion Then
+                    'No Input Control
+                Else
+                    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = CType(udcInputEHSClaim, ucInputCOVID19RVP)
+                    AddHandler udcInputCOVID19RVP.SearchButtonClick, AddressOf udcInputCOVID19RVP_SearchButtonClick
+                    AddHandler udcInputCOVID19RVP.RCHCodeTextChanged, AddressOf udcInputCOVID19RVP_RCHCodeTextChanged
+
+                End If
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
@@ -557,6 +589,10 @@ Partial Public Class ucInputEHSClaim
         RaiseEvent ClaimControlEventFired(SchemeClaimModel.VSS, sender, e)
     End Sub
 
+    Private Sub udcInputCOVID19RVP_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent ClaimControlEventFired(SchemeClaimModel.COVID19RVP, sender, e)
+    End Sub
+
     Private Sub udcInputEHSClaim_VaccineLegendClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent VaccineLegendClicked(sender, e)
     End Sub
@@ -571,6 +607,10 @@ Partial Public Class ucInputEHSClaim
 
     Private Sub udcInputEHSClaim_RecipientConditionHelpClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent RecipientConditionHelpClicked(sender, e)
+    End Sub
+
+    Private Sub udcInputCOVID19RVP_RCHCodeTextChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        RaiseEvent RCHCodeTextChanged(SchemeClaimModel.COVID19RVP, sender, e)
     End Sub
 
 #End Region
@@ -765,6 +805,51 @@ Partial Public Class ucInputEHSClaim
         End If
     End Function
     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+    ' --------------------------------------------------------------------------------------
+    Public Function GetCOVID19Control() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputCOVID19)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
+    Public Function GetCOVID19CBDControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19CBD)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputCOVID19CBD)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+
+    Public Function GetCOVID19RVPControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19RVP)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputCOVID19RVP)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
 #End Region
 
 #Region "Property"

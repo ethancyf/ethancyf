@@ -57,6 +57,7 @@ Partial Public Class ucNoticePopUp
 
 #Region "Private Members"
     Private _udtNoticeMsg As NoticeMsg
+    Private _strCustomHeaderText As String
 
 #End Region
 
@@ -112,6 +113,15 @@ Partial Public Class ucNoticePopUp
         End Get
         Set(ByVal value As String)
             Me.lblMsg.Text = value
+        End Set
+    End Property
+
+    Public Property CustomHeaderText() As String
+        Get
+            Return Me.lblHeader.Text
+        End Get
+        Set(ByVal value As String)
+            Me.lblHeader.Text = value
         End Set
     End Property
 
@@ -260,6 +270,7 @@ Partial Public Class ucNoticePopUp
                         Me.imgIcon.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "QuestionMarkIcon")
                 End Select
         End Select
+
     End Sub
 
     Private Sub SetupButtonMode(Optional ByVal udtNoticeMsg As NoticeMsg = Nothing)

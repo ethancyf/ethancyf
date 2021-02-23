@@ -472,6 +472,27 @@ Public Class SPProfileBLL
         Return udtSP
     End Function
 
+
+    'CRE20-018 Stop Token sharing [Start][Nichole]
+    Public Function CheckToken(ByVal strSerialNo As String) As Boolean
+        Dim blnRes As Boolean = False
+
+        Dim dt As New DataTable
+
+        Dim parms() As SqlParameter = { _
+            udtDB.MakeInParam("@Serial_No", SqlDbType.VarChar, 20, strSerialNo)}
+        udtDB.RunProc("proc_CheckToken_bySerialNo", parms, dt)
+
+        If dt.Rows.Count > 0 Then
+            If dt.Rows(0).Item("IsEHR") = YesNo.Yes Then
+                blnRes = True
+            End If
+        End If
+
+        Return blnRes
+
+    End Function
+    'CRE20-018 Stop Token Sharing [End][Nichole]
     Public Function GetServiceProviderPermanentProfileWithMaintenance(ByVal strSPID As String) As ServiceProviderModel
         Dim udtSP As ServiceProviderModel = Nothing
         Dim udtServiceProviderBLL As ServiceProviderBLL = New ServiceProviderBLL

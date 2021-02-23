@@ -272,7 +272,7 @@ Partial Public Class ucReadOnlyCommon
                 lblVHKIDText.Text = Me.GetGlobalResourceObject("Text", "VisaRefNo")
                 lblVHKID.Text = udtFormatter.FormatDocIdentityNoForDisplay(udtEHSPersonalInformation.DocCode, udtEHSPersonalInformation.IdentityNum, blnMaskIdentityNo)
 
-                ' CRE19-001 (VSS 2019) [Start][Winnie]
+                ' CRE20-0022 (Immu record) [Start][Martin]
                 ' ----------------------------------------------------------------------------------------
             Case DocTypeCode.OC,
                 DocTypeCode.OW,
@@ -280,10 +280,13 @@ Partial Public Class ucReadOnlyCommon
                 DocTypeCode.IR,
                 DocTypeCode.HKP,
                 DocTypeCode.RFNo8,
-                DocTypeCode.OTHER
+                DocTypeCode.OTHER,
+                DocTypeCode.CCIC,
+                DocTypeCode.ROP140,
+                DocTypeCode.PASS
                 lblVHKIDText.Text = Me.GetGlobalResourceObject("Text", "OTHERDocNo")
                 lblVHKID.Text = udtFormatter.FormatDocIdentityNoForDisplay(udtEHSPersonalInformation.DocCode, udtEHSPersonalInformation.IdentityNum, blnMaskIdentityNo)
-                ' CRE19-001 (VSS 2019) [End][Winnie]
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
         ' CRE13-001 - EHAPP [Start][Koala]
         ' ------------------------------------------------------------------------------------

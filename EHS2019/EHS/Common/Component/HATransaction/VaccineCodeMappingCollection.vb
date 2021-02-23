@@ -52,8 +52,8 @@ Namespace Component.HATransaction
         ''' <param name="strCode">Vaccine code from source system</param>
         ''' <returns>Vaccine code mapping model for retrieve target vaccine code and display name</returns>
         ''' <remarks></remarks>
-        Public Function GetMappingByCode(ByVal strSourceSystem As String, ByVal strTargetSystem As String, ByVal strCode As String) As VaccineCodeMappingModel
-            Return CType(MyBase.Item(GenerateKey(strSourceSystem, strTargetSystem, strCode)), VaccineCodeMappingModel)
+        Public Function GetMappingByCode(ByVal strSourceSystem As String, ByVal strTargetSystem As String, ByVal strCode As String, ByVal strBrandID As String) As VaccineCodeMappingModel
+            Return CType(MyBase.Item(GenerateKey(strSourceSystem, strTargetSystem, strCode, strBrandID)), VaccineCodeMappingModel)
         End Function
 
 #Region "Private Function"
@@ -113,11 +113,12 @@ Namespace Component.HATransaction
         Private Function GenerateKey(ByVal udtVaccineCodeMappingModel As VaccineCodeMappingModel) As String
             Return GenerateKey(udtVaccineCodeMappingModel.SourceSystem, _
                                 udtVaccineCodeMappingModel.TargetSystem, _
-                                udtVaccineCodeMappingModel.VaccineCodeSource)
+                                udtVaccineCodeMappingModel.VaccineCodeSource, _
+                                udtVaccineCodeMappingModel.VaccineBrandIDSource)
         End Function
 
-        Private Function GenerateKey(ByVal strSourceSystem As String, ByVal strTargetSystem As String, ByVal strCode As String) As String
-            Return strSourceSystem + "|" + strTargetSystem + "|" + strCode
+        Private Function GenerateKey(ByVal strSourceSystem As String, ByVal strTargetSystem As String, ByVal strCode As String, ByVal strBrandID As String) As String
+            Return strSourceSystem + "|" + strTargetSystem + "|" + strCode + "|" + strBrandID
         End Function
 
 #End Region

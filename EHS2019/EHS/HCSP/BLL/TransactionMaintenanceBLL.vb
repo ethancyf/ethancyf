@@ -430,7 +430,7 @@ Public Class TransactionMaintenanceBLL
         End Sub
     End Class
 
-    Public Function SearchClaimTrans(ByVal strSPID As String, ByVal strDataEntry As String, ByVal intPracticeSeq As Integer, ByVal intBankAcctSeq As Integer, ByVal strStatus As String, ByVal dtTranDateFrom As Date, ByVal dtTranDateTo As Date, ByVal strTranNo As String, ByVal strSchemeCode As String, ByVal enumSubPlatform As [Enum]) As DataTable
+    Public Function SearchClaimTrans(ByVal strSPID As String, ByVal strDataEntry As String, ByVal intPracticeSeq As Integer, ByVal intBankAcctSeq As Integer, ByVal strStatus As String, ByVal dtTranDateFrom As Date, ByVal dtTranDateTo As Date, ByVal strTranNo As String, ByVal strSchemeCode As String, ByVal strDocType As String, ByVal strDocumentNo1 As String, ByVal strDocumentNo2 As String, ByVal enumSubPlatform As [Enum]) As DataTable
         Dim ds As New DataSet
         Dim udtDB As Database = New Database
 
@@ -448,7 +448,10 @@ Public Class TransactionMaintenanceBLL
             udtDB.MakeInParam("@Practice_Seq", SqlDbType.SmallInt, 2, IIf(intPracticeSeq = 0, DBNull.Value, intPracticeSeq)), _
             udtDB.MakeInParam("@Record_Status", SqlDbType.Char, 1, IIf(strStatus = String.Empty, DBNull.Value, strStatus)), _
             udtDB.MakeInParam("@Scheme_Code", SqlDbType.Char, 10, IIf(strSchemeCode = String.Empty, DBNull.Value, strSchemeCode)), _
-            udtDB.MakeInParam("@Available_HCSP_SubPlatform", SqlDbType.VarChar, 2, IIf(strSubPlatform.Trim.Equals(String.Empty), DBNull.Value, strSubPlatform))}
+            udtDB.MakeInParam("@Available_HCSP_SubPlatform", SqlDbType.VarChar, 2, IIf(strSubPlatform.Trim.Equals(String.Empty), DBNull.Value, strSubPlatform)), _
+            udtDB.MakeInParam("@doc_code", SqlDbType.Char, 20, IIf(strDocType = String.Empty, DBNull.Value, strDocType)), _
+            udtDB.MakeInParam("@identity_no1", SqlDbType.VarChar, 20, IIf(strDocumentNo1 = String.Empty, DBNull.Value, strDocumentNo1)), _
+            udtDB.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, IIf(strDocumentNo2 = String.Empty, DBNull.Value, strDocumentNo2))}
 
         udtDB.RunProc("proc_VoucherTransaction_get_BySPIDBankAcctTransID", prams, ds)
 

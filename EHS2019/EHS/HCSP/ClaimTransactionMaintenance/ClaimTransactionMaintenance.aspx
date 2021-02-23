@@ -150,6 +150,34 @@
                                                                     </asp:DropDownList>
                                                                 </td>
                                                             </tr>
+                                                            <asp:panel ID="panDocSearch" runat="server" Visible ="false">
+                                                            <tr style="height: 28px">
+                                                                <td style="vertical-align: top">
+                                                                    <asp:Label ID="lblTabeHSAccountDocTypeText" runat="server"  CssClass="tableTitle" Text="<%$ Resources:Text, DocumentType %>"></asp:Label></td>
+                                                                <td style="vertical-align: top">
+                                                                    <asp:DropDownList ID="ddlTabeHSAccountDocType" runat="server"  Width="430px">
+                                                                    </asp:DropDownList>
+                                                                </td>
+                                                            </tr>
+                                                            <tr style="height: 30px">
+                                                                <td style="vertical-align: top">
+                                                                    <asp:Label ID="lblTabeHSAccountDocNoText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, DocumentNo %>"/>
+                                                                </td>
+                                                            <td style="vertical-align: top;">
+                                                                    <table cellpadding="0" cellspacing="0">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <asp:TextBox ID="txtTabeHSAccountDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="18"/>
+                                                                            </td>
+                                                                            <td>
+                                                                                <asp:Image ID="imgTabeHSAccountDocNo" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
+                                                                                    AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" Visible="False" style="position:relative;top:-1px;left:1px"/>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>  
+                                                                </td>
+                                                            </tr>
+                                                            </asp:panel>
                                                             <tr style="height: 10px">
                                                                 <tr>
                                                                     <td>
@@ -208,6 +236,20 @@
                                                     <td style="vertical-align: top">
                                                         <asp:Label ID="lblTargetScheme" runat="server" CssClass="tableText"></asp:Label></td>
                                                 </tr>
+                                                <asp:Panel ID="panDocCriteria" runat="server" Visible ="false">
+                                                 <tr style="height: 28px">
+                                                    <td style="vertical-align: top">
+                                                        <asp:Label ID="lblTargetTabeHSAccountDocTypeText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, DocumentType %>"></asp:Label></td>
+                                                    <td style="vertical-align: top">
+                                                        <asp:Label ID="lblTargetTabeHSAccountDocType" runat="server" CssClass="tableText"></asp:Label></td>
+                                                </tr>
+                                                <tr style="height: 28px">
+                                                    <td style="vertical-align: top">
+                                                        <asp:Label ID="lblTargetTabeHSAccountDocNoText" runat="server" CssClass="tableTitle" Text="<%$ Resources: Text, DocumentNo %>"></asp:Label></td>
+                                                    <td style="vertical-align: top">
+                                                        <asp:Label ID="lblTargetTabeHSAccountDocNo" runat="server" CssClass="tableText"></asp:Label></td>
+                                                </tr>
+                                                </asp:Panel>
                                             </table>
                                         </td>
                                     </tr>
@@ -501,11 +543,64 @@
                                                             <asp:Label ID="lblSummarySuspendedRMB_SSSCMC" runat="server" CssClass="tableText"></asp:Label></asp:TableCell>
                                                       
                                                     </asp:TableRow>
-                                                </asp:Table>
+                                                    </asp:Table>
+                                                   
+                                               
                                                 <br />
                                             </asp:Panel>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:Panel ID="panSSSCMCRecordSummary" runat="server" Visible="false">
+
+                                                <br />
+                                                <asp:Table ID="tblSSSCMCRecordSummary" runat="server" cellpadding="0" cellspacing="0" BorderWidth="2" style="background-color: white; text-align: center">
+                                                     <asp:TableRow ID="trRecordTitle1_SSSCMC" runat="server" style="height: 30px" BorderWidth="2">
+                                                         <asp:TableCell style="width: 110px" BorderWidth="2" runat="server" ID="TableCell1"  RowSpan="5" valign="top">
+                                                            <asp:Label ID="lblSSSCMCSummary_Title" runat="server" CssClass="tableTitle"></asp:Label></asp:TableCell>
+                                                        <asp:TableCell style="width: 110px" BorderWidth="2" RowSpan="2" >
+                                                            <asp:Label ID="lblSSSCMCSummary_Space" runat="server" CssClass="tableTitle"  ></asp:Label></asp:TableCell>
+                                                         <asp:TableCell BorderWidth="2" style="width: 220px" columnSpan="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_subTitle" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMCConsultationFee %>"></asp:Label></asp:TableCell>
+                                                         
+                                                    </asp:TableRow>
+                                                    <asp:TableRow ID="trRecordTitle2_SSSCMC" runat="server"  BorderWidth="1">
+                                                        <asp:TableCell style="width: 110px" BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_frequency" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMCFrequency %>"></asp:Label></asp:TableCell>
+                                                         <asp:TableCell style="width: 110px" BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_amount" runat="server" CssClass="tableTitle"  Text="<%$ Resources:Text, SSSCMCAmount %>"></asp:Label></asp:TableCell>
+                                                         
+                                                    </asp:TableRow>
+                                                     <asp:TableRow ID="trRecordSummaryHasA_SSSCMC" runat="server"  BorderWidth="1">
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_pp" runat="server" CssClass="tableTitle"  Text="<%$ Resources:Text, SSSCMCPatientPaid %>"></asp:Label></asp:TableCell>
+                                                         <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_CountHASA" runat="server" CssClass="tableText" ></asp:Label></asp:TableCell>
+                                                           <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_HASAAmount" runat="server" CssClass="tableText" ></asp:Label></asp:TableCell>
+                                                    </asp:TableRow>
+                                                     <asp:TableRow ID="trRecordSummaryHasB_SSSCMC" runat="server"  BorderWidth="1">
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_HASB" runat="server" CssClass="tableTitle"  Text="<%$ Resources:Text, SSSCMCFullReduct %>"></asp:Label></asp:TableCell>
+                                                         <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_CountHASB" runat="server" CssClass="tableText" ></asp:Label></asp:TableCell>
+                                                           <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummary_HASBAmount" runat="server" CssClass="tableText" ></asp:Label></asp:TableCell>
+                                                    </asp:TableRow>
+                                                    <asp:TableRow ID="trRecordSummaryTtl_SSSCMC" runat="server"  BorderWidth="1">
+                                                        <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummaryTotal" runat="server" CssClass="tableTitle"  Text="<%$ Resources:Text, SSSCMCSummaryTitle %>"></asp:Label></asp:TableCell>
+                                                         <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummaryTotalCount" runat="server" CssClass="tableText" ></asp:Label></asp:TableCell>
+                                                           <asp:TableCell BorderWidth="2">
+                                                            <asp:Label ID="lblSSSCMCSummaryTotalAmount" runat="server" CssClass="tableText" ></asp:Label></asp:TableCell>
+                                                    </asp:TableRow>
+                                                </asp:Table>
+                                                <br />
+                                            </asp:Panel>
+                                        </td>
+                                    </tr> 
                                 </table>
                                 <asp:ImageButton ID="ibtnBack" runat="server" ImageUrl="<%$ Resources: ImageURL, BackBtn %>"
                                     AlternateText="<%$ Resources: AlternateText, BackBtn %>" OnClick="ibtnBack_Click" />

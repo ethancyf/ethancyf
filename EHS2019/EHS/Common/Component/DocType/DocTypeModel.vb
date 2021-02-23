@@ -80,7 +80,23 @@ Namespace Component.DocType
             ''' <remarks></remarks>
             Public Const RFNo8 As String = "RFNo8"
             ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-
+            ' CRE20-0022 (Immu record) [Start][Martin]
+            ''' <summary>
+            ''' Consular Corps Identity Card
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const CCIC As String = "CCIC"
+            ''' <summary>
+            ''' Acknowledgement of application for a Hong Kong permanent identity card 
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const ROP140 As String = "ROP140"
+            ''' <summary>
+            ''' PASSPORT
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const PASS As String = "PASS"
+            ' CRE20-0022 (Immu record) [End][Martin]
         End Class
 
 
@@ -220,7 +236,7 @@ Namespace Component.DocType
 
         Public ReadOnly Property DocName(ByVal strLanguage As String) As String
             Get
-                Select Case strLanguage
+                Select Case strLanguage.Trim.ToLower
                     Case CultureLanguage.English
                         Return Me.DocName
                     Case CultureLanguage.TradChinese
@@ -280,7 +296,7 @@ Namespace Component.DocType
 
         Public ReadOnly Property DocIdentityDesc(ByVal strLanguage As String) As String
             Get
-                Select Case strLanguage
+                Select Case strLanguage.Trim.ToLower
                     Case CultureLanguage.English
                         Return Me.DocIdentityDesc
                     Case CultureLanguage.TradChinese

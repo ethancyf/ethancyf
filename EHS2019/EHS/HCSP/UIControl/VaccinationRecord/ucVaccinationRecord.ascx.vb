@@ -10,6 +10,8 @@ Imports Common.Component.StaticData
 Imports Common.Format
 Imports Common.WebService.Interface
 Imports HCSP.BLL
+Imports Common.Component.Scheme
+Imports Common.Component.DHTransaction
 
 Partial Public Class ucVaccinationRecord
     Inherits System.Web.UI.UserControl
@@ -25,6 +27,12 @@ Partial Public Class ucVaccinationRecord
     Private Class SESS
         Public Const TranDetailList As String = "ucVaccinationRecord_TranDetailList"
     End Class
+
+    Public Enum RecordType
+        ALL
+        COVID19
+        WithoutCOVID19
+    End Enum
 
 #End Region
 
@@ -57,7 +65,11 @@ Partial Public Class ucVaccinationRecord
 
 #End Region
 
-    Public Sub Build(ByVal udtEHSAccount As EHSAccountModel, ByVal udtCachedHAVaccineResult As HAVaccineResult, ByVal udtCachedDHVaccineResult As DHVaccineResult, ByVal udtAuditLogEntry As AuditLogEntry)
+    Public Sub Build(ByVal udtEHSAccount As EHSAccountModel, _
+                     ByVal udtCachedHAVaccineResult As HAVaccineResult, _
+                     ByVal udtCachedDHVaccineResult As DHVaccineResult, _
+                     ByVal udtAuditLogEntry As AuditLogEntry, _
+                     ByVal enumRecordType As RecordType)
 
         BuildEHSAccount(udtEHSAccount)
 
@@ -76,13 +88,24 @@ Partial Public Class ucVaccinationRecord
         udtVaccineResultBagSession.DHVaccineResult = udtCachedDHVaccineResult
         udtVaccineResultBagSession.HAVaccineResult = udtCachedHAVaccineResult
 
-        udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount, udtTranDetailVaccineList, udtVaccineResultBag, htRecordSummary, udtAuditLogEntry, String.Empty, udtVaccineResultBagSession)
+        udtVaccinationBLL.GetVaccinationRecord(udtEHSAccount, _
+                                               udtTranDetailVaccineList, _
+                                               udtVaccineResultBag, _
+                                               htRecordSummary, _
+                                               udtAuditLogEntry, _
+                                               String.Empty, _
+                                               udtVaccineResultBagSession)
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'FilterVaccinationRecord(enumRecordType, udtTranDetailVaccineList, htRecordSummary, udtVaccineResultBag, udtAuditLogEntry)
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         _udtDHVaccineResult = udtVaccineResultBag.DHVaccineResult
         _udtHAVaccineResult = udtVaccineResultBag.HAVaccineResult
 
         ' Build record summary
-        BuildSystemMessage(udtVaccineResultBag)
+        BuildSystemMessage(htRecordSummary, udtVaccineResultBag)
 
         ' CRE19-007 (DH CIMS Sub return code) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
@@ -127,9 +150,8 @@ Partial Public Class ucVaccinationRecord
 
 
 
-    Public Sub Build(ByVal udtEHSAccount As EHSAccountModel, ByVal udtAuditLogEntry As AuditLogEntry)
-        'Build(udtEHSAccount, Nothing, udtAuditLogEntry)
-        Build(udtEHSAccount, Nothing, Nothing, udtAuditLogEntry)
+    Public Sub Build(ByVal udtEHSAccount As EHSAccountModel, ByVal udtAuditLogEntry As AuditLogEntry, ByVal enumRecordType As RecordType)
+        Build(udtEHSAccount, Nothing, Nothing, udtAuditLogEntry, enumRecordType)
     End Sub
 
     Public Sub BuildEHSAccount(ByVal udtEHSAccount As EHSAccountModel)
@@ -375,11 +397,12 @@ Partial Public Class ucVaccinationRecord
                 End If
 
                 If udtVaccineResultBag.DHVaccineResult.SingleClient.ReturnClientCIMSCode = DHTransaction.DHClientModel.ReturnCIMSCode.AllDemographicMatch_PartialRecord Then
-                    'Override hidden value: 3 -> 3,PartialRecordReturned
-                    hfDH.Value = String.Format("{0},{1}", strDHValue, "PartialRecordReturned")
-                    strDHValue = String.Format("{0} ({1})", strDHValue, Me.GetGlobalResourceObject("Text", "PartialRecordReturned"))
-                    lblDH.Style("color") = "blue"
-
+                    If CInt(hfDH.Value) > 0 Then
+                        'Override hidden value: 3 -> 3,PartialRecordReturned
+                        hfDH.Value = String.Format("{0},{1}", strDHValue, "PartialRecordReturned")
+                        strDHValue = String.Format("{0} ({1})", strDHValue, Me.GetGlobalResourceObject("Text", "PartialRecordReturned"))
+                        lblDH.Style("color") = "blue"
+                    End If
                 End If
 
                 lblDH.Visible = True
@@ -394,7 +417,7 @@ Partial Public Class ucVaccinationRecord
 
     ' CRE19-007 (DH CIMS Sub return code) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Private Sub BuildSystemMessage(ByVal udtVaccineResultBag As VaccineResultCollection)
+    Private Sub BuildSystemMessage(ByVal htRecordSummary As Hashtable, ByVal udtVaccineResultBag As VaccineResultCollection)
         Dim udtSystemMessage As SystemMessage = Nothing
         Dim udtSystemMessageList As New List(Of SystemMessage)
         Dim blnHAError As Boolean = False
@@ -420,7 +443,9 @@ Partial Public Class ucVaccinationRecord
             Select Case udtVaccineResultBag.DHReturnStatus
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.OK
                     If udtVaccineResultBag.DHVaccineResult.SingleClient.ReturnClientCIMSCode = DHTransaction.DHClientModel.ReturnCIMSCode.AllDemographicMatch_PartialRecord Then
-                        udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00048))
+                        If CInt(htRecordSummary(VaccinationBLL.VaccineRecordProvider.DH)) > 0 Then
+                            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00048))
+                        End If
                     End If
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
                     udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00041))
@@ -468,6 +493,7 @@ Partial Public Class ucVaccinationRecord
             .Add("SubsidizeDescChi", GetType(String))
             .Add("AvailableItemDesc", GetType(String))
             .Add("AvailableItemDescChi", GetType(String))
+            .Add("AvailableItemDescCN", GetType(String))
             .Add("Provider", GetType(String))
             .Add("Remark", GetType(String))
         End With
@@ -481,14 +507,14 @@ Partial Public Class ucVaccinationRecord
             drVaccineRecord("SubsidizeDescChi") = udtTranDetailVaccine.SubsidizeDescChi
             drVaccineRecord("AvailableItemDesc") = udtTranDetailVaccine.AvailableItemDesc
             drVaccineRecord("AvailableItemDescChi") = udtTranDetailVaccine.AvailableItemDescChi
-            ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-            ' ----------------------------------------------------------
+            drVaccineRecord("AvailableItemDescCN") = udtTranDetailVaccine.AvailableItemDescCN
+
             If udtTranDetailVaccine.SchemeCode = Common.Component.Scheme.SchemeClaimModel.RVP Then
                 drVaccineRecord("Provider") = TransactionDetailVaccineModel.ProviderClass.RVP
             Else
                 drVaccineRecord("Provider") = udtTranDetailVaccine.Provider
             End If
-            ' CRE18-004 (CIMS Vaccination Sharing) [End][Chris YIM]
+
             drVaccineRecord("Remark") = udtTranDetailVaccine.RecordType
 
             dtVaccineRecord.Rows.Add(drVaccineRecord)
@@ -509,24 +535,27 @@ Partial Public Class ucVaccinationRecord
 
     Protected Sub gvVaccinationRecord_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim dr As DataRow = CType(e.Row.DataItem, System.Data.DataRowView).Row
             Dim udtFormatter As New Formatter
             Dim blnIsChinese As Boolean = (LCase(Session("language")) = CultureLanguage.TradChinese)
+            Dim strLanguage As String = Session("language").ToString.Trim.ToLower
 
             ' Injection Date
             Dim lblGInjectionDate As Label = e.Row.FindControl("lblGInjectionDate")
-            'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            'If blnIsChinese Then
-            '    lblGInjectionDate.Text = udtFormatter.formatDate(lblGInjectionDate.Text.Trim, CultureLanguage.TradChinese)
-            'Else
-            '    lblGInjectionDate.Text = udtFormatter.formatDate(lblGInjectionDate.Text.Trim, CultureLanguage.English)
-            'End If
-            If blnIsChinese Then
-                lblGInjectionDate.Text = udtFormatter.formatDisplayDate(CDate(lblGInjectionDate.Text.Trim), CultureLanguage.TradChinese)
-            Else
-                lblGInjectionDate.Text = udtFormatter.formatDisplayDate(CDate(lblGInjectionDate.Text.Trim), CultureLanguage.English)
-            End If
-            'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+
+            Select Case strLanguage
+                Case CultureLanguage.TradChinese
+                    lblGInjectionDate.Text = udtFormatter.formatDisplayDate(CDate(lblGInjectionDate.Text.Trim), CultureLanguage.TradChinese)
+                Case CultureLanguage.SimpChinese
+                    lblGInjectionDate.Text = udtFormatter.formatDisplayDate(CDate(lblGInjectionDate.Text.Trim), CultureLanguage.SimpChinese)
+                Case CultureLanguage.English
+                    lblGInjectionDate.Text = udtFormatter.formatDisplayDate(CDate(lblGInjectionDate.Text.Trim), CultureLanguage.English)
+                Case Else
+                    lblGInjectionDate.Text = udtFormatter.formatDisplayDate(CDate(lblGInjectionDate.Text.Trim), CultureLanguage.English)
+            End Select
+
 
             ' Vaccination
             Dim lblGVaccination As Label = e.Row.FindControl("lblGVaccination")
@@ -539,25 +568,51 @@ Partial Public Class ucVaccinationRecord
             Dim lblGDose As Label = e.Row.FindControl("lblGDose")
             Dim lblGDoseChi As Label = e.Row.FindControl("lblGDoseChi")
 
-            lblGDose.Visible = Not blnIsChinese
-            lblGDoseChi.Visible = blnIsChinese
+            lblGDose.Visible = False
+            lblGDoseChi.Visible = False
+
+            Select Case strLanguage
+                Case CultureLanguage.TradChinese
+                    lblGDoseChi.Visible = True
+                    lblGDoseChi.Text = dr("AvailableItemDescChi")
+                Case CultureLanguage.SimpChinese
+                    lblGDoseChi.Visible = True
+                    lblGDoseChi.Text = dr("AvailableItemDescCN")
+                Case CultureLanguage.English
+                    lblGDose.Visible = True
+                    lblGDose.Text = dr("AvailableItemDesc")
+                Case Else
+                    lblGDose.Visible = True
+                    lblGDose.Text = dr("AvailableItemDesc")
+            End Select
 
             ' Information Provider
             Dim lblGProvider As Label = e.Row.FindControl("lblGProvider")
-            If blnIsChinese Then
-                Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.ProviderClass.ClassCode, lblGProvider.Text.Trim, String.Empty, lblGProvider.Text)
-            Else
-                Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.ProviderClass.ClassCode, lblGProvider.Text.Trim, lblGProvider.Text, String.Empty)
-            End If
+            Select Case strLanguage
+                Case CultureLanguage.TradChinese
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.ProviderClass.ClassCode, lblGProvider.Text.Trim, String.Empty, lblGProvider.Text, String.Empty)
+                Case CultureLanguage.SimpChinese
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.ProviderClass.ClassCode, lblGProvider.Text.Trim, String.Empty, String.Empty, lblGProvider.Text)
+                Case CultureLanguage.English
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.ProviderClass.ClassCode, lblGProvider.Text.Trim, lblGProvider.Text, String.Empty, String.Empty)
+                Case Else
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.ProviderClass.ClassCode, lblGProvider.Text.Trim, lblGProvider.Text, String.Empty, String.Empty)
+            End Select
 
             ' Remarks
             Dim lblGRemark As Label = e.Row.FindControl("lblGRemark")
-            If blnIsChinese Then
-                Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.RecordTypeClass.ClassCode, lblGRemark.Text.Trim, String.Empty, lblGRemark.Text)
-            Else
-                Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.RecordTypeClass.ClassCode, lblGRemark.Text.Trim, lblGRemark.Text, String.Empty)
-            End If
+            Select Case strLanguage
+                Case CultureLanguage.TradChinese
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.RecordTypeClass.ClassCode, lblGRemark.Text.Trim, String.Empty, lblGRemark.Text, String.Empty)
+                Case CultureLanguage.SimpChinese
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.RecordTypeClass.ClassCode, lblGRemark.Text.Trim, String.Empty, String.Empty, lblGRemark.Text)
+                Case CultureLanguage.English
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.RecordTypeClass.ClassCode, lblGRemark.Text.Trim, lblGRemark.Text, String.Empty, String.Empty)
+                Case Else
+                    Status.GetDescriptionFromDBCode(TransactionDetailVaccineModel.RecordTypeClass.ClassCode, lblGRemark.Text.Trim, lblGRemark.Text, String.Empty, String.Empty)
+            End Select
 
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
         End If
     End Sub
 
@@ -732,5 +787,183 @@ Partial Public Class ucVaccinationRecord
         Me.udcReadOnlyDocumnetType.Clear()
     End Sub
     ' INT12-011 Vaccination record enquiry viewstate fix [End][Koala]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Sub FilterVaccinationRecord(ByVal enumRecordType As RecordType, _
+                                       ByRef udtTranDetailVaccineList As TransactionDetailVaccineModelCollection, _
+                                       ByRef htRecordSummary As Hashtable, _
+                                       ByVal udtVaccineResultBag As VaccineResultCollection, _
+                                       ByVal udtAuditLogEntry As AuditLogEntry)
+
+        Select Case enumRecordType
+            Case RecordType.COVID19
+                udtTranDetailVaccineList = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                'EHS
+                htRecordSummary.Remove(VaccinationBLL.VaccineRecordProvider.EHS)
+                htRecordSummary.Add(VaccinationBLL.VaccineRecordProvider.EHS, _
+                                    udtVaccineResultBag.EHSTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count)
+
+                'HA-CMS
+                If udtVaccineResultBag.HAReturnStatus = VaccinationBLL.EnumVaccinationRecordReturnStatus.OK Then
+                    Dim udtFilterHAVaccineList As New HAVaccineModelCollection
+
+                    Dim udtHACodeList As VaccineCodeMappingCollection = (New HAVaccineBLL).GetAllVaccineCodeMapping()
+
+                    For Each udtHAVaccine As HAVaccineModel In udtVaccineResultBag.HAVaccineResult.SinglePatient.VaccineList
+                        Dim udtCodeModel As VaccineCodeMappingModel
+                        Dim strSubsidizeCode As String = String.Empty
+
+                        udtCodeModel = udtHACodeList.GetMappingByCode(VaccineCodeMappingModel.SourceSystemClass.CMS, _
+                                                                      VaccineCodeMappingModel.TargetSystemClass.EHS, _
+                                                                      udtHAVaccine.VaccineCode, _
+                                                                      udtHAVaccine.VaccineBrand)
+
+                        strSubsidizeCode = udtCodeModel.VaccineCodeTarget.Split("|")(0).Trim
+
+
+                        If strSubsidizeCode = Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                            udtFilterHAVaccineList.Add(udtHAVaccine)
+                        End If
+                    Next
+
+                    htRecordSummary.Remove(VaccinationBLL.VaccineRecordProvider.HA)
+                    htRecordSummary.Add(VaccinationBLL.VaccineRecordProvider.HA, udtFilterHAVaccineList.Count)
+                End If
+
+                'DH-CIMS
+                If udtVaccineResultBag.DHReturnStatus = VaccinationBLL.EnumVaccinationRecordReturnStatus.OK Then
+                    Dim udtFilterDHVaccineList As New DHVaccineModelCollection
+
+                    Dim udtDHCodeList As HKMTTVaccineMappingCollection = (New DHVaccineBLL).GetAllHKMTTVaccineMapping()
+                    Dim udtDHCodeSeasonList As HKMTTVaccineSeasonMappingCollection = (New DHVaccineBLL).GetAllHKMTTVaccineSeasonMapping()
+
+                    For Each udtDHVaccine As DHVaccineModel In udtVaccineResultBag.DHVaccineResult.SingleClient.VaccineRecordList
+                        Dim ldicCodeList As ListDictionary
+                        Dim slCodeList As SortedList(Of DateTime, HKMTTVaccineSeasonMappingModel)
+
+                        Dim strSubsidizeCode As String = String.Empty
+
+                        ldicCodeList = udtDHCodeList.GetListBySystem(HKMTTVaccineSeasonMappingModel.SourceSystemClass.CIMS, _
+                                                                     HKMTTVaccineSeasonMappingModel.TargetSystemClass.EHS)
+
+                        Dim udtVaccineMapping As HKMTTVaccineMappingModel = ldicCodeList(HKMTTVaccineMappingModel.GenerateKey(udtDHVaccine))
+
+                        slCodeList = udtDHCodeSeasonList.GetListBySystem(HKMTTVaccineSeasonMappingModel.SourceSystemClass.CIMS, _
+                                                                         HKMTTVaccineSeasonMappingModel.TargetSystemClass.EHS, _
+                                                                         udtVaccineMapping.VaccineTypeTarget)
+
+                        Dim udtCodeModel As HKMTTVaccineSeasonMappingModel = Nothing
+                        For i As Integer = 0 To slCodeList.Values.Count - 1
+                            udtCodeModel = slCodeList.Values(i)
+                            If udtCodeModel.InjectionDtmFromSource <= udtDHVaccine.AdmDate AndAlso udtCodeModel.InjectionDtmToSource > udtDHVaccine.AdmDate Then
+                                Exit For
+                            End If
+                        Next
+
+                        strSubsidizeCode = udtCodeModel.VaccineCodeTarget.Split("|")(0).Trim
+
+                        If strSubsidizeCode = Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                            udtFilterDHVaccineList.Add(udtDHVaccine)
+                        End If
+                    Next
+
+                    htRecordSummary.Remove(VaccinationBLL.VaccineRecordProvider.DH)
+                    htRecordSummary.Add(VaccinationBLL.VaccineRecordProvider.DH, udtFilterDHVaccineList.Count)
+                End If
+
+                udtAuditLogEntry.AddDescripton("No. of EHS record", htRecordSummary(VaccinationBLL.VaccineRecordProvider.EHS).ToString.Trim)
+                udtAuditLogEntry.AddDescripton("No. of HA record", htRecordSummary(VaccinationBLL.VaccineRecordProvider.HA).ToString.Trim)
+                udtAuditLogEntry.AddDescripton("No. of DH record", htRecordSummary(VaccinationBLL.VaccineRecordProvider.DH).ToString.Trim)
+                udtAuditLogEntry.WriteLog(LogID.LOG00300, "Display vaccination record but filtered by COVID19")
+
+            Case RecordType.WithoutCOVID19
+                udtTranDetailVaccineList = udtTranDetailVaccineList.FilterExcludeBySubsidizeItemCode(Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                'EHS
+                htRecordSummary.Remove(VaccinationBLL.VaccineRecordProvider.EHS)
+                htRecordSummary.Add(VaccinationBLL.VaccineRecordProvider.EHS, _
+                                    udtVaccineResultBag.EHSTranDetailVaccineList.FilterExcludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count)
+
+                'HA-CMS
+                If udtVaccineResultBag.HAReturnStatus = VaccinationBLL.EnumVaccinationRecordReturnStatus.OK Then
+                    Dim udtFilterHAVaccineList As New HAVaccineModelCollection
+
+                    Dim udtHACodeList As VaccineCodeMappingCollection = (New HAVaccineBLL).GetAllVaccineCodeMapping()
+
+                    For Each udtHAVaccine As HAVaccineModel In udtVaccineResultBag.HAVaccineResult.SinglePatient.VaccineList
+                        Dim udtCodeModel As VaccineCodeMappingModel
+                        Dim strSubsidizeCode As String = String.Empty
+
+                        udtCodeModel = udtHACodeList.GetMappingByCode(VaccineCodeMappingModel.SourceSystemClass.CMS, _
+                                                                      VaccineCodeMappingModel.TargetSystemClass.EHS, _
+                                                                      udtHAVaccine.VaccineCode, _
+                                                                      udtHAVaccine.VaccineBrand)
+
+                        strSubsidizeCode = udtCodeModel.VaccineCodeTarget.Split("|")(0).Trim
+
+
+                        If strSubsidizeCode <> Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                            udtFilterHAVaccineList.Add(udtHAVaccine)
+                        End If
+                    Next
+
+                    htRecordSummary.Remove(VaccinationBLL.VaccineRecordProvider.HA)
+                    htRecordSummary.Add(VaccinationBLL.VaccineRecordProvider.HA, udtFilterHAVaccineList.Count)
+
+                End If
+
+                'DH-CIMS
+                If udtVaccineResultBag.DHReturnStatus = VaccinationBLL.EnumVaccinationRecordReturnStatus.OK Then
+                    Dim udtFilterDHVaccineList As New DHVaccineModelCollection
+
+                    Dim udtDHCodeList As HKMTTVaccineMappingCollection = (New DHVaccineBLL).GetAllHKMTTVaccineMapping()
+                    Dim udtDHCodeSeasonList As HKMTTVaccineSeasonMappingCollection = (New DHVaccineBLL).GetAllHKMTTVaccineSeasonMapping()
+
+                    For Each udtDHVaccine As DHVaccineModel In udtVaccineResultBag.DHVaccineResult.SingleClient.VaccineRecordList
+                        Dim ldicCodeList As ListDictionary
+                        Dim slCodeList As SortedList(Of DateTime, HKMTTVaccineSeasonMappingModel)
+
+                        Dim strSubsidizeCode As String = String.Empty
+
+                        ldicCodeList = udtDHCodeList.GetListBySystem(HKMTTVaccineSeasonMappingModel.SourceSystemClass.CIMS, _
+                                                                     HKMTTVaccineSeasonMappingModel.TargetSystemClass.EHS)
+
+                        Dim udtVaccineMapping As HKMTTVaccineMappingModel = ldicCodeList(HKMTTVaccineMappingModel.GenerateKey(udtDHVaccine))
+
+                        slCodeList = udtDHCodeSeasonList.GetListBySystem(HKMTTVaccineSeasonMappingModel.SourceSystemClass.CIMS, _
+                                                                         HKMTTVaccineSeasonMappingModel.TargetSystemClass.EHS, _
+                                                                         udtVaccineMapping.VaccineTypeTarget)
+
+                        Dim udtCodeModel As HKMTTVaccineSeasonMappingModel = Nothing
+                        For i As Integer = 0 To slCodeList.Values.Count - 1
+                            udtCodeModel = slCodeList.Values(i)
+                            If udtCodeModel.InjectionDtmFromSource <= udtDHVaccine.AdmDate AndAlso udtCodeModel.InjectionDtmToSource > udtDHVaccine.AdmDate Then
+                                Exit For
+                            End If
+                        Next
+
+                        strSubsidizeCode = udtCodeModel.VaccineCodeTarget.Split("|")(0).Trim
+
+                        If strSubsidizeCode <> Common.Component.Scheme.SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
+                            udtFilterDHVaccineList.Add(udtDHVaccine)
+                        End If
+                    Next
+
+                    htRecordSummary.Remove(VaccinationBLL.VaccineRecordProvider.DH)
+                    htRecordSummary.Add(VaccinationBLL.VaccineRecordProvider.DH, udtFilterDHVaccineList.Count)
+
+                End If
+
+                udtAuditLogEntry.AddDescripton("No. of EHS record", htRecordSummary(VaccinationBLL.VaccineRecordProvider.EHS).ToString.Trim)
+                udtAuditLogEntry.AddDescripton("No. of HA record", htRecordSummary(VaccinationBLL.VaccineRecordProvider.HA).ToString.Trim)
+                udtAuditLogEntry.AddDescripton("No. of DH record", htRecordSummary(VaccinationBLL.VaccineRecordProvider.DH).ToString.Trim)
+                udtAuditLogEntry.WriteLog(LogID.LOG00301, "Display vaccination record but filtered without COVID19")
+            Case Else
+                'Nothing to do
+        End Select
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+    End Sub
 
 End Class

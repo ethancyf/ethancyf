@@ -9,6 +9,21 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	05 Feb 2021
+-- CR No.:			CRE20-022 (Immu record)
+-- Description:		Add column [Vaccine_Brand] & [Vaccine_Lot_No]
+--					Add share of benefit under doc. HKIC, EC, HKBC, CCIC, ROP140
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:	    Chris YIM
+-- Modified date:	05 Jan 2021
+-- CR No.:			CRE20-XXX (Immu record)
+-- Description:	  	Add Column - [VoucherTransaction].[High_Risk]
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -83,8 +98,8 @@ GO
 --					DocCode, Identity For SP/VU Transaction Detail Display
 -- =============================================
 CREATE PROCEDURE [dbo].[proc_TransactionDetail_vaccine_get_byDocCodeDocID] 
-	@Doc_Code			char(20),
-	@identity			varchar(20)
+	@Doc_Code			CHAR(20),
+	@identity			VARCHAR(20)
 WITH RECOMPILE
 AS BEGIN
 
@@ -93,18 +108,20 @@ AS BEGIN
 -- =============================================
 
 DECLARE @blnOtherDoc_Code tinyint
+DECLARE @blnWithVoucherAcct tinyint
 
 DECLARE @OtherDoc_Code table (
-	Doc_Code	char(20)
+	Doc_Code	CHAR(20)
 )
 
 DECLARE @tmpVoucherAcct Table
 (
-	Voucher_Acc_ID char(15),
-	Encrypt_Field2 varbinary(100),
-	DOB datetime,
-	Exact_DOB char(1),
-	Sex char(1)
+	Voucher_Acc_ID	CHAR(15),
+	Encrypt_Field2	VARBINARY(100),
+	DOB				DATETIME,
+	Exact_DOB		CHAR(1),
+	Sex				CHAR(1),
+	Doc_Code		CHAR(20)
 )
 
 DECLARE @tmpTempVoucherAcct Table
@@ -173,7 +190,9 @@ declare @result table
 	[DOB] datetime,
 	[Exact_DOB] char(1),
 	[Sex] char(1),
-	[High_Risk] char(1)
+	[High_Risk] char(1),
+	[Vaccine_Brand] VARCHAR(50),
+	[Vaccine_Lot_No] VARCHAR(50)
 )
 
 -- =============================================
@@ -184,18 +203,76 @@ declare @result table
 -- =============================================
 	
 SET @blnOtherDoc_Code = 0 
+SET @blnWithVoucherAcct = 0 
 
 IF LTRIM(RTRIM(@Doc_Code)) = 'HKIC' 
 BEGIN
 	Set @blnOtherDoc_Code = 1
 	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKBC')
 	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('EC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('CCIC')               
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('ROP140')
 END
 
-IF LTRIM(RTRIM(@Doc_Code)) = 'HKBC' OR LTRIM(RTRIM(@Doc_Code)) = 'EC'
+IF LTRIM(RTRIM(@Doc_Code)) = 'HKBC'
 BEGIN
 	Set @blnOtherDoc_Code = 1
 	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKIC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('EC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('CCIC')               
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('ROP140')
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'EC'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKIC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKBC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('CCIC')               
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('ROP140')
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'CCIC'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKIC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKBC')   
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('EC')           
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('ROP140')
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'ROP140'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKIC')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKBC')   
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('EC')           
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('CCIC')
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'VISA'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('PASS')
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'HKP'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('PASS') 
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'PASS'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKP')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('VISA')
+END
+
+IF LTRIM(RTRIM(@Doc_Code)) = 'OC'
+BEGIN
+	Set @blnOtherDoc_Code = 1
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('PASS')
 END
 
 -- =============================================
@@ -212,7 +289,8 @@ EXEC [proc_SymmetricKey_open]
 			[Encrypt_Field2],
 			[DOB],
 			[Exact_DOB],
-			[Sex]
+			[Sex],
+			[Doc_Code]
 	FROM	[PersonalInformation]
 	WHERE	Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @identity) AND
 			(
@@ -226,13 +304,16 @@ EXEC [proc_SymmetricKey_open]
 				[Encrypt_Field2],
 				[DOB],
 				[Exact_DOB],
-				[Sex]
+				[Sex],
+				[Doc_Code]
 		FROM	[PersonalInformation]
 		WHERE	Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @identity) AND
 				(
 					@blnOtherDoc_Code = 1 AND [Doc_Code] IN (SELECT Doc_Code FROM @OtherDoc_Code)
 				)
 	END
+	ELSE
+		SET @blnWithVoucherAcct = 1
 	
 
 	--SELECT * FROM @tmpVoucherAcct
@@ -297,9 +378,11 @@ EXEC [proc_SymmetricKey_close]
 		tmp.[Exact_DOB],
 		tmp.[Sex]
 	FROM
-		@tmpVoucherAcct tmp INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
-			ON VT.[Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]
-				AND VT.[Invalid_Acc_ID] IS NULL
+		@tmpVoucherAcct tmp 
+			INNER JOIN [VoucherTransaction] VT WITH(NOLOCK)
+				ON VT.[Voucher_Acc_ID] = tmp.[Voucher_Acc_ID]
+					AND VT.[Invalid_Acc_ID] IS NULL
+					AND (@blnWithVoucherAcct = 1 OR VT.[Doc_Code]= tmp.[Doc_Code])
 	WHERE
 		--VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'W' AND VT.[Record_Status] <> 'D' 
 		NOT EXISTS(SELECT 1 FROM [VoucherTransaction] WITH(NOLOCK) WHERE [Record_Status] IN ('I','D') AND VT.Transaction_ID = Transaction_ID)
@@ -355,6 +438,7 @@ EXEC [proc_SymmetricKey_close]
 	WHERE
 		VT.[Record_Status] <> 'I' AND VT.[Record_Status] <> 'D'   
 		
+	--SELECT * FROM @tmpVoucherTransaction
 				
 	insert into @result
 	(
@@ -379,7 +463,9 @@ EXEC [proc_SymmetricKey_close]
 		[DOB],
 		[Exact_DOB],
 		[Sex],
-		[High_Risk]
+		[High_Risk],
+		[Vaccine_Brand],
+		[Vaccine_Lot_No]
 	)
 	SELECT
 		--Distinct
@@ -404,7 +490,9 @@ EXEC [proc_SymmetricKey_close]
 		tmp.[DOB],
 		tmp.[Exact_DOB],
 		tmp.[Sex],
-		VT.[High_Risk]
+		VT.[High_Risk],
+		TAF_Brand.AdditionalFieldValueCode AS [Vaccine_Brand],
+		TAF_LotNo.AdditionalFieldValueCode AS [Vaccine_Lot_No]
 	FROM
 		@tmpVoucherTransaction tmp 
 			INNER JOIN [TransactionDetail] TD  WITH(NOLOCK)
@@ -413,8 +501,11 @@ EXEC [proc_SymmetricKey_close]
 				ON TD.[Transaction_ID] = VT.[Transaction_ID]	
 			INNER JOIN [Practice] P
 				ON VT.[SP_ID] = P.[SP_ID] AND VT.[Practice_Display_Seq] = P.[Display_Seq]	
-
-					
+			LEFT OUTER JOIN [TransactionAdditionalField] TAF_Brand
+				ON VT.[Transaction_ID] = TAF_Brand.Transaction_ID AND TAF_Brand.AdditionalFieldID = 'VaccineBrand'
+			LEFT OUTER JOIN [TransactionAdditionalField] TAF_LotNo
+				ON VT.[Transaction_ID] = TAF_LotNo.Transaction_ID AND TAF_LotNo.AdditionalFieldID = 'VaccineLotNo'
+				
 	update @Result
 	set [Display_Code] = SC.Display_Code
 	from @Result R, SchemeClaim SC
@@ -437,22 +528,24 @@ EXEC [proc_SymmetricKey_close]
 	update @Result
 	set [Subsidize_Desc] = s.[Vaccine_Code_Desc],
 		[Subsidize_Desc_Chi] = s.[Vaccine_Code_Desc_Chi]
-	from @Result R, (SELECT [Vaccine_Code_Source], [Vaccine_Code_Desc], [Vaccine_Code_Desc_Chi] FROM VaccineCodeMapping WHERE Source_System='EHS') s
+	from @Result R, (SELECT [Vaccine_Code_Source], [Vaccine_Brand_ID_Source], [Vaccine_Code_Desc], [Vaccine_Code_Desc_Chi] FROM VaccineCodeMapping WHERE Source_System='EHS') s
 	where REPLACE(R.Scheme_Code + '|' + STR(R.Scheme_Seq) + '|' + R.Subsidize_Code,' ','') = s.[Vaccine_Code_Source] 
+		AND (s.[Vaccine_Brand_ID_Source] = '' OR s.[Vaccine_Brand_ID_Source] = R.Vaccine_Brand)
 
 
 EXEC [proc_SymmetricKey_open]
 
- select convert(varchar(11), R.[Service_Receive_Dtm], 113) as Service_Receive_Dtm,
+	SELECT
+		CONVERT(VARCHAR(11), R.[Service_Receive_Dtm], 113) AS Service_Receive_Dtm,
 		R.[Display_Code],
 		R.[Scheme_Code],
 		R.[Scheme_Seq],
 		R.[Subsidize_Code],
 		R.[Subsidize_Item_Code],
-		R.[Available_item_Code] as Available_item_Code,
-		R.[Available_item_Desc] as Available_Item_Desc,
-		R.[Available_item_Desc_Chi] as Available_item_Desc_Chi,
-		R.[Available_item_Desc_CN] as Available_item_Desc_CN,
+		R.[Available_item_Code] AS Available_item_Code,
+		R.[Available_item_Desc] AS Available_Item_Desc,
+		R.[Available_item_Desc_Chi] AS Available_item_Desc_Chi,
+		R.[Available_item_Desc_CN] AS Available_item_Desc_CN,
 		R.[Unit],
 		R.[Per_Unit_Value],
 		R.[Total_Amount],
@@ -467,16 +560,29 @@ EXEC [proc_SymmetricKey_open]
 		R.[Transaction_Dtm],
 		R.[Ext_Ref_Status],
 		'' AS [Remark],
-		CONVERT(varchar(40), DecryptByKey(R.[Encrypt_Field2])) AS [Eng_Name],
+		CONVERT(VARCHAR(40), DecryptByKey(R.[Encrypt_Field2])) AS [Eng_Name],
 		R.[DOB],
 		R.[Exact_DOB],
 		R.[Sex],
-		R.[High_Risk]
-		from @result R
-		INNER JOIN SubsidizeItem I
-			ON R.Subsidize_Item_Code = I.Subsidize_Item_Code
-			AND I.Subsidize_Type = 'VACCINE'
-		order by R.[Service_Receive_Dtm]
+		R.[High_Risk],
+		R.[Vaccine_Brand],
+		R.[Vaccine_Lot_No],
+		CBD.Brand_Trade_Name,
+		[Brand_Trade_Name_Chi] = 
+			CASE 
+				WHEN CBD.[Brand_Trade_Name_Chi] IS NULL THEN CBD.[Brand_Trade_Name]
+				WHEN CBD.[Brand_Trade_Name_Chi] = '' THEN CBD.[Brand_Trade_Name]
+				ELSE CBD.[Brand_Trade_Name_Chi]
+			END
+	FROM 
+		@result R
+			INNER JOIN SubsidizeItem I
+				ON R.Subsidize_Item_Code = I.Subsidize_Item_Code
+				AND I.Subsidize_Type = 'VACCINE'
+			LEFT OUTER JOIN COVID19VaccineBrandDetail CBD
+				ON R.[Vaccine_Brand] = CBD.[Brand_ID]
+			
+	ORDER BY R.[Service_Receive_Dtm]
 
 EXEC [proc_SymmetricKey_close]
 	

@@ -232,7 +232,7 @@
 		                                                            <asp:LinkButton ID="lbkAuthorityForPaymentToABankC" runat="server" Text="<%$ Resources:Text, Chinese %>"
 		                                                                OnClientClick="javascript:openNewWin('Doc/AppendixB_CHI.pdf');return false;"></asp:LinkButton></td>
 		                                                    </tr>
-		                                                    <tr>
+		                                                    <tr id="trEHRSSConsentForm" runat="server">
 		                                                        <td valign="top" >
 		                                                            <asp:Label ID="lblEHRSSConsentForm" runat="server" Text="<%$ Resources:Text, EHRSSConsentFom %>"></asp:Label></td>
 		                                                        <td valign="top" align="center">

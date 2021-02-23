@@ -152,6 +152,20 @@ Namespace BLL
             Public Const SESS_HAPatient As String = "SESS_HA_PATIENT"
             ' CRE20-0XX (HA Scheme) [End][Winnie]
 
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Const SESS_ClaimCOVID19 As String = "SESS_CLAIMCOVID19"
+            Public Const SESS_ClaimCOVID19_Booth As String = "SESS_CLAIMCOVID19_BOOTH"
+            Public Const SESS_ClaimCOVID19_Category As String = "SESS_CLAIMCOVID19_CATEGORY"
+            Public Const SESS_ClaimCOVID19_VaccineBrand As String = "SESS_CLAIMCOVID19_VACCINEBRAND"
+            Public Const SESS_ClaimCOVID19_VaccineLotNo As String = "SESS_CLAIMCOVID19_VACCINELOTNO"
+            Public Const SESS_ClaimCOVID19_Dose As String = "SESS_CLAIMCOVID19_DOSE"
+            Public Const SESS_ClaimCOVID19_VaccineRecord As String = "SESS_CLAIMCOVID19_VACCINERECORD" ' CRE20-0022 (Immu record) [End][Martin]
+            Public Const SESS_ClaimFunctCode As String = "SESS_CLAIM_FUNCTCODE" 'nichole
+            Public Const SESS_ClaimCOVID19_SchemeSelected As String = "SESS_CLAIMCOVID19_SCHEMESELECTED"
+            Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         End Class
 
         Public Function Language() As String
@@ -755,6 +769,18 @@ Namespace BLL
         Public Sub PracticeDisplayListRemoveFromSession()
             HttpContext.Current.Session.Remove(SessionName.SESS_SelectedPracticeDsiplayList)
         End Sub
+
+        Public Sub PracticeDisplayListSaveToSession(ByVal udtPracticeDisplay As PracticeDisplayModelCollection, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SelectedPracticeDsiplayList)) = udtPracticeDisplay
+        End Sub
+
+        Public Function PracticeDisplayListGetFromSession(ByVal strFunctionCode As String) As PracticeDisplayModelCollection
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SelectedPracticeDsiplayList)), PracticeDisplayModelCollection)
+        End Function
+
+        Public Sub PracticeDisplayListRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SelectedPracticeDsiplayList))
+        End Sub
 #End Region
 
 #Region "Selected Practice Display"
@@ -1158,9 +1184,9 @@ Namespace BLL
         Public Sub ClearVREClaim()
             FromVaccinationRecordEnquiryRemoveFromSession()
             VREEHSAccountRemoveFromSession()
-            SmartIDContentRemoveFormSession(FunctCode.FUNT020201)
+            SmartIDContentRemoveFormSession(ClaimFunctCodeGetFromSession)  'CRE20-0xx Immue record [Nichole]
             SmartIDContentRemoveFormSession(FunctCode.FUNT020801)
-            EHSAccountRemoveFromSession(FunctCode.FUNT020201)
+            EHSAccountRemoveFromSession(ClaimFunctCodeGetFromSession) 'CRE20-0xx Immue record [Nichole]
             EHSAccountRemoveFromSession(FunctCode.FUNT020801)
             ExtRefStatusRemoveFromSession()
         End Sub
@@ -1261,6 +1287,189 @@ Namespace BLL
         End Sub
 #End Region
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19"
+
+#Region "Claim COVID-19 Selected"
+        Public Sub ClaimCOVID19SaveToSession(ByVal blnClaim As Boolean)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19) = blnClaim
+        End Sub
+
+        Public Function ClaimCOVID19GetFromSession() As Boolean
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19), Boolean)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19RemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19)
+        End Sub
+#End Region
+
+
+#Region "Funct Code Setting"
+        'CRE20-0xx Immu record Covid-19 set funct code [Start][Nichole]
+        Public Sub ClaimFunctCodeSaveToSession(ByVal strFunctCode As String)
+            HttpContext.Current.Session(SessionName.SESS_ClaimFunctCode) = strFunctCode
+        End Sub
+
+        Public Function ClaimFunctCodeGetFromSession() As String
+            If HttpContext.Current.Session(SessionName.SESS_ClaimFunctCode) Is Nothing Then
+                Return Common.Component.FunctCode.FUNT020201
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimFunctCode), String)
+            End If
+        End Function
+
+        Public Sub ClaimFunctCodeRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimFunctCode)
+        End Sub
+        'CRE20-0xx Immu record Covid-19 set funct code [End][Nichole]
+#End Region
+
+#Region "Claim COVID-19 - Booth"
+
+        Public Sub ClaimCOVID19BoothSaveToSession(ByVal strBooth As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Booth)) = strBooth
+        End Sub
+
+        Public Function ClaimCOVID19BoothGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Booth)), String)
+        End Function
+
+        Public Sub ClaimCOVID19BoothRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Booth))
+        End Sub
+
+#End Region
+
+#Region "Claim COVID-19 - Category"
+
+        Public Sub ClaimCOVID19CategorySaveToSession(ByVal strCategory As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Category)) = strCategory
+        End Sub
+
+        Public Function ClaimCOVID19CategoryGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Category)), String)
+        End Function
+
+        Public Sub ClaimCOVID19CategoryRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Category))
+        End Sub
+
+#End Region
+
+#Region "Claim COVID-19 - Vaccine Brand"
+
+        Public Sub ClaimCOVID19VaccineBrandSaveToSession(ByVal strVaccineBrand As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_VaccineBrand)) = strVaccineBrand
+        End Sub
+
+        Public Function ClaimCOVID19VaccineBrandGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_VaccineBrand)), String)
+        End Function
+
+        Public Sub ClaimCOVID19VaccineBrandRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_VaccineBrand))
+        End Sub
+
+#End Region
+
+#Region "Claim COVID-19 - Vaccine Lot No."
+
+        Public Sub ClaimCOVID19VaccineLotNoSaveToSession(ByVal strVaccineLotNo As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_VaccineLotNo)) = strVaccineLotNo
+        End Sub
+
+        Public Function ClaimCOVID19VaccineLotNoGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_VaccineLotNo)), String)
+        End Function
+
+        Public Sub ClaimCOVID19VaccineLotNoRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_VaccineLotNo))
+        End Sub
+
+#End Region
+
+#Region "Claim COVID-19 - Dose"
+
+        Public Sub ClaimCOVID19DoseSaveToSession(ByVal strDose As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Dose)) = strDose
+        End Sub
+
+        Public Function ClaimCOVID19DoseGetFromSession(ByVal strFunctionCode As String) As String
+            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Dose))
+        End Function
+
+        Public Sub ClaimCOVID19DoseRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Dose))
+        End Sub
+
+#End Region
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Martin]
+#Region "Claim COVID-19 - Vaccine Record."
+
+        Public Sub ClaimCOVID19VaccineRecordSaveToSession(ByVal dtVaccineRecord As DataTable)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_VaccineRecord) = dtVaccineRecord
+        End Sub
+
+        Public Function ClaimCOVID19VaccineRecordGetFromSession() As DataTable
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_VaccineRecord) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19_VaccineRecord), DataTable)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19VaccineRecordRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19_VaccineRecord)
+        End Sub
+#End Region
+        ' CRE20-0022 (Immu record) [End][Martin]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19 - Scheme Selected"
+        Public Sub ClaimCOVID19SchemeSelectedSaveToSession(ByVal udtSchemeClaim As SchemeClaimModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SchemeSelected)) = udtSchemeClaim
+        End Sub
+
+        Public Function ClaimCOVID19SchemeSelectedGetFromSession(ByVal strFunctionCode As String) As SchemeClaimModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SchemeSelected)), SchemeClaimModel)
+        End Function
+
+        Public Sub ClaimCOVID19SchemeSelectedRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SchemeSelected))
+        End Sub
+
+#End Region
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19 - Vaccination Card"
+        Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtEHSTransaction As TransactionDetailVaccineModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtEHSTransaction
+        End Sub
+
+        Public Function ClaimCOVID19VaccinationCardGetFromSession(ByVal strFunctionCode As String) As TransactionDetailVaccineModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)), TransactionDetailVaccineModel)
+        End Function
+
+        Public Sub ClaimCOVID19VaccinationCardRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard))
+        End Sub
+
+#End Region
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+#End Region
 
 
     End Class

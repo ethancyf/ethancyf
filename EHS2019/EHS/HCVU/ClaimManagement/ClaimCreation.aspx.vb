@@ -1890,6 +1890,18 @@ Partial Public Class ClaimCreation
                 Dim udcInputPPP As ucInputPPP = Me.udInputEHSClaim.GetPPPControl()
                 strCategory = udcInputPPP.Category
 
+            Case SchemeClaimModel.EnumControlType.COVID19
+                Dim udcInputCOVID19 As ucInputCOVID19 = Me.udInputEHSClaim.GetCOVID19Control()
+                strCategory = udcInputCOVID19.Category
+
+                'Case SchemeClaimModel.EnumControlType.COVID19CBD
+                '    Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udInputEHSClaim.GetCOVID19CBDControl()
+                '    strCategory = udcInputCOVID19CBD.Category
+
+                'Case SchemeClaimModel.EnumControlType.COVID19RVP
+                '    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udInputEHSClaim.GetCOVID19RVPControl()
+                '    strCategory = udcInputCOVID19RVP.Category
+
         End Select
         ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
@@ -1903,17 +1915,11 @@ Partial Public Class ClaimCreation
             Dim udtEHSAccount As EHSAccount.EHSAccountModel = udtEHSAccountMaintBLL.EHSAccountGetFromSession(FunctionCode)
             Dim udtPersonalInformation As EHSAccount.EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
             Dim udtClaimCategorys As ClaimCategory.ClaimCategoryModelCollection
-
-            'udtClaimCategorys = Me._udtClaimCategoryBLL.getDistinctCategoryByScheme(udtSchemeClaim, udtPersonalInformation.DOB, udtPersonalInformation.ExactDOB, dtmServiceDate)
-
             Dim udtClaimCategoryBLL As New ClaimCategory.ClaimCategoryBLL
-            'udtClaimCategorys = udtClaimCategoryBLL.getDistinctCategoryByScheme(udtSchemeClaim, udtPersonalInformation.DOB, udtPersonalInformation.ExactDOB, dtmServiceDate)
+
             udtClaimCategorys = udtClaimCategoryBLL.getDistinctCategoryBySchemeOnly(udtSchemeClaim)
 
-            ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
-            ' -----------------------------------------------------------------------------------------
             Me.udtSessionHandlerBLL.ClaimCategorySaveToSession(udtClaimCategorys.FilterByCategoryCode(udtSchemeClaim.SchemeCode, strCategory), FunctionCode)
-            ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]
             Me.udtSessionHandlerBLL.EHSClaimVaccineRemoveFromSession(FunctionCode)
             Me.udInputEHSClaim.ResetSchemeType()
 
@@ -2133,6 +2139,17 @@ Partial Public Class ClaimCreation
                     blnIsValid = Me.SSSCMCValidation(udtEHSTransaction)
                     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                Case SchemeClaimModel.EnumControlType.COVID19
+                    blnIsValid = COVID19Validation(udtEHSTransaction)
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+                Case SchemeClaimModel.EnumControlType.COVID19CBD
+                    blnIsValid = COVID19CBDValidation(udtEHSTransaction)
+
+                Case SchemeClaimModel.EnumControlType.COVID19RVP
+                    blnIsValid = COVID19RVPValidation(udtEHSTransaction)
             End Select
 
         End If
@@ -2149,7 +2166,8 @@ Partial Public Class ClaimCreation
 
             Case SchemeClaimModel.EnumControlType.CIVSS, SchemeClaimModel.EnumControlType.EVSS, SchemeClaimModel.EnumControlType.HSIVSS, _
                  SchemeClaimModel.EnumControlType.RVP, SchemeClaimModel.EnumControlType.PIDVSS, SchemeClaimModel.EnumControlType.VSS, _
-                 SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP
+                 SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP, SchemeClaimModel.EnumControlType.COVID19, _
+                 SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
 
                 Me.AuditLogVaccination(udtAuditLogEntry, udtEHSClaimVaccine, dtmServiceDate, udtEHSTransaction)
 
@@ -2239,21 +2257,19 @@ Partial Public Class ClaimCreation
                 '-------------------
                 ' Voucher Type
                 '-------------------
-                ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-                ' ----------------------------------------------------------
                 udtEHSTransaction.PerVoucherValue = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeFeeList.Filter(SubsidizeFeeModel.SubsidizeFeeTypeClass.SubsidizeFeeTypeVoucher, dtmServiceDate).SubsidizeFee
-                ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+
                 Me.udtEHSClaimBLL.ConstructEHSTransactionDetails(udtEHSTransaction, udtEHSAccount, udtHCVUUser.UserID)
             End If
 
             udtValidationResults = udtCommonEHSClaimBLL.ValidateClaimCreation(EHSClaim.EHSClaimBLL.EHSClaimBLL.ClaimAction.HCVUClaim, udtEHSTransaction, udtHAVaccineResult, udtDHVaccineResult, udtAuditLogEntry)
-            ' CRE18-001(CIMS Vaccination Sharing) [End][Chris YIM]
 
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
+            'Handle blocking message
             udtBlockMessage = udtValidationResults.BlockResults
             For Each udtBlock As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtBlockMessage.RuleResults
-                If Not IsNothing(udtBlock.MessageVariableNameArrayList) And Not IsNothing(udtBlock.MessageVariableValueArrayList) Then
+                If Not IsNothing(udtBlock.MessageVariableNameArrayList) AndAlso Not IsNothing(udtBlock.MessageVariableValueArrayList) AndAlso _
+                   udtBlock.MessageVariableNameArrayList.Count > 0 AndAlso udtBlock.MessageVariableValueArrayList.Count > 0 Then
+
                     Me.udcMessageBox.AddMessage(udtBlock.ErrorMessage, udtBlock.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtBlock.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
                 Else
                     Me.udcMessageBox.AddMessage(udtBlock.ErrorMessage)
@@ -2262,12 +2278,15 @@ Partial Public Class ClaimCreation
                 blnIsValid = False
             Next
 
+            'Handle warning message
             If blnIsValid Then
                 udtWarningMessage = udtValidationResults.WarningResults
                 If udtWarningMessage.RuleResults.Count > 0 Then
                     udtEHSTransaction.WarningMessage = udtWarningMessage
                     For Each udtWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtWarningMessage.RuleResults
-                        If Not IsNothing(udtWarning.MessageVariableNameArrayList) And Not IsNothing(udtWarning.MessageVariableValueArrayList) Then
+                        If Not IsNothing(udtWarning.MessageVariableNameArrayList) AndAlso Not IsNothing(udtWarning.MessageVariableValueArrayList) AndAlso _
+                           udtWarning.MessageVariableNameArrayList.Count > 0 AndAlso udtWarning.MessageVariableValueArrayList.Count > 0 Then
+
                             Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage, udtWarning.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtWarning.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
                         Else
                             Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage)
@@ -2277,7 +2296,18 @@ Partial Public Class ClaimCreation
                     Next
                 End If
             End If
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
+
+
+            'If udtClaimRuleResult IsNot Nothing Then
+            '    Select Case (sm.FunctionCode.ToString + "-" + sm.SeverityCode.ToString + "-" + sm.MessageCode.ToString)
+            '        Case "990000-E-00461"
+            '            Me.udcMsgBoxErr.AddMessage(sm, "%s", udtClaimRuleResult.ResultParam("%DaysApart"))
+            '        Case Else
+            '            Me.udcMsgBoxErr.AddMessage(sm)
+            '    End Select
+            'Else
+            '    Me.udcMsgBoxErr.AddMessage(sm)
+            'End If
 
         End If
 
@@ -3078,22 +3108,17 @@ Partial Public Class ClaimCreation
                 Me.ModalPopupExtenderRVPHomeListSearch.Hide()
             End If
 
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             'School List
             If Not IsNothing(Session(SESS_SearchSchoolList)) AndAlso CBool(Session(SESS_SearchSchoolList)) Then
                 Me.ModalPopupExtenderSchoolListSearch.Show()
             Else
                 Me.ModalPopupExtenderSchoolListSearch.Hide()
             End If
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
             If Not strSchemeCode.Equals(String.Empty) AndAlso _
                 Not udtSchemeClaim Is Nothing AndAlso _
                 udtSchemeClaim.SubsidizeGroupClaimList.Filter(dtmServiceDate).Count > 0 Then
 
-                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 Select Case New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(strSchemeCode)
                     Case SchemeClaimModel.EnumControlType.VOUCHER, SchemeClaimModel.EnumControlType.VOUCHERCHINA
                         'Get Voucher Info.
@@ -3118,7 +3143,9 @@ Partial Public Class ClaimCreation
 
                     Case SchemeClaimModel.EnumControlType.CIVSS, SchemeClaimModel.EnumControlType.EVSS, SchemeClaimModel.EnumControlType.HSIVSS, _
                          SchemeClaimModel.EnumControlType.RVP, SchemeClaimModel.EnumControlType.PIDVSS, SchemeClaimModel.EnumControlType.VSS, _
-                         SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP
+                         SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP, SchemeClaimModel.EnumControlType.COVID19, _
+                         SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+
 
                         Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel = Nothing
                         Dim blnNeedCreateVaccine As Boolean = False
@@ -3135,7 +3162,10 @@ Partial Public Class ClaimCreation
                                  SchemeClaimModel.EnumControlType.RVP, _
                                  SchemeClaimModel.EnumControlType.VSS, _
                                  SchemeClaimModel.EnumControlType.ENHVSSO, _
-                                 SchemeClaimModel.EnumControlType.PPP
+                                 SchemeClaimModel.EnumControlType.PPP, _
+                                 SchemeClaimModel.EnumControlType.COVID19, _
+                                 SchemeClaimModel.EnumControlType.COVID19CBD, _
+                                 SchemeClaimModel.EnumControlType.COVID19RVP
 
                                 '--------------------
                                 ' With Category
@@ -3225,7 +3255,11 @@ Partial Public Class ClaimCreation
                                 '--------------------------------------
                                 If udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.VSS) OrElse _
                                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.ENHVSSO) OrElse _
-                                   udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.PPP) Then
+                                   udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.PPP) OrElse _
+                                   udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19) OrElse _
+                                   udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19CBD) OrElse _
+                                   udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19RVP) _
+                                   Then
 
                                     If Not udtClaimCategory Is Nothing AndAlso udtClaimCategory.SchemeCode = udtSchemeClaim.SchemeCode.Trim() Then
                                         'Category has been selected
@@ -3365,10 +3399,13 @@ Partial Public Class ClaimCreation
                             blnValid = False
                         End If
 
-                        ' Check Patient whether has available subsidy
-                        If Not udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList) > 0 Then
-                            blnValid = False
-                        End If
+                        ' INT20-00XX (Allow back-office claim in scheme SSSCMC when zero balance) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        '' Check Patient whether has available subsidy
+                        'If Not udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtPersonalInformation, udtSchemeClaim.SubsidizeGroupClaimList) > 0 Then
+                        '    blnValid = False
+                        'End If
+                        ' INT20-00XX (Allow back-office claim in scheme SSSCMC when zero balance) [End][Chris YIM]
 
                         If blnValid Then
                             blnNotAvailableForClaim = False
@@ -3409,7 +3446,8 @@ Partial Public Class ClaimCreation
 
                 Select Case udtSchemeClaim.ControlType
                     Case SchemeClaimModel.EnumControlType.HSIVSS, SchemeClaimModel.EnumControlType.RVP, SchemeClaimModel.EnumControlType.VSS, _
-                         SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP
+                         SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP, SchemeClaimModel.EnumControlType.COVID19,
+                         SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
 
                         If udtClaimCategory Is Nothing OrElse blnNotAvailableForClaim OrElse blnNoCategory Then
                             Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, False)
@@ -3425,7 +3463,6 @@ Partial Public Class ClaimCreation
                         End If
 
                 End Select
-                ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
             End If
         End If
@@ -4354,23 +4391,26 @@ Partial Public Class ClaimCreation
         '    End If
         'End If
 
-        If isValid Then
-            ' --------------------------------------------------------------
-            ' Check Benefit:
-            ' --------------------------------------------------------------
-            Dim udtEHSTransactionBLL As New EHSTransactionBLL
+        ' INT20-00XX (Allow back-office claim in scheme SSSCMC when zero balance) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'If isValid Then
+        '    ' --------------------------------------------------------------
+        '    ' Check Benefit:
+        '    ' --------------------------------------------------------------
+        '    Dim udtEHSTransactionBLL As New EHSTransactionBLL
 
-            decAvailableAmount = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+        '    decAvailableAmount = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
 
-            If decAvailableAmount > 0 AndAlso decAvailableAmount >= udcInputSSSCMC.UsedRMB Then
-                ' Subsidies for SSSCMC is available
-            Else
-                ' No available subsidies for SSSCMC
-                isValid = False
-                Me.udcMessageBox.AddMessage(New SystemMessage("990000", "E", "00107"))
-            End If
+        '    If decAvailableAmount > 0 AndAlso decAvailableAmount >= udcInputSSSCMC.UsedRMB Then
+        '        ' Subsidies for SSSCMC is available
+        '    Else
+        '        ' No available subsidies for SSSCMC
+        '        isValid = False
+        '        Me.udcMessageBox.AddMessage(New SystemMessage("990000", "E", "00107"))
+        '    End If
 
-        End If
+        'End If
+        ' INT20-00XX (Allow back-office claim in scheme SSSCMC when zero balance) [End][Chris YIM]
 
         If isValid Then
             udtEHSTransaction.VoucherBeforeRedeem = Nothing
@@ -4386,6 +4426,186 @@ Partial Public Class ClaimCreation
         Return isValid
     End Function
     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function COVID19Validation(ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
+        ' ---------------------------------------------
+        ' Init
+        '----------------------------------------------
+        Dim isValid As Boolean = False
+
+        Dim udcInputCOVID19 As ucInputCOVID19 = Me.udInputEHSClaim.GetCOVID19Control
+        Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel = Me.udtSessionHandlerBLL.EHSClaimVaccineGetFromSession(FunctionCode)
+
+        udcInputCOVID19.SetDoseErrorImage(False)
+
+        ' -----------------------------------------------
+        ' UI Input Validation
+        '------------------------------------------------
+        Dim isValidDetail, isValidVaccineSelection As Boolean
+
+        'Claim Detial Part & Vaccine Part
+        If Not udcInputCOVID19.Validate(True, Me.udcMessageBox) Then
+            isValidDetail = False
+        Else
+            isValidDetail = True
+        End If
+
+        'Select Vaccine Part
+        udtEHSClaimVaccine = udcInputCOVID19.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
+        Me.udtSessionHandlerBLL.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine, FunctionCode)
+
+        Dim udtSMList As Dictionary(Of SystemMessage, List(Of String())) = Nothing
+        isValidVaccineSelection = udtEHSClaimVaccine.chkVaccineSelection(udtEHSClaimVaccine, udtSMList)
+        If Not isValidVaccineSelection Then
+            udcInputCOVID19.SetDoseErrorImage(True)
+        End If
+
+        'Combine Result
+        isValid = isValidDetail And isValidVaccineSelection
+
+        If Not isValid Then
+            For Each kvp As KeyValuePair(Of SystemMessage, List(Of String())) In udtSMList
+                If IsNothing(kvp.Value) Then
+                    Me.udcMessageBox.AddMessage(kvp.Key)
+                Else
+                    Dim s As List(Of String())
+                    s = kvp.Value
+                    Me.udcMessageBox.AddMessage(kvp.Key, s(0), s(1))
+                End If
+
+            Next
+
+        End If
+
+        If isValid Then
+            udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
+        End If
+
+        Return isValid
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function COVID19CBDValidation(ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
+        ' ---------------------------------------------
+        ' Init
+        '----------------------------------------------
+        Dim isValid As Boolean = False
+
+        Dim udcInputCOVID19 As ucInputCOVID19 = Me.udInputEHSClaim.GetCOVID19Control
+        Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel = Me.udtSessionHandlerBLL.EHSClaimVaccineGetFromSession(FunctionCode)
+
+        udcInputCOVID19.SetDoseErrorImage(False)
+
+        ' -----------------------------------------------
+        ' UI Input Validation
+        '------------------------------------------------
+        Dim isValidDetail, isValidVaccineSelection As Boolean
+
+        'Claim Detial Part & Vaccine Part
+        If Not udcInputCOVID19.Validate(True, Me.udcMessageBox) Then
+            isValidDetail = False
+        Else
+            isValidDetail = True
+        End If
+
+        'Select Vaccine Part
+        udtEHSClaimVaccine = udcInputCOVID19.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
+        Me.udtSessionHandlerBLL.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine, FunctionCode)
+
+        Dim udtSMList As Dictionary(Of SystemMessage, List(Of String())) = Nothing
+        isValidVaccineSelection = udtEHSClaimVaccine.chkVaccineSelection(udtEHSClaimVaccine, udtSMList)
+        If Not isValidVaccineSelection Then
+            udcInputCOVID19.SetDoseErrorImage(True)
+        End If
+
+        'Combine Result
+        isValid = isValidDetail And isValidVaccineSelection
+
+        If Not isValid Then
+            For Each kvp As KeyValuePair(Of SystemMessage, List(Of String())) In udtSMList
+                If IsNothing(kvp.Value) Then
+                    Me.udcMessageBox.AddMessage(kvp.Key)
+                Else
+                    Dim s As List(Of String())
+                    s = kvp.Value
+                    Me.udcMessageBox.AddMessage(kvp.Key, s(0), s(1))
+                End If
+
+            Next
+
+        End If
+
+        If isValid Then
+            udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
+        End If
+
+        Return isValid
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function COVID19RVPValidation(ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
+        ' ---------------------------------------------
+        ' Init
+        '----------------------------------------------
+        Dim isValid As Boolean = False
+
+        Dim udcInputCOVID19 As ucInputCOVID19 = Me.udInputEHSClaim.GetCOVID19Control
+        Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel = Me.udtSessionHandlerBLL.EHSClaimVaccineGetFromSession(FunctionCode)
+
+        udcInputCOVID19.SetDoseErrorImage(False)
+
+        ' -----------------------------------------------
+        ' UI Input Validation
+        '------------------------------------------------
+        Dim isValidDetail, isValidVaccineSelection As Boolean
+
+        'Claim Detial Part & Vaccine Part
+        If Not udcInputCOVID19.Validate(True, Me.udcMessageBox) Then
+            isValidDetail = False
+        Else
+            isValidDetail = True
+        End If
+
+        'Select Vaccine Part
+        udtEHSClaimVaccine = udcInputCOVID19.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
+        Me.udtSessionHandlerBLL.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine, FunctionCode)
+
+        Dim udtSMList As Dictionary(Of SystemMessage, List(Of String())) = Nothing
+        isValidVaccineSelection = udtEHSClaimVaccine.chkVaccineSelection(udtEHSClaimVaccine, udtSMList)
+        If Not isValidVaccineSelection Then
+            udcInputCOVID19.SetDoseErrorImage(True)
+        End If
+
+        'Combine Result
+        isValid = isValidDetail And isValidVaccineSelection
+
+        If Not isValid Then
+            For Each kvp As KeyValuePair(Of SystemMessage, List(Of String())) In udtSMList
+                If IsNothing(kvp.Value) Then
+                    Me.udcMessageBox.AddMessage(kvp.Key)
+                Else
+                    Dim s As List(Of String())
+                    s = kvp.Value
+                    Me.udcMessageBox.AddMessage(kvp.Key, s(0), s(1))
+                End If
+
+            Next
+
+        End If
+
+        If isValid Then
+            udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
+        End If
+
+        Return isValid
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
 #End Region
 

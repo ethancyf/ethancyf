@@ -72,31 +72,46 @@ Namespace Component.HATransaction
             End Get
         End Property
 
-        Private _bForEnquiry As String
+        Private _blnForEnquiry As Boolean
         Public ReadOnly Property ForEnquiry() As Boolean
             Get
-                Return _bForEnquiry
+                Return _blnForEnquiry
             End Get
         End Property
 
-        Private _bForBar As String
+        Private _blnForBar As Boolean
         Public ReadOnly Property ForBar() As Boolean
             Get
-                Return _bForBar
+                Return _blnForBar
             End Get
         End Property
 
-        Private _bForDisplay As String
+        Private _blnForDisplay As Boolean
         Public ReadOnly Property ForDisplay() As Boolean
             Get
-                Return _bForDisplay
+                Return _blnForDisplay
+            End Get
+        End Property
+
+        Private _strVaccineBrandIDSource As String
+        Public ReadOnly Property VaccineBrandIDSource() As String
+            Get
+                Return _strVaccineBrandIDSource
+            End Get
+        End Property
+
+        Private _strVaccineBrandIDTarget As String
+        Public ReadOnly Property VaccineBrandIDTarget() As String
+            Get
+                Return _strVaccineBrandIDTarget
             End Get
         End Property
 
         Public Sub New(ByVal strSourceSystem As String, ByVal strTargetSystem As String, _
                         ByVal strVaccineCodeSource As String, ByVal strVaccineCodeTarget As String, ByVal strVaccineCodeCommon As String, _
                         ByVal strVaccineCodeDesc As String, ByVal strVaccineCodeDescChinese As String, _
-                        ByVal strForEnquiry As String, ByVal strForBar As String, ByVal strForDisplay As String)
+                        ByVal strForEnquiry As String, ByVal strForBar As String, ByVal strForDisplay As String, _
+                        ByVal strVaccineBrandIDSource As String, ByVal strVaccineBrandIDTarget As String)
             _strSourceSystem = strSourceSystem
             _strTargetSystem = strTargetSystem
             _strVaccineCodeSource = strVaccineCodeSource
@@ -104,9 +119,11 @@ Namespace Component.HATransaction
             _strVaccineCodeCommon = strVaccineCodeCommon
             _strVaccineCodeDesc = strVaccineCodeDesc
             _strVaccineCodeDescChinese = strVaccineCodeDescChinese
-            _bForEnquiry = IIf(strForEnquiry = YesNoClass.Y, True, False)
-            _bForBar = IIf(strForBar = YesNoClass.Y, True, False)
-            _bForDisplay = IIf(strForDisplay = YesNoClass.Y, True, False)
+            _blnForEnquiry = IIf(strForEnquiry = YesNoClass.Y, True, False)
+            _blnForBar = IIf(strForBar = YesNoClass.Y, True, False)
+            _blnForDisplay = IIf(strForDisplay = YesNoClass.Y, True, False)
+            _strVaccineBrandIDSource = strVaccineBrandIDSource
+            _strVaccineBrandIDTarget = strVaccineBrandIDTarget
         End Sub
     End Class
 End Namespace

@@ -716,6 +716,15 @@ Partial Public Class spProfile
     Protected WithEvents panEHRSS As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''tbHadJoinedEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tbHadJoinedEHRSS As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
     '''lblEHRSSText control.
     '''</summary>
     '''<remarks>

@@ -63,7 +63,7 @@ Partial Public Class ucInputEHSClaim
         ' ---------------------------------------------------------------------------------------------------------
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
-
+        Public Const COVID19 As String = "ucInputEHSClaim_COVID19"
 
     End Class
 
@@ -95,6 +95,7 @@ Partial Public Class ucInputEHSClaim
         ' ---------------------------------------------------------------------------------------------------------
         ucInputEHSClaim_SSSCMC.Visible = False
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+        ucInputEHSClaim_COVID19.Visible = False
 
         Select Case New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(Me._strSchemeCode)
             Case SchemeClaimModel.EnumControlType.VOUCHER
@@ -181,6 +182,27 @@ Partial Public Class ucInputEHSClaim
                 udcInputEHSClaim.ID = EHSClaimControlID.SSSCMC
                 'CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+            Case SchemeClaimModel.EnumControlType.COVID19
+                udcInputEHSClaim = Me.ucInputEHSClaim_COVID19
+
+                Dim udcInputCOVID19 As ucInputCOVID19 = CType(udcInputEHSClaim, ucInputCOVID19)
+                AddHandler udcInputCOVID19.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+                AddHandler udcInputCOVID19.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
+
+                'Case SchemeClaimModel.EnumControlType.COVID19CBD
+                '    udcInputEHSClaim = Me.ucInputEHSClaim_COVID19CBD
+
+                '    Dim udcInputCOVID19CBD As ucInputCOVID19CBD = CType(udcInputEHSClaim, ucInputCOVID19CBD)
+                '    AddHandler udcInputCOVID19CBD.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+                '    AddHandler udcInputCOVID19CBD.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
+
+                'Case SchemeClaimModel.EnumControlType.COVID19RVP
+                '    udcInputEHSClaim = Me.ucInputEHSClaim_COVID19RVP
+
+                '    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = CType(udcInputEHSClaim, ucInputCOVID19RVP)
+                '    AddHandler udcInputCOVID19RVP.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+                '    AddHandler udcInputCOVID19RVP.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
+
         End Select
 
         If Not IsNothing(udcInputEHSClaim) Then
@@ -208,12 +230,13 @@ Partial Public Class ucInputEHSClaim
         ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         Select Case udcControl.ID
-            Case EHSClaimControlID.HCVS, EHSClaimControlID.HCVS_CHINA, EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, EHSClaimControlID.SSSCMC
+            Case EHSClaimControlID.HCVS, EHSClaimControlID.HCVS_CHINA, EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, _
+                 EHSClaimControlID.SSSCMC, EHSClaimControlID.COVID19
                 'Show Input Control
                 udcControl.Visible = True
 
                 Select Case udcControl.ID
-                    Case EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP
+                    Case EHSClaimControlID.VSS, EHSClaimControlID.ENHVSSO, EHSClaimControlID.PPP, EHSClaimControlID.COVID19
                         'For vaccine input setup
                         udcControl.SetupContent(_blnPostbackRebuild)
 
@@ -289,6 +312,16 @@ Partial Public Class ucInputEHSClaim
             ucPPPControl.Visible = False
         End If
         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ' COVID19
+        Dim ucCOVID19Control As ucInputEHSClaimBase = GetCOVID19Control()
+        If Not ucCOVID19Control Is Nothing Then
+            ucCOVID19Control.Clear()
+            ucCOVID19Control.Visible = False
+        End If
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.PlaceHolder1.Controls.Clear()
 
@@ -574,6 +607,17 @@ Partial Public Class ucInputEHSClaim
     End Function
     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetCOVID19Control() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCOVID19)
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Property"

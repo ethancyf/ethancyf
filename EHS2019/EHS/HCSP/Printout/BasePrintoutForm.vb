@@ -47,10 +47,7 @@ Public MustInherit Class BasePrintoutForm
             Case SchemeClaimModel.EVSS
                 rpt = GetReport()
 
-                ' CRE19-006 (DHC) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
             Case SchemeClaimModel.HCVS, SchemeClaimModel.HCVSCHN, SchemeClaimModel.HCVSDHC
-                ' CRE19-006 (DHC) [End][Winnie]
                 rpt = ConsentFormInformationBLL.GetReport(BulidConsentFormInformation(strFunctCode))
 
             Case SchemeClaimModel.HSIVSS
@@ -65,10 +62,15 @@ Public MustInherit Class BasePrintoutForm
             Case SchemeClaimModel.ENHVSSO
                 rpt = GetReport()
 
-                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                ' CRE20-015 (HA Scheme) [Start][Winnie]
             Case SchemeClaimModel.SSSCMC
                 rpt = ConsentFormInformationBLL.GetReport(BulidConsentFormInformation(strFunctCode))
-                ' CRE20-0XX (HA Scheme) [End][Winnie]
+                ' CRE20-015 (HA Scheme) [End][Winnie]
+
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP
+                rpt = GetReport()
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
             Case Else
                 rpt = Nothing

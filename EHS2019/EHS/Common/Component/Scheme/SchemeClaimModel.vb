@@ -53,7 +53,10 @@ Namespace Component.Scheme
         Public Const PPP As String = "PPP"
         Public Const PPPKG As String = "PPPKG"          ' CRE19-001 (VSS 2019) 
         Public Const HCVSDHC As String = "HCVSDHC"      ' CRE19-006 (DHC)
-        Public Const SSSCMC As String = "SSSCMC"      ' CRE20-0XX (HA Scheme)
+        Public Const SSSCMC As String = "SSSCMC"      ' CRE20-015 (HA Scheme)
+        Public Const COVID19CVC As String = "COVID19CVC"      ' CRE20-0022 (Immu record) [Winnie SUEN]
+        Public Const COVID19CBD As String = "COVID19CBD"
+        Public Const COVID19RVP As String = "COVID19RVP"
 
 #End Region
 
@@ -71,10 +74,10 @@ Namespace Component.Scheme
             VSS
             ENHVSSO
             PPP
-            ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             SSSCMC
-            ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+            COVID19     ' CRE20-0022 (Immu record) [Winnie SUEN]
+            COVID19CBD
+            COVID19RVP
         End Enum
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]

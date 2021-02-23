@@ -11,6 +11,10 @@ Namespace Component.ClaimCategory
         Public Const _Category_Name_Chi As String = "Category_Name_Chi"
         Public Const _Category_Name_CN As String = "Category_Name_CN"
         Public Const _IsMedicalCondition As String = "IsMedicalCondition"
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Const _Subsidize_Code As String = "Subsidize_Code"
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
 #Region "Private Member"
 

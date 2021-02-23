@@ -22,6 +22,7 @@ Partial Public Class login
 
     Private Const SESS_ChangePasswordHCVUUser As String = "ChangePasswordHCVUUser"
     Dim udtGeneralFunction As New GeneralFunction
+    Private udcSessionHandler As New SessionHandlerBLL
 
     ' CRE19-026 (HCVS hotline service) [Start][Winnie]
     ' ------------------------------------------------------------------------
@@ -78,6 +79,16 @@ Partial Public Class login
             Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT010001, Me)
             udtAuditLogEntry.WriteLog(LogID.LOG00000, "Login loaded")
             Session("language") = "en-us"
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udcSessionHandler.IDEASComboClientRemoveFormSession()
+
+            If SmartIDHandler.EnableSmartID Then
+                System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboClient", "checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);", True)
+                System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboVersion", "getIDEASComboVersion();", True)
+            End If
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
         End If
 
         ' CRE15-006 Rename of eHS [Start][Lawrence]
@@ -90,6 +101,8 @@ Partial Public Class login
         Select Case Me.SubPlatform
             Case EnumHCVUSubPlatform.CC
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBannerCallCentre").ToString + ")"
+            Case EnumHCVUSubPlatform.VC
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBannerVaccinationCentre").ToString + ")"
             Case Else
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBanner").ToString + ")"
         End Select
@@ -116,6 +129,19 @@ Partial Public Class login
         strPleaseWaitScript.Append("Sys.Application.add_load(ModalUpdProgInitialize);")
 
         ScriptManager.RegisterStartupScript(Page, Me.GetType, "ModalUpdProg", strPleaseWaitScript.ToString, True)
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        SetDefaultButton(Me.txtUsername, Me.ibtnLogin)
+        SetDefaultButton(Me.txtPassword, Me.ibtnLogin)
+        SetDefaultButton(Me.txtPinCode, Me.ibtnLogin)
+
+        If SmartIDHandler.EnableSmartID Then
+            Me.txtUsername.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+            Me.txtPassword.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+            Me.txtPinCode.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+        End If
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         ' Privacy Policy
         Dim strHost As String = Request.Url.ToString.Substring(0, Request.Url.ToString.IndexOf(Request.Path))
@@ -190,6 +216,11 @@ Partial Public Class login
     End Sub
 
     Private Sub ibtnLogin_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnLogin.Click
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        SaveToSessionIdeasComboClientInfo(Me.txtIDEASComboResult.Text, Me.txtIDEASComboVersion.Text)
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         If Not ValidateLoginInput() Then
             ' Empty input, should be block by logic inside "LoginAction"
@@ -433,14 +464,14 @@ Partial Public Class login
                             dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
 
                             For Each udtUserRole As UserRoleModel In udtUserRoleBLL.GetUserRoleCollection(strUserID).Values
-
-                                Dim drRoleType As DataRow() = dtRoleType.Select("(Available_HCVU_SubPlatform = 'ALL' OR Available_HCVU_SubPlatform = '" + Me.SubPlatform.ToString + "')" _
-                                                                                 + "AND Role_Type = " + udtUserRole.RoleType.ToString)
-
-                                If drRoleType.Length > 0 Then
+                                ' CRE20-0XX (Immu record) [Start][Raiman]
+                                ' ------------------------------------------------------------------------
+                                ' change All setting in SubPlatform
+                                If udtLoginBLL.FilterRoleTypeByUser(dtRoleType, Me.SubPlatform, udtUserRole.RoleType).Length > 0 Then
                                     blnValidUser = True
                                     Exit For
                                 End If
+                                ' CRE20-0XX (Immu record) [End][Raiman]
                             Next
 
                             If Not blnValidUser Then
@@ -699,6 +730,38 @@ Partial Public Class login
             Return False
         End If
     End Function
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub SaveToSessionIdeasComboClientInfo(ByVal strResult As String, ByVal strVersion As String)
+        Dim IC4RA_ERRORCODE_SUCCESS As String = "E0000"
+        Dim IC4RA_ERRORCODE_NOCLIENT As String = "E0009"
+
+        'Save Session - IDEAS Combo Client Installation Result
+        Select Case strResult
+            Case IC4RA_ERRORCODE_SUCCESS
+                udcSessionHandler.IDEASComboClientSaveToSession(YesNo.Yes)
+
+            Case IC4RA_ERRORCODE_NOCLIENT
+                udcSessionHandler.IDEASComboClientSaveToSession(YesNo.No)
+
+            Case Else
+                udcSessionHandler.IDEASComboClientSaveToSession(YesNo.No)
+
+        End Select
+
+        'Save Session - IDEAS Combo Version
+        udcSessionHandler.IDEASComboVersionSaveToSession(strVersion)
+
+    End Sub
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    Public Sub SetDefaultButton(ByRef objTextControl As TextBox, ByRef objDefaultButton As ImageButton)
+
+        objTextControl.Attributes.Add("onkeydown", "fnTrapKD(event)")
+
+    End Sub
+
 #End Region
 
 End Class

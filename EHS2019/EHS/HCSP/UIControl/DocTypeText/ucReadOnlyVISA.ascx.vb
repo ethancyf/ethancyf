@@ -81,12 +81,10 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
             'Me.lblReadonlyVISANoText.Text = Me.GetGlobalResourceObject("Text", "VisaRefNo")
             Me.lblReadonlyPassportNoText.Text = Me.GetGlobalResourceObject("Text", "PassportNo")
-
-            If MyBase.SessionHandler().Language = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblReadonlyVISANoText.Text = udtDocTypeModel.DocIdentityDescChi
-            Else
-                Me.lblReadonlyVISANoText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblReadonlyVISANoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Sub
 

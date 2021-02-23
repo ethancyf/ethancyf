@@ -15,6 +15,7 @@ Imports SSODAL
 Imports SSOUtil
 Imports System.Net.Security
 Imports System.Security.Cryptography.X509Certificates
+Imports HCSP.BLL
 
 Partial Public Class MasterPage
     Inherits System.Web.UI.MasterPage
@@ -63,6 +64,36 @@ Partial Public Class MasterPage
     End Property
     ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+    ' CRE20-0022 (Immu record) [Start][Raiman]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property IsClaimCOVID19() As Boolean
+        Get
+
+            If (New SessionHandler).ClaimCOVID19GetFromSession() Then
+                Return True
+            End If
+
+            Return False
+
+        End Get
+    End Property
+    ' CRE20-0022 (Immu record) [End][Raiman]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property ClaimMode() As ClaimMode
+        Get
+            Dim enumClaimMode As ClaimMode = Common.Component.ClaimMode.All
+
+            If (New SessionHandler).ClaimCOVID19GetFromSession() Then
+                enumClaimMode = Common.Component.ClaimMode.COVID19
+            End If
+
+            Return enumClaimMode
+
+        End Get
+    End Property
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "SSO related Sub/Functions"
@@ -442,6 +473,23 @@ Partial Public Class MasterPage
             Dim udtSessionHandler As New BLL.SessionHandler
             udtSessionHandler.ClearVREClaim()
 
+            Dim lnkBtn As LinkButton = CType(e.CommandSource, LinkButton)
+
+            If lnkBtn.Attributes.Item("mode") IsNot Nothing Then
+                Select Case lnkBtn.Attributes.Item("mode").ToString.Trim
+                    Case "1"
+                        udtSessionHandler.ClaimCOVID19SaveToSession(False)
+                        udtSessionHandler.ClaimFunctCodeSaveToSession(FunctCode.FUNT020201)
+                    Case "2"
+                        udtSessionHandler.ClaimCOVID19SaveToSession(True)
+                        udtSessionHandler.ClaimFunctCodeSaveToSession(FunctCode.FUNT020203)
+                    Case Else
+                        udtSessionHandler.ClaimCOVID19SaveToSession(False)
+                        udtSessionHandler.ClaimFunctCodeSaveToSession(FunctCode.FUNT020201)
+                End Select
+
+            End If
+
             '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
             RedirectHandler.ToURL(e.CommandArgument)
@@ -503,13 +551,45 @@ Partial Public Class MasterPage
             End If
 
             If strMenuPage = strCurrentPage And Not strMenuPage.Equals(String.Empty) Then
-                e.Row.CssClass = "menuSelect"
-                'CRE13-021 Upgrade server to 2008 [Start][Karl]
-                'lnkbtnMenuItem.CssClass = "menuSelect"
-                'lnkbtnMenuChiItem.CssClass = "menuSelect"
-                lblbtnMenuItem.CssClass = "menuSelect"
-                lblbtnMenuChiItem.CssClass = "menuSelect"
-                'CRE13-021 Upgrade server to 2008 [End][Karl]                
+
+                'CRE20-0022 (Immu record) [Start][Raiman]
+                If (strMenuPage = "/ehsclaimv1.aspx") Then
+
+                    If (IsClaimCOVID19()) Then
+                        'Display_Seq 11 = COVID-19 Vaccination Programme
+                        If Not dr.Item("Display_Seq") Is DBNull.Value AndAlso dr.Item("Display_Seq") = "11" Then
+                            e.Row.CssClass = "menuSelect"
+                            lblbtnMenuItem.CssClass = "menuSelect"
+                            lblbtnMenuChiItem.CssClass = "menuSelect"
+                        Else
+                            e.Row.CssClass = "menuUnSelect"
+                            lblbtnMenuItem.CssClass = "menuUnSelect"
+                            lblbtnMenuChiItem.CssClass = "menuUnSelect"
+                        End If
+
+                    Else
+                        'Display_Seq 10 = Claim
+                        If Not dr.Item("Display_Seq") Is DBNull.Value AndAlso dr.Item("Display_Seq") = "10" Then
+                            e.Row.CssClass = "menuSelect"
+                            lblbtnMenuItem.CssClass = "menuSelect"
+                            lblbtnMenuChiItem.CssClass = "menuSelect"
+                        Else
+                            e.Row.CssClass = "menuUnSelect"
+                            lblbtnMenuItem.CssClass = "menuUnSelect"
+                            lblbtnMenuChiItem.CssClass = "menuUnSelect"
+                        End If
+                    End If
+
+                Else
+                    e.Row.CssClass = "menuSelect"
+                    'CRE13-021 Upgrade server to 2008 [Start][Karl]
+                    'lnkbtnMenuItem.CssClass = "menuSelect"
+                    'lnkbtnMenuChiItem.CssClass = "menuSelect"
+                    lblbtnMenuItem.CssClass = "menuSelect"
+                    lblbtnMenuChiItem.CssClass = "menuSelect"
+                    'CRE13-021 Upgrade server to 2008 [End][Karl]   
+                End If
+                ' CRE20-0022 (Immu record) [End][Raiman]
             Else
                 e.Row.CssClass = "menuUnSelect"
                 'CRE13-021 Upgrade server to 2008 [Start][Karl]    
@@ -587,7 +667,29 @@ Partial Public Class MasterPage
             If strMenuPage <> strCurrentPage Then
                 e.Row.Attributes.Add("onmouseover", "this.className = 'menuSelect';document.getElementById('" + strMenuItemClientID + "').className = 'menuSelect';")
                 e.Row.Attributes.Add("onmouseout", "this.className = 'menuUnSelect';document.getElementById('" + strMenuItemClientID + "').className = 'menuUnSelect';")
+            Else
+                'CRE20-0022 (Immu record) [Start][Raiman]
+                If (strMenuPage = "/ehsclaimv1.aspx") Then
+                    If (IsClaimCOVID19()) Then
+                        'Display_Seq 11 = COVID-19 Vaccination Programme
+                        If Not dr.Item("Display_Seq") Is DBNull.Value AndAlso Not dr.Item("Display_Seq") = "11" Then
+                            e.Row.Attributes.Add("onmouseover", "this.className = 'menuSelect';document.getElementById('" + strMenuItemClientID + "').className = 'menuSelect';")
+                            e.Row.Attributes.Add("onmouseout", "this.className = 'menuUnSelect';document.getElementById('" + strMenuItemClientID + "').className = 'menuUnSelect';")
+                        End If
+
+                    Else
+                        'Display_Seq 10 = Claim
+                        If Not dr.Item("Display_Seq") Is DBNull.Value AndAlso Not dr.Item("Display_Seq") = "10" Then
+                            e.Row.Attributes.Add("onmouseover", "this.className = 'menuSelect';document.getElementById('" + strMenuItemClientID + "').className = 'menuSelect';")
+                            e.Row.Attributes.Add("onmouseout", "this.className = 'menuUnSelect';document.getElementById('" + strMenuItemClientID + "').className = 'menuUnSelect';")
+                        End If
+                    End If
+                End If
+                'CRE20-0022 (Immu record) [End][Raiman]
             End If
+
+
+
 
             'CRE13-021 Upgrade server to 2008 [Start][Karl]
             'e.Row.Attributes.Add("onclick", "document.getElementById('" + strMenuItemClientIDReal + "').click();")
@@ -621,9 +723,26 @@ Partial Public Class MasterPage
                     aryDataEntryPracticeList = udtDataEntry.PracticeList
                 End If
 
-                ' Check the Menu Visible if entitle the premitted scheme
-                Dim strMenuSchemeList As String = CStr(dr("Scheme_Code")).Trim.ToUpper
-                e.Row.Visible = CheckMenuVisible(strMenuSchemeList, udtSP, aryDataEntryPracticeList)
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                If Me.IsCOVID19MenuItem(CInt(dr("Display_Seq"))) Then
+                    ' Check the Menu Visible if entitle the premitted scheme
+                    Dim strMenuSchemeList As String = CStr(dr("Scheme_Code")).Trim.ToUpper
+                    e.Row.Visible = CheckMenuVisible(strMenuSchemeList, udtSP, aryDataEntryPracticeList, SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                    lnkbtnMenuItemReal.Attributes.Add("Mode", "2")
+                    lnkbtnMenuChiItemReal.Attributes.Add("Mode", "2")
+
+                Else
+                    ' Check the Menu Visible if entitle the premitted scheme
+                    Dim strMenuSchemeList As String = CStr(dr("Scheme_Code")).Trim.ToUpper
+                    e.Row.Visible = CheckMenuVisible(strMenuSchemeList, udtSP, aryDataEntryPracticeList)
+
+                    lnkbtnMenuItemReal.Attributes.Add("Mode", "1")
+                    lnkbtnMenuChiItemReal.Attributes.Add("Mode", "1")
+
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+                End If
 
             End If
         End If
@@ -715,7 +834,13 @@ Partial Public Class MasterPage
         End Select
     End Sub
 
-    Private Function CheckMenuVisible(ByVal strMenuSchemeList As String, ByVal udtSP As ServiceProviderModel, ByVal aryDataEntryPracticeList As ArrayList) As Boolean
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function CheckMenuVisible(ByVal strMenuSchemeList As String, _
+                                      ByVal udtSP As ServiceProviderModel, _
+                                      ByVal aryDataEntryPracticeList As ArrayList, _
+                                      Optional ByVal strSubsidizeItemCodeForClaim As String = "") As Boolean
+
         If strMenuSchemeList = "ALL" Then Return True
 
         ' Get all SP Scheme
@@ -746,8 +871,38 @@ Partial Public Class MasterPage
 
         Next
 
+        Dim udtSubsidizeBLL As New SubsidizeBLL
         Dim udtSchemeClaimBLL As New SchemeClaimBLL
-        Dim udtSchemeClaimList As SchemeClaimModelCollection = udtSchemeClaimBLL.ConvertSchemeClaimCodeFromSchemeEnrol(udtFilterPracticeSchemeList)
+        Dim udtSchemeClaimList As SchemeClaimModelCollection
+
+        If strSubsidizeItemCodeForClaim <> String.Empty Then
+            Dim blnDisplay As Boolean = False
+
+            For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtFilterPracticeSchemeList.Values
+                Dim lstSchemeCode As New List(Of String)
+                Dim lstSubsidizeCode As New List(Of String)
+
+                udtSchemeClaimBLL.ConvertSubsidizeClaimCodeFromSubsidizeEnrolCode(udtPracticeSchemeInfo.SchemeCode, _
+                                                                                  udtPracticeSchemeInfo.SubsidizeCode, _
+                                                                                  lstSchemeCode, _
+                                                                                  lstSubsidizeCode)
+
+                If lstSchemeCode.Count > 0 AndAlso lstSubsidizeCode.Count > 0 Then
+                    For intCt As Integer = 0 To lstSchemeCode.Count - 1
+                        If strSubsidizeItemCodeForClaim.ToUpper.Trim = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(lstSubsidizeCode(intCt).ToUpper.Trim) Then
+                            blnDisplay = True
+                        End If
+                    Next
+                End If
+
+            Next
+
+            If Not blnDisplay Then
+                Return False
+            End If
+        End If
+
+        udtSchemeClaimList = udtSchemeClaimBLL.ConvertSchemeClaimCodeFromSchemeEnrol(udtFilterPracticeSchemeList)
 
         For Each udtSchemeClaim As SchemeClaimModel In udtSchemeClaimList
             For Each strMenuScheme As String In strMenuSchemeList.Split(",")
@@ -760,6 +915,8 @@ Partial Public Class MasterPage
         Return False
 
     End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
 
 #Region "Script Function"
 
@@ -1408,5 +1565,18 @@ Partial Public Class MasterPage
 
     End Sub
     ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function IsCOVID19MenuItem(ByVal intDisplaySeq As Integer) As Boolean
+        Dim blnRes As Boolean = False
+
+        If intDisplaySeq = 11 Then
+            blnRes = True
+        End If
+
+        Return blnRes
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
 End Class

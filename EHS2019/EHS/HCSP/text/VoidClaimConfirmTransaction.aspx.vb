@@ -228,6 +228,19 @@ Partial Public Class VoidClaimConfirmDetail
                 Me.SetupClaimTransactionDetail(udtEHSTransaction, True)
                 Me.SetupReasonForVisit()
 
+                ' CRE20-0XX (Immu record)  [Start][Raiman]
+                ' Display setting for COVID-19
+                If IsClaimCOVID19(udtEHSTransaction) Then
+                    Label8.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+                    If (udtEHSTransaction.TransactionAdditionFields.ContactNo <> "") Then
+                        trContactNum.Style.Remove("display")
+                        trContactNumText.Style.Remove("display")
+                        lblContactNum.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
+                    End If
+                End If
+                ' --- Claim Information ---
+                ' CRE20-0XX (Immu record)  [End][Raiman]
+
             Case ActiveViewIndex.ModifyTransaction
                 Me.udcMsgBoxErr.Clear()
 
@@ -1730,6 +1743,12 @@ Partial Public Class VoidClaimConfirmDetail
             Case SchemeClaimModel.EnumControlType.PPP
                 'No text version
 
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+                'No text version
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
         End Select
         ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
@@ -1793,6 +1812,12 @@ Partial Public Class VoidClaimConfirmDetail
 
             Case SchemeClaimModel.EnumControlType.PPP
                 'no text version
+
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+                'No text version
+                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
         End Select
         ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
@@ -1930,5 +1955,20 @@ Partial Public Class VoidClaimConfirmDetail
 
 #End Region
 
+    ' CRE20-0XX (Immu record)  [Start][Raiman]
+    ' -----------------------------------------------------------------------------------------
+    Public Function IsClaimCOVID19(udtEHSTransaction) As Boolean
+
+        Dim udtTranDetailList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+        If udtTranDetailList.Count > 0 Then
+            Return True
+        End If
+
+        Return False
+
+    End Function
+    ' CRE20-0XX (Immu record)  [End][Raiman]
+    ' -----------------------------------------------------------------------------------------
 
 End Class

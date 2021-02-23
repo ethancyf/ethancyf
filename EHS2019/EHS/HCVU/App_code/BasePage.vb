@@ -90,6 +90,8 @@ Public MustInherit Class BasePage
 
         Dim udtHCVUUser As HCVUUserModel = Nothing
         Dim udtHCVUUserBLL As New HCVUUserBLL
+        Dim udtSessionHandler As New SessionHandlerBLL
+
         Dim objLang As Object
         Dim objLastTimeCheck As Object
         Dim objLastCheckCount As Object
@@ -107,6 +109,7 @@ Public MustInherit Class BasePage
         Dim objPageRedirectorParam As Object = Nothing
         Dim objPageRedirectorSource As Object = Nothing
         Dim objIsCheckedForNotice As Object = Nothing
+        Dim objSmartIDContent As Object = Nothing
         Dim udtRedirectParameter As RedirectParameterModel = Nothing
 
         Dim objPageKey As Object = Nothing
@@ -153,6 +156,11 @@ Public MustInherit Class BasePage
             ' CRE19-026 (HCVS hotline service) [Start][Winnie]
             objPageKey = Session(SESS_PageKey)
             ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            objSmartIDContent = udtSessionHandler.SmartIDContentGetFormSession(FunctCode.FUNT010421)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Session.RemoveAll()
 
@@ -206,6 +214,11 @@ Public MustInherit Class BasePage
             ' ------------------------------------------------------------------------
             Session(SESS_PageKey) = objPageKey
             ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtSessionHandler.SmartIDContentSaveToSession(FunctCode.FUNT010421, objSmartIDContent)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
         End If
     End Sub
 

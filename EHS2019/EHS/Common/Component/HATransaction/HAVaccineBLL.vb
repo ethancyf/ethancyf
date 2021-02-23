@@ -38,6 +38,8 @@ Namespace Component.HATransaction
             Public Const For_Enquiry As String = "For_Enquiry"
             Public Const For_Bar As String = "For_Bar"
             Public Const For_Display As String = "For_Display"
+            Public Const Vaccine_Brand_ID_Source As String = "Vaccine_Brand_ID_Source"
+            Public Const Vaccine_Brand_ID_Target As String = "Vaccine_Brand_ID_Target"
         End Class
 
         Public Class tableVaccineCodeBySchemeMapping
@@ -133,15 +135,17 @@ Namespace Component.HATransaction
                                                                         dr(tableVaccineCodeMapping.Vaccine_Code_Desc_Chi).ToString().Trim(), _
                                                                         dr(tableVaccineCodeMapping.For_Enquiry).ToString().Trim(), _
                                                                         dr(tableVaccineCodeMapping.For_Bar).ToString().Trim(), _
-                                                                        dr(tableVaccineCodeMapping.For_Display).ToString().Trim())
-
+                                                                        dr(tableVaccineCodeMapping.For_Display).ToString().Trim(), _
+                                                                        dr(tableVaccineCodeMapping.Vaccine_Brand_ID_Source).ToString().Trim(), _
+                                                                        dr(tableVaccineCodeMapping.Vaccine_Brand_ID_Target).ToString().Trim() _
+                                                                    )
                             udtCollection.Add(udtModel)
                         Next
                     End If
 
                     Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCodeMapping, udtCollection)
                 Catch ex As Exception
-                    Throw ex
+                    Throw
                 End Try
             End If
             Return udtCollection

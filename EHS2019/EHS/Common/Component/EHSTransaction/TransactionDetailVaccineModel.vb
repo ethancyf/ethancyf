@@ -22,6 +22,14 @@ Namespace Component.EHSTransaction
         Private _strHighRisk As String = String.Empty
         Private _udtPersonalInformationDemographic As EHSPersonalInformationDemographicModel
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strVaccineBrand As String = String.Empty
+        Private _strVaccineLotNo As String = String.Empty
+        Private _strVaccineTradeName As String = String.Empty
+        Private _strVaccineTradeNameChi As String = String.Empty
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
 #Region "Status"
 
         Public Class ProviderClass
@@ -173,26 +181,111 @@ Namespace Component.EHSTransaction
                 _udtPersonalInformationDemographic = value
             End Set
         End Property
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property VaccineBrand() As String
+            Get
+                Return _strVaccineBrand
+            End Get
+            Set(ByVal value As String)
+                _strVaccineBrand = value
+            End Set
+        End Property
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property VaccineLotNo() As String
+            Get
+                Return _strVaccineLotNo
+            End Get
+            Set(ByVal value As String)
+                _strVaccineLotNo = value
+            End Set
+        End Property
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property VaccineTradeName() As String
+            Get
+                Return _strVaccineTradeName
+            End Get
+            Set(ByVal value As String)
+                _strVaccineTradeName = value
+            End Set
+        End Property
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property VaccineTradeNameChi() As String
+            Get
+                Return _strVaccineTradeNameChi
+            End Get
+            Set(ByVal value As String)
+                _strVaccineTradeNameChi = value
+            End Set
+        End Property
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
 #End Region
 
 #Region "Constructor"
 
-        Public Sub New(ByVal strTrsansactionID As String, ByVal strSchemeCode As String, ByVal intScheme_Seq As Integer, ByVal strSubsidize_Code As String, _
+        Public Sub New(ByVal udtTransactionDetailVaccine As TransactionDetailVaccineModel)
+            Me.TransactionID = udtTransactionDetailVaccine.TransactionID
+            Me.SchemeCode = udtTransactionDetailVaccine.SchemeCode
+            Me.SubsidizeCode = udtTransactionDetailVaccine.SubsidizeCode
+            Me.SchemeSeq = udtTransactionDetailVaccine.SchemeSeq
+            Me.SubsidizeItemCode = udtTransactionDetailVaccine.SubsidizeItemCode
+
+            Me.AvailableItemCode = udtTransactionDetailVaccine.AvailableItemCode
+            Me.Unit = udtTransactionDetailVaccine.Unit
+            Me.PerUnitValue = udtTransactionDetailVaccine.PerUnitValue
+            Me.TotalAmount = udtTransactionDetailVaccine.TotalAmount
+            Me.Remark = udtTransactionDetailVaccine.Remark
+            Me.Provider = udtTransactionDetailVaccine.Provider
+
+            ' Addition Memeber
+            Me.AvailableItemDesc = udtTransactionDetailVaccine.AvailableItemDesc
+            Me.AvailableItemDescChi = udtTransactionDetailVaccine.AvailableItemDescChi
+
+            Me.TransactionDtm = udtTransactionDetailVaccine.TransactionDtm
+            Me.VaccineBrand = udtTransactionDetailVaccine.VaccineBrand
+            Me.VaccineLotNo = udtTransactionDetailVaccine.VaccineLotNo
+            Me.VaccineTradeName = udtTransactionDetailVaccine.VaccineTradeName
+            Me.VaccineTradeNameChi = udtTransactionDetailVaccine.VaccineTradeNameChi
+
+        End Sub
+
+        Public Sub New(ByVal strTransactionID As String, ByVal strSchemeCode As String, ByVal intScheme_Seq As Integer, ByVal strSubsidize_Code As String, _
                         ByVal strSubsidize_Item_Code As String, ByVal strAvailable_Item_Code As String, ByVal intUnit As Nullable(Of Integer), _
-                        ByVal dblPer_Unit_Value As Nullable(Of Double), ByVal dblTotal_Amount As Nullable(Of Double), ByVal strRemark As String, ByVal dtmTransactionDtm As Nullable(Of DateTime), _
+                        ByVal dblPer_Unit_Value As Nullable(Of Double), ByVal dblTotal_Amount As Nullable(Of Double), ByVal strRemark As String, _
+                        ByVal dtmTransactionDtm As Nullable(Of DateTime), ByVal strVaccineBrand As String, ByVal strVaccineLotNo As String, _
+                        ByVal strVaccineTradeName As String, ByVal strVaccineTradeNameChi As String, _
                         Optional ByVal strAvailable_Item_Desc As String = "", Optional ByVal strAvailable_Item_Desc_Chi As String = "")
-            Constructor(strTrsansactionID, strSchemeCode, intScheme_Seq, strSubsidize_Code, _
+
+            Constructor(strTransactionID, strSchemeCode, intScheme_Seq, strSubsidize_Code, _
                          strSubsidize_Item_Code, strAvailable_Item_Code, intUnit, _
                          dblPer_Unit_Value, dblTotal_Amount, strRemark, _
                          strAvailable_Item_Desc, strAvailable_Item_Desc_Chi)
+
             Me.TransactionDtm = dtmTransactionDtm
+            Me.VaccineBrand = strVaccineBrand.Trim
+            Me.VaccineLotNo = strVaccineLotNo.Trim
+            Me.VaccineTradeName = strVaccineTradeName.Trim
+            Me.VaccineTradeNameChi = strVaccineTradeNameChi.Trim
+
         End Sub
 
-        Private Sub Constructor(ByVal strTrsansactionID As String, ByVal strSchemeCode As String, ByVal intScheme_Seq As Integer, ByVal strSubsidize_Code As String, _
+        Private Sub Constructor(ByVal strTransactionID As String, ByVal strSchemeCode As String, ByVal intScheme_Seq As Integer, ByVal strSubsidize_Code As String, _
                         ByVal strSubsidize_Item_Code As String, ByVal strAvailable_Item_Code As String, ByVal intUnit As Nullable(Of Integer), _
                         ByVal dblPer_Unit_Value As Nullable(Of Double), ByVal dblTotal_Amount As Nullable(Of Double), ByVal strRemark As String, _
                         Optional ByVal strAvailable_Item_Desc As String = "", Optional ByVal strAvailable_Item_Desc_Chi As String = "")
-            Me.TransactionID = strTrsansactionID
+
+            Me.TransactionID = strTransactionID
             Me.SchemeCode = strSchemeCode
             Me.SubsidizeCode = strSubsidize_Code
             Me.SchemeSeq = intScheme_Seq
@@ -253,6 +346,10 @@ Namespace Component.EHSTransaction
                                                                                                 udtPersonalInfo.DocCode, _
                                                                                                 udtPersonalInfo.EName)
                 Me.HighRisk = String.Empty
+                Me.VaccineBrand = .VaccineBrand
+                Me.VaccineLotNo = .VaccineLotNo
+                Me.VaccineTradeName = (New COVID19.COVID19BLL).GetVaccineTradeName(.VaccineBrand)
+                Me.VaccineTradeNameChi = (New COVID19.COVID19BLL).GetVaccineTradeNameChi(.VaccineBrand)
             End With
         End Sub
 
@@ -287,8 +384,13 @@ Namespace Component.EHSTransaction
                                                                                                 udtPersonalInfo.DocCode, _
                                                                                                 udtPersonalInfo.EName)
                 Me.HighRisk = String.Empty
+                Me.VaccineBrand = String.Empty
+                Me.VaccineLotNo = String.Empty
+                Me.VaccineTradeName = String.Empty
+                Me.VaccineTradeNameChi = String.Empty
             End With
         End Sub
+
 #End Region
 
     End Class

@@ -56,11 +56,29 @@
     <Reference Include="AjaxControlToolkit">
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Web.Design.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
-    <Reference Include="GrapeCity.ActiveReports.Web.v8, Version=8.2.492.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL" />
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\CommonBin\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Document.v12, Version=12.3.17127.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Document.v12.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.v12.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Viewer.Win.v12.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.Design.v12.dll</HintPath>
+    </Reference>
+    <Reference Include="GrapeCity.ActiveReports.Web.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.v12.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -155,6 +173,7 @@
     <Compile Include="ComObject\MasterPage.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="ComObject\Signature.vb" />
     <Compile Include="ComObject\RestrictAccessHandler.vb" />
     <Compile Include="ComObject\ScheduleJobLogEntry.vb" />
     <Compile Include="ComObject\SearchCriteria.vb" />
@@ -190,6 +209,65 @@
     <Compile Include="Component\ClaimRules\SubsidizeItemDetailRuleModelCollection.vb" />
     <Compile Include="Component\ClaimTrans\ClaimTransBLL.vb" />
     <Compile Include="Component\CMSHealthCheck\CMSHealthCheckBLL.vb" />
+    <Compile Include="Component\COVID19\COVID19BLL.vb" />
+    <Compile Include="Component\COVID19\QRCodeModel.vb" />
+    <Compile Include="Component\COVID19\PrintOut\Common\Format\Formatter.vb" />
+    <Compile Include="Component\COVID19\PrintOut\Common\Format\QrCodeFormatter.vb" />
+    <Compile Include="Component\COVID19\PrintOut\Common\PrintoutHelper.vb" />
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable.designer.vb">
+      <DependentUpon>Covid19DoseTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable_A5.Designer.vb">
+      <DependentUpon>Covid19DoseTable_A5.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable_A5.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithNoSignature.designer.vb">
+      <DependentUpon>Covid19FooterDoseTableWithNoSignature.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithNoSignature.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithSignature.designer.vb">
+      <DependentUpon>Covid19FooterDoseTableWithSignature.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithSignature.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName.designer.vb">
+      <DependentUpon>Covid19PatientName.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName_A5.designer.vb">
+      <DependentUpon>Covid19PatientName_A5.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName_A5.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard.designer.vb">
+      <DependentUpon>Covid19VaccinationCard.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCardFooter.designer.vb">
+      <DependentUpon>Covid19VaccinationCardFooter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCardFooter.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard_A5.designer.vb">
+      <DependentUpon>Covid19VaccinationCard_A5.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard_A5.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Component\DataEntryUser\DataEntryUserBLL.vb" />
     <Compile Include="Component\DataEntryUser\DataEntryUserModel.vb" />
     <Compile Include="Component\DHTransaction\DHClientModel.vb" />
@@ -488,6 +566,33 @@
     <Compile Include="WebService\Proxy\TokenReplacementWS.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable.resx">
+      <DependentUpon>Covid19DoseTable.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19DoseTable_A5.resx">
+      <DependentUpon>Covid19DoseTable_A5.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithNoSignature.resx">
+      <DependentUpon>Covid19FooterDoseTableWithNoSignature.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19FooterDoseTableWithSignature.resx">
+      <DependentUpon>Covid19FooterDoseTableWithSignature.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName.resx">
+      <DependentUpon>Covid19PatientName.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19PatientName_A5.resx">
+      <DependentUpon>Covid19PatientName_A5.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard.resx">
+      <DependentUpon>Covid19VaccinationCard.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCardFooter.resx">
+      <DependentUpon>Covid19VaccinationCardFooter.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard_A5.resx">
+      <DependentUpon>Covid19VaccinationCard_A5.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>

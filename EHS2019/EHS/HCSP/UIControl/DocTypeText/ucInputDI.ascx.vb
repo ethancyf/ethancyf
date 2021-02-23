@@ -25,7 +25,7 @@ Namespace UIControl.DocTypeText
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.DI)
 
             ' Travel Document No
-            Me.lblTDNoText.Text = IIf(SessionHandler.Language() = CultureLanguage.English, udtDocTypeModel.DocIdentityDesc, udtDocTypeModel.DocIdentityDescChi)
+            Me.lblTDNoText.Text = udtDocTypeModel.DocIdentityDesc(SessionHandler().Language)
             'Me.lblTDNoTip.Text = String.Empty
 
             ' English Name

@@ -24,6 +24,9 @@ Partial Public Class ucInputDocumentType
         Public Const TW As String = "ucInputDocumentType_TW"
         Public Const RFNo8 As String = "ucInputDocumentType_RFNo8"
         Public Const OTHER As String = "ucInputDocumentType_OTHER"
+        Public Const CCIC As String = "ucInputDocumentType_CCIC"
+        Public Const ROP140 As String = "ucInputDocumentType_ROP140"
+        Public Const PASS As String = "ucInputDocumentType_PASS"
     End Class
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
@@ -264,6 +267,30 @@ Partial Public Class ucInputDocumentType
 
                 ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+
+                udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputCCIC.ascx", strFolderPath))
+                udcInputDocumentType.ID = DocumentControlID.CCIC
+                udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
+
+            Case DocTypeModel.DocTypeCode.ROP140
+
+                udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputROP140.ascx", strFolderPath))
+                udcInputDocumentType.ID = DocumentControlID.ROP140
+                udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+
+            Case DocTypeModel.DocTypeCode.PASS
+
+                udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputPASS.ascx", strFolderPath))
+                udcInputDocumentType.ID = DocumentControlID.PASS
+                udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
+
+
+
+                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
         udcInputDocumentType.UpdateValue = Me._fillValue
@@ -435,8 +462,6 @@ Partial Public Class ucInputDocumentType
         End If
     End Function
 
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Function GetOWControl() As ucInputOW
         Dim control As Control = Me.FindControl(DocumentControlID.OW)
         If Not control Is Nothing Then
@@ -473,7 +498,37 @@ Partial Public Class ucInputDocumentType
         End If
     End Function
 
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+    ' CRE20-0022 (Immu record) [Start][Martin]
+
+    Public Function GetCCICControl() As ucInputCCIC
+        Dim control As Control = Me.FindControl(DocumentControlID.CCIC)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCCIC)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function GetROP140Control() As ucInputROP140
+        Dim control As Control = Me.FindControl(DocumentControlID.ROP140)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputROP140)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function GetPASSControl() As ucInputPASS
+        Dim control As Control = Me.FindControl(DocumentControlID.PASS)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputPASS)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    ' CRE20-0022 (Immu record) [End][Martin]
+
 
 #End Region
 

@@ -752,6 +752,17 @@ Partial Public Class EHSRectification
             Case DocTypeModel.DocTypeCode.OTHER
 
                 blnProceed = Me.ValidateRectifyDetail_OTHER(udtEHSAccount, udtAuditLogEntry)
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+
+                blnProceed = Me.ValidateRectifyDetail_CCIC(udtEHSAccount, udtAuditLogEntry)
+            Case DocTypeModel.DocTypeCode.ROP140
+
+                blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount, udtAuditLogEntry)
+            Case DocTypeModel.DocTypeCode.PASS
+
+                blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount, udtAuditLogEntry)
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
         If blnProceed Then
@@ -3276,6 +3287,190 @@ Partial Public Class EHSRectification
     End Function
 
     ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+
+    'CCIC
+    Private Function ValidateRectifyDetail_CCIC(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.CCIC)
+
+        Dim udcInputCCIC As ucInputCCIC = Me.udcRectifyAccount.GetCCICControl
+        udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+        udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputCCIC.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputCCIC.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputCCIC.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCCIC.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputCCIC.Gender)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputCCIC.DOB)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
+
+        'English Name
+        Me.sm = Me.validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCCIC.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'Gender
+        Me.sm = Me.validator.chkGender(udcInputCCIC.Gender)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCCIC.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputCCIC.DOB
+        Me.sm = Me.validator.chkDOB(DocType.DocTypeModel.DocTypeCode.CCIC, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCCIC.SetDOBError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputCCIC.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputCCIC.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputCCIC.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+
+
+
+    End Function
+
+    'ROP140
+    Private Function ValidateRectifyDetail_ROP140(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.ROP140)
+
+        Dim udcInputCROP140 As ucInputROP140 = Me.udcRectifyAccount.GetROP140Control
+        udcInputCROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+        udcInputCROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputCROP140.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputCROP140.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputCROP140.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCROP140.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputCROP140.Gender)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputCROP140.DOB)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
+
+        'English Name
+        Me.sm = Me.validator.chkEngName(udcInputCROP140.ENameSurName, udcInputCROP140.ENameFirstName)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCROP140.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'Gender
+        Me.sm = Me.validator.chkGender(udcInputCROP140.Gender)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCROP140.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputCROP140.DOB
+        Me.sm = Me.validator.chkDOB(DocType.DocTypeModel.DocTypeCode.ROP140, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCROP140.SetDOBError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputCROP140.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputCROP140.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputCROP140.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+
+    End Function
+
+
+    'PASS
+    Private Function ValidateRectifyDetail_PASS(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.PASS)
+
+        Dim udcInputPASS As ucInputPASS = Me.udcRectifyAccount.GetPASSControl
+        udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+        udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputPASS.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputPASS.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputPASS.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputPASS.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputPASS.Gender)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputPASS.DOB)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
+
+        'English Name
+        Me.sm = Me.validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputPASS.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'Gender
+        Me.sm = Me.validator.chkGender(udcInputPASS.Gender)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputPASS.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputPASS.DOB
+        Me.sm = Me.validator.chkDOB(DocType.DocTypeModel.DocTypeCode.PASS, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputPASS.SetDOBError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputPASS.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputPASS.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputPASS.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+
+    End Function
 
 #End Region
 

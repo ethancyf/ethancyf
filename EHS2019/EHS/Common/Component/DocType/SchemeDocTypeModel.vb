@@ -156,5 +156,82 @@ Namespace Component.DocType
         End Sub
 
 #End Region
+
+#Region "Functions"
+
+        Public Function IsExceedAgeLimit(dtmDOB As Date, dtmServiceReceiveDtm As Date) As Boolean
+            If Me.AgeLowerLimit.HasValue Then
+                If ConvertPassValueByCalUnit(Me.AgeLowerLimitUnit, dtmDOB, dtmServiceReceiveDtm) < Me.AgeLowerLimit.Value Then
+                    Return True
+                End If
+
+            End If
+
+            If Me.AgeUpperLimit.HasValue Then
+                If ConvertPassValueByCalUnit(Me.AgeUpperLimitUnit, dtmDOB, dtmServiceReceiveDtm) >= Me.AgeUpperLimit.Value Then
+                    Return True
+                End If
+            End If
+
+            Return False
+
+        End Function
+
+        Private Shared Function ConvertPassValueByCalUnit(strUnit As String, dtmPassDOB As DateTime, dtmCompareDate As Date) As Integer
+            '   Y   = Year (exact Year)
+            '   YC  = Year (Calendar Year)
+            '   M   = Month (exact Month)
+            '   MC  = Month (Calendar Month)
+            '   D   = Day (exact Day)
+            '   W   = Week (exact Week)
+            Dim intReferenceValue As Integer = -1
+
+            Select Case strUnit.Trim().ToUpper()
+                Case "Y"
+                    Dim intCompareYear As Integer = dtmCompareDate.Year
+                    Dim intPassYear As Integer = dtmPassDOB.Year
+                    intReferenceValue = intCompareYear - intPassYear
+
+                    If (dtmPassDOB.Month > dtmCompareDate.Month) OrElse (dtmPassDOB.Month = dtmCompareDate.Month AndAlso dtmPassDOB.Day > dtmCompareDate.Day) Then
+                        intReferenceValue = intReferenceValue - 1
+                    End If
+
+                Case "YC"
+                    Dim intCurYear As Integer = dtmCompareDate.Year
+                    Dim intDOBYear As Integer = dtmPassDOB.Year
+                    intReferenceValue = intCurYear - intDOBYear
+
+                Case "M"
+                    Dim intCurYear As Integer = dtmCompareDate.Year
+                    Dim intCurMonth As Integer = dtmCompareDate.Month
+                    Dim intDOBYear As Integer = dtmPassDOB.Year
+                    Dim intDOBMonth As Integer = dtmPassDOB.Month
+
+                    intReferenceValue = 12 * (intCurYear - intDOBYear) + (intCurMonth - intDOBMonth)
+                    If dtmPassDOB.Day > dtmCompareDate.Day Then
+                        intReferenceValue = intReferenceValue - 1
+                    End If
+
+                Case "MC"
+                    Dim intCurYear As Integer = dtmCompareDate.Year
+                    Dim intCurMonth As Integer = dtmCompareDate.Month
+                    Dim intDOBYear As Integer = dtmPassDOB.Year
+                    Dim intDOBMonth As Integer = dtmPassDOB.Month
+                    intReferenceValue = 12 * (intCurYear - intDOBYear) + (intCurMonth - intDOBMonth)
+
+                Case "D"
+                    intReferenceValue = DateDiff(DateInterval.Day, dtmPassDOB, dtmCompareDate.Date)
+
+                Case "W"
+                    Dim intDifferentDay As Integer = DateDiff(DateInterval.Day, dtmPassDOB, dtmCompareDate.Date)
+                    intReferenceValue = CInt(Math.Floor(intDifferentDay / 7))
+            End Select
+
+            Return intReferenceValue
+
+        End Function
+
+#End Region
+
     End Class
 End Namespace

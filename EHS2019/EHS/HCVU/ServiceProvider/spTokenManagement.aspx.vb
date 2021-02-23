@@ -66,7 +66,9 @@ Partial Public Class spTokenManagement
     Public Const SESS_IsShareToken As String = "010202_IsShareToken"
     Public Const SESS_IsShareTokenReplacement As String = "010202_IsShareTokenReplacement"
     Public Const SESS_ProjectReplacement As String = "010202_ProjectReplacement"
+    Public Const SESS_ProjectReplacement_Original As String = "010202_ProjectReplacement_Original"
     Public Const SESS_ReplacementToken As String = "ReplacementToken"
+    Public Const SESS_ReplacementToken_Original As String = "ReplacementToken_Original"
     Public Const SESS_PPI_Status As String = "PPI_Status"
     Public Const SESS_Project As String = "Project"
     Public Const SESS_IsUniqueSearch As String = "010202_IsUniqueSearch"
@@ -495,8 +497,6 @@ Partial Public Class spTokenManagement
         Return value
     End Function
 
-    '
-
     Protected Sub gvResult_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             Dim udtFormatter As New Formatter
@@ -584,6 +584,10 @@ Partial Public Class spTokenManagement
         Dim udtSP As ServiceProviderModel = Nothing
         Dim udtServiceProviderBLL As New ServiceProviderBLL
         Dim udtSPProfileBLL As New SPProfileBLL
+
+
+        Dim udtGeneralFunction As New GeneralFunction 'CRE20-018 Stop Token Sharing [Nichole]
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token") 'CRE20-018 Stop Token Sharing [Nichole]
 
         ' Retrieve SP from DB
         ' New Enrolment, Scheme Enrolment -> Staging; Others -> Permanent
@@ -711,17 +715,21 @@ Partial Public Class spTokenManagement
             strIsShareTokenReplacement = dr("Is_Share_Token_Replacement").ToString.Trim
 
             Session(SESS_ProjectReplacement) = strProjectReplacement
+            Session(SESS_ProjectReplacement_Original) = strProjectReplacement
             Session(SESS_IsShareTokenReplacement) = strIsShareTokenReplacement
 
+            lblDRTokenSerialNo.Visible = True 'CRE20-018 Stop Token Sharing 
             lblDRTokenSerialNo.Text = TokenModel.DisplayTokenSerialNo(strReplacementTokenSerialNo, strProjectReplacement, False, False, True)
             lblDRTokenIssuedBy.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strProjectReplacement).DataValue
             lblDRIsShareToken.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("YesNo", strIsShareTokenReplacement).DataValue
 
             Session(SESS_ReplacementToken) = strReplacementTokenSerialNo
+            Session(SESS_ReplacementToken_Original) = strReplacementTokenSerialNo
 
             Dim strLastReplacementReason As String = dr("Last_Replacement_Reason").ToString.Trim
 
             If strLastReplacementReason <> String.Empty Then
+                lblDRReplacementReason.Visible = True 'CRE20-018 Stop Token Sharing
                 If strProject = TokenProjectType.EHCVS Then
                     lblDRReplacementReason.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_REPLACE_REASON", strLastReplacementReason).DataValue
                 ElseIf strProject = TokenProjectType.EHR Then
@@ -734,7 +742,9 @@ Partial Public Class spTokenManagement
 
         Else
             Session(SESS_ReplacementToken) = String.Empty
+            Session(SESS_ReplacementToken_Original) = String.Empty
             Session(SESS_ProjectReplacement) = String.Empty
+            Session(SESS_ProjectReplacement_Original) = String.Empty
             Session(SESS_IsShareTokenReplacement) = String.Empty
 
         End If
@@ -823,6 +833,14 @@ Partial Public Class spTokenManagement
 
                 hfDCurrentAction.Value = DetailPageCurrentAction.NewEnrolment
 
+                'CRE20-018 Stop Token Sharing [Start][Nichole]
+                If streHRSSToken = YesNo.No Then
+                    ibtnDGetFromEHRSS.Visible = False
+                    lblDUserDeclareEHRSSUser.Visible = False
+                    trTokenIssueBy.Visible = False
+                End If
+                'CRE20-018 Stop Token Sharing [End][Nichole]
+
             Case ServiceProviderTokenStatus.Active
                 Select Case strTokenStatus
                     Case TokenStatus.Active
@@ -882,6 +900,12 @@ Partial Public Class spTokenManagement
                             udtAuditLogEntry.WriteEndLog(LogID.LOG00005, "Select successful")
 
                         End If
+
+                        'CRE20-018 Stop Token Sharing [Start][Nichole]
+                        lblDTokenIssuedBy.Text = CheckEHRToken(strTokenSerialNo, lblDTokenIssuedBy.Text)
+                        lblDRTokenIssuedBy.Text = CheckEHRToken(lblDRTokenSerialNo.Text, lblDRTokenIssuedBy.Text)
+                        trTokenIssueBy.Visible = True
+                        'CRE20-018 Stop Token Sharing [End][Nichole]
 
                     Case TokenStatus.Deactivated
                         trDDeactivationTime.Visible = True
@@ -992,6 +1016,15 @@ Partial Public Class spTokenManagement
 
                         End If
 
+                        'CRE20-018 Stop Token Sharing [Start][Nichole]
+                        If streHRSSToken = YesNo.No Then
+                            ibtnDGetFromEHRSS.Visible = False
+                            lblDUserDeclareEHRSSUser.Visible = False
+                            'trTokenIssueBy.Visible = False
+                        End If
+
+                        lblDTokenIssuedBy.Text = CheckEHRToken(lblDTokenSerialNo.Text, lblDTokenIssuedBy.Text)
+                        'CRE20-018 Stop Token Sharing [End][Nichole]
                     Case Else
                         Throw New Exception(String.Format("spTokenManagement.BuildDetail: Unexpected value (strRowStatus={0}, strTokenStatus={1})", _
                                                           strRowStatus, strTokenStatus))
@@ -1010,6 +1043,15 @@ Partial Public Class spTokenManagement
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00005, "Select successful")
 
                 mvDButton.SetActiveView(vBackOnly)
+
+                'CRE20-018 Stop Token Sharing [Start][Nichole]
+                If streHRSSToken = YesNo.No Then
+                    trTokenIssueBy.Visible = True
+                End If
+
+                lblDTokenIssuedBy.Text = CheckEHRToken(lblDTokenSerialNo.Text, lblDTokenIssuedBy.Text)
+                lblDRTokenIssuedBy.Text = CheckEHRToken(lblDRTokenSerialNo.Text, lblDRTokenIssuedBy.Text)
+                'CRE20-018 Stop Token Sharing [End][Nichole]
 
             Case ServiceProviderTokenStatus.Delisted
                 lblDTokenIssuedBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
@@ -1048,6 +1090,12 @@ Partial Public Class spTokenManagement
 
                 mvDButton.SetActiveView(vSchemeEnrolment)
 
+                'CRE20-018 Stop Token Sharing [Start][Nichole]
+                If streHRSSToken = YesNo.No Then
+                    trTokenIssueBy.Visible = True
+                End If
+                lblDTokenIssuedBy.Text = CheckEHRToken(lblDTokenSerialNo.Text, lblDTokenIssuedBy.Text)
+                'CRE20-018 Stop Token Sharing [End][Nichole]
         End Select
 
         ' Replacement Token panel
@@ -1175,7 +1223,13 @@ Partial Public Class spTokenManagement
         rblDRReplacementReason.ClearSelection()
 
         ' Issued By and Is Share Token must be the same as Existing Token
-        lblDRTokenIssuedBy.Text = lblDTokenIssuedBy.Text
+        'lblDRTokenIssuedBy.Text = lblDTokenIssuedBy.Text
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        Dim strTokenProject As String = Session(SESS_Project)
+        Dim udtStaticDataBLL As New StaticDataBLL
+        lblDRTokenIssuedBy.Text = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strTokenProject).DataValue.ToString.Trim
+        'CRE20-018 Stop Token Sharing [End][Nichole]
+
         lblDRIsShareToken.Text = lblDIsShareToken.Text
 
         ' Visible
@@ -1190,6 +1244,16 @@ Partial Public Class spTokenManagement
 
         hfDCurrentAction.Value = DetailPageCurrentAction.ReplaceToken
 
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        Dim udtGeneralFunction As New GeneralFunction
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+        If streHRSSToken = YesNo.No Then
+            trTokenIssueBy.Visible = True
+            lblDTokenIssuedBy.Text = CheckEHRToken(lblDTokenSerialNo.Text, _
+                                                   udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strTokenProject).DataValue.ToString.Trim)
+            ' lblDRTokenIssuedBy.Text = Me.GetGlobalResourceObject("Text", "N/A")
+        End If
+        'CRE20-018 Stop Token Sharing [End][Nichole]
     End Sub
 
     '
@@ -1420,6 +1484,10 @@ Partial Public Class spTokenManagement
                     udcInfoMessageBox.Type = InfoMessageBoxType.Information
                     udcInfoMessageBox.BuildMessageBox()
 
+                    Dim strTokenProject As String = Session(SESS_Project)
+
+                    lblDRTokenIssuedBy.Text = CheckEHRToken(txtDRTokenSerialNo.Text.Trim, _
+                                                   udtStaticDataBLL.GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strTokenProject).DataValue.ToString.Trim)
                     lblDRTokenSerialNo.Text = txtDRTokenSerialNo.Text.Trim
                     lblDRReplacementReason.Text = AntiXssEncoder.HtmlEncode(rblDRReplacementReason.SelectedItem.Text, True)
 
@@ -1440,6 +1508,11 @@ Partial Public Class spTokenManagement
 
         End Select
 
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        lblDTokenIssuedBy.Text = CheckEHRToken(lblDTokenSerialNo.Text, lblDTokenIssuedBy.Text)
+        'lblDRTokenIssuedBy.Text = CheckEHRToken(lblDRTokenSerialNo.Text, lblDRTokenIssuedBy.Text)
+
+        'CRE20-018 Stop Token Sharing [End][Nichole]
     End Sub
 
     Protected Sub ibtnDCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs)
@@ -1470,6 +1543,10 @@ Partial Public Class spTokenManagement
                     txtDRTokenSerialNo.Visible = False
                     lblDRReplacementReason.Visible = True
                     rblDRReplacementReason.Visible = False
+
+                    lblDRTokenSerialNo.Text = Session(SESS_ReplacementToken_Original)
+                    lblDRTokenIssuedBy.Text = CheckEHRToken(Session(SESS_ReplacementToken_Original), _
+                                                   (New StaticDataBLL).GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", Session(SESS_ProjectReplacement_Original)).DataValue.ToString.Trim)
 
                 Else
                     panDExistingToken.GroupingText = String.Empty
@@ -1564,6 +1641,14 @@ Partial Public Class spTokenManagement
                     udtToken.UpdateBy = udtHCVUUser.UserID
                     udtToken.IssueBy = udtHCVUUser.UserID
                     udtToken.RecordStatus = TokenStatus.Active
+
+                    'CRE20-018 Stop Token Sharing [Start][Nichole]
+                    Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+                    If streHRSSToken = YesNo.No Then
+                        rblDTokenIssuedBy.SelectedValue = TokenProjectType.EHCVS
+                    End If
+                    'CRE20-018 Stop Token Sharing [End][Nichole]
+
                     udtToken.Project = rblDTokenIssuedBy.SelectedValue
                     udtToken.IsShareToken = IIf(rblDIsShareToken.SelectedValue = YesNo.Yes, True, False)
                     udtToken.TokenSerialNo = txtDTokenSerialNo.Text.Trim
@@ -1923,6 +2008,9 @@ Partial Public Class spTokenManagement
 
     Protected Sub ibtnDConfirmBack_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        Dim udtGeneralFunction As New GeneralFunction
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+
         udtAuditLogEntry.WriteLog(LogID.LOG00035, "Back Click")
 
         ResetMessageAndError()
@@ -1969,6 +2057,14 @@ Partial Public Class spTokenManagement
                 End If
                 ' CRE18-016 (Enable Reject at Token Scheme Management Stage) [End][Winnie]
 
+                'CRE20-018 Stop Token Sharing [Start][Nichole]
+
+                If streHRSSToken = YesNo.No Then
+                    ibtnDGetFromEHRSS.Visible = False
+                    lblDUserDeclareEHRSSUser.Visible = False
+                    trTokenIssueBy.Visible = False
+                End If
+                'CRE20-018 Stop Token Sharing [End][Nichole]
             Case DetailPageCurrentAction.DeactivateToken
                 lblDTokenNewStatus.Visible = False
                 lblDTokenStatus.Visible = True
@@ -1983,10 +2079,25 @@ Partial Public Class spTokenManagement
                 lblDRReplacementReason.Visible = False
                 rblDRReplacementReason.Visible = True
 
+                Dim strProject As String = Session(SESS_ProjectReplacement_Original)
+                If strProject = String.Empty Then
+                    strProject = Session(SESS_Project)
+                End If
+
+                lblDRTokenIssuedBy.Text = CheckEHRToken("", _
+                               (New StaticDataBLL).GetStaticDataByColumnNameItemNo("TOKEN_ISSUE_BY", strProject).DataValue.ToString.Trim)
+
                 mvDButton.SetActiveView(vSaveCancel)
 
         End Select
 
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        If streHRSSToken = YesNo.No Then
+            ibtnDGetFromEHRSS.Visible = False
+            lblDUserDeclareEHRSSUser.Visible = False
+            'trTokenIssueBy.Visible = False
+        End If
+        'CRE20-018 Stop Token Sharing [End][Nichole]
     End Sub
 
     '
@@ -2135,7 +2246,7 @@ Partial Public Class spTokenManagement
     End Sub
 
     Private Sub ucEnrolmentActionPopup_ButtonClick(ByVal e As ucNoticePopUp.enumButtonClick) Handles ucEnrolmentActionPopup.ButtonClick
-        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)        
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
 
         Select Case e
             Case ucNoticePopup.enumButtonClick.OK
@@ -3280,6 +3391,21 @@ Partial Public Class spTokenManagement
         Return blnValidatedSuccess
     End Function
     ' CRE17-016 Checking of PCD status during VSS enrolment [End][Winnie]
+
+    'CRE20-018 Stop Token Sharing [Start][Nichole]
+    Private Function CheckEHRToken(ByVal strTokenSerialNo As String, ByVal strTokenIssueBy As String) As String
+
+        Dim strTokenIssuetxt As String = String.Empty
+
+        If (New SPProfileBLL).CheckToken(strTokenSerialNo) Then
+            strTokenIssuetxt = Me.GetGlobalResourceObject("Text", "TokenEHR")
+        Else
+            strTokenIssuetxt = strTokenIssueBy
+        End If
+
+        Return strTokenIssuetxt
+    End Function
+    'CRE20-018 Stop Token Sharing [End][Nichole]
 #End Region
 
 #Region "Implement IWorkingData (CRE11-004)"

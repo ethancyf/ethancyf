@@ -1,5 +1,6 @@
 ﻿Imports System.Threading
 Imports Common.Component
+Imports Common.Component.DocType
 Imports System.ComponentModel
 Imports System.Reflection
 
@@ -33,6 +34,10 @@ Namespace Format
         Const strDisplayClockFormat As String = "dd/MM/yyyy HH:mm:ss"
         Const strDisplayClockTimeFormat As String = "HH:mm:ss"
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]
+
+        'CRE20-0022 (Immu record) [Start][Raiman]
+        Const strDisplayVaccinationRecordClockFormat As String = "dd-MM-yyyy HH:mm"
+        'CRE20-0022 (Immu record) [End][Raiman]
 
         'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
         '-----------------------------------------------------------------------------------------
@@ -73,6 +78,14 @@ Namespace Format
         Public Function formatBankPaymentDay(ByVal strInputPaymentDate As String) As String
             Return strInputPaymentDate.Substring(0, 2) & strInputPaymentDate.Substring(3, 2) & strInputPaymentDate.Substring(8, 2)
         End Function
+
+        'CRE20-0022 (Immu record) [Start][Raiman]
+        Public ReadOnly Property DisplayVaccinationRecordClockFormat() As String
+            Get
+                Return strDisplayVaccinationRecordClockFormat
+            End Get
+        End Property
+        'CRE20-0022 (Immu record) [End][Raiman]
 
         ''' <summary>
         ''' Format the HKIC No. with blanket for displaying to user. Mask the last four digits is needed if there is any privacy concern.
@@ -487,6 +500,35 @@ Namespace Format
 
                 For Each strTemp As String In strGivenName
                     strExtractedName &= Left(strTemp, 1) & ". "
+                Next
+
+                Return String.Format("{0}, {1}", strLastName, strExtractedName).TrimEnd(" ")
+            End If
+
+        End Function
+
+        Public Function maskEnglishNameByStar(ByVal strName As String) As String
+
+            ' Extract Name delimiter
+            Dim intNameDelimiter As Integer = InStr(strName, ",")
+
+            ' Get the Last Name
+            If intNameDelimiter <= 0 Then
+                Return strName
+            Else
+                Dim strLastName As String = Left(strName, intNameDelimiter - 1)
+                Dim strGivenName() As String = Mid(strName, intNameDelimiter + 2).Trim().Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
+                Dim strExtractedName As String = ""
+
+
+                For Each strTemp As String In strGivenName
+                    Dim strExtractedWord As String = ""
+
+                    For x As Integer = 0 To strTemp.Length - 2
+                        strExtractedWord += "*"
+                    Next
+
+                    strExtractedName &= Left(strTemp, 1) & strExtractedWord + " "
                 Next
 
                 Return String.Format("{0}, {1}", strLastName, strExtractedName).TrimEnd(" ")
@@ -1760,7 +1802,11 @@ Namespace Format
         Public Function formatDocumentIdentityNumber(ByVal strDocCode As String, ByVal strIdentityNum As String) As String
             ' Do not Trim!
             Select Case strDocCode
-                Case Component.DocType.DocTypeModel.DocTypeCode.HKIC, Component.DocType.DocTypeModel.DocTypeCode.HKBC, Component.DocType.DocTypeModel.DocTypeCode.EC
+                ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                ' --------------------------------------------------------------------------------------
+                Case Component.DocType.DocTypeModel.DocTypeCode.HKIC, Component.DocType.DocTypeModel.DocTypeCode.HKBC, Component.DocType.DocTypeModel.DocTypeCode.EC,
+                    Component.DocType.DocTypeModel.DocTypeCode.CCIC, Component.DocType.DocTypeModel.DocTypeCode.ROP140
+                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                     Select Case strIdentityNum.Trim().Length
                         Case 8
                             Return " " + strIdentityNum.Trim().ToUpper()
@@ -1893,7 +1939,13 @@ Namespace Format
                         'XX999999(X)
 
                         strRes = formatHKID(strDocIDNo, blnMask)
+                        ' CRE20-0022 (Immu record) [Start][Martin]
+                    Case Common.Component.DocType.DocTypeModel.DocTypeCode.CCIC,
+                         Common.Component.DocType.DocTypeModel.DocTypeCode.ROP140
+                        'XX999999(X)
 
+                        strRes = formatHKID(strDocIDNo, blnMask)
+                        ' CRE20-0022 (Immu record) [End][Martin]
                     Case Common.Component.DocType.DocTypeModel.DocTypeCode.ID235B
                         'XX999999
 
@@ -1937,7 +1989,9 @@ Namespace Format
                         Common.Component.DocType.DocTypeModel.DocTypeCode.IR,
                         Common.Component.DocType.DocTypeModel.DocTypeCode.HKP,
                         Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
-                        Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+
                         ' CRE19-001 (VSS 2019) [End][Winnie]
 
                         'Mask sample 1
@@ -1982,12 +2036,10 @@ Namespace Format
         ''' <remarks></remarks>
         Public Function formatDocumentIdentityNumberForIVRS(ByVal strDocCode As String, ByVal strIdentityNum As String) As String
             Select Case strDocCode
-                Case Component.DocType.DocTypeModel.DocTypeCode.HKIC, Component.DocType.DocTypeModel.DocTypeCode.HKBC, Component.DocType.DocTypeModel.DocTypeCode.EC
+                Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.EC, _
+                     DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140
 
-                    ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
                     If strIdentityNum.Trim().Length >= 7 Then
-                        ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Winnie]
                         Return strIdentityNum.Trim().Substring(strIdentityNum.Trim().Length - 7, 7)
                     Else
                         Return ""
@@ -1997,16 +2049,6 @@ Namespace Format
             End Select
             Return strIdentityNum
         End Function
-
-        'Public Function formatDocumentIdentityNumberForImmd(ByVal strDocCode As String, ByVal strIdentityNum As String) As String
-        '    Select Case strDocCode
-        '        Case Component.DocType.DocTypeModel.AdoptionCert
-        '            Return strIdentityNum.Substring(8, 5)
-        '        Case Else
-        '            Return String.Empty
-        '    End Select
-        '    Return strIdentityNum
-        'End Function
 
         ''' <summary>
         ''' Format DOB for display for different document
@@ -2110,6 +2152,13 @@ Namespace Format
                     'DD-MM-YYYY / MM-YYYY / YYYY
                     strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
 
+                    ' CRE20-0022 (Immu record) [Start][Martin]
+                Case Common.Component.DocType.DocTypeModel.DocTypeCode.CCIC,
+                     Common.Component.DocType.DocTypeModel.DocTypeCode.ROP140
+                    strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
+
+                    ' CRE20-0022 (Immu record) [End][Martin]
+
                 Case Common.Component.DocType.DocTypeModel.DocTypeCode.ID235B
                     'DD-MM-YYYY
                     strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
@@ -2155,11 +2204,12 @@ Namespace Format
                     Common.Component.DocType.DocTypeModel.DocTypeCode.IR,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.HKP,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
-                    Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                     ' CRE19-001 (VSS 2019) [End][Winnie]
 
                     strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
-                    
+
             End Select
             'CRE13-019-02 Extend HCVS to China [End][Winnie]
 
@@ -2214,6 +2264,12 @@ Namespace Format
 
                 Case Common.Component.DocType.DocTypeModel.DocTypeCode.VISA
                     'No Date of Issue
+
+                Case Common.Component.DocType.DocTypeModel.DocTypeCode.CCIC,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ROP140,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.PASS
+                    'No Date of Issue
+
             End Select
 
             Return strRes

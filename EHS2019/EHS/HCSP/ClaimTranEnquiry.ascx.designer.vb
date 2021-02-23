@@ -311,6 +311,15 @@ Partial Public Class ClaimTranEnquiry
     Protected WithEvents lblSP_Chi As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trPractice As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblPracticeText control.
     '''</summary>
     '''<remarks>
@@ -365,6 +374,15 @@ Partial Public Class ClaimTranEnquiry
     Protected WithEvents lblBankAcct As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trServiceType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trServiceType As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblServiceTypeText control.
     '''</summary>
     '''<remarks>
@@ -417,6 +435,87 @@ Partial Public Class ClaimTranEnquiry
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents udcInputEHSClaim As Global.HCSP.ucInputEHSClaim
+
+    '''<summary>
+    '''panRecipinetContactInfo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panRecipinetContactInfo As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''trContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblContactNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRemark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panJoinEHRSS As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblJoinEHRSSText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblJoinEHRSSText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblJoinEHRSS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''trCreateBy control.

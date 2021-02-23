@@ -101,6 +101,8 @@ Partial Public Class LoginChangePassword
         Select Case Me.SubPlatform
             Case EnumHCVUSubPlatform.CC
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "BannerCallCentre").ToString + ")"
+            Case EnumHCVUSubPlatform.VC
+                Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "BannerVaccinationCentre").ToString + ")"
             Case Else
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "Banner").ToString + ")"
         End Select

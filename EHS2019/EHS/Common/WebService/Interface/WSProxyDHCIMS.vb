@@ -849,14 +849,21 @@ Namespace WebService.Interface
                     Return "OP"
                 Case DocTypeModel.DocTypeCode.ADOPC
                     Return "AR"
-                    ' CRE17-018-04 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [Start][Koala]
                 Case DocTypeModel.DocTypeCode.OW
                     Return "OW"
                 Case DocTypeModel.DocTypeCode.TW
                     Return "TW"
                 Case DocTypeModel.DocTypeCode.OC
                     Return "OC"
-                    ' CRE17-018-04 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [End][Koala]
+                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                    ' --------------------------------------------------------------------------------------
+                Case DocTypeModel.DocTypeCode.CCIC
+                    Return "CCIC" ' Revise Later
+                Case DocTypeModel.DocTypeCode.ROP140
+                    Return "ROP140" ' Revise Later
+                Case DocTypeModel.DocTypeCode.PASS
+                    Return "PASS" ' Revise Later
+                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
                 Case Else
                     Throw New Exception(String.Format("Generate CIMS request object failed: Unhandle Document Type({0}).", strDocCode))
             End Select
@@ -881,17 +888,23 @@ Namespace WebService.Interface
                     Else
                         Return udtPersonalInfo.IdentityNum.Trim
                     End If
-                    ' CRE17-018-04 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 4 - Claim [End][Koala]
                 Case DocTypeModel.DocTypeCode.ADOPC
                     Return udtPersonalInfo.AdoptionPrefixNum + "/" + udtPersonalInfo.IdentityNum.Trim
-                    ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
                 Case DocTypeModel.DocTypeCode.OC
                     Return udtPersonalInfo.IdentityNum
                 Case DocTypeModel.DocTypeCode.OW
                     Return udtPersonalInfo.IdentityNum
                 Case DocTypeModel.DocTypeCode.TW
                     Return udtPersonalInfo.IdentityNum
-                    ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                    ' --------------------------------------------------------------------------------------
+                Case DocTypeModel.DocTypeCode.CCIC
+                    Return udtPersonalInfo.IdentityNum
+                Case DocTypeModel.DocTypeCode.ROP140
+                    Return udtPersonalInfo.IdentityNum
+                Case DocTypeModel.DocTypeCode.PASS
+                    Return udtPersonalInfo.IdentityNum
+                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
                 Case Else
                     Throw New Exception(String.Format("Generate CIMS request object failed: Unhandle Document Type({0}).", udtPersonalInfo.DocCode))
             End Select

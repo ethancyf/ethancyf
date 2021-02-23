@@ -149,24 +149,17 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblReadonlyHKIDIssueDateText.Text = Me.GetGlobalResourceObject("Text", "DateOfIssue")
-            'Me.lblReadonlyHKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
-            'Me.lblReadonlyHKIDModificationText.Text = Me.GetGlobalResourceObject("Text", "HKID")
 
-            If MyBase.SessionHandler().Language = Common.Component.CultureLanguage.TradChinese Then
-                Me.lblReadonlyHKIDText.Text = udtDocTypeModel.DocIdentityDescChi
-                Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDescChi
-            Else
-                Me.lblReadonlyHKIDText.Text = udtDocTypeModel.DocIdentityDesc
-                Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblReadonlyHKIDText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            Me.lblReadonlyHKIDModificationText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-            ' ----------------------------------------------------------
             If MyBase.EHSAccountPersonalInfo.HKICSymbol <> String.Empty And MyBase.ShowHKICSymbol Then
                 Me.lblReadonlyHKIDText.Text = lblReadonlyHKIDText.Text + Me.GetGlobalResourceObject("Text", "HKICSymbolShort")
                 Me.lblReadonlyHKIDModificationText.Text = Me.lblReadonlyHKIDModificationText.Text + Me.GetGlobalResourceObject("Text", "HKICSymbolShort")
             End If
-            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
         End Sub
 

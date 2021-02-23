@@ -3,9 +3,24 @@
 GO
 
 SET ANSI_NULLS ON
+GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0XX (Immu record)
+-- Modified by:		Raiman CHONG
+-- Modified date:	1 Feb 2021
+-- Description:		Add Search Criteria [DocType] AND [DocNo]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-015-12 (Tx Summary)
+-- Modified by:		Koala CHENG
+-- Modified date:	23 Dec 2020
+-- Description:		Get [ConsultAndRegFeeRMB] AND [Subsidize_Code] for SSSCMC scheme
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -90,7 +105,10 @@ CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_BySPIDBankAcctTransID]
 	@Practice_Seq	smallint,
 	@Record_Status	char(1),
 	@Scheme_Code	char(10),
-	@Available_HCSP_SubPlatform	char(2)
+	@Available_HCSP_SubPlatform	char(2),
+	@doc_code     char(20),    
+	@identity_no1    varchar(20),    
+	@Adoption_Prefix_Num char(7)
 AS BEGIN
 -- =============================================
 -- Declaration
@@ -107,6 +125,10 @@ AS BEGIN
 	DECLARE @In_Record_Status	char(1)
 	DECLARE @In_Scheme_Code		char(10)
 	DECLARE @In_Available_HCSP_SubPlatform	char(2)
+	DECLARE @In_doc_code     char(20)  
+	DECLARE @In_identity_no1    varchar(20)  
+	DECLARE @In_Adoption_Prefix_Num char(7)
+
 	SET @In_TransactionID = @TransactionID
 	SET @In_TranDtmFrom = @TranDtmFrom
 	SET @In_TranDtmTo = @TranDtmTo
@@ -116,6 +138,20 @@ AS BEGIN
 	SET @In_Record_Status = @Record_Status
 	SET @In_Scheme_Code = @Scheme_Code
 	SET @In_Available_HCSP_SubPlatform = @Available_HCSP_SubPlatform
+	SET @In_doc_code    = @doc_code 
+	SET @In_identity_no1    = @identity_no1 
+	SET @In_Adoption_Prefix_Num = @Adoption_Prefix_Num 
+
+	DECLARE @In_identity_no2 varchar(20)  
+
+	IF @In_identity_no1 is null  
+	BEGIN  
+	 set @In_identity_no2  = null  
+	END  
+	ELSE  
+	BEGIN  
+	 set @In_identity_no2 = ' ' + @In_identity_no1  
+	END 
 
 	DECLARE @maxrow					int
 	
@@ -145,7 +181,9 @@ AS BEGIN
 		IsUpload					varchar(1),
 		Category_Code				varchar(10),
 		High_Risk					char(1),
-		DHC_Service					char(1)
+		DHC_Service					char(1),
+		Subsidize_Code				char(10),
+		ConsultAndRegFeeRMB			Money
 	)
 
 	DECLARE @TempTransactionAdditionalField table (
@@ -204,7 +242,9 @@ AS BEGIN
 		IsUpload,
 		Category_Code,
 		High_Risk,
-		DHC_Service
+		DHC_Service,
+		Subsidize_Code,
+		ConsultAndRegFeeRMB
 	)
 	SELECT
 		VT.Transaction_ID,
@@ -231,8 +271,9 @@ AS BEGIN
 		VT.IsUpload,
 		VT.Category_Code,
 		VT.High_Risk,
-		VT.DHC_Service
-
+		VT.DHC_Service,
+		TD.Subsidize_Code,
+		TAF.AdditionalFieldValueCode
 	from VoucherTransaction VT WITH (NOLOCK)
 	INNER JOIN ServiceProvider SP WITH (NOLOCK)
 		ON VT.SP_ID = SP.SP_ID
@@ -259,6 +300,8 @@ AS BEGIN
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
 		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
+	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
 	where isnull(VT.[voucher_acc_id],'') <> ''
 	and isnull(VT.[invalid_acc_id],'') = ''
@@ -272,7 +315,10 @@ AS BEGIN
 	and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
 	AND (@In_Record_Status IS NULL OR @In_Record_Status = VT.Record_Status)
 	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-
+	AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
 	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
 	BEGIN
 		RAISERROR('00009', 16, 1)
@@ -306,7 +352,9 @@ AS BEGIN
 		IsUpload,
 		Category_Code,
 		High_Risk,
-		DHC_Service
+		DHC_Service,
+		Subsidize_Code,
+		ConsultAndRegFeeRMB
 	)
 	SELECT
 		VT.Transaction_ID,
@@ -333,8 +381,9 @@ AS BEGIN
 		VT.IsUpload,
 		VT.Category_Code,
 		VT.High_Risk,
-		VT.DHC_Service
-		
+		VT.DHC_Service,
+		TD.Subsidize_Code,
+		TAF.AdditionalFieldValueCode
 	FROM VoucherTransaction VT WITH (NOLOCK)
 	INNER JOIN ServiceProvider SP WITH (NOLOCK)
 		ON VT.SP_ID = SP.SP_ID
@@ -355,6 +404,8 @@ AS BEGIN
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
 		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
+	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
 	where isnull(VT.invalid_acc_id,'') = ''
 	and isnull(VT.special_acc_id,'') = ''
@@ -373,7 +424,10 @@ AS BEGIN
 				@In_Record_Status = VT.Record_Status)
 		)
 	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-
+		AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
 	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
 	BEGIN
 		RAISERROR('00009', 16, 1)
@@ -407,7 +461,9 @@ AS BEGIN
 		IsUpload,
 		Category_Code,
 		High_Risk,
-		DHC_Service
+		DHC_Service,
+		Subsidize_Code,
+		ConsultAndRegFeeRMB
 	)
 	SELECT
 		VT.Transaction_ID,
@@ -434,8 +490,9 @@ AS BEGIN
 		VT.IsUpload,
 		VT.Category_Code,
 		VT.High_Risk,
-		VT.DHC_Service
-	
+		VT.DHC_Service,
+		TD.Subsidize_Code,
+		TAF.AdditionalFieldValueCode
 	from VoucherTransaction VT WITH (NOLOCK)
 	INNER JOIN ServiceProvider SP WITH (NOLOCK)
 		ON VT.SP_ID = SP.SP_ID
@@ -459,6 +516,8 @@ AS BEGIN
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
 		ON VT.Transaction_ID = TD.Transaction_ID  AND TD.Total_Amount_RMB IS NOT NULL
+	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
 	where isnull(VT.invalid_acc_id,'') = ''
 	and isnull(VT.special_acc_id,'') <> ''
@@ -478,7 +537,10 @@ AS BEGIN
 				isnull(RAT.Authorised_Status,'') <> 'R')
 		)
 	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-	
+		AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
 		
 	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
 	BEGIN
@@ -514,7 +576,9 @@ AS BEGIN
 		IsUpload,
 		Category_Code,
 		High_Risk,
-		DHC_Service
+		DHC_Service,
+		Subsidize_Code,
+		ConsultAndRegFeeRMB
 	)
 	SELECT
 		VT.Transaction_ID,
@@ -541,7 +605,9 @@ AS BEGIN
 		VT.IsUpload,
 		VT.Category_Code,
 		VT.High_Risk,
-		VT.DHC_Service
+		VT.DHC_Service,
+		TD.Subsidize_Code,
+		TAF.AdditionalFieldValueCode
 
 	from VoucherTransaction VT WITH (NOLOCK)
 	INNER JOIN ServiceProvider SP WITH (NOLOCK)
@@ -568,6 +634,8 @@ AS BEGIN
 		ON VT.Scheme_Code = SC.Scheme_Code
 	LEFT JOIN TransactionDetail TD WITH (NOLOCK)  
 		ON VT.Transaction_ID = TD.Transaction_ID AND TD.Total_Amount_RMB IS NOT NULL
+	LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)  
+		ON VT.Transaction_ID = TAF.Transaction_ID  AND TAF.AdditionalFieldID = 'ConsultAndRegFeeRMB'
 
 	where isnull(VT.invalid_acc_id,'') <> ''
 	AND VT.Record_Status NOT IN ('B', 'D')
@@ -579,7 +647,11 @@ AS BEGIN
 	and (@In_Scheme_Code is null or @In_Scheme_Code = VT.Scheme_Code)
 	AND (@In_Record_Status IS NULL OR @In_Record_Status = VT.Record_Status)
 	AND (@In_Available_HCSP_SubPlatform is null or SC.Available_HCSP_SubPlatform = @In_Available_HCSP_SubPlatform)
-	
+		AND (@In_identity_no1 is null or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no1)  
+			or PINFO.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @In_identity_no2))
+	 AND (@In_Adoption_Prefix_Num is null or PINFO.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @In_Adoption_Prefix_Num)) 
+	  AND (@In_doc_code is null or @doc_code = VT.Doc_Code)  
+
 	IF (SELECT COUNT(1) FROM @TempTransaction) > @maxrow
 	BEGIN
 		RAISERROR('00009', 16, 1)
@@ -1401,7 +1473,9 @@ AS BEGIN
 		T.Manual_Reimburse, 
 		T.IsUpload,
 		LEFT(DT.doc_display_code + Space(20), 20)  + convert(varchar, DecryptByKey(T.Encrypt_Field1)) as DocCode_IdentityNum,
-		T.Scheme_Code + ' ' + T.Transaction_ID	as SchemeCode_TransactionID		-- CRE11-024-02
+		T.Scheme_Code + ' ' + T.Transaction_ID	as SchemeCode_TransactionID,		-- CRE11-024-02
+		T.Subsidize_Code, -- Use for determine GP or Waiver 
+		T.ConsultAndRegFeeRMB
 	FROM
 		@TempTransaction T
 			INNER JOIN DocType DT WITH (NOLOCK)

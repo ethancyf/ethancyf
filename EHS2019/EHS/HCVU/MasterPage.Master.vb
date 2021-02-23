@@ -79,6 +79,8 @@ Partial Public Class MasterPage
         Select Case DirectCast(Me.Page, BasePage).SubPlatform
             Case EnumHCVUSubPlatform.CC
                 tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "BannerCallCentre").ToString + ")"
+            Case EnumHCVUSubPlatform.VC
+                tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "BannerVaccinationCentre").ToString + ")"
             Case Else
                 tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "Banner") + ")"
         End Select

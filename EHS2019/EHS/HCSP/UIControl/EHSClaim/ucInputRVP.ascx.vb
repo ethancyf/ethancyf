@@ -13,7 +13,8 @@ Imports System.Web.Security.AntiXss
 Partial Public Class ucInputRVP
     Inherits ucInputEHSClaimBase
 
-    Public Const FunctCode As String = Common.Component.FunctCode.FUNT020201
+    'Public Const FunctCode As String = Common.Component.FunctCode.FUNT020201
+    Public FunctCode As String = (New BLL.SessionHandler).ClaimFunctCodeGetFromSession() 'Cre20-0xx Immue record [Nichole]
 
     'Events 
     Public Event SearchButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -285,7 +286,8 @@ Partial Public Class ucInputRVP
             Me.lblRCHNameChi.Text = String.Empty
 
             Dim udtSessionHandler As New BLL.SessionHandler()
-            udtSessionHandler.RVPRCHCodeRemoveFromSession(Common.Component.FunctCode.FUNT020201)
+            'udtSessionHandler.RVPRCHCodeRemoveFromSession(Common.Component.FunctCode.FUNT020201)
+            udtSessionHandler.RVPRCHCodeRemoveFromSession(FunctCode)
         Else
             Me.lookUpRCHCode()
         End If
@@ -298,12 +300,14 @@ Partial Public Class ucInputRVP
 
         If dtResult.Rows.Count > 0 Then
             Me.SetUpRCHInfo(dtResult.Rows(0))
-            udtSessionHandler.RVPRCHCodeSaveToSession(Common.Component.FunctCode.FUNT020201, dtResult.Rows(0)("RCH_Code").ToString().Trim().ToUpper())
+            udtSessionHandler.RVPRCHCodeSaveToSession(FunctCode, dtResult.Rows(0)("RCH_Code").ToString().Trim().ToUpper())
+            'udtSessionHandler.RVPRCHCodeSaveToSession(Common.Component.FunctCode.FUNT020201, dtResult.Rows(0)("RCH_Code").ToString().Trim().ToUpper())
         Else
             Me.lblRCHCode.Text = String.Empty
             Me.lblRCHName.Text = String.Empty
             Me.lblRCHNameChi.Text = String.Empty
-            udtSessionHandler.RVPRCHCodeRemoveFromSession(Common.Component.FunctCode.FUNT020201)
+            udtSessionHandler.RVPRCHCodeRemoveFromSession(FunctCode)
+            ' udtSessionHandler.RVPRCHCodeRemoveFromSession(Common.Component.FunctCode.FUNT020201)
         End If
     End Sub
 

@@ -35,8 +35,6 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const DUPLICATE = "DUPLICATE"
 
-            ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             ''' <summary>
             ''' DOSE SEQ EXIST: eg. The first dose should taken before second Dose, The second dose should taken before third Dose
             ''' </summary>
@@ -46,7 +44,6 @@ Namespace Component.ClaimRules
             ''' SERVICE DATE: eg. Compare the service date with specific date
             ''' </summary>
             Public Const SERVICEDATE = "SERVICEDATE"
-            ' CRE19-031 (VSS MMR Upload) [End][Chris YIM]
 
             ''' <summary>
             ''' SUBSIDIZE SEQ: eg. 1. The service date of SIV (4th season) could not be earlier than then same subsidize item of previous season.
@@ -62,8 +59,6 @@ Namespace Component.ClaimRules
             Public Const INNERSUBSIDIZE = "INNERSUBSIDIZE"
             Public Const SUBSIDIZEMUTEX = "SUBSIDIZEMUTEX"
 
-            ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             ''' <summary>
             ''' In same season, both 1st dose and 2nd dose are vaccinated with the same school code
             ''' </summary>
@@ -83,8 +78,30 @@ Namespace Component.ClaimRules
             ''' Check patient whether is in list of Gov SIV
             ''' </summary>
             Public Const CHECK_ON_LIST = "CHECKONLIST"
-            ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
 
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ''' <summary>
+            ''' Check Brand of COVID19
+            ''' </summary>
+            Public Const VACCINE_BRAND = "VACCINEBRAND"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ''' <summary>
+            ''' Check Brand of COVID19
+            ''' </summary>
+            Public Const VACCINE_WINDOW = "VACCINEWINDOW"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ''' <summary>
+            ''' In same season, no COVID19 dose is vaccinated
+            ''' </summary>
+            Public Const NO_DOSE_IN_COVID19 = "NODOSEINCOVID19"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Class
 

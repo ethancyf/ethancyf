@@ -421,13 +421,12 @@ Namespace Text
             If Not udtEHSAccount Is Nothing Then
                 'Get Documnet type full name
                 udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-                If Me._udtSessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
-                    strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocNameChi
-                    strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDescChi
-                Else
-                    strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocName
-                    strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDesc
-                End If
+
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                strDocumentTypeFullName = udtDocTypeModelList.Filter(strDocCode).DocName(Me._udtSessionHandler.Language)
+                strDocIdentityDesc = udtDocTypeModelList.Filter(strDocCode).DocIdentityDesc(Me._udtSessionHandler.Language)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 '==================================================================== Code for SmartID ============================================================================
                 If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
@@ -500,7 +499,7 @@ Namespace Text
                         'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
                         Me.lblstep1a1HKID.Text = Me._udtFormatter.formatHKID(udtEHSAccountPersonalInfo.IdentityNum, False)
 
-                    Case DocType.DocTypeModel.DocTypeCode.HKBC
+                    Case DocType.DocTypeModel.DocTypeCode.HKBC, DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record)[Martin]
                         'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "RegistrationNo")
                         Me.lblstep1a1HKID.Text = Me._udtFormatter.formatHKID(udtEHSAccountPersonalInfo.IdentityNum, False)
 
@@ -520,7 +519,7 @@ Namespace Text
                         'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "NoOfEntry")
                         Me.lblstep1a1HKID.Text = Me._udtFormatter.FormatDocIdentityNoForDisplay(udtEHSAccountPersonalInfo.DocCode, udtEHSAccountPersonalInfo.IdentityNum, False, udtEHSAccountPersonalInfo.AdoptionPrefixNum)
 
-                    Case DocTypeModel.DocTypeCode.DI
+                    Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record)[Martin]
                         'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "IdentityDocNo")
                         Me.lblstep1a1HKID.Text = Me._udtFormatter.FormatDocIdentityNoForDisplay(udtEHSAccountPersonalInfo.DocCode, udtEHSAccountPersonalInfo.IdentityNum, False)
                         'Me.lblstep1a1HKID.Text = udtEHSAccountPersonalInfo.IdentityNum
@@ -528,8 +527,10 @@ Namespace Text
 
                 Select Case udtEHSAccountPersonalInfo.DocCode
                     Case DocType.DocTypeModel.DocTypeCode.HKIC, _
-                     DocType.DocTypeModel.DocTypeCode.HKBC, _
-                      DocType.DocTypeModel.DocTypeCode.EC
+                         DocType.DocTypeModel.DocTypeCode.HKBC, _
+                         DocType.DocTypeModel.DocTypeCode.EC, _
+                         DocType.DocTypeModel.DocTypeCode.CCIC, _
+                         DocType.DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record)[Martin]
                         Me.lblstep1a1HKID.Text = Me._udtFormatter.formatHKID(udtEHSAccountPersonalInfo.IdentityNum, False)
                     Case DocType.DocTypeModel.DocTypeCode.ADOPC
                         Me.lblstep1a1HKID.Text = udtEHSAccountPersonalInfo.AdoptionField
@@ -2191,6 +2192,10 @@ Namespace Text
                 'CRE16-002 (Revamp VSS) [End][Chris YIM]
                 SessionHandler.DocumentTypeSelectedRemoveFromSession(FunctCode)
                 'SessionHandler.EHSClaimSessionRemove(FunctCode)
+
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
+                SessionHandler.SchemeSelectedForPracticeRemoveFromSession(FunctCode)
+                ' CRE20-0XX (HA Scheme) [Start][Winnie]
             Else
                 ' Check the selected practice is same as the one in session or not.
                 Dim sessionPractice As BLL.PracticeDisplayModel = SessionHandler.PracticeDisplayGetFromSession(FunctCode)

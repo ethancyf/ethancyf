@@ -4,6 +4,7 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.Practice
 Imports Common.Component.Scheme
 
+
 Namespace BLL
     Public Class SessionHandlerBLL
 
@@ -15,6 +16,16 @@ Namespace BLL
             Public Const SESS_EHSTransaction As String = "SESS_EHSTRANSACTION"
             Public Const SESS_EHSTransaction_Without_Transaction_Detail As String = "SESS_EHSTRANSACTION_WITHOUT_TRANSACTION_DETAIL"
             Public Const SESS_EHSClaimVaccine As String = "SESS_EHSCLAIMVACCINE"
+
+
+            ' CRE20-0022 (Immu record) [Start][Raiman]
+            ' ---------------------------------------------------------------------------------------------------------
+            'EHSTransaction Reprint
+            Public Const SESS_EHSClaimPrintOutFunctionCode As String = "SESS_EHSCLAIM_PRINTOUT_FUNCTIONCODE"
+            Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
+            Public Const SESS_CLAIMCOVID19_ValidReprint As String = "SESS_CLAIMCOVID19_VALIDREPRINT"
+            ' CRE20-0022 (Immu record) [Start][Raiman]
+            ' ---------------------------------------------------------------------------------------------------------
 
             'Scheme
             Public Const SESS_SchemeClaim As String = "SESS_SCHEMECLAIM"
@@ -52,11 +63,29 @@ Namespace BLL
             Public Const SESS_EHSAccount As String = "SESS_EHSACCOUNT"
             ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Const SESS_ClaimCOVID19 As String = "SESS_CLAIMCOVID19"
+            Public Const SESS_ClaimCOVID19_Booth As String = "SESS_CLAIMCOVID19_Booth"
+            Public Const SESS_ClaimCOVID19_Category As String = "SESS_CLAIMCOVID19_Category"
+            Public Const SESS_ClaimCOVID19_VaccineLotNo As String = "SESS_CLAIMCOVID19_VaccineLotNo"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             Public Const SESS_HAPatient As String = "SESS_HA_PATIENT"
             Public Const SESS_NewClaim As String = "SESS_NEW_CLAIM"
             ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            '------------------------------------------------------------------------------------------
+            'SmartIC Content Session
+            '------------------------------------------------------------------------------------------
+            Public Const SESS_SmartIDContent As String = "SESS_SMARTIDCONTENT"
+            Public Const SESS_IDEASComboClient As String = "SESS_IDEASComboClient"
+            Public Const SESS_IDEASComboVersion As String = "SESS_IDEASComboVersion"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Class
 
@@ -95,6 +124,23 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_EHSTransaction_Without_Transaction_Detail))
         End Sub
         ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+#End Region
+
+
+#Region "EHS Claim Printout Step"
+
+        Public Sub EHSClaimPrintoutFunctionCodeSaveToSession(ByVal strFunctCode As String)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_EHSClaimPrintOutFunctionCode)) = strFunctCode
+        End Sub
+
+        Public Function EHSClaimPrintoutFunctionCodeGetFromSession() As String
+            Return HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_EHSClaimPrintOutFunctionCode))
+        End Function
+
+        Public Sub EHSClaimPrintoutFunctionCodeRemoveFromSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_EHSClaimPrintOutFunctionCode))
+        End Sub
+
 #End Region
 
 #Region "Claim Vaccination Transaction"
@@ -412,6 +458,87 @@ Namespace BLL
         End Sub
 #End Region
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+
+#Region "COVID-19"
+        ' CRE20-0022 (Immu record) [Start][Raiman]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "COVID-19 - Vaccination Card"
+        Public Sub ClaimCOVID19VaccinationCardSaveToSession(ByVal udtEHSTransaction As TransactionDetailVaccineModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)) = udtEHSTransaction
+        End Sub
+
+        Public Function ClaimCOVID19VaccinationCardGetFromSession(ByVal strFunctionCode As String) As TransactionDetailVaccineModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard)), TransactionDetailVaccineModel)
+        End Function
+
+        Public Sub ClaimCOVID19VaccinationCardRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_VaccinationCard))
+        End Sub
+
+#End Region
+        ' CRE20-0022 (Immu record) [End][Raiman]
+
+#Region "COVID-19 - Valid Reprint Vaccination Card"
+        Public Sub ClaimCOVID19ValidReprintSaveToSession(ByVal blnValid As Boolean, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_ValidReprint)) = blnValid
+        End Sub
+
+        Public Function ClaimCOVID19ValidReprintGetFromSession(ByVal strFunctionCode As String) As Boolean
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_ValidReprint)), Boolean)
+        End Function
+
+        Public Sub ClaimCOVID19ValidReprintRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_ValidReprint))
+        End Sub
+
+#End Region
+
+#End Region
+
+#Region "SmartID"
+        '---------------------------------------------------------------------------------------
+        ' SmartID
+        '---------------------------------------------------------------------------------------
+        'SmartIDContent Model
+        Public Sub SmartIDContentSaveToSession(ByVal strFunctionCode As String, ByVal udtSmartIDContent As BLL.SmartIDContentModel)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SmartIDContent)) = udtSmartIDContent
+        End Sub
+
+        Public Function SmartIDContentGetFormSession(ByVal strFunctionCode As String) As BLL.SmartIDContentModel
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SmartIDContent)), BLL.SmartIDContentModel)
+        End Function
+
+        Public Sub SmartIDContentRemoveFormSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SmartIDContent))
+        End Sub
+
+        'SmartID Ideas Combo Client Installation Result
+        Public Sub IDEASComboClientSaveToSession(ByVal strResult As String)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboClient)) = strResult
+        End Sub
+
+        Public Function IDEASComboClientGetFormSession() As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboClient)), String)
+        End Function
+
+        Public Sub IDEASComboClientRemoveFormSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_IDEASComboClient))
+        End Sub
+
+        'SmartID Ideas Combo Version
+        Public Sub IDEASComboVersionSaveToSession(ByVal strVersion As String)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboVersion)) = strVersion
+        End Sub
+
+        Public Function IDEASComboVersionGetFormSession() As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_IDEASComboVersion)), String)
+        End Function
+
+        Public Sub IDEASComboVersionRemoveFormSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_IDEASComboVersion))
+        End Sub
+#End Region
 
     End Class
 End Namespace

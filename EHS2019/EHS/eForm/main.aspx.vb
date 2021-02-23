@@ -1,6 +1,7 @@
 ﻿Imports Common.Component.Scheme
 Imports Common.ComObject
 Imports Common.Component
+Imports Common.ComFunction
 
 Partial Public Class main
     Inherits BasePage
@@ -111,6 +112,14 @@ Partial Public Class main
         ObsoletedOSHandler.HandleObsoleteOS(CommonSessionHandler.OS, ModalPopupExtenderReminderWindowsVersion, ObsoletedOSHandler.Version.Full, _
                                             Me.FunctionCode, LogID.LOG00076, Me, Nothing)
         ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
+
+        'CRE20-018 Stop Token Sharing [Start][Nichole]
+        Dim udtGeneralFunction As New GeneralFunction
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+        If streHRSSToken = YesNo.No Then
+            trEHRSSConsentForm.Visible = False
+        End If
+        'CRE20-018 Stop Token Sharing [End][Nichole]
 
     End Sub
 

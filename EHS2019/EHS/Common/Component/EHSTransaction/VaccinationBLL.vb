@@ -88,26 +88,44 @@ Namespace Component.EHSTransaction
                 htRecordSummary = New Hashtable
             End If
 
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
             '-----------------------------------------------------------------------------
             ' 1. Get EHS vaccine information into collection "udtTranDetailVaccineList"
             '-----------------------------------------------------------------------------
-            udtAuditLogEntry.AddDescripton("Doc Code", udtPersonalInfo.DocCode)
-            udtAuditLogEntry.AddDescripton("Doc No.", udtPersonalInfo.IdentityNum)
-            udtAuditLogEntry.WriteStartLog(LogID.LOG01000) ' Get EHS Vaccination
-
             Dim udtEHSTransactionBLL As New EHSTransactionBLL
 
             If blnGetEHSTransaction Then
-                udtTranDetailVaccineList = udtEHSTransactionBLL.getTransactionDetailVaccine(udtPersonalInfo)
+
+                Dim enumSource As EHSTransactionBLL.Source = EHSTransactionBLL.Source.GetFromDB
+
+                If udtVaccineResultBag.HAVaccineResult IsNot Nothing OrElse udtVaccineResultBag.DHVaccineResult IsNot Nothing Then
+                    enumSource = EHSTransactionBLL.Source.GetFromSession
+                End If
+
+                If enumSource = EHSTransactionBLL.Source.GetFromDB Then
+                    udtAuditLogEntry.AddDescripton("Doc Code", udtPersonalInfo.DocCode)
+                    udtAuditLogEntry.AddDescripton("Doc No.", udtPersonalInfo.IdentityNum)
+                    udtAuditLogEntry.WriteStartLog(LogID.LOG01000) ' Get EHS Vaccination
+                End If
+
+                udtTranDetailVaccineList = udtEHSTransactionBLL.getTransactionDetailVaccine(udtPersonalInfo, enumSource).Copy
+
+                udtVaccineResultBagReturn.EHSTranDetailVaccineList = udtTranDetailVaccineList.Copy
 
                 ' Compare the demographic
                 CompareDemographic(udtTranDetailVaccineList, udtPersonalInfo)
 
                 htRecordSummary.Add(VaccineRecordProvider.EHS, udtTranDetailVaccineList.Count)
 
-                udtAuditLogEntry.AddDescripton("No. of record", udtTranDetailVaccineList.Count)
-                udtAuditLogEntry.WriteEndLog(LogID.LOG01001) ' Get EHS Vaccination complete
+                If enumSource = EHSTransactionBLL.Source.GetFromDB Then
+                    udtAuditLogEntry.AddDescripton("No. of record", udtTranDetailVaccineList.Count)
+                    udtAuditLogEntry.WriteEndLog(LogID.LOG01001) ' Get EHS Vaccination complete
+                End If
+
             End If
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             '-----------------------------------------------------------------------------
             ' 2. Get CMS vaccine information into collection "udtTranDetailVaccineList"
@@ -563,7 +581,7 @@ Namespace Component.EHSTransaction
                                 ' CRE19-007 (DH CIMS Sub return code) [End][Chris YIM]
 
                                 ' CRE19-007 (DH CIMS Sub return code) [Start][Koala]
-                                Select udtDHVaccineResult.SingleClient.ReturnClientCIMSCode
+                                Select Case udtDHVaccineResult.SingleClient.ReturnClientCIMSCode
                                     Case DHTransaction.DHClientModel.ReturnCIMSCode.AllDemographicMatch_PartialRecord
                                         udtAuditLogEntry.WriteEndLog(LogID.LOG01106) ' Get CIMS Vaccination complete: Partial record found
 
@@ -577,7 +595,7 @@ Namespace Component.EHSTransaction
                                         End If
                                 End Select
                                 ' CRE19-007 (DH CIMS Sub return code) [End][Koala]
-                              
+
                             End If
 
                             Return EnumVaccinationRecordReturnStatus.OK
@@ -782,7 +800,8 @@ Namespace Component.EHSTransaction
                         DocTypeModel.DocTypeCode.REPMT, DocTypeModel.DocTypeCode.ID235B, DocTypeModel.DocTypeCode.VISA
                     Return True
 
-                Case DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.ADOPC
+                Case DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.ADOPC, DocTypeModel.DocTypeCode.OW, _
+                    DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                     Return False
 
                 Case Else

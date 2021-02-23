@@ -994,10 +994,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim udtInputPicker As New InputPickerModel
             Dim udtInputVaccineCollection As New InputVaccineModelCollection
 
-            ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
-            ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
+            udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
 
             '------------------------------------------------------------------------------
             ' 1. Retrieve and concat the current claiming vaccination from TransactionDetail
@@ -1037,9 +1035,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
             '-------------------------------------------------------------------
             udtInputPicker.HighRisk = udtEHSTransaction.HighRisk
 
-
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             '-------------------------------------------------------------------
             ' 4. Collect "School Code"
             '-------------------------------------------------------------------
@@ -1053,7 +1048,17 @@ Namespace Component.EHSClaim.EHSClaimBLL
             End If
 
             udtInputPicker.SchoolCode = strSchoolCode
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            '-------------------------------------------------------------------
+            ' 4. Collect "Vaccination Record"
+            '-------------------------------------------------------------------
+            If udtEHSTransaction.TransactionAdditionFields.VaccineBrand IsNot Nothing Then
+                udtInputPicker.Brand = udtEHSTransaction.TransactionAdditionFields.VaccineBrand.Trim
+            End If
+            udtInputPicker.VaccinationRecord = udtTransactionBenefitDetailList
+
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             ' Check Claim Rule
             ' ------------------------------------------------------------------------------------------------------------------------------------
@@ -1558,22 +1563,22 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim blnExceedLimit As Boolean = False
             Dim udtDocTypeBLL As New DocTypeBLL()
 
-            Dim udtDocTypeList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
+            Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtEHSTransaction.SchemeCode)
 
-            If udtDocTypeList.Count > 0 Then
-                Dim udtDocTypeModel As DocTypeModel = udtDocTypeList.Filter(udtEHSTransaction.DocCode)
-                If Not udtDocTypeModel Is Nothing Then
-                    If udtDocTypeModel.AgeUpperLimit.HasValue OrElse udtDocTypeModel.AgeLowerLimit.HasValue Then
-                        Dim dtmPassDOB As Date = EHSClaimValidationBLL.ConvertDateOfBirthByCalMethod(udtDocTypeModel.AgeCalMethod, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB)
+            If udtSchemeDocTypeList.Count > 0 Then
+                Dim udtSchemeDocTypeModel As SchemeDocTypeModel = udtSchemeDocTypeList.FilterDocCode(udtEHSTransaction.DocCode)(0)
+                If Not udtSchemeDocTypeModel Is Nothing Then
+                    If udtSchemeDocTypeModel.AgeUpperLimit.HasValue OrElse udtSchemeDocTypeModel.AgeLowerLimit.HasValue Then
+                        Dim dtmPassDOB As Date = EHSClaimValidationBLL.ConvertDateOfBirthByCalMethod(udtSchemeDocTypeModel.AgeCalMethod, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB)
 
-                        If udtDocTypeModel.AgeLowerLimit.HasValue Then
-                            Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtDocTypeModel.AgeLowerLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
-                            blnExceedLimit = blnExceedLimit Or (intPassValue < udtDocTypeModel.AgeLowerLimit.Value)
+                        If udtSchemeDocTypeModel.AgeLowerLimit.HasValue Then
+                            Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtSchemeDocTypeModel.AgeLowerLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
+                            blnExceedLimit = blnExceedLimit Or (intPassValue < udtSchemeDocTypeModel.AgeLowerLimit.Value)
                         End If
 
-                        If udtDocTypeModel.AgeUpperLimit.HasValue Then
-                            Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtDocTypeModel.AgeUpperLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
-                            blnExceedLimit = blnExceedLimit Or (intPassValue >= udtDocTypeModel.AgeUpperLimit.Value)
+                        If udtSchemeDocTypeModel.AgeUpperLimit.HasValue Then
+                            Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtSchemeDocTypeModel.AgeUpperLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
+                            blnExceedLimit = blnExceedLimit Or (intPassValue >= udtSchemeDocTypeModel.AgeUpperLimit.Value)
                         End If
                     End If
 

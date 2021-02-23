@@ -82,20 +82,26 @@
                         <asp:Label ID="lblSP" runat="server" CssClass="tableText"></asp:Label>
                         <asp:Label ID="lblSP_Chi" runat="server" CssClass="tableTextChi"></asp:Label></td>
                 </tr>
-                <tr>
+                <tr id="trPractice" runat="server">
                     <td style="vertical-align: top" class="tableCellStyle">
                         <asp:Label ID="lblPracticeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, Practice %>"></asp:Label></td>
                     <td align="left" style="vertical-align: top">
                         <asp:Label ID="lblPractice" runat="server" CssClass="tableText"></asp:Label>
                         <asp:Label ID="lblPractice_Chi" runat="server" CssClass="tableTextChi"></asp:Label></td>
                 </tr>
+                <%--<tr id="trContactNo" runat="server"  style="display: none">
+                    <td style="vertical-align: top" class="tableCellStyle">
+                        <asp:Label ID="lblContactText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label></td>
+                    <td style="vertical-align: top">
+                        <asp:Label ID="lblContact" runat="server" CssClass="tableText"></asp:Label>
+                </tr>--%>
                 <tr id="trBankAcct" runat="server">
                     <td style="vertical-align: top" class="tableCellStyle">
                         <asp:Label ID="lblBankAcctText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, BankAccountNo %>"></asp:Label></td>
                     <td style="vertical-align: top">
                         <asp:Label ID="lblBankAcct" runat="server" CssClass="tableText"></asp:Label></td>
                 </tr>
-                <tr>
+                <tr id="trServiceType" runat="server">
                     <td style="vertical-align: top" class="tableCellStyle">
                         <asp:Label ID="lblServiceTypeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, ServiceType %>"></asp:Label></td>
                     <td style="vertical-align: top">
@@ -111,8 +117,49 @@
                         <uc4:ucInputEHSClaim ID="udcInputEHSClaim" runat="server" Visible="false"></uc4:ucInputEHSClaim>
                     </td>
                 </tr>
-                <tr style="height: 4px"></tr>
+                <tr style="height: 2px"></tr>
             </table>
+
+            <asp:Panel ID="panRecipinetContactInfo" runat="server">
+            <table style="width: 100%;border-spacing:0;padding:0px;border-collapse:collapse">
+                <%--<tr>
+                    <td class="eHSTableHeading" colspan="2">
+                        <asp:Label ID="lblStep3aRecipinetContactInfoHeading" runat="server" Text="<%$ Resources:Text, RecipientContactInformation%>" />
+                    </td>
+                </tr>--%>
+                <tr id="trContactNo" runat="server" visible="false">
+                    <td style="height:25px;width: 205px;vertical-align:top">
+                        <asp:Label ID="lblContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" Style="position:relative;left:-1px"/>
+                    </td>
+                    <td style="height:25px;vertical-align:top">
+                        <asp:Label ID="lblContactNo" runat="server" CssClass="tableText" Style="position:relative;left:-2px"/>
+                    </td>
+                </tr>
+                <%--<tr>
+                    <td style="padding-bottom:10px">
+                    </td>
+                </tr>--%>
+                <tr>
+                    <td style="height:25px;width: 205px;vertical-align:top">
+                        <asp:Label ID="lblRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" Style="position:relative;left:-1px"/>
+                    </td>
+                    <td style="height:25px;vertical-align:top">
+                        <asp:Label ID="lblRemark" runat="server" CssClass="tableText" Style="position:relative;left:-2px"/>
+                    </td>
+                </tr>
+                <asp:Panel ID="panJoinEHRSS" runat="server">
+                <tr>
+                    <td style="height:25px;width: 205px;vertical-align:top">
+                        <asp:Label ID="lblJoinEHRSSText" runat="server" Text="<%$ Resources:Text, JoinEHRSS%>" CssClass="tableTitle" Width="160px" Style="position:relative;left:-1px"/>
+                    </td>
+                    <td style="height:25px;vertical-align:top">
+                        <asp:Label ID="lblJoinEHRSS" runat="server" CssClass="tableText" Style="position:relative;left:-2px"/>
+                    </td>
+                </tr>
+                </asp:Panel>
+            </table>
+            </asp:Panel>
+
             <table style="width: 100%" cellpadding="0" cellspacing="0">
                 <tr id="trCreateBy" runat="server">
                     <td style="vertical-align: top; width: 205px" class="tableCellStyle">

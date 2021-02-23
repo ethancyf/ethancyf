@@ -58,27 +58,18 @@ Partial Public Class ucInputDI
         Me.imgDOIDate.AlternateText = strErrorImageALT
 
         'Get Documnet type full name
-        Dim strDocumentTypeFullName As String
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
         Dim udtDocTypeModelList As DocTypeModelCollection
         udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.DI).DocNameChi
-            Me.lblTravelDocNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocIdentityDescChi
-        Else
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.DI).DocName
-            Me.lblTravelDocNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocIdentityDesc
-        End If
-        'Me.lblDocumentType.Text = strDocumentTypeFullName
-        Me.lblDocumentTypeOriginal.Text = strDocumentTypeFullName
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.lblDocumentTypeOriginal.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocName(Session("Language").ToString())
+        Me.lblTravelDocNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocIdentityDesc(Session("Language").ToString())
 
         ' -------------------------- Creation ------------------------------
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            Me.lblNewTravelDocNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocIdentityDescChi
-        Else
-            Me.lblNewTravelDocNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocIdentityDesc
-        End If
+        Me.lblNewTravelDocNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.DI).DocIdentityDesc(Session("Language").ToString())
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")

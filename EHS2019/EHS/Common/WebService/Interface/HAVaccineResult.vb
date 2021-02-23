@@ -443,10 +443,39 @@ Namespace WebService.Interface
                                 strDoseSeqDescChinese = drVaccine("dose_seq_desc_chinese")
                             End If
 
+                            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            Dim udtVaccineCodeMapping As VaccineCodeMappingCollection = (New Component.HATransaction.HAVaccineBLL).GetAllVaccineCodeMapping()
+
+                            Dim strBrandID As String = String.Empty
+                            For Each udtVaccineCode As VaccineCodeMappingModel In udtVaccineCodeMapping.Values
+                                If udtVaccineCode.VaccineCodeSource.Trim.ToUpper = drVaccine("vaccine_code").ToString.Trim.ToUpper Then
+                                    strBrandID = udtVaccineCode.VaccineBrandIDSource
+                                    Exit For
+                                End If
+                            Next
+
+                            Dim dtCOVID19VaccineMapping As DataTable = (New Component.COVID19.COVID19BLL).GetCOVID19VaccineLotMapping()
+                            Dim drCOVID19VaccineMapping() As DataRow = dtCOVID19VaccineMapping.Select(String.Format("Brand_ID = '{0}'", strBrandID.Trim))
+
+                            If drCOVID19VaccineMapping.Length = 0 Then
+                                strBrandID = String.Empty
+                            End If
+
+                            Dim strVaccineLotNo As String = String.Empty
+
+                            If drVaccine.Table.Columns.Contains("vaccine_lot_no") AndAlso drVaccine("vaccine_lot_no") IsNot Nothing Then
+                                strVaccineLotNo = drVaccine("vaccine_lot_no").ToString.Trim
+                            End If
+
+                            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
                             udtHAVaccineList.Add(New HAVaccineModel(dtmRecordCreation, dtmInjection, _
                                                                     drVaccine("vaccine_code"), drVaccine("vaccine_desc"), strVaccineDescChinese, _
                                                                     drVaccine("dose_seq_code"), drVaccine("dose_seq_desc"), strDoseSeqDescChinese, _
-                                                                    drVaccine("provider"), drVaccine("location"), drVaccine("location_chinese"), drVaccine("onsite")))
+                                                                    drVaccine("provider"), drVaccine("location"), drVaccine("location_chinese"), drVaccine("onsite"), _
+                                                                    strBrandID, strVaccineLotNo)
+                                                )
                         Next
 
                         dicVaccinationRecord.Add(dicReturnData(strKey), udtHAVaccineList)

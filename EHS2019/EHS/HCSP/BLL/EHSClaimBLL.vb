@@ -96,11 +96,12 @@ Namespace BLL
                 Dim udtEHSTransactionBLL As New EHSTransactionBLL()
 
                 If udtTranBenefitList Is Nothing Then
-                    ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
-                    ' -----------------------------------------------------------------------------------------
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
                     udtTranBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSPersonalInfo.DocCode, _
-                        udtEHSPersonalInfo.IdentityNum)
-                    ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]
+                                                                                          udtEHSPersonalInfo.IdentityNum, _
+                                                                                          EHSTransactionBLL.Source.GetFromDB)
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
                 End If
 
 
@@ -318,6 +319,12 @@ Namespace BLL
                             strFunctCode = udtClaimResult.RelatedClaimRule.FunctionCode
                             strSeverity = udtClaimResult.RelatedClaimRule.SeverityCode
                             strMsgCode = udtClaimResult.RelatedClaimRule.MessageCode
+
+                            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            udtClaimRuleResult = udtClaimResult
+                            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
                             Exit For
                         End If
                     End If
@@ -700,10 +707,17 @@ Namespace BLL
         ''' <param name="strAdoptionPrefixNum"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function SearchEHSAccount(ByVal strSchemeCode As String, ByVal strDocCode As String, ByVal strIdentityNum As String, _
-            ByVal strDOB As String, ByRef udtEHSAccount As EHSAccountModel, ByRef udtEligibleResult As ClaimRulesBLL.EligibleResult, _
-            ByRef udtSearchAccountStatus As SearchAccountStatus, ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, _
-            ByVal strAdoptionPrefixNum As String, ByVal strFunctionCode As String) As SystemMessage
+        Public Function SearchEHSAccount(ByVal strSchemeCode As String, _
+                                         ByVal strDocCode As String, _
+                                         ByVal strIdentityNum As String, _
+                                         ByVal strDOB As String, _
+                                         ByRef udtEHSAccount As EHSAccountModel, _
+                                         ByRef udtEligibleResult As ClaimRulesBLL.EligibleResult, _
+                                         ByRef udtSearchAccountStatus As SearchAccountStatus, _
+                                         ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, _
+                                         ByVal strAdoptionPrefixNum As String, _
+                                         ByVal strFunctionCode As String, _
+                                         ByVal enumClaimMode As ClaimMode) As SystemMessage
 
             ' -------------------------------------------------------------------------------
             ' Init
@@ -731,6 +745,11 @@ Namespace BLL
             ' -------------------------------------------------------------------------------
             Dim udtSchemeClaimBLL As New SchemeClaimBLL()
             Dim udtSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(strSchemeCode, dtmCurrentDateTime)
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtSchemeClaimModel.SubsidizeGroupClaimList = udtSchemeClaimBLL.FilterSubsidizeGroupClaim(udtSchemeClaimModel, enumClaimMode)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             If udtSchemeClaimModel Is Nothing OrElse udtSchemeClaimModel.SubsidizeGroupClaimList.Count = 0 Then
                 strMsgCode = "00105"
@@ -844,9 +863,9 @@ Namespace BLL
                         Select Case strDocCode
                             Case DocTypeModel.DocTypeCode.ADOPC
                                 strMsgCode = "00222"
-                            Case DocTypeModel.DocTypeCode.DI
+                            Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                 strMsgCode = "00223"
-                            Case DocTypeModel.DocTypeCode.EC
+                            Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                                 strMsgCode = "00110"
                             Case DocTypeModel.DocTypeCode.HKBC
                                 strMsgCode = "00224"
@@ -869,14 +888,23 @@ Namespace BLL
             ' -------------------------------------------------------------------------------
             ' 8. Search Temporary Account, Check Account Status
             ' -------------------------------------------------------------------------------
-            If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
-                Me.SearchTemporaryAccount(strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtEHSAccount, _
-                    udtSearchAccountStatus, Nothing, Nothing, strAdoptionPrefixNum, strSearchDocCode, _
-                    udtEHSPersonalInfo)
+            'CRE20-0xx Immu Record [Start][Nichole]
+            If Not (New SessionHandler).ClaimCOVID19GetFromSession() Then
+                If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
+                    Me.SearchTemporaryAccount(strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtEHSAccount, _
+                        udtSearchAccountStatus, Nothing, Nothing, strAdoptionPrefixNum, strSearchDocCode, _
+                        udtEHSPersonalInfo)
+                End If
+
+                udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
+            Else
+                If Not udtEHSAccount Is Nothing AndAlso udtEHSAccount.RecordStatus = "A" Then
+                    'If udtEHSAccount Is Nothing And Not udtEHSAccount.RecordStatus = "A" Then
+                Else
+                    udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, strExactDOB, dtmDOB, strSchemeCode, strAdoptionPrefixNum, udtEHSPersonalInfo)
+                End If
             End If
-
-            udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
-
+            'CRE20-0xx Immu Record [End][Nichole]
             ' -------------------------------------------------------------------------------
             ' 9. Create New Account
             ' -------------------------------------------------------------------------------
@@ -1785,9 +1813,9 @@ Namespace BLL
                             Select Case strDocCode
                                 Case DocTypeModel.DocTypeCode.ADOPC
                                     strMsgCode = "00222"
-                                Case DocTypeModel.DocTypeCode.DI
+                                Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00223"
-                                Case DocTypeModel.DocTypeCode.EC
+                                Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00110"
                                 Case DocTypeModel.DocTypeCode.HKBC
                                     strMsgCode = "00224"

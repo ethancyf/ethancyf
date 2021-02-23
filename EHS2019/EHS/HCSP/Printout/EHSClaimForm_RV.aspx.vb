@@ -56,6 +56,9 @@ Partial Public Class EHSClaimForm_RV
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
         Dim udtEHSTransaction As EHSTransactionModel = _udtSessionHandler.EHSTransactionGetFromSession(strFunctCode)
         Dim udtSmartIDContent As BLL.SmartIDContentModel = Me._udtSessionHandler.SmartIDContentGetFormSession(strFunctCode)
+
+
+        Dim udtVaccinationRecord As TransactionDetailVaccineModel = _udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
         Dim udtSP As ServiceProviderModel = Nothing
         _udtSessionHandler.CurrentUserGetFromSession(udtSP, Nothing)
 
@@ -101,13 +104,14 @@ Partial Public Class EHSClaimForm_RV
                         AndAlso Not IsNothing(udtEHSTransaction) _
                         AndAlso Not IsNothing(udtEHSAccount) _
                         AndAlso Not IsNothing(udtSchemeClaim) Then
-                    If udtEHSTransaction.CategoryCode = CategoryCode.VSS_Child Then
+                    If udtEHSTransaction.CategoryCode = CategoryCode.VSS_CHILD Then
                         objReport = New VSSConsentForm.VSSConsentForm_C(udtEHSTransaction, udtSchemeClaim, udtEHSAccount, udtSP, udtSmartIDContent)
                     Else
                         objReport = New VSSConsentForm.VSSConsentForm(udtEHSTransaction, udtSchemeClaim, udtEHSAccount, udtSP, udtSmartIDContent)
                     End If
 
                 End If
+
 
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
                 ' --------------------------------------------------------------------------------------
@@ -127,6 +131,19 @@ Partial Public Class EHSClaimForm_RV
 
                 End If
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+                'CRE20-0XX (Immu record)  [Start][Raiman] 
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP
+                If Not IsNothing(udtSP) _
+                        AndAlso Not IsNothing(udtEHSTransaction) _
+                        AndAlso Not IsNothing(udtEHSAccount) _
+                        AndAlso Not IsNothing(udtSchemeClaim) Then
+                    objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+
+
+
+                End If
+                'CRE20-0XX (Immu record)  [End][Raiman] 
 
         End Select
 

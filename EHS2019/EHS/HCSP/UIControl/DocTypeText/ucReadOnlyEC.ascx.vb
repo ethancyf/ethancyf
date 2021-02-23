@@ -89,22 +89,16 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyRefenceText.Text = Me.GetGlobalResourceObject("Text", "RefNo")
             Me.lblReadonlyConfirmTempAcctText.Text = Me.GetGlobalResourceObject("Text", "TempVRAcctRecord")
             Me.lblReadonlyCreationDateTimeText.Text = Me.GetGlobalResourceObject("Text", "AccountCreateDate")
-
             Me.lblReadonlyECSerialNoText.Text = Me.GetGlobalResourceObject("Text", "ECSerialNo")
             Me.lblReadonlyECReferenceNoText.Text = Me.GetGlobalResourceObject("Text", "ECReference")
             Me.lblReadonlyECDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
-
             Me.lblReadonlyNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
-            'Me.lblReadonlyECHKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
-            'Me.lblReadonlyECHKIDModificationText.Text = Me.GetGlobalResourceObject("Text", "HKID")
             Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
-
-            If MyBase.SessionHandler().Language = Common.Component.CultureLanguage.TradChinese Then
-                lblReadonlyECHKIDText.Text = udtDocTypeModel.DocIdentityDescChi
-            Else
-                lblReadonlyECHKIDText.Text = udtDocTypeModel.DocIdentityDesc
-            End If
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblReadonlyECHKIDText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Sub
 

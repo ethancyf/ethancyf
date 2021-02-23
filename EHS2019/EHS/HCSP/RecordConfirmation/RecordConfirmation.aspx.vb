@@ -88,6 +88,13 @@ Partial Public Class RecordConfirmation
         ' -----------------------------------------------------------------------------------------
         Public Const ClickCustomTypeChange As String = "Custom Type Change"  '40
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
+
+        'Confirm All record
+        Public Const ConfirmAllRecord As String = "Confirm All Record"  '41
+        Public Const ConfirmAllRecordComplete As String = "Complete Confirm All Record"  '42
+        Public Const ConfirmAllRecordFail As String = "Confirm All Record Fail"   '43
+
+
     End Class
 #End Region
 
@@ -188,7 +195,7 @@ Partial Public Class RecordConfirmation
 
         'ReRenderPage()
 
-        
+
 
         If Not IsPostBack Then
             If Not Session("fromMain") Is Nothing Then
@@ -257,6 +264,19 @@ Partial Public Class RecordConfirmation
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
 
         AddHandler udcClaimTranEnquiry.VaccineLegendClicked1, AddressOf udcClaimTranEnquiry_VaccineLegendClicked
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        GetCurrentUser(udtSP, udtDataEntry)
+
+        If udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19CVC) IsNot Nothing OrElse _
+            udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19RVP) IsNot Nothing Then
+            ibtnConfirmAll.Visible = True
+        Else
+            ibtnConfirmAll.Visible = False
+        End If
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
     End Sub
 
 #End Region
@@ -737,6 +757,84 @@ Partial Public Class RecordConfirmation
         Me.mvRecordConfirmation.ActiveViewIndex = 0
     End Sub
 
+    Private Sub ibtnConfirmAll_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnConfirmAll.Click
+        Dim udtSystemMessage As SystemMessage
+        Dim udtValidator As New Validator
+        Dim dtClaimRecord As DataTable
+        Dim dtRecordSelected As New DataTable
+        Dim noPendingRecord As Boolean = True
+        dtClaimRecord = CType(Session("ClaimRecord"), DataTable)
+        dtRecordSelected = dtClaimRecord.Clone
+        dtRecordSelected.Clear()
+
+        'Log start search 
+        Me.udtAuditLogEntry = New AuditLogEntry(Me.strFuncCode, Me)
+        Me.udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00041, AuditLogDescription.ConfirmAllRecord)
+
+        For Each row As DataRow In dtClaimRecord.Rows
+            If row.Item("Record_Status") = ClaimTransStatus.Pending Then
+                dtRecordSelected.Rows.Add(row.ItemArray)
+                noPendingRecord = False
+            End If
+        Next row
+
+        If noPendingRecord Then
+            udtSystemMessage = New Common.ComObject.SystemMessage("990000", "E", "00465")
+            Me.udcMessageBox.AddMessage(udtSystemMessage)
+        End If
+
+
+
+        Dim i As Integer
+        If Me.udcMessageBox.GetCodeTable.Rows.Count = 0 Then
+
+            If Me.SubPlatform = EnumHCSPSubPlatform.CN Then
+                gvSelectedRecord.Columns(5).Visible = True    'lblTotalAmountRMB
+            Else
+                gvSelectedRecord.Columns(5).Visible = False    'lblTotalAmountRMB
+            End If
+
+            ' go to vSelectedRecord
+            Me.mvRecordConfirmation.ActiveViewIndex = 1
+            Me.mvClaimTrans.ActiveViewIndex = 1
+
+            If dtRecordSelected.Rows.Count > 0 Then
+
+                Dim strSortExpression As String
+                Dim strSortDirection As String
+
+                strSortExpression = Me.GetGridViewSortExpression(Me.gvClaimRecord)
+                strSortDirection = Me.GetGridViewSortDirection(Me.gvClaimRecord)
+
+                Session("RecordSelected") = dtRecordSelected
+                Me.GridViewDataBind(Me.gvSelectedRecord, Session("RecordSelected"), strSortExpression, strSortDirection, False)
+
+                Me.udtAuditLogEntry.AddDescripton("NoOfRecord", dtRecordSelected.Rows.Count)
+                'log each transaction ID
+                Dim strTransactionIDList As String = String.Empty
+                Dim k As Integer
+                If dtRecordSelected.Rows.Count > 0 Then
+                    For i = 0 To dtRecordSelected.Rows.Count - 1
+                        If strTransactionIDList.Trim.Equals(String.Empty) Then
+                            strTransactionIDList = CStr(dtRecordSelected.Rows(i).Item("Transaction_ID")).Trim
+                        Else
+                            strTransactionIDList += " ," + CStr(dtRecordSelected.Rows(i).Item("Transaction_ID")).Trim
+                        End If
+                    Next
+                End If
+                Me.udtAuditLogEntry.AddDescripton("TransactionIDList", strTransactionIDList)
+                Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00042, AuditLogDescription.ConfirmAllRecordComplete)
+
+            End If
+
+            Dim udtGeneralFunction As New GeneralFunction
+            udtGeneralFunction.UpdateImageURL(Me.ibtnConfirmTransaction, False)
+            Me.chkConfirmTransaction.Checked = False
+
+        End If
+        Me.udcMessageBox.BuildMessageBox("ValidationFail", Me.udtAuditLogEntry, Common.Component.LogID.LOG00043, AuditLogDescription.ConfirmAllRecordFail)
+    End Sub
+
     Private Sub ibtnConfirmSelection_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnConfirmSelection.Click
         Dim udtSystemMessage As SystemMessage
         Dim udtValidator As New Validator
@@ -1210,7 +1308,7 @@ Partial Public Class RecordConfirmation
         btn.RedirectParameter.ReturnParameter.SourceFunctionCode = btn.TargetFunctionCode
         btn.RedirectParameter.ReturnParameter.TargetFunctionCode = btn.SourceFunctionCode
         btn.RedirectParameter.ReturnParameter.ActionList.Add(RedirectParameterModel.EnumRedirectAction.Search)
-        
+
         btn.RedirectParameter.ReturnParameter.SearchCriteria = RecordConfirmation.BuildSearchCriteria(Me.chkIncludeIncompleteClaim.Checked, _
                                 Me.txtCutOffDate.Text.Trim(), _
                                 Me.ddlPractice.SelectedValue, _
@@ -2044,6 +2142,7 @@ Partial Public Class RecordConfirmation
 
 #Region "Gridview Funtion - Transaction"
 
+#Region "Select Record"
     Private Sub gvClaimRecord_DataBinding(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvClaimRecord.DataBinding
 
     End Sub
@@ -2066,6 +2165,21 @@ Partial Public Class RecordConfirmation
 
     Protected Sub gvClaimRecord_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
+    End Sub
+
+    Private Sub gvClaimRecord_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvClaimRecord.RowCreated
+        Dim udtSortedGVHeaderList As SortedGridviewHeaderModelCollection = New SortedGridviewHeaderModelCollection
+        Dim strImageURL As String = Me.GetGlobalResourceObject("ImageURL", "infoicon")
+
+        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(2, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
+        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(4, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
+
+        ' Add the subsidy legend only if in non-CN platform
+        If Me.SubPlatform <> EnumHCSPSubPlatform.CN Then
+            udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(9, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
+        End If
+
+        Me.GirdViewRowCreated(sender, e, udtSortedGVHeaderList)
     End Sub
 
     Private Sub gvClaimRecord_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gvClaimRecord.RowCommand
@@ -2107,6 +2221,52 @@ Partial Public Class RecordConfirmation
         End If
     End Sub
 
+#End Region
+
+#Region "Confirm Record"
+    Private Sub gvSelectedRecord_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvSelectedRecord.PreRender
+        Me.GridViewPreRenderHandler(sender, e, "RecordSelected")
+    End Sub
+
+    Private Sub gvSelectedRecord_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles gvSelectedRecord.Sorting
+        Me.GridViewSortingHandler(sender, e, "RecordSelected")
+    End Sub
+
+    Private Sub gvSelectedRecord_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvSelectedRecord.RowCreated
+        Dim udtSortedGVHeaderList As SortedGridviewHeaderModelCollection = New SortedGridviewHeaderModelCollection
+        Dim strImageURL As String = Me.GetGlobalResourceObject("ImageURL", "infoicon")
+
+        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(1, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
+        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(3, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
+
+        ' Add the subsidy legend only if in non-CN platform
+        If Me.SubPlatform <> EnumHCSPSubPlatform.CN Then
+            udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(8, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
+        End If
+
+        Me.GirdViewRowCreated(sender, e, udtSortedGVHeaderList)
+
+        Me.GirdViewRowCreated(sender, e, udtSortedGVHeaderList)
+    End Sub
+
+    Private Sub gvSelectedRecord_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvSelectedRecord.RowDataBound
+        gv_RowDataBound(e)
+    End Sub
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub gvSelectedRecord_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles gvSelectedRecord.PageIndexChanging
+        Me.GridViewPageIndexChangingHandler(sender, e, "RecordSelected")
+    End Sub
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    Protected Sub gvSelectedRecord_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvSelectedRecord.SelectedIndexChanged
+
+    End Sub
+
+#End Region
+
+#Region "Common"
     Private Sub gv_RowDataBound(ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
 
         'CRE13-018 Change Voucher Amount to 1 Dollar [Start][Chris YIM]
@@ -2360,54 +2520,7 @@ Partial Public Class RecordConfirmation
             End If
         End If
     End Sub
-
-    Private Sub gvSelectedRecord_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvSelectedRecord.PreRender
-        Me.GridViewPreRenderHandler(sender, e, "RecordSelected")
-    End Sub
-
-    Private Sub gvSelectedRecord_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles gvSelectedRecord.Sorting
-        Me.GridViewSortingHandler(sender, e, "RecordSelected")
-    End Sub
-
-    Private Sub gvSelectedRecord_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvSelectedRecord.RowDataBound
-        gv_RowDataBound(e)
-    End Sub
-
-    Private Sub gvClaimRecord_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvClaimRecord.RowCreated
-        Dim udtSortedGVHeaderList As SortedGridviewHeaderModelCollection = New SortedGridviewHeaderModelCollection
-        Dim strImageURL As String = Me.GetGlobalResourceObject("ImageURL", "infoicon")
-
-        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(2, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
-        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(4, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
-
-        ' Add the subsidy legend only if in non-CN platform
-        If Me.SubPlatform <> EnumHCSPSubPlatform.CN Then
-            udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(9, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
-        End If
-
-        Me.GirdViewRowCreated(sender, e, udtSortedGVHeaderList)
-    End Sub
-
-    Private Sub gvSelectedRecord_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvSelectedRecord.RowCreated
-        Dim udtSortedGVHeaderList As SortedGridviewHeaderModelCollection = New SortedGridviewHeaderModelCollection
-        Dim strImageURL As String = Me.GetGlobalResourceObject("ImageURL", "infoicon")
-
-        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(1, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
-        udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(3, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
-
-        ' Add the subsidy legend only if in non-CN platform
-        If Me.SubPlatform <> EnumHCSPSubPlatform.CN Then
-            udtSortedGVHeaderList.Add(New SortedGridviewHeaderModel(8, strImageURL, Me.GetGlobalResourceObject("Text", "Legend")))
-        End If
-
-        Me.GirdViewRowCreated(sender, e, udtSortedGVHeaderList)
-
-        Me.GirdViewRowCreated(sender, e, udtSortedGVHeaderList)
-    End Sub
-
-    Protected Sub gvSelectedRecord_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles gvSelectedRecord.SelectedIndexChanged
-
-    End Sub
+#End Region
 
 #End Region
 
@@ -3201,5 +3314,6 @@ Partial Public Class RecordConfirmation
 
     End Sub
     'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
+
 End Class
 

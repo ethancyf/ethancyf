@@ -655,12 +655,12 @@ Partial Public Class VaccinationRecordEnquiry
 
                         Else
                             ' Go to result
-                            udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me))
-                            ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [Start][Koala]
-                            ' -----------------------------------------------------------------------------------------
+                            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
+                            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
                             Me.GotoViewResult()
-                            'MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Result
-                            ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [End][Koala]
 
                             Return True
 
@@ -801,12 +801,12 @@ Partial Public Class VaccinationRecordEnquiry
             udtAuditLogEntry.WriteLog(LogID.LOG00006, AuditLogDescription.SearchComplete)
 
             ' (6) No record found, directly go to result
-            udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me))
-            ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [Start][Koala]
-            ' -----------------------------------------------------------------------------------------
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             Me.GotoViewResult()
-            'MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Result
-            ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [End][Koala]
 
             Return
 
@@ -822,13 +822,12 @@ Partial Public Class VaccinationRecordEnquiry
                 udtAuditLogEntry.AddDescripton("Go to", "(1) and (2) Go to result")
                 udtAuditLogEntry.WriteLog(LogID.LOG00006, AuditLogDescription.SearchComplete)
 
-                udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me))
-                ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [Start][Koala]
-                ' -----------------------------------------------------------------------------------------
-                Me.GotoViewResult()
-                'MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Result
-                ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [End][Koala]
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+                Me.GotoViewResult()
 
             Else
                 udtAuditLogEntry.AddDescripton("Account result", "Validated account but different doc code")
@@ -2235,12 +2234,12 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.AddDescripton("Doc No.", udtEHSPersonalInfo.IdentityNum)
         udtAuditLogEntry.WriteLog(LogID.LOG00019, AuditLogDescription.InputRecipientInformationSmartICProceedToEnquiry)
 
-        udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me))
-        ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [Start][Koala]
-        ' -----------------------------------------------------------------------------------------
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         Me.GotoViewResult()
-        'MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Result
-        ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [End][Koala]
 
     End Sub
 
@@ -2336,12 +2335,13 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.WriteLog(LogID.LOG00012, AuditLogDescription.ConfirmRecipientInformationProceed)
 
         ResetMessageBox()
-        udcVaccinationRecord.Build(Session(SESS.EHSAccount), New AuditLogEntry(FunctionCode, Me))
-        ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [Start][Koala]
-        ' -----------------------------------------------------------------------------------------
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        udcVaccinationRecord.Build(Session(SESS.EHSAccount), New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         Me.GotoViewResult()
-        'MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Result
-        ' CRE11-028 Removing the 2nd eVaccination record sharing enquiry (backend) when 1st enquiry is success [End][Koala]
+
     End Sub
 
     '

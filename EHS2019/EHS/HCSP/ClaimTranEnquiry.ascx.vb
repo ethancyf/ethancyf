@@ -31,6 +31,10 @@ Partial Public Class ClaimTranEnquiry
 
 #End Region
 
+    Private Sub Page_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
+
+    End Sub
+
     'Public Sub buildClaimObject(ByVal strTransactionNo As String, ByVal blnMaskIdentityNo As Boolean)
     '    Dim udtEHSTransaction As New EHSTransactionModel
     '    buildClaimObject(strTransactionNo, udtEHSTransaction, blnMaskIdentityNo)
@@ -45,7 +49,6 @@ Partial Public Class ClaimTranEnquiry
     End Sub
 
     Public Sub buildClaimObject(ByVal strTransactionNo As String, ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtEHSTransactionOriginal As EHSTransactionModel, ByVal blnMaskIdentityNo As Boolean, ByVal blnForceRebuildInput As Boolean)
-
 
         If IsNothing(udtEHSTransaction) OrElse udtEHSTransaction.TransactionID.Trim = String.Empty Then
             udtEHSTransaction = udtEHSTransactionBLL.LoadClaimTran(strTransactionNo)
@@ -62,11 +65,8 @@ Partial Public Class ClaimTranEnquiry
             udcReadOnlyDocumentType.ShowTempAccountNotice = False
             udcReadOnlyDocumentType.ShowAccountCreationDate = False
             udcReadOnlyDocumentType.Mode = ucInputDocTypeBase.BuildMode.Modification
-            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-            ' ----------------------------------------------------------
             udcReadOnlyDocumentType.TableTitleWidth = 205
             udcReadOnlyDocumentType.SetEnableToShowHKICSymbol = True
-            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
             If udtEHSTransaction.Invalidation = EHSTransactionModel.InvalidationStatusClass.Invalidated Then
                 udcReadOnlyDocumentType.IsInvalidAccount = True
@@ -78,6 +78,64 @@ Partial Public Class ClaimTranEnquiry
 
         End If
 
+        ' CRE20-0XX (Immu record)  [Start][Raiman]
+        ' Display setting for COVID-19
+        If IsClaimCOVID19(udtEHSTransaction) Then
+            'trTransactionStatus.Style.Add("display", "none")
+            'trPractice.Style.Add("display", "none")
+            trBankAcct.Style.Add("display", "none")
+            trServiceType.Style.Add("display", "none")
+            'trServiceDate.Style.Add("display", "none")
+            lblClaimInfo.Text = Me.GetGlobalResourceObject("Text", "VaccineInfo")
+            panRecipinetContactInfo.Visible = True
+            lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+
+            'Contact No. & Mobile
+            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+                trContactNo.Visible = True
+
+                If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+                    lblContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
+
+                    If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
+                        lblContactNo.Text = lblContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
+                    End If
+                Else
+                    lblContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+
+            End If
+
+            'Remarks
+            If udtEHSTransaction.TransactionAdditionFields.Remarks IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Remarks <> String.Empty Then
+                lblRemark.Text = udtEHSTransaction.TransactionAdditionFields.Remarks
+            Else
+                lblRemark.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
+
+            'Join EHRSS
+            If udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19CVC OrElse udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19CBD Then
+                panJoinEHRSS.Visible = True
+                If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                    lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                               GetGlobalResourceObject("Text", "Yes"), _
+                                               GetGlobalResourceObject("Text", "No"))
+
+                Else
+                    lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+            Else
+                panJoinEHRSS.Visible = False
+            End If
+
+
+        Else
+            lblClaimInfo.Text = Me.GetGlobalResourceObject("Text", "ClaimInfo")
+            panRecipinetContactInfo.Visible = False
+            lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "ServiceDate")
+        End If
+        ' CRE20-0XX (Immu record)  [End][Raiman]
+        
         ' --- Claim Information ---
 
         ' Transaction No.
@@ -676,4 +734,17 @@ Partial Public Class ClaimTranEnquiry
         Me.trPaymentMethod.Style.Item("display") = IIf(blnDisplay, "", "none")
     End Sub
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
+
+    Public Function IsClaimCOVID19(udtEHSTransaction) As Boolean
+
+        Dim udtTranDetailList As TransactionDetailModelCollection = udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+        If udtTranDetailList.Count > 0 Then
+            Return True
+        End If
+
+        Return False
+
+    End Function
+
 End Class

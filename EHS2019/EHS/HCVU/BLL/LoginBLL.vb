@@ -96,19 +96,16 @@ Namespace BLL
 
                 Dim udtRoleTypeBLL As New RoleTypeBLL
                 Dim dtRoleType As DataTable
-                Dim drRoleType As DataRow()
 
                 For Each udtUserRole In udtHCVUUser.UserRoleCollection.Values
-
-                    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-                    ' ------------------------------------------------------------------------
                     ' Check User Role Type which is available in SubPlatform
                     dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
 
-                    drRoleType = dtRoleType.Select("(Available_HCVU_SubPlatform = 'ALL' OR Available_HCVU_SubPlatform = '" + EnumHCVUSubPlatform.ToString + "')" _
-                                                                     + "AND Role_Type = '" & udtUserRole.RoleType & "'")
-                    If drRoleType.Length = 0 Then Continue For
-                    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+                    ' CRE20-0XX (Immu record) [Start][Raiman]
+                    ' ------------------------------------------------------------------------
+                    ' change All setting in SubPlatform
+                    If Me.FilterRoleTypeByUser(dtRoleType, enumHCVUSubPlatform, udtUserRole.RoleType).Length = 0 Then Continue For
+                    ' CRE20-0XX (Immu record) [End][Raiman]
 
                     drList = dtRoleSecurity.Select("Role_Type = '" & udtUserRole.RoleType & "'")
                     For Each dr In drList
@@ -119,12 +116,25 @@ Namespace BLL
                 udtHCVUUser.AccessRightCollection = udtAccessRightCollection
 
             Catch ex As Exception
-                Throw ex
+                Throw
             End Try
             Return udtHCVUUser
         End Function
 
+        Public Function FilterRoleTypeByUser(ByVal dtRoleType As DataTable, ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform, ByVal intRoleType As Integer) As DataRow()
+            Dim drRoleType As DataRow() = Nothing
 
+            Dim Available_HCVU_SubPlatform_split1 As String = "Available_HCVU_SubPlatform like '" + enumHCVUSubPlatform.ToString + ",%'" 'if SubPlatform text in head
+            Dim Available_HCVU_SubPlatform_split2 As String = "Available_HCVU_SubPlatform like '%," + enumHCVUSubPlatform.ToString + ",%'" 'if SubPlatform text in middle
+            Dim Available_HCVU_SubPlatform_split3 As String = "Available_HCVU_SubPlatform like '%," + enumHCVUSubPlatform.ToString + "'" 'if SubPlatform text in last
+            Dim Available_HCVU_SubPlatform_split = "(" + Available_HCVU_SubPlatform_split1 + " OR " + Available_HCVU_SubPlatform_split2 + " OR " + Available_HCVU_SubPlatform_split3 + ")"
+
+            drRoleType = dtRoleType.Select("(" + Available_HCVU_SubPlatform_split + " OR Available_HCVU_SubPlatform = '" + enumHCVUSubPlatform.ToString + "')" _
+                                                             + "AND Role_Type = '" & intRoleType & "'")
+
+            Return drRoleType
+
+        End Function
     End Class
 End Namespace
 

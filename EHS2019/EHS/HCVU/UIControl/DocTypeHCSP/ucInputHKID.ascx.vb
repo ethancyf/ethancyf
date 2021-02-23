@@ -66,13 +66,10 @@ Namespace UIControl.DocTypeHCSP
                 'Table title
                 Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.HKIC)
 
-                If MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
-                    Me.lblHKICNoModificationText.Text = udtDocTypeModel.DocIdentityDescChi
-                ElseIf MyBase.SessionHandler.Language() = Common.Component.CultureLanguage.SimpChinese Then
-                    Me.lblHKICNoModificationText.Text = udtDocTypeModel.DocIdentityDescCN
-                Else
-                    Me.lblHKICNoModificationText.Text = udtDocTypeModel.DocIdentityDesc
-                End If
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me.lblHKICNoModificationText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
                 Me.lblENameCommaModification.Text = Me.GetGlobalResourceObject("Text", "Comma")
                 Me.lblReferenceNoModificationText.Text = Me.GetGlobalResourceObject("Text", "RefNo")

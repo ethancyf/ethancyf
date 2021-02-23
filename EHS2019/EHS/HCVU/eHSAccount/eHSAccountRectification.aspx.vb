@@ -960,6 +960,15 @@ Partial Public Class eHSAccountRectification
                 ' CRE19-001 (VSS 2019) [End][Winnie]
                 blnProceed = Me.ValidateRectifyDetail_OTHER(udtEHSAccount_Rectify, udtAuditLogEntry)
 
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+                blnProceed = Me.ValidateRectifyDetail_CCIC(udtEHSAccount_Rectify, udtAuditLogEntry)
+            Case DocTypeModel.DocTypeCode.ROP140
+                blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount_Rectify, udtAuditLogEntry)
+            Case DocTypeModel.DocTypeCode.PASS
+                blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount_Rectify, udtAuditLogEntry)
+                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
         If blnProceed Then
@@ -3273,6 +3282,212 @@ Partial Public Class eHSAccountRectification
         Return isValid
     End Function
     ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+
+    'CCIC
+    Private Function ValidateRectifyDetail_CCIC(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.CCIC)
+        Dim udcInputCCIC As ucInputCCIC = Me.ucInputDocumentType.GetCCICControl
+        Dim mode As ActionModel
+        mode = CType(Session(SESS_InputMode), ActionModel)
+
+        If mode = ActionModel.Amending Then
+            'Special Account, one side
+            udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification_OneSide)
+            udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification_OneSide, False)
+        Else
+            'Validated Account, with original
+            udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+            udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+        End If
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputCCIC.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputCCIC.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputCCIC.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCCIC.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputCCIC.Gender)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
+
+        'English Name
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputCCIC.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtvalidator.chkGender(udcInputCCIC.Gender)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputCCIC.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputCCIC.DOB
+
+        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.CCIC, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputCCIC.SetDOBError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputCCIC.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputCCIC.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputCCIC.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+    End Function
+
+    'ROP140
+    Private Function ValidateRectifyDetail_ROP140(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.ROP140)
+        Dim udcInputROP140 As ucInputROP140 = Me.ucInputDocumentType.GetROP140Control
+        Dim mode As ActionModel
+        mode = CType(Session(SESS_InputMode), ActionModel)
+
+        If mode = ActionModel.Amending Then
+            'Special Account, one side
+            udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification_OneSide)
+            udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification_OneSide, False)
+        Else
+            'Validated Account, with original
+            udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+            udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+        End If
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputROP140.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputROP140.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputROP140.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputROP140.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputROP140.Gender)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
+
+        'English Name
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputROP140.ENameSurName, udcInputROP140.ENameFirstName)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputROP140.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtvalidator.chkGender(udcInputROP140.Gender)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputROP140.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputROP140.DOB
+
+        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.ROP140, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputROP140.SetDOBError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputROP140.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputROP140.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputROP140.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+    End Function
+
+    'PASS
+    Private Function ValidateRectifyDetail_PASS(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.PASS)
+        Dim udcInputPASS As ucInputPASS = Me.ucInputDocumentType.GetPASSControl
+        Dim mode As ActionModel
+        mode = CType(Session(SESS_InputMode), ActionModel)
+
+        If mode = ActionModel.Amending Then
+            'Special Account, one side
+            udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Modification_OneSide)
+            udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification_OneSide, False)
+        Else
+            'Validated Account, with original
+            udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+            udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+        End If
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputPASS.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputPASS.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputPASS.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputPASS.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputPASS.Gender)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
+
+        'English Name
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputPASS.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtvalidator.chkGender(udcInputPASS.Gender)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputPASS.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputPASS.DOB
+
+        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.PASS, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputPASS.SetDOBError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputPASS.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputPASS.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputPASS.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+    End Function
+
+
 #End Region
 
 #Region "Action Model"

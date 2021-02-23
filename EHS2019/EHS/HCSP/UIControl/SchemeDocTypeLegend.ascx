@@ -85,6 +85,30 @@
                     Visible="False" />
             </ItemTemplate>
         </asp:TemplateField>
+         <asp:TemplateField>
+            <HeaderStyle VerticalAlign="Top" />
+            <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
+            <ItemTemplate>
+                <asp:Image ID="imgScheme10" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
+                    Visible="False" />
+            </ItemTemplate>
+        </asp:TemplateField>
+         <asp:TemplateField>
+            <HeaderStyle VerticalAlign="Top" />
+            <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
+            <ItemTemplate>
+                <asp:Image ID="imgScheme11" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
+                    Visible="False" />
+            </ItemTemplate>
+        </asp:TemplateField>
+         <asp:TemplateField>
+            <HeaderStyle VerticalAlign="Top" />
+            <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
+            <ItemTemplate>
+                <asp:Image ID="imgScheme12" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
+                    Visible="False" />
+            </ItemTemplate>
+        </asp:TemplateField>
     </Columns>
 </asp:GridView>
 <table style="width: 95%">

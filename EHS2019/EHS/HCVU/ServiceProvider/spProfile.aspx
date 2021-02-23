@@ -2397,7 +2397,7 @@
                                 </table>
                                 <asp:Panel ID="panEHRSS" runat="server" BorderColor="#E0E0E0" BorderStyle="Solid"
                                     BorderWidth="1px">
-                                    <table>
+                                    <table id="tbHadJoinedEHRSS"  runat="server">
                                         <tr>
                                             <td>
                                                 <div class="headingText">
@@ -2410,6 +2410,7 @@
                                                 <asp:Label ID="lblHadJoinedEHRSSQ" runat="server" Text="<%$ Resources:Text, HadJoinedEHRSSQVU %>"></asp:Label>
                                             </td>
                                         </tr>
+            
                                         <tr>
                                             <td>
                                                 <table border="0" cellpadding="0" cellspacing="0">

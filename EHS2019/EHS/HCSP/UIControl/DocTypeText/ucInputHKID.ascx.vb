@@ -58,7 +58,7 @@ Namespace UIControl.DocTypeText
             ' HKID
             'Me.lblHKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.HKIC)
-            Me.lblHKIDText.Text = IIf(SessionHandler.Language() = CultureLanguage.English, udtDocTypeModel.DocIdentityDesc, udtDocTypeModel.DocIdentityDescChi)
+            Me.lblHKIDText.Text = udtDocTypeModel.DocIdentityDesc(SessionHandler().Language)
 
         End Sub
 

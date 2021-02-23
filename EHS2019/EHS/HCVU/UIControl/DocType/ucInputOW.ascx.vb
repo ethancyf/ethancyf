@@ -71,19 +71,14 @@ Partial Public Class ucInputOW
         udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
 
         If Not MyBase.EHSPersonalInfoAmend Is Nothing Then
-            If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-                strDocumentTypeFullName = udtDocTypeModelList.Filter(MyBase.EHSPersonalInfoAmend.DocCode).DocNameChi
-            Else
-                strDocumentTypeFullName = udtDocTypeModelList.Filter(MyBase.EHSPersonalInfoAmend.DocCode).DocName
-            End If
-            lblDocumentTypeOriginal.Text = strDocumentTypeFullName
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblDocumentTypeOriginal.Text = udtDocTypeModelList.Filter(MyBase.EHSPersonalInfoAmend.DocCode).DocName(Session("Language").ToString())
 
             ' -------------------------- Creation ------------------------------
-            If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-                Me.lblNewDocNoText.Text = udtDocTypeModelList.Filter(MyBase.EHSPersonalInfoAmend.DocCode).DocIdentityDescChi
-            Else
-                Me.lblNewDocNoText.Text = udtDocTypeModelList.Filter(MyBase.EHSPersonalInfoAmend.DocCode).DocIdentityDesc
-            End If
+            Me.lblNewDocNoText.Text = udtDocTypeModelList.Filter(MyBase.EHSPersonalInfoAmend.DocCode).DocIdentityDesc(Session("Language").ToString())
+
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
         End If
 
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")

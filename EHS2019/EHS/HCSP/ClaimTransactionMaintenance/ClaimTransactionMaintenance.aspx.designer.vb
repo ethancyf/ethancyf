@@ -293,6 +293,60 @@ Partial Public Class ClaimTransactionMaintenance
     Protected WithEvents ddlScheme As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''panDocSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDocSearch As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblTabeHSAccountDocTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTabeHSAccountDocTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlTabeHSAccountDocType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlTabeHSAccountDocType As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblTabeHSAccountDocNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTabeHSAccountDocNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtTabeHSAccountDocNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtTabeHSAccountDocNo As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgTabeHSAccountDocNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgTabeHSAccountDocNo As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''ibtnSearch control.
     '''</summary>
     '''<remarks>
@@ -417,6 +471,51 @@ Partial Public Class ClaimTransactionMaintenance
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblTargetScheme As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panDocCriteria control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panDocCriteria As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblTargetTabeHSAccountDocTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTargetTabeHSAccountDocTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblTargetTabeHSAccountDocType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTargetTabeHSAccountDocType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblTargetTabeHSAccountDocNoText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTargetTabeHSAccountDocNoText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblTargetTabeHSAccountDocNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblTargetTabeHSAccountDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''gvTranList control.
@@ -840,6 +939,204 @@ Partial Public Class ClaimTransactionMaintenance
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSummarySuspendedRMB_SSSCMC As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panSSSCMCRecordSummary control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panSSSCMCRecordSummary As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''tblSSSCMCRecordSummary control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblSSSCMCRecordSummary As Global.System.Web.UI.WebControls.Table
+
+    '''<summary>
+    '''trRecordTitle1_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRecordTitle1_SSSCMC As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''TableCell1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents TableCell1 As Global.System.Web.UI.WebControls.TableCell
+
+    '''<summary>
+    '''lblSSSCMCSummary_Title control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_Title As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_Space control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_Space As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_subTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_subTitle As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRecordTitle2_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRecordTitle2_SSSCMC As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''lblSSSCMCSummary_frequency control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_frequency As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_amount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_amount As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRecordSummaryHasA_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRecordSummaryHasA_SSSCMC As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''lblSSSCMCSummary_pp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_pp As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_CountHASA control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_CountHASA As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_HASAAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_HASAAmount As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRecordSummaryHasB_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRecordSummaryHasB_SSSCMC As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''lblSSSCMCSummary_HASB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_HASB As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_CountHASB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_CountHASB As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummary_HASBAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummary_HASBAmount As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trRecordSummaryTtl_SSSCMC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trRecordSummaryTtl_SSSCMC As Global.System.Web.UI.WebControls.TableRow
+
+    '''<summary>
+    '''lblSSSCMCSummaryTotal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummaryTotal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummaryTotalCount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummaryTotalCount As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSSSCMCSummaryTotalAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSSSCMCSummaryTotalAmount As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''ibtnBack control.

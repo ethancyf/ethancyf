@@ -13,6 +13,7 @@ Imports Common.Component.ServiceProvider
 Imports Common.Component.SortedGridviewHeader
 Imports Common.Component.UserAC
 Imports Common.Component.RedirectParameter
+Imports Common.Component.DocType
 Imports Common.ComObject
 Imports Common.Format
 Imports Common.Validation
@@ -23,6 +24,7 @@ Imports System.Web.Script.Services.ScriptMethodAttribute
 Imports AjaxControlToolkit
 Imports System.Web.Services
 Imports System.Web.Security.AntiXss
+Imports CustomControls
 
 Partial Public Class ClaimTransactionMaintenance
     Inherits BasePageWithGridView
@@ -86,6 +88,9 @@ Partial Public Class ClaimTransactionMaintenance
         Public dtmTransactionDateTo As String
         Public strTransactionNo As String
         Public strSchemeCode As String
+        Public DocumentType As String
+        Public DocumentNo1 As String
+        Public DocumentNo2 As String
     End Class
 
 #End Region
@@ -101,7 +106,8 @@ Partial Public Class ClaimTransactionMaintenance
     Private udtSchemeClaimBLL As New SchemeClaimBLL
     Private udtTransactionMaintenanceBLL As New TransactionMaintenanceBLL
     Private udtValidator As New Validator
-
+    Private udtDocTypeBLL As New DocTypeBLL
+    Private _strDocumentTypes As Dictionary(Of String, DocumentInfo)
 #End Region
 
 #Region "Constants"
@@ -109,6 +115,13 @@ Partial Public Class ClaimTransactionMaintenance
     Private Const VoidablePeriodHour As Integer = 24
     Private ValidationFail As String = "ValidationFail"
 #End Region
+
+    'CRE20-015 HA scheme [Start][Nichole]
+#Region "Constants"
+    Public Const HAS_A As String = "HAS_A"
+    Public Const HAS_B As String = "HAS_B"
+#End Region
+    'CRE20-015 HA scheme [End][Nichole]
 
 #Region "Session Constants"
 
@@ -171,7 +184,7 @@ Partial Public Class ClaimTransactionMaintenance
                 Session(SESS_HideDetailBackButton) = "N"
 
                 'CRE16-026 (Add PCV13)(Fix claim transaction management worng button display) [Start][DICKSON]'
-				'Clear Session Return From value
+                'Clear Session Return From value
                 Dim udtRedirectParameterBLL As New RedirectParameterBLL
                 udtRedirectParameterBLL.RemoveReturnFromSession()
                 'CRE16-026 (Add PCV13)(Fix claim transaction management worng button display) [End][DICKSON]'
@@ -183,7 +196,7 @@ Partial Public Class ClaimTransactionMaintenance
 
         Else
             'CRE16-026 (Add PCV13)(Fix claim transaction management worng button display) [Start][DICKSON]'
-			'If ActiveViewIndex is 1 or 2, clear Session Return From value
+            'If ActiveViewIndex is 1 or 2, clear Session Return From value
             If MultiViewClaimTranManagement.ActiveViewIndex = ViewIndex.InputSearch Or MultiViewClaimTranManagement.ActiveViewIndex = ViewIndex.TransactionList Then
                 Dim udtRedirectParameterBLL As New RedirectParameterBLL
                 udtRedirectParameterBLL.RemoveReturnFromSession()
@@ -430,6 +443,40 @@ Partial Public Class ClaimTransactionMaintenance
 
         ddlScheme.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), String.Empty))
 
+
+
+        'CRE20-0022 (Immu record) [Start][Raiman]
+
+        ' Save the DocType info list to session for re-render language
+        Me._strDocumentTypes = New Dictionary(Of String, DocumentInfo)
+        Dim documentInfo As DocumentInfo = Nothing
+
+        ' Init Document Type Status, set all disable
+        For Each udtDocTypeModel As DocType.DocTypeModel In udtDocTypeBLL.getAllDocType()
+            documentInfo = New DocumentInfo(udtDocTypeModel)
+            Me._strDocumentTypes.Add(documentInfo.DocCode, documentInfo)
+        Next
+
+        ddlTabeHSAccountDocType.DataSource = _strDocumentTypes.Values
+        ddlTabeHSAccountDocType.DataValueField = "DocCode"
+
+        If Session("language") = TradChinese Then
+            ddlTabeHSAccountDocType.DataTextField = "DocNameChi"
+        ElseIf Session("language") = SimpChinese Then
+            ddlTabeHSAccountDocType.DataTextField = "DocNameCN"
+        Else
+            ddlTabeHSAccountDocType.DataTextField = "DocName"
+        End If
+
+        ddlTabeHSAccountDocType.DataBind()
+
+        ddlTabeHSAccountDocType.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), String.Empty))
+
+        'CRE20-0022 (Immu record) [End][Raiman]
+
+
+
+
     End Sub
 
     Private Sub RenderLanguage()
@@ -445,6 +492,10 @@ Partial Public Class ClaimTransactionMaintenance
         ddlSearchStatus.Items(0).Text = Me.GetGlobalResourceObject("Text", "Any")
         If txtSearchTranNoPrefix.Text.Trim.Equals(String.Empty) And Me.txtSearchTranNoContent.Text.Trim.Equals(String.Empty) And Me.txtSearchTranNochkdgt.Text.Trim.Equals(String.Empty) Then
             lblTargetTranNo.Text = Me.GetGlobalResourceObject("Text", "Any")
+        End If
+
+        If txtTabeHSAccountDocNo.Text.Trim.Equals(String.Empty) Then
+            lblTargetTabeHSAccountDocNo.Text = Me.GetGlobalResourceObject("Text", "Any")
         End If
 
         SwitchGridViewLanguage()
@@ -556,6 +607,43 @@ Partial Public Class ClaimTransactionMaintenance
             ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [Start][Winnie]
             lblTargetScheme.Text = AntiXssEncoder.HtmlEncode(ddlScheme.SelectedItem.Text.Trim(), True)
             ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [End][Winnie]
+
+            'CRE20-0022 (Immu record) [Start][Raiman]
+
+
+            Dim strDocTypeSelected As String = ddlTabeHSAccountDocType.SelectedValue
+
+            ' Save the DocType info list to session for re-render language
+            Me._strDocumentTypes = New Dictionary(Of String, DocumentInfo)
+            Dim documentInfo As DocumentInfo = Nothing
+
+            ' Init Document Type Status, set all disable
+            For Each udtDocTypeModel As DocType.DocTypeModel In udtDocTypeBLL.getAllDocType()
+                documentInfo = New DocumentInfo(udtDocTypeModel)
+                Me._strDocumentTypes.Add(documentInfo.DocCode, documentInfo)
+            Next
+
+            ddlTabeHSAccountDocType.DataSource = _strDocumentTypes.Values
+            ddlTabeHSAccountDocType.DataValueField = "DocCode"
+
+            If Session("language") = TradChinese Then
+                ddlTabeHSAccountDocType.DataTextField = "DocNameChi"
+            ElseIf Session("language") = SimpChinese Then
+                ddlTabeHSAccountDocType.DataTextField = "DocNameCN"
+            Else
+                ddlTabeHSAccountDocType.DataTextField = "DocName"
+            End If
+
+            ddlTabeHSAccountDocType.DataBind()
+
+            ddlTabeHSAccountDocType.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), String.Empty))
+            ddlTabeHSAccountDocType.SelectedValue = strDocTypeSelected
+
+            lblTargetTabeHSAccountDocType.Text = AntiXssEncoder.HtmlEncode(ddlTabeHSAccountDocType.SelectedItem.Text.Trim(), True)
+
+
+
+
         End If
 
         'If strTranDateFrom.Equals(String.Empty) And strTranDateTo.Equals(String.Empty) Then
@@ -713,17 +801,20 @@ Partial Public Class ClaimTransactionMaintenance
         If Me.SubPlatform.Equals(EnumHCSPSubPlatform.CN) Then
             trRecordSummaryTotalAmountRMB.Style.Add("display", "default")
             trRecordSummaryTotalAmountRMB_SSSCMC.Style.Add("display", "default")
+
             tdSummarySchemeHCVSCHN.Style.Add("display", "default")
             tdSummarySchemeSSSCMC.Style.Add("display", "default")
             tdSummarySchemeTitle.Style.Add("display", "default")
             tdSummaryIncompleteTitle.Style.Add("display", "none")
             tdSummaryIncomplete.Style.Add("display", "none")
+            panSSSCMCRecordSummary.Visible = True 'CRE20-015 HA Scheme-SSSCMC consultation summary [Nichole]
         Else
             trRecordSummaryTotalAmountRMB.Style.Add("display", "none")
             trRecordSummaryTotalAmountRMB_SSSCMC.Style.Add("display", "none")
             tdSummarySchemeTitle.Style.Add("display", "none")
             tdSummarySchemeHCVSCHN.Style.Add("display", "none")
             tdSummarySchemeSSSCMC.Style.Add("display", "none")
+            panSSSCMCRecordSummary.Visible = False 'CRE20-015 HA Scheme-SSSCMC consultation summary [Nichole]
         End If
 
     End Sub
@@ -1003,6 +1094,16 @@ Partial Public Class ClaimTransactionMaintenance
         ' Scheme
         Dim strSchemeCode As String = ddlScheme.SelectedValue.Trim
 
+        'Doc Type
+        Dim strDocType As String = ddlTabeHSAccountDocType.SelectedValue.Trim
+        'Doc No.
+        Dim strDocNum As String = txtTabeHSAccountDocNo.Text.Trim
+
+        'Doc Splite Doc No.1
+        Dim strDocumentNo1 As String
+        'Doc Splite Doc No.2
+        Dim strDocumentNo2 As String
+
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
         udtAuditLogEntry.AddDescripton("SPID", strSPID)
         udtAuditLogEntry.AddDescripton("Data Entry Account", strDataEntryAccount)
@@ -1012,6 +1113,8 @@ Partial Public Class ClaimTransactionMaintenance
         udtAuditLogEntry.AddDescripton("Transaction Time To", strTransactionDateTo)
         udtAuditLogEntry.AddDescripton("Transaction No", strTransactionNo)
         udtAuditLogEntry.AddDescripton("Scheme", strSchemeCode)
+        udtAuditLogEntry.AddDescripton("Doc Code", strDocType)
+        udtAuditLogEntry.AddDescripton("Doc No", strDocNum)
         udtAuditLogEntry.WriteStartLog(LogID.LOG00001, AuditLogDescription.Search)
 
         ' Data validation
@@ -1095,9 +1198,26 @@ Partial Public Class ClaimTransactionMaintenance
 
         lblTargetScheme.Text = ddlScheme.SelectedItem.ToString
 
+        lblTargetTabeHSAccountDocType.Text = ddlTabeHSAccountDocType.SelectedItem.ToString
+
+        Dim aryDocumentNo As String() = Me.txtTabeHSAccountDocNo.Text.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
+        If aryDocumentNo.Length > 1 Then
+            strDocumentNo1 = aryDocumentNo(1)
+            strDocumentNo2 = aryDocumentNo(0)
+        Else
+            strDocumentNo1 = aryDocumentNo(0)
+            strDocumentNo2 = String.Empty
+        End If
+
+        If strDocNum = String.Empty Then
+            lblTargetTabeHSAccountDocNo.Text = Me.GetGlobalResourceObject("Text", "Any")
+        Else
+            lblTargetTabeHSAccountDocNo.Text = strDocNum
+        End If
+
         Try
             Dim udtSearchCriteria As SearchCriteria = BuildSearchCriteria(strSPID, strDataEntryAccount, intPracticeNo, intBankNo, strStatus, _
-                                                                    dtmTransactionDateFrom, dtmTransactionDateTo.AddDays(1), strTransactionNo, strSchemeCode)
+                                                                    dtmTransactionDateFrom, dtmTransactionDateTo.AddDays(1), strTransactionNo, strSchemeCode, strDocType, strDocumentNo1, strDocumentNo2)
 
             Session(SESS_SearchCriteria) = udtSearchCriteria
 
@@ -1132,8 +1252,13 @@ Partial Public Class ClaimTransactionMaintenance
                 If blnBuildRecordSummary Then
                     BuildRecordSummary(dtTransaction)
                     panRecordSummary.Visible = True
+                    'CRE20-015 HA Scheme - SSSCMC [Start][Nichole]
+                    panSSSCMCRecordSummary.Visible = True
+
                 Else
                     panRecordSummary.Visible = False
+                    panSSSCMCRecordSummary.Visible = False
+                    'CRE20-015 HA Scheme -SSSCMC [End][Nichole]
                 End If
 
                 SwitchGridViewLanguage()
@@ -1169,7 +1294,8 @@ Partial Public Class ClaimTransactionMaintenance
 
     Private Function BuildSearchCriteria(ByVal strSPID As String, ByVal strDataEntryAccount As String, ByVal intPracticeNo As Integer, _
                                             ByVal intBankNo As Integer, ByVal strStatus As String, ByVal dtmTransactionDateFrom As Date, _
-                                            ByVal dtmTransactionDateTo As Date, ByVal strTransactionNo As String, ByVal strSchemeCode As String) As SearchCriteria
+                                            ByVal dtmTransactionDateTo As Date, ByVal strTransactionNo As String, ByVal strSchemeCode As String,
+                                            ByVal DocumentType As String, ByVal DocumentNo1 As String, ByVal DocumentNo2 As String) As SearchCriteria
         Dim udtSearchCriteria As New SearchCriteria
 
         udtSearchCriteria.strSPID = strSPID
@@ -1181,6 +1307,9 @@ Partial Public Class ClaimTransactionMaintenance
         udtSearchCriteria.dtmTransactionDateTo = dtmTransactionDateTo
         udtSearchCriteria.strTransactionNo = strTransactionNo
         udtSearchCriteria.strSchemeCode = strSchemeCode
+        udtSearchCriteria.DocumentType = DocumentType
+        udtSearchCriteria.DocumentNo1 = DocumentNo1
+        udtSearchCriteria.DocumentNo2 = DocumentNo2
 
         Return udtSearchCriteria
 
@@ -1194,7 +1323,7 @@ Partial Public Class ClaimTransactionMaintenance
 
         Dim dtTransaction As DataTable = udtTransactionMaintenanceBLL.SearchClaimTrans(udtSearchCriteria.strSPID, udtSearchCriteria.strDataEntryAccount, _
                 udtSearchCriteria.intPracticeNo, udtSearchCriteria.intBankNo, udtSearchCriteria.strStatus, udtSearchCriteria.dtmTransactionDateFrom, _
-                udtSearchCriteria.dtmTransactionDateTo, udtSearchCriteria.strTransactionNo, udtSearchCriteria.strSchemeCode, enumSubPlatform)
+                udtSearchCriteria.dtmTransactionDateTo, udtSearchCriteria.strTransactionNo, udtSearchCriteria.strSchemeCode, udtSearchCriteria.DocumentType, udtSearchCriteria.DocumentNo1, udtSearchCriteria.DocumentNo2, enumSubPlatform)
 
         ' Handle Mirgration Complete Show Practice Chi
         Dim strHCSPDataMirgrationCompleteTurnOn As String = String.Empty
@@ -1310,6 +1439,15 @@ Partial Public Class ClaimTransactionMaintenance
         Dim dblManualReimbursedClaimRMB_SSSCMC As Double = 0
         ' CRE20-0XX (HA Scheme) [End][Winnie]
 
+        'CRE20-015 (HA Scheme) SSSCMC [Start][Nichole]
+        Dim dblSSSCMC_HASA_CT As Integer = 0
+        Dim dblSSSCMC_HASB_CT As Integer = 0
+        Dim dblSSSCMC_TTL_CT As Integer = 0
+        Dim dblSSSCMC_HASA_AMT As Double = 0
+        Dim dblSSSCMC_HASB_AMT As Double = 0
+        Dim dblSSSCMC_TTL_AMT As Double = 0
+        'CRE20-015 (HA Scheme) SSSCMC [End][Nichole]
+
         For Each dr As DataRow In dt.Rows
             If IsNumeric(dr("Total_Claim_Amount")) = True Then
 
@@ -1402,7 +1540,25 @@ Partial Public Class ClaimTransactionMaintenance
                                 dblSuspendedRMB_SSSCMC += CDbl(dr("Total_Claim_Amount_RMB"))
                         End Select
                         ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+                        'CRE20-015 HA Scheme SSSCMC [Start][Nichole]
+                        If CStr(dr("Record_Status")).Trim <> ClaimTransStatus.Removed AndAlso CStr(dr("Record_Status")).Trim <> ClaimTransStatus.Inactive Then
+                            If CStr(IIf(IsDBNull(dr("Invalidation")), String.Empty, dr("Invalidation"))).Trim <> EHSTransactionModel.InvalidationStatusClass.Invalidated AndAlso CDbl(dr("ConsultAndRegFeeRMB")) > 0 Then
+
+                                Select Case CStr(dr("subsidize_Code")).Trim
+                                    Case HAS_A
+                                        dblSSSCMC_HASA_CT += 1
+                                        dblSSSCMC_HASA_AMT += CDbl(dr("ConsultAndRegFeeRMB"))
+                                    Case HAS_B
+                                        dblSSSCMC_HASB_CT += 1
+                                        dblSSSCMC_HASB_AMT += CDbl(dr("ConsultAndRegFeeRMB"))
+                                End Select
+
+                            End If
+                        End If
+                        'CRE20-015 HA Scheme SSSCMC [End][Nichole]
                 End Select
+
             End If
             'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
         Next
@@ -1446,6 +1602,18 @@ Partial Public Class ClaimTransactionMaintenance
         lblSummaryReimbursedRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblReimbursedRMB_SSSCMC.ToString, False)
         lblSummarySuspendedRMB_SSSCMC.Text = udtFormatter.formatMoneyRMB(dblSuspendedRMB_SSSCMC.ToString, False)
         ' CRE20-0XX (HA Scheme) [End][Winnie]
+
+        'CRE20-015 HA Scheme - SSSCMS consultation [Start][Nichole]
+        lblSSSCMCSummary_Title.Text = SchemeClaimModel.SSSCMC
+        lblSSSCMCSummary_CountHASA.Text = dblSSSCMC_HASA_CT.ToString
+        lblSSSCMCSummary_HASAAmount.Text = udtFormatter.formatMoneyRMB(dblSSSCMC_HASA_AMT.ToString, False)
+        lblSSSCMCSummary_CountHASB.Text = dblSSSCMC_HASB_CT.ToString
+        lblSSSCMCSummary_HASBAmount.Text = udtFormatter.formatMoneyRMB(dblSSSCMC_HASB_AMT.ToString, False)
+        dblSSSCMC_TTL_CT = dblSSSCMC_HASA_CT + dblSSSCMC_HASB_CT
+        lblSSSCMCSummaryTotalCount.Text = dblSSSCMC_TTL_CT
+        dblSSSCMC_TTL_AMT = dblSSSCMC_HASA_AMT + dblSSSCMC_HASB_AMT
+        lblSSSCMCSummaryTotalAmount.Text = udtFormatter.formatMoneyRMB(dblSSSCMC_TTL_AMT.ToString, False)
+        'CRE20-015 HA Scheme - SSSCMS consultation [End][Nichole]
 
         'lblManualReimbursed.Text = dblManualReimbursedClaim.ToString("#,##0")
     End Sub
@@ -1882,8 +2050,13 @@ Partial Public Class ClaimTransactionMaintenance
                 If blnBuildRecordSummary Then
                     BuildRecordSummary(dtTransaction)
                     panRecordSummary.Visible = True
+                    'CRE20-015 HA Scheme - SSSCMC [Start][Nichole]
+                    panSSSCMCRecordSummary.Visible = True
+
                 Else
                     panRecordSummary.Visible = False
+                    panSSSCMCRecordSummary.Visible = False
+                    'CRE20-015 HA Scheme - SSSCMC [End][Nichole]
                 End If
 
                 SwitchGridViewLanguage()
@@ -2003,7 +2176,7 @@ Partial Public Class ClaimTransactionMaintenance
 
             ' Reimbursment Method
             'Dim hfTranListManualReimburse As HiddenField = e.Row.FindControl("hfTranListManualReimburse")
-            Dim strTranListManualReimburse As string = e.Row.DataItem("Manual_Reimburse").ToString.Trim
+            Dim strTranListManualReimburse As String = e.Row.DataItem("Manual_Reimburse").ToString.Trim
             Dim udtStaticDataBLL As StaticData.StaticDataBLL = New StaticData.StaticDataBLL
             Dim udtStaticDataModel As StaticData.StaticDataModel
 

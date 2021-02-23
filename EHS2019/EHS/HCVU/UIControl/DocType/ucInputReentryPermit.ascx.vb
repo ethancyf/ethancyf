@@ -60,26 +60,20 @@ Partial Public Class ucInputReentryPermit
 
 
         'Get Documnet type full name
-        Dim strDocumentTypeFullName As String
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
         Dim udtDocTypeModelList As DocTypeModelCollection
         udtDocTypeModelList = udtDocTypeBLL.getAllDocType()
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocNameChi
-            Me.lblReentryPermitNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocIdentityDescChi
-        Else
-            strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocName
-            Me.lblReentryPermitNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocIdentityDesc
-        End If
-        'lblDocumentType.Text = strDocumentTypeFullName
-        lblDocumentTypeOriginal.Text = strDocumentTypeFullName
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.lblDocumentTypeOriginal.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocName(Session("Language").ToString())
+        Me.lblReentryPermitNoOriginalText.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocIdentityDesc(Session("Language").ToString())
 
         ' -------------------------- Creation ------------------------------
-        If Session("Language").ToString().ToUpper.Equals(Common.Component.CultureLanguage.TradChinese) Then
-            Me.lblNewPermitNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocIdentityDescChi
-        Else
-            Me.lblNewPermitNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocIdentityDesc
-        End If
+        Me.lblNewPermitNoText.Text = udtDocTypeModelList.Filter(DocTypeCode.REPMT).DocIdentityDesc(Session("Language").ToString())
+
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         Me.lblNewNameText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblNewENameSurnameTips.Text = Me.GetGlobalResourceObject("Text", "Surname")
         Me.lblNewENameGivenNameTips.Text = Me.GetGlobalResourceObject("Text", "Givenname")

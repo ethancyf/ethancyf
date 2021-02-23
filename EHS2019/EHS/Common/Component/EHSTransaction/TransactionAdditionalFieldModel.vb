@@ -45,6 +45,7 @@ Namespace Component.EHSTransaction
             ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             ' SSSCMC
+            Public Const SubSpecialities As String = "SubSpecialities"
             Public Const ClaimedPaymentType As String = "ClaimedPaymentType"
             Public Const RegistrationFeeRMB As String = "RegistrationFeeRMB"
             Public Const ConsultAndRegFeeRMB As String = "ConsultAndRegFeeRMB"
@@ -57,6 +58,18 @@ Namespace Component.EHSTransaction
             Public Const PaymentTypeMatch As String = "PaymentTypeMatch" ' CRE20-015-05 (Special Support Scheme) [Winnie]
             Public Const ExemptRegFee As String = "ExemptRegFee" ' CRE20-015-06 (Special Support Scheme) [Winnie]
             ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Const ContactNo As String = "ContactNo"
+            Public Const Mobile As String = "Mobile"
+            Public Const Booth As String = "Booth"
+            Public Const VaccineBrand As String = "VaccineBrand"
+            Public Const VaccineLotID As String = "VaccineLotID"
+            Public Const VaccineLotNo As String = "VaccineLotNo"
+            Public Const Remarks As String = "Remarks"
+            Public Const JoinEHRSS As String = "JoinEHRSS"
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Public Shared Function ReasonForVisitL1() As String()
                 ' Principal

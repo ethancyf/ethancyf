@@ -19,6 +19,20 @@ Namespace Component.EHSTransaction
         Private strYES = "Y"
         Private strNO = "N"
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private Class SESS
+            Public Const TransactionDetailBenefitDocCode As String = "TransactionDetailBenefitDocCode"
+            Public Const TransactionDetailBenefitDocNo As String = "TransactionDetailBenefitDocNo"
+            Public Const TransactionDetailBenefit As String = "TransactionDetailBenefit"
+
+            Public Const TransactionDetailVaccineDocCode As String = "TransactionDetailVaccineDocCode"
+            Public Const TransactionDetailVaccineDocNo As String = "TransactionDetailVaccineDocNo"
+            Public Const TransactionDetailVaccine As String = "TransactionDetailVaccine"
+
+        End Class
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         Private _udtFormatter As New Format.Formatter()
 
         Public Function LoadClaimTran(ByVal strTranID As String, Optional ByVal blnLoadOriginalAccInsteadOfInvalidAcc As Boolean = False, Optional ByVal blnShowWarning As Boolean = False, Optional ByVal udtdb As Database = Nothing) As EHSTransactionModel
@@ -3431,31 +3445,113 @@ Namespace Component.EHSTransaction
         End Function
         ' CRE19-003 (Opt voucher capping) [End][Winnie]
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Enum Source
+            GetFromDB
+            GetFromSession
+            NoSession
+        End Enum
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Sub ClearSessionTransactionDetailBenefit()
+            HttpContext.Current.Session.Remove(SESS.TransactionDetailBenefitDocCode)
+            HttpContext.Current.Session.Remove(SESS.TransactionDetailBenefitDocNo)
+            HttpContext.Current.Session.Remove(SESS.TransactionDetailBenefit)
+        End Sub
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         ''' <summary>
         ''' Retrieve All Benefit (TransactionDetail) of the recipient
         ''' </summary>
         ''' <param name="strDocCode"></param>
         ''' <param name="strIdentityNum"></param>
+        ''' <param name="enumSource"></param>
         ''' <param name="udtDB"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function getTransactionDetailBenefit(ByVal strDocCode As String, ByVal strIdentityNum As String, Optional ByVal udtDB As Database = Nothing) As TransactionDetailModelCollection
+        Public Function getTransactionDetailBenefit(ByVal strDocCode As String, ByVal strIdentityNum As String, Optional ByVal enumSource As Source = Source.GetFromSession, Optional ByVal udtDB As Database = Nothing) As TransactionDetailModelCollection
             Dim udtTransactionDetailList As New TransactionDetailModelCollection()
             Dim udtTranDetailModel As TransactionDetailModel = Nothing
-
+            Dim blnDiffDoc As Boolean = False
 
             If udtDB Is Nothing Then udtDB = New Database()
-            Dim dt As DataTable
+
+            If HttpContext.Current.Session(SESS.TransactionDetailBenefitDocCode) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.TransactionDetailBenefitDocCode), String) <> strDocCode Then
+                blnDiffDoc = True
+            End If
+
+            If HttpContext.Current.Session(SESS.TransactionDetailBenefitDocNo) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.TransactionDetailBenefitDocNo), String) <> strIdentityNum Then
+                blnDiffDoc = True
+            End If
+
+            HttpContext.Current.Session(SESS.TransactionDetailBenefitDocCode) = strDocCode
+            HttpContext.Current.Session(SESS.TransactionDetailBenefitDocNo) = strIdentityNum
+
+            If HttpContext.Current.Session(SESS.TransactionDetailBenefit) Is Nothing OrElse enumSource = Source.GetFromDB OrElse blnDiffDoc Then
+                Try
+                    Dim dt As DataTable = getTransactionDetailBenefitDataTable(strDocCode, strIdentityNum, udtDB)
+                    For Each dr As DataRow In dt.Rows
+                        udtTranDetailModel = Me.FillTransactionDetail(dr)
+                        udtTranDetailModel.ServiceReceiveDtm = CDate(dr("Service_Receive_Dtm"))
+                        udtTranDetailModel.DOB = CDate(dr("DOB"))
+                        udtTranDetailModel.ExactDOB = CStr(dr("Exact_DOB")).Trim()
+                        udtTransactionDetailList.Add(udtTranDetailModel)
+                    Next
+
+                    HttpContext.Current.Session(SESS.TransactionDetailBenefit) = udtTransactionDetailList
+
+                Catch eSQL As SqlException
+                    Throw eSQL
+                Catch ex As Exception
+                    Throw
+                End Try
+            Else
+                Dim udtNewTranDetailList As New TransactionDetailModelCollection
+
+                For Each udtTranDetail As TransactionDetailModel In CType(HttpContext.Current.Session(SESS.TransactionDetailBenefit), TransactionDetailModelCollection)
+                    udtNewTranDetailList.Add(udtTranDetail)
+                Next
+
+                udtTransactionDetailList = udtNewTranDetailList
+            End If
+
+            Return udtTransactionDetailList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve All Benefit (TransactionDetail) of the recipient
+        ''' </summary>
+        ''' <param name="strDocCode"></param>
+        ''' <param name="strIdentityNum"></param>
+        ''' <param name="enumSource"></param>
+        ''' <param name="udtDB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getTransactionDetailBenefitForIVRS(ByVal strDocCode As String, ByVal strIdentityNum As String, Optional ByVal enumSource As Source = Source.GetFromSession, Optional ByVal udtDB As Database = Nothing) As TransactionDetailModelCollection
+            Dim udtTransactionDetailList As New TransactionDetailModelCollection()
+            Dim udtTranDetailModel As TransactionDetailModel = Nothing
+            Dim blnDiffDoc As Boolean = False
+
+            If udtDB Is Nothing Then udtDB = New Database()
+
             Try
-                dt = getTransactionDetailBenefitDataTable(strDocCode, strIdentityNum, udtDB)
+                Dim dt As DataTable = getTransactionDetailBenefitDataTable(strDocCode, strIdentityNum, udtDB)
                 For Each dr As DataRow In dt.Rows
                     udtTranDetailModel = Me.FillTransactionDetail(dr)
                     udtTranDetailModel.ServiceReceiveDtm = CDate(dr("Service_Receive_Dtm"))
-                    ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
-                    ' -----------------------------------------------------------------------------------------
                     udtTranDetailModel.DOB = CDate(dr("DOB"))
                     udtTranDetailModel.ExactDOB = CStr(dr("Exact_DOB")).Trim()
-                    ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]
                     udtTransactionDetailList.Add(udtTranDetailModel)
                 Next
 
@@ -3466,7 +3562,9 @@ Namespace Component.EHSTransaction
             End Try
 
             Return udtTransactionDetailList
+
         End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         ''' <summary>
         ''' Retrieve All Benefit (TransactionDetail) of the recipient
@@ -3872,6 +3970,8 @@ Namespace Component.EHSTransaction
 
 #End Region
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         ''' <summary>
         ''' Retrieve All vaccine (TransactionDetail) of the recipient
         ''' </summary>
@@ -3879,12 +3979,34 @@ Namespace Component.EHSTransaction
         ''' <param name="udtDB"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function getTransactionDetailVaccine(ByVal oRequestPatient As EHSAccountModel.EHSPersonalInformationModel, Optional ByVal udtDB As Database = Nothing) As TransactionDetailVaccineModelCollection
+        Public Function getTransactionDetailVaccine(ByVal oRequestPatient As EHSAccountModel.EHSPersonalInformationModel, Optional ByVal enumSource As Source = Source.GetFromDB, Optional ByVal udtDB As Database = Nothing) As TransactionDetailVaccineModelCollection
             ' Reformat the identity numuber (make sure the format is correct (with space), e.g. " A1234563"
             Dim formatter As New Common.Format.Formatter
-            Return getTransactionDetailVaccine(oRequestPatient.DocCode, formatter.formatDocumentIdentityNumber(oRequestPatient.DocCode, oRequestPatient.IdentityNum), udtDB)
-        End Function
+            Dim udtTransactionDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
 
+            If enumSource = Source.NoSession Then
+                udtTransactionDetailVaccineList = getTransactionDetailVaccineForStudentFile(oRequestPatient.DocCode, formatter.formatDocumentIdentityNumber(oRequestPatient.DocCode, oRequestPatient.IdentityNum), enumSource, udtDB)
+
+            Else
+                udtTransactionDetailVaccineList = getTransactionDetailVaccine(oRequestPatient.DocCode, formatter.formatDocumentIdentityNumber(oRequestPatient.DocCode, oRequestPatient.IdentityNum), enumSource, udtDB)
+
+            End If
+
+            Return udtTransactionDetailVaccineList
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Sub ClearSessionTransactionDetailVaccine()
+            HttpContext.Current.Session.Remove(SESS.TransactionDetailVaccineDocCode)
+            HttpContext.Current.Session.Remove(SESS.TransactionDetailVaccineDocNo)
+            HttpContext.Current.Session.Remove(SESS.TransactionDetailVaccine)
+        End Sub
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
         ''' <summary>
         ''' Retrieve All Benefit (TransactionDetail) of the recipient
         ''' </summary>
@@ -3893,15 +4015,81 @@ Namespace Component.EHSTransaction
         ''' <param name="udtDB"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function getTransactionDetailVaccine(ByVal strDocCode As String, ByVal strIdentityNum As String, Optional ByVal udtDB As Database = Nothing) As Component.EHSTransaction.TransactionDetailVaccineModelCollection
+        Public Function getTransactionDetailVaccine(ByVal strDocCode As String, ByVal strIdentityNum As String, Optional ByVal enumSource As Source = Source.GetFromDB, Optional ByVal udtDB As Database = Nothing) As Component.EHSTransaction.TransactionDetailVaccineModelCollection
             Dim udtTranDetailList As New Component.EHSTransaction.TransactionDetailVaccineModelCollection()
             Dim udtTranDetailModel As Component.EHSTransaction.TransactionDetailVaccineModel = Nothing
-
+            Dim blnDiffDoc As Boolean = False
 
             If udtDB Is Nothing Then udtDB = New Database()
             Dim dt As New DataTable()
 
             'strIdentityNum = Me._udtFormatter.formatDocumentIdentityNumber(strDocCode, strIdentityNum)
+
+            If HttpContext.Current.Session(SESS.TransactionDetailVaccineDocCode) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.TransactionDetailVaccineDocCode), String) <> strDocCode Then
+                blnDiffDoc = True
+            End If
+
+            If HttpContext.Current.Session(SESS.TransactionDetailVaccineDocNo) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.TransactionDetailVaccineDocNo), String) <> strIdentityNum Then
+                blnDiffDoc = True
+            End If
+
+            HttpContext.Current.Session(SESS.TransactionDetailVaccineDocCode) = strDocCode
+            HttpContext.Current.Session(SESS.TransactionDetailVaccineDocNo) = strIdentityNum
+
+            If HttpContext.Current.Session(SESS.TransactionDetailVaccine) Is Nothing OrElse enumSource = Source.GetFromDB OrElse blnDiffDoc Then
+                Try
+                    Dim prams() As SqlParameter = { _
+                        udtDB.MakeInParam("@Doc_Code", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocCode), _
+                        udtDB.MakeInParam("@identity", EHSAccount.EHSAccountModel.IdentityNum_DataType, EHSAccount.EHSAccountModel.IdentityNum_DataSize, strIdentityNum)}
+
+                    udtDB.RunProc("proc_TransactionDetail_vaccine_get_byDocCodeDocID", prams, dt)
+
+                    For Each dr As DataRow In dt.Rows
+                        udtTranDetailModel = Me.FillTransactionDetailVaccine(dr, strDocCode, strIdentityNum)
+                        udtTranDetailList.Add(udtTranDetailModel)
+                    Next
+
+                    HttpContext.Current.Session(SESS.TransactionDetailVaccine) = udtTranDetailList
+
+                Catch eSQL As SqlException
+                    Throw eSQL
+                Catch ex As Exception
+                    Throw
+                End Try
+            Else
+                Dim udtNewTranDetailVaccineList As New TransactionDetailVaccineModelCollection
+
+                For Each udtTranDetailVaccine As TransactionDetailVaccineModel In CType(HttpContext.Current.Session(SESS.TransactionDetailVaccine), TransactionDetailVaccineModelCollection)
+                    udtNewTranDetailVaccineList.Add(udtTranDetailVaccine)
+                Next
+
+                udtTranDetailList = udtNewTranDetailVaccineList
+            End If
+
+            Return udtTranDetailList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ''' <summary>
+        ''' Retrieve All Benefit (TransactionDetail) of the recipient
+        ''' </summary>
+        ''' <param name="strDocCode"></param>
+        ''' <param name="strIdentityNum"></param>
+        ''' <param name="udtDB"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function getTransactionDetailVaccineForStudentFile(ByVal strDocCode As String, ByVal strIdentityNum As String, Optional ByVal enumSource As Source = Source.GetFromDB, Optional ByVal udtDB As Database = Nothing) As Component.EHSTransaction.TransactionDetailVaccineModelCollection
+            Dim udtTranDetailList As New Component.EHSTransaction.TransactionDetailVaccineModelCollection()
+            Dim udtTranDetailModel As Component.EHSTransaction.TransactionDetailVaccineModel = Nothing
+            Dim blnDiffDoc As Boolean = False
+
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim dt As New DataTable()
 
             Try
                 Dim prams() As SqlParameter = { _
@@ -3911,7 +4099,6 @@ Namespace Component.EHSTransaction
                 udtDB.RunProc("proc_TransactionDetail_vaccine_get_byDocCodeDocID", prams, dt)
 
                 For Each dr As DataRow In dt.Rows
-
                     udtTranDetailModel = Me.FillTransactionDetailVaccine(dr, strDocCode, strIdentityNum)
                     udtTranDetailList.Add(udtTranDetailModel)
                 Next
@@ -3924,8 +4111,8 @@ Namespace Component.EHSTransaction
 
             Return udtTranDetailList
 
-            'Return udtTransactionDetailList
         End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         ''' <summary>
         ''' 
@@ -3939,12 +4126,14 @@ Namespace Component.EHSTransaction
             Dim strAvailableItemCode As String = String.Empty
             Dim strAvailableItemDesc As String = String.Empty
             Dim strAvailableItemDescChi As String = String.Empty
+            Dim strAvailableItemDescCN As String = String.Empty
             Dim strRemark As String = String.Empty
 
             If Not drSource.IsNull("Subsidize_Item_Code") Then strSubsidizeItemCode = drSource("Subsidize_Item_Code").ToString().Trim()
             If Not drSource.IsNull("Available_Item_Code") Then strAvailableItemCode = drSource("Available_Item_Code").ToString().Trim()
             If Not drSource.IsNull("Available_Item_Desc") Then strAvailableItemDesc = drSource("Available_Item_Desc").ToString().Trim()
             If Not drSource.IsNull("Available_Item_Desc_Chi") Then strAvailableItemDescChi = drSource("Available_Item_Desc_Chi").ToString().Trim()
+            If Not drSource.IsNull("Available_Item_Desc_CN") Then strAvailableItemDescCN = drSource("Available_Item_Desc_CN").ToString().Trim()
             If Not drSource.IsNull("Remark") Then strRemark = drSource("Remark").ToString().Trim()
 
             Dim intUnit As Nullable(Of Integer) = Nothing
@@ -3982,11 +4171,22 @@ Namespace Component.EHSTransaction
             If Not drSource.IsNull("Sex") Then strGender = drSource("Sex").ToString().Trim()
             dtmDOB = CDate(drSource("DOB"))
 
-            'CRE16-026 (Add PCV13) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             Dim strHighRisk As String = String.Empty
             If Not drSource.IsNull("High_Risk") Then strHighRisk = drSource("High_Risk").ToString().Trim()
-            'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Dim strVaccineBrand As String = String.Empty
+            If Not drSource.IsNull("Vaccine_Brand") Then strVaccineBrand = drSource("Vaccine_Brand").ToString().Trim()
+
+            Dim strVaccineLotNo As String = String.Empty
+            If Not drSource.IsNull("Vaccine_Lot_No") Then strVaccineLotNo = drSource("Vaccine_Lot_No").ToString().Trim()
+
+            Dim strVaccineTradeName As String = String.Empty
+            If Not drSource.IsNull("Brand_Trade_Name") Then strVaccineTradeName = drSource("Brand_Trade_Name").ToString().Trim()
+
+            Dim strVaccineTradeNameChi As String = String.Empty
+            If Not drSource.IsNull("Brand_Trade_Name_Chi") Then strVaccineTradeNameChi = drSource("Brand_Trade_Name_Chi").ToString().Trim()
 
             Dim udtTransactionDetailVaccineModel As New TransactionDetailVaccineModel( _
                 drSource("Transaction_ID").ToString(), _
@@ -4000,9 +4200,15 @@ Namespace Component.EHSTransaction
                 dblTotalAmount, _
                 strRemark, _
                 dtmTransactionDtm, _
+                strVaccineBrand, _
+                strVaccineLotNo, _
+                strVaccineTradeName, _
+                strVaccineTradeNameChi, _
                 strAvailableItemDesc, _
                 strAvailableItemDescChi)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+            udtTransactionDetailVaccineModel.AvailableItemDescCN = strAvailableItemDescCN
             udtTransactionDetailVaccineModel.ServiceReceiveDtm = dtmServiceReceiveDtm
             udtTransactionDetailVaccineModel.SchemeCode = strSchemeCode
             udtTransactionDetailVaccineModel.SubsidizeDesc = strSubsidizeDesc

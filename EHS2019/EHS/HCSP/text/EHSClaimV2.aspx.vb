@@ -1112,6 +1112,8 @@ Partial Public Class EHSClaimV2
         udtClaimCategorys = Me._udtClaimCategoryBLL.getDistinctCategoryByScheme(udtSchemeClaim, udtPersonalInformation, Me._udtEHSTransaction.ServiceDate)
         ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
 
+        udtClaimCategorys = udtClaimCategorys.FilterOutBySubsidizeItemCodeReturnCollection(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19) ' CRE20-0022 (Immu record)[Martin]
+
         dtCategory = ClaimCategoryBLL.ConvertCategoryToDatatable(udtClaimCategorys, "text")
 
         ' --------------------------------------------------------------------------------------------------
@@ -6065,7 +6067,7 @@ Partial Public Class EHSClaimV2
                 If udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.ADOPC Then
                     udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                         udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, _
-                        udtEHSPersonalInfo.AdoptionPrefixNum, FunctionCode)
+                        udtEHSPersonalInfo.AdoptionPrefixNum, FunctionCode, ClaimMode.All)
 
                 Else
                     If Not udtSmartIDContent Is Nothing AndAlso udtSmartIDContent.IsReadSmartID Then
@@ -6113,7 +6115,7 @@ Partial Public Class EHSClaimV2
                     Else
                         udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                             udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, _
-                            String.Empty, FunctionCode)
+                            String.Empty, FunctionCode, ClaimMode.All)
 
                         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
                         ' -------------------------------------------------------------------------------
@@ -6151,7 +6153,7 @@ Partial Public Class EHSClaimV2
 
                 Else
                     udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
-                        udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, String.Empty, FunctionCode)
+                        udtEHSPersonalInfo.IdentityNum, strDOB, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, String.Empty, FunctionCode, ClaimMode.All)
 
                 End If
         End Select
@@ -6451,7 +6453,7 @@ Partial Public Class EHSClaimV2
                     'Get all available Scheme <- for SP
                     udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(SessionSP.PracticeList(udtSelectedPracticeDisplay.PracticeID).PracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
                     'Get all Eligible Scheme form available List <- for EHS Account
-                    udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchEligibleClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaimModelCollection)
+                    udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchEligibleAndExceedDocumentClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaimModelCollection)
 
                     Me.SessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaimModelCollection, Me.FunctionCode)
                 End If
@@ -6780,7 +6782,7 @@ Partial Public Class EHSClaimV2
 
                 udtSchemeClaims = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(SessionSP.PracticeList(intPracticeId).PracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
                 ' Get all Eligible Scheme form available List <- for EHS Account
-                udtSchemeClaims = udtSchemeClaimBLL.searchEligibleClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaims)
+                udtSchemeClaims = udtSchemeClaimBLL.searchEligibleAndExceedDocumentClaimScheme(udtEHSAccount, udtEHSAccount.SearchDocCode, udtSchemeClaims)
 
                 Me.SessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaims, Me.FunctionCode)
 

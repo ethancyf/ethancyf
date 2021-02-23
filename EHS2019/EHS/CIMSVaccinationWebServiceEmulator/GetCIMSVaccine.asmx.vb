@@ -524,7 +524,13 @@ Public Class WebService1
         'TW	= Exit/Entry Permit for Travelling to and from Hong Kong and Macao (Two-way Permit)
         'ED	= eHR document
         'MD	= Macao ID Card
+        'CCIC	= Consular Corps Identity Card
+        'ROP140	= Acknowledgement of application for a Hong Kong permanent identity card
+        'PASS	= Passport
 
+        ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+        ' --------------------------------------------------------------------------------------
+        ' Revise Later
         If udtReqClient.docType <> "ID" And _
             udtReqClient.docType <> "BC" And _
             udtReqClient.docType <> "EC" And _
@@ -537,8 +543,11 @@ Public Class WebService1
             udtReqClient.docType <> "RP" And _
             udtReqClient.docType <> "TW" And _
             udtReqClient.docType <> "ED" And _
-            udtReqClient.docType <> "MD" Then
-
+            udtReqClient.docType <> "MD" And _
+            udtReqClient.docType <> "CCIC" And _
+            udtReqClient.docType <> "ROP140" And _
+            udtReqClient.docType <> "PASS" Then
+            ' CRE20-0022 (Immu record) [End][Winnie SUEN]
             udtRspClient.returnCode = "20006"
             udtRspClient.returnCodeDesc = String.Format("Invalid Identity Document Type, {0}", udtReqClient.docType)
             udtRspClient.returnRecordCnt = 0

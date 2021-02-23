@@ -66,6 +66,10 @@ Public Class DocumentTypeRadioButtonGroup
     Private _enumFilterDocCode As FilterDocCode = FilterDocCode.None
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private _blnCOVID19 As Boolean = False
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Internal Class"
@@ -245,6 +249,7 @@ Public Class DocumentTypeRadioButtonGroup
 
                 Dim udtDocTypeList As New DocTypeModelCollection
 
+                'DocType(HKIC, EC, HKBC) Filter by SchemeDocType(e.g. HCVSCHN, [HKIC, EC])
                 For Each udtSchemeDocType As SchemeDocTypeModel In Me._udtSchemeDocTypeList
                     Dim udtDocType As DocTypeModel = udtDocTypeModelList.Filter(udtSchemeDocType.DocCode)
 
@@ -376,13 +381,16 @@ Public Class DocumentTypeRadioButtonGroup
         Me._strDocumentTypes = New Dictionary(Of String, DocumentInfo)
         Dim documentInfo As DocumentInfo = Nothing
 
-        ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
         Dim udtDocTypeModelList As DocTypeModelCollection = (New DocTypeBLL).getAllDocType()
 
         If Me.HCSPSubPlatform <> EnumHCSPSubPlatform.NA Then
             udtDocTypeModelList = udtDocTypeModelList.FilterByHCSPSubPlatform(Me.HCSPSubPlatform)
         End If
-        ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        udtDocTypeModelList = udtDocTypeModelList.FilterForVaccinationRecordEnquriySearch()
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         For Each udtDocType As DocTypeModel In udtDocTypeModelList
             documentInfo = New DocumentInfo(udtDocType)
@@ -505,6 +513,7 @@ Public Class DocumentTypeRadioButtonGroup
                     End If
                     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
                 End If
+
             End If
 
             'add RadioButton into cell

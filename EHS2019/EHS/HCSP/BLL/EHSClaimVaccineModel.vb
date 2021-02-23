@@ -1,6 +1,7 @@
 Imports Common.ComObject
 Imports Common.Component.ClaimRules
 Imports Common.Component.Scheme
+Imports Common.Component
 
 
 <Serializable()> Public Class EHSClaimVaccineModel
@@ -76,6 +77,24 @@ Imports Common.Component.Scheme
         Return blnEnabled
     End Function
     'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetSelectedDoseForCOVID19() As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel
+        For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In Me.SubsidizeList
+            If udtSubsidize.Selected Then
+                For Each udtSubidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtSubsidize.SubsidizeDetailList
+                    If udtSubidizeDetail.Selected Then
+                        Return udtSubidizeDetail
+                    End If
+                Next
+
+            End If
+        Next
+
+        Return Nothing
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
 #Region "Class EHSClaimSubsidzeModel & Collection"
 
@@ -593,6 +612,24 @@ Imports Common.Component.Scheme
                 Me._strAvailableItemDescCN = value
             End Set
         End Property
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        ReadOnly Property AvailableItemDesc(ByVal strLanguage As String) As String
+            Get
+                Select Case strLanguage.Trim.ToLower
+                    Case CultureLanguage.English
+                        Return Me.AvailableItemDesc
+                    Case CultureLanguage.TradChinese
+                        Return Me.AvailableItemDescChi
+                    Case CultureLanguage.SimpChinese
+                        Return Me.AvailableItemDescCN
+                    Case Else
+                        Throw New Exception(String.Format("EHSClaimSubidizeDetailModel.AvailableItemDesc: Unexpected value (strLanguage={0})", strLanguage))
+                End Select
+            End Get
+        End Property
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Property AvailableItemNum() As Integer
             Get

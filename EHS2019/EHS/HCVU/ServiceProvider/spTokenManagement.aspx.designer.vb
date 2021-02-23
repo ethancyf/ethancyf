@@ -932,6 +932,15 @@ Partial Public Class spTokenManagement
     Protected WithEvents lblDUserDeclareEHRSSUser As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trTokenIssueBy control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trTokenIssueBy As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblDTokenIssuedByText control.
     '''</summary>
     '''<remarks>
@@ -975,6 +984,15 @@ Partial Public Class spTokenManagement
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgDTokenIssuedByAlert As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trDShareTokenStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trDShareTokenStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''lblDIsShareTokenText control.

@@ -76,6 +76,7 @@ Public Class ScheduleJob
         OCSSSConnectFail
         EHRSSPatientPortalSlowResponse
         HAServicePatientImporter
+        COVID19Exporter
     End Enum
 
 #End Region
@@ -421,6 +422,11 @@ Public Class ScheduleJob
         dtmLastCheck.Insert(HealthCheckType.HAServicePatientImporter, dtmNow)
         ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
 
+        'CRE20-0022 (Immu record) [Start][Winnie SUEN]
+        ' ---------------------------------------------------------------------------------------------------------
+        dtmLastCheck.Insert(HealthCheckType.COVID19Exporter, dtmNow)
+        'CRE20-0022 (Immu record) [End][Winnie SUEN]
+
 
         CheckTime.ReadCheckTime(dtmLastCheck)
 
@@ -467,6 +473,10 @@ Public Class ScheduleJob
             ' ---------------------------------------------------------------------------------------------------------
             CheckHASPImporter_ImportFail(dtmLastCheck(HealthCheckType.HAServicePatientImporter), dtmNow)
             ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
+
+            'CRE20-0022 (Immu record) [Start][Martin Tang]
+            CheckCOVID19Exporter_ExportFail(dtmLastCheck(HealthCheckType.COVID19Exporter), dtmNow)
+            'CRE20-0022 (Immu record) [End][Martin Tang]
 
             CheckTime.WriteCheckTime(dtmLastCheck)
 
@@ -1490,7 +1500,7 @@ Public Class ScheduleJob
         Dim intSlowResponseCount As Integer = CInt(ConfigurationManager.AppSettings("CIMS_SlowResponse_FailCount"))
 
         Dim strSlowResponse_Message As String = "(CIMS->EHS) {0}/{1} Slow Performance Record count (>={2}s) in the past {3} mins [threshold: {4}]"
-        
+
         ' Single Mode
         Dim dvSingle As DataView = New DataView(dt)
         dvSingle.RowFilter = String.Format("Description like '%<BatchEnquiry: {0}>%'", "N")
@@ -2209,6 +2219,93 @@ Public Class ScheduleJob
 
 #End Region
 
+
+#Region "COVID19Exporter"
+    Private Sub CheckCOVID19Exporter_ExportFail(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
+        ' +--------------------------------------------------------------------------------------------------+
+        ' | For every [5] minutes, monitor the ScheduleJobLog to see if any COVID19Exporter                  |
+        ' | If there are any connection error case, raise alert.                                              |
+        ' +--------------------------------------------------------------------------------------------------+
+
+        Log("Checking COVID19Exporter_ExportFail")
+
+        ' Check whether need to run
+        If DateDiff(DateInterval.Minute, dtmLastCheck, dtmCurrent) < CInt(ConfigurationManager.AppSettings("COVID19Exporter_CheckInterval")) Then
+            Log("Smaller than CheckInterval, no need to run")
+
+            Return
+        End If
+
+        ' Update now to be the new LastCheckTime
+        dtmLastCheck = dtmCurrent
+
+        ' Check logs
+        Dim intScheduleJobLogMinuteBefore As Integer = CInt(ConfigurationManager.AppSettings("COVID19Exporter_ScheduleJobLogMinuteBefore"))
+        Dim strScheduleJobLogProgramID As String = ConfigurationManager.AppSettings("COVID19Exporter_ProgramID")
+        Dim strScheduleJobAlertLogID As String = ConfigurationManager.AppSettings("COVID19Exporter_AlertLogID")
+
+        Dim strPagerAlertLogID_PagerAlert As String = ConfigurationManager.AppSettings("COVID19Exporter_PagerAlertLogID_PagerAlert")
+        Dim strEmailAlertLogID_EmailAlert As String = ConfigurationManager.AppSettings("COVID19Exporter_EmailAlertLogID_EmailAlert")
+
+
+        Dim dtAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobAlertLogID, _
+                                                         dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                         dtmCurrent)
+
+        Dim strMessage As String = String.Empty
+        Dim blnPagerAlert As Boolean = False
+        Dim blnEmailAlert As Boolean = False
+
+        If dtAlertLogID.Rows.Count > 0 Then
+
+            If strPagerAlertLogID_PagerAlert = "Y" Then blnPagerAlert = True
+
+            If strEmailAlertLogID_EmailAlert = "Y" Then blnEmailAlert = True
+
+            ' Get the latest description
+            strMessage = dtAlertLogID.Rows(0)("Description")
+        End If
+
+
+
+        If blnPagerAlert Then
+            Log("CheckCOVID19Exporter_ExportFail pager alert")
+
+            CheckCOVID19Exporter_ExportFailAlert(AlertType.PagerAlert, strMessage)
+        End If
+
+        If blnEmailAlert Then
+            Log("CheckCOVID19Exporter_ExportFail email alert")
+
+            CheckCOVID19Exporter_ExportFailAlert(AlertType.EmailAlert, strMessage)
+        End If
+
+        Log("Completed checking CheckCOVID19Exporter_ExportFail")
+
+    End Sub
+
+
+    'For CheckCOVID19Exporter_ImportFail write event log
+    Private Sub CheckCOVID19Exporter_ExportFailAlert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19Exporter_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19Exporter_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19Exporter_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19Exporter_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
+#End Region
 
 
 

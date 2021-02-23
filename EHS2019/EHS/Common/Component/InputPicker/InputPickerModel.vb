@@ -10,14 +10,18 @@
         Private _strRCHCode As String
         Private _strHighRisk As String
         Private _strSchoolCode As String
-
-        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Private _strSPID As String
-        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strBrand As String
+        Private _udtVaccinationRecord As EHSTransaction.TransactionDetailVaccineModelCollection
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         'User Define Type
         Private _udtInputVaccineModelCollection As InputPicker.InputVaccineModelCollection
+
+
 
 #Region "Property"
 
@@ -66,8 +70,6 @@
             End Set
         End Property
 
-        ' CRE20-014 (Gov SIV 2020/21) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property SPID() As String
             Get
                 Return _strSPID
@@ -76,7 +78,6 @@
                 _strSPID = Value
             End Set
         End Property
-        ' CRE20-014 (Gov SIV 2020/21) [End][Chris YIM]
 
         Public Property EHSClaimVaccine() As InputVaccineModelCollection
             Get
@@ -87,6 +88,26 @@
             End Set
         End Property
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property Brand() As String
+            Get
+                Return _strBrand
+            End Get
+            Set(ByVal Value As String)
+                _strBrand = Value
+            End Set
+        End Property
+
+        Public Property VaccinationRecord() As EHSTransaction.TransactionDetailVaccineModelCollection
+            Get
+                Return _udtVaccinationRecord
+            End Get
+            Set(ByVal Value As EHSTransaction.TransactionDetailVaccineModelCollection)
+                _udtVaccinationRecord = Value
+            End Set
+        End Property
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Constructor"
@@ -96,10 +117,13 @@
             _strCategoryCode = String.Empty
             _strRCHCode = String.Empty
             _strHighRisk = String.Empty
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             _strSchoolCode = String.Empty
-            ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+            _strSPID = String.Empty
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            _strBrand = String.Empty
+            _udtVaccinationRecord = Nothing
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             _udtInputVaccineModelCollection = Nothing
 

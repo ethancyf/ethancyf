@@ -47,9 +47,11 @@ Namespace UIControl.DocTypeText
             Me.RenderLanguage(Me.DocType)
         End Sub
 
-        Public Sub RenderLanguage(ByVal documentType As String)
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Sub RenderLanguage(ByVal strDocumentType As String)
             Dim strlanguage As String = Session("language").ToString()
-            Me.DocType = documentType
+            Me.DocType = strDocumentType
 
             Me.lblSearchShortDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
 
@@ -58,25 +60,14 @@ Namespace UIControl.DocTypeText
             Dim udtDocTypeList As DocTypeModelCollection
             udtDocTypeList = udtDocTypeBLL.getAllDocType
 
-            Select Case documentType
+            Select Case strDocumentType
                 Case DocTypeModel.DocTypeCode.HKIC
-                    ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-                    ' ----------------------------------------------------------
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblSearchHKICIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDescChi
-                    Else
-                        Me.lblSearchHKICIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDesc
-                    End If
-                    ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+                    Dim strDocIdentityDesc As String = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKIC).DocIdentityDesc(strlanguage)
+                    Me.lblSearchHKICIdentityNo.Text = strDocIdentityDesc
 
                 Case DocTypeModel.DocTypeCode.EC
-                    'Me.lblECHKIDText.Text = Me.GetGlobalResourceObject("Text", "HKID")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblECHKIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDescChi
-                    Else
-                        Me.lblECHKIDText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc
-                    End If
-
+                    Dim strDocIdentityDesc As String = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.EC).DocIdentityDesc(strlanguage)
+                    Me.lblECHKIDText.Text = strDocIdentityDesc
                     Me.lblECDOBText.Text = Me.GetGlobalResourceObject("Text", "DOBYOB")
                     Me.lblECDOBOrText.Text = Me.GetGlobalResourceObject("Text", "Or")
 
@@ -86,54 +77,18 @@ Namespace UIControl.DocTypeText
                         Me.ECDOARenderLanguage(True)
                     End If
 
-                Case DocTypeModel.DocTypeCode.HKBC
-                    ' Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "BCRegNo")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKBC).DocIdentityDescChi
-                    Else
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.HKBC).DocIdentityDesc
-                    End If
+                Case DocTypeModel.DocTypeCode.HKBC, _
+                     DocTypeModel.DocTypeCode.REPMT, _
+                     DocTypeModel.DocTypeCode.VISA, _
+                     DocTypeModel.DocTypeCode.ID235B, _
+                     DocTypeModel.DocTypeCode.DI
 
-                Case DocTypeModel.DocTypeCode.REPMT
-                    'Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "ReentryPermitNo")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.REPMT).DocIdentityDescChi
-                    Else
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.REPMT).DocIdentityDesc
-                    End If
-
-                Case DocTypeModel.DocTypeCode.VISA
-                    'Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "VisaRefNo")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.VISA).DocIdentityDescChi
-                    Else
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.VISA).DocIdentityDesc
-                    End If
-
-                Case DocTypeModel.DocTypeCode.ID235B
-                    'Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "BirthEntryNo")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ID235B).DocIdentityDescChi
-                    Else
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ID235B).DocIdentityDesc
-                    End If
-
+                    Dim strDocIdentityDesc As String = udtDocTypeList.Filter(strDocumentType).DocIdentityDesc(strlanguage)
+                    Me.lblSearchShortIdentityNo.Text = strDocIdentityDesc
 
                 Case DocTypeModel.DocTypeCode.ADOPC
-                    'Me.lblADOPCIdentityNoText.Text = Me.GetGlobalResourceObject("Text", "NoOfEntry")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblADOPCIdentityNoText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDescChi
-                    Else
-                        Me.lblADOPCIdentityNoText.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDesc
-                    End If
-
-                Case DocTypeModel.DocTypeCode.DI
-                    'Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "IdentityDocNo")
-                    If strlanguage.ToUpper.Equals(Common.Component.CultureLanguage.TradChinese.ToUpper()) Then
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.DI).DocIdentityDescChi
-                    Else
-                        Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.DI).DocIdentityDesc
-                    End If
+                    Dim strDocIdentityDesc As String = udtDocTypeList.Filter(DocTypeModel.DocTypeCode.ADOPC).DocIdentityDesc(strlanguage)
+                    Me.lblADOPCIdentityNoText.Text = strDocIdentityDesc
 
                 Case String.Empty
                     Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "IdentityDocNo")
@@ -142,6 +97,7 @@ Namespace UIControl.DocTypeText
             End Select
 
         End Sub
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         Private Sub SetupShortIdentityNoSearch(ByVal enable As Boolean)
             Me.txtSearchShortIdentityNo.Enabled = enable

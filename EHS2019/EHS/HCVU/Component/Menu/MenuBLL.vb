@@ -51,15 +51,28 @@ Namespace Component.Menu
             Dim drCurrent As DataRow
             Dim i As Integer
 
+            ' CRE20-0XX (Immu record) [Start][Raiman]
+            ' ------------------------------------------------------------------------
+            ' change All setting in SubPlatform
+
+            Dim SubPlatform_split_list As ArrayList = New ArrayList
+
             For i = 0 To dtMenuItem.Rows.Count - 1
                 drCurrent = dtMenuItem.Rows(i)
 
-                If drCurrent("Available_HCVU_SubPlatform") <> "ALL" AndAlso drCurrent("Available_HCVU_SubPlatform") <> enumHCVUSubPlatform.ToString Then
+                If Not drCurrent("Available_HCVU_SubPlatform") Is Nothing Then
+                    SubPlatform_split_list.AddRange(drCurrent("Available_HCVU_SubPlatform").Split(","))
+                End If
+
+                If Not SubPlatform_split_list.Contains(enumHCVUSubPlatform.ToString) AndAlso drCurrent("Available_HCVU_SubPlatform") <> enumHCVUSubPlatform.ToString Then
                     Continue For
                 End If
 
+                SubPlatform_split_list.Clear()
                 dtResult.ImportRow(drCurrent)
             Next
+
+            ' CRE20-0XX (Immu record) [End][Raiman]
 
             Return dtResult
         End Function

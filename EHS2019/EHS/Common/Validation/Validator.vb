@@ -3603,7 +3603,8 @@ Namespace Validation
                 Case DocTypeModel.DocTypeCode.HKBC
                     systemMessage = Me.chkRegNo(strIdentityNum)
 
-                Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC
+                Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC,
+                     DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin] 
                     systemMessage = Me.chkHKID(strIdentityNum)
 
                 Case DocTypeModel.DocTypeCode.ID235B
@@ -3623,7 +3624,8 @@ Namespace Validation
                     DocTypeModel.DocTypeCode.IR,
                     DocTypeModel.DocTypeCode.HKP,
                     DocTypeModel.DocTypeCode.RFNo8,
-                    DocTypeModel.DocTypeCode.OTHER
+                    DocTypeModel.DocTypeCode.OTHER,
+                    DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                     systemMessage = Me.chkDocumentNoForNonEHSDocType(strIdentityNum)
                     ' CRE19-001 (VSS 2019) [End][Winnie]
             End Select
@@ -4903,15 +4905,21 @@ Namespace Validation
                 Case Component.DocType.DocTypeModel.DocTypeCode.HKIC
                     systemMessage = Me.chkHKIDIssueDate(strDate, dtmDOB)
 
+
                 Case Component.DocType.DocTypeModel.DocTypeCode.VISA, _
                     Component.DocType.DocTypeModel.DocTypeCode.ADOPC, _
                     Component.DocType.DocTypeModel.DocTypeCode.DI, _
                     Component.DocType.DocTypeModel.DocTypeCode.HKBC, _
                     Component.DocType.DocTypeModel.DocTypeCode.REPMT
+
                     systemMessage = Me.chkIssueDate_DDMMYYYY(strDate, dtmDOB)
 
-                Case Component.DocType.DocTypeModel.DocTypeCode.ID235B
-                    ' ID235B do not have DOI
+                    ' CRE20-0022 (Immu record) [Start][Martin]
+                Case Component.DocType.DocTypeModel.DocTypeCode.ID235B, _
+                    Component.DocType.DocTypeModel.DocTypeCode.ROP140, _
+                    Component.DocType.DocTypeModel.DocTypeCode.CCIC
+                    ' CRE20-0022 (Immu record) [End][Martin]
+                    ' do not have DOI
             End Select
 
             Return systemMessage
@@ -5067,6 +5075,7 @@ Namespace Validation
         ''' <param name="strDocCode"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        ''' ' is not used
         Public Function GetMessageForIdentityNoIsInvalid(ByVal strDocCode As String) As ComObject.SystemMessage
             Dim strMsgCode As String = Nothing
             Select Case strDocCode
@@ -5105,9 +5114,14 @@ Namespace Validation
             Select Case strDocCode
                 Case DocTypeModel.DocTypeCode.ADOPC
                     strMsgCode = "00306"
-                Case DocTypeModel.DocTypeCode.DI
+                Case DocTypeModel.DocTypeCode.DI, _
+                     DocTypeModel.DocTypeCode.OW, _
+                     DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                     strMsgCode = "00307"
-                Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC
+                Case DocTypeModel.DocTypeCode.HKIC, _
+                     DocTypeModel.DocTypeCode.EC, _
+                     DocTypeModel.DocTypeCode.CCIC, _
+                     DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                     strMsgCode = "00301"
                 Case DocTypeModel.DocTypeCode.HKBC
                     strMsgCode = "00302"
@@ -5248,14 +5262,19 @@ Namespace Validation
                             End If
                         End If
 
-                        ' CRE19-001 (VSS 2019) [Start][Winnie]
+                        ' CRE20-0022 (Immu record) [Start][Martin]
                     Case DocTypeModel.DocTypeCode.OC,
                         DocTypeModel.DocTypeCode.OW,
                         DocTypeModel.DocTypeCode.TW,
                         DocTypeModel.DocTypeCode.IR,
                         DocTypeModel.DocTypeCode.HKP,
                         DocTypeModel.DocTypeCode.RFNo8,
-                        DocTypeModel.DocTypeCode.OTHER
+                        DocTypeModel.DocTypeCode.OTHER,
+                        DocTypeModel.DocTypeCode.CCIC,
+                        DocTypeModel.DocTypeCode.ROP140,
+                        DocTypeModel.DocTypeCode.PASS
+                        ' CRE20-0022 (Immu record) [End][Martin]
+
                         If udtDocTypeList.Filter(strDocCode).ForceManualValidate Then
                             If _udteHSAccountPersonalInfo.Validating Then
                                 ManualValidate = False
@@ -5264,6 +5283,8 @@ Namespace Validation
                             End If
                         End If
                         ' CRE19-001 (VSS 2019) [End][Winnie]
+
+
                 End Select
 
             End If

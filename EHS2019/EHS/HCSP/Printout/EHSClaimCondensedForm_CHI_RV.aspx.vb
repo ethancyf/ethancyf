@@ -57,6 +57,7 @@ Partial Public Class EHSClaimCondensedForm_CHI_RV
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
         Dim udtEHSTransaction As EHSTransactionModel = _udtSessionHandler.EHSTransactionGetFromSession(strFunctCode)
         Dim udtSmartIDContent As BLL.SmartIDContentModel = Me._udtSessionHandler.SmartIDContentGetFormSession(strFunctCode)
+        Dim udtVaccinationRecord As TransactionDetailVaccineModel = _udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
 
         Dim udtSP As ServiceProviderModel = Nothing
         _udtSessionHandler.CurrentUserGetFromSession(udtSP, Nothing)
@@ -146,10 +147,22 @@ Partial Public Class EHSClaimCondensedForm_CHI_RV
 
                 End If
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+                'CRE20-0XX (Immu record)  [Start][Raiman] 
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP
+                If Not IsNothing(udtSP) _
+                        AndAlso Not IsNothing(udtEHSTransaction) _
+                        AndAlso Not IsNothing(udtEHSAccount) _
+                        AndAlso Not IsNothing(udtSchemeClaim) Then
+
+                    objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                End If
+                'CRE20-0XX (Immu record)   [End][Raiman] 
+
         End Select
 
         Return objReport
     End Function
 
-   
+
 End Class

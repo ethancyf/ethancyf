@@ -28,19 +28,18 @@ Namespace UIControl.DocTypeText
 
             'Table title
             Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.REPMT)
-            If MyBase.SessionHandler().Language() = Common.Component.CultureLanguage.English Then
-                Me.lblTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc
-            Else
-                Me.lblTravelDocNoText.Text = udtDocTypeModel.DocIdentityDescChi
-            End If
-            'Me.lblTravelDocNo.Text = Me.GetGlobalResourceObject("Text", "TravelDocNo")
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.lblTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
             Me.lblSurname.Text = String.Format("({0})", Me.GetGlobalResourceObject("Text", "Surname"))
             Me.lblGivenName.Text = String.Format("({0})", Me.GetGlobalResourceObject("Text", "Givenname"))
             Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
             Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
-            'Me.lblTransactionNoText.Text = Me.GetGlobalResourceObject("Text", "TransactionNo")
 
             'Gender Radio button list
             Me.rbGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")

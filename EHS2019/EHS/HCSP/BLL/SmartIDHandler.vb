@@ -402,6 +402,59 @@ Namespace BLL
             End Get
         End Property
 
+        'Public Shared ReadOnly Property EnableComboClientScript() As Boolean
+        '    Get
+        '        Dim blnRes As Boolean = False
+
+        '        Dim strEnableSmartIDAllowScheme As String = ConfigurationManager.AppSettings("EnableSmartID_AllowScheme")
+
+        '        If Not IsNothing(strEnableSmartIDAllowScheme) AndAlso strEnableSmartIDAllowScheme <> String.Empty Then
+        '            blnRes = True
+        '        End If
+
+        '        If EnableSmartID OrElse blnRes Then
+        '            Return True
+        '        End If
+
+        '        Return False
+        '    End Get
+        'End Property
+
+        '' Check web config to see if enable, Hide Smart ID if not enabled
+        'Public Shared ReadOnly Property EnableSmartID(ByVal strSchemeCode As String) As Boolean
+        '    Get
+        '        Dim strEnableSmartID As String = ConfigurationManager.AppSettings("EnableSmartID")
+
+        '        If Not IsNothing(strEnableSmartID) AndAlso strEnableSmartID = YesNo.Yes Then
+        '            Return True
+        '        End If
+
+        '        Dim blnRes As Boolean = False
+        '        Dim strEnableSmartIDAllowScheme As String = ConfigurationManager.AppSettings("EnableSmartID_AllowScheme")
+
+        '        If Not IsNothing(strEnableSmartIDAllowScheme) AndAlso strEnableSmartIDAllowScheme <> String.Empty Then
+        '            If strEnableSmartIDAllowScheme = "ALL" Then
+        '                Return True
+        '            End If
+
+        '            Dim strAllowScheme() As String = Split(strEnableSmartIDAllowScheme, ";")
+
+        '            If strAllowScheme.Length > 0 Then
+        '                For intCt As Integer = 0 To strAllowScheme.Length - 1
+        '                    If strAllowScheme(intCt).Trim.ToUpper = strSchemeCode.Trim.ToUpper Then
+        '                        blnRes = True
+        '                        Exit For
+        '                    End If
+        '                Next
+        '            End If
+
+        '        End If
+
+        '        Return blnRes
+
+        '    End Get
+        'End Property
+
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         ' Check system parameters to see if turn on, Smart ID will be dimmed if off
@@ -566,12 +619,16 @@ Namespace BLL
                     Case IdeasBLL.EnumIdeasVersion.TwoGender
                         strSmartIDVer = SmartIDVersion.IDEAS2_WithGender
                     Case IdeasBLL.EnumIdeasVersion.Combo
-                        If Me.CardVersion = 1 Then
-                            strSmartIDVer = SmartIDVersion.IDEAS_Combo_Old
-                        End If
-
-                        If Me.CardVersion = 2 Then
+                        If Me.IsDemonVersion Then
                             strSmartIDVer = SmartIDVersion.IDEAS_Combo_New
+                        Else
+                            If Me.CardVersion = 1 Then
+                                strSmartIDVer = SmartIDVersion.IDEAS_Combo_Old
+                            End If
+
+                            If Me.CardVersion = 2 Then
+                                strSmartIDVer = SmartIDVersion.IDEAS_Combo_New
+                            End If
                         End If
 
                     Case IdeasBLL.EnumIdeasVersion.ComboGender
@@ -613,7 +670,9 @@ Namespace BLL
         Public ReadOnly Property CardVersion() As String
             Get
                 Return Me._udtIdeasSamlResponse.CardFaceDate.CardVersion
+
             End Get
+
         End Property
         ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
