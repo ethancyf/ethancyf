@@ -1436,6 +1436,24 @@ Partial Public Class MyProfileV2
     Protected WithEvents lblPracticeText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''btnDESelectAllPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDESelectAllPractice As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnDEUnselectAllPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDEUnselectAllPractice As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''chkPracticeList control.
     '''</summary>
     '''<remarks>

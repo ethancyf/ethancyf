@@ -14,7 +14,7 @@ Public Class ucInputCCIC
     Private _strENameSurName As String
     Private _strGender As String
     Private _strDOB As String
-    'Private _strDOI As String
+    Private _strDOI As String
     Private _strReferenceNo As String = String.Empty
     Private _strTransNo As String = String.Empty
 
@@ -30,7 +30,7 @@ Public Class ucInputCCIC
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
-        'Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
+        Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
 
         'Gender Radio button list
         Me.rbGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
@@ -52,8 +52,8 @@ Public Class ucInputCCIC
         Me.imgDOBDate.ImageUrl = strErrorImageURL
         Me.imgDOBDate.AlternateText = strErrorImageALT
 
-        'Me.imgDOIDate.ImageUrl = strErrorImageURL
-        'Me.imgDOIDate.AlternateText = strErrorImageALT
+        Me.imgDOIDate.ImageUrl = strErrorImageURL
+        Me.imgDOIDate.AlternateText = strErrorImageALT
 
     End Sub
 
@@ -67,11 +67,11 @@ Public Class ucInputCCIC
         Me._strGender = MyBase.EHSPersonalInfo.Gender
         Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
 
-        'If MyBase.EHSPersonalInfo.DateofIssue.HasValue Then
-        '    Me._strDOI = MyBase.Formatter.formatInputDate(CDate(MyBase.EHSPersonalInfo.DateofIssue))
-        'Else
-        '    Me._strDOI = String.Empty
-        'End If
+        If MyBase.EHSPersonalInfo.DateofIssue.HasValue Then
+            Me._strDOI = MyBase.Formatter.formatHKIDIssueDate(MyBase.EHSPersonalInfo.DateofIssue)
+        Else
+            Me._strDOI = String.Empty
+        End If
 
         Me.SetValue(modeType)
 
@@ -114,7 +114,7 @@ Public Class ucInputCCIC
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.rbGender.Enabled = True
-                'Me.txtDOI.Enabled = True
+                Me.txtDOI.Enabled = True
             Else
                 'Modification Read-Only Mode
                 Me.lblTDNo.Visible = True
@@ -125,7 +125,7 @@ Public Class ucInputCCIC
                 Me.txtENameFirstname.Enabled = False
                 Me.rbGender.Enabled = False
                 Me.txtDOB.Enabled = False
-                'Me.txtDOI.Enabled = False
+                Me.txtDOI.Enabled = False
             End If
 
         End If
@@ -135,7 +135,7 @@ Public Class ucInputCCIC
             Me.SetENameError(False)
             Me.SetGenderError(False)
             Me.SetDOBError(False)
-            'Me.SetDOIError(False)
+            Me.SetDOIError(False)
         End If
 
     End Sub
@@ -150,7 +150,7 @@ Public Class ucInputCCIC
         SetupENameSurName()
         SetupGender()
         SetupDOB()
-        'SetupDOI()
+        SetupDOI()
         SetReferenceNo()
         SetTransactionNo()
     End Sub
@@ -178,9 +178,9 @@ Public Class ucInputCCIC
         Me.txtDOB.Text = Me._strDOB
     End Sub
 
-    'Public Sub SetupDOI()
-    '    Me.txtDOI.Text = Me._strDOI
-    'End Sub
+    Public Sub SetupDOI()
+        Me.txtDOI.Text = Me._strDOI
+    End Sub
 
     'unqiue for modification and modification read-only modes
     Public Sub SetReferenceNo()
@@ -232,9 +232,9 @@ Public Class ucInputCCIC
         Me.imgDOBDate.Visible = visible
     End Sub
 
-    'Public Sub SetDOIError(ByVal visible As Boolean)
-    '    Me.imgDOIDate.Visible = visible
-    'End Sub
+    Public Sub SetDOIError(ByVal visible As Boolean)
+        Me.imgDOIDate.Visible = visible
+    End Sub
 
 #End Region
 
@@ -245,7 +245,7 @@ Public Class ucInputCCIC
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue.Trim
-        'Me._strDOI = Me.txtDOI.Text.Trim
+        Me._strDOI = Me.txtDOI.Text.Trim
         Me._strDOB = Me.txtDOB.Text.Trim
     End Sub
 
@@ -303,14 +303,14 @@ Public Class ucInputCCIC
     '    End Set
     'End Property
 
-    'Public Property DateOfIssue() As String
-    '    Get
-    '        Return Me._strDOI
-    '    End Get
-    '    Set(ByVal value As String)
-    '        Me._strDOI = value
-    '    End Set
-    'End Property
+    Public Property DateOfIssue() As String
+        Get
+            Return Me._strDOI
+        End Get
+        Set(ByVal value As String)
+            Me._strDOI = value
+        End Set
+    End Property
 
     Public Property ReferenceNo() As String
         Get

@@ -28,6 +28,28 @@ Namespace Component
             Return dt
         End Function
 
+        Shared Function GetStatusAllCache() As DataTable
+            Dim dt As New DataTable
+            Dim db As New DataAccess.Database
+
+            If HttpContext.Current.Cache.Get("StatusDataAll") Is Nothing Then
+                Try
+                    ' run the stored procedure
+                    db.RunProc("proc_StatusData_get_all_cache", dt)
+                Catch ex As Exception
+                    'ErrorHandler.Log(ex)
+                    Throw ex
+                End Try
+
+                'HttpContext.Current.Cache.Insert("Status", dt)
+                Common.ComObject.CacheHandler.InsertCache("StatusDataAll", dt)
+            Else
+                dt = CType(HttpContext.Current.Cache.Get("StatusDataAll"), DataTable)
+            End If
+
+            Return dt
+        End Function
+
         'Public MustOverride Function GetDescriptionFromDBCode(ByVal strCode As String) As String
 
         Shared Function GetDescriptionListFromDBEnumCode(ByVal strEnumCode As String, ByVal blnTrim As Boolean) As DataTable
@@ -56,6 +78,26 @@ Namespace Component
             Return dtResult
 
         End Function
+
+        Shared Sub GetDescriptionAllFromDBCode(ByVal strClassCode As String, ByVal strStatusValue As String, ByRef strEngDesc As String, ByRef strChiDesc As String, Optional ByRef strCNDesc As String = "")
+            Dim strDesc As String = ""
+            Dim dt As DataTable
+            dt = GetStatusAllCache()
+
+            Dim i As Integer = 0
+
+            strEngDesc = ""
+            strChiDesc = ""
+
+            While i < dt.Rows.Count
+                If Trim(dt.Rows(i)("Enum_class")).Equals(strClassCode) And Trim(dt.Rows(i)("Status_Value").ToString).Equals(Trim(strStatusValue)) Then
+                    strEngDesc = dt.Rows(i)("Status_Description").ToString
+                    strChiDesc = dt.Rows(i)("Status_Description_Chi").ToString
+                    strCNDesc = dt.Rows(i)("Status_Description_CN").ToString
+                End If
+                i = i + 1
+            End While
+        End Sub
 
         Shared Sub GetDescriptionFromDBCode(ByVal strClassCode As String, ByVal strStatusValue As String, ByRef strEngDesc As String, ByRef strChiDesc As String, Optional ByRef strCNDesc As String = "")
             Dim strDesc As String = ""
@@ -3075,6 +3117,7 @@ Namespace Component
         ' ---------------------------------------------------------------------------------------------------------
         Public Const VSS_NIA As String = "VSSNIA"
         Public Const VSS_VC As String = "VSSVC"
+        Public Const VSS_COVID19 As String = "VSSCOVID19"
         ' CRE20-0022 (Immu record) [End][Chris YIM]
     End Class
 

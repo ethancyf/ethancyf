@@ -68,7 +68,7 @@ Public MustInherit Class BasePrintoutForm
                 ' CRE20-015 (HA Scheme) [End][Winnie]
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP, SchemeClaimModel.COVID19DH
                 rpt = GetReport()
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -426,19 +426,23 @@ Public MustInherit Class BasePrintoutForm
                 Next
 
             Case ConsentFormInformationModel.FormTypeClass.VSS
-                For Each udtTranDetail As TransactionDetailModel In udtEHSTransaction.TransactionDetails
-                    If obj.SubsidyInfo.Length > 0 Then
-                        obj.SubsidyInfo += ","
-                    End If
+                If udtEHSTransaction.TransactionDetails(0).SubsidizeItemCode = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
 
-                    For Each udtSubsidy As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
-                        If udtSubsidy.SubsidizeCode = udtTranDetail.SubsidizeCode Then
-                            obj.SubsidyInfo = udtSubsidy.SubsidizeDisplayCode
-                            Continue For
+                Else
+                    For Each udtTranDetail As TransactionDetailModel In udtEHSTransaction.TransactionDetails
+                        If obj.SubsidyInfo.Length > 0 Then
+                            obj.SubsidyInfo += ","
                         End If
-                    Next
 
-                Next
+                        For Each udtSubsidy As SubsidizeGroupClaimModel In udtSchemeClaim.SubsidizeGroupClaimList
+                            If udtSubsidy.SubsidizeCode = udtTranDetail.SubsidizeCode Then
+                                obj.SubsidyInfo = udtSubsidy.SubsidizeDisplayCode
+                                Continue For
+                            End If
+                        Next
+
+                    Next
+                End If
 
         End Select
 

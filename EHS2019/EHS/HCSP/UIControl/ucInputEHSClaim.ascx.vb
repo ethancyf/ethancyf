@@ -9,6 +9,7 @@ Imports HCSP.BLL
 Partial Public Class ucInputEHSClaim
     Inherits System.Web.UI.UserControl
 
+#Region "Private Member"
     Private _strSchemeCode As String
     Private _currentPractice As BLL.PracticeDisplayModel
     Private _udtEHSAccount As EHSAccountModel
@@ -26,30 +27,16 @@ Partial Public Class ucInputEHSClaim
     Private _udcInputEHSClaim As ucInputEHSClaimBase = Nothing
     Private _btnIsModifyMode As Boolean = False
     Private _udtSessionHandler As New SessionHandler
-
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
     Private _blnNonClinic As Boolean
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
-
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
-    ' -----------------------------------------------------------------------------------------
-
     Private _mode As EHSClaimMode
+    Private _enumClaimMode As ClaimMode
+#End Region
 
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
-
+#Region "Raise Event"
     'Events 
-
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
-    ' -----------------------------------------------------------------------------------------
-
     Public Event SelectReasonForVisitClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event AddReasonForVisitClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event EditReasonForVisitClicked(ByVal sender As Object, ByVal e As System.EventArgs)
-
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
-
     Public Event VaccineRemarkClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event ClaimControlEventFired(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -57,6 +44,9 @@ Partial Public Class ucInputEHSClaim
     Public Event RecipientConditionHelpClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
     Public Event RCHCodeTextChanged(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
+#Region "Constant"
 
     Private Class EHSClaimControlID
 
@@ -70,6 +60,7 @@ Partial Public Class ucInputEHSClaim
         Public Const HCVS_CHINA As String = "ucInputEHSClaim_HCVSChina"
         Public Const PIDVSS As String = "ucInputEHSClaim_PIDVSS"
         Public Const VSS As String = "ucInputEHSClaim_VSS"
+        Public Const VSSCOVID19 As String = "ucInputEHSClaim_VSSCOVID19"
         Public Const ENHVSSO As String = "ucInputEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucInputEHSClaim_PPP"
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
@@ -79,14 +70,14 @@ Partial Public Class ucInputEHSClaim
 
     End Class
 
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
-    ' -----------------------------------------------------------------------------------------
-
     Public Enum EHSClaimMode
         Normal
         Complete
     End Enum
 
+#End Region
+
+#Region "Property"
     Public Property Mode() As EHSClaimMode
         Get
             Return Me._mode
@@ -96,8 +87,7 @@ Partial Public Class ucInputEHSClaim
         End Set
     End Property
 
-
-    ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
+#End Region
 
 #Region "Setup Function"
     Public Sub Built()
@@ -144,6 +134,9 @@ Partial Public Class ucInputEHSClaim
 
                 Case SchemeClaimModel.EnumControlType.VSS
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.VSS Then BuiltSchemeControlOnly(True)
+
+                Case SchemeClaimModel.EnumControlType.VSSCOVID19
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.VSSCOVID19 Then BuiltSchemeControlOnly(True)
 
                 Case SchemeClaimModel.EnumControlType.ENHVSSO
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.ENHVSSO Then BuiltSchemeControlOnly(True)
@@ -315,17 +308,29 @@ Partial Public Class ucInputEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.VSS
-                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputVSS.ascx", strFolderPath))
-                udcInputEHSClaim.ID = EHSClaimControlID.VSS
-                If Me._textOnlyVersion Then
-                    'No Input Control
+                If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                    udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputVSSCOVID19.ascx", strFolderPath))
+                    udcInputEHSClaim.ID = EHSClaimControlID.VSSCOVID19
+                    If Me._textOnlyVersion Then
+                        'No Input Control
+                    Else
+                        'Nothing to do
+                    End If
+
                 Else
-                    Dim udcInputVSS As ucInputVSS = CType(udcInputEHSClaim, ucInputVSS)
-                    AddHandler udcInputVSS.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
-                    AddHandler udcInputVSS.SearchButtonClick, AddressOf udcInputVSS_SearchButtonClick
-                    AddHandler udcInputVSS.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
-                    AddHandler udcInputVSS.SubsidizeDisabledRemarkClicked, AddressOf udcInputEHSClaim_SubsidizeDisabledRemarkClick
-                    AddHandler udcInputVSS.RecipientConditionHelpClick, AddressOf udcInputEHSClaim_RecipientConditionHelpClick
+                    udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputVSS.ascx", strFolderPath))
+                    udcInputEHSClaim.ID = EHSClaimControlID.VSS
+                    If Me._textOnlyVersion Then
+                        'No Input Control
+                    Else
+                        Dim udcInputVSS As ucInputVSS = CType(udcInputEHSClaim, ucInputVSS)
+                        AddHandler udcInputVSS.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+                        AddHandler udcInputVSS.SearchButtonClick, AddressOf udcInputVSS_SearchButtonClick
+                        AddHandler udcInputVSS.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
+                        AddHandler udcInputVSS.SubsidizeDisabledRemarkClicked, AddressOf udcInputEHSClaim_SubsidizeDisabledRemarkClick
+                        AddHandler udcInputVSS.RecipientConditionHelpClick, AddressOf udcInputEHSClaim_RecipientConditionHelpClick
+                    End If
+
                 End If
 
             Case SchemeClaimModel.EnumControlType.ENHVSSO
@@ -758,6 +763,23 @@ Partial Public Class ucInputEHSClaim
     '-----------------------------------------------------------------------------------------
     'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' --------------------------------------------------------------------------------------
+    Public Function GetVSSCOVID19Control() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.VSSCOVID19)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputVSSCOVID19)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
+
     ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
     ' --------------------------------------------------------------------------------------
     Public Function GetENHVSSOControl() As ucInputEHSClaimBase
@@ -1002,8 +1024,6 @@ Partial Public Class ucInputEHSClaim
         End Set
     End Property
 
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
     Public Property NonClinic() As Boolean
         Get
             Return _blnNonClinic
@@ -1012,7 +1032,18 @@ Partial Public Class ucInputEHSClaim
             _blnNonClinic = value
         End Set
     End Property
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property ClaimMode() As ClaimMode
+        Get
+            Return _enumClaimMode
+        End Get
+        Set(ByVal value As ClaimMode)
+            _enumClaimMode = value
+        End Set
+    End Property
+    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
 #End Region
 

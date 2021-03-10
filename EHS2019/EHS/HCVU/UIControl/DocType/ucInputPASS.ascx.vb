@@ -112,7 +112,7 @@ Public Class ucInputPASS
             '-------temporary code------------------------------
             If Not IsNothing(MyBase.EHSPersonalInfoAmend) Then
                 'Pre-Fill before entering account creation page (eHS maintenance)
-                Me._strTDNumber = MyBase.Formatter.formatHKID(MyBase.EHSPersonalInfoAmend.IdentityNum, False)
+                Me._strTDNumber = MyBase.EHSPersonalInfoAmend.IdentityNum.Trim
                 Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
                 Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)

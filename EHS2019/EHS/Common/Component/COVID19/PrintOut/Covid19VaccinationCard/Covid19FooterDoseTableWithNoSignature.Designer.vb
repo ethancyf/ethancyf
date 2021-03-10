@@ -43,8 +43,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.Label16 = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseVaccineName = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.FirstDoseVaccineName = New GrapeCity.ActiveReports.SectionReportModel.Label()
-            Me.FirstDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
             Me.SecondDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
+            Me.FirstDoseCover = New GrapeCity.ActiveReports.SectionReportModel.Label()
             CType(Me.Label17, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label18, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.Label6, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -69,8 +69,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.Label16, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseVaccineName, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.FirstDoseVaccineName, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
             'Detail
@@ -375,45 +375,29 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             '
             'SecondDoseVaccineName
             '
-            Me.SecondDoseVaccineName.Height = 0.197!
+            Me.SecondDoseVaccineName.Height = 0.26!
             Me.SecondDoseVaccineName.HyperLink = Nothing
-            Me.SecondDoseVaccineName.Left = 0.796!
+            Me.SecondDoseVaccineName.Left = 0.753!
             Me.SecondDoseVaccineName.Name = "SecondDoseVaccineName"
             Me.SecondDoseVaccineName.ShrinkToFit = True
             Me.SecondDoseVaccineName.Style = "font-family: Times New Roman; font-size: 10pt; text-align: center; vertical-align" & _
         ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.SecondDoseVaccineName.Text = ""
-            Me.SecondDoseVaccineName.Top = 1.552!
-            Me.SecondDoseVaccineName.Width = 2.0!
+            Me.SecondDoseVaccineName.Top = 1.51!
+            Me.SecondDoseVaccineName.Width = 2.086!
             '
             'FirstDoseVaccineName
             '
-            Me.FirstDoseVaccineName.Height = 0.197!
+            Me.FirstDoseVaccineName.Height = 0.2600001!
             Me.FirstDoseVaccineName.HyperLink = Nothing
-            Me.FirstDoseVaccineName.Left = 0.796!
+            Me.FirstDoseVaccineName.Left = 0.7529999!
             Me.FirstDoseVaccineName.Name = "FirstDoseVaccineName"
             Me.FirstDoseVaccineName.ShrinkToFit = True
             Me.FirstDoseVaccineName.Style = "font-family: Times New Roman; font-size: 10pt; text-align: center; vertical-align" & _
         ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.FirstDoseVaccineName.Text = ""
-            Me.FirstDoseVaccineName.Top = 0.9830002!
-            Me.FirstDoseVaccineName.Width = 2.0!
-            '
-            'FirstDoseCover
-            '
-            Me.FirstDoseCover.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.FirstDoseCover.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.FirstDoseCover.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.FirstDoseCover.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.FirstDoseCover.Height = 0.569!
-            Me.FirstDoseCover.HyperLink = Nothing
-            Me.FirstDoseCover.Left = 0.753!
-            Me.FirstDoseCover.Name = "FirstDoseCover"
-            Me.FirstDoseCover.Style = "background-color: White; font-family: PMingLiU; font-size: 10.75pt; font-weight: " & _
-        "normal; text-align: center; vertical-align: middle; ddo-char-set: 1"
-            Me.FirstDoseCover.Text = "未有紀錄" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "No Records"
-            Me.FirstDoseCover.Top = 0.6510001!
-            Me.FirstDoseCover.Width = 3.116!
+            Me.FirstDoseVaccineName.Top = 0.941!
+            Me.FirstDoseVaccineName.Width = 2.086!
             '
             'SecondDoseCover
             '
@@ -430,6 +414,22 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.SecondDoseCover.Text = "未接種" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Pending"
             Me.SecondDoseCover.Top = 1.22!
             Me.SecondDoseCover.Width = 3.116!
+            '
+            'FirstDoseCover
+            '
+            Me.FirstDoseCover.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseCover.Border.LeftStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseCover.Border.RightStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseCover.Border.TopStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
+            Me.FirstDoseCover.Height = 0.569!
+            Me.FirstDoseCover.HyperLink = Nothing
+            Me.FirstDoseCover.Left = 0.753!
+            Me.FirstDoseCover.Name = "FirstDoseCover"
+            Me.FirstDoseCover.Style = "background-color: White; font-family: PMingLiU; font-size: 10.75pt; font-weight: " & _
+        "normal; text-align: center; vertical-align: middle; ddo-char-set: 1"
+            Me.FirstDoseCover.Text = "未有紀錄" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "No Records"
+            Me.FirstDoseCover.Top = 0.651!
+            Me.FirstDoseCover.Width = 3.116!
             '
             'Covid19FooterDoseTableWithNoSignature
             '
@@ -468,8 +468,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             CType(Me.Label16, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseVaccineName, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.FirstDoseVaccineName, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.SecondDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.FirstDoseCover, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
         End Sub

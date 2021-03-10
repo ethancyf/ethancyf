@@ -13,6 +13,7 @@ Namespace Component.COVID19
 
 #Region "Constant"
         Public Class CACHE_STATIC_DATA
+            Public Const CACHE_ALL_COVID19VaccineBrand As String = "COVID19BLL_ALL_COVID19VaccineBrand"
             Public Const CACHE_ALL_COVID19VaccineLotMapping As String = "COVID19BLL_ALL_COVID19VaccineLotMapping"
             Public Const CACHE_ALL_VaccineCentreSPMapping As String = "COVID19BLL_ALL_VaccineCentreSPMapping"
         End Class
@@ -37,6 +38,29 @@ Namespace Component.COVID19
 #End Region
 
 #Region "Cache"
+        Public Function GetCOVID19VaccineBrand() As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrand)) Then
+
+                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrand), DataTable)
+
+            Else
+
+                Try
+                    db.RunProc("proc_COVID19VaccineBrand_get_all_cache", dt)
+
+                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrand, dt)
+                Catch ex As Exception
+                    Throw
+                End Try
+            End If
+
+            Return dt
+
+        End Function
+
         Public Function GetCOVID19VaccineLotMapping() As DataTable
             Dim dt As New DataTable
             Dim db As New Database
@@ -173,7 +197,7 @@ Namespace Component.COVID19
 
         Public Function GetVaccineBrandPrintoutName(ByVal strBrand As String) As String
             Dim strResult As String = String.Empty
-            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineLotMapping()
+            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
             Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", strBrand.Trim))
 
             If dr.Length > 0 Then
@@ -186,7 +210,7 @@ Namespace Component.COVID19
 
         Public Function GetVaccineBrandPrintoutNameChi(ByVal strBrand As String) As String
             Dim strResult As String = String.Empty
-            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineLotMapping()
+            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
             Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", strBrand.Trim))
 
             If dr.Length > 0 Then
@@ -199,7 +223,7 @@ Namespace Component.COVID19
 
         Public Function GetVaccineTradeName(ByVal strBrand As String) As String
             Dim strResult As String = String.Empty
-            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineLotMapping()
+            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
             Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", strBrand.Trim))
 
             If dr.Length > 0 Then
@@ -212,7 +236,7 @@ Namespace Component.COVID19
 
         Public Function GetVaccineTradeNameChi(ByVal strBrand As String) As String
             Dim strResult As String = String.Empty
-            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineLotMapping()
+            Dim dt As DataTable = (New COVID19.COVID19BLL).GetCOVID19VaccineBrand()
             Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", strBrand.Trim))
 
             If dr.Length > 0 Then
@@ -235,6 +259,20 @@ Namespace Component.COVID19
             db.RunProc("proc_COVID19VaccineLotCentreHCVUMapping", parms, dt)
 
             Return dt
+
+        End Function
+
+        Public Function GetCOVID19VaccineCentreBySPID(ByVal strSPID As String) As DataTable
+            Dim dt As DataTable = Me.GetVaccineCentreSPMapping()
+            Dim dr() As DataRow
+
+            dr = dt.Select(String.Format("SP_ID = '{0}'", strSPID))
+
+            If dr.Length > 0 Then
+                Return dr.CopyToDataTable
+            Else
+                Return Nothing
+            End If
 
         End Function
 
@@ -331,6 +369,59 @@ Namespace Component.COVID19
 
         End Function
 
+        Public Function GenerateCategoryMappingJavaScript(ByVal strCategoryDataJson As String, ByVal strCategoryTextEngJson As String, ByVal strCategoryTextChiJson As String) As String
+            Dim strSubCategoryJavaScript As String = String.Empty
+
+            'strSubCategoryJavaScript += "var SubCategory = {'PG1': ['GL1', 'GL2'],'PG2': ['GL3']};"
+            strSubCategoryJavaScript += "var SubCategory = " & strCategoryDataJson & ";"
+            strSubCategoryJavaScript += "var SubCategoryTextEng = " & strCategoryTextEngJson & ";"
+            strSubCategoryJavaScript += "var SubCategoryTextChi = " & strCategoryTextChiJson & ";"
+            Dim guidText As String = Guid.NewGuid().ToString()
+            strSubCategoryJavaScript += "RemoveUsedBlockScript('" & guidText & "');"
+
+            Return strSubCategoryJavaScript
+
+        End Function
+
+        Public Function GenerateCategoryJavaScript(ByVal strLang As String) As String
+            Dim strJSBindingDDLCategory As String = String.Empty
+
+            Dim strPleaseSelect As String = HttpContext.GetGlobalResourceObject("Text", "PleaseSelect")
+
+            strJSBindingDDLCategory += "var subCategoryCOVID19Language = '" & strLang & "';"
+            strJSBindingDDLCategory += "var $SubCategory = $(""[id$='ddlCSubCategoryCovid19']"");"
+            'When the ddlCVaccineBrandCovid19 is changed, it focus to rerender the ddlCVaccineLotNoCovid19.
+            strJSBindingDDLCategory += "$(""[id$='ddlCMainCategoryCovid19']"").change(function () {"
+            strJSBindingDDLCategory += "var MainCategory = $(this).val(), lmcns = SubCategory[MainCategory] || [];"
+            strJSBindingDDLCategory += "$(""[id$='txtCMainCategory']"").val(MainCategory);"
+            'strJSBindingDDLCategory += "console.log(""checked ddl:  ""  + MainCategory);"
+            'strJSBindingDDLCategory += "console.log(""checked txtCMainCategory:  ""  + $(""[id$='txtCMainCategory']"").val());"
+            'If no. of items is more than 1, then add "Please Select" at the top of dropdownlist
+            strJSBindingDDLCategory += "var html = (lmcns.length > 1 ?'<option value>" & strPleaseSelect & "</option>': '');"
+            strJSBindingDDLCategory += "html += $.map(lmcns, function(lmcn){"
+            'strJSBindingDDLCategory += "var opt;if (subCategoryCOVID19Language =='zh-tw'||subCategoryCOVID19Language=='zh'){"
+            strJSBindingDDLCategory += "var opt;if (subCategoryCOVID19Language =='zh-tw'){"
+            strJSBindingDDLCategory += "opt='<option value=""' + lmcn + '"">' + SubCategoryTextChi[lmcn] + '</option>';}else{"
+            strJSBindingDDLCategory += "opt='<option value=""' + lmcn + '"">' + SubCategoryTextEng[lmcn] + '</option>';}"
+            strJSBindingDDLCategory += "return opt;"
+            strJSBindingDDLCategory += "}).join('');"
+            strJSBindingDDLCategory += "$SubCategory.html(html).change();"
+            strJSBindingDDLCategory += "(lmcns.length > 0) ? $SubCategory.prop('disabled', false) : $SubCategory.prop('disabled', true);"
+            strJSBindingDDLCategory += "});"
+            'Save the ddlCSubCategoryCovid19 selected value to hidden text box for postback
+            strJSBindingDDLCategory += "$SubCategory.change(function () {"
+            strJSBindingDDLCategory += "var SelectedSubCategory = $(this).val();"
+            strJSBindingDDLCategory += "$(""[id$='txtCSubCategory']"").val(SelectedSubCategory);"
+            'strJSBindingDDLCategory += "console.log(""checked ddl:  ""  + SelectedSubCategory);"
+            'strJSBindingDDLCategory += "console.log(""checked txtCVaccineLotNo:  ""  + $(""[id$='txtCSubCategory']"").val());"
+            strJSBindingDDLCategory += "});"
+            Dim guidText As String = Guid.NewGuid().ToString()
+            strJSBindingDDLCategory += "RemoveUsedBlockScript('" & guidText & "');"
+
+            Return strJSBindingDDLCategory
+
+        End Function
+
         Public Function FilterVaccineLotNoByServiceDate(ByVal dtVaccineLotNo As DataTable, ByVal dtmServiceDate As DateTime) As DataRow()
             Dim drVaccineLotNo() As DataRow = Nothing
 
@@ -360,6 +451,44 @@ Namespace Component.COVID19
             Return strVaccineLotNoJson
 
         End Function
+
+        Public Sub GenerateCategoryJson(ByRef strCategoryData As String, ByRef strCategoryTextEng As String, ByRef strCategoryTextChi As String)
+            Dim dtSubCategory As DataTable = Status.GetDescriptionListFromDBEnumCode("VSSC19SubCategory")
+            Dim drSubcategory() As DataRow = dtSubCategory.Select()
+
+            If drSubcategory IsNot Nothing AndAlso drSubcategory.Length > 0 Then
+                'Convert DataRow to Dictionary(select SubCategory group by Brand_ID)
+                Dim dicSubCategory As Dictionary(Of String, String()) = drSubcategory _
+                    .GroupBy(Function(row) row.Field(Of String)("Column_Name")) _
+                    .ToDictionary(
+                        Function(gp) gp.Key,
+                        Function(gp) gp.Select(Function(gpRow) gpRow.Field(Of String)("Status_Value")).ToArray()
+                    )
+
+                Dim dicSubCategoryTextEng As Dictionary(Of String, String()) = drSubcategory _
+                    .GroupBy(Function(row) row.Field(Of String)("Status_Value")) _
+                    .ToDictionary(
+                        Function(gp) gp.Key,
+                        Function(gp) gp.Select(Function(gpRow) gpRow.Field(Of String)("Status_Description")).ToArray()
+                    )
+
+                Dim dicSubCategoryTextChi As Dictionary(Of String, String()) = drSubcategory _
+                    .GroupBy(Function(row) row.Field(Of String)("Status_Value")) _
+                    .ToDictionary(
+                        Function(gp) gp.Key,
+                        Function(gp) gp.Select(Function(gpRow) gpRow.Field(Of String)("Status_Description_Chi")).ToArray()
+                    )
+
+                'Convert Dictionary to josn
+                Dim serializer As New JavaScriptSerializer()
+
+                strCategoryData = serializer.Serialize(dicSubCategory)
+                strCategoryTextEng = serializer.Serialize(dicSubCategoryTextEng)
+                strCategoryTextChi = serializer.Serialize(dicSubCategoryTextChi)
+            End If
+
+        End Sub
+
 #End Region
 
 #Region "QR Code"

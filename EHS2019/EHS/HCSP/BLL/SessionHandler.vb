@@ -109,6 +109,8 @@ Namespace BLL
             Public Const SESS_IDEASComboVersion As String = "SESS_IDEASComboVersion"
             ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
 
+            Public Const SESS_ForceToReadSmartIC As String = "SESS_ForceToReadSmartIC"
+
             '------------------------------------------------------------------------------------------
             'VaccinationRecordEnquiry
             '------------------------------------------------------------------------------------------
@@ -157,6 +159,8 @@ Namespace BLL
             Public Const SESS_ClaimCOVID19 As String = "SESS_CLAIMCOVID19"
             Public Const SESS_ClaimCOVID19_Booth As String = "SESS_CLAIMCOVID19_BOOTH"
             Public Const SESS_ClaimCOVID19_Category As String = "SESS_CLAIMCOVID19_CATEGORY"
+            Public Const SESS_ClaimCOVID19_MainCategory As String = "SESS_CLAIMCOVID19_MAINCATEGORY"
+            Public Const SESS_ClaimCOVID19_SubCategory As String = "SESS_CLAIMCOVID19_SUBCATEGORY"
             Public Const SESS_ClaimCOVID19_VaccineBrand As String = "SESS_CLAIMCOVID19_VACCINEBRAND"
             Public Const SESS_ClaimCOVID19_VaccineLotNo As String = "SESS_CLAIMCOVID19_VACCINELOTNO"
             Public Const SESS_ClaimCOVID19_Dose As String = "SESS_CLAIMCOVID19_DOSE"
@@ -1247,6 +1251,23 @@ Namespace BLL
             HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_IDEASComboVersion))
         End Sub
 
+        'SmartID Ideas Combo Version
+        Public Sub ForceToReadSmartICSaveToSession(ByVal blnForce As Boolean)
+            HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_ForceToReadSmartIC)) = blnForce
+        End Sub
+
+        Public Function ForceToReadSmartICGetFormSession() As Nullable(Of Boolean)
+            If HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_ForceToReadSmartIC)) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(String.Format("{0}", SessionName.SESS_ForceToReadSmartIC)), Boolean)
+            End If
+        End Function
+
+        Public Sub ForceToReadSmartICRemoveFormSession()
+            HttpContext.Current.Session.Remove(String.Format("{0}", SessionName.SESS_ForceToReadSmartIC))
+        End Sub
+
 #Region "NoticedDuplicateClaimAlert"
         ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
         Public Sub NoticedDuplicateClaimAlertSaveToSession(ByVal NoticedDuplicateClaimAlert As String)
@@ -1359,6 +1380,38 @@ Namespace BLL
 
         Public Sub ClaimCOVID19CategoryRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_Category))
+        End Sub
+
+#End Region
+
+#Region "Claim COVID-19 - Main Category"
+
+        Public Sub ClaimCOVID19MainCategorySaveToSession(ByVal strMainCategory As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_MainCategory)) = strMainCategory
+        End Sub
+
+        Public Function ClaimCOVID19MainCategoryGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_MainCategory)), String)
+        End Function
+
+        Public Sub ClaimCOVID19MainCategoryRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_MainCategory))
+        End Sub
+
+#End Region
+
+#Region "Claim COVID-19 - Sub Category"
+
+        Public Sub ClaimCOVID19SubCategorySaveToSession(ByVal strSubCategory As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SubCategory)) = strSubCategory
+        End Sub
+
+        Public Function ClaimCOVID19SubCategoryGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SubCategory)), String)
+        End Function
+
+        Public Sub ClaimCOVID19SubCategoryRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_SubCategory))
         End Sub
 
 #End Region

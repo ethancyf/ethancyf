@@ -24,7 +24,11 @@
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHTravelDocNoText" runat="server" Text="<%$ Resources:Text, TravelDocNo %>"></asp:Label></td>
                 <td style="vertical-align: top">
-                    <asp:Label ID="lblHTravelDocNo" runat="server" CssClass="tableText"></asp:Label></td>                
+                    <asp:Label ID="lblHTravelDocNo" runat="server" CssClass="tableText"></asp:Label></td>      
+                 <td style="vertical-align: top">
+                    <asp:Label ID="lblHDateOfIssueText" runat="server" Text="<%$ Resources:Text, DateOfIssue %>"></asp:Label></td>
+                <td style="vertical-align: top">
+                    <asp:Label ID="lblHDateOfIssue" runat="server" CssClass="tableText"></asp:Label></td>          
             </tr>
         </table>
     </asp:View>
@@ -60,7 +64,13 @@
                     <asp:Label ID="lblVDOBText" runat="server" Text="<%$ Resources:Text, DOB %>"></asp:Label></td>
                 <td valign="top">
                     <asp:Label ID="lblVDOB" runat="server" CssClass="tableText"></asp:Label></td>
-            </tr>            
+            </tr>  
+             <tr>
+                <td valign="top">
+                    <asp:Label ID="lblVDateOfIssueText" runat="server" Text="<%$ Resources:Text, DateOfIssue %>"></asp:Label></td>
+                <td valign="top">
+                    <asp:Label ID="lblVDateOfIssue" runat="server" CssClass="tableText"></asp:Label></td>
+            </tr>          
         </table>
     </asp:View>
 </asp:MultiView>

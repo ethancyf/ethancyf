@@ -34,7 +34,7 @@ Partial Public Class EHSAccountCreationV1
     Private _udtUserAC As UserACModel = New UserACModel()
     Private _udtSP As ServiceProviderModel = Nothing
     Private _blnIsRequireHandlePageRefresh As Boolean = False
-    Private _udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+    Private _udtAuditLogEntry As AuditLogEntry
 
     Private Class PrintOptionValue
         Public Const Chi As String = "Chi"
@@ -93,6 +93,8 @@ Partial Public Class EHSAccountCreationV1
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
         FunctCode = Me.ClaimFunctCode
+
+        _udtAuditLogEntry = New AuditLogEntry(FunctCode, Me)
 
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
@@ -1089,7 +1091,7 @@ Partial Public Class EHSAccountCreationV1
             Me._udtSessionHandler.EHSAccountSaveToSession(Me._udtEHSAccount, FunctCode)
 
             EHSAccountCreationBase.AuditLogStep1b1Complete(_udtAuditLogEntry, Me._udtEHSAccount)
-       
+
             Me.mvAccountCreation.ActiveViewIndex = ActiveViewIndex.Step1b2
         End If
 
@@ -1225,6 +1227,10 @@ Partial Public Class EHSAccountCreationV1
             Case DocType.DocTypeModel.DocTypeCode.PASS
                 'Input Tips 
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoPASS")
+
+            Case DocType.DocTypeModel.DocTypeCode.OW
+                'Input Tips 
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoOW")
                 ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
@@ -1961,7 +1967,8 @@ Partial Public Class EHSAccountCreationV1
         Dim isValid As Boolean = True
         Dim udcInputCCIC As ucInputCCIC = Me.udcStep1b1InputDocumentType.GetCCICControl()
         Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
-        Dim strDOI As String = String.Empty
+        Dim strHKIDIssueDate As String = String.Empty
+        Dim dtHKIDIssueDate As DateTime
         udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
@@ -1979,12 +1986,25 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
         End If
 
+        strHKIDIssueDate = Me._udtFormatter.formatHKIDIssueDateBeforeValidate(udcInputCCIC.DateOfIssue)
+        Me._systemMessage = Me._validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.CCIC, strHKIDIssueDate, udtEHSAccountPersonalInfo.DOB)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputCCIC.SetDOIError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        Else
+            dtHKIDIssueDate = Me._udtFormatter.convertHKIDIssueDateStringToDate(strHKIDIssueDate)
+        End If
+
+
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputCCIC.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputCCIC.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputCCIC.Gender
+            udtEHSAccountPersonalInfo.DateofIssue = dtHKIDIssueDate
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.CCIC
             udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
 
             Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.CCIC, udtEHSAccount)
             If Not Me._systemMessage Is Nothing Then
@@ -2001,6 +2021,7 @@ Partial Public Class EHSAccountCreationV1
         Dim isValid As Boolean = True
         Dim udcInputROP140 As ucInputROP140 = Me.udcStep1b1InputDocumentType.GetROP140Control()
         Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+        Dim dtDateOfIssue As DateTime
         Dim strDOI As String = String.Empty
         udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
@@ -2019,10 +2040,23 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
         End If
 
+
+        strDOI = Me._udtFormatter.formatDateBeforValidation_DDMMYYYY(udcInputROP140.DateOfIssue)
+        Me._systemMessage = Me._validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.ROP140, strDOI, udtEHSAccountPersonalInfo.DOB)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputROP140.SetDOIError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        Else
+            dtDateOfIssue = Me._udtFormatter.convertDate(Me._udtFormatter.formatInputDate(strDOI), Me._udtSessionHandler.Language())
+        End If
+
+
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputROP140.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputROP140.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputROP140.Gender
+            udtEHSAccountPersonalInfo.DateofIssue = dtDateOfIssue
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.ROP140
             udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
 
@@ -2517,7 +2551,7 @@ Partial Public Class EHSAccountCreationV1
         'Me.lblStep1b3Consent.Text = Me.GetGlobalResourceObject("Text", "ValidatedACWithDiffInfo")
         Me.btnStep1b3Cancel.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CancelBtn")
         Me.btnStep1b3Cancel.AlternateText = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
-        
+
         Me.btnStep1b3Confirm.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
         Me.btnStep1b3Confirm.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
 

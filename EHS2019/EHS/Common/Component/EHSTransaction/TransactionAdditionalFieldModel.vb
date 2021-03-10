@@ -64,6 +64,8 @@ Namespace Component.EHSTransaction
             Public Const ContactNo As String = "ContactNo"
             Public Const Mobile As String = "Mobile"
             Public Const Booth As String = "Booth"
+            Public Const MainCategory As String = "MainCategory"
+            Public Const SubCategory As String = "SubCategory"
             Public Const VaccineBrand As String = "VaccineBrand"
             Public Const VaccineLotID As String = "VaccineLotID"
             Public Const VaccineLotNo As String = "VaccineLotNo"

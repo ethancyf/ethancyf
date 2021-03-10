@@ -563,6 +563,15 @@ Partial Public Class ucClaimSearch
     Protected WithEvents lbtnUpdateNow As Global.System.Web.UI.WebControls.LinkButton
 
     '''<summary>
+    '''tdManual control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdManual As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
     '''tblManual control.
     '''</summary>
     '''<remarks>
@@ -662,6 +671,15 @@ Partial Public Class ucClaimSearch
     Protected WithEvents ibtnSearchHKIC As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''tdSmartID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdSmartID As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
     '''mvIDEASCombo control.
     '''</summary>
     '''<remarks>
@@ -678,6 +696,15 @@ Partial Public Class ucClaimSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents vOldIDEAS As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''tblOldIDEAS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblOldIDEAS As Global.System.Web.UI.HtmlControls.HtmlTable
 
     '''<summary>
     '''mvOldHKIC control.
@@ -885,6 +912,15 @@ Partial Public Class ucClaimSearch
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents vNewIDEAS As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''tblNewIDEAS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblNewIDEAS As Global.System.Web.UI.HtmlControls.HtmlTable
 
     '''<summary>
     '''tblNewSmartICCombo control.

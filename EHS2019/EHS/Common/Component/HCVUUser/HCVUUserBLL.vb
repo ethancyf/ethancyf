@@ -56,6 +56,41 @@ Namespace Component.HCVUUser
             Return dtHCVUUser
         End Function
 
+        ' CRE20-00XX (Reprint vaccination card) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function GetHCSPUserForLogin(ByVal strUserID As String) As DataTable
+
+            Dim dtHCSPUser As New DataTable
+
+            Dim db As New Database
+            Dim parms() As SqlParameter = { _
+                db.MakeInParam("@User_ID", SqlDbType.Char, 20, strUserID)}
+            db.RunProc("proc_HCSPUserAC_get_to_HCVUUser", parms, dtHCSPUser)
+
+            Return dtHCSPUser
+        End Function
+        ' CRE20-00XX (Reprint vaccination card) [End][Chris YIM]
+
+        ' CRE20-00XX (Reprint vaccination card) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function GetHCSPDataEntryUserForLogin(ByVal strUserID As String, ByVal strSPID As String) As DataTable
+
+            Dim dtHCSPDataEntryUser As New DataTable
+
+            Dim db As New Database
+
+            Dim parms() As SqlParameter = { _
+                db.MakeInParam("@SP_ID", SqlDbType.VarChar, 20, strSPID), _
+                db.MakeInParam("@Data_Entry_Account", SqlDbType.VarChar, 20, strUserID), _
+                db.MakeInParam("@HCSP_Sub_Platform", SqlDbType.VarChar, 10, "HK")}
+
+            db.RunProc("proc_DataEntryUserAC_get_to_HCVUUser", parms, dtHCSPDataEntryUser)
+
+            Return dtHCSPDataEntryUser
+
+        End Function
+        ' CRE20-00XX (Reprint vaccination card) [End][Chris YIM]
+
         Public Sub UpdateLoginDtm(ByVal strUserID As String, ByVal strStatus As String, ByRef db As Database)
 
             Dim intSuspendCount As Integer = -1

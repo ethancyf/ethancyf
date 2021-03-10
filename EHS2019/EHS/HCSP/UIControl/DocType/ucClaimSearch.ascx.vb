@@ -29,11 +29,9 @@ Partial Public Class ucClaimSearch
     Private _blnDisplayHKICSymbol As Boolean = False
     Private _strHKICSymbol As String = String.Empty
     Private _strSchemeCode As String = String.Empty
-    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Private _blnIDEASComboClientInstalled As Boolean = False
     Private _blnIDEASComboForceToUse As Boolean = False
-    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+    Private _blnForceReadSmartID As Boolean = False
 
 #End Region
 
@@ -358,6 +356,12 @@ Partial Public Class ucClaimSearch
                     txtSearchHKICNo.Text = udtFormatter.FormatDocIdentityNoForDisplay(DocTypeModel.DocTypeCode.HKIC, udtEHSPersonalInfo.IdentityNum, False)
                     txtSearchHKICDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, CultureLanguage.English, Nothing, Nothing)
 
+                    'Manual Input Style
+                    tblManual.Visible = True
+                    tdManual.Style.Add("width", "305px")
+                    tblNewIDEAS.Style.Add("position", "relative")
+                    tblNewIDEAS.Style.Add("left", "0px")
+
                 Else
                     txtSearchHKICNo.Enabled = True
                     txtSearchHKICDOB.Enabled = True
@@ -474,6 +478,19 @@ Partial Public Class ucClaimSearch
                             ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
                         End If
                         ' CRE19-028 (IDEAS Combo) [End][Chris YIM
+
+                        If _blnForceReadSmartID Then
+                            tblManual.Visible = False
+                            tdManual.Style.Add("width", "0px")
+                            tblNewIDEAS.Style.Add("position", "relative")
+                            tblNewIDEAS.Style.Add("left", "-13px")
+                        Else
+                            tblManual.Visible = True
+                            tdManual.Style.Add("width", "305px")
+                            tblNewIDEAS.Style.Add("position", "relative")
+                            tblNewIDEAS.Style.Add("left", "0px")
+                        End If
+
                     Else
                         ' CRE20-0022 (Immu record) [Start][Chris YIM]
                         ' ---------------------------------------------------------------------------------------------------------
@@ -1137,6 +1154,18 @@ Partial Public Class ucClaimSearch
         End Get
         Set(ByVal value As Boolean)
             _blnIDEASComboForceToUse = value
+        End Set
+    End Property
+    ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+    ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property ForceReadSmartIDCard() As Boolean
+        Get
+            Return _blnForceReadSmartID
+        End Get
+        Set(ByVal value As Boolean)
+            _blnForceReadSmartID = value
         End Set
     End Property
     ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	

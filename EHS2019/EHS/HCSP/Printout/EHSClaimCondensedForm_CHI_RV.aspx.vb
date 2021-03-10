@@ -116,15 +116,27 @@ Partial Public Class EHSClaimCondensedForm_CHI_RV
                 ' ToDo: RVP Printout
 
             Case SchemeClaimModel.VSS
-                If Not IsNothing(udtSP) _
-                        AndAlso Not IsNothing(udtEHSTransaction) _
-                        AndAlso Not IsNothing(udtEHSAccount) _
-                        AndAlso Not IsNothing(udtSchemeClaim) Then
+                If udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
+                    If Not IsNothing(udtSP) _
+                            AndAlso Not IsNothing(udtEHSTransaction) _
+                            AndAlso Not IsNothing(udtEHSAccount) _
+                            AndAlso Not IsNothing(udtSchemeClaim) Then
 
-                    If udtEHSTransaction.CategoryCode = CategoryCode.VSS_Child Then
-                        objReport = New VSSConsentForm_CHI.VSSConsentCondensedForm_C_CHI(udtEHSTransaction, udtSchemeClaim, udtEHSAccount, udtSP, udtSmartIDContent)
-                    Else
-                        objReport = New VSSConsentForm_CHI.VSSConsentCondensedForm_CHI(udtEHSTransaction, udtSchemeClaim, udtEHSAccount, udtSP, udtSmartIDContent)
+                        objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                    End If
+
+                Else
+                    If Not IsNothing(udtSP) _
+                            AndAlso Not IsNothing(udtEHSTransaction) _
+                            AndAlso Not IsNothing(udtEHSAccount) _
+                            AndAlso Not IsNothing(udtSchemeClaim) Then
+
+                        If udtEHSTransaction.CategoryCode = CategoryCode.VSS_CHILD Then
+                            objReport = New VSSConsentForm_CHI.VSSConsentCondensedForm_C_CHI(udtEHSTransaction, udtSchemeClaim, udtEHSAccount, udtSP, udtSmartIDContent)
+                        Else
+                            objReport = New VSSConsentForm_CHI.VSSConsentCondensedForm_CHI(udtEHSTransaction, udtSchemeClaim, udtEHSAccount, udtSP, udtSmartIDContent)
+                        End If
+
                     End If
 
                 End If
@@ -148,8 +160,8 @@ Partial Public Class EHSClaimCondensedForm_CHI_RV
                 End If
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
-                'CRE20-0XX (Immu record)  [Start][Raiman] 
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP
+                'CRE20-022 (Immu record)  [Start][Raiman] 
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP, SchemeClaimModel.COVID19DH
                 If Not IsNothing(udtSP) _
                         AndAlso Not IsNothing(udtEHSTransaction) _
                         AndAlso Not IsNothing(udtEHSAccount) _
@@ -157,7 +169,7 @@ Partial Public Class EHSClaimCondensedForm_CHI_RV
 
                     objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
                 End If
-                'CRE20-0XX (Immu record)   [End][Raiman] 
+                'CRE20-022 (Immu record)   [End][Raiman] 
 
         End Select
 

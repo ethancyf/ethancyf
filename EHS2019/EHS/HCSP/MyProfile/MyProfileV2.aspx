@@ -283,6 +283,18 @@ function tabChanges(sender, e) {
             }
             return false;
         }
+
+        function SelectAllPractice(blnChecked) {
+
+            var list = document.getElementById('<%= chkPracticeList.ClientID %>');
+            var chklist = list.getElementsByTagName("input");
+            
+            for (var i = 0; i < chklist.length; i++) {
+                chklist[i].checked = blnChecked;
+            }
+
+        }
+
     </script>
 
     <asp:Image ID="imgHeader" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources: AlternateText, MyProfileBanner %>"
@@ -1292,6 +1304,14 @@ function tabChanges(sender, e) {
                                                     </td>
                                                     <td colspan="2" rowspan="2" align="left" valign="top" style="width: 473px; border-spacing: 0px">
                                                         <table cellpadding="0" cellspacing="0" style="height: 29px; vertical-align: top">
+                                                            <tr>
+                                                                <td valign="top" align="left" style="width: auto">
+                                                                    <asp:ImageButton ID="btnDESelectAllPractice" runat="server" AlternateText="<%$ Resources:AlternateText, SelectAllBtn %>" 
+                                                                        ImageUrl="<%$ Resources:ImageURL, SelectAllBtn %>" ImageAlign="AbsMiddle" OnClientClick="SelectAllPractice(true);return false;" />
+                                                                    <asp:ImageButton ID="btnDEUnselectAllPractice" runat="server" AlternateText="<%$ Resources:AlternateText, UnselectAllBtn %>" 
+                                                                        ImageUrl="<%$ Resources:ImageURL, UnselectAllBtn %>" ImageAlign="AbsMiddle" OnClientClick="SelectAllPractice(false);return false;" />
+                                                                </td>
+                                                            </tr>
                                                             <tr>
                                                                 <td rowspan="2" valign="top" align="left" style="width: auto">
                                                                     <asp:CheckBoxList ID="chkPracticeList" runat="server" Enabled="False" Style="vertical-align: top; text-wrap: none">

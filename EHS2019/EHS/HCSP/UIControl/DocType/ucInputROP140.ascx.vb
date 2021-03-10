@@ -28,7 +28,9 @@ Public Class ucInputROP140
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
-        'Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
+        Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
+
+        Me.lblDOIROP140Hint.Text = Me.GetGlobalResourceObject("Text", "DOIHintROP140")
 
         'Gender Radio button list
         Me.rbGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
@@ -50,8 +52,8 @@ Public Class ucInputROP140
         Me.imgDOBDate.ImageUrl = strErrorImageURL
         Me.imgDOBDate.AlternateText = strErrorImageALT
 
-        'Me.imgDOIDate.ImageUrl = strErrorImageURL
-        'Me.imgDOIDate.AlternateText = strErrorImageALT
+        Me.imgDOIDate.ImageUrl = strErrorImageURL
+        Me.imgDOIDate.AlternateText = strErrorImageALT
 
     End Sub
 
@@ -112,7 +114,7 @@ Public Class ucInputROP140
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.rbGender.Enabled = True
-                'Me.txtDOI.Enabled = True
+                Me.txtDOI.Enabled = True
             Else
                 'Modification Read-Only Mode
                 Me.lblTDNo.Visible = True
@@ -123,7 +125,7 @@ Public Class ucInputROP140
                 Me.txtENameFirstname.Enabled = False
                 Me.rbGender.Enabled = False
                 Me.txtDOB.Enabled = False
-                'Me.txtDOI.Enabled = False
+                Me.txtDOI.Enabled = False
             End If
 
         End If
@@ -148,7 +150,7 @@ Public Class ucInputROP140
         SetupENameSurName()
         SetupGender()
         SetupDOB()
-        'SetupDOI()
+        SetupDOI()
         SetReferenceNo()
         SetTransactionNo()
     End Sub
@@ -176,9 +178,9 @@ Public Class ucInputROP140
         Me.txtDOB.Text = Me._strDOB
     End Sub
 
-    'Public Sub SetupDOI()
-    '    Me.txtDOI.Text = Me._strDOI
-    'End Sub
+    Public Sub SetupDOI()
+        Me.txtDOI.Text = Me._strDOI
+    End Sub
 
     'unqiue for modification and modification read-only modes
     Public Sub SetReferenceNo()
@@ -211,7 +213,7 @@ Public Class ucInputROP140
         Me.SetENameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
-        'Me.SetDOIError(visible)
+        Me.SetDOIError(visible)
     End Sub
 
     Public Sub SetTDError(ByVal blnVisible As Boolean)
@@ -230,9 +232,9 @@ Public Class ucInputROP140
         Me.imgDOBDate.Visible = visible
     End Sub
 
-    'Public Sub SetDOIError(ByVal visible As Boolean)
-    '    Me.imgDOIDate.Visible = visible
-    'End Sub
+    Public Sub SetDOIError(ByVal visible As Boolean)
+        Me.imgDOIDate.Visible = visible
+    End Sub
 
 #End Region
 
@@ -243,7 +245,7 @@ Public Class ucInputROP140
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue.Trim
-        'Me._strDOI = Me.txtDOI.Text.Trim
+        Me._strDOI = Me.txtDOI.Text.Trim
         Me._strDOB = Me.txtDOB.Text.Trim
     End Sub
 

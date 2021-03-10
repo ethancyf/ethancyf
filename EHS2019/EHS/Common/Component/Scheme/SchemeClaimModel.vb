@@ -57,6 +57,7 @@ Namespace Component.Scheme
         Public Const COVID19CVC As String = "COVID19CVC"      ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19CBD As String = "COVID19CBD"
         Public Const COVID19RVP As String = "COVID19RVP"
+        Public Const COVID19DH As String = "COVID19DH"    ' CRE20-0023-04 (Immu record) [Winnie SUEN]
 
 #End Region
 
@@ -72,6 +73,7 @@ Namespace Component.Scheme
             EHAPP
             PIDVSS
             VSS
+            VSSCOVID19
             ENHVSSO
             PPP
             SSSCMC

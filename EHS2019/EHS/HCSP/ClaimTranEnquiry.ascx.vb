@@ -78,7 +78,7 @@ Partial Public Class ClaimTranEnquiry
 
         End If
 
-        ' CRE20-0XX (Immu record)  [Start][Raiman]
+        ' CRE20-022 (Immu record)  [Start][Raiman]
         ' Display setting for COVID-19
         If IsClaimCOVID19(udtEHSTransaction) Then
             'trTransactionStatus.Style.Add("display", "none")
@@ -91,7 +91,7 @@ Partial Public Class ClaimTranEnquiry
             lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
 
             'Contact No. & Mobile
-            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing Then
                 trContactNo.Visible = True
 
                 If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
@@ -114,7 +114,15 @@ Partial Public Class ClaimTranEnquiry
             End If
 
             'Join EHRSS
-            If udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19CVC OrElse udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19CBD Then
+            If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
+                (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
+                 udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
+               (udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
+                udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
+                udtEHSTransaction.DocCode = DocTypeCode.OW) Then
+
                 panJoinEHRSS.Visible = True
                 If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
                     lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
@@ -134,7 +142,7 @@ Partial Public Class ClaimTranEnquiry
             panRecipinetContactInfo.Visible = False
             lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "ServiceDate")
         End If
-        ' CRE20-0XX (Immu record)  [End][Raiman]
+        ' CRE20-022 (Immu record)  [End][Raiman]
         
         ' --- Claim Information ---
 
@@ -299,10 +307,8 @@ Partial Public Class ClaimTranEnquiry
         udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
         udcReadOnlyEHSClaim.SchemeCode = udtEHSTransaction.SchemeCode
         udcReadOnlyEHSClaim.Mode = ucReadOnlyEHSClaim.ReadOnlyEHSClaimMode.Normal
-        'INT14-0012 (Fix Net Service Fee Changed lead-zero input and DB value) [Start][Karl]
         udcReadOnlyEHSClaim.TableTitleWidth = 205
-        'udcReadOnlyEHSClaim.TableTitleWidth = 185
-        'INT14-0012 (Fix Net Service Fee Changed lead-zero input and DB value) [End][Karl]
+        udcReadOnlyEHSClaim.ClaimMode = IIf(IsClaimCOVID19(udtEHSTransaction), ClaimMode.COVID19, ClaimMode.All)
         udcReadOnlyEHSClaim.Built()
 
         'Dim udtSessionHandler As New SessionHandler

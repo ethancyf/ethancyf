@@ -22,6 +22,8 @@ Public Class DocumentTypeRadioButtonGroup
         Scheme
         Scheme_WithDisabled
         VaccinationRecordEnquriySearch
+        VSS
+        VSS_COVID19
         VSS_NIA_MMR
     End Enum
 
@@ -200,12 +202,12 @@ Public Class DocumentTypeRadioButtonGroup
                 udtDocTypeModelList = udtDocTypeModelList.FilterForVaccinationRecordEnquriySearch()
 
             Case FilterDocCode.Scheme_WithDisabled
-                If Me._udtSchemeDocTypeList Is Nothing OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
+                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
                     Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
                 End If
 
             Case FilterDocCode.Scheme
-                If Me._udtSchemeDocTypeList Is Nothing OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
+                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 OrElse (Me._udtSchemeDocTypeList.Count > 0 AndAlso Me._udtSchemeDocTypeList(0).SchemeCode <> Me._strScheme.Trim()) Then
                     Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
                 End If
 
@@ -226,6 +228,24 @@ Public Class DocumentTypeRadioButtonGroup
 
                 udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
                 ' CRE20-003 (Batch Upload) [End][Chris YIM]
+
+                ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case FilterDocCode.VSS
+                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
+                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                End If
+
+                udtDocTypeModelList = udtDocTypeModelList.FilterForVSSClaim()
+
+            Case FilterDocCode.VSS_COVID19
+                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
+                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                End If
+
+                udtDocTypeModelList = udtDocTypeModelList.FilterForVSSCOVID19Claim()
+
+                ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Case FilterDocCode.None
                 'Nothing to do

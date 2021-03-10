@@ -4851,7 +4851,7 @@ Namespace Validation
             Return strMessage
         End Function
 
-        Public Function chkHKIDIssueDate(ByVal strOriString As String) As ComObject.SystemMessage
+        Public Function chkHKIDIssueDateEmpty(ByVal strOriString As String, Optional ByVal bShortMessage As Boolean = False) As ComObject.SystemMessage
             Dim sm As ComObject.SystemMessage
             Dim strFunctCode, strSeverity, strMsgCode As String
             Dim blnRes As Boolean = False
@@ -4860,15 +4860,14 @@ Namespace Validation
             strMsgCode = String.Empty
 
             If strOriString.Trim.Equals(String.Empty) Then
-                strMsgCode = "00047"
+                If bShortMessage = True Then
+                    strMsgCode = "00081"
+                Else
+                    strMsgCode = "00047"
+                End If
+
             Else
-                ' 2010-05-08 Fix, Check Future Day
                 strMsgCode = Me.isValidDateOfIssueFormat(strOriString)
-                'If isValidDateOfIssueFormat(strOriString) Then
-                '    strMsgCode = String.Empty
-                'Else                    
-                '    strMsgCode = "00064"
-                'End If
             End If
 
             If strMsgCode.Equals(String.Empty) Then
@@ -4880,12 +4879,12 @@ Namespace Validation
 
         End Function
 
-        Public Function chkHKIDIssueDate(ByVal strOriString As String, ByVal dtmDOB As DateTime) As ComObject.SystemMessage
+        Public Function chkHKIDIssueDate(ByVal strOriString As String, ByVal dtmDOB As DateTime, Optional ByVal bShortMessage As Boolean = False) As ComObject.SystemMessage
             Dim udtFormatter As Format.Formatter = New Format.Formatter()
             Dim systemMessage As Common.ComObject.SystemMessage = Nothing
             Dim dtmIssueDate As DateTime
 
-            systemMessage = chkHKIDIssueDate(strOriString)
+            systemMessage = chkHKIDIssueDateEmpty(strOriString, bShortMessage)
             If systemMessage Is Nothing Then
                 dtmIssueDate = udtFormatter.convertHKIDIssueDateStringToDate(strOriString)
                 If dtmIssueDate < dtmDOB Then
@@ -4901,23 +4900,25 @@ Namespace Validation
         Public Function chkDataOfIssue(ByVal strDocCode As String, ByVal strDate As String, ByVal dtmDOB As DateTime) As ComObject.SystemMessage
             Dim systemMessage As ComObject.SystemMessage = Nothing
 
+            ' CRE20-0022 (Immu record) [Start][Martin]
             Select Case strDocCode
                 Case Component.DocType.DocTypeModel.DocTypeCode.HKIC
                     systemMessage = Me.chkHKIDIssueDate(strDate, dtmDOB)
+
+                Case Component.DocType.DocTypeModel.DocTypeCode.CCIC
+                    systemMessage = Me.chkHKIDIssueDate(strDate, dtmDOB, True)
 
 
                 Case Component.DocType.DocTypeModel.DocTypeCode.VISA, _
                     Component.DocType.DocTypeModel.DocTypeCode.ADOPC, _
                     Component.DocType.DocTypeModel.DocTypeCode.DI, _
                     Component.DocType.DocTypeModel.DocTypeCode.HKBC, _
-                    Component.DocType.DocTypeModel.DocTypeCode.REPMT
+                    Component.DocType.DocTypeModel.DocTypeCode.REPMT, _
+                    Component.DocType.DocTypeModel.DocTypeCode.ROP140
 
                     systemMessage = Me.chkIssueDate_DDMMYYYY(strDate, dtmDOB)
 
-                    ' CRE20-0022 (Immu record) [Start][Martin]
-                Case Component.DocType.DocTypeModel.DocTypeCode.ID235B, _
-                    Component.DocType.DocTypeModel.DocTypeCode.ROP140, _
-                    Component.DocType.DocTypeModel.DocTypeCode.CCIC
+                Case Component.DocType.DocTypeModel.DocTypeCode.ID235B
                     ' CRE20-0022 (Immu record) [End][Martin]
                     ' do not have DOI
             End Select

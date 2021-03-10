@@ -2,6 +2,7 @@
     Inherits="HCSP.UIControl.EHCClaimText.ucReadOnlyVSS" %>
 <%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc1" %>
 <table border="0" cellpadding="0" cellspacing="0" class="textVersionTable">
+    <asp:Panel ID="panCategory" runat="server">
     <tr>
         <td>
             <asp:Label ID="lblCategoryText" runat="server" CssClass="tableTitle"></asp:Label>
@@ -12,6 +13,32 @@
             <asp:Label ID="lblCategory" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
+    </asp:Panel>
+    <asp:Panel ID="panMainCategory" runat="server" Visible="false">
+    <tr>
+        <td>
+            <asp:Label ID="lblMainCategoryText" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="lblMainCategory" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    </asp:Panel>
+    <asp:Panel ID="panSubCategory" runat="server">
+    <tr>
+        <td>
+            <asp:Label ID="lblSubCategoryText" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="lblSubCategory" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    </asp:Panel>
+
     <tr id="trDocumentaryProofText" runat="server">
         <td>
             <asp:Label ID="lblDocumentaryProofText" runat="server" CssClass="tableTitle"></asp:Label>
@@ -22,7 +49,6 @@
             <asp:Label ID="lblDocumentaryProof" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
-   <!---CRE20-009 VSS DA With CSSA [Start][Nichole] -->
     <asp:Panel ID="panVSSDAConfirm" runat="server" visible="false" >
     <tr id="trDocProofCSSA" runat="server">
  
@@ -53,7 +79,6 @@
     </tr>
     <tr><td>&nbsp;</td></tr>
     </asp:Panel>
-    <!--CRe20-009 VSS DA With CSSA [End][Nichole]-->
     <tr id="trPIDInstitutionCodeText" runat="server">
         <td>
             <asp:Label ID="lblPIDInstitutionCodeText" runat="server" CssClass="tableTitle"></asp:Label>
@@ -84,6 +109,68 @@
             <asp:Label ID="lblPlaceOfVaccination" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
+    <asp:Panel ID="panCOVID19Vaccine" runat="server">
+    <tr>
+        <td>
+            <asp:Label ID="lblVaccineTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="lblVaccineForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="lblVaccineLotNumTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="lblVaccineLotNumForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td >
+            <asp:Label ID="lblDoseTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td >
+            <asp:Label ID="lblDoseForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td >
+            <asp:Label ID="lblContactNoTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td >
+            <asp:Label ID="lblContactNoForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td >
+            <asp:Label ID="lblRemarksTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td >
+            <asp:Label ID="lblRemarksForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr id="trJoinEHRSSText" runat="server">
+        <td >
+            <asp:Label ID="lblJoinEHRSSTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr  id="trJoinEHRSS" runat="server">
+        <td >
+            <asp:Label ID="lblJoinEHRSSForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    </asp:Panel>
 </table>
 <cc1:ClaimVaccineReadOnlyText ID="udcClaimVaccineReadOnlyText" runat="server" CssTableText="tableText"
     CssTableTitle="tableTitle" />

@@ -69,6 +69,56 @@ Namespace Component.DocType
 
         End Function
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterForVSSCOVID19Claim() As DocTypeModelCollection
+            Dim udtDocTypeList As New DocTypeModelCollection
+
+            For Each udtDocType As DocTypeModel In Me
+                Select Case udtDocType.DocCode
+                    Case DocTypeModel.DocTypeCode.HKIC, _
+                        DocTypeModel.DocTypeCode.EC, _
+                        DocTypeModel.DocTypeCode.OW, _
+                        DocTypeModel.DocTypeCode.CCIC, _
+                        DocTypeModel.DocTypeCode.ROP140, _
+                        DocTypeModel.DocTypeCode.PASS
+
+                        udtDocTypeList.Add(New DocTypeModel(udtDocType))
+
+                End Select
+            Next
+
+            Return udtDocTypeList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function FilterForVSSClaim() As DocTypeModelCollection
+            Dim udtDocTypeList As New DocTypeModelCollection
+
+            For Each udtDocType As DocTypeModel In Me
+                Select Case udtDocType.DocCode
+                    Case DocTypeModel.DocTypeCode.HKIC, _
+                        DocTypeModel.DocTypeCode.EC, _
+                        DocTypeModel.DocTypeCode.DI, _
+                        DocTypeModel.DocTypeCode.HKBC, _
+                        DocTypeModel.DocTypeCode.REPMT, _
+                        DocTypeModel.DocTypeCode.ID235B, _
+                        DocTypeModel.DocTypeCode.VISA, _
+                        DocTypeModel.DocTypeCode.ADOPC
+
+                        udtDocTypeList.Add(New DocTypeModel(udtDocType))
+
+                End Select
+            Next
+
+            Return udtDocTypeList
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterBySchemeDocTypeList(ByVal udtSchemeDocTypeList As SchemeDocTypeModelCollection) As DocTypeModelCollection

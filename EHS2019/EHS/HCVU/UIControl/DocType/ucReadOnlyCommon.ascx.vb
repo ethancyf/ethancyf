@@ -318,7 +318,7 @@ Partial Public Class ucReadOnlyCommon
         lblHDOIText.Visible = False
         lblHDOI.Visible = False
         Select Case udtEHSPersonalInformation.DocCode
-            Case DocTypeCode.HKIC, DocTypeCode.EC, DocTypeCode.REPMT, DocTypeCode.DI
+            Case DocTypeCode.HKIC, DocTypeCode.EC, DocTypeCode.REPMT, DocTypeCode.DI, DocTypeCode.CCIC, DocTypeCode.ROP140
                 lblVDOIText.Visible = True
                 lblVDOI.Visible = True
                 lblHDOIText.Visible = True

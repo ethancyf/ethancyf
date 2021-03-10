@@ -136,6 +136,60 @@ Namespace BLL
 
         End Function
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function CheckEligibilityForIVRSEnterClaim(ByVal udtSchemeClaimWithSubsidize As SchemeClaimModel, ByVal dtmServiceDate As Date, _
+                    ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtTranBenefitList As TransactionDetailModelCollection, ByRef udtEligibilityRuleResult As ClaimRulesBLL.EligibleResult) As Common.ComObject.SystemMessage
+
+            Dim strFunctCode As String = "990000"
+            Dim strSeverity As String = "E"
+            Dim strMsgCode As String = String.Empty
+
+            ' In Enter Claim Detail, service date can be change, use the servicedate for validation
+            ' -------------------------------------------------------------------------------
+            ' 1. Check Active SchemeClaim
+            ' -------------------------------------------------------------------------------
+            Dim udtServiceSchemeClaimModel As SchemeClaimModel = Nothing
+            strMsgCode = Me._udtClaimRulesBLL.CheckSchemeClaimModelByServiceDate(dtmServiceDate, udtSchemeClaimWithSubsidize, udtServiceSchemeClaimModel)
+
+            ' -------------------------------------------------------------------------------
+            ' 2. Retrieve Benifit for Exception Handling & Claim Rule Checking
+            ' -------------------------------------------------------------------------------
+            If strMsgCode = "" Then
+
+                Dim udtEHSTransactionBLL As New EHSTransactionBLL()
+
+                If udtTranBenefitList Is Nothing Then
+                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                    ' ---------------------------------------------------------------------------------------------------------
+                    udtTranBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefitForIVRS(udtEHSPersonalInfo.DocCode, _
+                                                                                                udtEHSPersonalInfo.IdentityNum, _
+                                                                                                EHSTransactionBLL.Source.GetFromDB)
+                    ' CRE20-0022 (Immu record) [End][Chris YIM]
+                End If
+
+
+                ' -------------------------------------------------------------------------------
+                ' 3. Check Eligibility Rule for Prompt Message
+                ' -------------------------------------------------------------------------------
+                udtEligibilityRuleResult = Me._udtClaimRulesBLL.CheckEligibilityAny(udtServiceSchemeClaimModel, udtEHSPersonalInfo, _
+                                                                                    dtmServiceDate, udtTranBenefitList)
+
+            End If
+
+            If strMsgCode = "" AndAlso Not udtEligibilityRuleResult.IsEligible Then
+                strMsgCode = "00106"
+            End If
+
+            If Not strMsgCode.Equals(String.Empty) Then
+                Return New Common.ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+            Else
+                Return Nothing
+            End If
+
+        End Function
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
         ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
         ' -----------------------------------------------------------------------------------------
         ' Modify to able to checking with multiple scheme seq subsidy
@@ -478,7 +532,7 @@ Namespace BLL
         Public Function SearchEHSAccount(ByVal strSchemeCode As String, ByVal strDocCode As String, ByVal strIdentityNum As String, _
             ByVal intAge As Integer, ByVal dtmDOR As Date, ByRef udtEHSAccount As EHSAccountModel, ByRef udtEligibleResult As ClaimRulesBLL.EligibleResult, _
             ByRef udtSearchAccountStatus As EHSClaimBLL.SearchAccountStatus, ByVal udtEHSPersonalInfo As EHSPersonalInformationModel, _
-            ByVal strFunctionCode As String) As SystemMessage
+            ByVal strFunctionCode As String, ByVal enumClaimMode As ClaimMode) As SystemMessage
 
             ' -------------------------------------------------------------------------------
             ' Init
@@ -503,6 +557,11 @@ Namespace BLL
             ' -------------------------------------------------------------------------------
             Dim udtSchemeClaimBLL As New SchemeClaimBLL()
             Dim udtSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(strSchemeCode, dtmCurrentDateTime)
+
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtSchemeClaimModel.SubsidizeGroupClaimList = udtSchemeClaimBLL.FilterSubsidizeGroupClaim(udtSchemeClaimModel, enumClaimMode)
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             If udtSchemeClaimModel Is Nothing OrElse udtSchemeClaimModel.SubsidizeGroupClaimList.Count = 0 Then
                 strMsgCode = "00105"
@@ -1655,7 +1714,8 @@ Namespace BLL
         Public Function SearchEHSAccountSmartID(ByVal strSchemeCode As String, ByVal strDocCode As String, ByVal strIdentityNum As String, _
                             ByVal strDOB As String, ByRef udtEHSAccount As EHSAccountModel, ByVal udtEHSAccountSmartID As EHSAccountModel, _
                             ByRef enumSmartIDReadStatus As SmartIDHandler.SmartIDResultStatus, ByRef udtEligibleResult As ClaimRulesBLL.EligibleResult, _
-                            ByRef blnNoMatchRecordFound As Boolean, ByRef blnExceedDocTypeLimit As Boolean, ByVal strFunctionCode As String, ByVal blnCheckSelfClaim As Boolean) As Common.ComObject.SystemMessage
+                            ByRef blnNoMatchRecordFound As Boolean, ByRef blnExceedDocTypeLimit As Boolean, ByVal strFunctionCode As String, ByVal blnCheckSelfClaim As Boolean, _
+                            ByVal enumClaimMode As ClaimMode) As Common.ComObject.SystemMessage
 
             ' -------------------------------------------------------------------------------
             ' Init
@@ -1683,6 +1743,11 @@ Namespace BLL
             ' -------------------------------------------------------------------------------
             Dim udtSchemeClaimBLL As New SchemeClaimBLL()
             Dim udtSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(strSchemeCode, dtmCurrentDateTime)
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            udtSchemeClaimModel.SubsidizeGroupClaimList = udtSchemeClaimBLL.FilterSubsidizeGroupClaim(udtSchemeClaimModel, enumClaimMode)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             If udtSchemeClaimModel Is Nothing OrElse udtSchemeClaimModel.SubsidizeGroupClaimList.Count = 0 Then
                 strMsgCode = "00105"

@@ -83,7 +83,7 @@
         </tr>
     </table>
     <cc1:FilteredTextBoxExtender ID="filtereditTDNo" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Numbers"
-        TargetControlID="txtTDNo"></cc1:FilteredTextBoxExtender>
+        TargetControlID="txtTDNo" ValidChars="-()"></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="filtereditEnameSurname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtENameSurname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="filtereditEnameFirstname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
@@ -154,8 +154,8 @@
                     ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
         </tr>
     </table>
-    <cc1:FilteredTextBoxExtender ID="FilteredTextNewTravelDocNo" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Numbers"
-        TargetControlID="txtNewTravelDocNo"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="FilteredTextNewTravelDocNo" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Numbers, Custom"
+        TargetControlID="txtNewTravelDocNo" ValidChars="-()"></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewENameSurname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtNewSurname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewENameGivenname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"

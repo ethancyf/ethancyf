@@ -201,18 +201,21 @@ Partial Public Class login
 
         ibtnUserManual.OnClientClick = "window.open('" & strUserManualLink & "', '_blank', 'resizable=yes,status=yes,toolbar=no,location=no,scrollbars=yes,left=0,top=0'); return false;"
 
-        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-        ' ------------------------------------------------------------------------
-        If Me.SubPlatform = EnumHCVUSubPlatform.CC Then
-            ibtnUserManual.Visible = False
-            ibtnContactUs.Visible = False
-            ibtnFAQ.Visible = False
-        Else
-            ibtnUserManual.Visible = True
-            ibtnContactUs.Visible = True
-            ibtnFAQ.Visible = True
-        End If
-        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+        ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+        ' --------------------------------------------------------------------------------------
+        Select Case Me.SubPlatform
+            Case EnumHCVUSubPlatform.CC, EnumHCVUSubPlatform.VC
+                ibtnUserManual.Visible = False
+                ibtnContactUs.Visible = False
+                ibtnFAQ.Visible = False
+
+            Case Else
+                ibtnUserManual.Visible = True
+                ibtnContactUs.Visible = True
+                ibtnFAQ.Visible = True
+
+        End Select
+        ' CRE20-0022 (Immu record) [End][Winnie SUEN]
     End Sub
 
     Private Sub ibtnLogin_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnLogin.Click
@@ -413,9 +416,9 @@ Partial Public Class login
 
         If Me.udcMessageBox.GetCodeTable.Rows.Count = 0 Then
             If Not dtHCVUUser Is Nothing AndAlso dtHCVUUser.Rows.Count = 1 AndAlso blnPassLogin Then
-                If CStr(dtHCVUUser.Rows(0).Item("User_ID")).Trim.ToUpper() = Me.txtUsername.Text.Trim.ToUpper() Then
+                If strLogUserID.Trim.ToUpper() = Me.txtUsername.Text.Trim.ToUpper() Then
 
-                    ' I-CRE16-007-02 Refine system from CheckMarx findings [Start][Dickson Law]
+
                     Dim udtVerifyPassword As VerifyPasswordResultModel = VerifyPassword(EnumPlatformType.VU, dtHCVUUser, strPassword)
 
 
@@ -444,14 +447,13 @@ Partial Public Class login
                             End If
                         End If
                     Else
-                        ' --- I-CRE16-007-02 (Refine system from CheckMarx findings) [Start] (Marco) ---
+
                         If udtVerifyPassword.VerifyResult = EnumVerifyPasswordResult.Pass Then
                             If udtVerifyPassword.TransitPassword Then
                                 dtHCVUUser = udtHCVUUserBLL.GetHCVUUserForLogin(Me.txtUsername.Text)
                             End If
-                            ' --- I-CRE16-007-02 (Refine system from CheckMarx findings) [End] (Marco) ---
 
-                            Dim strUserID As String = dtHCVUUser.Rows(0).Item("User_ID")
+                            Dim strUserID As String = strLogUserID
 
                             ' CRE19-026 (HCVS hotline service) [Start][Winnie]
                             ' ------------------------------------------------------------------------
@@ -551,14 +553,14 @@ Partial Public Class login
                     udtAuditLogEntry.AddDescripton("Login ID", Me.txtUsername.Text)
                     udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00021, "Login successful (Reset Password Force change password)", strLogUserID)
-                    Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserAC(Me.txtUsername.Text, dtHCVUUser, Me.SubPlatform)
+                    Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserAC(String.Empty, dtHCVUUser, Me.SubPlatform)
                     Session.Remove(HCVUUserBLL.SESS_HCVUUSER)
                     ' CRE19-026 (HCVS hotline service) [Start][Winnie]                                                                        
                     RedirectHandler.ToURL(PageURL.ChangePassword)
                     ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
                 ElseIf dtHCVUUser.Rows(0).Item("Suspended") Is DBNull.Value AndAlso dtHCVUUser.Rows(0).Item("Account_Locked") = "N" Then
-                    'If CStr(dtHCVUUser.Rows(0).Item("User_ID")).Trim.ToUpper() = Me.txtUsername.Text.Trim.ToUpper() AndAlso CStr(dtHCVUUser.Rows(0).Item("User_Password")) = Encrypt.MD5hash(Me.txtPassword.Text) Then
+
                     ' account not suspended
                     Dim udtHCVUUser As HCVUUserModel
 
@@ -617,7 +619,7 @@ Partial Public Class login
                                 udtAuditLogEntry.AddDescripton("Login ID", Me.txtUsername.Text)
                                 udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
                                 udtAuditLogEntry.WriteEndLog(LogID.LOG00004, "Login successful (Force change password)", strLogUserID)
-                                Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserAC(Me.txtUsername.Text, dtHCVUUser, Me.SubPlatform)
+                                Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserAC(String.Empty, dtHCVUUser, Me.SubPlatform)
                                 Session.Remove(HCVUUserBLL.SESS_HCVUUSER)
 
                                 ' CRE19-026 (HCVS hotline service) [Start][Winnie]                                                                        
@@ -634,7 +636,7 @@ Partial Public Class login
                             udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
                             udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "Login successful (First logon change password)", strLogUserID)
                             Session.Remove(HCVUUserBLL.SESS_HCVUUSER)
-                            Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserAC(Me.txtUsername.Text, dtHCVUUser, Me.SubPlatform)
+                            Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserAC(String.Empty, dtHCVUUser, Me.SubPlatform)
                             ' CRE19-026 (HCVS hotline service) [Start][Winnie]                                                                        
                             RedirectHandler.ToURL(PageURL.ChangePassword)
                             ' CRE19-026 (HCVS hotline service) [End][Winnie]

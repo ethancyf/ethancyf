@@ -176,13 +176,14 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private Sub setVaccinationCenterTextLabel(ByVal IsEHSTransactionObj As Boolean, ByRef VaccinationCenter As Label, ByRef VaccinationCenterChi As Label)
 
             If (IsEHSTransactionObj) Then
-                If (_udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19CVC) Then
+                If (_udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
+                    _udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH) Then
                     'booth and centre 
                     Dim dtVaccineCenter As DataTable = udtCOVID19BLL.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(_udtEHSTransaction.ServiceProviderID, _udtEHSTransaction.PracticeID)
                     VaccinationCenter.Text = dtVaccineCenter.Rows(0)("Centre_Name")
                     VaccinationCenterChi.Text = dtVaccineCenter.Rows(0)("Centre_Name_Chi")
 
-                ElseIf (_udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19RVP) Then
+                ElseIf (_udtEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP) Then
                     Dim strRCHCode As String = _udtEHSTransaction.TransactionAdditionFields.RCHCode
                     Dim udtRVP As RVPHomeListModel = (New Component.RVPHomeList.RVPHomeListBLL()).GetRVPHomeListModalByCode(strRCHCode)
                     VaccinationCenter.Text = udtRVP.HomenameEng
@@ -193,7 +194,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
                 End If
             Else
-                If (_udtVaccinationRecordHistory.SchemeCode = SchemeClaimModel.COVID19CVC) Then
+                If (_udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
+                    _udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH) Then
                     'booth and centre 
                     If _udtVaccinationRecordHistory.TransactionID IsNot Nothing AndAlso _udtVaccinationRecordHistory.TransactionID <> String.Empty Then
                         'EHS Transaction
@@ -208,7 +210,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                         VaccinationCenterChi.Text = _udtVaccinationRecordHistory.PracticeNameChi
                     End If
 
-                ElseIf (_udtVaccinationRecordHistory.SchemeCode = SchemeClaimModel.COVID19RVP) Then
+                ElseIf (_udtVaccinationRecordHistory.SchemeCode.Trim() = SchemeClaimModel.COVID19RVP) Then
                     If _udtVaccinationRecordHistory.TransactionID IsNot Nothing AndAlso _udtVaccinationRecordHistory.TransactionID <> String.Empty Then
                         'EHS Transaction
                         Dim udtEHSTransactionBLL As New EHSTransactionBLL

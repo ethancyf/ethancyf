@@ -132,7 +132,7 @@ Namespace Component.DocType
             Dim udtSchemeDocTypeModel As SchemeDocTypeModel = Nothing
 
 
-            If Not IsNothing(HttpContext.Current.Cache(CACHE_STATIC_DATA.CACHE_ALL_SchemeDocType)) Then
+            If Not IsNothing(HttpContext.Current) AndAlso Not IsNothing(HttpContext.Current.Cache(CACHE_STATIC_DATA.CACHE_ALL_SchemeDocType)) Then
                 udtSchemeDocTypeModelCollection = CType(HttpContext.Current.Cache(CACHE_STATIC_DATA.CACHE_ALL_SchemeDocType), SchemeDocTypeModelCollection)
             Else
                 udtSchemeDocTypeModelCollection = New SchemeDocTypeModelCollection()
@@ -172,7 +172,7 @@ Namespace Component.DocType
                         Next
                     End If
 
-                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_SchemeDocType, udtSchemeDocTypeModelCollection)
+                    If Not IsNothing(HttpContext.Current) Then Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_SchemeDocType, udtSchemeDocTypeModelCollection)
                 Catch ex As Exception
                     Throw ex
                 End Try

@@ -2066,12 +2066,41 @@ Namespace ComFunction
         End Function
         ' CRE19-022 Inspection Module [End][Winnie]
 
+
+        'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[Start][Nichole]
+        Public Function GenerateVaccineLotMappingID() As String
+            Dim strPrefix As String = String.Empty
+
+            Dim intNextNum As Integer = getSeqNo_Prefix("VLM", String.Empty, strPrefix)
+
+            Return String.Format("{0}{1}", strPrefix, intNextNum.ToString.PadLeft(7, "0"))
+
+        End Function
+        'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[End][Nichole]
 #End Region
 
 #Region "Transaction Number (By SchemeCode)"
 
         'CRE15-003 System-generated Form [Start][Philip Chau]
         Public Function generateTemporaryTransactionNumber(ByVal strSchemeCode As String, Optional ByVal blnManualReimburse As Boolean = False) As String
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Overrides the scheme code to get the specific profile no.
+            Select Case strSchemeCode.Trim.ToUpper()
+                Case Common.Component.Scheme.SchemeClaimModel.COVID19CVC, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
+                     Common.Component.Scheme.SchemeClaimModel.CIVSS
+
+                    strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC
+
+                Case Else
+                    'Nothing to do
+            End Select
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
+
             Dim strRes As String = String.Empty
             Dim strDBPrefix As String = String.Empty
             Dim strProfileType As String = String.Empty
@@ -2110,10 +2139,11 @@ Namespace ComFunction
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             'Overrides the scheme code to get the specific profile no.
-            Select Case strSchemeCode
+            Select Case strSchemeCode.Trim.ToUpper()
                 Case Common.Component.Scheme.SchemeClaimModel.COVID19CVC, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
                      Common.Component.Scheme.SchemeClaimModel.CIVSS
 
                     strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC

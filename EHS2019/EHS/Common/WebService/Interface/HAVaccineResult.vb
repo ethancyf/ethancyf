@@ -455,10 +455,10 @@ Namespace WebService.Interface
                                 End If
                             Next
 
-                            Dim dtCOVID19VaccineMapping As DataTable = (New Component.COVID19.COVID19BLL).GetCOVID19VaccineLotMapping()
-                            Dim drCOVID19VaccineMapping() As DataRow = dtCOVID19VaccineMapping.Select(String.Format("Brand_ID = '{0}'", strBrandID.Trim))
+                            Dim dtCOVID19VaccineBrand As DataTable = (New Component.COVID19.COVID19BLL).GetCOVID19VaccineBrand()
+                            Dim drCOVID19VaccineBrand() As DataRow = dtCOVID19VaccineBrand.Select(String.Format("Brand_ID = '{0}'", strBrandID.Trim))
 
-                            If drCOVID19VaccineMapping.Length = 0 Then
+                            If drCOVID19VaccineBrand Is Nothing OrElse drCOVID19VaccineBrand.Length = 0 Then
                                 strBrandID = String.Empty
                             End If
 

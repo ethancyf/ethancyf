@@ -12,6 +12,7 @@ Public Class ucInputCCIC
     Private _strENameSurName As String
     Private _strGender As String
     Private _strDOB As String
+    Private _strDOI As String
 
     Private udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
 
@@ -52,6 +53,8 @@ Public Class ucInputCCIC
         Me.imgDOBDate.ImageUrl = strErrorImageURL
         Me.imgDOBDate.AlternateText = strErrorImageALT
 
+        Me.imgDOIDate.ImageUrl = strErrorImageURL
+        Me.imgDOIDate.AlternateText = strErrorImageALT
 
         'Get Documnet type full name
         Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
@@ -70,6 +73,7 @@ Public Class ucInputCCIC
         Me.lblNewGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblNewDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
         Me.lblNewEnameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+        Me.lblNewDOIText.Text = Me.GetGlobalResourceObject("Text", "DateOfIssue")
 
         'Gender Radio button list
         Me.rboNewGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
@@ -87,6 +91,9 @@ Public Class ucInputCCIC
 
         Me.imgNewDOBErr.ImageUrl = strErrorImageURL
         Me.imgNewDOBErr.AlternateText = strErrorImageALT
+
+        Me.imgNewDOIErr.ImageUrl = strErrorImageURL
+        Me.imgNewDOIErr.AlternateText = strErrorImageALT
 
         ' ------------------------------------------------------------------
     End Sub
@@ -115,6 +122,11 @@ Public Class ucInputCCIC
                 Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
                 Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
+                If MyBase.EHSPersonalInfoAmend.DateofIssue.HasValue Then
+                    Me._strDOI = MyBase.Formatter.formatHKIDIssueDate(MyBase.EHSPersonalInfoAmend.DateofIssue)
+                Else
+                    Me._strDOI = String.Empty
+                End If
                 Me.txtNewTravelDocNo.Enabled = False
                 SetValue(BuildMode.Creation)
             End If
@@ -130,6 +142,11 @@ Public Class ucInputCCIC
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
+            If MyBase.EHSPersonalInfoAmend.DateofIssue.HasValue Then
+                Me._strDOI = MyBase.Formatter.formatHKIDIssueDate(MyBase.EHSPersonalInfoAmend.DateofIssue)
+            Else
+                Me._strDOI = String.Empty
+            End If
 
             'Fill values
             Me.SetValue(Mode)
@@ -150,7 +167,11 @@ Public Class ucInputCCIC
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
-
+            If MyBase.EHSPersonalInfoAmend.DateofIssue.HasValue Then
+                Me._strDOI = MyBase.Formatter.formatHKIDIssueDate(MyBase.EHSPersonalInfoAmend.DateofIssue)
+            Else
+                Me._strDOI = String.Empty
+            End If
             Me.SetValue(modeType)
 
             'Mode related Settings
@@ -166,6 +187,7 @@ Public Class ucInputCCIC
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.rbGender.Enabled = True
+                Me.txtDOI.Enabled = True
             Else
                 '--------------------------------------------------------
                 'Modify Read Only Mode
@@ -175,6 +197,7 @@ Public Class ucInputCCIC
                 Me.txtENameFirstname.Enabled = False
                 Me.rbGender.Enabled = False
                 Me.txtDOB.Enabled = False
+                Me.txtDOI.Enabled = False
             End If
 
             If MyBase.ActiveViewChanged Then
@@ -193,12 +216,14 @@ Public Class ucInputCCIC
             SetENameFirstName()
             SetENameSurName()
             SetDOB()
+            SetDOI()
         Else
             SetTDNumber()
             SetENameFirstName()
             SetENameSurName()
             SetGender()
             SetDOB()
+            SetDOI()
         End If
 
     End Sub
@@ -294,6 +319,26 @@ Public Class ucInputCCIC
     End Sub
 
 
+    Public Sub SetDOI()
+
+        If Mode = BuildMode.Creation Then
+            Me.txtNewDOI.Text = Me._strDOI
+
+        ElseIf Mode = BuildMode.Modification_OneSide Then
+            Me.txtNewDOI.Text = Me._strDOI
+        Else
+            'Amend
+            Me.txtDOI.Text = Me._strDOI
+            'Original
+            If MyBase.EHSPersonalInfoOriginal.DateofIssue.HasValue Then
+                Me.lblDOIOriginal.Text = MyBase.Formatter.formatHKIDIssueDate(MyBase.EHSPersonalInfoAmend.DateofIssue)
+            Else
+                Me.lblDOIOriginal.Text = String.Empty
+            End If
+        End If
+    End Sub
+
+
 #End Region
 
 #Region "Set Up Error Image"
@@ -306,6 +351,7 @@ Public Class ucInputCCIC
         Me.SetENameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
+        Me.SetDOIError(visible)
     End Sub
 
     Public Sub SetTDError(ByVal blnVisible As Boolean)
@@ -342,6 +388,15 @@ Public Class ucInputCCIC
 
     End Sub
 
+    Public Sub SetDOIError(ByVal blnVisible As Boolean)
+        If Me.Mode = BuildMode.Creation Or Me.Mode = BuildMode.Modification_OneSide Then
+            imgNewDOIErr.Visible = blnVisible
+        Else
+            Me.imgDOIDate.Visible = blnVisible
+        End If
+    End Sub
+
+
 
 #End Region
 
@@ -353,16 +408,19 @@ Public Class ucInputCCIC
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
+            Me._strDOI = Me.txtNewDOI.Text.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
         ElseIf mode = BuildMode.Modification_OneSide Then
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
+            Me._strDOI = Me.txtNewDOI.Text.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
         Else
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue.Trim
+            Me._strDOI = Me.txtDOI.Text.Trim
             Me._strDOB = Me.txtDOB.Text.Trim
         End If
 
@@ -410,6 +468,15 @@ Public Class ucInputCCIC
         End Get
         Set(ByVal value As String)
             Me._strDOB = value
+        End Set
+    End Property
+
+    Public Property DateOfIssue() As String
+        Get
+            Return Me._strDOI
+        End Get
+        Set(ByVal value As String)
+            Me._strDOI = value
         End Set
     End Property
 

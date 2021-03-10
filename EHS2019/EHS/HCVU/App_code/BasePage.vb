@@ -25,19 +25,14 @@ Public MustInherit Class BasePage
 
 
 #Region "Private Members"
-    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-    ' ------------------------------------------------------------------------
+
     Public _PostBackPageKey As String = String.Empty
     Public _FunctCodeCommon As String = FunctCode.FUNT029901
     Public Const SESS_PageKey As String = "HCVU_PageKey"
-
-    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+    Public Const SESS_UserType As String = "HCVU_UserType"
 
     Protected WithEvents _ScriptManager As ScriptManager
-    ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Tommy L]
-    ' -------------------------------------------------------------------------
     Protected Const BASE_PAGE_FUNCT_CODE As String = FunctCode.FUNT990002
-    ' CRE12-014 - Relax 500 rows limit in back office platform [End][Tommy L]
 
 #End Region
 
@@ -110,6 +105,7 @@ Public MustInherit Class BasePage
         Dim objPageRedirectorSource As Object = Nothing
         Dim objIsCheckedForNotice As Object = Nothing
         Dim objSmartIDContent As Object = Nothing
+        Dim objUserType As Object = Nothing
         Dim udtRedirectParameter As RedirectParameterModel = Nothing
 
         Dim objPageKey As Object = Nothing
@@ -161,6 +157,8 @@ Public MustInherit Class BasePage
             ' ---------------------------------------------------------------------------------------------------------
             objSmartIDContent = udtSessionHandler.SmartIDContentGetFormSession(FunctCode.FUNT010421)
             ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+            objUserType = Session(SESS_UserType)
 
             Session.RemoveAll()
 
@@ -219,6 +217,9 @@ Public MustInherit Class BasePage
             ' ---------------------------------------------------------------------------------------------------------
             udtSessionHandler.SmartIDContentSaveToSession(FunctCode.FUNT010421, objSmartIDContent)
             ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+            Session(SESS_UserType) = objUserType
+
         End If
     End Sub
 

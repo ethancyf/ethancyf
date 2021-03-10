@@ -43,7 +43,8 @@ Public Class PreAuthorizationCheckingFileGenerator
             params(i) = udtDB.MakeInParam(udtSPParamObject.ParamName, udtSPParamObject.ParamDBType, udtSPParamObject.ParamDBSize, udtSPParamObject.ParamValue)
         Next
 
-        udtDB.CommandTimeout = 300
+        ' udtDB.CommandTimeout = 300
+
         udtDB.RunProc(Me.m_udtFileGeneration.FileDataSP, params, dsData)
 
         ' [Super Download] & [Detail Payment Analysis Report], use same StoreProc to retrieve data

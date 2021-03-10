@@ -15,6 +15,15 @@ Namespace UIControl.EHCClaimText
     Partial Public Class ucReadOnlyVSS
 
         '''<summary>
+        '''panCategory control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents panCategory As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
         '''lblCategoryText control.
         '''</summary>
         '''<remarks>
@@ -31,6 +40,60 @@ Namespace UIControl.EHCClaimText
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents lblCategory As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''panMainCategory control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents panMainCategory As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''lblMainCategoryText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblMainCategoryText As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblMainCategory control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblMainCategory As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''panSubCategory control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents panSubCategory As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''lblSubCategoryText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblSubCategoryText As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblSubCategory control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblSubCategory As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
         '''trDocumentaryProofText control.
@@ -238,6 +301,141 @@ Namespace UIControl.EHCClaimText
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents lblPlaceOfVaccination As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''panCOVID19Vaccine control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents panCOVID19Vaccine As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''lblVaccineTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblVaccineTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblVaccineForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblVaccineForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblVaccineLotNumTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblVaccineLotNumTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblVaccineLotNumForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblVaccineLotNumForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblDoseTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDoseTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblDoseForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDoseForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblContactNoTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblContactNoTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblContactNoForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblContactNoForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblRemarksTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblRemarksTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblRemarksForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblRemarksForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trJoinEHRSSText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trJoinEHRSSText As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblJoinEHRSSTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblJoinEHRSSTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trJoinEHRSS control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trJoinEHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblJoinEHRSSForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblJoinEHRSSForCovid19 As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
         '''udcClaimVaccineReadOnlyText control.

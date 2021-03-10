@@ -66,14 +66,14 @@
                 <asp:Image ID="imgDOBDate" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                     ImageAlign="Top" Visible="false" /></td>
         </tr>
-    <%--    <tr>
+        <tr>
             <td valign="top" class="tableCellStyle">
                 <asp:Label ID="lblDOI" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
             <td valign="top" style="width: 350px" class="tableCellStyle">
-                <asp:TextBox ID="txtDOI" runat="server" MaxLength="10" Width="75px" onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
+                <asp:TextBox ID="txtDOI" runat="server" MaxLength="8" Width="75px" onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
                 <asp:Image ID="imgDOIDate" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                     ImageAlign="Top" Visible="false" /></td>
-        </tr>--%>
+        </tr>
         <tr id="trTransactionNo_M" runat="server">
             <td style="height: 19px" valign="top" class="tableCellStyle">
                 <asp:Label ID="lblTransactionNoText_M" runat="server" CssClass="tableTitle"
@@ -91,5 +91,7 @@
     TargetControlID="txtENameFirstname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
 <cc1:FilteredTextBoxExtender ID="filtereditDOB" runat="server" FilterType="Numbers, Custom"
     TargetControlID="txtDOB" ValidChars="-"></cc1:FilteredTextBoxExtender>
+<cc1:FilteredTextBoxExtender ID="filtereditDOI" runat="server" FilterType="Numbers, Custom"
+    TargetControlID="txtDOI" ValidChars="-"></cc1:FilteredTextBoxExtender>
 
 

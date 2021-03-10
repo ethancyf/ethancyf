@@ -1032,7 +1032,20 @@ Partial Public Class ucInputVSS
 
         If dtClaimCategory.Rows.Count > 1 Then
             Me.rbCategorySelection.Visible = True
-            Me.rbCategorySelection.DataSource = dtClaimCategory
+
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            'Temporary hide the COVID19 category
+            Dim drClaimCategory() As DataRow = dtClaimCategory.Select(String.Format("Category_Code <> '{0}'", "VSSCOVID19"))
+
+            If drClaimCategory IsNot Nothing AndAlso drClaimCategory.Length > 0 Then
+                Me.rbCategorySelection.DataSource = drClaimCategory.CopyToDataTable
+            Else
+                Me.rbCategorySelection.DataSource = dtClaimCategory
+            End If
+
+            'Me.rbCategorySelection.DataSource = dtClaimCategory
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             Me.rbCategorySelection.DataValueField = ClaimCategoryModel._Category_Code
 

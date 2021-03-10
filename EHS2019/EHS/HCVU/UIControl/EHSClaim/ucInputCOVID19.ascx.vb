@@ -104,16 +104,16 @@ Partial Public Class ucInputCOVID19
     ' ---------------------------------------------------------------------------------------------------------
     Public ReadOnly Property VaccineBrand() As String
         Get
-            If Me.txtCVaccineBrand.Text = "" Then
-                Return String.Empty
-            Else
-                Return Me.txtCVaccineBrand.Text
-            End If
-            'If Me.ddlCVaccineBrandCovid19.SelectedItem Is Nothing Then
+            'If Me.txtCVaccineBrand.Text = "" Then
             '    Return String.Empty
             'Else
-            '    Return Me.ddlCVaccineBrandCovid19.SelectedItem.Value
+            '    Return Me.txtCVaccineBrand.Text
             'End If
+            If Me.ddlCVaccineBrandCovid19.SelectedItem Is Nothing Then
+                Return String.Empty
+            Else
+                Return Me.ddlCVaccineBrandCovid19.SelectedItem.Value
+            End If
         End Get
     End Property
     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
@@ -123,18 +123,18 @@ Partial Public Class ucInputCOVID19
     Public ReadOnly Property VaccineLotNo() As String
         Get
 
-            If Me.txtCVaccineLotNo.Text = "" Then
-                Return String.Empty
-            Else
-                Return Me.txtCVaccineLotNo.Text
-            End If
-
-
-            'If Me.ddlCVaccineLotNoCovid19.SelectedItem Is Nothing Then
+            'If Me.txtCVaccineLotNo.Text = "" Then
             '    Return String.Empty
             'Else
-            '    Return Me.ddlCVaccineLotNoCovid19.SelectedItem.Value
+            '    Return Me.txtCVaccineLotNo.Text
             'End If
+
+
+            If Me.ddlCVaccineLotNoCovid19.SelectedItem Is Nothing Then
+                Return String.Empty
+            Else
+                Return Me.ddlCVaccineLotNoCovid19.SelectedItem.Value
+            End If
         End Get
     End Property
     ' CRE20-0022 (Immu record) [End][Martin Tang]
@@ -353,7 +353,7 @@ Partial Public Class ucInputCOVID19
                 'Bind DropDownList Vaccine Brand
                 BindCOVID19VaccineBrand(drVaccineLotNo)
 
-                ' Fill value by temp save
+                ' Fill brand value by temp save
                 If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
                     Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
 
@@ -387,12 +387,37 @@ Partial Public Class ucInputCOVID19
                             End If
                         Next
                     End If
-
                 End If
 
             Else
                 ddlCVaccineBrandCovid19.Enabled = False
                 ddlCVaccineLotNoCovid19.Enabled = False
+
+            End If
+
+            'Display or hide "Join eHealth"
+            If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
+                Select Case MyBase.EHSAccount.SearchDocCode
+                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW
+                        trJoinEHRSS.Style.Remove("display")
+                    Case Else
+                        trJoinEHRSS.Style.Add("display", "none")
+                End Select
+            End If
+
+            ' Fill value by temp save
+            If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
+                Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
+
+                'Remark
+                If udtTAFList.Remarks IsNot Nothing Then
+                    txtCRemark.Text = udtTAFList.Remarks.Trim
+                End If
+
+                'Join eHealth
+                If udtTAFList.JoinEHRSS IsNot Nothing Then
+                    chkCJoinEHRSS.Checked = IIf(udtTAFList.JoinEHRSS = YesNo.Yes, True, False)
+                End If
 
             End If
 
@@ -1080,10 +1105,12 @@ Partial Public Class ucInputCOVID19
         Dim strVaccinBandID As String = Me.ddlCVaccineBrandCovid19.SelectedValue
 
         'If stVaccinBandID = "", it means no brand is selected. (the Practice has more than one brand = > drVaccineLotNoFilterWithBand.length = 0) 
-        drVaccineLotNoFilterWithBrand = drVaccineLotNo.CopyToDataTable().Select(String.Format("Brand_ID = '{0}'", strVaccinBandID))
+        If drVaccineLotNo.Length > 0 Then
+            drVaccineLotNoFilterWithBrand = drVaccineLotNo.CopyToDataTable().Select(String.Format("Brand_ID = '{0}'", strVaccinBandID))
+        End If
 
         'For render the server side dropdown
-        If drVaccineLotNoFilterWithBrand.Length > 0 Then
+        If drVaccineLotNoFilterWithBrand IsNot Nothing AndAlso drVaccineLotNoFilterWithBrand.Length > 0 Then
             Me.ddlCVaccineLotNoCovid19.Enabled = True
             Me.ddlCVaccineLotNoCovid19.DataSource = drVaccineLotNoFilterWithBrand.CopyToDataTable()
 

@@ -1,3 +1,4 @@
+Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.DocType
 Imports Common.Component.DocType.DocTypeModel
@@ -52,9 +53,17 @@ Partial Public Class ucInputHKIDSmartIDSignal
 
         'Error Image
 
-        Me.imgGenderError.ImageUrl = strErrorImageURL
-        Me.imgGenderError.AlternateText = strErrorImageALT
+        Me.imgRGenderError.ImageUrl = strErrorImageURL
+        Me.imgRGenderError.AlternateText = strErrorImageALT
 
+        Me.imgIGenderError.ImageUrl = strErrorImageURL
+        Me.imgIGenderError.AlternateText = strErrorImageALT
+
+        Me.lblIFemale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderFemale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIFemaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Female", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+        Me.lblIMale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderMale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIMaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Male", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
 
     End Sub
 
@@ -108,7 +117,12 @@ Partial Public Class ucInputHKIDSmartIDSignal
             Me.SetGenderSmartIDError(False)
         End If
 
-
+        divSmartICFemale.Attributes.Add("onclick", "document.getElementById('" & rbGender.ClientID & "_0').checked=true;javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$udcStep1b3InputDocumentType$ucInputDocumentType_HKIDSmartIDSignal$rbGender$0\',\'\')', 0); ")
+        divSmartICFemale.Attributes.Add("onmouseover", "document.getElementById('" & divSmartICFemale.ClientID & "').style.left='-1px'; document.getElementById('" & divSmartICFemale.ClientID & "').style.top='-1px'; ")
+        divSmartICFemale.Attributes.Add("onmouseout", "document.getElementById('" & divSmartICFemale.ClientID & "').style.left='0px'; document.getElementById('" & divSmartICFemale.ClientID & "').style.top='0px'; ")
+        divSmartICMale.Attributes.Add("onclick", "document.getElementById('" & rbGender.ClientID & "_1').checked=true;javascript:setTimeout('__doPostBack(\'ctl00$ContentPlaceHolder1$udcStep1b3InputDocumentType$ucInputDocumentType_HKIDSmartIDSignal$rbGender$1\',\'\')', 0); ")
+        divSmartICMale.Attributes.Add("onmouseover", "document.getElementById('" & divSmartICMale.ClientID & "').style.left='-1px'; document.getElementById('" & divSmartICMale.ClientID & "').style.top='-1px'; ")
+        divSmartICMale.Attributes.Add("onmouseout", "document.getElementById('" & divSmartICMale.ClientID & "').style.left='0px'; document.getElementById('" & divSmartICMale.ClientID & "').style.top='0px'; ")
 
     End Sub
 
@@ -197,15 +211,23 @@ Partial Public Class ucInputHKIDSmartIDSignal
     ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
     ' ----------------------------------------------------------------------------------------
     Public Sub SetGender(ByVal blnReadOnly As Boolean)
-        Me.lblGender.Visible = False
+        Me.lblRGender.Visible = False
+        Me.lblIGender.Visible = False
         Me.rbGender.Visible = False
 
         If blnReadOnly Then
-            Me.lblGender.Visible = True
+            Me.lblRGender.Visible = True
             If Me._strGender = "M" Then
-                Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "GenderMale")
+                Me.lblRGender.Text = Me.GetGlobalResourceObject("Text", "GenderMale")
             Else
-                Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
+                Me.lblRGender.Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
+            End If
+
+            Me.lblIGender.Visible = True
+            If Me._strGender = "M" Then
+                Me.lblIGender.Text = Me.GetGlobalResourceObject("Text", "GenderMale")
+            Else
+                Me.lblIGender.Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
             End If
 
         Else
@@ -239,7 +261,8 @@ Partial Public Class ucInputHKIDSmartIDSignal
     'Set Up Error Image
     '--------------------------------------------------------------------------------------------------------------
     Public Sub SetGenderSmartIDError(ByVal visible As Boolean)
-        Me.imgGenderError.Visible = visible
+        Me.imgRGenderError.Visible = visible
+        Me.imgIGenderError.Visible = visible
     End Sub
 
 
@@ -248,6 +271,25 @@ Partial Public Class ucInputHKIDSmartIDSignal
 #Region "Events"
 
     Protected Sub rbGenderSmartID_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbGender.SelectedIndexChanged
+        Dim rbGender As RadioButtonList = CType(sender, RadioButtonList)
+
+        Select Case rbGender.SelectedValue
+            Case "M"
+                divSmartICFemale.Style.Add("border-color", "black")
+                divSmartICFemale.Style.Add("border-width", "2px")
+
+                divSmartICMale.Style.Add("border-color", "#3198FF")
+                divSmartICMale.Style.Add("border-width", "8px")
+
+            Case "F"
+                divSmartICFemale.Style.Add("border-color", "#3198FF")
+                divSmartICFemale.Style.Add("border-width", "8px")
+
+                divSmartICMale.Style.Add("border-color", "black")
+                divSmartICMale.Style.Add("border-width", "2px")
+
+        End Select
+        'document.getElementById('divSmartICFemale').style.borderColor='#3198ff';document.getElementById('divSmartICFemale').style.borderWidth='3px';
         RaiseEvent SelectedGender(sender, e)
     End Sub
 

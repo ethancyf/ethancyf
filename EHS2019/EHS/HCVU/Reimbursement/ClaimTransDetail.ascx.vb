@@ -542,21 +542,33 @@ Partial Public Class ClaimTransDetail
             Case SchemeClaimModel.EnumControlType.VSS
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
                 udcReadOnlyEHSClaim.Width = 204
-                udcReadOnlyEHSClaim.BuildVSS()
 
                 If IsClaimCOVID19(udtEHSTransaction) Then
-                    ' CRE20-0022 (Immu record) [Start][Martin]
+                    udcReadOnlyEHSClaim.BuildVSSCOVID19()
+
                     If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
                         DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
                     End If
-                    ' CRE20-0022 (Immu record) [End][Martin]
 
-                    DisplayContactNo(False)
+                    DisplayContactNo(True)
+                    DisplayRemarks(True)
+                    If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.OW Then
+                        DisplayJoinEHRSS(True)
+                    End If
 
-                    'FillContactNo(udtEHSTransaction)
+                    FillContactNo(udtEHSTransaction)
+                    FillRemarks(udtEHSTransaction)
+                    FillJoinEHRSS(udtEHSTransaction)
 
                 Else
+                    udcReadOnlyEHSClaim.BuildVSS()
+
                     DisplayContactNo(False)
+                    DisplayRemarks(False)
+                    DisplayJoinEHRSS(False)
+
                 End If
 
             Case SchemeClaimModel.EnumControlType.ENHVSSO
@@ -593,7 +605,11 @@ Partial Public Class ClaimTransDetail
 
                     DisplayContactNo(False)
                     DisplayRemarks(True)
-                    DisplayJoinEHRSS(True)
+                    If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.OW Then
+                        DisplayJoinEHRSS(True)
+                    End If
 
                     'FillContactNo(udtEHSTransaction)
                     FillRemarks(udtEHSTransaction)
@@ -620,7 +636,11 @@ Partial Public Class ClaimTransDetail
 
                     DisplayContactNo(True)
                     DisplayRemarks(True)
-                    DisplayJoinEHRSS(True)
+                    If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.OW Then
+                        DisplayJoinEHRSS(True)
+                    End If
 
                     FillContactNo(udtEHSTransaction)
                     FillRemarks(udtEHSTransaction)
@@ -1569,10 +1589,10 @@ Partial Public Class ClaimTransDetail
         If VaccinationBLL.CheckTurnOnVaccinationRecord(VaccinationBLL.VaccineRecordSystem.CMS) <> VaccinationBLL.EnumTurnOnVaccinationRecord.N Then
             Select Case udtVaccineResultBag.HAReturnStatus
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00026))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00030))
                     blnHANotMatch = True
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00254))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00272))
                     blnHAError = True
             End Select
         End If
@@ -1582,27 +1602,27 @@ Partial Public Class ClaimTransDetail
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.OK
                     If udtVaccineResultBag.DHVaccineResult.SingleClient.ReturnClientCIMSCode = DHTransaction.DHClientModel.ReturnCIMSCode.AllDemographicMatch_PartialRecord Then
                         If udtVaccineResultBag.DHVaccineResult.GetNoOfValidVaccine > 0 Then
-                            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00048))
+                            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00051))
                             blnDHNotMatch = True
                         End If
                     End If
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00041))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00043))
                     blnDHNotMatch = True
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00409))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00411))
                     blnDHError = True
             End Select
         End If
 
         If blnHANotMatch And blnDHNotMatch Then
             udtSystemMessageList.Clear()
-            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00042))
+            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00044))
         End If
 
         If blnHAError And blnDHError Then
             udtSystemMessageList.Clear()
-            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00410))
+            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00412))
         End If
 
         For Each udtSystemMessage In udtSystemMessageList

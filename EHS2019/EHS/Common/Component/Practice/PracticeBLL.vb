@@ -345,7 +345,7 @@ Namespace Component.Practice
 
         Public Function GetPracticeBankAcctListFromPermanentBySPID(ByVal strSPID As String, ByVal udtDB As Database, Optional ByVal blnCheckServiceDate As Boolean = False, Optional ByVal dtServiceDate As DateTime = Nothing) As PracticeModelCollection
             Dim udtPracticeModelCollection As PracticeModelCollection = New PracticeModelCollection()
-            Dim udtPracticeModel As PracticeModel
+            Dim udtPracticeModel As PracticeModel = Nothing
 
             Dim intAddressCode As Nullable(Of Integer)
             Dim intBankDisplaySeq As Nullable(Of Integer)
@@ -455,18 +455,32 @@ Namespace Component.Practice
                                                                 Nothing)
                     ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
 
+                    udtPracticeModelCollection.Add(udtPracticeModel)
+                Next
+
+                If dtRaw.Rows.Count > 0 Then
+
                     ' Get Practice Scheme Information
                     Dim udtPracticeSchemeInfoBLL As New PracticeSchemeInfoBLL
+                    Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection
                     If blnCheckServiceDate = False Then
-                        udtPracticeModel.PracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListPermanentBySPIDPracticeDisplaySeq(udtPracticeModel.SPID, udtPracticeModel.DisplaySeq, udtDB)
+                        udtPracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListPermanentBySPID(udtPracticeModel.SPID, udtDB)
                     Else
-                        udtPracticeModel.PracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListPermanentBySPIDPracticeDisplaySeq(udtPracticeModel.SPID, udtPracticeModel.DisplaySeq, udtDB, True, dtServiceDate)
+                        udtPracticeSchemeInfoList = udtPracticeSchemeInfoBLL.GetPracticeSchemeInfoListPermanentBySPID(udtPracticeModel.SPID, udtDB, True, dtServiceDate)
                     End If
 
+                    For Each udtPractice As PracticeModel In udtPracticeModelCollection.Values
+                        Dim udtNewPracticeSchemeInfoList As New PracticeSchemeInfoModelCollection
+                        For Each udtPracticeSchemeInfo As PracticeSchemeInfoModel In udtPracticeSchemeInfoList.Values
+                            If udtPractice.DisplaySeq = udtPracticeSchemeInfo.PracticeDisplaySeq Then
+                                udtNewPracticeSchemeInfoList.Add(New PracticeSchemeInfoModel(udtPracticeSchemeInfo))
+                            End If
+                        Next
+                        udtPractice.PracticeSchemeInfoList = udtNewPracticeSchemeInfoList
+                    Next
 
-                    udtPracticeModelCollection.Add(udtPracticeModel)
+                End If
 
-                Next
 
                 If Not IsNothing(udtPracticeModelCollection) Then
                     udtPracticeModelCollection.DuplicatePracticeEName()

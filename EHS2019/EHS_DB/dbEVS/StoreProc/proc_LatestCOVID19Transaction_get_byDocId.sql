@@ -33,7 +33,8 @@ AS
         -- =============================================  
 
         DECLARE @l_doc_code CHAR(20)= @doc_code;
-        DECLARE @l_identity_no1 VARCHAR(20)= RTRIM(LTRIM(@identity_no1));
+        DECLARE @l_identity_no1 VARCHAR(20)= LTRIM(RTRIM(@identity_no1));
+        DECLARE @l_identity_no2 VARCHAR(20);
         DECLARE @l_Adoption_Prefix_Num CHAR(7)= @Adoption_Prefix_Num;
 
         CREATE TABLE #Results
@@ -50,32 +51,45 @@ AS
         -- =============================================
         INSERT INTO @OtherDoc_Code(Doc_Code)
         VALUES(@l_doc_code);
-		
-		IF LTRIM(RTRIM(@l_doc_code)) IN ('HKBC','EC','CCIC','ROP140')
-		BEGIN
-			INSERT INTO @OtherDoc_Code(Doc_Code) VALUES('HKIC');
-		END;
 
-		IF LTRIM(RTRIM(@l_doc_code)) IN ('HKIC','EC','CCIC','ROP140')
-		BEGIN
-			INSERT INTO @OtherDoc_Code(Doc_Code) VALUES('HKBC');
-		END;
+        IF LTRIM(RTRIM(@l_doc_code)) IN('HKBC', 'EC', 'CCIC', 'ROP140')
+            BEGIN
+                INSERT INTO @OtherDoc_Code(Doc_Code)
+            VALUES('HKIC');
+            END;
 
-		IF LTRIM(RTRIM(@l_doc_code)) IN ('HKIC','HKBC','CCIC','ROP140')
-		BEGIN
-			INSERT INTO @OtherDoc_Code(Doc_Code) VALUES('EC');
-		END;
+        IF LTRIM(RTRIM(@l_doc_code)) IN('HKIC', 'EC', 'CCIC', 'ROP140')
+            BEGIN
+                INSERT INTO @OtherDoc_Code(Doc_Code)
+            VALUES('HKBC');
+            END;
 
-		IF LTRIM(RTRIM(@l_doc_code)) IN ('HKIC','HKBC','EC','ROP140')
-		BEGIN
-			INSERT INTO @OtherDoc_Code(Doc_Code) VALUES('CCIC');
-		END;
+        IF LTRIM(RTRIM(@l_doc_code)) IN('HKIC', 'HKBC', 'CCIC', 'ROP140')
+            BEGIN
+                INSERT INTO @OtherDoc_Code(Doc_Code)
+            VALUES('EC');
+            END;
 
-		IF LTRIM(RTRIM(@l_doc_code)) IN ('HKIC','HKBC','EC','CCIC')
-		BEGIN
-			INSERT INTO @OtherDoc_Code(Doc_Code) VALUES('ROP140');
-		END;
+        IF LTRIM(RTRIM(@l_doc_code)) IN('HKIC', 'HKBC', 'EC', 'ROP140')
+            BEGIN
+                INSERT INTO @OtherDoc_Code(Doc_Code)
+            VALUES('CCIC');
+            END;
 
+        IF LTRIM(RTRIM(@l_doc_code)) IN('HKIC', 'HKBC', 'EC', 'CCIC')
+            BEGIN
+                INSERT INTO @OtherDoc_Code(Doc_Code)
+            VALUES('ROP140');
+            END;
+
+        IF @l_identity_no1 IS NULL
+            BEGIN
+                SET @l_identity_no2 = NULL;
+            END;
+            ELSE
+            BEGIN
+                SET @l_identity_no2 = ' ' + @l_identity_no1;
+            END;
 
         -- =============================================
         -- Return results
@@ -94,7 +108,8 @@ AS
              INNER JOIN PersonalInformation AS pinfo WITH(NOLOCK)
              ON vt.Voucher_Acc_ID = pinfo.Voucher_Acc_ID
                 AND vt.Doc_Code = pinfo.Doc_Code
-                AND RTRIM(LTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo.Encrypt_Field1)))) = @l_identity_no1
+                AND (pinfo.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_identity_no1)
+                     OR pinfo.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_identity_no2))
                 AND (@l_Adoption_Prefix_Num IS NULL
                      OR pinfo.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_Adoption_Prefix_Num))
              INNER JOIN @OtherDoc_Code AS oc
@@ -114,7 +129,8 @@ AS
              INNER JOIN tempPersonalInformation AS tpi WITH(NOLOCK)
              ON vt.Temp_Voucher_Acc_ID = tpi.Voucher_Acc_ID
                 AND vt.Doc_Code = tpi.Doc_Code
-                AND RTRIM(LTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.Encrypt_Field1)))) = @l_identity_no1
+                AND (tpi.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_identity_no1)
+                     OR tpi.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_identity_no2))
                 AND (@l_Adoption_Prefix_Num IS NULL
                      OR tpi.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_Adoption_Prefix_Num))
              INNER JOIN @OtherDoc_Code AS oc

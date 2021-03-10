@@ -24,6 +24,7 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const HCVS_CHINA As String = "~/UIControl/EHSClaim/ucReadOnlyHCVSCHina.ascx"
         Public Const PIDVSS As String = "~/UIControl/EHSClaim/ucReadOnlyPIDVSS.ascx"
         Public Const VSS As String = "~/UIControl/EHSClaim/ucReadOnlyVSS.ascx"
+        Public Const VSSCOVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx" ' CRE20-0023 (Immu record) [Start][Chris YIM]
         Public Const VACCINE As String = "~/UIControl/EHSClaim/ucReadOnlyVaccine.ascx"
         Public Const EHAPP As String = "~/UIControl/EHSClaim/ucReadOnlyEHAPP.ascx"
         Public Const ENHVSSO As String = "~/UIControl/EHSClaim/ucReadOnlyENHVSSO.ascx"
@@ -144,6 +145,21 @@ Partial Public Class ucReadOnlyEHSClaim
 
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyVSS)
     End Sub
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Sub BuildVSSCOVID19()
+        setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
+        setSessionValue("_intWidth", _intWidth)
+        setSessionValue("EHSClaimBuild", "VSSCOVID19")
+
+        Dim udcReadOnlyVSSCOVID19 As ucReadOnlyVSSCOVID19 = Me.LoadControl(UserControlPath.VSSCOVID19)
+
+        udcReadOnlyVSSCOVID19.Build(_udtEHSTransaction, _intWidth)
+
+        phReadOnlyEHSClaim.Controls.Add(udcReadOnlyVSSCOVID19)
+    End Sub
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
     ' CRE13-001 - EHAPP [Start][Tommy L]
     ' -------------------------------------------------------------------------------------
@@ -346,10 +362,13 @@ Partial Public Class ucReadOnlyEHSClaim
                     Me.BuildPIDVSS()
                 Case SchemeClaimModel.VSS
                     Me.BuildVSS()
+                Case "VSSCOVID19"
+                    Me.BuildVSSCOVID19()
                 Case SchemeClaimModel.SSSCMC
                     Me.BuildSSSCMC()
                     ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                Case SchemeClaimModel.COVID19CVC
+                Case SchemeClaimModel.COVID19CVC, _
+                    SchemeClaimModel.COVID19DH
                     Me.BuildCOVID19()
                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
                 Case SchemeClaimModel.COVID19CBD

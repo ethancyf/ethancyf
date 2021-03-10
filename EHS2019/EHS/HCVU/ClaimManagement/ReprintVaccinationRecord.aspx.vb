@@ -27,6 +27,21 @@ Partial Public Class ReprintVaccinationRecord
         Public Const Detail As Integer = 1
     End Class
 
+    Private Class AuditLogDescription
+        Public Const LOG00000 As String = "Reprint Vaccination Record Page Loaded"
+        Public Const LOG00001 As String = "Search Button Click"
+        Public Const LOG00002 As String = "Search Start"
+        Public Const LOG00003 As String = "Search successful"
+        Public Const LOG00004 As String = "Search fail"
+        Public Const LOG00005 As String = "Click Read Card and Search"
+        Public Const LOG00006 As String = "Click Read Card and Search Complete"
+        Public Const LOG00007 As String = "Click Read Card and Search Fail"
+        Public Const LOG00008 As String = "Reprint Button Click"
+        Public Const LOG00009 As String = "Reprint successful"
+        Public Const LOG00010 As String = "Reprint fail"
+        Public Const LOG00011 As String = "Back button Click"
+
+    End Class
 #End Region
 
 #Region "Session Constants"
@@ -52,7 +67,7 @@ Partial Public Class ReprintVaccinationRecord
             FunctionCode = FunctCode.FUNT010421
 
             Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
-            udtAuditLogEntry.WriteLog(LogID.LOG00000, "Reprint Vaccination Record Page Loaded")
+            udtAuditLogEntry.WriteLog(LogID.LOG00000, AuditLogDescription.LOG00000)
             InitializeDataValue()
 
             '==================================================================== Code for SmartID ============================================================================
@@ -65,7 +80,7 @@ Partial Public Class ReprintVaccinationRecord
             If MultiViewReprintVaccinationRecord.ActiveViewIndex = ViewIndex.Detail Then
                 ' Rebind the details
                 Dim udtEHSTransaction As EHSTransactionModel = Session(SESS_EHSTransaction)
-                BuildClaimTransDetail(udtEHSTransaction.TransactionID)
+                BuildClaimTransDetail(udtEHSTransaction)
             End If
 
         End If
@@ -108,11 +123,11 @@ Partial Public Class ReprintVaccinationRecord
         ddlEHealthDocType.SelectedValue = strMajorDoc
     End Sub
 
-    Private Sub BuildClaimTransDetail(ByVal strTransactionNo As String)
+    Private Sub BuildClaimTransDetail(ByVal udtEHSTransaction As EHSTransactionModel)
 
         MultiViewReprintVaccinationRecord.ActiveViewIndex = ViewIndex.Detail
         Dim udtSearchCriteria As New SearchCriteria
-        udtSearchCriteria.TransNum = strTransactionNo
+        udtSearchCriteria.TransNum = udtEHSTransaction.TransactionID
 
         Dim ucMessageHistory As ClaimTransDetail = udcClaimTransDetail
         'Me.viewMessageHistory.FindControl("ucMessageHistory")
@@ -120,7 +135,6 @@ Partial Public Class ReprintVaccinationRecord
         udcClaimTransDetail.ClearEHSClaim()
         udcClaimTransDetail.ClearVaccineRecord()
 
-        Dim udtEHSTransaction As EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(strTransactionNo, True, True)
         ucMessageHistory.ShowHKICSymbol = True
         ucMessageHistory.ShowAccountIDAsBtn = False
         ucMessageHistory.FunctionCode = FunctionCode
@@ -160,11 +174,10 @@ Partial Public Class ReprintVaccinationRecord
 #Region "Event Handler"
     Protected Sub ibtnSearch_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
-        udtAuditLogEntry.AddDescripton("Doc Code", Me.ddleHSDocType.SelectedValue)
-        udtAuditLogEntry.AddDescripton("Doc No", Me.txteHSDocNo.Text.Trim)
-        udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Search Start")
 
-        SearchCOVID19Transaction()
+        udtAuditLogEntry.WriteLog(LogID.LOG00001, AuditLogDescription.LOG00001)
+
+        SearchCOVID19Transaction(Me.txteHSDocNo.Text, Me.ddleHSDocType.SelectedValue)
 
     End Sub
 
@@ -172,19 +185,19 @@ Partial Public Class ReprintVaccinationRecord
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
 
         Try
-            udtAuditLogEntry.WriteLog(LogID.LOG00004, "Click Read Card and Search")
+            udtAuditLogEntry.WriteLog(LogID.LOG00005, AuditLogDescription.LOG00005)
 
             Me.RedirectToIdeasCombo(IdeasBLL.EnumIdeasVersion.Combo)
 
-            udtAuditLogEntry.WriteEndLog(LogID.LOG00005, "Click Read Card and Search Complete")
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00006, AuditLogDescription.LOG00006)
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
             udtAuditLogEntry.AddDescripton("Message", ex.Message)
-            udtAuditLogEntry.WriteEndLog(LogID.LOG00006, "Click Read Card and Search Fail")
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00007, AuditLogDescription.LOG00007)
         End Try
     End Sub
 
-    Protected Sub SearchCOVID19Transaction()
+    Protected Sub SearchCOVID19Transaction(ByVal streHSDocNo As String, ByVal streDocType As String)
         Dim udtSearchCriteria = New SearchCriteria
         Dim dt As New DataTable
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
@@ -192,6 +205,11 @@ Partial Public Class ReprintVaccinationRecord
         Dim strTransNum As String
         Dim strDocCode As String = String.Empty
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+
+        udtAuditLogEntry.AddDescripton("Doc Code", streDocType)
+        udtAuditLogEntry.AddDescripton("Doc No", streHSDocNo)
+
+        udtAuditLogEntry.WriteStartLog(LogID.LOG00002, AuditLogDescription.LOG00002)
 
         imgeHSDocNoErr.Visible = False
         udcErrorMessage.Clear()
@@ -204,13 +222,27 @@ Partial Public Class ReprintVaccinationRecord
         udtSessionHandlerBLL.CIMSVaccineResultRemoveFromSession(FunctionCode)
 
         Try
-            If Trim(Me.txteHSDocNo.Text) = String.Empty Then
+            If Trim(streHSDocNo) = String.Empty Then
                 udcErrorMessage.AddMessage("990000", "E", "00211")
                 imgeHSDocNoErr.Visible = True
 
             Else
-                udtSearchCriteria.DocumentType = Me.ddleHSDocType.SelectedValue
-                Dim aryDocumentNo As String() = Me.txteHSDocNo.Text.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
+                udtSearchCriteria.DocumentType = streDocType
+                Dim aryDocumentNo As String()
+
+                Select Case streDocType
+                    Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.DI, _
+                        DocTypeModel.DocTypeCode.REPMT, DocTypeModel.DocTypeCode.ID235B, DocTypeModel.DocTypeCode.VISA, _
+                        DocTypeModel.DocTypeCode.ADOPC, DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.CCIC, _
+                        DocTypeModel.DocTypeCode.ROP140
+                        aryDocumentNo = streHSDocNo.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
+
+                    Case Else
+                        'DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.PASS
+                        aryDocumentNo = streHSDocNo.Split("")
+                End Select
+
+
                 If aryDocumentNo.Length > 1 Then
                     udtSearchCriteria.DocumentNo1 = aryDocumentNo(1)
                     udtSearchCriteria.DocumentNo2 = aryDocumentNo(0)
@@ -222,33 +254,139 @@ Partial Public Class ReprintVaccinationRecord
                 'Search COVID19 transaction
                 dt = udtCOVID19BLL.GetLatestCovid19TransactionByDocId(udtSearchCriteria)
 
+                udtAuditLogEntry.AddDescripton("No. of Records", dt.Rows.Count)
+
                 If dt.Rows.Count > 0 Then
+                    Dim blnValidToPrint As Boolean = True
+
                     strTransNum = dt.Rows(0).Item("Transaction_ID")
 
-                    'Build EHS transaction Detail
-                    BuildClaimTransDetail(strTransNum)
+                    'Get Transaction
+                    Dim udtEHSTransaction As EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(strTransNum, True, True)
 
-                    strDocCode = dt.Rows(0).Item("Doc_Code")
-                    If Me.ddleHSDocType.SelectedValue <> Trim(strDocCode) Then
-                        ' Message: Doc code not match
-                        udcInfoMessageBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001)
+                    'Get EHSAccount
+                    Dim udtEHSAccount As EHSAccountModel = udtEHSTransaction.EHSAcct
+
+                    'Get vaccination record
+                    udcClaimTransDetail.FunctionCode = Me.FunctionCode
+                    Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = udcClaimTransDetail.GetVaccinationRecordFromSession(udtEHSAccount, udtEHSTransaction.SchemeCode)
+
+                    If Session(SESS_UserType) = "HCSPUser" Then
+                        'Search HCSPUser account, set false at default
+                        blnValidToPrint = False
+
+                        Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser
+                        Dim strUserID As String = String.Empty
+
+                        If udtHCVUUser.UserID.Contains("_") Then
+                            Dim strUser() As String = Split(udtHCVUUser.UserID, "_")
+                            strUserID = strUser(0)
+                        Else
+                            strUserID = udtHCVUUser.UserID
+                        End If
+
+                        For Each udtVaccineRecord As TransactionDetailVaccineModel In udtTranDetailVaccineList
+                            Dim udtCurEHSTransaction As EHSTransactionModel = Nothing
+
+                            'Not COVID-19, not check 
+                            If udtVaccineRecord.SubsidizeItemCode <> SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then Continue For
+
+                            'CMS / CIMS record, not check 
+                            If udtVaccineRecord.TransactionID Is Nothing OrElse udtVaccineRecord.TransactionID = String.Empty Then Continue For
+
+                            If udtVaccineRecord.TransactionID.Trim.ToUpper = udtEHSTransaction.TransactionID.Trim.ToUpper Then
+                                udtCurEHSTransaction = udtEHSTransaction
+                            Else
+                                udtCurEHSTransaction = udtEHSTransactionBLL.LoadClaimTran(udtVaccineRecord.TransactionID, True, True)
+                            End If
+
+                            ' For Centre only
+                            If udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19CVC OrElse
+                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19DH Then
+
+                                Dim dtLoginUserVaccineCentre As DataTable = udtCOVID19BLL.GetCOVID19VaccineCentreBySPID(strUserID)
+
+                                ' User from Centre
+                                If dtLoginUserVaccineCentre IsNot Nothing Then
+
+                                    Dim dtTransactionVaccineCentre As DataTable = udtCOVID19BLL.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(udtCurEHSTransaction.ServiceProviderID, _
+                                                                                                                                                udtCurEHSTransaction.PracticeID)
+
+                                    Dim drLoginUserVaccineCentre() As DataRow
+
+                                    If dtTransactionVaccineCentre IsNot Nothing AndAlso dtTransactionVaccineCentre.Rows.Count > 0 Then
+                                        For intIdx As Integer = 0 To dtTransactionVaccineCentre.Rows.Count - 1
+                                            Dim strTransVaccineCentreID As String = dtTransactionVaccineCentre.Rows(intIdx)("Centre_ID").ToString
+
+                                            drLoginUserVaccineCentre = dtLoginUserVaccineCentre.Select(String.Format("Centre_ID = '{0}'", strTransVaccineCentreID))
+
+                                            If drLoginUserVaccineCentre.Length > 0 Then
+                                                blnValidToPrint = True
+                                                Exit For
+                                            End If
+                                        Next
+                                    End If
+
+                                    If blnValidToPrint Then
+                                        Exit For
+                                    End If
+                                End If
+                            End If
+
+                            'For Private: VSS, RVP, COVID19RVP
+                            If udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.VSS OrElse _
+                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP OrElse _
+                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP Then
+
+                                If udtCurEHSTransaction.ServiceProviderID = strUserID Then
+                                    blnValidToPrint = True
+                                    Exit For
+                                End If
+
+                            End If
+
+                        Next
+
                     End If
-                    udtAuditLogEntry.WriteEndLog(LogID.LOG00002, "Search successful")
+
+                    udtAuditLogEntry.AddDescripton("Valid to print", IIf(blnValidToPrint, "Y", "N"))
+
+                    If blnValidToPrint Then
+                        'Build EHS transaction Detail
+                        BuildClaimTransDetail(udtEHSTransaction)
+
+                        strDocCode = dt.Rows(0).Item("Doc_Code")
+                        If streDocType <> Trim(strDocCode) Then
+                            ' Message: Doc code not match
+                            udcInfoMessageBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001)
+                        End If
+
+                        udtAuditLogEntry.WriteEndLog(LogID.LOG00003, AuditLogDescription.LOG00003)
+
+                    Else
+                        ' Message: No records found in your centre.
+                        udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Information
+                        udcInfoMessageBox.AddMessage("010421", "I", "00002")
+
+                        udtAuditLogEntry.WriteEndLog(LogID.LOG00003, AuditLogDescription.LOG00003)
+                    End If
+
                 Else
                     ' Message: No records found.
                     udcInfoMessageBox.Type = CustomControls.InfoMessageBoxType.Information
                     udcInfoMessageBox.AddMessage("990000", "I", "00001")
-                    'udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "Search and Hold fail")
+
+                    udtAuditLogEntry.WriteEndLog(LogID.LOG00003, AuditLogDescription.LOG00003)
                 End If
             End If
 
             udcInfoMessageBox.BuildMessageBox()
-            udcErrorMessage.BuildMessageBox("ValidationFail", udtAuditLogEntry, LogID.LOG00003, "Search fail")
+            udcErrorMessage.BuildMessageBox("ValidationFail", udtAuditLogEntry, LogID.LOG00004, AuditLogDescription.LOG00004)
 
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
             udtAuditLogEntry.AddDescripton("Message", ex.Message)
-            udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "Search fail")
+            udtAuditLogEntry.WriteEndLog(LogID.LOG00004, AuditLogDescription.LOG00004)
             Throw
         End Try
 
@@ -256,7 +394,7 @@ Partial Public Class ReprintVaccinationRecord
 
     Protected Sub ibtnDetailBack_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
-        udtAuditLogEntry.WriteLog(LogID.LOG00010, "Back Click")
+        udtAuditLogEntry.WriteLog(LogID.LOG00011, AuditLogDescription.LOG00011)
         udcClaimTransDetail.ClearDocumentType()
         udcClaimTransDetail.ClearEHSClaim()
         udcClaimTransDetail.ClearVaccineRecord()
@@ -275,7 +413,7 @@ Partial Public Class ReprintVaccinationRecord
         Dim udtSessionHandler As BLL.SessionHandlerBLL = New BLL.SessionHandlerBLL
 
         Try
-            udtAuditLogEntry.WriteStartLog(LogID.LOG00007, "Reprint")
+            udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDescription.LOG00008)
 
             'Find the nearest vaccination record for vaccination card
             Dim udtTransactionBenefitDetailList As TransactionDetailVaccineModelCollection = Nothing
@@ -315,13 +453,13 @@ Partial Public Class ReprintVaccinationRecord
             If strCurrentPrintOption = Common.Component.PrintFormOptionValue.PrintPurposeAndConsent Then
                 ScriptManager.RegisterStartupScript(Me, Page.GetType, "VoucherConsentFormScript", "javascript:openNewWin('../Printout/BasePrintoutForm.aspx?TID=" + strPrintDateTime + "');", True)
                 udtAuditLogEntry.AddDescripton("Reprint", "Vaccination Card Printed")
-                udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00008, "Reprint successful")
+                udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00009, AuditLogDescription.LOG00009)
             End If
 
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
             udtAuditLogEntry.AddDescripton("Message", ex.Message)
-            udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00009, "Reprint fail")
+            udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00010, AuditLogDescription.LOG00010)
             Throw
         End Try
 
@@ -439,9 +577,9 @@ Partial Public Class ReprintVaccinationRecord
         End If
     End Sub
 
-    'Page Load : LOG00001
+    'Page Load : LOG00000
     Public Shared Sub AuditLogPageLoad(ByVal udtAuditLogEntry As AuditLogEntry, ByVal selectedPractice As Boolean, ByVal comeFromAccountCreation As Boolean)
-        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00001, "Reprint Vaccination Record Page Loaded")
+        udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00000, AuditLogDescription.LOG00000)
     End Sub
 
     'Search Account : Read Samrt ID: LOG00047
@@ -780,9 +918,7 @@ Partial Public Class ReprintVaccinationRecord
         udtPersonalInfoSmartID = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC)
 
         ddleHSDocType.SelectedValue = DocTypeModel.DocTypeCode.HKIC
-        txteHSDocNo.Text = udtPersonalInfoSmartID.IdentityNum
-
-        SearchCOVID19Transaction()
+        SearchCOVID19Transaction(udtPersonalInfoSmartID.IdentityNum, ddleHSDocType.SelectedValue)
 
         ''If isValid Then
 

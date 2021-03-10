@@ -466,6 +466,11 @@ Partial Public Class MasterPage
         SetupTimeoutReminder()
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]
 
+        ' CRE20-023-03 - COVID19 - DH CLinic [Start][Koala]
+        Me.ibtnReprintVaccinationRecord.Visible = IsClaimCOVID19
+        Me.ibtnReprintVaccinationRecord.OnClientClick = "window.open('" + (New GeneralFunction).getSystemParameter("VaccinationCentreAdminSPLogin") + "', 'testpopupblocker', 'width=' + screen.width + ',height=' + screen.height + ',top=0,left=0,resizable=1,scrollbars=1'); return false;"
+        ' CRE20-023-03 - COVID19 - DH CLinic [End][Koala]
+
     End Sub
 
     Private Sub gvMenu_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gvMenu.RowCommand
@@ -483,6 +488,7 @@ Partial Public Class MasterPage
                     Case "2"
                         udtSessionHandler.ClaimCOVID19SaveToSession(True)
                         udtSessionHandler.ClaimFunctCodeSaveToSession(FunctCode.FUNT020203)
+                        udtSessionHandler.ForceToReadSmartICRemoveFormSession()
                     Case Else
                         udtSessionHandler.ClaimCOVID19SaveToSession(False)
                         udtSessionHandler.ClaimFunctCodeSaveToSession(FunctCode.FUNT020201)
@@ -882,17 +888,25 @@ Partial Public Class MasterPage
                 Dim lstSchemeCode As New List(Of String)
                 Dim lstSubsidizeCode As New List(Of String)
 
-                udtSchemeClaimBLL.ConvertSubsidizeClaimCodeFromSubsidizeEnrolCode(udtPracticeSchemeInfo.SchemeCode, _
-                                                                                  udtPracticeSchemeInfo.SubsidizeCode, _
-                                                                                  lstSchemeCode, _
-                                                                                  lstSubsidizeCode)
+                If udtPracticeSchemeInfo.ProvideService Then
+                    udtSchemeClaimBLL.ConvertSubsidizeClaimCodeFromSubsidizeEnrolCode(udtPracticeSchemeInfo.SchemeCode, _
+                                                                                      udtPracticeSchemeInfo.SubsidizeCode, _
+                                                                                      lstSchemeCode, _
+                                                                                      lstSubsidizeCode)
 
-                If lstSchemeCode.Count > 0 AndAlso lstSubsidizeCode.Count > 0 Then
-                    For intCt As Integer = 0 To lstSchemeCode.Count - 1
-                        If strSubsidizeItemCodeForClaim.ToUpper.Trim = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(lstSubsidizeCode(intCt).ToUpper.Trim) Then
-                            blnDisplay = True
-                        End If
-                    Next
+                    If lstSchemeCode.Count > 0 AndAlso lstSubsidizeCode.Count > 0 Then
+                        For intCt As Integer = 0 To lstSchemeCode.Count - 1
+                            If strSubsidizeItemCodeForClaim.ToUpper.Trim = udtSubsidizeBLL.GetSubsidizeItemBySubsidize(lstSubsidizeCode(intCt).ToUpper.Trim) Then
+                                blnDisplay = True
+                                Exit For
+                            End If
+                        Next
+                    End If
+
+                End If
+
+                If blnDisplay Then
+                    Exit For
                 End If
 
             Next
@@ -1002,6 +1016,11 @@ Partial Public Class MasterPage
         Session(Me.strLastTimeCheck) = Now
         Session(Me.strLastCheckCount) = 0
 
+        ' CRE20-023-03 - COVID19 - DH CLinic [Start][Koala]
+        Dim objSessionHandler As SessionHandler = New SessionHandler
+        objSessionHandler.ClaimCOVID19SaveToSession(False)
+        ' CRE20-023-03 - COVID19 - DH CLinic [End][Koala]
+
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start
 
         RedirectHandler.ToURL("~/Home/Inbox.aspx")
@@ -1017,6 +1036,10 @@ Partial Public Class MasterPage
         udtAuditLogEntry.WriteLog(LogID.LOG00001, "Home click")
         ' CRE13-026 - Repository [End][Lawrence]
 
+        ' CRE20-023-03 - COVID19 - DH CLinic [Start][Koala]
+        Dim objSessionHandler As SessionHandler = New SessionHandler
+        objSessionHandler.ClaimCOVID19SaveToSession(False)
+        ' CRE20-023-03 - COVID19 - DH CLinic [Start][End]
         'Session.Abandon()
 
         '---[CRE11-016] Concurrent Browser Handling [2010-02-01] Start

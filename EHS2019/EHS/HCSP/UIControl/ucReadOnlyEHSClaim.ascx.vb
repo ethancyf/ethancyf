@@ -15,6 +15,7 @@ Partial Public Class ucReadOnlyEHSClaim
     Private _udtEHSTransaction As EHSTransactionModel
     Private _textOnlyVersion As Boolean
     Private _intTableTitleWidth As Integer = 0
+    Private _enumClaimMode As Common.Component.ClaimMode = Common.Component.ClaimMode.All
 
     Public Event VaccineRemarkClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -30,12 +31,10 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const EHAPP As String = "ucReadOnlyEHSClaim_EHAPP"
         Public Const PIDVSS As String = "ucReadOnlyEHSClaim_PIDVSS"
         Public Const VSS As String = "ucReadOnlyEHSClaim_VSS"
+        Public Const VSSCOVID19 As String = "ucReadOnlyEHSClaim_VSSCOVID19"
         Public Const ENHVSSO As String = "ucReadOnlyEHSClaim_ENHVSSO"
         Public Const PPP As String = "ucReadOnlyEHSClaim_PPP"
-        ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Const SSSCMC As String = "ucReadOnlyEHSClaim_SSSCMC"
-        ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19CBD As String = "ucReadOnlyEHSClaim_COVID19CBD"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"     ' CRE20-0022 (Immu record) [Winnie SUEN]
@@ -114,12 +113,17 @@ Partial Public Class ucReadOnlyEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.VSS
-                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyVSS.ascx", strFolderPath))
-                udcReadOnlyEHSClaim.ID = EHSClaimControlID.VSS
-                If Me._textOnlyVersion Then
-                    AddHandler CType(udcReadOnlyEHSClaim, UIControl.EHCClaimText.ucReadOnlyVSS).VaccineRemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
+                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                    udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyVSSCOVID19.ascx", strFolderPath))
+                    udcReadOnlyEHSClaim.ID = EHSClaimControlID.VSSCOVID19
                 Else
-                    AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyVSS).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
+                    udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyVSS.ascx", strFolderPath))
+                    udcReadOnlyEHSClaim.ID = EHSClaimControlID.VSS
+                    If Me._textOnlyVersion Then
+                        AddHandler CType(udcReadOnlyEHSClaim, UIControl.EHCClaimText.ucReadOnlyVSS).VaccineRemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
+                    Else
+                        AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyVSS).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
+                    End If
                 End If
 
             Case SchemeClaimModel.EnumControlType.ENHVSSO
@@ -254,6 +258,15 @@ Partial Public Class ucReadOnlyEHSClaim
         End Get
         Set(ByVal value As Integer)
             _intTableTitleWidth = value
+        End Set
+    End Property
+
+    Public Property ClaimMode() As Common.Component.ClaimMode
+        Get
+            Return Me._enumClaimMode
+        End Get
+        Set(ByVal value As Common.Component.ClaimMode)
+            _enumClaimMode = value
         End Set
     End Property
 

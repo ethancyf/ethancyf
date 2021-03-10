@@ -69,13 +69,13 @@
                 <td valign="top" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyDOB" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
-           <%-- <tr>
+            <tr>
                 <td valign="top" runat="server" id="cellReadonlyIssueDateText" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyIssueDateText" runat="server" CssClass="tableTitle"
                         Width="150px"></asp:Label></td>
                 <td valign="top" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyIssueDate" runat="server" CssClass="tableText"></asp:Label></td>
-            </tr>--%>
+            </tr>
         </tbody>
     </table>
 </asp:Panel>
@@ -109,12 +109,12 @@
             <td style="padding-bottom: 10px; width: 300px;" valign="top" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalTravelDocNo" runat="server" CssClass="tableText"
                     Width="300px"></asp:Label></td>
-           <%-- <td valign="top" style="padding-bottom: 10px" runat="server" id="cellReadonlyHorizontalIssueDateText" class="tableCellStyleLite">
+            <td valign="top" style="padding-bottom: 10px" runat="server" id="cellReadonlyHorizontalIssueDateText" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalIssueDateText" runat="server" CssClass="tableTitle"
                     Width="160px"></asp:Label></td>
             <td valign="top" style="padding-bottom: 10px" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalIssueDate" runat="server" CssClass="tableText"
-                    Width="300px"></asp:Label></td>--%>
+                    Width="300px"></asp:Label></td>
         </tr>
     </table>
 </asp:Panel>

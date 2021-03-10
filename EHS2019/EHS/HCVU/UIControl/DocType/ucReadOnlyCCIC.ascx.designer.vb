@@ -131,6 +131,24 @@ Partial Public Class ucReadOnlyCCIC
     Protected WithEvents lblHTravelDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblHDateOfIssueText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHDateOfIssueText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblHDateOfIssue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHDateOfIssue As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''ViewVertical control.
     '''</summary>
     '''<remarks>
@@ -237,4 +255,22 @@ Partial Public Class ucReadOnlyCCIC
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVDOB As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVDateOfIssueText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVDateOfIssueText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVDateOfIssue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVDateOfIssue As Global.System.Web.UI.WebControls.Label
 End Class

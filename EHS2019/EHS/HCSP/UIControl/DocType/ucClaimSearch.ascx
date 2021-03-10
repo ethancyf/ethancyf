@@ -279,7 +279,7 @@
                 </table>
                 <table class="searchOption-container" cellpadding="0" cellspacing="0" runat="server">
                     <tr>
-                        <td style="vertical-align:top;width:305px">                        
+                        <td id="tdManual" runat="server" style="vertical-align:top">                        
                             <table id="tblManual" runat="server" cellpadding="0" cellspacing="0" class="searchOption">
                                 <tr style="height:25px">
                                     <td align="center" valign="middle">
@@ -330,10 +330,10 @@
                                 <tr></tr>
                             </table>
                         </td>
-                        <td style="vertical-align:top;width:710px">
+                        <td id="tdSmartID" runat="server" style="vertical-align:top;width:710px">
                             <asp:MultiView ID="mvIDEASCombo" runat="server" ActiveViewIndex="0"> 
                                 <asp:View ID="vOldIDEAS" runat="server">
-                                    <table cellpadding="0" cellspacing="0" runat="server">
+                                    <table id="tblOldIDEAS" cellpadding="0" cellspacing="0" runat="server">
                                         <tr>
                                             <td style="vertical-align:top;width:305px">
                                                 <asp:MultiView ID="mvOldHKIC" runat="server" ActiveViewIndex="0"> 
@@ -423,7 +423,7 @@
                                     </table>
                                 </asp:View>
                                 <asp:View ID="vNewIDEAS" runat="server">
-                                    <table cellpadding="0" cellspacing="0" runat="server" style="vertical-align:middle">
+                                    <table id="tblNewIDEAS" cellpadding="0" cellspacing="0" runat="server" style="vertical-align:middle">
                                         <tr>
                                             <td style="vertical-align:top;width:624px;">
                                                 <table runat="server" id="tblNewSmartICCombo" cellpadding="0" cellspacing="0" class="searchOption">

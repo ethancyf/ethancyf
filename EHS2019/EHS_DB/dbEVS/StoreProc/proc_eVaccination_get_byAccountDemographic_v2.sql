@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	10 Mar 2021
+-- CR No.:			CRE20-022 (Immu record)
+-- Description:		Allow transaction made by amended account
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -485,7 +491,9 @@ SELECT
 	0 
 FROM TempVoucherAccount TVA WITH (NOLOCK)  
 	INNER JOIN TempPersonalInformation TP WITH (NOLOCK)  
-	ON TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID AND Account_Purpose NOT IN ('A','O') AND  TVA.Record_Status NOT IN ('V', 'D')  
+	ON TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
+		AND Account_Purpose NOT IN ('O') 
+		AND TVA.Record_Status NOT IN ('V', 'D')  
 	INNER JOIN @AvailableDocCode ADC  
 	ON TP.Doc_Code = ADC.Doc_Code  
 WHERE   
@@ -543,7 +551,7 @@ WHERE
  INSERT INTO @Account  
  SELECT DISTINCT Acc_Type, Voucher_Acc_ID FROM @temptable 
  
- 
+ --SELECT * FROM @temptable
  -- =============================================  
  -- Query vaccination record by Patient in @temptable  
  -- =============================================  

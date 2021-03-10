@@ -47,18 +47,52 @@
             <td valign="top" class="tableCellStyle" style="width: 200px">
                 <asp:Label ID="lblGenderText" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
             <td valign="top" class="tableCellStyle">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                    <tr>
+                <table id="tblGender" runat="server" border="0" style="border-spacing:0px;border-collapse:collapse;padding:0px">
+                    <tr id="trGenderRadioInput" runat="server" style="display:none">
                         <td>
-                            <asp:Label ID="lblGender" runat="server" CssClass="tableText" Visible="false"></asp:Label>
+                            <asp:Label ID="lblRGender" runat="server" CssClass="tableText" Visible="false"></asp:Label>
                             <asp:RadioButtonList ID="rbGender" runat="server" CssClass="tableText" RepeatDirection="Horizontal"
                                 RepeatLayout="Flow" AutoPostBack="True" BackColor="#FFFF99" Visible="false">
                                 <asp:ListItem Value="F">Female</asp:ListItem>
                                 <asp:ListItem Value="M">Male</asp:ListItem>
                             </asp:RadioButtonList>
-                            <asp:Image ID="imgGenderError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="false" /></td>
-                        
+                        </td>
+                        <td>
+                            <asp:Image ID="imgRGenderError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="false" />
+                        </td>                       
+                    </tr>
+                    <tr id="trGenderImageInput" runat="server">
+                        <td style="background-color:#ffff99;padding:10px">
+                            <asp:Label ID="lblIGender" runat="server" CssClass="tableText" Visible="false"></asp:Label>
+                            <table id="tblIGender" runat="server" style="border-spacing:0px;border-collapse:collapse;padding:0px">
+                                <tr>
+                                    <td>
+                                        <div ID="divSmartICFemale" runat="server" style="width:180px;border:solid;border-width:2px;border-color:black;padding-left:5px;background-color:white;position:relative;cursor:pointer">
+                                            <asp:Image ID="imgFemale" runat="server" AlternateText="<%$ Resources:AlternateText, Female%>"
+                                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, SmartICFemale%>" />
+                                            <asp:Label ID="lblIFemale" runat="server" CssClass="tableText" style="position:absolute;left:120px;top:65px" />
+                                            <asp:Label ID="lblIFemaleChi" runat="server" CssClass="tableText" style="position:absolute;left:120px;top:85px" />
+                                        </div>
+                                        <div id="test" runat="server"></div>
+                                    </td>
+                                    <td style="width:20px">
+                                    </td>
+                                    <td>
+                                        <div ID="divSmartICMale" runat="server" style="width:180px;border:solid;border-width:2px;border-color:black;padding-left:5px;background-color:white;position:relative;cursor:pointer">
+                                            <asp:Image ID="imgMale" runat="server" AlternateText="<%$ Resources:AlternateText, Male%>"
+                                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, SmartICMale%>" />
+                                            <asp:Label ID="lblIMale" runat="server" CssClass="tableText" style="position:absolute;left:120px;top:65px" />
+                                            <asp:Label ID="lblIMaleChi" runat="server" CssClass="tableText" style="position:absolute;left:120px;top:85px" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <asp:Image ID="imgIGenderError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="false" />
+                        </td>                       
                     </tr>
                 </table>
             </td>

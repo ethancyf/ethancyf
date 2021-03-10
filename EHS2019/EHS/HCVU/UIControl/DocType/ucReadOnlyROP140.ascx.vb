@@ -53,7 +53,7 @@ Public Class ucReadOnlyROP140
             lblVDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInformation.DOB, udtEHSPersonalInformation.ExactDOB, String.Empty, Nothing, Nothing)
 
             ' Date of Issue
-            'lblVDateOfIssue.Text = udtFormatter.formatDOI(DocTypeCode.ROP140, udtEHSPersonalInformation.DateofIssue)
+            lblVDateOfIssue.Text = udtFormatter.formatDOI(DocTypeCode.ROP140, udtEHSPersonalInformation.DateofIssue)
 
             ' Control the width of the first column
             tblVDI.Rows(0).Cells(0).Width = intWidth
@@ -89,7 +89,7 @@ Public Class ucReadOnlyROP140
             lblHTravelDocNo.Text = udtFormatter.FormatDocIdentityNoForDisplay(DocTypeCode.ROP140, udtEHSPersonalInformation.IdentityNum, blnMaskTravelDocNo)
 
             ' Date of Issue
-            'lblHDateOfIssue.Text = udtFormatter.formatDOI(DocTypeCode.ROP140, udtEHSPersonalInformation.DateofIssue)
+            lblHDateOfIssue.Text = udtFormatter.formatDOI(DocTypeCode.ROP140, udtEHSPersonalInformation.DateofIssue)
 
             ' Control the width of the columns
             tblHDI.Rows(0).Cells(0).Width = intWidth

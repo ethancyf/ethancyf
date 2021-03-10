@@ -3304,6 +3304,7 @@ Partial Public Class EHSRectification
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCCIC.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputCCIC.Gender)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputCCIC.DOB)
+        _udtAuditLogEntry.AddDescripton("DOI", udcInputCCIC.DateOfIssue)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
 
         'English Name
@@ -3337,12 +3338,26 @@ Partial Public Class EHSRectification
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
+        'DOI
+        Dim strHKIDIssueDate As String = Nothing
+        Dim dtHKIDIssueDate As DateTime
+        strHKIDIssueDate = Me.formatter.formatHKIDIssueDateBeforeValidate(udcInputCCIC.DateOfIssue)
+        Me.sm = Me.validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.CCIC, strHKIDIssueDate, udtEHSAccountPersonalInfo.DOB)
+        If Not Me.sm Is Nothing Then
+            isvalid = False
+            udcInputCCIC.SetDOIError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        Else
+            dtHKIDIssueDate = Me.formatter.convertHKIDIssueDateStringToDate(strHKIDIssueDate)
+        End If
+
         If isvalid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputCCIC.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputCCIC.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputCCIC.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
+            udtEHSAccountPersonalInfo.DateofIssue = dtHKIDIssueDate
         End If
 
         Return isvalid
@@ -3366,6 +3381,7 @@ Partial Public Class EHSRectification
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCROP140.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputCROP140.Gender)
         _udtAuditLogEntry.AddDescripton("DOB", udcInputCROP140.DOB)
+        _udtAuditLogEntry.AddDescripton("DOI", udcInputCROP140.DateOfIssue)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
 
         'English Name
@@ -3399,12 +3415,31 @@ Partial Public Class EHSRectification
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
+
+
+        'DOI        
+        Dim strIssueDate As String = Nothing
+        Dim dtIssueDate As DateTime
+      
+        Dim strDOI As String = String.Empty
+        strDOI = Me.formatter.formatDateBeforValidation_DDMMYYYY(udcInputCROP140.DateOfIssue)
+        sm = Me.validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.DI, strDOI, udtEHSAccountPersonalInfo.DOB)
+        If Not IsNothing(sm) Then
+            isvalid = False
+            udcInputCROP140.SetDOIError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        Else
+            dtIssueDate = CDate(Me.udtFormatter.convertDate(Me.udtFormatter.formatInputDate(strDOI), Common.Component.CultureLanguage.English))
+        End If
+
+
         If isvalid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputCROP140.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputCROP140.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputCROP140.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
+            udtEHSAccountPersonalInfo.DateofIssue = dtIssueDate
         End If
 
         Return isvalid

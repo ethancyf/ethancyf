@@ -969,6 +969,10 @@ Partial Public Class eHSAccountMaint
                 Else
                     Me.lblAcctListIdentityNumR2.Text = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
 
+                    'only OW and PASS are free text
+                    If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
+                        strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
+                    Else
                     Dim strIdentityNumFullTemp As String
                     strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
 
@@ -980,6 +984,8 @@ Partial Public Class eHSAccountMaint
                     Else
                         strIdentityNum = strIdentityNumFullTemp
                     End If
+                End If
+
                 End If
 
                 'English Name
@@ -2000,14 +2006,23 @@ Partial Public Class eHSAccountMaint
             'Identity Number
             strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
 
-            Dim strIdentityNumFull() As String
-            strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
-            If strIdentityNumFull.Length > 1 Then
-                strIdentityNum = strIdentityNumFull(1)
-                strAdoptionPrefixNum = strIdentityNumFull(0)
+
+            ' CRE20-0022 (Immu record) [Start][Martin]
+            'only OW and PASS are free text
+            If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
+                strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim()
             Else
-                strIdentityNum = strIdentityNumFullTemp
+                Dim strIdentityNumFull() As String
+                strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
+                If strIdentityNumFull.Length > 1 Then
+                    strIdentityNum = strIdentityNumFull(1)
+                    strAdoptionPrefixNum = strIdentityNumFull(0)
+                Else
+                    strIdentityNum = strIdentityNumFullTemp
+                End If
             End If
+            ' CRE20-0022 (Immu record) [End][Martin]
+
             udtSM = Me.udtvalidator.chkIdentityNumber(strDocCode, strIdentityNum, strAdoptionPrefixNum)
             If Not IsNothing(udtSM) Then
                 Me.imgIdentityNumErr.Visible = True
@@ -7444,6 +7459,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputCCIC.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCCIC.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputCCIC.Gender)
+        _udtAuditLogEntry.AddDescripton("DOI", udcInputCCIC.DateOfIssue)
         '_udtAuditLogEntry.AddDescripton("ExactDOB", udcInputCCIC.ExactDOB)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
@@ -7487,6 +7503,19 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
+        'DOI
+        Dim strHKIDIssueDate As String = Nothing
+        Dim dtHKIDIssueDate As DateTime
+        strHKIDIssueDate = Me.udtformatter.formatHKIDIssueDateBeforeValidate(udcInputCCIC.DateOfIssue)
+        Me.udtSM = Me.udtValidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.CCIC, strHKIDIssueDate, udtEHSAccountPersonalInfo.DOB)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputCCIC.SetDOIError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        Else
+            dtHKIDIssueDate = Me.udtformatter.convertHKIDIssueDateStringToDate(strHKIDIssueDate)
+        End If
+
         If isvalid Then
             If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
                 udtEHSAccountPersonalInfo.IdentityNum = udcInputCCIC.TravelDocNo
@@ -7496,7 +7525,8 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputCCIC.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputCCIC.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
-            udtEHSAccountPersonalInfo.DOB = dtmDOB 
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+            udtEHSAccountPersonalInfo.DateofIssue = dtHKIDIssueDate
         End If
 
         Return isvalid
@@ -7524,6 +7554,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputROP140.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputROP140.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputROP140.Gender)
+        _udtAuditLogEntry.AddDescripton("DOI", udcInputROP140.DateOfIssue)
         '_udtAuditLogEntry.AddDescripton("ExactDOB", udcInputROP140.ExactDOB)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
@@ -7567,6 +7598,20 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
+        'DOI       
+        Dim strIssueDate As String = Nothing
+        Dim dtIssueDate As DateTime
+        Dim strDOI As String = String.Empty
+        strDOI = Me.udtformatter.formatDateBeforValidation_DDMMYYYY(udcInputROP140.DateOfIssue)
+        Me.udtSM = Me.udtValidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.ROP140, strDOI, udtEHSAccountPersonalInfo.DOB)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputROP140.SetDOIError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        Else
+            dtIssueDate = CDate(Me.udtformatter.convertDate(Me.udtformatter.formatInputDate(strDOI), Common.Component.CultureLanguage.English))
+        End If
+
         If isvalid Then
             If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
                 udtEHSAccountPersonalInfo.IdentityNum = udcInputROP140.TravelDocNo
@@ -7577,6 +7622,7 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.Gender = udcInputROP140.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
+            udtEHSAccountPersonalInfo.DateofIssue = dtIssueDate
         End If
 
         Return isvalid

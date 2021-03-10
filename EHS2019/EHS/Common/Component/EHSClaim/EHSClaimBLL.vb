@@ -1566,23 +1566,50 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim udtSchemeDocTypeList As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(udtEHSTransaction.SchemeCode)
 
             If udtSchemeDocTypeList.Count > 0 Then
-                Dim udtSchemeDocTypeModel As SchemeDocTypeModel = udtSchemeDocTypeList.FilterDocCode(udtEHSTransaction.DocCode)(0)
-                If Not udtSchemeDocTypeModel Is Nothing Then
-                    If udtSchemeDocTypeModel.AgeUpperLimit.HasValue OrElse udtSchemeDocTypeModel.AgeLowerLimit.HasValue Then
-                        Dim dtmPassDOB As Date = EHSClaimValidationBLL.ConvertDateOfBirthByCalMethod(udtSchemeDocTypeModel.AgeCalMethod, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB)
+                If udtSchemeDocTypeList.FilterDocCode(udtEHSTransaction.DocCode).Count = 0 Then
 
-                        If udtSchemeDocTypeModel.AgeLowerLimit.HasValue Then
-                            Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtSchemeDocTypeModel.AgeLowerLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
-                            blnExceedLimit = blnExceedLimit Or (intPassValue < udtSchemeDocTypeModel.AgeLowerLimit.Value)
-                        End If
+                    Dim udtDocTypeList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
 
-                        If udtSchemeDocTypeModel.AgeUpperLimit.HasValue Then
-                            Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtSchemeDocTypeModel.AgeUpperLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
-                            blnExceedLimit = blnExceedLimit Or (intPassValue >= udtSchemeDocTypeModel.AgeUpperLimit.Value)
+                    If udtDocTypeList.Count > 0 Then
+                        Dim udtDocTypeModel As DocTypeModel = udtDocTypeList.Filter(udtEHSTransaction.DocCode)
+                        If Not udtDocTypeModel Is Nothing Then
+                            If udtDocTypeModel.AgeUpperLimit.HasValue OrElse udtDocTypeModel.AgeLowerLimit.HasValue Then
+                                Dim dtmPassDOB As Date = EHSClaimValidationBLL.ConvertDateOfBirthByCalMethod(udtDocTypeModel.AgeCalMethod, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB)
+
+                                If udtDocTypeModel.AgeLowerLimit.HasValue Then
+                                    Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtDocTypeModel.AgeLowerLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
+                                    blnExceedLimit = blnExceedLimit Or (intPassValue < udtDocTypeModel.AgeLowerLimit.Value)
+                                End If
+
+                                If udtDocTypeModel.AgeUpperLimit.HasValue Then
+                                    Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtDocTypeModel.AgeUpperLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
+                                    blnExceedLimit = blnExceedLimit Or (intPassValue >= udtDocTypeModel.AgeUpperLimit.Value)
+                                End If
+                            End If
+
                         End If
                     End If
 
+                Else
+                    Dim udtSchemeDocTypeModel As SchemeDocTypeModel = udtSchemeDocTypeList.FilterDocCode(udtEHSTransaction.DocCode)(0)
+                    If Not udtSchemeDocTypeModel Is Nothing Then
+                        If udtSchemeDocTypeModel.AgeUpperLimit.HasValue OrElse udtSchemeDocTypeModel.AgeLowerLimit.HasValue Then
+                            Dim dtmPassDOB As Date = EHSClaimValidationBLL.ConvertDateOfBirthByCalMethod(udtSchemeDocTypeModel.AgeCalMethod, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB)
+
+                            If udtSchemeDocTypeModel.AgeLowerLimit.HasValue Then
+                                Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtSchemeDocTypeModel.AgeLowerLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
+                                blnExceedLimit = blnExceedLimit Or (intPassValue < udtSchemeDocTypeModel.AgeLowerLimit.Value)
+                            End If
+
+                            If udtSchemeDocTypeModel.AgeUpperLimit.HasValue Then
+                                Dim intPassValue As Integer = EHSClaimValidationBLL.ConvertPassValueByCalUnit(udtSchemeDocTypeModel.AgeUpperLimitUnit, dtmPassDOB, udtEHSTransaction.ServiceDate)
+                                blnExceedLimit = blnExceedLimit Or (intPassValue >= udtSchemeDocTypeModel.AgeUpperLimit.Value)
+                            End If
+                        End If
+
+                    End If
                 End If
+
             End If
 
             If blnExceedLimit Then

@@ -56,7 +56,7 @@ Public Class ucReadOnlyCCIC
             Me.lblReadonlyDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, udtSessionHandler.Language(), Nothing, Nothing)
             Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
             Me.lblReadonlyDocumentType.Text = strDocumentTypeFullName
-            'Me.lblReadonlyIssueDate.Text = formatter.formatDOI(DocTypeCode.CCIC, MyBase.EHSAccountPersonalInfo.DateofIssue)
+            Me.lblReadonlyIssueDate.Text = formatter.formatDOI(DocTypeCode.CCIC, MyBase.EHSAccountPersonalInfo.DateofIssue)
 
         Else
 
@@ -68,7 +68,7 @@ Public Class ucReadOnlyCCIC
             Me.lblReadonlyHorizontalDOB.Text = formatter.formatDOB(MyBase.EHSAccountPersonalInfo.DOB, MyBase.EHSAccountPersonalInfo.ExactDOB, Session("language"), Nothing, Nothing)
             Me.lblReadonlyHorizontalDocumentType.Text = strDocumentTypeFullName
             Me.lblReadonlyHorizontalGender.Text = Me.GetGlobalResourceObject("Text", strGender)
-            'Me.lblReadonlyHorizontalIssueDate.Text = formatter.formatDOI(DocTypeCode.CCIC, MyBase.EHSAccountPersonalInfo.DateofIssue)
+            Me.lblReadonlyHorizontalIssueDate.Text = formatter.formatDOI(DocTypeCode.CCIC, MyBase.EHSAccountPersonalInfo.DateofIssue)
         End If
 
     End Sub
@@ -84,14 +84,14 @@ Public Class ucReadOnlyCCIC
             Me.lblReadonlyNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
             Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
-            'Me.lblReadonlyIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
+            Me.lblReadonlyIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
             Me.lblReadonlyTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
 
         Else
             Me.lblReadonlyHorizontalDocumentTypeText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
             Me.lblReadonlyHorizontalNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
             Me.lblReadonlyHorizontalDOBGenderText.Text = Me.GetGlobalResourceObject("Text", "DOBLongGender")
-            'Me.lblReadonlyHorizontalIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
+            Me.lblReadonlyHorizontalIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
             Me.lblReadonlyHorizontalTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
 
         End If
@@ -106,13 +106,13 @@ Public Class ucReadOnlyCCIC
             Me.lblReadonlyDOBText.Width = width
             Me.lblReadonlyGender.Width = width
             Me.lblReadonlyTravelDocNoText.Width = width
-            'Me.lblReadonlyIssueDateText.Width = width
+            Me.lblReadonlyIssueDateText.Width = width
 
             Me.cellReadonlyCreationDateTimeText.Width = width
             Me.cellReadonlyDOBText.Width = width
             Me.cellReadonlyDocumentTypeText.Width = width
             Me.cellReadonlyGenderText.Width = width
-            'Me.cellReadonlyIssueDateText.Width = width
+            Me.cellReadonlyIssueDateText.Width = width
             Me.cellReadonlyNameText.Width = width
             Me.cellReadonlyRefenceText.Width = width
             Me.cellReadonlyTravelDocNoText.Width = width
@@ -122,11 +122,11 @@ Public Class ucReadOnlyCCIC
             Me.lblReadonlyHorizontalNameText.Width = width
             Me.lblReadonlyHorizontalTravelDocNoText.Width = width
             Me.lblReadonlyHorizontalDOBGenderText.Width = width
-            'Me.lblReadonlyHorizontalIssueDateText.Width = width
+            Me.lblReadonlyHorizontalIssueDateText.Width = width
 
             Me.cellReadonlyHorizontalDOBGenderText.Width = width
             Me.cellReadonlyHorizontalDocumentTypeText.Width = width
-            'Me.cellReadonlyHorizontalIssueDateText.Width = width
+            Me.cellReadonlyHorizontalIssueDateText.Width = width
             Me.cellReadonlyHorizontalNameText.Width = width
             Me.cellReadonlyHorizontalTravelDocNoText.Width = width
 

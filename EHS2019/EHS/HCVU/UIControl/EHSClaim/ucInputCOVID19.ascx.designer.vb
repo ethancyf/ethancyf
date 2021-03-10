@@ -284,6 +284,15 @@ Partial Public Class ucInputCOVID19
     Protected WithEvents imgCRemarkError As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''trJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trJoinEHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''lblCJoinEHRSSText control.
     '''</summary>
     '''<remarks>

@@ -77,6 +77,28 @@ Namespace Component.PracticeSchemeInfo
         Public Sub New()
 
         End Sub
+
+        Public Function GetPracticeSchemeInfoListPermanentBySPID(ByVal strSPID As String, ByRef udtDB As Database, Optional ByVal blnCheckByServiceDate As Boolean = False, Optional ByVal dtServiceDate As DateTime = Nothing) As PracticeSchemeInfoModelCollection
+            Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
+            Dim udtFinalPracticeSchemeInfoList As New PracticeSchemeInfoModelCollection
+
+            Try
+                If blnCheckByServiceDate = False Then
+                    udtPracticeSchemeInfoList = GetPracticeSchemeInfoListPermanentBySPID(strSPID, udtDB)
+                Else
+                    udtPracticeSchemeInfoList = GetPracticeSchemeInfoListPermanentBySPIDServiceDate(strSPID, udtDB, dtServiceDate)
+                End If
+
+                Return udtPracticeSchemeInfoList
+
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtPracticeSchemeInfoList
+
+        End Function
+
         Public Function GetPracticeSchemeInfoListPermanentBySPIDPracticeDisplaySeq(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer, ByRef udtDB As Database, Optional ByVal blnCheckByServiceDate As Boolean = False, Optional ByVal dtServiceDate As DateTime = Nothing) As PracticeSchemeInfoModelCollection
             Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
             Dim udtFinalPracticeSchemeInfoList As New PracticeSchemeInfoModelCollection
@@ -102,6 +124,197 @@ Namespace Component.PracticeSchemeInfo
             Return udtPracticeSchemeInfoList
         End Function
 
+        Public Function GetPracticeSchemeInfoListPermanentBySPID(ByVal strSPID As String, ByRef udtDB As Database) As PracticeSchemeInfoModelCollection
+            Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
+            Dim udtPracticeSchemeInfo As PracticeSchemeInfoModel
+
+            'Dim intPracticeDisplaySeq As Nullable(Of Integer)
+            Dim intServiceFee As Nullable(Of Integer)
+
+            Dim dtmDelistDtm As Nullable(Of DateTime)
+            Dim dtmEffectiveDtm As Nullable(Of DateTime)
+            Dim dtmCreateDtm As Nullable(Of DateTime)
+            Dim dtmUpdateDtm As Nullable(Of DateTime)
+
+            Dim btyTsmp As Byte()
+
+            Try
+                Dim dt As New DataTable
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID)}
+
+                udtDB.RunProc("proc_PracticeSchemeInformation_get_bySPID", prams, dt)
+
+                udtPracticeSchemeInfoList = New PracticeSchemeInfoModelCollection
+
+                For Each r As DataRow In dt.Rows
+                    If IsDBNull(r("Service_Fee")) Then
+                        intServiceFee = Nothing
+                    Else
+                        intServiceFee = CInt(r("Service_Fee"))
+                    End If
+
+                    If IsDBNull(r("Effective_dtm")) Then
+                        dtmEffectiveDtm = Nothing
+                    Else
+                        dtmEffectiveDtm = CType(r("Effective_dtm"), DateTime)
+                    End If
+
+                    If IsDBNull(r("Delist_Dtm")) Then
+                        dtmDelistDtm = Nothing
+                    Else
+                        dtmDelistDtm = CType(r("Delist_Dtm"), DateTime)
+                    End If
+
+                    If IsDBNull(r("Create_dtm")) Then
+                        dtmCreateDtm = Nothing
+                    Else
+                        dtmCreateDtm = CType(r("Create_dtm"), DateTime)
+                    End If
+
+                    If IsDBNull(r("Update_dtm")) Then
+                        dtmUpdateDtm = Nothing
+                    Else
+                        dtmUpdateDtm = CType(r("Update_dtm"), DateTime)
+                    End If
+
+                    If r.IsNull("TSMP") Then
+                        btyTsmp = Nothing
+                    Else
+                        btyTsmp = CType(r("TSMP"), Byte())
+                    End If
+
+                    udtPracticeSchemeInfo = New PracticeSchemeInfoModel(CStr(r("SP_ID")).Trim, _
+                                                                                String.Empty, _
+                                                                                CInt(r("Practice_Display_Seq")), _
+                                                                                CStr(r("Scheme_Code")).Trim, _
+                                                                                intServiceFee, _
+                                                                                CStr(r("Record_status")).Trim, _
+                                                                                CStr(IIf((r("Delist_Status") Is DBNull.Value), String.Empty, r("Delist_Status"))).Trim, _
+                                                                                CStr(IIf((r("Remark") Is DBNull.Value), String.Empty, r("Remark"))).Trim, _
+                                                                                dtmCreateDtm, _
+                                                                                CStr(r("Create_by")).Trim, _
+                                                                                dtmUpdateDtm, _
+                                                                                CStr(r("update_by")).Trim, _
+                                                                                dtmDelistDtm, _
+                                                                                dtmEffectiveDtm, _
+                                                                                btyTsmp, _
+                                                                                CStr(r("subsidize_code")).Trim, _
+                                                                                CStr(IIf((r("ProvideServiceFee") Is DBNull.Value), String.Empty, r("ProvideServiceFee"))).Trim, _
+                                                                                CInt(r("scheme_display_seq")), _
+                                                                                CInt(r("subsidize_display_seq")), _
+                                                                                CStr(IIf((r("Provide_Service") Is DBNull.Value), String.Empty, r("Provide_Service"))).Trim, _
+                                                                                r("Clinic_Type"))
+
+                    udtPracticeSchemeInfoList.Add(udtPracticeSchemeInfo)
+                Next
+
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtPracticeSchemeInfoList
+
+        End Function
+
+        Public Function GetPracticeSchemeInfoListPermanentBySPIDServiceDate(ByVal strSPID As String, ByRef udtDB As Database, ByVal dtServiceDate As DateTime) As PracticeSchemeInfoModelCollection
+            Dim udtPracticeSchemeInfoList As PracticeSchemeInfoModelCollection = Nothing
+            Dim udtPracticeSchemeInfo As PracticeSchemeInfoModel
+
+            'Dim intPracticeDisplaySeq As Nullable(Of Integer)
+            Dim intServiceFee As Nullable(Of Integer)
+
+            Dim dtmDelistDtm As Nullable(Of DateTime)
+            Dim dtmEffectiveDtm As Nullable(Of DateTime)
+            Dim dtmCreateDtm As Nullable(Of DateTime)
+            Dim dtmUpdateDtm As Nullable(Of DateTime)
+
+            Dim btyTsmp As Byte()
+
+            Try
+                Dim dt As New DataTable
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, strSPID), _
+                                               udtDB.MakeInParam("@service_date", System.Data.SqlDbType.DateTime, 8, dtServiceDate)}
+
+                udtDB.RunProc("proc_PracticeSchemeInformation_get_bySPID_ServiceDate", prams, dt)
+
+                udtPracticeSchemeInfoList = New PracticeSchemeInfoModelCollection
+
+                For Each r As DataRow In dt.Rows
+                    If IsDBNull(r("Service_Fee")) Then
+                        intServiceFee = Nothing
+                    Else
+                        intServiceFee = CInt(r("Service_Fee"))
+                    End If
+
+                    If IsDBNull(r("Effective_dtm")) Then
+                        dtmEffectiveDtm = Nothing
+                    Else
+                        dtmEffectiveDtm = CType(r("Effective_dtm"), DateTime)
+                    End If
+
+                    If IsDBNull(r("Delist_Dtm")) Then
+                        dtmDelistDtm = Nothing
+                    Else
+                        dtmDelistDtm = CType(r("Delist_Dtm"), DateTime)
+                    End If
+
+                    If IsDBNull(r("Create_dtm")) Then
+                        dtmCreateDtm = Nothing
+                    Else
+                        dtmCreateDtm = CType(r("Create_dtm"), DateTime)
+                    End If
+
+                    If IsDBNull(r("Update_dtm")) Then
+                        dtmUpdateDtm = Nothing
+                    Else
+                        dtmUpdateDtm = CType(r("Update_dtm"), DateTime)
+                    End If
+
+                    If r.IsNull("TSMP") Then
+                        btyTsmp = Nothing
+                    Else
+                        btyTsmp = CType(r("TSMP"), Byte())
+                    End If
+
+                    udtPracticeSchemeInfo = New PracticeSchemeInfoModel(CStr(r("SP_ID")).Trim, _
+                                                                                String.Empty, _
+                                                                                CInt(r("Practice_Display_Seq")), _
+                                                                                CStr(r("Scheme_Code")).Trim, _
+                                                                                intServiceFee, _
+                                                                                CStr(r("Record_status")).Trim, _
+                                                                                CStr(IIf((r("Delist_Status") Is DBNull.Value), String.Empty, r("Delist_Status"))).Trim, _
+                                                                                CStr(IIf((r("Remark") Is DBNull.Value), String.Empty, r("Remark"))).Trim, _
+                                                                                dtmCreateDtm, _
+                                                                                CStr(r("Create_by")).Trim, _
+                                                                                dtmUpdateDtm, _
+                                                                                CStr(r("update_by")).Trim, _
+                                                                                dtmDelistDtm, _
+                                                                                dtmEffectiveDtm, _
+                                                                                btyTsmp, _
+                                                                                CStr(r("subsidize_code")).Trim, _
+                                                                                CStr(IIf((r("ProvideServiceFee") Is DBNull.Value), String.Empty, r("ProvideServiceFee"))).Trim, _
+                                                                                CInt(r("scheme_display_seq")), _
+                                                                                CInt(r("subsidize_display_seq")), _
+                                                                                CStr(IIf((r("Provide_Service") Is DBNull.Value), String.Empty, r("Provide_Service"))).Trim, _
+                                                                                r("Clinic_Type"))
+
+                    If Not udtPracticeSchemeInfoList.ContainsKey(udtPracticeSchemeInfo.PracticeDisplaySeq.ToString.Trim + "-" _
+                                                                 + CStr(udtPracticeSchemeInfo.SchemeDisplaySeq).PadLeft(5, "0") + "-" + _
+                                                                 CStr(udtPracticeSchemeInfo.SubsidizeDisplaySeq).PadLeft(5, "0") + "-" + _
+                                                                 udtPracticeSchemeInfo.SubsidizeCode.Trim + "-" + _
+                                                                 udtPracticeSchemeInfo.SchemeCode) Then
+                        udtPracticeSchemeInfoList.Add(udtPracticeSchemeInfo)
+                    End If
+
+                Next
+
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtPracticeSchemeInfoList
+
+        End Function
 
 
         Public Function GetPracticeSchemeInfoListPermanentBySPID(ByVal strSPID As String, ByVal intDisplaySeq As Integer, ByRef udtDB As Database) As PracticeSchemeInfoModelCollection

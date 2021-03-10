@@ -1694,6 +1694,15 @@ EHS2019/EHS/HCSP/Images/button/small_button/btn_MarkAsUnread_tw.png -text
 EHS2019/EHS/HCSP/Images/button/small_button/btn_PPIePR.png -text
 EHS2019/EHS/HCSP/Images/button/small_button/btn_ReadSmartIDTips.png -text
 EHS2019/EHS/HCSP/Images/button/small_button/btn_ReadSmartIDTips_tw.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_ReprintVaccinationRecord.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_ReprintVaccinationRecord_cn.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_ReprintVaccinationRecord_tw.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_SelectAll.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_SelectAll_cn.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_SelectAll_tw.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_UnselectAll.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_UnselectAll_cn.png -text
+EHS2019/EHS/HCSP/Images/button/small_button/btn_UnselectAll_tw.png -text
 EHS2019/EHS/HCSP/Images/button/small_button/btn_chinesename.png -text
 EHS2019/EHS/HCSP/Images/button/small_button/btn_chinesename_cn.png -text
 EHS2019/EHS/HCSP/Images/button/small_button/btn_chinesename_tw.png -text
@@ -1863,6 +1872,8 @@ EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC.png -text
 EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC_D.png -text
 EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC_D_tw.png -text
 EHS2019/EHS/HCSP/Images/others/SearchOldSmartIC_tw.png -text
+EHS2019/EHS/HCSP/Images/others/SmartIC_Female.png -text
+EHS2019/EHS/HCSP/Images/others/SmartIC_Male.png -text
 EHS2019/EHS/HCSP/Images/others/SmartIDCardReader.png -text
 EHS2019/EHS/HCSP/Images/others/Tab_left.png -text
 EHS2019/EHS/HCSP/Images/others/Tab_left_D.png -text
@@ -3300,6 +3311,9 @@ EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputSSSCMC.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSS.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSS.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSS.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSSCOVID19.ascx -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSSCOVID19.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSSCOVID19.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSSDA.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSSDA.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucInputVSSDA.ascx.vb -text
@@ -3354,6 +3368,9 @@ EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlySSSCMC.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVSS.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVSS.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVSS.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVoucherSlim.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVoucherSlim.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaim/ucReadOnlyVoucherSlim.ascx.vb -text
@@ -4610,6 +4627,9 @@ EHS2019/EHS/HCVU/ReportAndDownload/reportSubmission.aspx.vb -text
 EHS2019/EHS/HCVU/RestrictAccess.aspx -text
 EHS2019/EHS/HCVU/RestrictAccess.aspx.designer.vb -text
 EHS2019/EHS/HCVU/RestrictAccess.aspx.vb -text
+EHS2019/EHS/HCVU/SPlogin.aspx -text
+EHS2019/EHS/HCVU/SPlogin.aspx.designer.vb -text
+EHS2019/EHS/HCVU/SPlogin.aspx.vb -text
 EHS2019/EHS/HCVU/ServiceProvider/MOPracticeLists.ascx -text
 EHS2019/EHS/HCVU/ServiceProvider/MOPracticeLists.ascx.designer.vb -text
 EHS2019/EHS/HCVU/ServiceProvider/MOPracticeLists.ascx.vb -text
@@ -4956,6 +4976,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlySSSCMC.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVSS.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVSS.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVSS.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVSSCOVID19.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVaccine.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVoucherSlim.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVoucherSlim.ascx.designer.vb -text
@@ -8524,6 +8547,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_Get_Summary.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19ExporterQueue_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19ExporterQueue_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19ExporterQueue_update.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineBrand_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotCentre.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotCentreHCVUMapping.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll.sql -text
@@ -8560,6 +8584,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_getAll_BySPID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_getAll_BySPIDPracticeID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_get_BySPIDDEID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_get_to_HCVUUser.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_udp_ConsentPrinOption.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_upd_LoginDtm.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_DataEntryUserAC_upd_Password.sql -text
@@ -8851,6 +8876,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_get_bySPIDActivationCode.sql -tex
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_get_bySPIDStatus.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_get_bySPIDStatusCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_get_status_bySPID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_get_to_HCVUUser.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_udp_Activation.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_udp_ConsentPrinOption.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_HCSPUserAC_upd_ActivationCode.sql -text
@@ -9065,9 +9091,11 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInfo_get_bySPID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInfo_get_validSchemeBySPID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInfo_upd_DelistToActive.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInfo_upd_ServiceFee.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInformation_get_bySPID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInformation_get_bySPIDDisplySeq.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInformation_get_bySPIDDisplySeq_ServiceDate.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInformation_get_bySPIDDisplySeq_all.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInformation_get_bySPID_ServiceDate.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeStagingRowCount_byERNProfSeq.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeStaging_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeStaging_del.sql -text
@@ -9403,6 +9431,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_StatisticCriteriaSetup_SCSU_get_byStatisticI
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StatisticResultSetup_SRSU_get_byStatisticID.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StatisticSetup_STSU_get_byRecordStatus.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StatisticSetup_STSU_get_byStatisticID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_StatusData_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StatusData_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentAccountMatching_check_TempAcc.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_StudentFileEntryMMRFieldStaging_add.sql -text

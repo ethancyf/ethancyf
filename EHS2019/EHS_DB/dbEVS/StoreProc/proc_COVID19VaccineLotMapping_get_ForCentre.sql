@@ -73,13 +73,15 @@ BEGIN
 		[COVID19VaccineLotMapping] VLM WITH(NOLOCK)
 			INNER JOIN [VaccineCentreSPMapping] VCSP WITH(NOLOCK)
 				ON VLM.[Centre_ID] = VCSP.[Centre_ID]
-					AND (VLM.[Booth] IS NULL OR VLM.[Booth] = VCSP.[Booth])
+					AND (ISNULL(VLM.[Booth],'All') = 'All' OR VLM.[Booth] = VCSP.[Booth])
 			INNER JOIN [COVID19VaccineLotDetail] VLD WITH(NOLOCK)
 				ON VLM.[Vaccine_Lot_No] = VLD.[Vaccine_Lot_No]
 			INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)
 				ON VLD.[Brand_ID] = VBD.[Brand_ID]
 	WHERE
-		VLM.[Record_Status] = 'A'
+		VLM.[Service_Type] = 'CENTRE'
+		AND VLM.[Record_Status] = 'A'
+		AND VLM.[Lot_Status] = 'A'
 		AND VCSP.[SP_ID] = @SP_ID
 		AND (@Practice_Display_Seq IS NULL OR VCSP.[Practice_Display_Seq] = @Practice_Display_Seq)
 	ORDER BY 

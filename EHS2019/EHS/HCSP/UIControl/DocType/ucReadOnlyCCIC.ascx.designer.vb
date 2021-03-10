@@ -275,6 +275,33 @@ Partial Public Class ucReadOnlyCCIC
     Protected WithEvents lblReadonlyDOB As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''cellReadonlyIssueDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cellReadonlyIssueDateText As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblReadonlyIssueDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyIssueDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReadonlyIssueDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyIssueDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''panReadonlyHorizontalCCIC control.
     '''</summary>
     '''<remarks>
@@ -408,4 +435,31 @@ Partial Public Class ucReadOnlyCCIC
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReadonlyHorizontalTravelDocNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''cellReadonlyHorizontalIssueDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cellReadonlyHorizontalIssueDateText As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblReadonlyHorizontalIssueDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyHorizontalIssueDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReadonlyHorizontalIssueDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyHorizontalIssueDate As Global.System.Web.UI.WebControls.Label
 End Class

@@ -238,6 +238,12 @@ Partial Public Class MyProfileV2
             Me.chkChgDEPWD.Enabled = False
             Me.chkDESuspend.Enabled = False
 
+            ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+            ' --------------------------------------------------------------------------------------
+            Me.btnDESelectAllPractice.Visible = False
+            Me.btnDEUnselectAllPractice.Visible = False
+            ' CRE20-0023 (Immu record) [End][Winnie SUEN]
+
             'Me.ddlDEDefaultPrintOption.Enabled = False
 
             Me.btnAddDEAcct.Visible = True
@@ -2149,6 +2155,12 @@ Partial Public Class MyProfileV2
         'Me.ddlDEDefaultPrintOption.Enabled = True
         clearSelectedPractice()
 
+        ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+        ' --------------------------------------------------------------------------------------
+        Me.btnDESelectAllPractice.Visible = True
+        Me.btnDEUnselectAllPractice.Visible = True
+        ' CRE20-0023 (Immu record) [End][Winnie SUEN]
+
         Me.chkPracticeList.Enabled = True
         Me.chkDESuspend.Enabled = False
         Me.chkDESuspend.Checked = False
@@ -2590,6 +2602,13 @@ Partial Public Class MyProfileV2
         'CRE13-019-02 Extend HCVS to China [Start][Winnie]
         InitDEFilterControl(False)
         'CRE13-019-02 Extend HCVS to China [End][Winnie]
+
+        ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+        ' --------------------------------------------------------------------------------------
+        Me.btnDESelectAllPractice.Visible = True
+        Me.btnDEUnselectAllPractice.Visible = True
+        ' CRE20-0023 (Immu record) [End][Winnie SUEN]
+
         Me.chkPracticeList.Enabled = True
         Me.chkChgDEPWD.Enabled = True
         Me.chkDESuspend.Enabled = True
@@ -4074,6 +4093,12 @@ Partial Public Class MyProfileV2
 
         Me.chkChgDEPWD.Enabled = False
         Me.chkPracticeList.Enabled = False
+
+        ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+        ' --------------------------------------------------------------------------------------
+        Me.btnDESelectAllPractice.Visible = False
+        Me.btnDEUnselectAllPractice.Visible = False
+        ' CRE20-0023 (Immu record) [End][Winnie SUEN]
 
         'Me.ddlDEDefaultPrintOption.Enabled = False
 

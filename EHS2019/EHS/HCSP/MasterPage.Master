@@ -127,6 +127,10 @@
                                         <asp:TextBox ID="txtSSORedirect" runat="Server" Style="display: none" />
                                         <!--<asp:button ID="btnRedirectSSO" runat="Server" Visible="false" />-->
                                         <!--<button ID="Button1" title="PPI-ePR"  onclick="javascript:return perform_SSO('UATApp');">PPI-ePR</button>-->
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <asp:ImageButton ID="ibtnReprintVaccinationRecord" runat="server" AlternateText="<%$ Resources:AlternateText, ReprintVaccinationRecordSmallBtn %>"
+                                            ImageUrl="<%$ Resources:ImageUrl, ReprintVaccinationRecordSmallBtn %>"  Visible="false"/>
+
                                     </td>
                                     <td align="right">
                                         <!-- Clock  -->

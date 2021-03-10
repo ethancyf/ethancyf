@@ -1869,6 +1869,33 @@ Public Class eHSAccountMaintBLL
                     Exit Select
                 End If
 
+            Case DocType.DocTypeModel.DocTypeCode.ROP140, DocType.DocTypeModel.DocTypeCode.CCIC  ' CRE20-0022 (Immu record) [Martin]
+                ' Send to ImmD Validation Value
+                ' 1. DOB
+                ' 2. Date of Issue
+
+                ' 1a. Check Exact DOB
+                If Not udtEHSPersonalInformation.ExactDOB.Trim.Equals(udtEHSPersonalInformation_Amend.ExactDOB.Trim) Then
+                    blnRes = True
+                    Exit Select
+                End If
+
+                ' 1b. Check DOB (Datetime)
+                If DateTime.Compare(udtEHSPersonalInformation.DOB, udtEHSPersonalInformation_Amend.DOB) <> 0 Then
+                    blnRes = True
+                    Exit Select
+                End If
+
+                ' 2. Check Date of Issue
+                If udtEHSPersonalInformation.DateofIssue Is Nothing And udtEHSPersonalInformation_Amend.DateofIssue IsNot Nothing Then
+                    blnRes = True
+                    Exit Select
+
+                ElseIf DateTime.Compare(udtEHSPersonalInformation.DateofIssue, udtEHSPersonalInformation_Amend.DateofIssue) <> 0 Then
+                    blnRes = True
+                    Exit Select
+                End If
+
 
             Case DocType.DocTypeModel.DocTypeCode.ID235B
                 ' Send to ImmD Validation Value

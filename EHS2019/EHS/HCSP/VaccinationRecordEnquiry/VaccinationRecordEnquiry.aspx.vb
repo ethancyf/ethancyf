@@ -520,10 +520,19 @@ Partial Public Class VaccinationRecordEnquiry
                     If blnValid Then
                         'CRE16-017 (Block EHCP make voucher claim for themselves) [Start][Chris YIM]
                         '-----------------------------------------------------------------------------------------
-                        udtSystemMessage = (New EHSClaimBLL).SearchEHSAccountSmartID("RVP", DocTypeModel.DocTypeCode.HKIC, udtPersonalInfoSmartID.IdentityNum, _
-                                        (New Formatter).formatDOB(udtPersonalInfoSmartID.DOB, udtPersonalInfoSmartID.ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing), _
-                                        udtEHSAccount, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, blnNotMatchAccountExist, blnExceedDocTypeLimit, _
-                                        FunctionCode, False)
+                        udtSystemMessage = (New EHSClaimBLL).SearchEHSAccountSmartID("RVP", _
+                                                                                     DocTypeModel.DocTypeCode.HKIC, _
+                                                                                     udtPersonalInfoSmartID.IdentityNum, _
+                                                                                     (New Formatter).formatDOB(udtPersonalInfoSmartID.DOB, udtPersonalInfoSmartID.ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing), _
+                                                                                     udtEHSAccount, _
+                                                                                     udtSmartIDContent.EHSAccount, _
+                                                                                     udtSmartIDContent.SmartIDReadStatus, _
+                                                                                     udtEligibleResult, _
+                                                                                     blnNotMatchAccountExist, _
+                                                                                     blnExceedDocTypeLimit, _
+                                                                                     FunctionCode, _
+                                                                                     False, _
+                                                                                     Common.Component.ClaimMode.All)
                         'CRE16-017 (Block EHCP make voucher claim for themselves) [End][Chris YIM]
 
                         '---------------------------------------------------------------------------------------------------------------

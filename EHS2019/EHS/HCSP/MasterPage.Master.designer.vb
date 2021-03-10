@@ -257,6 +257,15 @@ Partial Public Class MasterPage
     Protected WithEvents btnRedirectSSO As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''ibtnReprintVaccinationRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnReprintVaccinationRecord As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''lblClock control.
     '''</summary>
     '''<remarks>

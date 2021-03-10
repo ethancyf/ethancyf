@@ -186,6 +186,12 @@ Partial Public Class MasterPage
         End Select
         ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
+        If Session("HCVU_UserType") = "HCSPUser" Then
+            Me.ibtnInbox.Visible = False
+        Else
+            Me.ibtnInbox.Visible = True
+        End If
+
         ' Wait Cursor Panel Script
         ScriptManager.RegisterStartupScript(Page, Me.GetType, "ModalUpdProg", Me.GetWaitCursorPanelScript(), True)
 
@@ -252,6 +258,8 @@ Partial Public Class MasterPage
         Dim blnSESSUUA As Boolean = CommonSessionHandler.AddedUndefinedUserAgent
         'I-CRE16-006 (Capture detail client browser and OS information) [End][Chris YIM]
 
+        Dim strUserType As String = Session("HCVU_UserType")
+
         Session.RemoveAll()
 
         Session("language") = selectedValue
@@ -260,7 +268,12 @@ Partial Public Class MasterPage
         CommonSessionHandler.AddedUndefinedUserAgent = blnSESSUUA
         'I-CRE16-006 (Capture detail client browser and OS information) [End][Chris YIM]
 
-        Response.Redirect("~/login.aspx")
+        If strUserType = "HCSPUser" Then
+            Response.Redirect("~/SPlogin.aspx")
+        Else
+            Response.Redirect("~/login.aspx")
+        End If
+
     End Sub
 
     Private Sub ibtnHome_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnHome.Click

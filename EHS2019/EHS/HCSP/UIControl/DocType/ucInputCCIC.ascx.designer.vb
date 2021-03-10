@@ -203,6 +203,33 @@ Partial Public Class ucInputCCIC
     Protected WithEvents imgDOBDate As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDOI As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDOI As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgDOIDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDOIDate As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''trTransactionNo_M control.
     '''</summary>
     '''<remarks>
@@ -264,4 +291,13 @@ Partial Public Class ucInputCCIC
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents filtereditDOB As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtereditDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtereditDOI As Global.AjaxControlToolkit.FilteredTextBoxExtender
 End Class

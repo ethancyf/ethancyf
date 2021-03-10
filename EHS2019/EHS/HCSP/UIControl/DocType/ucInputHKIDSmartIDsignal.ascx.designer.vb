@@ -176,13 +176,31 @@ Partial Public Class ucInputHKIDSmartIDSignal
     Protected WithEvents lblGenderText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblGender control.
+    '''tblGender control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblGender As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents tblGender As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''trGenderRadioInput control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trGenderRadioInput As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblRGender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRGender As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''rbGender control.
@@ -194,13 +212,130 @@ Partial Public Class ucInputHKIDSmartIDSignal
     Protected WithEvents rbGender As Global.System.Web.UI.WebControls.RadioButtonList
 
     '''<summary>
-    '''imgGenderError control.
+    '''imgRGenderError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgGenderError As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents imgRGenderError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trGenderImageInput control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trGenderImageInput As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblIGender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIGender As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tblIGender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblIGender As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''divSmartICFemale control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divSmartICFemale As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''imgFemale control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgFemale As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblIFemale control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIFemale As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIFemaleChi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIFemaleChi As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''test control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents test As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''divSmartICMale control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divSmartICMale As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''imgMale control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgMale As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblIMale control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIMale As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIMaleChi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIMaleChi As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgIGenderError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgIGenderError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblDOIText control.

@@ -173,6 +173,15 @@ Public MustInherit Class EHSAccountCreationBase
                 udtAuditLogEntry = AuditLogVISA(udtAuditLogEntry, udtEHSAccount)
             Case DocType.DocTypeModel.DocTypeCode.ADOPC
                 udtAuditLogEntry = AuditLogADOPC(udtAuditLogEntry, udtEHSAccount)
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocType.DocTypeModel.DocTypeCode.CCIC
+                udtAuditLogEntry = AuditLogCCIC(udtAuditLogEntry, udtEHSAccount)
+            Case DocType.DocTypeModel.DocTypeCode.ROP140
+                udtAuditLogEntry = AuditLogROP140(udtAuditLogEntry, udtEHSAccount)
+            Case DocType.DocTypeModel.DocTypeCode.PASS
+                udtAuditLogEntry = AuditLogPASS(udtAuditLogEntry, udtEHSAccount)
+                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00032, "Enter Detail Complete")
@@ -213,6 +222,14 @@ Public MustInherit Class EHSAccountCreationBase
                 udtAuditLogEntry = AuditLogVISA(udtAuditLogEntry, udtEHSAccount)
             Case DocType.DocTypeModel.DocTypeCode.ADOPC
                 udtAuditLogEntry = AuditLogADOPC(udtAuditLogEntry, udtEHSAccount)
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocType.DocTypeModel.DocTypeCode.CCIC
+                udtAuditLogEntry = AuditLogCCIC(udtAuditLogEntry, udtEHSAccount)
+            Case DocType.DocTypeModel.DocTypeCode.ROP140
+                udtAuditLogEntry = AuditLogROP140(udtAuditLogEntry, udtEHSAccount)
+            Case DocType.DocTypeModel.DocTypeCode.PASS
+                udtAuditLogEntry = AuditLogPASS(udtAuditLogEntry, udtEHSAccount)
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00036, "Confirm Detail Complete")
@@ -285,6 +302,14 @@ Public MustInherit Class EHSAccountCreationBase
                 udtAuditLogEntry = AuditLogVISA(udtAuditLogEntry, udtEHSAccount)
             Case DocType.DocTypeModel.DocTypeCode.ADOPC
                 udtAuditLogEntry = AuditLogADOPC(udtAuditLogEntry, udtEHSAccount)
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocType.DocTypeModel.DocTypeCode.CCIC
+                udtAuditLogEntry = AuditLogCCIC(udtAuditLogEntry, udtEHSAccount)
+            Case DocType.DocTypeModel.DocTypeCode.ROP140
+                udtAuditLogEntry = AuditLogROP140(udtAuditLogEntry, udtEHSAccount)
+            Case DocType.DocTypeModel.DocTypeCode.PASS
+                udtAuditLogEntry = AuditLogPASS(udtAuditLogEntry, udtEHSAccount)
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
 
@@ -523,6 +548,49 @@ Public MustInherit Class EHSAccountCreationBase
         Return udtAuditLogEntry
     End Function
 
+    ' CRE20-0022 (Immu record) [Start][Martin]
+    'CCIC
+    Private Shared Function AuditLogCCIC(ByVal udtAuditLogEntry As AuditLogEntry, ByVal udtEHSAccount As EHSAccount.EHSAccountModel) As AuditLogEntry
+        Dim udtEHSPersonalInfo As EHSAccount.EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(DocType.DocTypeModel.DocTypeCode.CCIC)
+        udtAuditLogEntry.AddDescripton("Doc Type", DocType.DocTypeModel.DocTypeCode.CCIC)
+        udtAuditLogEntry.AddDescripton("Document No.", udtEHSPersonalInfo.IdentityNum)
+        udtAuditLogEntry.AddDescripton("DOB", udtEHSPersonalInfo.DOB)
+        udtAuditLogEntry.AddDescripton("ExactDOB", udtEHSPersonalInfo.ExactDOB)
+        udtAuditLogEntry.AddDescripton("ENameSurName", udtEHSPersonalInfo.ENameSurName)
+        udtAuditLogEntry.AddDescripton("ENameFirstName", udtEHSPersonalInfo.ENameFirstName)
+        udtAuditLogEntry.AddDescripton("Gender", udtEHSPersonalInfo.Gender)
+        udtAuditLogEntry.AddDescripton("Date of Issue", udtEHSPersonalInfo.DateofIssue)
+        Return udtAuditLogEntry
+    End Function
+
+
+    'ROP140
+    Private Shared Function AuditLogROP140(ByVal udtAuditLogEntry As AuditLogEntry, ByVal udtEHSAccount As EHSAccount.EHSAccountModel) As AuditLogEntry
+        Dim udtEHSPersonalInfo As EHSAccount.EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(DocType.DocTypeModel.DocTypeCode.ROP140)
+        udtAuditLogEntry.AddDescripton("Doc Type", DocType.DocTypeModel.DocTypeCode.ROP140)
+        udtAuditLogEntry.AddDescripton("Document No.", udtEHSPersonalInfo.IdentityNum)
+        udtAuditLogEntry.AddDescripton("DOB", udtEHSPersonalInfo.DOB)
+        udtAuditLogEntry.AddDescripton("ExactDOB", udtEHSPersonalInfo.ExactDOB)
+        udtAuditLogEntry.AddDescripton("ENameSurName", udtEHSPersonalInfo.ENameSurName)
+        udtAuditLogEntry.AddDescripton("ENameFirstName", udtEHSPersonalInfo.ENameFirstName)
+        udtAuditLogEntry.AddDescripton("Gender", udtEHSPersonalInfo.Gender)
+        udtAuditLogEntry.AddDescripton("Date of Issue", udtEHSPersonalInfo.DateofIssue)
+        Return udtAuditLogEntry
+    End Function
+
+    'PASS
+    Private Shared Function AuditLogPASS(ByVal udtAuditLogEntry As AuditLogEntry, ByVal udtEHSAccount As EHSAccount.EHSAccountModel) As AuditLogEntry
+        Dim udtEHSPersonalInfo As EHSAccount.EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(DocType.DocTypeModel.DocTypeCode.PASS)
+        udtAuditLogEntry.AddDescripton("Doc Type", DocType.DocTypeModel.DocTypeCode.PASS)
+        udtAuditLogEntry.AddDescripton("Document No.", udtEHSPersonalInfo.IdentityNum)
+        udtAuditLogEntry.AddDescripton("DOB", udtEHSPersonalInfo.DOB)
+        udtAuditLogEntry.AddDescripton("ExactDOB", udtEHSPersonalInfo.ExactDOB)
+        udtAuditLogEntry.AddDescripton("ENameSurName", udtEHSPersonalInfo.ENameSurName)
+        udtAuditLogEntry.AddDescripton("ENameFirstName", udtEHSPersonalInfo.ENameFirstName)
+        udtAuditLogEntry.AddDescripton("Gender", udtEHSPersonalInfo.Gender)
+        Return udtAuditLogEntry
+    End Function
+    ' CRE20-0022 (Immu record) [End][Martin]
 #End Region
 
 

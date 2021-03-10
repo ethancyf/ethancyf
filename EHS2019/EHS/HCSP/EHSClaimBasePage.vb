@@ -774,7 +774,7 @@ Public MustInherit Class EHSClaimBasePage
     'Confirm Claim Detail : Confirm Claim Detail Passed : LOG00015
     Public Shared Sub AuditLogConfirmClaimDetailPassed(ByRef udtAuditLogEntry As AuditLogEntry, ByVal strFuncCode As String, ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtSmartIDContent As BLL.SmartIDContentModel, ByVal blnCreateAdment As Boolean)
 
-        udtAuditLogEntry.AddDescripton("Doc Code", udtEHSTransaction.DocCode)
+        udtAuditLogEntry.AddDescripton("Doc Code", udtEHSTransaction.DocCode.Trim)
         udtAuditLogEntry.AddDescripton("Create By", udtEHSTransaction.CreateBy)
         udtAuditLogEntry.AddDescripton("Update By", udtEHSTransaction.UpdateBy)
         udtAuditLogEntry.AddDescripton("Date Entry By", udtEHSTransaction.DataEntryBy)
@@ -869,9 +869,9 @@ Public MustInherit Class EHSClaimBasePage
 
     'Complete Claim : Complete Claim : LOG00017
     Public Shared Sub AuditLogCompleteClaim(ByVal udtAuditLogEntry As AuditLogEntry, ByVal udtEHSTransaction As EHSTransactionModel)
-        udtAuditLogEntry.AddDescripton("Transaction No", udtEHSTransaction.TransactionID)
+        udtAuditLogEntry.AddDescripton("Transaction No", udtEHSTransaction.TransactionID.Trim)
         udtAuditLogEntry.AddDescripton("Transaction Date", udtEHSTransaction.TransactionDtm)
-        udtAuditLogEntry.AddDescripton("Doc Code", udtEHSTransaction.DocCode)
+        udtAuditLogEntry.AddDescripton("Doc Code", udtEHSTransaction.DocCode.Trim)
         udtAuditLogEntry.AddDescripton("Create By", udtEHSTransaction.CreateBy)
         udtAuditLogEntry.AddDescripton("Update By", udtEHSTransaction.UpdateBy)
         udtAuditLogEntry.AddDescripton("Date Entry By", udtEHSTransaction.DataEntryBy)
@@ -882,8 +882,13 @@ Public MustInherit Class EHSClaimBasePage
             udtAuditLogEntry.AddDescripton("Is Read by Smart ID Case", "False")
         End If
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        If udtEHSTransaction.SchemeCode = SchemeClaimModel.COVID19CVC Then
+            EHSClaimBasePage.AddDescriptionCentreBooth(udtAuditLogEntry, udtEHSTransaction.ServiceProviderID, udtEHSTransaction.PracticeID)
+        End If
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
         Dim enumControlType As SchemeClaimModel.EnumControlType = New SchemeClaimBLL().ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode.Trim())
 
         Select Case enumControlType
@@ -936,9 +941,7 @@ Public MustInherit Class EHSClaimBasePage
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
-        'CRE15-003 System-generated Form [Start][Philip Chau]
         Dim udtEHSClaimBLL As EHSClaimBLL = New EHSClaimBLL
         Dim _udtSessionHandler As SessionHandler = New SessionHandler
         Dim strPrefixStatus As String = String.Empty
@@ -951,15 +954,12 @@ Public MustInherit Class EHSClaimBasePage
             End If
             udtAuditLogEntry.AddDescripton("Consent Form Transaction No. Prefix Outdated", strPrefixStatus)
         End If
-        'CRE15-003 System-generated Form [End][Philip Chau]
 
-        ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
         If _udtSessionHandler.NoticedDuplicateClaimAlertGetFromSession = YesNo.Yes Then
             udtAuditLogEntry.AddDescripton("Confirmed Duplicate Claim Alert", "True")
         Else
             udtAuditLogEntry.AddDescripton("Confirmed Duplicate Claim Alert", "False")
         End If
-        ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
 
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00017, "Complete Claim")
     End Sub
@@ -1557,6 +1557,30 @@ Public MustInherit Class EHSClaimBasePage
         udtAuditLogEntry.WriteLog(LogID.LOG00075, "Vaccination record view details button click")
     End Sub
 
+#End Region
+
+#Region "Center & Booth"
+    Public Shared Sub AddDescriptionCentreBooth(ByVal udtAuditLogEntry As AuditLogEntry, ByVal strSPID As String, ByVal intPracticeID As Integer)
+        Dim udtCOVID19BLL As New COVID19.COVID19BLL
+        Dim dtCentre As DataTable = Nothing
+
+        Dim strCentreID As String = String.Empty
+        Dim strBooth As String = String.Empty
+
+        Try
+            dtCentre = udtCOVID19BLL.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(strSPID, intPracticeID)
+        Catch ex As Exception
+
+        End Try
+
+        If dtCentre IsNot Nothing Then
+            strCentreID = dtCentre.Rows(0)("Centre_ID").ToString.Trim
+            strBooth = dtCentre.Rows(0)("Booth").ToString.Trim
+        End If
+
+        udtAuditLogEntry.AddDescripton("Centre", strCentreID)
+        udtAuditLogEntry.AddDescripton("Booth", strBooth)
+    End Sub
 #End Region
 
 End Class

@@ -57,45 +57,29 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v12, Version=12.3.17127.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Document.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Document.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Document.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Html.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Html.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Export.Html.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Export.Html.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Pdf.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Export.Pdf.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Extensibility.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Extensibility.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Extensibility.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Extensibility.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Viewer.Win.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Viewer.Win.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Web.Design.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.Design.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Web.Design.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Web.Design.v12.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Web.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.v12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="GrapeCity.ActiveReports.Web.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Web.v12.dll</HintPath>
     </Reference>
     <Reference Include="IdeasRM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -139,7 +123,6 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ActiveReports.ReportService.asmx" />
     <Content Include="cn\error.aspx" />
     <Content Include="cn\ImproperAccess.aspx" />
     <Content Include="cn\index.aspx" />
@@ -426,6 +409,7 @@
     <Content Include="UIControl\EHSClaimText\ucReadOnlyCOVID19.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
@@ -436,6 +420,7 @@
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlySSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx" />
@@ -2681,6 +2666,13 @@
       <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.designer.vb">
+      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.vb">
+      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx.designer.vb">
       <DependentUpon>ucInputCOVID19CBD.ascx</DependentUpon>
     </Compile>
@@ -2756,6 +2748,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.vb">
       <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVSSCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.vb">
+      <DependentUpon>ucReadOnlyVSSCOVID19.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx.designer.vb">
@@ -5725,7 +5724,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2524</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/HCSP_dev</IISUrl>
+          <IISUrl>http://localhost/HCSP_Dev</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
           <IISAppRootUrl>http://localhost/HCSP</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

@@ -13,6 +13,7 @@ Public Class ProgramMgr
     Private m_strExportFolderPath As String = New DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + appSettings.GetValue("ExportFolderPath", GetType(String))).FullName
     Private m_strBackupFolderPath As String = New DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + appSettings.GetValue("BackupFolderPath", GetType(String))).FullName
     Private m_strTimeInterval As String = appSettings.GetValue("TimeInterval", GetType(String))
+    Private m_strTimeIntervalMins As String = appSettings.GetValue("TimeIntervalMins", GetType(String))
     Private m_strGenerateMode As String = appSettings.GetValue("GenerateMode", GetType(String))
     Private m_strFileID As String = appSettings.GetValue("RegenerateFileID", GetType(String))
     Private m_strPassword As String = ""
@@ -152,7 +153,8 @@ Public Class ProgramMgr
                 dtCurrentDate = New DateTime(Now.Year, Now.Month, Now.Day, Now.Hour, Now.Minute, 0)
                 dtCurrentDate = dtCurrentDate.AddMinutes(-(dtCurrentDate.Minute Mod 15)) '(00,15,30,45)
             ElseIf m_strTimeInterval = "M" Then
-                dtCurrentDate = New DateTime(Now.Year, Now.Month, Now.Day, Now.Hour, Now.Minute, 0) 'review later
+                dtCurrentDate = New DateTime(Now.Year, Now.Month, Now.Day, Now.Hour, Now.Minute, 0)
+                dtCurrentDate = dtCurrentDate.AddMinutes(-m_strTimeIntervalMins)
             End If
 
             C19Logger.LogLine("Start Process Normal Records")
@@ -178,7 +180,8 @@ Public Class ProgramMgr
                 End Try
                 ExportAndZipFile()
             Else
-                C19Logger.LogLine(" DB system variable date > today.....")
+                C19Logger.LogLine(String.Format("The Last Export Cut Off Dtm {0} >= Current CutOff Dtm {1}, Normal Case will not be handlded.....", _
+                                                dtLastExport.ToString("yyyy-MM-dd HH:mm:ss"), dtCurrentDate.ToString("yyyy-MM-dd HH:mm:ss")))
             End If
             C19Logger.LogLine("Process Normal Records Finish")
             C19Logger.Log(Common.Component.LogID.LOG00000, objLogStartKeyStack.Pop, "<Success><chkNormalRecord>Process Normal Records Finish...")

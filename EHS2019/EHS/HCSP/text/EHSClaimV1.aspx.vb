@@ -741,7 +741,7 @@ Namespace Text
                             udtSystemMessage = Me._udtEHSClaimBLL.SearchEHSAccountSmartID(udtSchemeClaim.SchemeCode.Trim(), DocTypeModel.DocTypeCode.HKIC, udtPersonalInfoSmartID.IdentityNum, _
                                             Me._udtFormatter.formatDOB(udtPersonalInfoSmartID.DOB, udtPersonalInfoSmartID.ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing), _
                                             udtEHSAccountExist, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, blnNotMatchAccountExist, blnExceedDocTypeLimit, _
-                                            FunctionCode, True)
+                                            FunctionCode, True, ClaimMode.All)
 
                             ' ----------------------------------------------
                             ' 2. Call OCSSS to check HKIC if input is shown
@@ -1213,7 +1213,7 @@ Namespace Text
                                 Dim dtmDateOfReg As DateTime = CDate(_udtFormatter.convertDate(strDateOfReg, SessionHandler.Language))
 
                                 udtSysMsgValidateEC = _udtEHSClaimBLL.SearchEHSAccount(strSchemeCode, strSearchDocCode, strIdentityNo, _
-                                    strECAge, dtmDateOfReg, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, FunctionCode)
+                                    strECAge, dtmDateOfReg, udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, FunctionCode, ClaimMode.All)
                             End If
 
 
@@ -3853,7 +3853,7 @@ Namespace Text
                             '-----------------------------------------------------------------------------------------
                             udtSystemMessage = Me._udtEHSClaimBLL.SearchEHSAccountSmartID(udtSchemeClaim.SchemeCode.Trim(), DocTypeModel.DocTypeCode.HKIC, udtEHSPersonalInfo.IdentityNum, _
                                                 strDOB, udtEHSAccount, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, blnNotMatchAccountExist, blnExceedDocTypeLimit, _
-                                                FunctionCode, True)
+                                                FunctionCode, True, ClaimMode.All)
                             'CRE16-017 (Block EHCP make voucher claim for themselves) [End][Chris YIM]
 
                             ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
@@ -3911,7 +3911,7 @@ Namespace Text
                     If udtEHSPersonalInfo.ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration AndAlso udtEHSPersonalInfo.ECAge.HasValue Then
                         udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                             udtEHSPersonalInfo.IdentityNum, udtEHSPersonalInfo.ECAge.Value, udtEHSPersonalInfo.ECDateOfRegistration.Value, _
-                            udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, FunctionCode)
+                            udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, FunctionCode, ClaimMode.All)
 
                     Else
                         udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _

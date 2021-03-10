@@ -6090,7 +6090,8 @@ Partial Public Class EHSClaimV2
                         'CRE16-017 (Block EHCP make voucher claim for themselves) [Start][Chris YIM]
                         '-----------------------------------------------------------------------------------------
                         udtSystemMessage = Me._udtEHSClaimBLL.SearchEHSAccountSmartID(udtSchemeClaim.SchemeCode.Trim(), DocTypeModel.DocTypeCode.HKIC, udtEHSPersonalInfo.IdentityNum, _
-                                            strDOB, udtEHSAccount, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, blnNotMatchAccountExist, blnExceedDocTypeLimit, FunctionCode, True)
+                                            strDOB, udtEHSAccount, udtSmartIDContent.EHSAccount, udtSmartIDContent.SmartIDReadStatus, udtEligibleResult, _
+                                            blnNotMatchAccountExist, blnExceedDocTypeLimit, FunctionCode, True, ClaimMode.All)
                         'CRE16-017 (Block EHCP make voucher claim for themselves) [End][Chris YIM]
 
                         ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
@@ -6149,7 +6150,7 @@ Partial Public Class EHSClaimV2
                 If udtEHSPersonalInfo.ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration AndAlso udtEHSPersonalInfo.ECAge.HasValue Then
                     udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _
                         udtEHSPersonalInfo.IdentityNum, udtEHSPersonalInfo.ECAge.Value, udtEHSPersonalInfo.ECDateOfRegistration.Value, _
-                        udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, FunctionCode)
+                        udtEHSAccount, udtEligibleResult, udtSearchAccountStatus, Nothing, FunctionCode, ClaimMode.All)
 
                 Else
                     udtSystemMessage = _udtEHSClaimBLL.SearchEHSAccount(udtSchemeClaim.SchemeCode.Trim, udtEHSAccount.SearchDocCode, _

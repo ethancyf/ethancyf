@@ -55,7 +55,6 @@ Namespace BLL
                     udtHCVUUser = New HCVUUserModel
                     udtHCVUUser.UserID = CStr(drHCVUUser.Item("User_ID")).Trim
                     udtHCVUUser.UserName = CStr(drHCVUUser.Item("User_Name")).Trim
-
                     udtHCVUUser.LastPwdChangeDtm = IIf(drHCVUUser.Item("Last_Pwd_Change_Dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Pwd_Change_Dtm"))
                     udtHCVUUser.LastLoginDtm = IIf(drHCVUUser.Item("Last_Login_dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Login_dtm"))
                     udtHCVUUser.LastUnsuccessLoginDtm = IIf(drHCVUUser.Item("Last_Unsuccess_Login_dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Unsuccess_Login_dtm"))
@@ -111,6 +110,95 @@ Namespace BLL
                     For Each dr In drList
                         udtAccessRightCollection.Item(dr.Item("Function_Code")).Allow = True
                     Next
+                Next
+
+                udtHCVUUser.AccessRightCollection = udtAccessRightCollection
+
+            Catch ex As Exception
+                Throw
+            End Try
+            Return udtHCVUUser
+        End Function
+
+        Public Function LoginUserACFromSP(ByVal strUserID As String, ByRef dtHCVUUser As DataTable, ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform) As HCVUUserModel
+            Dim udtHCVUUser As HCVUUserModel = Nothing
+            Try
+                ' Create HCVUUser object
+                If dtHCVUUser.Rows.Count = 1 Then
+                    Dim drHCVUUser As DataRow
+                    drHCVUUser = dtHCVUUser.Rows(0)
+                    udtHCVUUser = New HCVUUserModel
+                    udtHCVUUser.UserID = CStr(drHCVUUser.Item("User_ID")).Trim & "_" & strUserID
+                    udtHCVUUser.UserName = CStr(drHCVUUser.Item("User_Name")).Trim
+                    udtHCVUUser.LastPwdChangeDtm = IIf(drHCVUUser.Item("Last_Pwd_Change_Dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Pwd_Change_Dtm"))
+                    udtHCVUUser.LastLoginDtm = IIf(drHCVUUser.Item("Last_Login_dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Login_dtm"))
+                    udtHCVUUser.LastUnsuccessLoginDtm = IIf(drHCVUUser.Item("Last_Unsuccess_Login_dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Unsuccess_Login_dtm"))
+                    udtHCVUUser.Suspended = IIf(drHCVUUser.Item("Suspended") Is DBNull.Value, False, True)
+                    udtHCVUUser.LastPwdChangeDuration = IIf(drHCVUUser.Item("Last_Pwd_Change_Duration") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Pwd_Change_Duration"))
+                    udtHCVUUser.TSMP = drHCVUUser.Item("TSMP")
+                    udtHCVUUser.TokenCnt = drHCVUUser.Item("Token_Cnt")
+                End If
+                If udtHCVUUser Is Nothing Then
+                    Return udtHCVUUser
+                End If
+
+                ' Get User Roles
+                Dim udtUserRoleBLL As New UserRoleBLL
+
+                '---------------------------------------------------------------
+                ' Manual setup user role
+                '---------------------------------------------------------------
+                Dim udtSetUserRole As UserRoleModel
+                Dim udtUserRoleCollection As New UserRoleModelCollection
+
+                udtSetUserRole = New UserRoleModel
+                udtSetUserRole.RoleType = 26
+                udtSetUserRole.UserID = udtHCVUUser.UserID
+                udtSetUserRole.SchemeCode = Scheme.SchemeClaimModel.COVID19CVC
+                udtUserRoleCollection.Add(udtSetUserRole)
+
+                udtHCVUUser.UserRoleCollection = udtUserRoleCollection
+
+                Dim udtMenuBLL As New MenuBLL
+                Dim dtMenuItem As DataTable = udtMenuBLL.GetMenuItemTable
+
+                Dim udtRoleSecurityBLL As New RoleSecurityBLL
+                Dim dtRoleSecurity As DataTable = udtRoleSecurityBLL.GetRoleSecurityTable()
+
+                Dim udtFunctionInformationBLL As New FunctionInformationBLL
+                Dim dtFuncInfo As DataTable = udtFunctionInformationBLL.GetFunctionInformationTable
+
+                ' Create the Access Right Collection
+                Dim udtAccessRightCollection As New AccessRightModelCollection
+                Dim i As Integer
+                'For i = 0 To dtMenuItem.Rows.Count - 1
+                '    udtAccessRightCollection.Add(CStr(dtMenuItem.Rows(i).Item("Function_Code")), New AccessRightModel(False))
+                'Next
+                For i = 0 To dtFuncInfo.Rows.Count - 1
+                    udtAccessRightCollection.Add(CStr(dtFuncInfo.Rows(i).Item("Function_Code")), New AccessRightModel(False))
+                Next
+                Dim drList() As DataRow
+                Dim dr As DataRow
+                Dim udtUserRole As UserRoleModel
+
+                Dim udtRoleTypeBLL As New RoleTypeBLL
+                Dim dtRoleType As DataTable
+
+                For Each udtUserRole In udtHCVUUser.UserRoleCollection.Values
+                    ' Check User Role Type which is available in SubPlatform
+                    dtRoleType = udtRoleTypeBLL.GetRoleTypeTable()
+
+                    ' CRE20-0XX (Immu record) [Start][Raiman]
+                    ' ------------------------------------------------------------------------
+                    ' change All setting in SubPlatform
+                    If Me.FilterRoleTypeByUser(dtRoleType, enumHCVUSubPlatform, udtUserRole.RoleType).Length = 0 Then Continue For
+                    ' CRE20-0XX (Immu record) [End][Raiman]
+
+                    'drList = dtRoleSecurity.Select("Role_Type = '" & udtUserRole.RoleType & "'")
+                    'For Each dr In drList
+                    udtAccessRightCollection.Item("010002").Allow = True    '~/home/home.aspx
+                    udtAccessRightCollection.Item("010421").Allow = True    '~/claimmanagement/reprintvaccinationrecord.aspx
+                    'Next
                 Next
 
                 udtHCVUUser.AccessRightCollection = udtAccessRightCollection

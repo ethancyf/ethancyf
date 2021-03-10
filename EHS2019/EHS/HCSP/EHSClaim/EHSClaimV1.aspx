@@ -231,7 +231,7 @@
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panSchemeDocTypeLegend" runat="server">
                 <asp:Panel ID="panSchemeDocTypeLegendHeading" runat="server" Style="cursor: move;">
-                    <table border="0" cellpadding="0" cellspacing="0" style="width: 960px">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 920px">
                         <tr>
                             <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
                             <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px">
@@ -240,7 +240,7 @@
                         </tr>
                     </table>
                 </asp:Panel>
-                <table border="0" cellpadding="0" cellspacing="0" style="width: 960px">
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 920px">
                     <tr>
                         <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
                         <td style="background-color: #ffffff; padding: 0px 0px 5px 10px" align="left">
@@ -847,6 +847,7 @@
                                     <asp:textbox ID="txtStep2aContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px" Width="100px"/>
                                     <asp:ImageButton ID="imgStep2aContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                    <asp:Label ID="lblStep2aContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" style="font-size:14px"></asp:Label>
                                     <cc1:FilteredTextBoxExtender ID="fteStep2aContactNo" runat="server" TargetControlID="txtStep2aContactNo"
                                                                 FilterType="Numbers" />
                                 </td>
@@ -1053,7 +1054,8 @@
                                     <asp:Label ID="lblStep2bContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
                                 </td>
                                 <td height="25" style="vertical-align:top;">
-                                    <asp:Label ID="lblStep2bContactNo" runat="server" CssClass="tableText" style="position:relative;left:1px"/>
+                                    <asp:Label ID="lblStep2bContactNo" runat="server" CssClass="tableText" style="position:relative;left:1px"/>&nbsp;
+                                    <asp:Label ID="lblStep2bContactNoNotAbleSMS" runat="server" CssClass="tableText" Text="<%$ Resources:Text, NotAbleToReceiveSMS%>" style="color:red!important" />
                                 </td>
                             </tr>
                             <tr>

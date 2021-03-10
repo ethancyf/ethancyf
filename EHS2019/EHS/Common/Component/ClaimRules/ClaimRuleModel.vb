@@ -82,7 +82,7 @@ Namespace Component.ClaimRules
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             ''' <summary>
-            ''' Check Brand of COVID19
+            ''' Check Brand of COVID19 whether is the same in 1st dose and 2nd dose
             ''' </summary>
             Public Const VACCINE_BRAND = "VACCINEBRAND"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
@@ -90,7 +90,7 @@ Namespace Component.ClaimRules
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             ''' <summary>
-            ''' Check Brand of COVID19
+            ''' Check Windows of COVID19
             ''' </summary>
             Public Const VACCINE_WINDOW = "VACCINEWINDOW"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
@@ -102,6 +102,16 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const NO_DOSE_IN_COVID19 = "NODOSEINCOVID19"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+            ''' <summary>
+            ''' Check Exact Age
+            ''' </summary>
+            Public Const EXACT_AGE = "EXACTAGE"
+
+            ''' <summary>
+            ''' Check Brand of COVID19 whether it is matched
+            ''' </summary>
+            Public Const BRAND_TYPE = "BRANDTYPE"
 
         End Class
 

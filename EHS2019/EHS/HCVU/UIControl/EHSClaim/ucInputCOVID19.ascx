@@ -125,7 +125,7 @@
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
             </td>
         </tr>
-        <tr>
+        <tr id="trJoinEHRSS" runat="server">
             <td style="width:200px;height:25px;vertical-align:top;padding-bottom:5px">
                 <asp:Label ID="lblCJoinEHRSSText" runat="server" Text="<%$ Resources:Text, JoinEHRSS%>" CssClass="tableTitle" Width="160px" />
             </td>

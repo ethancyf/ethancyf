@@ -4175,13 +4175,7 @@ Namespace Component.ClaimRules
                         Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
 
                         If udtVaccinationRecord.AvailableItemCode.ToUpper.Trim = udtClaimRule.Dependence.ToUpper.Trim Then
-                            Dim udtEHSTran As EHSTransactionModel = (New EHSTransactionBLL).LoadClaimTran(udtVaccinationRecord.TransactionID.Trim)
-
-                            If udtEHSTran Is Nothing Then Return False
-
-                            If udtEHSTran.TransactionAdditionFields.VaccineBrand Is Nothing Then Return False
-
-                            If RuleComparator(udtClaimRule.Operator, udtInputPicker.Brand.ToUpper.Trim, udtEHSTran.TransactionAdditionFields.VaccineBrand.ToUpper.Trim) Then
+                            If RuleComparator(udtClaimRule.Operator, udtInputPicker.Brand.ToUpper.Trim, udtVaccinationRecord.VaccineBrand.ToUpper.Trim) Then
                                 ' Error
                                 Return True
                             End If
@@ -4218,7 +4212,7 @@ Namespace Component.ClaimRules
 
                         'Dim udtTranDetailBenifitList As TransactionDetailModelCollection = udtVaccinationRecordList
 
-                        Dim dt As DataTable = (New COVID19BLL).GetCOVID19VaccineLotMapping()
+                        Dim dt As DataTable = (New COVID19BLL).GetCOVID19VaccineBrand()
                         Dim dr() As DataRow = dt.Select(String.Format("Brand_ID = '{0}'", udtInputPicker.Brand.Trim))
 
                         If dr.Length > 0 Then
@@ -4238,12 +4232,6 @@ Namespace Component.ClaimRules
                                     dicResultParam.Add("%DaysApart", strCompareValue)
                                 End If
                             End If
-
-                            Return blnResult
-
-                            'Dim blnResult As Boolean = CompareInnerSubsidize(dtmServiceDate, udtTranDetailBenifitList, _
-                            '                            udtClaimRule.SchemeCode, udtClaimRule.SchemeSeq, udtClaimRule.Dependence, _
-                            '                            udtClaimRule.CompareUnit, udtClaimRule.Operator, strCompareValue, dicResultParam)
 
                             Return blnResult
 
@@ -4287,6 +4275,38 @@ Namespace Component.ClaimRules
 
                     End If
                     ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+                Case ClaimRuleModel.RuleTypeClass.EXACT_AGE
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtInputPicker Is Nothing Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+                        If CompareEligibleRuleByAge(dtmServiceDate, udtEHSPersonalInfo, CInt(udtClaimRule.CompareValue), udtClaimRule.Operator, _
+                                                    udtClaimRule.CompareUnit, "DAY3") Then
+                            ' Error
+                            Return True
+
+                        End If
+
+                    End If
+
+                    Return False
+
+                Case ClaimRuleModel.RuleTypeClass.BRAND_TYPE
+                    If strDoseCode.Trim().ToUpper() = String.Empty Then Return False
+
+                    If udtInputPicker Is Nothing Then Return False
+
+                    If udtClaimRule.Target.Trim().ToUpper() = strDoseCode.Trim().ToUpper() Then
+                        If RuleComparator(udtClaimRule.Operator, udtInputPicker.Brand.ToUpper.Trim, udtClaimRule.CompareValue.Trim.ToUpper) Then
+                            ' Error
+                            Return True
+                        End If
+
+                    End If
+
+                    Return False
 
                 Case Else
                     Throw New Exception(String.Format("ClaimRulesBLL.CheckClaimRuleSingleEntry: Invalid Claim Rule type ({0}).", udtClaimRule.Type.Trim()))

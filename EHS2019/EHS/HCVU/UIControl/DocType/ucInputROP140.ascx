@@ -77,6 +77,20 @@
                                 ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
                         <td valign="top"></td>
                     </tr>
+                    <tr>
+                        <td valign="top">
+                            <asp:Label ID="lblDOIOriginalText" runat="server" Text="<%$ Resources:Text, ECDate %>"></asp:Label></td>
+                        <td>
+                            <asp:Label ID="lblDOIOriginal" runat="server" CssClass="tableText"></asp:Label></td>
+                        <td style="width: 350px">
+                            <asp:TextBox ID="txtDOI" runat="server" MaxLength="10" Width="75px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                                onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
+                                onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
+                            <asp:Image ID="imgDOIDate" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
+                        <td valign="top">
+                        </td>
+                    </tr>
 
                 </table>
             </td>
@@ -90,6 +104,9 @@
         TargetControlID="txtENameFirstname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="filtereditDOB" runat="server" FilterType="Numbers, Custom"
         TargetControlID="txtDOB" ValidChars="-"></cc1:FilteredTextBoxExtender>
+     <cc1:FilteredTextBoxExtender ID="filtereditDOI" runat="server" FilterType="Numbers, Custom"
+        TargetControlID="txtDOI" ValidChars="-">
+    </cc1:FilteredTextBoxExtender>
 
 </asp:Panel>
 <asp:Panel runat="server" ID="pnlNew">
@@ -153,11 +170,23 @@
                 <asp:Image ID="imgNewDOBErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
         </tr>
-    </table> 
+        <tr>
+            <td valign="top" style="width: 220px; height: 25px">
+                <asp:Label ID="lblNewDOIText" runat="server" Height="25px"></asp:Label></td>
+            <td style="width: 470px">
+                <asp:TextBox ID="txtNewDOI" runat="server" MaxLength="10" Width="75px" onkeydown="filterDateInputKeyDownHandler(this, event);"
+                    onkeyup="filterDateInputKeyUpHandler(this, event);" onchange="filterDateInput(this);"
+                    onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
+                <asp:Image ID="imgNewDOIErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                    ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
+        </tr>
+    </table>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewENameSurname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtNewSurname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewENameGivenname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtNewGivenName" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewDOB" runat="server" FilterType="Numbers, Custom"
         TargetControlID="txtNewDOB" ValidChars="-"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="FilteredTextBNewBOI" runat="server" FilterType="Numbers, Custom"
+        TargetControlID="txtNewDOI" ValidChars="-"></cc1:FilteredTextBoxExtender>
 </asp:Panel>

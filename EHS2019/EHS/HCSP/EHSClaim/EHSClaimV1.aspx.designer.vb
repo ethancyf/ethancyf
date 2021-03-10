@@ -1535,6 +1535,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents imgStep2aContactNoError As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''lblStep2aContactNoRecommendation control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aContactNoRecommendation As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''fteStep2aContactNo control.
     '''</summary>
     '''<remarks>
@@ -1992,6 +2001,15 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStep2bContactNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblStep2bContactNoNotAbleSMS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2bContactNoNotAbleSMS As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2bRemarkText control.

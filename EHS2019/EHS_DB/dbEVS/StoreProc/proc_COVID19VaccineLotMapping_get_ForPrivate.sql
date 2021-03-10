@@ -75,8 +75,9 @@ BEGIN
 			INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)
 				ON VLD.[Brand_ID] = VBD.[Brand_ID]
 	WHERE
-		VLM.[Record_Status] = 'A'
-		AND VLM.Service_Type = 'Private'
+		VLM.[Service_Type] = 'PRIVATE'
+		AND VLM.[Record_Status] = 'A'
+		AND VLM.[Lot_Status] = 'A'
 	ORDER BY 
 		VBD.[Brand_Name],
 		VLM.[Vaccine_Lot_ID]

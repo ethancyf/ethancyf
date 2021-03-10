@@ -57,51 +57,35 @@
     <Reference Include="AjaxControlToolkit">
       <HintPath>..\CommonBin\AjaxControlToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Chart.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Chart.v12.dll</HintPath>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Diagnostics.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Diagnostics.v12.dll</HintPath>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Document.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Document.v12.dll</HintPath>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Html.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Html.v12.dll</HintPath>
+    <Reference Include="GrapeCity.ActiveReports.Document.v12">
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Document.v12.dll</HintPath>
     </Reference>
     <Reference Include="GrapeCity.ActiveReports.Export.Pdf.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Pdf.v12.dll</HintPath>
-    </Reference>
-    <Reference Include="GrapeCity.ActiveReports.Export.Xml.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Export.Xml.v12.dll</HintPath>
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Export.Pdf.v12.dll</HintPath>
     </Reference>
     <Reference Include="GrapeCity.ActiveReports.Extensibility.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Extensibility.v12.dll</HintPath>
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Extensibility.v12.dll</HintPath>
     </Reference>
     <Reference Include="GrapeCity.ActiveReports.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.v12.dll</HintPath>
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.v12.dll</HintPath>
     </Reference>
     <Reference Include="GrapeCity.ActiveReports.Viewer.Win.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Viewer.Win.v12.dll</HintPath>
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Viewer.Win.v12.dll</HintPath>
     </Reference>
     <Reference Include="GrapeCity.ActiveReports.Web.Design.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.Design.v12.dll</HintPath>
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Web.Design.v12.dll</HintPath>
     </Reference>
     <Reference Include="GrapeCity.ActiveReports.Web.v12, Version=12.2.13986.0, Culture=neutral, PublicKeyToken=cc4967777c49a3ff, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Common Files\GrapeCity\ActiveReports 12\GrapeCity.ActiveReports.Web.v12.dll</HintPath>
+      <HintPath>..\CommonBin\GrapeCity.ActiveReports.Web.v12.dll</HintPath>
     </Reference>
-    <Reference Include="IdeasRM">
+    <Reference Include="IdeasRM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonBin\IdeasRM.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -258,38 +242,22 @@
     <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationSecondReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingNameList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationSecondReport.png" />
@@ -320,6 +288,7 @@
     <Content Include="Images\others\ProgressLine.png" />
     <Content Include="JS\ideasComboLib4Ra.js" />
     <Content Include="JS\ideasComboVersion.js" />
+    <Content Include="SPlogin.aspx" />
     <Content Include="PrintOut\BasePrintoutForm.aspx" />
     <Content Include="RestrictAccess.aspx" />
     <Content Include="ImproperAccess.aspx" />
@@ -395,6 +364,7 @@
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19CBD.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx" />
@@ -699,6 +669,13 @@
     </Compile>
     <Compile Include="IDEASComboReader\IDEASComboReaderGuide.aspx.vb">
       <DependentUpon>IDEASComboReaderGuide.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SPlogin.aspx.designer.vb">
+      <DependentUpon>SPlogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SPlogin.aspx.vb">
+      <DependentUpon>SPlogin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="PrintOut\BasePrintoutForm.aspx.designer.vb">
@@ -1753,6 +1730,13 @@
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyVSSCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.vb">
+      <DependentUpon>ucReadOnlyVSSCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19CBD.ascx.designer.vb">
       <SubType>ASPXCodeBehind</SubType>

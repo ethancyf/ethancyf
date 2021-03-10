@@ -186,7 +186,7 @@
         </tr>
     </table>
     <cc1:FilteredTextBoxExtender ID="filteredNewDocNo" runat="server" FilterType="Custom, Numbers, UppercaseLetters, LowercaseLetters"
-        TargetControlID="txtNewDocNo" ValidChars="()">
+        TargetControlID="txtNewDocNo" ValidChars="-()">
     </cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="filteredNewEnameSurname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtNewSurname" ValidChars="-' ">

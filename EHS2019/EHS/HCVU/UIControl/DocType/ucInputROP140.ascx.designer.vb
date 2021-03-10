@@ -230,6 +230,42 @@ Partial Public Class ucInputROP140
     Protected WithEvents imgDOBDate As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblDOIOriginalText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDOIOriginalText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDOIOriginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDOIOriginal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDOI As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgDOIDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDOIDate As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''filtereditTDNo control.
     '''</summary>
     '''<remarks>
@@ -264,6 +300,15 @@ Partial Public Class ucInputROP140
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents filtereditDOB As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtereditDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtereditDOI As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
     '''pnlNew control.
@@ -428,6 +473,33 @@ Partial Public Class ucInputROP140
     Protected WithEvents imgNewDOBErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblNewDOIText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewDOIText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtNewDOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewDOI As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgNewDOIErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgNewDOIErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''FilteredTextNewENameSurname control.
     '''</summary>
     '''<remarks>
@@ -453,4 +525,13 @@ Partial Public Class ucInputROP140
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents FilteredTextNewDOB As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''FilteredTextBNewBOI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FilteredTextBNewBOI As Global.AjaxControlToolkit.FilteredTextBoxExtender
 End Class

@@ -2239,7 +2239,8 @@ Namespace Format
                 Case Common.Component.DocType.DocTypeModel.DocTypeCode.ADOPC
                     'No Date of Issue
 
-                Case Common.Component.DocType.DocTypeModel.DocTypeCode.DI
+                Case Common.Component.DocType.DocTypeModel.DocTypeCode.DI,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ROP140
                     'DD-MM-YYYY
                     strRes = dtDOI.Value.ToString(strDisplayDOBDayFormat)
 
@@ -2251,7 +2252,9 @@ Namespace Format
                 Case Common.Component.DocType.DocTypeModel.DocTypeCode.HKBC
                     'No Date of Issue
 
-                Case Common.Component.DocType.DocTypeModel.DocTypeCode.HKIC
+                Case Common.Component.DocType.DocTypeModel.DocTypeCode.HKIC, _
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.CCIC
+
                     'DD-MM-YYYY
                     strRes = formatHKIDIssueDate(dtDOI.Value)
 
@@ -2265,9 +2268,7 @@ Namespace Format
                 Case Common.Component.DocType.DocTypeModel.DocTypeCode.VISA
                     'No Date of Issue
 
-                Case Common.Component.DocType.DocTypeModel.DocTypeCode.CCIC,
-                    Common.Component.DocType.DocTypeModel.DocTypeCode.ROP140,
-                    Common.Component.DocType.DocTypeModel.DocTypeCode.PASS
+                Case Common.Component.DocType.DocTypeModel.DocTypeCode.PASS
                     'No Date of Issue
 
             End Select
