@@ -16,6 +16,8 @@ Partial Public Class ucInputEHSClaim
     Private _udtEHSClaimVaccine As EHSClaimVaccineModel
     Private _udtEHSTransaction As EHSTransactionModel
     Private _udtEHSTransactionOriginal As EHSTransactionModel
+    Private _udtEHSTransactionLatestVaccineRecord As EHSTransactionModel
+    Private _udtTranDetailLatestVaccineRecord As TransactionDetailVaccineModel
     Private _blnAvaliableForClaim As Boolean
     Private _textOnlyVersion As Boolean
     Private _activeViewChanged As Boolean
@@ -39,6 +41,7 @@ Partial Public Class ucInputEHSClaim
     Public Event EditReasonForVisitClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event VaccineRemarkClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event ClaimControlEventFired(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event OutreachListSearchClicked(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event SubsidizeDisabledRemarkClicked(ByVal sender As System.Object, ByVal e As System.EventArgs)
     Public Event RecipientConditionHelpClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -55,6 +58,7 @@ Partial Public Class ucInputEHSClaim
         Public Const CIVSS As String = "ucInputEHSClaim_CIVSS"
         Public Const HSIVSS As String = "ucInputEHSClaim_HSIVSS"
         Public Const RVP As String = "ucInputEHSClaim_RVP"
+        Public Const RVPCOVID19 As String = "ucInputEHSClaim_RVPCOVID19"
         Public Const EHAPP As String = "ucInputEHSClaim_EHAPP"
         Public Const VACCINE As String = "ucInputEHSClaim_Vaccine"
         Public Const HCVS_CHINA As String = "ucInputEHSClaim_HCVSChina"
@@ -67,6 +71,7 @@ Partial Public Class ucInputEHSClaim
         Public Const COVID19 As String = "ucInputEHSClaim_COVID19"  ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19CBD As String = "ucInputEHSClaim_COVID19CBD"
         Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
+        Public Const COVID19OR As String = "ucInputEHSClaim_COVID19OR"
 
     End Class
 
@@ -124,7 +129,11 @@ Partial Public Class ucInputEHSClaim
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.HSIVSS Then BuiltSchemeControlOnly(True)
 
                 Case SchemeClaimModel.EnumControlType.RVP
-                    If _udcInputEHSClaim.ID <> EHSClaimControlID.RVP Then BuiltSchemeControlOnly(True)
+                    If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                        If _udcInputEHSClaim.ID <> EHSClaimControlID.RVPCOVID19 Then BuiltSchemeControlOnly(True)
+                    Else
+                        If _udcInputEHSClaim.ID <> EHSClaimControlID.RVP Then BuiltSchemeControlOnly(True)
+                    End If
 
                 Case SchemeClaimModel.EnumControlType.EHAPP
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.EHAPP Then BuiltSchemeControlOnly(True)
@@ -133,10 +142,11 @@ Partial Public Class ucInputEHSClaim
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.PIDVSS Then BuiltSchemeControlOnly(True)
 
                 Case SchemeClaimModel.EnumControlType.VSS
-                    If _udcInputEHSClaim.ID <> EHSClaimControlID.VSS Then BuiltSchemeControlOnly(True)
-
-                Case SchemeClaimModel.EnumControlType.VSSCOVID19
-                    If _udcInputEHSClaim.ID <> EHSClaimControlID.VSSCOVID19 Then BuiltSchemeControlOnly(True)
+                    If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                        If _udcInputEHSClaim.ID <> EHSClaimControlID.VSSCOVID19 Then BuiltSchemeControlOnly(True)
+                    Else
+                        If _udcInputEHSClaim.ID <> EHSClaimControlID.VSS Then BuiltSchemeControlOnly(True)
+                    End If
 
                 Case SchemeClaimModel.EnumControlType.ENHVSSO
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.ENHVSSO Then BuiltSchemeControlOnly(True)
@@ -160,6 +170,9 @@ Partial Public Class ucInputEHSClaim
                 Case SchemeClaimModel.EnumControlType.COVID19RVP
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19RVP Then BuiltSchemeControlOnly(True)
 
+                Case SchemeClaimModel.EnumControlType.COVID19OR
+                    If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19OR Then BuiltSchemeControlOnly(True)
+
                 Case Else
                     Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
@@ -179,6 +192,8 @@ Partial Public Class ucInputEHSClaim
         _udcInputEHSClaim.CurrentPractice = Me._currentPractice
         _udcInputEHSClaim.EHSTransaction = Me._udtEHSTransaction
         _udcInputEHSClaim.EHSTransactionOriginal = Me._udtEHSTransactionOriginal
+        _udcInputEHSClaim.EHSTransactionLatestVaccineRecord = Me._udtEHSTransactionLatestVaccineRecord
+        _udcInputEHSClaim.TranDetailLatestVaccineRecord = Me._udtTranDetailLatestVaccineRecord
         _udcInputEHSClaim.EHSClaimVaccine = Me._udtEHSClaimVaccine
         _udcInputEHSClaim.ServiceDate = Me._dtmServiceDate
         _udcInputEHSClaim.ClaimCategorys = Me._udtClaimCategorys
@@ -280,17 +295,29 @@ Partial Public Class ucInputEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.RVP
-                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputRVP.ascx", strFolderPath))
-                udcInputEHSClaim.ID = EHSClaimControlID.RVP
-                If Me._textOnlyVersion Then
-                    'No Input Control
+                If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                    udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputRVPCOVID19.ascx", strFolderPath))
+                    udcInputEHSClaim.ID = EHSClaimControlID.RVPCOVID19
+                    If Me._textOnlyVersion Then
+                        'No Input Control
+                    Else
+                        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = CType(udcInputEHSClaim, ucInputRVPCOVID19)
+                        AddHandler udcInputRVPCOVID19.SearchButtonClick, AddressOf udcInputRVP_SearchButtonClick
+                    End If
+
                 Else
-                    Dim udcInputRVP As ucInputRVP = CType(udcInputEHSClaim, ucInputRVP)
-                    AddHandler udcInputRVP.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
-                    AddHandler udcInputRVP.SearchButtonClick, AddressOf udcInputRVP_SearchButtonClick
-                    AddHandler udcInputRVP.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
-                    AddHandler udcInputRVP.SubsidizeDisabledRemarkClicked, AddressOf udcInputEHSClaim_SubsidizeDisabledRemarkClick
-                    AddHandler udcInputRVP.RecipientConditionHelpClick, AddressOf udcInputEHSClaim_RecipientConditionHelpClick
+                    udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputRVP.ascx", strFolderPath))
+                    udcInputEHSClaim.ID = EHSClaimControlID.RVP
+                    If Me._textOnlyVersion Then
+                        'No Input Control
+                    Else
+                        Dim udcInputRVP As ucInputRVP = CType(udcInputEHSClaim, ucInputRVP)
+                        AddHandler udcInputRVP.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+                        AddHandler udcInputRVP.SearchButtonClick, AddressOf udcInputRVP_SearchButtonClick
+                        AddHandler udcInputRVP.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
+                        AddHandler udcInputRVP.SubsidizeDisabledRemarkClicked, AddressOf udcInputEHSClaim_SubsidizeDisabledRemarkClick
+                        AddHandler udcInputRVP.RecipientConditionHelpClick, AddressOf udcInputEHSClaim_RecipientConditionHelpClick
+                    End If
                 End If
 
             Case SchemeClaimModel.EnumControlType.EHAPP
@@ -389,9 +416,22 @@ Partial Public Class ucInputEHSClaim
                 Else
                     Dim udcInputCOVID19RVP As ucInputCOVID19RVP = CType(udcInputEHSClaim, ucInputCOVID19RVP)
                     AddHandler udcInputCOVID19RVP.SearchButtonClick, AddressOf udcInputCOVID19RVP_SearchButtonClick
-                    AddHandler udcInputCOVID19RVP.RCHCodeTextChanged, AddressOf udcInputCOVID19RVP_RCHCodeTextChanged
+                    'AddHandler udcInputCOVID19RVP.RCHCodeTextChanged, AddressOf udcInputCOVID19RVP_RCHCodeTextChanged
 
                 End If
+
+            Case SchemeClaimModel.EnumControlType.COVID19OR
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19OR.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19OR
+                If Me._textOnlyVersion Then
+                    'No Input Control
+                Else
+                    Dim udcInputCOVID19OR As ucInputCOVID19OR = CType(udcInputEHSClaim, ucInputCOVID19OR)
+                    AddHandler udcInputCOVID19OR.SearchButtonClick, AddressOf udcInputCOVID19OR_SearchButtonClick
+
+
+                End If
+
             Case Else
                 Throw New Exception(String.Format("No available input control for scheme({0}).", enumControlType.ToString))
 
@@ -596,6 +636,10 @@ Partial Public Class ucInputEHSClaim
 
     Private Sub udcInputCOVID19RVP_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent ClaimControlEventFired(SchemeClaimModel.COVID19RVP, sender, e)
+    End Sub
+
+    Private Sub udcInputCOVID19OR_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent OutreachListSearchClicked(SchemeClaimModel.COVID19OR, sender, e)
     End Sub
 
     Private Sub udcInputEHSClaim_VaccineLegendClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
@@ -872,6 +916,35 @@ Partial Public Class ucInputEHSClaim
         Return Nothing
 
     End Function
+
+    Public Function GetRVPCOVID19Control() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.RVPCOVID19)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputRVPCOVID19)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+
+    Public Function GetCOVID19ORControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19OR)
+        If Not control Is Nothing Then
+            If Me._textOnlyVersion Then
+                'No Input Control
+            Else
+                Return CType(control, ucInputCOVID19OR)
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+
 #End Region
 
 #Region "Property"
@@ -936,6 +1009,24 @@ Partial Public Class ucInputEHSClaim
         End Get
         Set(ByVal value As EHSTransactionModel)
             Me._udtEHSTransactionOriginal = value
+        End Set
+    End Property
+
+    Public Property EHSTransactionLatestVaccineRecord() As EHSTransactionModel
+        Get
+            Return Me._udtEHSTransactionLatestVaccineRecord
+        End Get
+        Set(ByVal value As EHSTransactionModel)
+            Me._udtEHSTransactionLatestVaccineRecord = value
+        End Set
+    End Property
+
+    Public Property TranDetailLatestVaccineRecord() As TransactionDetailVaccineModel
+        Get
+            Return Me._udtTranDetailLatestVaccineRecord
+        End Get
+        Set(ByVal value As TransactionDetailVaccineModel)
+            Me._udtTranDetailLatestVaccineRecord = value
         End Set
     End Property
 

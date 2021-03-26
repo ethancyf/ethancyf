@@ -271,6 +271,8 @@ Partial Public Class RecordConfirmation
 
         If udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19CVC) IsNot Nothing OrElse _
             udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19DH) IsNot Nothing OrElse _
+            udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing OrElse _
+            udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19SR) IsNot Nothing OrElse _
             udtSP.SchemeInfoList.Filter(SchemeClaimModel.COVID19RVP) IsNot Nothing Then
             ibtnConfirmAll.Visible = True
         Else

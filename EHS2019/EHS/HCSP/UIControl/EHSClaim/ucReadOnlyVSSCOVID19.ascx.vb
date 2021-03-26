@@ -58,16 +58,21 @@ Partial Public Class ucReadOnlyVSSCOVID19
         Dim strMainCategoryEng As String = String.Empty
         Dim strMainCategoryChi As String = String.Empty
         Dim strMainCategoryCN As String = String.Empty
-        Status.GetDescriptionAllFromDBCode("VSSC19MainCategory", MyBase.EHSTransaction.TransactionAdditionFields.MainCategory, strMainCategoryEng, strMainCategoryChi, strMainCategoryCN)
 
-        Select Case MyBase.SessionHandler.Language
-            Case CultureLanguage.TradChinese
-                lblMainCategoryForCovid19.Text = strMainCategoryChi
-            Case CultureLanguage.SimpChinese
-                lblMainCategoryForCovid19.Text = strMainCategoryCN
-            Case Else
-                lblMainCategoryForCovid19.Text = strMainCategoryEng
-        End Select
+        If MyBase.EHSTransaction.TransactionAdditionFields.MainCategory <> String.Empty Then
+            Status.GetDescriptionAllFromDBCode("VSSC19MainCategory", MyBase.EHSTransaction.TransactionAdditionFields.MainCategory, strMainCategoryEng, strMainCategoryChi, strMainCategoryCN)
+
+            Select Case MyBase.SessionHandler.Language
+                Case CultureLanguage.TradChinese
+                    lblMainCategoryForCovid19.Text = strMainCategoryChi
+                Case CultureLanguage.SimpChinese
+                    lblMainCategoryForCovid19.Text = strMainCategoryCN
+                Case Else
+                    lblMainCategoryForCovid19.Text = strMainCategoryEng
+            End Select
+        Else
+            lblMainCategoryForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+        End If
 
         'Sub Category
         Dim strSubCategoryEng As String = String.Empty
@@ -75,20 +80,25 @@ Partial Public Class ucReadOnlyVSSCOVID19
         Dim strSubCategoryCN As String = String.Empty
 
         If MyBase.EHSTransaction.TransactionAdditionFields.SubCategory <> String.Empty Then
-            trSubCategory.Style.Remove("display")
+            'trSubCategory.Style.Remove("display")
             Status.GetDescriptionAllFromDBCode("VSSC19SubCategory", MyBase.EHSTransaction.TransactionAdditionFields.SubCategory, strSubCategoryEng, strSubCategoryChi, strSubCategoryCN)
-        Else
-            trSubCategory.Style.Add("display", "none")
-        End If
 
-        Select Case MyBase.SessionHandler.Language
-            Case CultureLanguage.TradChinese
-                lblSubCategoryForCovid19.Text = strSubCategoryChi
-            Case CultureLanguage.SimpChinese
-                lblSubCategoryForCovid19.Text = strSubCategoryCN
-            Case Else
-                lblSubCategoryForCovid19.Text = strSubCategoryEng
-        End Select
+            Select Case MyBase.SessionHandler.Language
+                Case CultureLanguage.TradChinese
+                    lblSubCategoryForCovid19.Text = strSubCategoryChi
+                Case CultureLanguage.SimpChinese
+                    lblSubCategoryForCovid19.Text = strSubCategoryCN
+                Case Else
+                    lblSubCategoryForCovid19.Text = strSubCategoryEng
+            End Select
+        Else
+            'trSubCategory.Style.Add("display", "none")
+            If MyBase.EHSTransaction.TransactionAdditionFields.MainCategory = String.Empty Then
+                lblSubCategoryForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                lblSubCategoryForCovid19.Text = GetGlobalResourceObject("Text", "NA")
+            End If
+        End If
 
         'table for VaccineLotNumber and Vaccine
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL

@@ -1,2 +1,2 @@
 del /Q {fileStore}\*
-E:\Attachmate\RSecure\rftpc.exe {eHSWebServer} /RFS {step5_generated_file}
+"C:\Program Files (x86)\Micro Focus\RSecure\rftpc.exe" {eHSWebServer} /RFS {step5_generated_file} /L {sectionFolder}\log\rftpc_{executionDate}.log

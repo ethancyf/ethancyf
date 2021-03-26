@@ -268,6 +268,7 @@
     <Compile Include="Component\COVID19\PrintOut\Covid19VaccinationCard\Covid19VaccinationCard_A5.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Component\COVID19\OutreachListBLL.vb" />
     <Compile Include="Component\DataEntryUser\DataEntryUserBLL.vb" />
     <Compile Include="Component\DataEntryUser\DataEntryUserModel.vb" />
     <Compile Include="Component\DHTransaction\DHClientModel.vb" />
@@ -297,6 +298,10 @@
     <Compile Include="Component\Profession\ProfessionDHCModel.vb" />
     <Compile Include="Component\Profession\ProfessionDHCModelCollection.vb" />
     <Compile Include="Component\StudentFile\StudentAcctFieldModel.vb" />
+    <Compile Include="Component\VaccineLot\VaccineLotBLL.vb" />
+    <Compile Include="Component\VaccineLot\VaccineLotCreationModel.vb" />
+    <Compile Include="Component\VaccineLot\VaccineLotModel.vb" />
+    <Compile Include="Component\VaccineLot\VaccineLotRequestModel.vb" />
     <Compile Include="Component\VoucherInfo\VoucherQuotaModelCollection.vb" />
     <Compile Include="Component\VoucherInfo\VoucherQuotaModel.vb" />
     <Compile Include="Component\EHSAccount\EHSAccountModel.vb" />

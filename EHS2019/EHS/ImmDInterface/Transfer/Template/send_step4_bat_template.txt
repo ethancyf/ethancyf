@@ -1,3 +1,3 @@
 e:
 cd {scriptFolder}
-"E:\Attachmate\RSecure\sftp.exe" -B {scriptFolder}\send_step3.bat < {scriptFolder}\sftp_account.txt
+"C:\Program Files (x86)\Micro Focus\RSecure\sftp.exe" -B {scriptFolder}\send_step3.bat < {scriptFolder}\sftp_account.txt

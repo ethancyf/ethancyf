@@ -129,6 +129,8 @@
     <Content Include="cn\invalidlink.aspx" />
     <Content Include="cn\InvalidOS.aspx" />
     <Content Include="cn\sessiontimeout.aspx" />
+    <Content Include="CSS\bootstrap-select.min.css" />
+    <Content Include="CSS\bootstrap.min.css" />
     <Content Include="CSS\CommonStyle_cn.css" />
     <Content Include="CSS\MenuStyle_cn.css" />
     <Content Include="DownloadArea\DownloadArea.aspx" />
@@ -380,16 +382,23 @@
     <Content Include="Images\Scheme\Scheme_Logo_ENHVSSO.jpg" />
     <Content Include="Images\Scheme\Scheme_Logo_SSSCMC.jpg" />
     <Content Include="Images\Scheme\Scheme_Logo_VSS.jpg" />
+    <Content Include="InfoCategory.aspx" />
+    <Content Include="JS\bootstrap-select.min.js" />
+    <Content Include="JS\bootstrap.bundle.min.js" />
     <Content Include="JS\ideasComboLib4Ra.js" />
     <Content Include="JS\ideasComboVersion.js" />
-    <Content Include="JS\jquery-3.4.1.min.js" />
+    <Content Include="JS\jquery-3.6.0.min.js" />
     <Content Include="Printout\EHSClaimForm_CN_RV.aspx" />
     <Content Include="ProperPractice\ProperPractice.aspx" />
     <Content Include="RecoverLogin\DataEntryRecoverLogin.aspx" />
     <Content Include="RecoverLogin\RecoverLogin.aspx" />
     <Content Include="text\en\InvalidOS.aspx" />
     <Content Include="text\zh\InvalidOS.aspx" />
+    <Content Include="UIControl\DocTypeText\ucReadOnlyCCIC.ascx" />
     <Content Include="UIControl\DocTypeText\ucReadOnlyOTHER.ascx" />
+    <Content Include="UIControl\DocTypeText\ucReadOnlyOW.ascx" />
+    <Content Include="UIControl\DocTypeText\ucReadOnlyPASS.ascx" />
+    <Content Include="UIControl\DocTypeText\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucInputCCIC.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
     <Content Include="UIControl\DocType\ucInputPASS.ascx" />
@@ -404,11 +413,15 @@
     <Content Include="UIControl\DocType\ucReadOnlyOW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyRFNo8.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
+    <Content Include="UIControl\EHSClaimText\ucReadOnlyCOVID19OR.ascx" />
+    <Content Include="UIControl\EHSClaimText\ucReadOnlyCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPPP.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyCOVID19.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
@@ -420,6 +433,8 @@
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlySSSCMC.ascx" />
@@ -430,6 +445,7 @@
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx" />
     <Content Include="UIControl\IDEASCombo\IDEASCombo.ascx" />
+    <Content Include="UIControl\OutreachListSearch.ascx" />
     <Content Include="UIControl\VaccinationFile\ucPreCheckDetail.ascx" />
     <Content Include="UIControl\VaccinationFile\ucVaccinationFileDetail.ascx" />
     <Content Include="VaccinationFile\DownloadFileWorker.aspx" />
@@ -2519,11 +2535,39 @@
     <Compile Include="UIControl\ClaimVaccineInputText.vb" />
     <Compile Include="UIControl\ClaimVaccineReadOnly.vb" />
     <Compile Include="UIControl\ClaimVaccineReadOnlyText.vb" />
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyCCIC.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCCIC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyCCIC.ascx.vb">
+      <DependentUpon>ucReadOnlyCCIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocTypeText\ucReadOnlyOTHER.ascx.designer.vb">
       <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\DocTypeText\ucReadOnlyOTHER.ascx.vb">
       <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyOW.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyOW.ascx.vb">
+      <DependentUpon>ucReadOnlyOW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyPASS.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyPASS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyPASS.ascx.vb">
+      <DependentUpon>ucReadOnlyPASS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyROP140.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyROP140.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyROP140.ascx.vb">
+      <DependentUpon>ucReadOnlyROP140.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucInputCCIC.ascx.designer.vb">
@@ -2624,6 +2668,20 @@
       <DependentUpon>ucReadOnlyOTHER.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaimText\ucReadOnlyCOVID19OR.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19OR.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaimText\ucReadOnlyCOVID19OR.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19OR.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaimText\ucReadOnlyCOVID19RVP.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19RVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaimText\ucReadOnlyCOVID19RVP.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19RVP.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyEHAPP.ascx.designer.vb">
       <DependentUpon>ucReadOnlyEHAPP.ascx</DependentUpon>
     </Compile>
@@ -2664,6 +2722,20 @@
     </Compile>
     <Compile Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx.vb">
       <DependentUpon>ucReadOnlyPIDVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19OR.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx.vb">
+      <DependentUpon>ucInputCOVID19OR.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx.designer.vb">
+      <DependentUpon>ucInputRVPCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx.vb">
+      <DependentUpon>ucInputRVPCOVID19.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.designer.vb">
@@ -2748,6 +2820,20 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.vb">
       <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyRVPCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx.vb">
+      <DependentUpon>ucReadOnlyRVPCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19OR.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19OR.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.designer.vb">
@@ -2847,6 +2933,13 @@
     <Compile Include="UIControl\PCDIntegration\ucTypeOfPracticePopup.ascx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucTypeOfPracticePopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\OutreachListSearch.ascx.designer.vb">
+      <DependentUpon>OutreachListSearch.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\OutreachListSearch.ascx.vb">
+      <DependentUpon>OutreachListSearch.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\Token\ucInputTokenPopup.ascx.designer.vb">
       <DependentUpon>ucInputTokenPopup.ascx</DependentUpon>
@@ -3698,6 +3791,13 @@
     </Compile>
     <Compile Include="Home\home.aspx.vb">
       <DependentUpon>home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="InfoCategory.aspx.designer.vb">
+      <DependentUpon>InfoCategory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="InfoCategory.aspx.vb">
+      <DependentUpon>InfoCategory.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="login.aspx.designer.vb">
@@ -5435,6 +5535,7 @@
     <Content Include="Doc\User Guide for Smart HKID Card Reading Software.pdf" />
     <None Include="Doc\voucheracccreation.pdf" />
     <None Include="Doc\voucherconsent.pdf" />
+    <Content Include="JS\bootstrap.bundle.min.js.map" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

@@ -7,16 +7,18 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (Immu record)
+-- Modified by:		Winnie SUEN
+-- Modified date:	11 Mar 2021
+-- Description:		Grant Permission to HCVU
+-- =============================================
+-- =============================================
 -- Author:			Karl Lam
 -- Create date:		08 Apr 2013
 -- Description:		proc_VoucherTransactionConfirm_upd_ConfirmedTransactionStatus
 -- =============================================
--- =============================================
--- Modification History
--- Modified by:	
--- Modified date: 
--- Description:	
--- =============================================
+
 CREATE Procedure proc_VoucherTransactionConfirm_upd_ConfirmedTransactionStatus
 @Transaction_ID		char(20)
 , @SP_ID			char(8)
@@ -47,5 +49,5 @@ WHERE	vt.Transaction_ID = @Transaction_ID
 
 GO
 
-GRANT EXECUTE ON [dbo].[proc_VoucherTransactionConfirm_upd_ConfirmedTransactionStatus] TO HCSP
+GRANT EXECUTE ON [dbo].[proc_VoucherTransactionConfirm_upd_ConfirmedTransactionStatus] TO HCSP, HCVU
 GO

@@ -1,0 +1,7 @@
+SET ABORT-ON-ERROR NO
+cd HCVS\Production\InterfaceFile\HAPatient
+lcd {sectionFolder}
+BINARY
+put received\{contentFileName} {contentFileName} overwrite
+SET ABORT-ON-ERROR YES
+quit

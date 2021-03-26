@@ -67,6 +67,7 @@ Partial Public Class ReprintVaccinationRecord
             FunctionCode = FunctCode.FUNT010421
 
             Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteLog(LogID.LOG00000, AuditLogDescription.LOG00000)
             InitializeDataValue()
 
@@ -174,7 +175,7 @@ Partial Public Class ReprintVaccinationRecord
 #Region "Event Handler"
     Protected Sub ibtnSearch_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
-
+        AuditLogUserType(udtAuditLogEntry)
         udtAuditLogEntry.WriteLog(LogID.LOG00001, AuditLogDescription.LOG00001)
 
         SearchCOVID19Transaction(Me.txteHSDocNo.Text, Me.ddleHSDocType.SelectedValue)
@@ -185,14 +186,16 @@ Partial Public Class ReprintVaccinationRecord
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
 
         Try
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteLog(LogID.LOG00005, AuditLogDescription.LOG00005)
 
             Me.RedirectToIdeasCombo(IdeasBLL.EnumIdeasVersion.Combo)
-
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteEndLog(LogID.LOG00006, AuditLogDescription.LOG00006)
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
             udtAuditLogEntry.AddDescripton("Message", ex.Message)
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteEndLog(LogID.LOG00007, AuditLogDescription.LOG00007)
         End Try
     End Sub
@@ -208,6 +211,7 @@ Partial Public Class ReprintVaccinationRecord
 
         udtAuditLogEntry.AddDescripton("Doc Code", streDocType)
         udtAuditLogEntry.AddDescripton("Doc No", streHSDocNo)
+        AuditLogUserType(udtAuditLogEntry)
 
         udtAuditLogEntry.WriteStartLog(LogID.LOG00002, AuditLogDescription.LOG00002)
 
@@ -301,8 +305,11 @@ Partial Public Class ReprintVaccinationRecord
                             End If
 
                             ' For Centre only
-                            If udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19CVC OrElse
-                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19DH Then
+                            If udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19CVC OrElse _
+                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19DH OrElse _
+                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP OrElse _
+                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19OR OrElse _
+                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19SR Then
 
                                 Dim dtLoginUserVaccineCentre As DataTable = udtCOVID19BLL.GetCOVID19VaccineCentreBySPID(strUserID)
 
@@ -333,10 +340,9 @@ Partial Public Class ReprintVaccinationRecord
                                 End If
                             End If
 
-                            'For Private: VSS, RVP, COVID19RVP
+                            'For Private: VSS, RVP
                             If udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.VSS OrElse _
-                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP OrElse _
-                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP Then
+                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP Then
 
                                 If udtCurEHSTransaction.ServiceProviderID = strUserID Then
                                     blnValidToPrint = True
@@ -350,7 +356,7 @@ Partial Public Class ReprintVaccinationRecord
                     End If
 
                     udtAuditLogEntry.AddDescripton("Valid to print", IIf(blnValidToPrint, "Y", "N"))
-
+                    AuditLogUserType(udtAuditLogEntry)
                     If blnValidToPrint Then
                         'Build EHS transaction Detail
                         BuildClaimTransDetail(udtEHSTransaction)
@@ -386,6 +392,7 @@ Partial Public Class ReprintVaccinationRecord
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
             udtAuditLogEntry.AddDescripton("Message", ex.Message)
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteEndLog(LogID.LOG00004, AuditLogDescription.LOG00004)
             Throw
         End Try
@@ -394,6 +401,7 @@ Partial Public Class ReprintVaccinationRecord
 
     Protected Sub ibtnDetailBack_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        AuditLogUserType(udtAuditLogEntry)
         udtAuditLogEntry.WriteLog(LogID.LOG00011, AuditLogDescription.LOG00011)
         udcClaimTransDetail.ClearDocumentType()
         udcClaimTransDetail.ClearEHSClaim()
@@ -413,6 +421,7 @@ Partial Public Class ReprintVaccinationRecord
         Dim udtSessionHandler As BLL.SessionHandlerBLL = New BLL.SessionHandlerBLL
 
         Try
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDescription.LOG00008)
 
             'Find the nearest vaccination record for vaccination card
@@ -423,9 +432,9 @@ Partial Public Class ReprintVaccinationRecord
                 Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtTransactionBenefitDetailList.FilterFindNearestRecord()
 
                 If udtEHSTransaction.TransactionDetails(0).AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    If udtEHSTransaction.TransactionAdditionFields.VaccineBrand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                        udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    End If
+                    'If udtEHSTransaction.TransactionAdditionFields.VaccineBrand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
+                    udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
+                    'End If
 
                 End If
 
@@ -453,12 +462,14 @@ Partial Public Class ReprintVaccinationRecord
             If strCurrentPrintOption = Common.Component.PrintFormOptionValue.PrintPurposeAndConsent Then
                 ScriptManager.RegisterStartupScript(Me, Page.GetType, "VoucherConsentFormScript", "javascript:openNewWin('../Printout/BasePrintoutForm.aspx?TID=" + strPrintDateTime + "');", True)
                 udtAuditLogEntry.AddDescripton("Reprint", "Vaccination Card Printed")
+                AuditLogUserType(udtAuditLogEntry)
                 udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00009, AuditLogDescription.LOG00009)
             End If
 
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
             udtAuditLogEntry.AddDescripton("Message", ex.Message)
+            AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00010, AuditLogDescription.LOG00010)
             Throw
         End Try
@@ -1261,6 +1272,16 @@ Partial Public Class ReprintVaccinationRecord
         Return udtAuditLogEntry
 
     End Function
+
+
+    Public Sub AuditLogUserType(ByRef udtAuditLogEntry As AuditLogEntry)
+        If Session(SESS_UserType) = "HCSPUser" Then
+            udtAuditLogEntry.AddDescripton("User Type", "SP")
+        Else
+            udtAuditLogEntry.AddDescripton("User Type", "BO")
+        End If
+    End Sub
+
 
 #End Region
 

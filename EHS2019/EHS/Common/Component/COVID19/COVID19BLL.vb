@@ -14,6 +14,7 @@ Namespace Component.COVID19
 #Region "Constant"
         Public Class CACHE_STATIC_DATA
             Public Const CACHE_ALL_COVID19VaccineBrand As String = "COVID19BLL_ALL_COVID19VaccineBrand"
+            Public Const CACHE_ALL_COVID19VaccineBrandLotDetail As String = "COVID19BLL_ALL_COVID19VaccineBrandLotDetail"
             Public Const CACHE_ALL_COVID19VaccineLotMapping As String = "COVID19BLL_ALL_COVID19VaccineLotMapping"
             Public Const CACHE_ALL_VaccineCentreSPMapping As String = "COVID19BLL_ALL_VaccineCentreSPMapping"
         End Class
@@ -52,6 +53,27 @@ Namespace Component.COVID19
                     db.RunProc("proc_COVID19VaccineBrand_get_all_cache", dt)
 
                     Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrand, dt)
+                Catch ex As Exception
+                    Throw
+                End Try
+            End If
+
+            Return dt
+
+        End Function
+
+        Public Function GetCOVID19VaccineBrandLotDetail() As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail)) Then
+                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail), DataTable)
+
+            Else
+                Try
+                    db.RunProc("proc_COVID19VaccineBrandLotDetail_getAll", dt)
+
+                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail, dt)
                 Catch ex As Exception
                     Throw
                 End Try
@@ -129,19 +151,6 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingByRCHCode(ByVal strRCHCode As String) As DataTable
-            Dim dt As New DataTable
-            Dim db As New Database
-
-            Dim parms() As SqlParameter = { _
-                db.MakeInParam("@RCHCode", SqlDbType.Char, 10, strRCHCode)}
-
-            db.RunProc("proc_COVID19VaccineLotMapping_get_byRCHCode", parms, dt)
-
-            Return dt
-
-        End Function
-
         Public Function GetCOVID19VaccineLotMappingForCentre(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer)) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
@@ -180,8 +189,28 @@ Namespace Component.COVID19
 
         End Function
 
+        Public Function GetCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            Dim objPracticeDisplaySeq As Object = DBNull.Value
+            If intPracticeDisplaySeq.HasValue Then
+                objPracticeDisplaySeq = intPracticeDisplaySeq.Value
+            End If
+
+            Dim parms() As SqlParameter = { _
+                db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+
+            db.RunProc("proc_COVID19VaccineLotMapping_get_ForRCH", parms, dt)
+
+            Return dt
+
+        End Function
+
         Public Function GetCOVID19VaccineLotMappingByVaccineLotNo(ByVal strVaccineLotNo As String) As DataTable
-            Dim dt As DataTable = Me.GetCOVID19VaccineLotMapping()
+            'Dim dt As DataTable = Me.GetCOVID19VaccineLotMapping()
+            Dim dt As DataTable = Me.GetCOVID19VaccineBrandLotDetail()
             Dim dr() As DataRow
 
             dr = dt.Select(String.Format("Vaccine_Lot_No = '{0}'", strVaccineLotNo))
@@ -190,7 +219,6 @@ Namespace Component.COVID19
                 Return dr.CopyToDataTable
             Else
                 Throw New Exception(String.Format("Invalid Vaccine Lot No ({0}), row(s) more than 1 or no record", strVaccineLotNo))
-
             End If
 
         End Function
@@ -286,7 +314,6 @@ Namespace Component.COVID19
                 Return dr.CopyToDataTable
             Else
                 Throw New Exception(String.Format("Invalid Vaccine Centre SP Mapping ('{0}','{1}'), row(s) more than 1 or no record", strSPID, intPracticeDisplaySeq))
-
             End If
 
         End Function
@@ -425,7 +452,17 @@ Namespace Component.COVID19
         Public Function FilterVaccineLotNoByServiceDate(ByVal dtVaccineLotNo As DataTable, ByVal dtmServiceDate As DateTime) As DataRow()
             Dim drVaccineLotNo() As DataRow = Nothing
 
-            drVaccineLotNo = dtVaccineLotNo.Select(String.Format("'{0}' >= Service_Period_From AND '{1}' < Service_Period_To", dtmServiceDate, dtmServiceDate))
+            drVaccineLotNo = dtVaccineLotNo.Select(String.Format("'{0}' >= Service_Period_From AND '{1}' <= Service_Period_To", dtmServiceDate, dtmServiceDate))
+
+            If drVaccineLotNo.Length > 0 Then
+                Dim dt As DataTable = drVaccineLotNo.CopyToDataTable
+                Dim dtSort As DataTable = Nothing
+
+                dt.DefaultView.Sort = "Vaccine_Lot_No"
+                dtSort = dt.DefaultView.ToTable
+
+                drVaccineLotNo = dtSort.Select()
+            End If
 
             Return drVaccineLotNo
 

@@ -303,11 +303,7 @@ Partial Public Class ucInputCOVID19
 
             If dtVaccineLotNo.Rows.Count > 0 Then
 
-                Dim drVaccineLotNo() As DataRow = Nothing
-
-                drVaccineLotNo = dtVaccineLotNo.Select(String.Format("'{0}' >= Service_Period_From AND '{1}' < Service_Period_To", _
-                                                    ServiceDate, _
-                                                    ServiceDate))
+                Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
 
                 ''Convert DataRow to Dictionary(select Vaccine_Lot_No group by Brand_ID)
                 'Dim dicVaccineLotNo As Dictionary(Of String, String()) = drVaccineLotNo _

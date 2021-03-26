@@ -78,6 +78,25 @@ function showUpdateNow(lang) {
     return false;
 }
 
+function showCategoryInfo(lang) {
+    var language;
+
+    switch (lang) {
+        case 'en-us':
+            language = 'EN';
+            break;
+        case 'zh-tw':
+            language = 'ZH';
+            break;
+        default:
+            language = 'EN';
+    }
+
+    newwindow = window.open('../InfoCategory.aspx?Language=' + language, 'CategoryList', 'toolbar=no, height=600, width=800, menubar=no, resizable=yes, location=no, status=no, scrollbars=yes');
+    newwindow.focus();
+    return false;
+}
+
 /*
 function formatHKID(textbox) {
     textbox.value=textbox.value.toUpperCase();

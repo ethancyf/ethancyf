@@ -95,6 +95,7 @@ Public Class ProgramMgr
         Catch ex As Exception
             C19Logger.LogLine(ex.ToString())
             C19Logger.ErrorLog(ex)
+            C19Logger.Log(strErrorLogid, Nothing, "<Error><COVID19ExporterProcess>" & ex.ToString())
         Finally
             Dim triggerAlertStr As String = C19Logger.ChkEmailAndPagerAlert()
             C19Logger.LogLine(triggerAlertStr)
@@ -115,6 +116,7 @@ Public Class ProgramMgr
             C19Logger.Log(Common.Component.LogID.LOG00000, objLogStartKeyStack.Pop, "<Success><RegenerateMode>Process RegenerateCases Records Finish...")
         Catch ex As Exception
             C19Logger.LogLine(ex.ToString())
+            C19Logger.Log(strErrorLogid, objLogStartKeyStack.Pop, "<Error><RegenerateMode>" & ex.ToString())
             C19Logger.ErrorLog(ex)
         End Try
     End Sub
@@ -134,12 +136,16 @@ Public Class ProgramMgr
 
         Catch ex As Exception
             C19Logger.LogLine(ex.ToString())
+            C19Logger.Log(strErrorLogid, objLogStartKeyStack.Pop, "<Error><chkFailRecord>" & ex.ToString())
             C19Logger.ErrorLog(ex)
         End Try
     End Sub
 
     Private Sub HandleNormalCases()
         Try
+            C19Logger.LogLine("Start Process Normal Records")
+            objLogStartKeyStack.Push(C19Logger.Log(Common.Component.LogID.LOG00000, Nothing, "<Start><chkNormalRecord>Start Process Normal Records..."))
+
             Dim udtC19BLL As New C19BLL()
             Dim udtDB As New Common.DataAccess.Database()
             Dim dtLastExport As DateTime = getCOVID19LastExportDt()
@@ -157,8 +163,6 @@ Public Class ProgramMgr
                 dtCurrentDate = dtCurrentDate.AddMinutes(-m_strTimeIntervalMins)
             End If
 
-            C19Logger.LogLine("Start Process Normal Records")
-            objLogStartKeyStack.Push(C19Logger.Log(Common.Component.LogID.LOG00000, Nothing, "<Start><chkNormalRecord>Start Process Normal Records..."))
             If dtLastExport < dtCurrentDate Then
                 Try
                     C19Logger.LogLine("Start and Check Assign New Records")
@@ -173,6 +177,7 @@ Public Class ProgramMgr
                     Try
                         udtDB.RollBackTranscation()
                     Catch rollbackex As Exception
+                        C19Logger.Log(strErrorLogid, objLogStartKeyStack.Pop, "<Error><assignRecords>" & rollbackex.ToString())
                         Throw rollbackex
                     End Try
                     'throw exception when db have error
@@ -188,6 +193,7 @@ Public Class ProgramMgr
 
         Catch ex As Exception
             C19Logger.LogLine(ex.ToString())
+            C19Logger.Log(strErrorLogid, objLogStartKeyStack.Pop, "<Error><chkNormalRecord>" & ex.ToString())
             C19Logger.ErrorLog(ex)
         End Try
     End Sub

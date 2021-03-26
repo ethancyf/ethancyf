@@ -228,19 +228,6 @@ Partial Public Class VoidClaimConfirmDetail
                 Me.SetupClaimTransactionDetail(udtEHSTransaction, True)
                 Me.SetupReasonForVisit()
 
-                ' CRE20-0XX (Immu record)  [Start][Raiman]
-                ' Display setting for COVID-19
-                If IsClaimCOVID19(udtEHSTransaction) Then
-                    Label8.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
-                    If (udtEHSTransaction.TransactionAdditionFields.ContactNo <> "") Then
-                        trContactNum.Style.Remove("display")
-                        trContactNumText.Style.Remove("display")
-                        lblContactNum.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
-                    End If
-                End If
-                ' --- Claim Information ---
-                ' CRE20-0XX (Immu record)  [End][Raiman]
-
             Case ActiveViewIndex.ModifyTransaction
                 Me.udcMsgBoxErr.Clear()
 
@@ -752,6 +739,15 @@ Partial Public Class VoidClaimConfirmDetail
         'If Not activeViewChanged Then
         '    Me.SetupEHSAccount(udtEHSTransaction.EHSAcct, udtEHSTransaction.DocCode)
         'End If
+
+        ' CRE20-022 (Immu record)  [Start][Martin]
+        ' Display setting for COVID-19
+        If IsClaimCOVID19(udtEHSTransaction) Then
+            Label8.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
+        End If
+        ' CRE20-022 (Immu record)  [End][Martin]
+
+
 
         Me.panPersonalInformation.Visible = True
         Me.udcMsgBoxInfo.BuildMessageBox()

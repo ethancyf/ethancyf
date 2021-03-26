@@ -6,6 +6,7 @@ Imports Common.Component
 Imports HCVU.BLL
 Imports Common.Component.EHSTransaction
 Imports Common.Component.EHSAccount
+Imports Common.Component.HCVUUser
 
 Partial Public MustInherit Class BasePrintoutForm
     Inherits System.Web.UI.Page
@@ -20,6 +21,12 @@ Partial Public MustInherit Class BasePrintoutForm
         ' Check session expired
         'UserACBLL.GetUserAC()
 
+        'CRE20-023 add session on the reprint form [Start][Nichole]
+        Dim udtHCVUUserBLL As New HCVUUserBLL
+        Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser()
+        'CRE20-023 add session on the reprint form [End][Nichole]
+
+
         Dim udtSessionHandler As BLL.SessionHandlerBLL = New BLL.SessionHandlerBLL()
         Dim strSessionFunctCode As String = udtSessionHandler.EHSClaimPrintoutFunctionCodeGetFromSession()
         Dim strFunctCode As String = Common.Component.FunctCode.FUNT020201
@@ -29,10 +36,8 @@ Partial Public MustInherit Class BasePrintoutForm
 
         Dim udtEHSTransaction As EHSTransactionModel = udtSessionHandler.EHSTransactionGetFromSession(strFunctCode)
 
-
         Dim rpt As GrapeCity.ActiveReports.SectionReport = Nothing
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
+
         Select Case udtEHSTransaction.SchemeCode.Trim
             Case SchemeClaimModel.CIVSS
                 'rpt = GetReport()
@@ -47,7 +52,13 @@ Partial Public MustInherit Class BasePrintoutForm
                 'rpt = GetReport()
 
             Case SchemeClaimModel.RVP
-                'rpt = GetReport()
+                If udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
+                    'EHS Record for covid19 printing
+                    Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
+                    Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
+
+                    rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                End If
 
             Case SchemeClaimModel.VSS
                 If udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
@@ -56,7 +67,6 @@ Partial Public MustInherit Class BasePrintoutForm
                     Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
 
                     rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
-                    ' CRE20-00XX (Immu record) [End][Winnie SUEN]
                 End If
 
                 'rpt = GetReport()
@@ -70,7 +80,7 @@ Partial Public MustInherit Class BasePrintoutForm
                 ' CRE20-015 (HA Scheme) [End][Winnie]
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19DH
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
                 'EHS Record for covid19 printing
                 Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
                 Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)

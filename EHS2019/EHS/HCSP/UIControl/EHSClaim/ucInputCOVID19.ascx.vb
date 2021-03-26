@@ -87,7 +87,7 @@ Partial Public Class ucInputCOVID19
         End Get
     End Property
 
-    Public ReadOnly Property VaccineBrand() As String
+    Public Property VaccineBrand() As String
         Get
             If Me.txtCVaccineBrand.Text = "" Then
                 Return String.Empty
@@ -100,6 +100,9 @@ Partial Public Class ucInputCOVID19
             '    Return Me.ddlCVaccineBrandCovid19.SelectedItem.Value
             'End If
         End Get
+        Set(value As String)
+            Me.txtCVaccineBrand.Text = value
+        End Set
     End Property
 
     Public ReadOnly Property VaccineBrandDDL() As DropDownList
@@ -108,9 +111,8 @@ Partial Public Class ucInputCOVID19
         End Get
     End Property
 
-    Public ReadOnly Property VaccineLotNo() As String
+    Public Property VaccineLotNo() As String
         Get
-
             If Me.txtCVaccineLotNo.Text = "" Then
                 Return String.Empty
             Else
@@ -123,6 +125,9 @@ Partial Public Class ucInputCOVID19
             '    Return Me.ddlCVaccineLotNoCovid19.SelectedItem.Value
             'End If
         End Get
+        Set(value As String)
+            Me.txtCVaccineLotNo.Text = value
+        End Set
     End Property
 
     Public ReadOnly Property VaccineLotNoDDL() As DropDownList

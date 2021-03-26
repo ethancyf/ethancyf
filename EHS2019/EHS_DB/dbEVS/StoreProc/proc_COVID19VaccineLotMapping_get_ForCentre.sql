@@ -20,6 +20,7 @@ GO
 -- Description:		Immu Record
 -- =============================================
 
+-- For Scheme (COVID19CVC / COVID19DH / COVID19RVP)
 CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotMapping_get_ForCentre]
 	@SP_ID CHAR(8),
 	@Practice_Display_Seq SMALLINT = NULL
@@ -39,10 +40,10 @@ BEGIN
 -- =============================================
 
 	SELECT
-		DISTINCT 
 		VLM.[Vaccine_Lot_ID],
-		VLD.[Vaccine_Lot_No],
+		VLM.[Vaccine_Lot_No],
 		VBD.[Brand_ID],
+		VBD.[Brand_Trade_Name],
 		VBD.[Brand_Name],
 		[Brand_Name_Chi] = 
 			CASE 
@@ -68,25 +69,31 @@ BEGIN
 		VLM.[Practice_Display_Seq],
 		VLM.[Record_Status],
 		VLM.[Service_Period_From],
-		VLM.[Service_Period_To]
+		-- VLM.[Service_Period_To],
+		[Service_Period_To] = 
+			CASE
+				WHEN VLM.[Service_Period_To] IS NULL THEN VLD.[Expiry_Date]
+				WHEN VLD.[Expiry_Date] < VLM.[Service_Period_To] THEN VLD.[Expiry_Date]
+				ELSE VLM.[Service_Period_To]
+			END,
+		VLD.[Expiry_Date]
 	FROM 
 		[COVID19VaccineLotMapping] VLM WITH(NOLOCK)
 			INNER JOIN [VaccineCentreSPMapping] VCSP WITH(NOLOCK)
 				ON VLM.[Centre_ID] = VCSP.[Centre_ID]
-					AND (ISNULL(VLM.[Booth],'All') = 'All' OR VLM.[Booth] = VCSP.[Booth])
+					AND VLM.[Booth] = VCSP.[Booth]
 			INNER JOIN [COVID19VaccineLotDetail] VLD WITH(NOLOCK)
 				ON VLM.[Vaccine_Lot_No] = VLD.[Vaccine_Lot_No]
 			INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)
 				ON VLD.[Brand_ID] = VBD.[Brand_ID]
 	WHERE
-		VLM.[Service_Type] = 'CENTRE'
-		AND VLM.[Record_Status] = 'A'
-		AND VLM.[Lot_Status] = 'A'
+		VLM.[Record_Status] = 'A'
+		AND VLM.[Service_Type] = 'CENTRE'
 		AND VCSP.[SP_ID] = @SP_ID
 		AND (@Practice_Display_Seq IS NULL OR VCSP.[Practice_Display_Seq] = @Practice_Display_Seq)
 	ORDER BY 
-		VBD.[Brand_Name],
-		VLM.[Vaccine_Lot_ID]
+		VBD.[Brand_Trade_Name],
+		VLM.[Vaccine_Lot_No]
 END
 GO
 

@@ -667,7 +667,8 @@ Public MustInherit Class EHSClaimBasePage
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
+                 SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -734,6 +735,22 @@ Public MustInherit Class EHSClaimBasePage
     ' Cancel Search RCH : LOG00078
     Public Shared Sub AuditLogCancelSearchRCH(ByVal udtAuditLogEntry As AuditLogEntry)
         udtAuditLogEntry.WriteLog(LogID.LOG00078, "Cancel Search RCH")
+    End Sub
+
+    ' Open Outreach Window : LOG00092
+    Public Shared Sub AuditLogShowOutreachPopup(ByVal udtAuditLogEntry As AuditLogEntry)
+        udtAuditLogEntry.WriteLog(LogID.LOG00092, "Show Outreach Popup")
+    End Sub
+
+    ' Search Outreach : LOG00093
+    Public Shared Sub AuditLogSelectOutreach(ByVal udtAuditLogEntry As AuditLogEntry, ByVal strOutreachCode As String)
+        udtAuditLogEntry.AddDescripton("Outreach Code", strOutreachCode)
+        udtAuditLogEntry.WriteLog(LogID.LOG00093, "Select Outreach")
+    End Sub
+
+    ' Cancel Search Outreach : LOG00094
+    Public Shared Sub AuditLogCancelSearchOutreach(ByVal udtAuditLogEntry As AuditLogEntry)
+        udtAuditLogEntry.WriteLog(LogID.LOG00094, "Cancel Search Outreach")
     End Sub
 
 
@@ -845,7 +862,8 @@ Public MustInherit Class EHSClaimBasePage
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
+                 SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -933,7 +951,8 @@ Public MustInherit Class EHSClaimBasePage
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
+                 SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -1364,6 +1383,7 @@ Public MustInherit Class EHSClaimBasePage
 
         For Each udtEHSTransactionDetail As TransactionDetailModel In udtEHSTransaction.TransactionDetails
             udtAuditLogEntry.AddDescripton("Subsidize Code", udtEHSTransactionDetail.SubsidizeCode.Trim)
+            udtAuditLogEntry.AddDescripton("Available Item Code", udtEHSTransactionDetail.AvailableItemCode.Trim)
             udtAuditLogEntry.AddDescripton("Total Amount", udtEHSTransactionDetail.TotalAmount)
         Next
 
@@ -1420,6 +1440,7 @@ Public MustInherit Class EHSClaimBasePage
 
         For Each udtEHSTransactionDetail As TransactionDetailModel In udtEHSTransaction.TransactionDetails
             udtAuditLogEntry.AddDescripton("Subsidize Code", udtEHSTransactionDetail.SubsidizeCode.Trim)
+            udtAuditLogEntry.AddDescripton("Available Item Code", udtEHSTransactionDetail.AvailableItemCode.Trim)
             udtAuditLogEntry.AddDescripton("Total Amount", udtEHSTransactionDetail.TotalAmount)
         Next
 
@@ -1518,6 +1539,7 @@ Public MustInherit Class EHSClaimBasePage
 
         For Each udtEHSTransactionDetail As TransactionDetailModel In udtEHSTransaction.TransactionDetails
             udtAuditLogEntry.AddDescripton("Subsidize Code", udtEHSTransactionDetail.SubsidizeCode.Trim)
+            udtAuditLogEntry.AddDescripton("Available Item Code", udtEHSTransactionDetail.AvailableItemCode.Trim)
             udtAuditLogEntry.AddDescripton("Total Amount", udtEHSTransactionDetail.TotalAmount)
         Next
 

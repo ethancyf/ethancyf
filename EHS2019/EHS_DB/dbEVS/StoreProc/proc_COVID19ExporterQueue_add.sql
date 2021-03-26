@@ -17,6 +17,42 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-0023-24 (COVID19SR Claim)
+-- Modified by:		Winnie SUEN
+-- Modified date:	24 Mar 2021
+-- Description:		1. Handle scheme [COVID19SR]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-21 (COVID19OR Claim)
+-- Modified by:		Winnie SUEN
+-- Modified date:	23 Mar 2021
+-- Description:		1. Handle scheme [COVID19OR]
+--					2. Revise Reserved field 9 for [Outreach Code]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-20 (COVID19 - Carry Forward & COVID19OR Enrolment)
+-- Modified by:		Koala CHENG
+-- Modified date:	19 Mar 2021
+-- Description:		1. Handle Join eHRSS with empty string
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023 (COVID19 - RVP Claim)
+-- Modified by:		Winnie SUEN
+-- Modified date:	15 Mar 2021
+-- Description:		1. Revise field for [COVID19RVP] & [RVP]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			INT20-0084
+-- Modified by:		Winnie SUEN
+-- Modified date:	15 Mar 2021
+-- Description:		1. Fix [Vaccine_administration_remark]
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT20-0081 (Fix COVID19Exporter)
 -- Modified by:		Martin Tang
 -- Modified date:	4 Mar 2021
@@ -66,9 +102,11 @@ AS
         DECLARE @SchemeCodeCOVID19CVC AS VARCHAR(10)= 'COVID19CVC';
         DECLARE @SchemeCodeCOVID19DH AS VARCHAR(10)= 'COVID19DH';
         DECLARE @SchemeCodeCOVID19RVP AS VARCHAR(10)= 'COVID19RVP';
+        DECLARE @SchemeCodeCOVID19OR AS VARCHAR(10)= 'COVID19OR';
+        DECLARE @SchemeCodeCOVID19SR AS VARCHAR(10)= 'COVID19SR';
+
         DECLARE @SchemeCodeRVP AS VARCHAR(10)= 'RVP';
         DECLARE @SchemeCodeVSS AS VARCHAR(10)= 'VSS';
-        DECLARE @SchemeCodeCOVID19CBD AS VARCHAR(10)= 'COVID19CBD';
 
         EXEC [proc_SymmetricKey_open];
 
@@ -229,58 +267,42 @@ AS
                    THEN pinfo.Encrypt_Field9
                    ELSE tpi.Encrypt_Field9
                END AS 'ccc6', 
-               REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                              WHEN @SchemeCodeVSS
+               REPLACE(LTRIM(RTRIM(ISNULL(CASE 
+											  WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeCOVID19OR)                                              
                                               THEN ContactNo.AdditionalFieldValueCode
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'Phone_no', 
                REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
                                               WHEN @SchemeCodeRVP
-                                              THEN CC.Category_Name
+                                              THEN VSSMainCat.Status_Description
                                               WHEN @SchemeCodeCOVID19RVP
-                                              THEN CC.Category_Name
+                                              THEN VSSMainCat.Status_Description
+                                              WHEN @SchemeCodeCOVID19OR
+                                              THEN VSSMainCat.Status_Description
                                               WHEN @SchemeCodeCOVID19CVC
                                               THEN ''
                                               WHEN @SchemeCodeVSS
                                               THEN VSSMainCat.Status_Description
                                               WHEN @SchemeCodeCOVID19DH
                                               THEN ''
-                                              WHEN @SchemeCodeCOVID19CBD
-                                              THEN CC.Category_Name
+                                              WHEN @SchemeCodeCOVID19SR
+                                              THEN ''
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'category', 
                REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
                                               WHEN @SchemeCodeRVP
-                                              THEN CASE rvpl.Type
-                                                       WHEN 'C'
-                                                       THEN 'Residential Child Care Centre (RCHC)'
-                                                       WHEN 'D'
-                                                       THEN 'Residential care home for disabilities (RCHD)'
-                                                       WHEN 'E'
-                                                       THEN 'Residential care home for elderly (RCHE) '
-                                                       WHEN 'I'
-                                                       THEN 'Institutions serving PID (RCHI)'
-                                                       ELSE ''
-                                                   END
+                                              THEN VSSSubCat.Status_Description
                                               WHEN @SchemeCodeCOVID19RVP
-                                              THEN CASE rvpl.Type
-                                                       WHEN 'C'
-                                                       THEN 'Residential Child Care Centre (RCHC)'
-                                                       WHEN 'D'
-                                                       THEN 'Residential care home for disabilities (RCHD)'
-                                                       WHEN 'E'
-                                                       THEN 'Residential care home for elderly (RCHE) '
-                                                       WHEN 'I'
-                                                       THEN 'Institutions serving PID (RCHI)'
-                                                       ELSE ''
-                                                   END
+                                              THEN VSSSubCat.Status_Description
+                                              WHEN @SchemeCodeCOVID19OR
+                                              THEN VSSSubCat.Status_Description
                                               WHEN @SchemeCodeCOVID19CVC
                                               THEN ''
                                               WHEN @SchemeCodeVSS
                                               THEN VSSSubCat.Status_Description
-                                              WHEN @SchemeCodeCOVID19CBD
-                                              THEN ''
                                               WHEN @SchemeCodeCOVID19DH
+                                              THEN ''
+                                              WHEN @SchemeCodeCOVID19SR
                                               THEN ''
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'subcategory', 
@@ -325,14 +347,16 @@ AS
                    THEN 'Other'
                    WHEN @SchemeCodeCOVID19RVP
                    THEN 'Other'
+                   WHEN @SchemeCodeCOVID19OR
+                   THEN 'Other'
                    WHEN @SchemeCodeCOVID19CVC
                    THEN 'Other'
                    WHEN @SchemeCodeVSS
                    THEN 'Private'
-                   WHEN @SchemeCodeCOVID19CBD
-                   THEN 'Other'
                    WHEN @SchemeCodeCOVID19DH
                    THEN 'DH'
+                   WHEN @SchemeCodeCOVID19SR
+                   THEN 'Other'
                    ELSE ''
                END AS 'Vaccination_provider_code',
                CASE vt.Scheme_Code
@@ -340,68 +364,54 @@ AS
                    THEN 'Other vaccination provider'
                    WHEN @SchemeCodeCOVID19RVP
                    THEN 'Other vaccination provider'
+                   WHEN @SchemeCodeCOVID19OR
+                   THEN 'Other vaccination provider'
                    WHEN @SchemeCodeCOVID19CVC
                    THEN 'Other vaccination provider'
                    WHEN @SchemeCodeVSS
                    THEN 'Private hospital /clinic'
-                   WHEN @SchemeCodeCOVID19CBD
-                   THEN 'Other vaccination provider'
                    WHEN @SchemeCodeCOVID19DH
                    THEN 'DH clinic'
+                   WHEN @SchemeCodeCOVID19SR
+                   THEN 'Other vaccination provider'
                    ELSE ''
                END AS 'Vaccination_provider_description', 
-               REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                              WHEN @SchemeCodeRVP
-                                              THEN 'Department of Health COVID-19 Vaccination Programme'
-                                              WHEN @SchemeCodeCOVID19RVP
-                                              THEN 'Department of Health COVID-19 Vaccination Programme'
-                                              WHEN @SchemeCodeCOVID19CVC
-                                              THEN 'Department of Health COVID-19 Vaccination Programme'
-                                              WHEN @SchemeCodeVSS
-                                              THEN 'Department of Health COVID-19 Vaccination Programme'
-                                              WHEN @SchemeCodeCOVID19CBD
-                                              THEN 'The University of Hong Kong - Shenzhen Hospital'
-                                              WHEN @SchemeCodeCOVID19DH
-                                              THEN 'Department of Health COVID-19 Vaccination Programme'
-                                              ELSE ''
-                                          END, ''))), @VBar, @VBarWithQuote) AS 'Vaccination_provider_local_description', 
+			   'Department of Health COVID-19 Vaccination Programme' AS 'Vaccination_provider_local_description', 
                REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
                                               WHEN @SchemeCodeRVP
                                               THEN rvpl.Homename_Eng
                                               WHEN @SchemeCodeCOVID19RVP
                                               THEN rvpl.Homename_Eng
+                                              WHEN @SchemeCodeCOVID19OR
+                                              THEN orl.Outreach_Name_Eng
                                               WHEN @SchemeCodeCOVID19CVC
                                               THEN vc.Centre_Name
                                               WHEN @SchemeCodeCOVID19DH
+                                              THEN vc.Centre_Name
+                                              WHEN @SchemeCodeCOVID19SR
                                               THEN vc.Centre_Name
                                               WHEN @SchemeCodeVSS
                                               THEN p.Practice_Name
-                                              WHEN @SchemeCodeCOVID19CBD
-                                              THEN 'Shenzhen Bay Port'
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'Vaccine_administration_premises', 
                REPLACE(LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(sp.Encrypt_Field2)))), @VBar, @VBarWithQuote) AS 'Health_care_staff_name', --sp name
                LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
                                       WHEN @SchemeCodeCOVID19CVC
                                       THEN vcsm.Booth
+                                      WHEN @SchemeCodeCOVID19SR
+                                      THEN vcsm.Booth
                                       ELSE ''
                                   END, ''))) AS 'Booth', 
-               REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                              WHEN @SchemeCodeVSS
-                                              THEN Remarks.AdditionalFieldValueDesc
-                                              ELSE ''
-                                          END, ''))), @VBar, @VBarWithQuote) AS 'Vaccine_administration_remark', 
+               REPLACE(LTRIM(RTRIM(ISNULL(Remarks.AdditionalFieldValueDesc, ''))), @VBar, @VBarWithQuote) AS 'Vaccine_administration_remark', --b 
                '' AS 'Contraindication', --b 
                '' AS 'Side_effect', --b 
                '' AS 'Route_of_administration_local_description', --b 
                '' AS 'Site_of_administration_local_description', --b 
-               LTRIM(RTRIM(ISNULL(JoinEHRSS.AdditionalFieldValueCode, 'N'))) AS 'eHRSS_Consent', 
+               CASE WHEN LTRIM(RTRIM(ISNULL(JoinEHRSS.AdditionalFieldValueCode, 'N'))) = 'Y' THEN 'Y' ELSE 'N' END AS 'eHRSS_Consent', 
                LTRIM(RTRIM(CONVERT(VARCHAR(19), vt.Create_Dtm, 120))) AS 'Source_record_create_datetime', 
                LTRIM(RTRIM(ISNULL(vt.Create_By_SmartID, 'N'))) AS 'Reserved_field_1', -- Create by Smart IC: Y/N
-               LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                      WHEN @SchemeCodeCOVID19CVC
-                                      THEN vcsm.Centre_ID
-                                      WHEN @SchemeCodeCOVID19DH
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Scheme_Code IN (@SchemeCodeCOVID19CVC, @SchemeCodeCOVID19DH, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR, @SchemeCodeCOVID19SR)
                                       THEN vcsm.Centre_ID
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_2', -- Centre Code
@@ -410,18 +420,18 @@ AS
                    THEN REPLACE(LTRIM(RTRIM(ISNULL(pinfo.EC_Serial_No, ''))), @VBar, @VBarWithQuote)
                    ELSE REPLACE(LTRIM(RTRIM(ISNULL(tpi.EC_Serial_No, ''))), @VBar, @VBarWithQuote)
                END AS 'Reserved_field_3', -- EC Serial No.
-               LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                      WHEN @SchemeCodeVSS
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeRVP, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR)
                                       THEN MainCategory.AdditionalFieldValueCode
                                       ELSE ''
-                                  END, ''))) AS 'Reserved_field_4', -- VSS Main Category
-               LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                      WHEN @SchemeCodeVSS
+                                  END, ''))) AS 'Reserved_field_4', -- Main Category
+               LTRIM(RTRIM(ISNULL(CASE 
+									  WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeRVP, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR)
                                       THEN SubCategory.AdditionalFieldValueCode
                                       ELSE ''
-                                  END, ''))) AS 'Reserved_field_5', -- VSS Sub Category
-               LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
-                                      WHEN @SchemeCodeVSS
+                                  END, ''))) AS 'Reserved_field_5', -- Sub Category
+               LTRIM(RTRIM(ISNULL(CASE 
+                                      WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeRVP)
                                       THEN pro.Registration_Code
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_6', -- Professional Registration no.
@@ -430,8 +440,16 @@ AS
                                       THEN CONVERT(VARCHAR(2), vt.Practice_Display_Seq)
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_7', --Practice Display Seq
-               '' AS 'Reserved_field_8', 
-               '' AS 'Reserved_field_9', 
+               LTRIM(RTRIM(ISNULL(CASE 
+                                      WHEN vt.Scheme_Code IN (@SchemeCodeRVP, @SchemeCodeCOVID19RVP)
+                                      THEN rvpl.RCH_code
+                                      ELSE ''
+                                  END, ''))) AS 'Reserved_field_8', --RCH Code
+               LTRIM(RTRIM(ISNULL(CASE 
+                                      WHEN vt.Scheme_Code IN (@SchemeCodeCOVID19OR)
+                                      THEN orl.Outreach_code
+                                      ELSE ''
+                                  END, ''))) AS 'Reserved_field_9', --Outreach Code
                '' AS 'Reserved_field_10', 
                '' AS 'Reserved_field_11', 
                '' AS 'Reserved_field_12', 
@@ -474,8 +492,13 @@ AS
              LEFT OUTER JOIN TransactionAdditionalField AS RCHCode WITH(NOLOCK)
              ON vt.Transaction_ID = RCHCode.Transaction_ID
                 AND RCHCode.AdditionalFieldID = 'RHCCode'
+             LEFT OUTER JOIN TransactionAdditionalField AS ORCode WITH(NOLOCK)
+             ON vt.Transaction_ID = ORCode.Transaction_ID
+                AND ORCode.AdditionalFieldID = 'OutreachCode'
              LEFT OUTER JOIN RVPHomeList AS rvpl WITH(NOLOCK)
              ON rvpl.RCH_code = RCHCode.AdditionalFieldValueCode
+             LEFT OUTER JOIN OutreachList AS orl WITH(NOLOCK)
+             ON orl.Outreach_Code = ORCode.AdditionalFieldValueCode
              LEFT OUTER JOIN COVID19VaccineBrandDetail AS cvbd WITH(NOLOCK)
              ON VaccineBrand.AdditionalFieldValueCode = cvbd.Brand_ID
              LEFT OUTER JOIN COVID19VaccineLotDetail AS CVLD WITH(NOLOCK)
@@ -497,7 +520,7 @@ AS
              LEFT OUTER JOIN VaccineCentreSPMapping AS vcsm WITH(NOLOCK)
              ON vt.SP_ID = vcsm.SP_ID
                 AND vt.Practice_Display_Seq = vcsm.Practice_Display_Seq
-             LEFT OUTER JOIN VaccineCentre AS vc
+             LEFT OUTER JOIN VaccineCentre AS vc WITH(NOLOCK)
              ON vcsm.Centre_ID = vc.Centre_ID
              LEFT OUTER JOIN TransactionAdditionalField AS MainCategory WITH(NOLOCK)
              ON vt.Transaction_ID = MainCategory.Transaction_ID

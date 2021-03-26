@@ -1,5 +1,5 @@
 SET ABORT-ON-ERROR NO
-cd HCVS\IMMED
+cd HCVS\Production\IMMED
 lcd {sectionFolder}
 BINARY
 put received\{contentFileName} {contentFileName} overwrite

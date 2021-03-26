@@ -8,7 +8,7 @@
                 </td>
                 <td style="vertical-align:top;padding: 0px 0px 0px 0px;">
                       <asp:CheckBox ID="chkDocumentaryProof" runat="server" Width="430px" AutoPostBack="true" Visible="false" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
-                      <asp:DropDownList ID="ddlDocumentaryProof" runat="server" Width="430px" AutoPostBack="true" Visible="false" Style="position:relative;left:-6px"></asp:DropDownList>
+                      <asp:DropDownList ID="ddlDocumentaryProof" runat="server" Width="430px" AutoPostBack="true" Visible="false" Style="position:relative;left:-3px"></asp:DropDownList>
                 </td>   
                 <td style="vertical-align:top; padding-left: 4px;">
                     <asp:Image ID="imgDocumentaryProofError" runat="server" EnableViewState="true" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"

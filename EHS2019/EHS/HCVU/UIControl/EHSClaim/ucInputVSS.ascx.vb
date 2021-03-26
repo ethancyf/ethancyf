@@ -38,6 +38,7 @@ Partial Public Class ucInputVSS
         Public Const VSS_PID As Integer = 4
         Public Const VSS_DA As Integer = 5
         Public Const VSS_ADULT As Integer = 6
+        Public Const VSS_COVID19 As Integer = 7
     End Class
 
     Private Class PlaceOfVaccinationOptions
@@ -207,12 +208,10 @@ Partial Public Class ucInputVSS
 
             Me.BindCategory(strLanguage, updateByTransactionModel, MyBase.ClaimCategorys)
 
-            'nichole
-            'CRE20-009 VSS Disabled with CSSA [Start][Nichole]
-            Dim strServiceDate = Me.ServiceDate()
-            Me.ucInputVSSDA.BindDocumentaryProof(MyBase.EHSClaimVaccine, strServiceDate)
-            ucInputVSSPID.BindDocumentaryProof(MyBase.EHSClaimVaccine)
-            'CRE20-009 VSS Disabled with CSSA [End][Nichole]
+            Me.ucInputVSSDA.BindDocumentaryProof(MyBase.EHSClaimVaccine, MyBase.ServiceDate)
+            Me.ucInputVSSPID.BindDocumentaryProof(MyBase.EHSClaimVaccine)
+            Me.ucInputVSSCOVID19.ServiceDate = MyBase.ServiceDate
+
             If Not MyBase.EHSClaimVaccine Is Nothing Then
                 Me.udcClaimVaccineInputVSS.ShowLegend = MyBase.ShowLegend
                 If Not blnPostbackRebuild Then
@@ -273,6 +272,7 @@ Partial Public Class ucInputVSS
                     Select Case mvCategory.ActiveViewIndex
                         Case ViewIndexCategory.VSS_DA
                             Me.ucInputVSSDA.SetDocumentaryProofOptions(Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.DocumentaryProof).AdditionalFieldValueCode)
+
                         Case ViewIndexCategory.VSS_PID
                             Dim strDocumentaryProofValue As String = Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.DocumentaryProof).AdditionalFieldValueCode
 
@@ -282,6 +282,10 @@ Partial Public Class ucInputVSS
                             Else
                                 Me.ucInputVSSPID.SetDocumentaryProofOptions(strDocumentaryProofValue)
                             End If
+
+                        Case ViewIndexCategory.VSS_COVID19
+                            Me.ucInputVSSCOVID19.EHSTransaction = MyBase.EHSTransaction
+                            Me.ucInputVSSCOVID19.SetupContent(True)
                     End Select
 
                     If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) Then
@@ -380,6 +384,7 @@ Partial Public Class ucInputVSS
                 Me.udcClaimVaccineInputVSS.Visible = False
                 Me.panVSSRecipientCondition.Visible = False
             End If
+
         End If
 
     End Sub
@@ -411,12 +416,14 @@ Partial Public Class ucInputVSS
         Me.imgCategoryError.Visible = visible
     End Sub
 
-    'CRE16-026 (Add PCV13) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
     Public Sub SetRecipientConditionError(ByVal visible As Boolean)
         Me.imgRecipientConditionError.Visible = visible
     End Sub
-    'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+    Public Sub SetCOVID19DetailError(ByVal blnVisible As Boolean)
+        ucInputVSSCOVID19.SetDetailError(blnVisible)
+    End Sub
+
 #End Region
 
 #Region "SetValue"
@@ -523,13 +530,10 @@ Partial Public Class ucInputVSS
         trPlaceOfVaccinationOther.Style.Add("display", "none")
         txtPlaceOfVaccinationOther.Text = String.Empty
 
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
         Me.chkRecipientCondition.Checked = False
         Me.rblRecipientCondition.SelectedIndex = -1
         Me.rblRecipientCondition.SelectedValue = Nothing
         Me.rblRecipientCondition.ClearSelection()
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
     End Sub
 
@@ -544,6 +548,11 @@ Partial Public Class ucInputVSS
         trPlaceOfVaccinationOther.Style.Add("display", "none")
         txtPlaceOfVaccinationOther.Text = String.Empty
     End Sub
+
+    Public Sub InitialCOVID19ClaimDetail()
+        Me.ucInputVSSCOVID19.InitialClaimDetail()
+    End Sub
+
 #End Region
 
 #Region "Events"
@@ -565,10 +574,13 @@ Partial Public Class ucInputVSS
         ucInputVSSPID.SetDocumentaryProofError(False)
         ucInputVSSPID.SetPIDCodeError(False)
         ucInputVSSDA.SetDocumentaryProofError(False)
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        SetCOVID19DetailError(False)
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-        ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [Start][Lawrence]
         Me.rbCategorySelection.SelectedValue = AntiXssEncoder.HtmlEncode(Me.Request.Form(Me.rbCategorySelection.UniqueID), True)
-        ' I-CRE16-007 Fix vulnerabilities found by Checkmarx [End][Lawrence]
+
         Me.udcClaimVaccineInputVSS.Controls.Clear()
         Me.ClearClaimDetailWithoutCategory()
 
@@ -623,8 +635,6 @@ Partial Public Class ucInputVSS
 
     Private Sub showCategoryDetail(ByVal strSelectedCategory As String)
 
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Select Case strSelectedCategory
             Case CategoryCode.VSS_PW
                 mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_PW
@@ -638,11 +648,14 @@ Partial Public Class ucInputVSS
                 mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_PID
             Case CategoryCode.VSS_DA
                 mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_DA
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case CategoryCode.VSS_COVID19
+                mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_COVID19
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
             Case Else
                 mvCategory.ActiveViewIndex = ViewIndexCategory.NoCategory
         End Select
-        ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
-
 
     End Sub
 
@@ -828,6 +841,11 @@ Partial Public Class ucInputVSS
                 blnResult = blnResult And Me.ucInputVSSDA.Validate(blnShowErrorImage, objMsgBox)
             Case ViewIndexCategory.VSS_PID
                 blnResult = blnResult And Me.ucInputVSSPID.Validate(blnShowErrorImage, objMsgBox)
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+            Case ViewIndexCategory.VSS_COVID19
+                blnResult = blnResult And Me.ucInputVSSCOVID19.Validate(blnShowErrorImage, objMsgBox)
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
         End Select
 
         'Check High Risk option if turned on 
@@ -953,6 +971,8 @@ Partial Public Class ucInputVSS
             Case ViewIndexCategory.VSS_PID
                 'Documentary Proof, with/without PID Code
                 Me.ucInputVSSPID.Save(udtEHSTransaction, udtEHSClaimVaccine)
+            Case ViewIndexCategory.VSS_COVID19
+                Me.ucInputVSSCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
         End Select
 
         ' -----------------------------------------------
@@ -997,7 +1017,7 @@ Partial Public Class ucInputVSS
 
 #End Region
 
-#Region "Other functions"
+#Region "Control Binding"
 
     Private Sub BindCategory(ByVal strLanguage As String, ByVal updateByTransactionModel As Boolean, ByVal udtClaimCategorys As ClaimCategoryModelCollection)
         Dim strSelectedValue As String
@@ -1032,20 +1052,7 @@ Partial Public Class ucInputVSS
 
         If dtClaimCategory.Rows.Count > 1 Then
             Me.rbCategorySelection.Visible = True
-
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
-            'Temporary hide the COVID19 category
-            Dim drClaimCategory() As DataRow = dtClaimCategory.Select(String.Format("Category_Code <> '{0}'", "VSSCOVID19"))
-
-            If drClaimCategory IsNot Nothing AndAlso drClaimCategory.Length > 0 Then
-                Me.rbCategorySelection.DataSource = drClaimCategory.CopyToDataTable
-            Else
-                Me.rbCategorySelection.DataSource = dtClaimCategory
-            End If
-
-            'Me.rbCategorySelection.DataSource = dtClaimCategory
-            ' CRE20-0023 (Immu record) [End][Chris YIM]
+            Me.rbCategorySelection.DataSource = dtClaimCategory
 
             Me.rbCategorySelection.DataValueField = ClaimCategoryModel._Category_Code
 
@@ -1088,6 +1095,7 @@ Partial Public Class ucInputVSS
         End If
 
     End Sub
+
 #End Region
 
 End Class

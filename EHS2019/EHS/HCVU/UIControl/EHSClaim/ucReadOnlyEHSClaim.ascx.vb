@@ -21,6 +21,7 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const EVSS As String = "~/UIControl/EHSClaim/ucReadOnlyEVSS.ascx"
         Public Const HSIVSS As String = "~/UIControl/EHSClaim/ucReadOnlyHSIVSS.ascx"
         Public Const RVP As String = "~/UIControl/EHSClaim/ucReadOnlyRVP.ascx"
+        Public Const RVPCOVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyRVPCOVID19.ascx"
         Public Const HCVS_CHINA As String = "~/UIControl/EHSClaim/ucReadOnlyHCVSCHina.ascx"
         Public Const PIDVSS As String = "~/UIControl/EHSClaim/ucReadOnlyPIDVSS.ascx"
         Public Const VSS As String = "~/UIControl/EHSClaim/ucReadOnlyVSS.ascx"
@@ -33,6 +34,7 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const COVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19.ascx"  ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
         Public Const COVID19CBD As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx"
         Public Const COVID19RVP As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19RVP.ascx"
+        Public Const COVID19OR As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx"
 
     End Class
 
@@ -119,6 +121,21 @@ Partial Public Class ucReadOnlyEHSClaim
 
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyRVP)
     End Sub
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Sub BuildRVPCOVID19()
+        setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
+        setSessionValue("_intWidth", _intWidth)
+        setSessionValue("EHSClaimBuild", "RVPCOVID19")
+
+        Dim udcReadOnlyRVPCOVID19 As ucReadOnlyRVPCOVID19 = Me.LoadControl(UserControlPath.RVPCOVID19)
+
+        udcReadOnlyRVPCOVID19.Build(_udtEHSTransaction, _intWidth)
+
+        phReadOnlyEHSClaim.Controls.Add(udcReadOnlyRVPCOVID19)
+    End Sub
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
     ' CRE15-005 PIDVSS [Start][Winnie]
     Public Sub BuildPIDVSS()
@@ -262,6 +279,18 @@ Partial Public Class ucReadOnlyEHSClaim
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyCOVID19RVP)
     End Sub
 
+    Public Sub BuildCOVID19OR()
+        setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
+        setSessionValue("_intWidth", _intWidth)
+        setSessionValue("EHSClaimBuild", "COVID19OR")
+
+        Dim udcReadOnlyCOVID19OR As ucReadOnlyCOVID19OR = Me.LoadControl(UserControlPath.COVID19OR)
+
+        udcReadOnlyCOVID19OR.Build(_udtEHSTransaction, _intWidth)
+
+        phReadOnlyEHSClaim.Controls.Add(udcReadOnlyCOVID19OR)
+    End Sub
+
     Public Sub Clear()
         phReadOnlyEHSClaim.Controls.Clear()
 
@@ -366,15 +395,18 @@ Partial Public Class ucReadOnlyEHSClaim
                     Me.BuildVSSCOVID19()
                 Case SchemeClaimModel.SSSCMC
                     Me.BuildSSSCMC()
-                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                    ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
                 Case SchemeClaimModel.COVID19CVC, _
-                    SchemeClaimModel.COVID19DH
+                    SchemeClaimModel.COVID19DH, _
+                    SchemeClaimModel.COVID19SR
                     Me.BuildCOVID19()
-                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+                    ' CRE20-0023 (Immu record) [End][Winnie SUEN]
                 Case SchemeClaimModel.COVID19CBD
                     Me.BuildCOVID19CBD()
                 Case SchemeClaimModel.COVID19RVP
                     Me.BuildCOVID19RVP()
+                Case SchemeClaimModel.COVID19OR
+                    Me.BuildCOVID19OR()                    
             End Select
 
             Session(ucReadOnlyEHSClaim.strForceRebuildEHSClaim) = Nothing

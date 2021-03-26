@@ -2,26 +2,6 @@
 <%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc1" %>
 
 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
-    <asp:Panel ID ="panBooth" runat="server" Visible ="false">
-    <tr>
-        <td style="width:205px;vertical-align:top">
-            <asp:Label ID="lblCBoothText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text="<%$ Resources:Text, Booth%>" />
-        </td>
-        <td style="vertical-align:top">
-            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
-                <tr>
-                    <td style="vertical-align:top">
-                        <asp:dropdownlist ID="ddlCBooth" runat="server" AutoPostBack="true" Style="width:300px;position:relative;top:-3px;left:-5px" />
-                    </td>
-                    <td style="vertical-align:top">
-                        <asp:Image ID="imgCBoothError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" />
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    </asp:Panel>
     <asp:Panel ID ="panCategory" runat="server" Visible ="false">
     <tr>
         <td style="width:205px;vertical-align:top">

@@ -536,6 +536,15 @@ Partial Public Class ClaimTransDetail
     Protected WithEvents lblContact As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblContactNoNotAbleSMS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblContactNoNotAbleSMS As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''trRemark control.
     '''</summary>
     '''<remarks>

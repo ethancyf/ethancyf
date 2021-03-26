@@ -523,7 +523,7 @@
                                                 </tr>
                                                 </asp:panel>
                                             </table>
-                                            <table style="width: 100%;padding-left:22px" cellpadding="1" cellspacing="0">
+                                            <table style="width: 100%;padding-left:22px;padding-bottom:10px" cellpadding="1" cellspacing="0">
                                                 <tr>
                                                     <td>
                                                         <uc2:ucInputEHSClaim ID="udInputEHSClaim" runat="server"></uc2:ucInputEHSClaim>
@@ -532,12 +532,12 @@
                                             </table>
                                             <table style="width:100%;padding-left:22px">
                                                 <tr>
-                                                    <td style="width: 100px" align="left" valign="top">
+                                                    <td style="width: 195px" align="left" valign="top">
                                                         <asp:ImageButton ID="ibtnEnterClaimDetailBack" runat="server" AlternateText="<%$ Resources:AlternateText, BackBtn %>"
                                                             ImageUrl="<%$ Resources:ImageUrl, BackBtn %>" OnClientClick="return ReasonForVisitInitialComplete();" OnClick="ibtnEnterClaimDetailBack_Click">
                                                         </asp:ImageButton>
                                                     </td>
-                                                    <td align="center" valign="top">
+                                                    <td align="left" valign="top">
                                                         <asp:ImageButton ID="ibtnEnterClaimDetailSave" runat="server" AlternateText="<%$ Resources:AlternateText, SaveBtn %>"
                                                             ImageUrl="<%$ Resources:ImageUrl, SaveBtn %>" OnClientClick="return ReasonForVisitInitialComplete();" OnClick="ibtnEnterClaimDetailSave_Click" /></td>
                                                 </tr>

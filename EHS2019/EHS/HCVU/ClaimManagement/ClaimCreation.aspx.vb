@@ -2316,11 +2316,13 @@ Partial Public Class ClaimCreation
             Me.udtSessionHandlerBLL.EHSTransactionSaveToSession(udtEHSTransaction, FunctionCode)
 
             Me.udcConfirmClaimCreation.EnableVaccinationRecordChecking = False
-            ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-            ' ----------------------------------------------------------
+
             Me.udcConfirmClaimCreation.ShowHKICSymbol = True
             Me.udcConfirmClaimCreation.ShowOCSSSCheckingResult = False
-            ' CRE17-010 (OCSSS integration) [End][Chris YIM]
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.udcConfirmClaimCreation.ShowContactNoNotAbleToSMS = True
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
             Me.udcConfirmClaimCreation.LoadTranInfo(udtEHSTransaction, New DataTable())
 
             If blnNeedOverrideReason Then
@@ -3034,6 +3036,19 @@ Partial Public Class ClaimCreation
 
         End If
 
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Select Case udtSchemeClaim.SchemeCode.Trim.ToUpper
+            Case SchemeClaimModel.VSS
+                Dim udcInputVSS As ucInputVSS = Me.udInputEHSClaim.GetVSSControl
+                If udcInputVSS IsNot Nothing Then
+                    udcInputVSS.InitialCOVID19ClaimDetail()
+                End If
+            Case Else
+                'Nothing to do
+        End Select
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
     End Sub
 
     Private Sub SetUpEnterClaimDetails(Optional ByVal blnPostbackRebuild As Boolean = True)
@@ -3567,6 +3582,7 @@ Partial Public Class ClaimCreation
                     If Not udcInputVSS Is Nothing Then
                         udcInputVSS.SetCategoryError(False)
                         udcInputVSS.SetDoseErrorImage(False)
+                        udcInputVSS.SetCOVID19DetailError(False)
                     End If
 
                 Case SchemeClaimModel.EnumControlType.ENHVSSO

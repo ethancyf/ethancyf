@@ -144,7 +144,8 @@ Partial Public Class EHSClaimForm_RV
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
                 'CRE20-022 (Immu record)  [Start][Raiman] 
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP, SchemeClaimModel.COVID19DH
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP, _
+                SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
                 If Not IsNothing(udtSP) _
                         AndAlso Not IsNothing(udtEHSTransaction) _
                         AndAlso Not IsNothing(udtEHSAccount) _
@@ -155,6 +156,17 @@ Partial Public Class EHSClaimForm_RV
 
                 End If
                 'CRE20-022 (Immu record)  [End][Raiman] 
+
+            Case SchemeClaimModel.RVP
+                If udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
+                    If Not IsNothing(udtSP) _
+                            AndAlso Not IsNothing(udtEHSTransaction) _
+                            AndAlso Not IsNothing(udtEHSAccount) _
+                            AndAlso Not IsNothing(udtSchemeClaim) Then
+                        objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+
+                    End If
+                End If
 
         End Select
 

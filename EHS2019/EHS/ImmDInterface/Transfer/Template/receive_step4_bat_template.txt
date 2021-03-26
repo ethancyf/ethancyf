@@ -1,1 +1,1 @@
-E:\Attachmate\RSecure\rftpc.exe {eHSWebServer} /RFS {step3_generated_file}
+"C:\Program Files (x86)\Micro Focus\RSecure\rftpc.exe" {eHSWebServer} /RFS {step3_generated_file}

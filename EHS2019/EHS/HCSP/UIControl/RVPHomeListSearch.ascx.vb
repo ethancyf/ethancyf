@@ -8,13 +8,14 @@ Partial Public Class RVPHomeListSearch
     Private Const Sess_RVPHomeList = "Grid_RVPHomeList"
     Private Const Sess_RVPSelectedCode = "Grid_RVPSelectedRCHCode"
 
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
-    Public Const FunctCode As String = Common.Component.FunctCode.FUNT020201
+
     Private _strScheme As String
 
     Private _udtSessionHandler As New SessionHandler
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+    Private FunctCode As String = _udtSessionHandler.ClaimFunctCodeGetFromSession()
+
+    Private _enumClaimMode As ClaimMode
 
     'Events 
     Public Event RCHSelected(ByVal strRCHCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs)
@@ -30,6 +31,17 @@ Partial Public Class RVPHomeListSearch
         End Get
         Set(ByVal value As String)
             Me._strScheme = value
+        End Set
+    End Property
+#End Region
+
+#Region "Property"
+    Public Property ClaimMode() As String
+        Get
+            Return Me._enumClaimMode
+        End Get
+        Set(ByVal value As String)
+            Me._enumClaimMode = value
         End Set
     End Property
 #End Region
@@ -49,6 +61,12 @@ Partial Public Class RVPHomeListSearch
 
         If Not udtSelectedScheme Is Nothing Then
             Me.Scheme = udtSelectedScheme.SchemeCode.Trim
+        End If
+
+        If _udtSessionHandler.ClaimCOVID19GetFromSession() Then
+            Me.ClaimMode = Common.Component.ClaimMode.COVID19
+        Else
+            Me.ClaimMode = Common.Component.ClaimMode.All
         End If
 
     End Sub
@@ -95,15 +113,27 @@ Partial Public Class RVPHomeListSearch
         End Select
 
         Dim dtRVPHomeList As DataTable = udtRVPHomeListBLL.searchRVHHomeListByHomeName(Me.txtRCHListFilterCriteria.Text.Trim(), strRCHType)
+        Dim dtFilterRVPHomeList As DataTable = Nothing
 
-        If dtRVPHomeList.Rows.Count = 0 Then
+        Select Case _enumClaimMode
+            Case Common.Component.ClaimMode.COVID19
+                Dim drRVP() As DataRow = dtRVPHomeList.Select("Type IN ('E','D')")
+
+                If drRVP.Length > 0 Then
+                    dtFilterRVPHomeList = drRVP.CopyToDataTable
+                End If
+            Case Else
+                dtFilterRVPHomeList = dtRVPHomeList
+        End Select
+
+        If dtFilterRVPHomeList Is Nothing OrElse dtFilterRVPHomeList.Rows.Count = 0 Then
             Me.udcMsgBoxInfo.AddMessage("990000", "I", "00001")
             Me.udcMsgBoxInfo.BuildMessageBox()
         Else
             Me.udcMsgBoxInfo.Clear()
         End If
 
-        Me.BindRVPHomeList(dtRVPHomeList)
+        Me.BindRVPHomeList(dtFilterRVPHomeList)
 
         Me.ClearSelection(sender)
     End Sub

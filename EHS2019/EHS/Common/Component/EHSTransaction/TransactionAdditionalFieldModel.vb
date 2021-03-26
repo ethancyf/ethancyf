@@ -71,6 +71,7 @@ Namespace Component.EHSTransaction
             Public Const VaccineLotNo As String = "VaccineLotNo"
             Public Const Remarks As String = "Remarks"
             Public Const JoinEHRSS As String = "JoinEHRSS"
+            Public Const OutreachCode As String = "OutreachCode"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Public Shared Function ReasonForVisitL1() As String()

@@ -55,7 +55,8 @@ Partial Public Class SchemeDocTypeLegend
                 dicIndexToSchemeCode.Add(intScheme, udtSchemeC.SchemeCode.Trim)
                 gvDocument.Columns(intScheme).HeaderText = udtSchemeC.SchemeDesc(strLanguage)
 
-                If udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.HSIVSS OrElse udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                'If udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.HSIVSS OrElse udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                If udtSchemeC.SchemeCode = SchemeClaimModel.HSIVSS OrElse udtSchemeC.SchemeCode = SchemeClaimModel.RVP Then
                     lblHSIVSSRemark.Visible = True
                     lblHSIVSSRemark.Text = Me.GetGlobalResourceObject("Text", "AcceptDocumentHSIVSSBelow11YearOld")
                 End If

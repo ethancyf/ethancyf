@@ -1,8 +1,5 @@
-﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb"
-    Inherits="HCSP.MasterPage" %>
-
-<%@ Register Src="UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp"
-    TagPrefix="uc1" %>
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="MasterPage.master.vb" Inherits="HCSP.MasterPage" %>
+<%@ Register Src="UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp" TagPrefix="uc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <%=PageLanguage%>>
@@ -12,9 +9,14 @@
     <base id="basetag" runat="server" />
     <link href="CSS/ComboBoxStyle.css" rel="stylesheet" type="text/css" />
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
-
+<%--    <link href="CSS/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+    <link href="CSS/bootstrap.min.css" rel="stylesheet " type="text/css"/>
+   
+    <script language="javascript" src="../JS/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script language="javascript" src="../JS/bootstrap-select.min.js" type="text/javascript"></script>
+    <script language="javascript" src="../JS/bootstrap.bundle.min.js" type="text/javascript"></script>--%>
     <script language="javascript" src="../JS/jquery-3.4.1.min.js" type="text/javascript"></script>   
-    <script language="javascript" src="../JS/Common.js?ver=2" type="text/javascript" ></script>
+    <script language="javascript" src="../JS/Common.js?ver=3" type="text/javascript" ></script>
     <script language="Javascript" src="../JS/ideasComboLib4Ra.js" type="text/javascript"></script>
     <script type="text/javascript">
 

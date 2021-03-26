@@ -77,6 +77,7 @@ Public Class ScheduleJob
         EHRSSPatientPortalSlowResponse
         HAServicePatientImporter
         COVID19Exporter
+        COVID19BatchConfirm
     End Enum
 
 #End Region
@@ -422,11 +423,11 @@ Public Class ScheduleJob
         dtmLastCheck.Insert(HealthCheckType.HAServicePatientImporter, dtmNow)
         ' CRE20-015 (HA Scheme) check HAServicePatientImporter fail  log 00009 and 000010 [Start][Raiman Chong]
 
-        'CRE20-0022 (Immu record) [Start][Winnie SUEN]
+        'CRE20-0023 (Immu record) [Start][Winnie SUEN]
         ' ---------------------------------------------------------------------------------------------------------
         dtmLastCheck.Insert(HealthCheckType.COVID19Exporter, dtmNow)
-        'CRE20-0022 (Immu record) [End][Winnie SUEN]
-
+        dtmLastCheck.Insert(HealthCheckType.COVID19BatchConfirm, dtmNow)
+        'CRE20-0023 (Immu record) [End][Winnie SUEN]
 
         CheckTime.ReadCheckTime(dtmLastCheck)
 
@@ -477,6 +478,10 @@ Public Class ScheduleJob
             'CRE20-0022 (Immu record) [Start][Martin Tang]
             CheckCOVID19Exporter_ExportFail(dtmLastCheck(HealthCheckType.COVID19Exporter), dtmNow)
             'CRE20-0022 (Immu record) [End][Martin Tang]
+
+            'CRE20-0023 (Immu record) [Start][Winnie SUEN]
+            CheckCOVID19BatchConfirm_Fail(dtmLastCheck(HealthCheckType.COVID19BatchConfirm), dtmNow)
+            'CRE20-0023 (Immu record) [End][Winnie SUEN]
 
             CheckTime.WriteCheckTime(dtmLastCheck)
 
@@ -2307,7 +2312,104 @@ Public Class ScheduleJob
 
 #End Region
 
+#Region "COVID19BatchConfirm"
+    Private Sub CheckCOVID19BatchConfirm_Fail(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
+        ' +--------------------------------------------------------------------------------------------------+
+        ' | For every [5] minutes, monitor the ScheduleJobLog to see if any COVID19BatchConfirm         |
+        ' | fail case. If there is error case, raise pager alert;If there is warning case, raise email alert |
+        ' +--------------------------------------------------------------------------------------------------+
 
+        Log("Checking COVID19BatchConfirm_Fail")
+
+        ' Check whether need to run
+        If DateDiff(DateInterval.Minute, dtmLastCheck, dtmCurrent) < CInt(ConfigurationManager.AppSettings("COVID19BatchConfirm_CheckInterval")) Then
+            Log("Smaller than CheckInterval, no need to run")
+
+            Return
+        End If
+
+        ' Update now to be the new LastCheckTime
+        dtmLastCheck = dtmCurrent
+
+        ' Check logs
+        Dim intScheduleJobLogMinuteBefore As Integer = CInt(ConfigurationManager.AppSettings("COVID19BatchConfirm_ScheduleJobLogMinuteBefore"))
+        Dim strScheduleJobLogProgramID As String = ConfigurationManager.AppSettings("COVID19BatchConfirm_ProgramID")
+        Dim strScheduleJobPagerAlertLogID As String = ConfigurationManager.AppSettings("COVID19BatchConfirm_PagerAlertLogID")
+        Dim strScheduleJobEmailAlertLogID As String = ConfigurationManager.AppSettings("COVID19BatchConfirm_EmailAlertLogID")
+
+
+        Dim strPagerAlertLogID_PagerAlert As String = ConfigurationManager.AppSettings("COVID19BatchConfirm_PagerAlertLogID_PagerAlert")
+
+        Dim strEmailAlertLogID_EmailAlert As String = ConfigurationManager.AppSettings("COVID19BatchConfirm_EmailAlertLogID_EmailAlert")
+
+
+        Dim dtPagerAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobPagerAlertLogID, _
+                                                         dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                         dtmCurrent)
+
+        Dim dtEmailAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobEmailAlertLogID, _
+                                                          dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                          dtmCurrent)
+
+        Dim strMessage As String = String.Empty
+        Dim blnPagerAlert As Boolean = False
+        Dim blnEmailAlert As Boolean = False
+
+        If dtPagerAlertLogID.Rows.Count > 0 Then
+
+            If strPagerAlertLogID_PagerAlert = "Y" Then blnPagerAlert = True
+
+            ' Get the latest description
+            strMessage = dtPagerAlertLogID.Rows(0)("Description")
+
+        ElseIf dtEmailAlertLogID.Rows.Count > 0 Then
+
+            If strEmailAlertLogID_EmailAlert = "Y" Then blnEmailAlert = True
+
+            ' Get the latest description
+            strMessage = dtEmailAlertLogID.Rows(0)("Description")
+        End If
+
+
+
+        If blnPagerAlert Then
+            Log("COVID19BatchConfirm_Fail pager alert")
+
+            CheckCOVID19BatchConfirm_FailAlert(AlertType.PagerAlert, strMessage)
+        End If
+
+        If blnEmailAlert Then
+            Log("COVID19BatchConfirm_Fail email alert")
+
+            CheckCOVID19BatchConfirm_FailAlert(AlertType.EmailAlert, strMessage)
+        End If
+
+        Log("Completed checking CheckCOVID19BatchConfirm_Fail")
+
+    End Sub
+
+
+    'For CheckCOVID19BatchConfirm_Fail write event log
+    Private Sub CheckCOVID19BatchConfirm_FailAlert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19BatchConfirm_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19BatchConfirm_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19BatchConfirm_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19BatchConfirm_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
+#End Region
 
 
 

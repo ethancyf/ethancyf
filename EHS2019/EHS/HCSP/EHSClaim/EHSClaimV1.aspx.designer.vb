@@ -140,6 +140,69 @@ Partial Public Class EHSClaimV1
     Protected WithEvents btnPopupPrintOptionSelectionSelect As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''panPopupOutreachListSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panPopupOutreachListSearch As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panOutreachListHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOutreachListHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblOutreachSearchTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachSearchTitle As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panOutreachRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOutreachRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''udcOutreachSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcOutreachSearch As Global.HCSP.OutreachListSearch
+
+    '''<summary>
+    '''btnPopupOutreachListSearchCancel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnPopupOutreachListSearchCancel As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnPopupOutreachListSearchSelect control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnPopupOutreachListSearchSelect As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''panPopupRVPHomeListSearch control.
     '''</summary>
     '''<remarks>
@@ -750,6 +813,24 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnModalPopupRVPHomeListSearch As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExtenderOutreachListSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderOutreachListSearch As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupOutreachListSearch control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupOutreachListSearch As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''ModalPopupExtenderSchemeLegned control.

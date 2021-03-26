@@ -240,7 +240,8 @@
                                     <asp:Label ID="lblContactText" runat="server" Text="<%$ Resources:Text, ContactNo2 %>"></asp:Label>
                                 </td>
                                 <td style="vertical-align: top">
-                                    <asp:Label ID="lblContact" runat="server" CssClass="tableText"></asp:Label>
+                                    <asp:Label ID="lblContact" runat="server" CssClass="tableText"></asp:Label>&nbsp;
+                                    <asp:Label ID="lblContactNoNotAbleSMS" runat="server" CssClass="tableText" Text="<%$ Resources:Text, NotAbleToReceiveSMS%>" style="color:red!important" />
                                 </td>
                             </tr>
                             <tr id="trRemark" runat="server">

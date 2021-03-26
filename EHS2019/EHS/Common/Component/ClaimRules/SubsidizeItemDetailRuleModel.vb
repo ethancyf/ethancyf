@@ -11,6 +11,9 @@ Namespace Component.ClaimRules
             Public Const SUBCOUNT As String = "SUBCOUNT"
             Public Const USED As String = "USED"
             Public Const NOTELIGIBLE As String = "NOTELIGIBLE"
+            Public Const SAMESP As String = "SAMESP"
+            Public Const SAMESCHEME As String = "SAMESCHEME"
+            Public Const SOURCE As String = "SOURCE"
         End Class
 #End Region
 

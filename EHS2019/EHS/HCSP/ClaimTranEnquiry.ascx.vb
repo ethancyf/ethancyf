@@ -117,6 +117,8 @@ Partial Public Class ClaimTranEnquiry
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
                 (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
                  udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
                (udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
@@ -130,7 +132,7 @@ Partial Public Class ClaimTranEnquiry
                                                GetGlobalResourceObject("Text", "No"))
 
                 Else
-                    lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NotProvided")
+                    lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
                 End If
             Else
                 panJoinEHRSS.Visible = False

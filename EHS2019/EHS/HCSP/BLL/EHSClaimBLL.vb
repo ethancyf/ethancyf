@@ -313,7 +313,14 @@ Namespace BLL
                     udtSchemeClaim = (New Scheme.SchemeClaimBLL).getAllEffectiveSchemeClaim_WithSubsidizeGroup(dtmServiceDate).Filter(udtEHSClaimVaccineModel.SchemeCode)
                     ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
-                    If Not CheckVaccineAvailableBenefitBySubsidizeForEnterClaim(udtSchemeClaim, lstIntSchemeSeq(i), lstStrSubsidizeCode(i), udtEHSPersonalInfo, dtmServiceDate, udtAllTransactionBenefit) Then
+                    If Not CheckVaccineAvailableBenefitBySubsidizeForEnterClaim(udtSchemeClaim, _
+                                                                                lstIntSchemeSeq(i), _
+                                                                                lstStrSubsidizeCode(i), _
+                                                                                udtEHSPersonalInfo, _
+                                                                                dtmServiceDate, _
+                                                                                udtAllTransactionBenefit, _
+                                                                                udtInputPicker
+                                                                                ) Then
                         ' No available subsidize
                         strMsgCode = "00255"
                         Exit For
@@ -431,6 +438,251 @@ Namespace BLL
         End Function
         ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]
 
+        Public Function CheckClaimRuleForEnterClaimCOVID19(ByVal dtmServiceDate As Date, ByVal udtEHSAccount As EHSAccountModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+            ByVal udtEHSClaimVaccineModel As EHSClaimVaccineModel, ByVal udtAllTransactionBenefit As TransactionDetailModelCollection, ByRef udtClaimRuleResultList As List(Of ClaimRulesBLL.ClaimRuleResult), _
+            ByVal udtInputPicker As InputPickerModel) As Common.ComObject.SystemMessage
+
+            Dim strMsgCode As String = String.Empty
+            Dim strFunctCode As String = "990000"
+            Dim strSeverity As String = "E"
+
+            Dim lstIntSchemeSeq As New List(Of Integer)
+            Dim lstStrSubsidizeCode As New List(Of String)
+            Dim lstStrSubsidizeItemCode As New List(Of String)
+            Dim lstStrAvailableCode As New List(Of String)
+
+            'CRE16-026 (Add PCV13) [Start][Chris YIM]
+            '-----------------------------------------------------------------------------------------
+            Dim udtInputVaccineCollection As New InputVaccineModelCollection
+            'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+            '------------------------------------------------------
+            ' Retrieve and concat the current claiming vaccination
+            '------------------------------------------------------
+            For Each udtEHSClaimSubsidizeModel As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccineModel.SubsidizeList
+                If udtEHSClaimSubsidizeModel.Selected Then
+                    If udtEHSClaimSubsidizeModel.SubsidizeDetailList.Count = 1 Then
+                        lstIntSchemeSeq.Add(udtEHSClaimSubsidizeModel.SchemeSeq)
+                        lstStrSubsidizeCode.Add(udtEHSClaimSubsidizeModel.SubsidizeCode.Trim())
+                        lstStrSubsidizeItemCode.Add(udtEHSClaimSubsidizeModel.SubsidizeDetailList(0).SubsidizeItemCode.Trim())
+                        lstStrAvailableCode.Add(udtEHSClaimSubsidizeModel.SubsidizeDetailList(0).AvailableItemCode.Trim())
+
+                        udtInputVaccineCollection.Add(New InputVaccineModel(udtEHSClaimSubsidizeModel.SchemeCode, udtEHSClaimSubsidizeModel.SchemeSeq, _
+                                                                            udtEHSClaimSubsidizeModel.SubsidizeCode.Trim(), _
+                                                                            udtEHSClaimSubsidizeModel.SubsidizeItemCode.Trim(), _
+                                                                            udtEHSClaimSubsidizeModel.SubsidizeDetailList(0).AvailableItemCode.Trim(),
+                                                                            udtEHSClaimSubsidizeModel.DisplaySeq, udtEHSClaimSubsidizeModel.SubsidizeDisplayCode))
+                    Else
+                        For Each udtEHSClaimSubsidizeDetailModel As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidizeModel.SubsidizeDetailList
+                            If udtEHSClaimSubsidizeDetailModel.Selected Then
+                                lstIntSchemeSeq.Add(udtEHSClaimSubsidizeModel.SchemeSeq)
+                                lstStrSubsidizeCode.Add(udtEHSClaimSubsidizeModel.SubsidizeCode.Trim())
+                                lstStrSubsidizeItemCode.Add(udtEHSClaimSubsidizeDetailModel.SubsidizeItemCode.Trim())
+                                lstStrAvailableCode.Add(udtEHSClaimSubsidizeDetailModel.AvailableItemCode.Trim())
+
+                                udtInputVaccineCollection.Add(New InputVaccineModel(udtEHSClaimSubsidizeModel.SchemeCode, udtEHSClaimSubsidizeModel.SchemeSeq, _
+                                                    udtEHSClaimSubsidizeModel.SubsidizeCode.Trim(), _
+                                                    udtEHSClaimSubsidizeModel.SubsidizeItemCode.Trim(), _
+                                                    udtEHSClaimSubsidizeDetailModel.AvailableItemCode.Trim(),
+                                                    udtEHSClaimSubsidizeModel.DisplaySeq, udtEHSClaimSubsidizeModel.SubsidizeDisplayCode))
+
+                                Exit For
+                            End If
+                        Next
+                    End If
+                End If
+            Next
+
+            'CRE16-026 (Add PCV13) [Start][Chris YIM]
+            '-----------------------------------------------------------------------------------------
+            udtInputPicker.EHSClaimVaccine = udtInputVaccineCollection
+            'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+
+            Dim blnInvalidScheme As Boolean = False
+
+
+            '------------------------------------------------------
+            ' Check the Newly Selected Transaction Same (Eqv Dose)
+            '------------------------------------------------------
+
+            'CRE15-004 (TIV and QIV) [Start][Chris YIM]
+            '-----------------------------------------------------------------------------------------
+            'Only use for function "CheckSameVaccineForNewTran"
+            Dim lstStrResSystemMessage As New List(Of String)
+            Dim blnHasResSystemMessage As Boolean = False
+
+            'Dim blnSameVaccineDoseError As Boolean = Me._udtClaimRulesBLL.CheckSameVaccineForNewTran(udtEHSClaimVaccineModel.SchemeCode, dtmServiceDate, lstIntSchemeSeq, lstStrSubsidizeCode, lstStrSubsidizeItemCode, lstStrAvailableCode)
+            Dim blnSameVaccineDoseError As Boolean = Me._udtClaimRulesBLL.CheckSameVaccineForNewTran(udtEHSClaimVaccineModel.SchemeCode, dtmServiceDate, lstIntSchemeSeq, lstStrSubsidizeCode, lstStrSubsidizeItemCode, lstStrAvailableCode, lstStrResSystemMessage)
+            If blnSameVaccineDoseError Then
+                strMsgCode = "00242"
+
+                If lstStrResSystemMessage.Count > 0 Then
+                    blnHasResSystemMessage = True
+                End If
+            End If
+            'CRE15-004 (TIV and QIV) [End][Chris YIM]
+
+            Dim lstClaimResultNewTran As List(Of ClaimRulesBLL.ClaimRuleResult) = Nothing
+            Dim lstClaimResult As List(Of ClaimRulesBLL.ClaimRuleResult) = Nothing
+
+            '------------------------------------------------------
+            ' Check the Newly Selected Transaction against the Newly Selected Transaction
+            '------------------------------------------------------
+            If strMsgCode = "" Then
+                ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
+                ' -----------------------------------------------------------------------------------------
+                lstClaimResultNewTran = Me._udtClaimRulesBLL.CheckClaimRuleForNewTran(udtEHSPersonalInfo, _
+                    dtmServiceDate, udtEHSClaimVaccineModel.SchemeCode, lstIntSchemeSeq, lstStrSubsidizeCode, _
+                    lstStrSubsidizeItemCode, lstStrAvailableCode, blnInvalidScheme)
+                ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+            End If
+
+            If strMsgCode = "" Then
+                If blnInvalidScheme Then
+                    strMsgCode = "00105"
+                End If
+            End If
+
+            '------------------------------------------------------
+            ' Check available subsidize for claim
+            '------------------------------------------------------
+            If strMsgCode = "" Then
+                Dim udtSchemeClaim As Scheme.SchemeClaimModel = Nothing '(New Scheme.SchemeClaimBLL).getAllEffectiveSchemeClaim_WithSubsidizeGroup(dtmServiceDate).FilterKey(udtEHSClaimVaccineModel.SchemeCode, udtEHSClaimVaccineModel.SchemeSeq)
+                For i As Integer = 0 To lstStrSubsidizeCode.Count - 1
+
+                    ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
+                    ' Remove SchemeSeq
+                    'udtSchemeClaim = (New Scheme.SchemeClaimBLL).getAllEffectiveSchemeClaim_WithSubsidizeGroup(dtmServiceDate).FilterKey(udtEHSClaimVaccineModel.SchemeCode, lstIntSchemeSeq(i))
+                    udtSchemeClaim = (New Scheme.SchemeClaimBLL).getAllEffectiveSchemeClaim_WithSubsidizeGroup(dtmServiceDate).Filter(udtEHSClaimVaccineModel.SchemeCode)
+                    ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+
+                    If Not CheckVaccineAvailableBenefitBySubsidizeForEnterClaim(udtSchemeClaim, _
+                                                                                lstIntSchemeSeq(i), _
+                                                                                lstStrSubsidizeCode(i), _
+                                                                                udtEHSPersonalInfo, _
+                                                                                dtmServiceDate, _
+                                                                                udtAllTransactionBenefit, _
+                                                                                udtInputPicker
+                                                                                ) Then
+                        ' No available subsidize
+                        strMsgCode = "00255"
+                        Exit For
+                    End If
+                Next
+            End If
+
+            '------------------------------------------------------
+            ' Check the Newly Selected Transaction against the database Transaction
+            '------------------------------------------------------
+            If strMsgCode = "" Then
+                ' Get All vaccination transaction (Benefit)
+                Dim udtAllTransactionVaccinte As EHSTransaction.TransactionDetailVaccineModelCollection = udtAllTransactionBenefit
+
+                ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
+                ' -----------------------------------------------------------------------------------------
+                lstClaimResult = Me._udtClaimRulesBLL.CheckClaimRuleForClaim(udtEHSPersonalInfo, dtmServiceDate, _
+                    udtEHSClaimVaccineModel.SchemeCode, lstIntSchemeSeq, lstStrSubsidizeCode, lstStrSubsidizeItemCode, lstStrAvailableCode, _
+                    udtAllTransactionVaccinte, blnInvalidScheme, udtInputPicker)
+                ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+
+                strMsgCode = CustomHandleSystemMessage(lstClaimResult, udtInputVaccineCollection, lstStrResSystemMessage, blnHasResSystemMessage)
+
+            End If
+
+            If strMsgCode = "" Then
+                If blnInvalidScheme Then
+                    strMsgCode = "00105"
+                End If
+            End If
+
+            ' -------------------------------------
+            ' Check with Block Case
+            ' -------------------------------------
+            If strMsgCode = "" Then
+                For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResultNewTran
+                    If udtClaimResult.IsBlock Then
+
+                        If Not udtClaimResult.RelatedClaimRule Is Nothing Then
+                            strFunctCode = udtClaimResult.RelatedClaimRule.FunctionCode
+                            strSeverity = udtClaimResult.RelatedClaimRule.SeverityCode
+                            strMsgCode = udtClaimResult.RelatedClaimRule.MessageCode
+                            Exit For
+                        End If
+                    End If
+                Next
+            End If
+
+            ' -------------------------------------
+            ' Check with Block Case
+            ' -------------------------------------
+            If strMsgCode = "" Then
+                For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResult
+                    If udtClaimResult.IsBlock Then
+
+                        If Not udtClaimResult.RelatedClaimRule Is Nothing Then
+                            strFunctCode = udtClaimResult.RelatedClaimRule.FunctionCode
+                            strSeverity = udtClaimResult.RelatedClaimRule.SeverityCode
+                            strMsgCode = udtClaimResult.RelatedClaimRule.MessageCode
+
+                            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            udtClaimRuleResultList.Add(udtClaimResult)
+                            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+                            Exit For
+                        End If
+                    End If
+                Next
+            End If
+
+            ' -------------------------------------
+            ' Check with Warning Case
+            ' -------------------------------------
+            If strMsgCode = "" Then
+                For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResultNewTran
+                    If Not udtClaimResult.IsBlock AndAlso (udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Declaration OrElse udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Warning) Then
+                        'udtClaimRuleResult = udtClaimResult
+                        udtClaimRuleResultList.Add(udtClaimResult)
+                        Exit For
+                    End If
+                Next
+            End If
+
+            ' -------------------------------------
+            ' Check with Warning Case
+            ' -------------------------------------
+            If strMsgCode = "" Then
+                For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResult
+                    If Not udtClaimResult.IsBlock AndAlso (udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Declaration OrElse udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Warning) Then
+                        'udtClaimRuleResult = udtClaimResult
+                        udtClaimRuleResultList = lstClaimResult
+                        Exit For
+                    End If
+                Next
+            End If
+
+            If Not strMsgCode.Equals(String.Empty) Then
+                'CRE15-004 (TIV and QIV) [Start][Chris YIM]
+                '-----------------------------------------------------------------------------------------
+                'Return New Common.ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+                Dim sm As SystemMessage = New SystemMessage(strFunctCode, strSeverity, strMsgCode)
+                'Dim strRes As String
+
+                If blnHasResSystemMessage Then
+                    'strRes = sm.ConcatMessage(lstStrResSystemMessage, Thread.CurrentThread.CurrentUICulture.Name.ToLower)
+                    For idx As Integer = 0 To lstStrResSystemMessage.Count - 1
+                        sm.AddReplaceMessage("%s" + (idx + 1).ToString, lstStrResSystemMessage(idx))
+                    Next
+                End If
+
+                Return sm
+                'CRE15-004 (TIV and QIV) [End][Chris YIM]
+            Else
+                Return Nothing
+            End If
+        End Function
+
         Public Function CheckExceedDocumentLimitForEnterClaim(ByVal strSchemeCode As String, ByVal dtmServiceDate As Date, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel) As Common.ComObject.SystemMessage
 
             ' -------------------------------------------------------------------------------
@@ -464,7 +716,8 @@ Namespace BLL
         Private Function CheckVaccineAvailableBenefitBySubsidizeForEnterClaim(ByVal udtSchemeClaim As SchemeClaimModel, ByVal intSchemeSeq As Integer, ByVal strSubsidizeCode As String, _
                                                                             ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
                                                                             ByVal dtmServiceDate As DateTime, _
-                                                                            ByVal udtEHSTransactionBenefitList As TransactionDetailModelCollection) As Boolean 'Common.ComObject.SystemMessage
+                                                                            ByVal udtEHSTransactionBenefitList As TransactionDetailModelCollection, _
+                                                                            ByVal udtInputPicker As InputPickerModel) As Boolean 'Common.ComObject.SystemMessage
 
             Dim udtSubsidizeGroupClaim As Scheme.SubsidizeGroupClaimModel = udtSchemeClaim.SubsidizeGroupClaimList.Filter(udtSchemeClaim.SchemeCode, _
                                                                                                                         intSchemeSeq, _
@@ -472,14 +725,11 @@ Namespace BLL
 
             Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtSubsidizeGroupClaim.SubsidizeItemCode)
 
-            ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-            ' -----------------------------------------------------------------------------------------
             If Not (New ClaimRules.ClaimRulesBLL).chkVaccineAvailableBenefitBySubsidize(udtSubsidizeGroupClaim, udtSubsidizeItemDetailList, _
                                                                             udtEHSTransactionBenefitList, _
                                                                             udtEHSPersonalInfo, _
                                                                             dtmServiceDate, _
-                                                                            Nothing, Nothing) Then
-                ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+                                                                            Nothing, udtInputPicker) Then
 
                 Return False
                 'Return New Common.ComObject.SystemMessage("990000", "E", "00255")
@@ -3438,7 +3688,8 @@ Namespace BLL
         ''' <param name="udtEHSAccountModel"></param>
         ''' <param name="dtmServiceDate"></param>
         ''' <param name="blnDynamicControl"></param>
-        ''' <param name="strCategoryCode"></param>
+        ''' <param name="udtAllTransactionVaccineBenefit"></param>
+        ''' <param name="udtInputPicker"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function SearchEHSClaimVaccine(ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal strDocCode As String, ByVal udtEHSAccountModel As EHSAccountModel, _

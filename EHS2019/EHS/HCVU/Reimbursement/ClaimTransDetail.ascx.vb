@@ -34,14 +34,9 @@ Partial Public Class ClaimTransDetail
 
     Private _blnEnableVaccinationRecordChecking As Boolean = True
 
-    ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-    ' ----------------------------------------------------------
     Private _blnEnableToShowHKICSymbol As Boolean = False
     Private _blnShowOCSSSCheckingResult As Boolean = True
-    ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
-    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-    ' ------------------------------------------------------------------------
     Private _blnEnableToShowAccountIDAsBtn As Boolean = True ' Default Show Btn
     Private _blnEnableToShowDateOfDeathBtn As Boolean = True ' Default Show Btn
 
@@ -55,14 +50,14 @@ Partial Public Class ClaimTransDetail
     Private _blnEnableToShowRejectBy As Boolean = True
     Private _blnEnableToShowVoidTransactionNo As Boolean = True
     Private _blnEnableToShowWarning As Boolean = True
-    ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
     Private _strClaimTransDetailFunctionCode As String = String.Empty ' CRE20-0022 (Immu record) [Martin]
+
+    Private _blnShowContactNoNotAbleToSMS As Boolean = False
 
 #End Region
 
 #Region "Properties"
-    ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
-    ' ----------------------------------------------------------
     Public Property ShowHKICSymbol() As Boolean
         Get
             Return _blnEnableToShowHKICSymbol
@@ -80,7 +75,6 @@ Partial Public Class ClaimTransDetail
             _blnShowOCSSSCheckingResult = value
         End Set
     End Property
-    ' CRE17-010 (OCSSS integration) [End][Chris YIM]
 
     Public Property EnableVaccinationRecordChecking() As Boolean
         Get
@@ -91,8 +85,6 @@ Partial Public Class ClaimTransDetail
         End Set
     End Property
 
-    ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-    ' ------------------------------------------------------------------------
     Public WriteOnly Property ShowAccountIDAsBtn() As Boolean
         Set(ByVal value As Boolean)
             _blnEnableToShowAccountIDAsBtn = value
@@ -105,12 +97,18 @@ Partial Public Class ClaimTransDetail
         End Set
 
     End Property
-    ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     ' CRE20-0022 (Immu record) [Start][Martin]
     Public WriteOnly Property FunctionCode() As String
         Set(ByVal value As String)
             _strClaimTransDetailFunctionCode = value
+        End Set
+
+    End Property
+
+    Public WriteOnly Property ShowContactNoNotAbleToSMS() As Boolean
+        Set(ByVal value As Boolean)
+            _blnShowContactNoNotAbleToSMS = value
         End Set
 
     End Property
@@ -528,7 +526,22 @@ Partial Public Class ClaimTransDetail
             Case SchemeClaimModel.EnumControlType.RVP
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
                 udcReadOnlyEHSClaim.Width = 204
-                udcReadOnlyEHSClaim.BuildRVP()
+
+                If IsClaimCOVID19(udtEHSTransaction) Then
+                    udcReadOnlyEHSClaim.BuildRVPCOVID19()
+
+                    If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
+                        DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
+                    End If
+
+                    DisplayRemarks(True)
+
+                    FillRemarks(udtEHSTransaction)
+
+                Else
+                    udcReadOnlyEHSClaim.BuildRVP()
+
+                End If
 
             Case SchemeClaimModel.EnumControlType.EHAPP
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
@@ -671,6 +684,30 @@ Partial Public Class ClaimTransDetail
                     'FillContactNo(udtEHSTransaction)
                     FillRemarks(udtEHSTransaction)
                     'FillJoinEHRSS(udtEHSTransaction)
+
+                Else
+                    DisplayContactNo(False)
+                    DisplayRemarks(False)
+                    DisplayJoinEHRSS(False)
+                End If
+
+            Case SchemeClaimModel.EnumControlType.COVID19OR
+                udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
+                udcReadOnlyEHSClaim.Width = 204
+                udcReadOnlyEHSClaim.BuildCOVID19OR()
+
+                If IsClaimCOVID19(udtEHSTransaction) Then
+                    If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
+                        DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
+                    End If
+
+                    DisplayContactNo(True)
+                    DisplayRemarks(True)
+                    DisplayJoinEHRSS(True)
+
+                    FillContactNo(udtEHSTransaction)
+                    FillRemarks(udtEHSTransaction)
+                    FillJoinEHRSS(udtEHSTransaction)
 
                 Else
                     DisplayContactNo(False)
@@ -1364,6 +1401,18 @@ Partial Public Class ClaimTransDetail
             If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
                 lblContact.Text = lblContact.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
             End If
+
+            If _blnShowContactNoNotAbleToSMS Then
+                Select Case Left(udtEHSTransaction.TransactionAdditionFields.ContactNo, 1)
+                    Case "2", "3"
+                        lblContactNoNotAbleSMS.Visible = True
+                    Case Else
+                        lblContactNoNotAbleSMS.Visible = False
+                End Select
+            Else
+                lblContactNoNotAbleSMS.Visible = False
+            End If
+
         Else
             lblContact.Text = GetGlobalResourceObject("Text", "NotProvided")
         End If
@@ -1386,7 +1435,7 @@ Partial Public Class ClaimTransDetail
                                        GetGlobalResourceObject("Text", "No"))
 
         Else
-            lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NotProvided")
+            lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
         End If
 
     End Sub
@@ -1589,10 +1638,10 @@ Partial Public Class ClaimTransDetail
         If VaccinationBLL.CheckTurnOnVaccinationRecord(VaccinationBLL.VaccineRecordSystem.CMS) <> VaccinationBLL.EnumTurnOnVaccinationRecord.N Then
             Select Case udtVaccineResultBag.HAReturnStatus
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00030))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00052))
                     blnHANotMatch = True
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00272))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00471))
                     blnHAError = True
             End Select
         End If
@@ -1607,22 +1656,22 @@ Partial Public Class ClaimTransDetail
                         End If
                     End If
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.DemographicNotMatch
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00043))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00053))
                     blnDHNotMatch = True
                 Case VaccinationBLL.EnumVaccinationRecordReturnStatus.ConnectionFail
-                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00411))
+                    udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00472))
                     blnDHError = True
             End Select
         End If
 
         If blnHANotMatch And blnDHNotMatch Then
             udtSystemMessageList.Clear()
-            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00044))
+            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00054))
         End If
 
         If blnHAError And blnDHError Then
             udtSystemMessageList.Clear()
-            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00412))
+            udtSystemMessageList.Add(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00473))
         End If
 
         For Each udtSystemMessage In udtSystemMessageList

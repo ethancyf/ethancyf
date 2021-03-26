@@ -2,6 +2,7 @@
 <%@ Register Assembly="HCVU" Namespace="HCVU" TagPrefix="cc1" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSDA.ascx" TagName="ucInputVSSDA" TagPrefix="uc1" %>
 <%@ Register Src="~/UIControl/EHSClaim/ucInputVSSPID.ascx" TagName="ucInputVSSPID" TagPrefix="uc2" %>
+<%@ Register Src="~/UIControl/EHSClaim/ucInputVSSCOVID19.ascx" TagName="ucInputVSSCOVID19" TagPrefix="uc3" %>
 
     <asp:Panel ID="panVSSCategory" runat="server">
         <table border="0" cellpadding="0" cellspacing="0">
@@ -26,6 +27,8 @@
             </tr>
         </table>
     </asp:Panel>
+
+    
 
     <asp:Panel ID="panVSSCategoryInput" runat="server">
         <asp:MultiView ID="mvCategory" runat="server" ActiveViewIndex="0" >
@@ -83,6 +86,10 @@
             </asp:view>
 
             <asp:View ID="vwAdult" runat="server" />
+
+            <asp:View ID="vmCOVID19" runat="server">
+                <uc3:ucInputVSSCOVID19 id="ucInputVSSCOVID19" runat="server" Visible="True" EnableViewState="True"/>
+            </asp:view>
 
         </asp:MultiView>
     </asp:Panel>

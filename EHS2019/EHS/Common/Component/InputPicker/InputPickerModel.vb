@@ -16,12 +16,11 @@
         ' ---------------------------------------------------------------------------------------------------------
         Private _strBrand As String
         Private _udtVaccinationRecord As EHSTransaction.TransactionDetailVaccineModelCollection
+        Private _udtC19Transaction As EHSTransaction.EHSTransactionModel
         ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         'User Define Type
         Private _udtInputVaccineModelCollection As InputPicker.InputVaccineModelCollection
-
-
 
 #Region "Property"
 
@@ -105,6 +104,15 @@
             End Get
             Set(ByVal Value As EHSTransaction.TransactionDetailVaccineModelCollection)
                 _udtVaccinationRecord = Value
+            End Set
+        End Property
+
+        Public Property LatestC19Transaction() As EHSTransaction.EHSTransactionModel
+            Get
+                Return _udtC19Transaction
+            End Get
+            Set(ByVal Value As EHSTransaction.EHSTransactionModel)
+                _udtC19Transaction = Value
             End Set
         End Property
         ' CRE20-0022 (Immu record) [End][Chris YIM]

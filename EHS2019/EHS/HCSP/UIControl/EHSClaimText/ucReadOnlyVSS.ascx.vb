@@ -34,7 +34,7 @@ Namespace UIControl.EHCClaimText
             lblVaccineLotNumTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "VaccineLotNumber")
             lblVaccineTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Vaccines")
             lblDoseTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Dose")
-            lblContactNoTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Contact2")
+            lblContactNoTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "ContactNo2")
             lblRemarksTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Remarks")
             lblJoinEHRSSTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "JoinEHRSS")
 
@@ -268,6 +268,8 @@ Namespace UIControl.EHCClaimText
                 If (MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
+                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
+                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
                     (MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
                      MyBase.EHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
                    (MyBase.EHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
@@ -283,7 +285,7 @@ Namespace UIControl.EHCClaimText
                                                             GetGlobalResourceObject("Text", "No"))
 
                     Else
-                        lblJoinEHRSSForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+                        lblJoinEHRSSForCovid19.Text = GetGlobalResourceObject("Text", "NA")
                     End If
                 Else
                     trJoinEHRSS.Visible = False

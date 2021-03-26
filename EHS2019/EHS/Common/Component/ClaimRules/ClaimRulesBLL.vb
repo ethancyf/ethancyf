@@ -4208,7 +4208,7 @@ Namespace Component.ClaimRules
                         Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
 
                         If udtClaimRule.Dependence.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then Return False
-                        If udtInputPicker.Brand.Trim <> udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then Return False
+                        'If udtInputPicker.Brand.Trim <> udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then Return False
 
                         'Dim udtTranDetailBenifitList As TransactionDetailModelCollection = udtVaccinationRecordList
 
@@ -5276,8 +5276,6 @@ Namespace Component.ClaimRules
 
             For Each udtSubsidizeItemDetailRuleModel As SubsidizeItemDetailRuleModel In udtSubsidizeItemDetailRuleModelCollection
 
-                'CRE16-026 (Add PCV13) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 'Check period whether it is valid. If not has period, bypass the checking 
                 If udtSubsidizeItemDetailRuleModel.CheckFrom.HasValue AndAlso udtSubsidizeItemDetailRuleModel.CheckTo.HasValue Then
                     If dtmServiceDate < udtSubsidizeItemDetailRuleModel.CheckFrom.Value.Date Or udtSubsidizeItemDetailRuleModel.CheckTo.Value.Date < dtmServiceDate Then
@@ -5328,9 +5326,80 @@ Namespace Component.ClaimRules
                         Case SubsidizeItemDetailRuleModel.TypeClass.SUBCOUNT
                             blnMatched = blnMatched AndAlso Me.CompareSubsidizeItemDetailRuleForSubsidizeCount(udtTransactionDetailList, udtSubsidizeItemDetailRuleModel)
 
+                        Case SubsidizeItemDetailRuleModel.TypeClass.SAMESP
+                            If udtInputPicker IsNot Nothing Then
+                                If udtInputPicker.LatestC19Transaction IsNot Nothing Then
+                                    'Match SP ID
+                                    blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                   udtInputPicker.LatestC19Transaction.ServiceProviderID.Trim, _
+                                                                                   udtInputPicker.SPID.Trim)
+                                Else
+                                    blnMatched = False
+
+                                End If
+                            Else
+                                blnMatched = False
+                            End If
+
+                        Case SubsidizeItemDetailRuleModel.TypeClass.SAMESCHEME
+                            If udtInputPicker IsNot Nothing Then
+                                If udtInputPicker.LatestC19Transaction IsNot Nothing Then
+                                    'Match scheme
+                                    Dim blnRes As Boolean = True
+                                    Dim strCompareValue() As String = Split(udtSubsidizeItemDetailRuleModel.CompareValue.Trim, "|")
+
+                                    For intCt As Integer = 0 To strCompareValue.Length - 1
+                                        If intCt = 0 Then
+                                            blnRes = RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                    strCompareValue(intCt), _
+                                                                    udtInputPicker.LatestC19Transaction.SchemeCode.Trim)
+                                        Else
+                                            Select Case udtSubsidizeItemDetailRuleModel.Operator
+                                                Case "="
+                                                    blnRes = blnRes OrElse RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                          strCompareValue(intCt), _
+                                                                                          udtInputPicker.LatestC19Transaction.SchemeCode.Trim)
+
+                                                Case "<>"
+                                                    blnRes = blnRes AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                           strCompareValue(intCt), _
+                                                                                           udtInputPicker.LatestC19Transaction.SchemeCode.Trim)
+
+                                                Case Else
+                                                    Throw New Exception(String.Format("ClaimRulesBLL.CheckSubsidizeItemDetailRuleGroup: SAMESCHEME - Invalid Operator ({0}).", udtSubsidizeItemDetailRuleModel.Operator.Trim()))
+                                            End Select
+
+                                        End If
+
+                                    Next
+
+                                    blnMatched = blnMatched AndAlso blnRes
+
+                                Else
+                                    blnMatched = False
+
+                                End If
+                            Else
+                                blnMatched = False
+                            End If
+
+                        Case SubsidizeItemDetailRuleModel.TypeClass.SOURCE
+                            If udtInputPicker IsNot Nothing Then
+                                Dim strSource As String = String.Empty
+
+                                If udtInputPicker.LatestC19Transaction IsNot Nothing Then
+                                    strSource = "EHS"
+                                End If
+
+                                blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                               udtSubsidizeItemDetailRuleModel.CompareValue.Trim, _
+                                                                               strSource)
+                            Else
+                                blnMatched = False
+                            End If
+
                     End Select
                 End If
-                'CRE16-026 (Add PCV13) [End][Chris YIM]
 
             Next
 

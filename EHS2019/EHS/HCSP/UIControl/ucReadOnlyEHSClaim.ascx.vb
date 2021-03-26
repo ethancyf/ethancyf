@@ -26,6 +26,7 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const CIVSS As String = "ucReadOnlyEHSClaim_CIVSS"
         Public Const HSIVSS As String = "ucReadOnlyEHSClaim_HSIVSS"
         Public Const RVP As String = "ucReadOnlyEHSClaim_RVP"
+        Public Const RVPCOVID19 As String = "ucReadOnlyEHSClaim_RVPCOVID19"
         Public Const HCVS_CHINA As String = "ucReadOnlyEHSClaim_HCVSChina"
         Public Const VACCINE As String = "ucReadOnlyEHSClaim_Vaccine"
         Public Const EHAPP As String = "ucReadOnlyEHSClaim_EHAPP"
@@ -38,6 +39,7 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19CBD As String = "ucReadOnlyEHSClaim_COVID19CBD"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"     ' CRE20-0022 (Immu record) [Winnie SUEN]
+        Public Const COVID19OR As String = "ucReadOnlyEHSClaim_COVID19OR"
     End Class
 
 
@@ -91,12 +93,17 @@ Partial Public Class ucReadOnlyEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.RVP
-                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyRVP.ascx", strFolderPath))
-                udcReadOnlyEHSClaim.ID = EHSClaimControlID.RVP
-                If Me._textOnlyVersion Then
-                    AddHandler CType(udcReadOnlyEHSClaim, UIControl.EHCClaimText.ucReadOnlyRVP).VaccineRemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
+                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                    udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyRVPCOVID19.ascx", strFolderPath))
+                    udcReadOnlyEHSClaim.ID = EHSClaimControlID.RVPCOVID19
                 Else
-                    AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyRVP).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
+                    udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyRVP.ascx", strFolderPath))
+                    udcReadOnlyEHSClaim.ID = EHSClaimControlID.RVP
+                    If Me._textOnlyVersion Then
+                        AddHandler CType(udcReadOnlyEHSClaim, UIControl.EHCClaimText.ucReadOnlyRVP).VaccineRemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
+                    Else
+                        AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyRVP).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
+                    End If
                 End If
 
             Case SchemeClaimModel.EnumControlType.EHAPP
@@ -170,6 +177,10 @@ Partial Public Class ucReadOnlyEHSClaim
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19RVP.ascx", strFolderPath))
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19RVP
+
+            Case SchemeClaimModel.EnumControlType.COVID19OR
+                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19OR.ascx", strFolderPath))
+                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19OR
         End Select
 
         udcReadOnlyEHSClaim.EHSClaimVaccine = Me._udtEHSClaimVaccine

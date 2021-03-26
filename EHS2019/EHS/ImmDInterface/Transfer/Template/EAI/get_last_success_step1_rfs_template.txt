@@ -1,0 +1,7 @@
+SET ABORT-ON-ERROR NO
+cd HCVS\Production\InterfaceFile\HAPatient
+lcd {sectionFolder}
+ASCII
+GET {lastSuccessIndicatorSyn} {lastSuccessIndicatorSyn} overwrite
+SET ABORT-ON-ERROR YES
+quit

@@ -12,6 +12,8 @@ Public MustInherit Class ucInputEHSClaimBase
     ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
     Private _udtEHSTransaction As EHSTransactionModel
     Private _udtEHSTransactionOriginal As EHSTransactionModel
+    Private _udtEHSTransactionLatestVaccineRecord As EHSTransactionModel
+    Private _udtTranDetailLatestVaccineRecord As TransactionDetailVaccineModel
     Private _udtEHSClaimVaccine As EHSClaimVaccineModel
     Private _udtEHSAccount As EHSAccountModel
     Private _udtCurrentPractice As BLL.PracticeDisplayModel
@@ -126,6 +128,24 @@ Public MustInherit Class ucInputEHSClaimBase
         End Get
         Set(ByVal value As EHSTransactionModel)
             Me._udtEHSTransactionOriginal = value
+        End Set
+    End Property
+
+    Public Property EHSTransactionLatestVaccineRecord() As EHSTransactionModel
+        Get
+            Return Me._udtEHSTransactionLatestVaccineRecord
+        End Get
+        Set(ByVal value As EHSTransactionModel)
+            Me._udtEHSTransactionLatestVaccineRecord = value
+        End Set
+    End Property
+
+    Public Property TranDetailLatestVaccineRecord() As TransactionDetailVaccineModel
+        Get
+            Return Me._udtTranDetailLatestVaccineRecord
+        End Get
+        Set(ByVal value As TransactionDetailVaccineModel)
+            Me._udtTranDetailLatestVaccineRecord = value
         End Set
     End Property
 

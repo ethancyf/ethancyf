@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			INT20-0086
+-- Modified by:		Winnie SUEN
+-- Modified date:	20 Mar 2021
+-- Description:		Fix Data type of [Practice_Name] VARCHAR(100) -> NVARCHAR(100)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -158,7 +165,7 @@ create table #tempVoucherAcc
 	Exact_DOB		char(1),
 	Sex				char(1),
 	DataEntry_By	varchar(20),
-	Practice_Name	varchar(100),
+	Practice_Name	nvarchar(100),
 	Practice_Name_Chi nvarchar(100),
 	Voucher_Acc_ID	char(15) COLLATE DATABASE_DEFAULT,
 	Scheme_Code		char(10),

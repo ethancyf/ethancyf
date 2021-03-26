@@ -2068,15 +2068,33 @@ Namespace ComFunction
 
 
         'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[Start][Nichole]
-        Public Function GenerateVaccineLotMappingID() As String
+        'Public Function GenerateVaccineLotMappingID() As String
+        '    Dim strPrefix As String = String.Empty
+
+        '    Dim intNextNum As Integer = getSeqNo_Prefix("VLM", String.Empty, strPrefix)
+
+        '    Return String.Format("{0}{1}", strPrefix, intNextNum.ToString.PadLeft(7, "0"))
+
+        'End Function
+        'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[End][Nichole]
+
+
+        'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[Start][Raiman]
+        Public Function GenerateVaccineLotMappingRequestID() As String
             Dim strPrefix As String = String.Empty
+            Dim dtToday As DateTime = Me.GetSystemDateTime()
+            Dim strPrefix_y As String
 
-            Dim intNextNum As Integer = getSeqNo_Prefix("VLM", String.Empty, strPrefix)
+            strPrefix_y = dtToday.Year.ToString()
 
-            Return String.Format("{0}{1}", strPrefix, intNextNum.ToString.PadLeft(7, "0"))
+            Dim intNextNum As Integer = getSeqNo_Prefix("VLMR", String.Empty, strPrefix)
+            strPrefix = strPrefix + strPrefix_y
+            Return String.Format("{0}{1}", strPrefix, intNextNum.ToString.PadLeft(5, "0"))
 
         End Function
-        'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[End][Nichole]
+        'CRE20-022 Immue Record (Phase 3) Vaccine Lot management[End][Raiman]
+
+
 #End Region
 
 #Region "Transaction Number (By SchemeCode)"
@@ -2092,6 +2110,8 @@ Namespace ComFunction
                      Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19OR, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19SR, _
                      Common.Component.Scheme.SchemeClaimModel.CIVSS
 
                     strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC
@@ -2144,6 +2164,8 @@ Namespace ComFunction
                      Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19OR, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19SR, _
                      Common.Component.Scheme.SchemeClaimModel.CIVSS
 
                     strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC

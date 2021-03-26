@@ -434,7 +434,8 @@ Partial Public Class EHSAccountCreationV1
     'CCCode Selection
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
     Private Sub udcChooseCCCode_Cancel(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcChooseCCCode.Cancel
-
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+        EHSAccountCreationBase.AuditLogStep1b1PromptCCCodeCancel(udtAuditLogEntry)
     End Sub
 
     Private Sub udcChooseCCCode_Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcChooseCCCode.Confirm
@@ -452,6 +453,11 @@ Partial Public Class EHSAccountCreationV1
         'Get Chinese From drop down list, and Save CCCode in Session
         strChineseName = Me.udcChooseCCCode.GetChineseName(FunctCode, True)
         udcInputHKIC.SetCName(strChineseName)
+
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+        udtAuditLogEntry.AddDescripton("Chinese Name", strChineseName)
+
+        EHSAccountCreationBase.AuditLogStep1b1PromptCCCodeConfirm(udtAuditLogEntry)
 
         udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).CName = strChineseName
         Me._udtSessionHandler.EHSAccountSaveToSession(udtEHSAccount, FunctCode)
@@ -1018,19 +1024,37 @@ Partial Public Class EHSAccountCreationV1
                     Me.udcChooseCCCode.Clean()
                     Me._udtSessionHandler.CCCodeRemoveFromSession(FunctCode)
                 Else
-                    'Check for select chinese name/CCCode 
-                    'if cccode is changed (different between session value and input box), or incorrect CCCode
-                    If Me.NeedPopupChineseNameDialog() Then
+                    udcInputHKIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+                    udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-                        systemMessage = Me.Step1b1ShowCCCodeSelection(udcInputHKIC, True)
-                        If Not systemMessage Is Nothing Then
-                            Me.udcMsgBoxErr.AddMessage(systemMessage)
-                        Else
-                            EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(_udtAuditLogEntry)
+                    If (udcInputHKIC.CCCode1.Length = 4 OrElse udcInputHKIC.CCCode1.Length = 0) AndAlso _
+                       (udcInputHKIC.CCCode2.Length = 4 OrElse udcInputHKIC.CCCode2.Length = 0) AndAlso _
+                       (udcInputHKIC.CCCode3.Length = 4 OrElse udcInputHKIC.CCCode3.Length = 0) AndAlso _
+                       (udcInputHKIC.CCCode4.Length = 4 OrElse udcInputHKIC.CCCode4.Length = 0) AndAlso _
+                       (udcInputHKIC.CCCode5.Length = 4 OrElse udcInputHKIC.CCCode5.Length = 0) AndAlso _
+                       (udcInputHKIC.CCCode6.Length = 4 OrElse udcInputHKIC.CCCode6.Length = 0) Then
 
+                        'Check for select chinese name/CCCode 
+                        'if cccode is changed (different between session value and input box), or incorrect CCCode
+                        If Me.NeedPopupChineseNameDialog() Then
+
+                            systemMessage = Me.Step1b1ShowCCCodeSelection(udcInputHKIC, True)
+                            If Not systemMessage Is Nothing Then
+                                Me.udcMsgBoxErr.AddMessage(systemMessage)
+                            Else
+                                EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(_udtAuditLogEntry)
+
+                            End If
+                            blnProceed = False
                         End If
+
+                    Else
+                        Me.udcMsgBoxErr.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputHKIC.SetCCCodeError(True)
                         blnProceed = False
+
                     End If
+
                 End If
 
                 If blnProceed Then
@@ -2153,6 +2177,14 @@ Partial Public Class EHSAccountCreationV1
         Dim systemMessage As SystemMessage
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+        udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+        udtAuditLogEntry.AddDescripton("CCCode1", udcInputHKID.CCCode1)
+        udtAuditLogEntry.AddDescripton("CCCode2", udcInputHKID.CCCode2)
+        udtAuditLogEntry.AddDescripton("CCCode3", udcInputHKID.CCCode3)
+        udtAuditLogEntry.AddDescripton("CCCode4", udcInputHKID.CCCode4)
+        udtAuditLogEntry.AddDescripton("CCCode5", udcInputHKID.CCCode5)
+        udtAuditLogEntry.AddDescripton("CCCode6", udcInputHKID.CCCode6)
+
         EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(udtAuditLogEntry)
 
         systemMessage = Step1b1ShowCCCodeSelection(udcInputHKID, False)

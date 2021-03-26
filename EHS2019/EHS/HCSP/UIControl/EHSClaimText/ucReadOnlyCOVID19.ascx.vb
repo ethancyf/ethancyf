@@ -3,6 +3,7 @@ Imports Common.Component.ClaimCategory
 Imports Common.Component.EHSTransaction
 Imports Common.Component.RVPHomeList
 Imports Common.Component.StaticData
+Imports Common.Component.DocType.DocTypeModel
 
 Namespace UIControl.EHCClaimText
     Partial Public Class ucReadOnlyCOVID19
@@ -14,20 +15,20 @@ Namespace UIControl.EHCClaimText
 
         Protected Overrides Sub RenderLanguage()
 
-            'CRE20-0XX (Immu record)  [Start][Raiman] 
+
             ' Text Field
             lblCategoryTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Category")
             lblVaccineLotNumTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "VaccineLotNumber")
             lblVaccineTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Vaccines")
             lblDoseTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Dose")
-            'CRE20-0XX (Immu record)   [End][Raiman] 
+            lblRemarksTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Remarks")
+            lblJoinEHRSSTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "JoinEHRSS")
+
 
 
         End Sub
 
         Protected Overrides Sub Setup()
-              'CRE20-0XX (Immu record)  [Start][Raiman] 
-
             'Category
             Dim drClaimCategory As DataRow = (New ClaimCategoryBLL).getCategoryDesc(MyBase.EHSTransaction.CategoryCode)
 
@@ -53,13 +54,12 @@ Namespace UIControl.EHCClaimText
             'Vaccine
             Select Case MyBase.SessionHandler.Language
                 Case CultureLanguage.TradChinese
-                    lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Name_Chi")
+                    lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Trade_Name_Chi")
                 Case CultureLanguage.SimpChinese
-                    lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Name_Chi")
+                    lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Trade_Name_Chi")
                 Case Else
-                    lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Name")
+                    lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Trade_Name")
             End Select
-
 
 
             'Dose
@@ -83,8 +83,36 @@ Namespace UIControl.EHCClaimText
 
             End If
 
+            'Remarks
+            If MyBase.EHSTransaction.TransactionAdditionFields.Remarks IsNot Nothing And MyBase.EHSTransaction.TransactionAdditionFields.Remarks <> String.Empty Then
+                lblRemarksForCovid19.Text = MyBase.EHSTransaction.TransactionAdditionFields.Remarks
+            Else
+                lblRemarksForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
 
-            'CRE20-0XX (Immu record)  [End][Raiman] 
+
+            'Join EHRSS
+            If (MyBase.EHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
+                MyBase.EHSTransaction.DocCode = DocTypeCode.EC OrElse _
+                MyBase.EHSTransaction.DocCode = DocTypeCode.OW) Then
+
+                trJoinEHRSS.Visible = True
+                trJoinEHRSSText.Visible = True
+
+                If MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                    lblJoinEHRSSForCovid19.Text = IIf(MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                                        GetGlobalResourceObject("Text", "Yes"), _
+                                                        GetGlobalResourceObject("Text", "No"))
+
+                Else
+                    lblJoinEHRSSForCovid19.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+            Else
+                trJoinEHRSS.Visible = False
+                trJoinEHRSSText.Visible = False
+            End If
+
+
 
         End Sub
 

@@ -51,6 +51,7 @@ Namespace BLL
             Public Const SESS_NotMatchTempAccountExist As String = "SESS_NOTMATCHTEMPACCOUNTEXIST"
             Public Const SESS_ExceedDocTypeLimit As String = "SESS_EXCEEDDOCTYPELIMIT"
             Public Const SESS_EHSEnterClaimDetailSearchRCH As String = "SESS_EHSCLAIMENTERCLAIMDETAILSEARCHRCH"
+            Public Const SESS_EHSEnterClaimDetailSearchOutreach As String = "SESS_EHSCLAIMENTERCLAIMDETAILSEARCHOUTREACH"
             Public Const SESS_RuleResults As String = "SESS_RULERESULTS"
 
             Public Const SESS_EHSClaimSteps As String = "SESS_EHSCLAIMSTEPS"
@@ -74,6 +75,7 @@ Namespace BLL
             Public Const SESS_EHSClaimPrintOutFunctionCode As String = "SESS_EHSCLAIM_PRINTOUT_FUNCTIONCODE"
 
             Public Const SESS_RVPRCHCode As String = "SESS_RVHRCHCode"
+            Public Const SESS_OutreachCode As String = "SESS_OUTREACHCODE"
             Public Const SESS_ClaimCategory As String = "SESS_CLAIMCATEGORY"
 
             Public Const SESS_IsMobileDevice As String = "SESS_ISMOBILEDEVICE"
@@ -168,6 +170,7 @@ Namespace BLL
             Public Const SESS_ClaimFunctCode As String = "SESS_CLAIM_FUNCTCODE" 'nichole
             Public Const SESS_ClaimCOVID19_SchemeSelected As String = "SESS_CLAIMCOVID19_SCHEMESELECTED"
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
+            Public Const SESS_CLAIMCOVID19_CarryForward As String = "SESS_CLAIMCOVID19_CARRYFORWARD"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         End Class
@@ -429,6 +432,37 @@ Namespace BLL
         Public Sub EHSEnterClaimDetailSearchRCHRemoveFromSession()
             HttpContext.Current.Session.Remove(SessionName.SESS_EHSEnterClaimDetailSearchRCH)
         End Sub
+#End Region
+
+#Region "Seach Outreach List during enter claim Detail"
+        Public Sub EHSEnterClaimDetailSearchOutreachSaveToSession(ByVal blnSearchOutreach As Boolean)
+            HttpContext.Current.Session(SessionName.SESS_EHSEnterClaimDetailSearchOutreach) = blnSearchOutreach
+        End Sub
+
+        Public Function EHSEnterClaimDetailSearchOutreachGetFromSession() As Boolean
+            If HttpContext.Current.Session(SessionName.SESS_EHSEnterClaimDetailSearchOutreach) Is Nothing Then
+                Return False
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_EHSEnterClaimDetailSearchOutreach), Boolean)
+            End If
+        End Function
+
+        Public Sub EHSEnterClaimDetailSearchOutreachRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_EHSEnterClaimDetailSearchOutreach)
+        End Sub
+
+        Public Sub OutreachCodeSaveToSession(ByVal strFunctionCode As String, ByVal strOutreachCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_OutreachCode)) = strOutreachCode.Trim()
+        End Sub
+
+        Public Function OutreachCodeGetFromSession(ByVal strFunctionCode As String) As String
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_OutreachCode)), String)
+        End Function
+
+        Public Sub OutreachCodeRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_OutreachCode))
+        End Sub
+
 #End Region
 
 #Region "Eligible Rules"
@@ -1522,6 +1556,23 @@ Namespace BLL
 #End Region
         ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+#Region "Claim COVID-19 - Carry Forword"
+        Public Sub ClaimCOVID19CarryForwordSaveToSession(ByVal blnUsed As Boolean, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_CarryForward)) = blnUsed
+        End Sub
+
+        Public Function ClaimCOVID19CarryForwordGetFromSession(ByVal strFunctionCode As String) As Boolean
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_CarryForward)), Boolean)
+        End Function
+
+        Public Sub ClaimCOVID19CarryForwordRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CLAIMCOVID19_CarryForward))
+        End Sub
+
+#End Region
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 #End Region
 
 

@@ -58,17 +58,21 @@ Namespace Component.Scheme
         Public Const COVID19CBD As String = "COVID19CBD"
         Public Const COVID19RVP As String = "COVID19RVP"
         Public Const COVID19DH As String = "COVID19DH"    ' CRE20-0023-04 (Immu record) [Winnie SUEN]
+        Public Const COVID19OR As String = "COVID19OR"
+        Public Const COVID19SR As String = "COVID19SR"
 
 #End Region
 
 #Region "Enum"
 
         Public Enum EnumControlType
+            NA
             CIVSS
             EVSS
             VOUCHER
             HSIVSS
             RVP
+            RVPCOVID19
             VOUCHERCHINA
             EHAPP
             PIDVSS
@@ -80,6 +84,7 @@ Namespace Component.Scheme
             COVID19     ' CRE20-0022 (Immu record) [Winnie SUEN]
             COVID19CBD
             COVID19RVP
+            COVID19OR
         End Enum
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
@@ -456,7 +461,20 @@ Namespace Component.Scheme
 
         Public Property ControlType() As EnumControlType
             Get
-                Return Me.ReadDataRowEnumName(Of EnumControlType)(_strControlType)
+                Dim enumResControlType As EnumControlType
+                Dim enumConvertControlType As EnumControlType
+                Dim blnValid As Boolean = False
+
+                blnValid = [Enum].TryParse(Of EnumControlType)(_strControlType, enumConvertControlType)
+
+                If blnValid Then
+                    enumResControlType = enumConvertControlType
+                Else
+                    enumResControlType = EnumControlType.NA
+                End If
+
+                Return enumResControlType
+                'Return Me.ReadDataRowEnumName(Of EnumControlType)(_strControlType)
             End Get
             Set(ByVal value As EnumControlType)
                 Me._strControlType = value.ToString

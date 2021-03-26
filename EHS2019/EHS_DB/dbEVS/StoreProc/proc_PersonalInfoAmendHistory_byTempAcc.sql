@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (Immu record)
+-- Modified by:		Winnie SUEN
+-- Modified date:	11 Mar 2021
+-- Description:		Grant Permission to HCVU
+-- =============================================
 -- =============================================  
 -- Modification History  
 -- CR No.:			INT20-037
@@ -132,5 +139,5 @@ and tp.Doc_code = @doc_code
 END
 GO
 
-GRANT EXECUTE ON [dbo].[proc_PersonalInfoAmendHistory_byTempAcc] TO HCSP
+GRANT EXECUTE ON [dbo].[proc_PersonalInfoAmendHistory_byTempAcc] TO HCSP, HCVU
 GO

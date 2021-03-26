@@ -193,6 +193,16 @@ Public MustInherit Class EHSAccountCreationBase
     Public Shared Sub AuditLogStep1b1PromptCCCode(ByVal udtAuditLogEntry As AuditLogEntry)
         udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00034, "Prompt CCCode Box")
     End Sub
+
+    'Enter Detail : Prompt CCCode Box : LOG00042
+    Public Shared Sub AuditLogStep1b1PromptCCCodeConfirm(ByVal udtAuditLogEntry As AuditLogEntry)
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00042, " Prompt CCCode Box - Confirm")
+    End Sub
+
+    'Enter Detail : Prompt CCCode Box : LOG00043
+    Public Shared Sub AuditLogStep1b1PromptCCCodeCancel(ByVal udtAuditLogEntry As AuditLogEntry)
+        udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00043, "Prompt CCCode Box - Cancel")
+    End Sub
 #End Region
 
 #Region "Enter Detail 1b2"

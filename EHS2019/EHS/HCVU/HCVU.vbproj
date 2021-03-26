@@ -159,6 +159,12 @@
     <Content Include="ClaimManagement\VaccinationFileConfirmation.aspx" />
     <Content Include="ClaimManagement\VaccinationFileRectification.aspx" />
     <Content Include="ClaimManagement\VaccinationFileUpload.aspx" />
+    <Content Include="ClaimManagement\VaccineLotApproval.aspx" />
+    <Content Include="ClaimManagement\VaccineLotCreation.aspx" />
+    <Content Include="ClaimManagement\VaccineLotCreationApproval.aspx" />
+    <Content Include="ClaimManagement\VaccineLotManagement.aspx" />
+    <Content Include="CSS\bootstrap-multiselect.css" />
+    <Content Include="CSS\bootstrap.css" />
     <Content Include="CSS\CommonStyleInspection.css" />
     <Content Include="CSS\ReportSubmission\CommonControlStyle.css" />
     <Content Include="CSS\CustomMenuStyle.css" />
@@ -172,6 +178,7 @@
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateEnquiry.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateManagement.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateRequestApproval.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_ReprintVaccinationRecord.png" />
     <Content Include="Images\banner\ClaimManagement\banner_StudentFileClaimCreation.png" />
     <Content Include="Images\banner\ClaimManagement\banner_StudentFileConfirmation.png" />
     <Content Include="Images\banner\ClaimManagement\banner_StudentFileEnquiry.png" />
@@ -182,6 +189,10 @@
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileEnquiry.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileRectification.png" />
     <Content Include="Images\banner\ClaimManagement\banner_VaccinationFileUpload.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccineAndLotNoApprovalInCentres.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccineAndLotNoManagementInCentres.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccineLotApproval.png" />
+    <Content Include="Images\banner\ClaimManagement\banner_VaccineLotManagement.png" />
     <Content Include="Images\banner\eHSAccount\banner_eHealthSubsidiesAccountEnquiryCallCentre.png" />
     <Content Include="Images\banner\ReportAndDownload\banner_PostPaymentCheck.png" />
     <Content Include="Images\banner\Surveillance\banner_InspectionRecordApproval.png" />
@@ -189,6 +200,10 @@
     <Content Include="Images\button\btn_AddAccount.png" />
     <Content Include="Images\button\btn_AddAccount_D.png" />
     <Content Include="Images\button\btn_Approve_D.png" />
+    <Content Include="Images\button\btn_BatchAssign.png" />
+    <Content Include="Images\button\btn_BatchAssign_D.png" />
+    <Content Include="Images\button\btn_BatchRemove.png" />
+    <Content Include="Images\button\btn_BatchRemove_D.png" />
     <Content Include="Images\button\btn_CloseCase.png" />
     <Content Include="Images\button\btn_CloseCase_D.png" />
     <Content Include="Images\button\btn_ConfirmAndAcceptWarning.png" />
@@ -242,22 +257,38 @@
     <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st_cn.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd_cn.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st_cn.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd_cn.png" />
+    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationSecondReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingNameList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd_cn.png" />
+    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationSecondReport.png" />
@@ -286,6 +317,8 @@
     <Content Include="Images\others\ProgressCompletePoint.png" />
     <Content Include="Images\others\ProgressEmptyPoint.png" />
     <Content Include="Images\others\ProgressLine.png" />
+    <Content Include="JS\bootstrap-multiselect.js" />
+    <Content Include="JS\bootstrap.bundle-4.5.2.min.js" />
     <Content Include="JS\ideasComboLib4Ra.js" />
     <Content Include="JS\ideasComboVersion.js" />
     <Content Include="SPlogin.aspx" />
@@ -363,7 +396,10 @@
     <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx" />
+    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19CBD.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
@@ -603,6 +639,34 @@
     </Compile>
     <Compile Include="ClaimManagement\VaccinationFileUpload.aspx.vb">
       <DependentUpon>VaccinationFileUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotApproval.aspx.designer.vb">
+      <DependentUpon>VaccineLotApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotApproval.aspx.vb">
+      <DependentUpon>VaccineLotApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotCreation.aspx.designer.vb">
+      <DependentUpon>VaccineLotCreation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotCreation.aspx.vb">
+      <DependentUpon>VaccineLotCreation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotCreationApproval.aspx.designer.vb">
+      <DependentUpon>VaccineLotCreationApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotCreationApproval.aspx.vb">
+      <DependentUpon>VaccineLotCreationApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotManagement.aspx.designer.vb">
+      <DependentUpon>VaccineLotManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClaimManagement\VaccineLotManagement.aspx.vb">
+      <DependentUpon>VaccineLotManagement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Component\FileGeneration\FileGenerationBLL.vb" />
@@ -1717,6 +1781,13 @@
       <DependentUpon>ucInputVSSDA.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.designer.vb">
+      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.vb">
+      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSPID.ascx.designer.vb">
       <DependentUpon>ucInputVSSPID.ascx</DependentUpon>
     </Compile>
@@ -1730,6 +1801,20 @@
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCIVSS.ascx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>ucReadOnlyCIVSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyRVPCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx.vb">
+      <DependentUpon>ucReadOnlyRVPCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCOVID19OR.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx.vb">
+      <DependentUpon>ucReadOnlyCOVID19OR.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.designer.vb">
       <DependentUpon>ucReadOnlyVSSCOVID19.ascx</DependentUpon>

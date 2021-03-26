@@ -1,7 +1,9 @@
+Imports Common.Component
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Component.StaticData
 Imports Common.Component.ClaimCategory
+
 
 Namespace UIControl.EHCClaimText
     Partial Public Class ucReadOnlyRVP
@@ -25,6 +27,10 @@ Namespace UIControl.EHCClaimText
             Me.lblRCHCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
             Me.lblRCHNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
             Me.lblCategoryText.Text = Me.GetGlobalResourceObject("Text", "Category")
+            lblVaccineLotNumTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "VaccineLotNumber")
+            lblVaccineTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Vaccines")
+            lblDoseTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Dose")
+            lblRemarksTextForCovid19.Text = Me.GetGlobalResourceObject("Text", "Remarks")
 
             AddHandler udcClaimVaccineReadOnlyText.RemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
 
@@ -40,6 +46,18 @@ Namespace UIControl.EHCClaimText
             Dim strEnableClaimCategory As String = Nothing
 
             udtGeneralFunction.getSytemParameterByParameterNameSchemeCode("RVPEnableClaimCategory", strEnableClaimCategory, String.Empty, SchemeClaimModel.RVP)
+
+            ' CRE20-0023 (Immu record) [Start][Martin]
+            ' ---------------------------------------------------------------------------------------------------------
+            If MyBase.EHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(Scheme.SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
+                udcClaimVaccineReadOnlyText.Visible = False
+                panCOVID19Vaccine.Visible = True
+            Else
+                udcClaimVaccineReadOnlyText.Visible = True
+                panCOVID19Vaccine.Visible = False
+            End If
+            ' CRE20-0023 (Immu record) [End][Martin Tang]
+
 
             '------------------------------------------------------------------------------------
             'Category
@@ -80,8 +98,63 @@ Namespace UIControl.EHCClaimText
                 End If
             End If
 
-            Me.udcClaimVaccineReadOnlyText.Build(MyBase.EHSClaimVaccine)
+            ' CRE20-0023 (Immu record) [Start][Martin Tang]
+            ' ---------------------------------------------------------------------------------------------------------
+            If Me.udcClaimVaccineReadOnlyText.Visible Then
+                Me.udcClaimVaccineReadOnlyText.Build(MyBase.EHSClaimVaccine)
+            End If
 
+           
+            If panCOVID19Vaccine.Visible Then
+                'table for VaccineLotNumber and Vaccine
+                Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
+                Dim strVaccineLotNo As String = MyBase.EHSTransaction.TransactionAdditionFields.VaccineLotNo
+                Dim dt As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingByVaccineLotNo(strVaccineLotNo)
+
+                'VaccineLotNumber
+                lblVaccineLotNumForCovid19.Text = dt.Rows(0)("Vaccine_Lot_No")
+
+                'Vaccine
+                Select Case MyBase.SessionHandler.Language
+                    Case CultureLanguage.TradChinese
+                        lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Trade_Name_Chi")
+                    Case CultureLanguage.SimpChinese
+                        lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Trade_Name_Chi")
+                    Case Else
+                        lblVaccineForCovid19.Text = dt.Rows(0)("Brand_Trade_Name")
+                End Select
+
+                'Dose
+                Dim udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel = EHSClaimVaccine.SubsidizeList(0)
+
+                If udtEHSClaimSubsidize.SubsidizeDetailList.Count > 0 Then
+
+                    For Each udtEHSClaimSubidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
+                        If udtEHSClaimSubidizeDetail.Selected Then
+                            Select Case MyBase.SessionHandler.Language
+                                Case CultureLanguage.TradChinese
+                                    lblDoseForCovid19.Text = udtEHSClaimSubidizeDetail.AvailableItemDescChi()
+                                Case CultureLanguage.SimpChinese
+                                    lblDoseForCovid19.Text = udtEHSClaimSubidizeDetail.AvailableItemDescChi()
+                                Case Else
+                                    lblDoseForCovid19.Text = udtEHSClaimSubidizeDetail.AvailableItemDesc()
+                            End Select
+
+                        End If
+                    Next
+
+                End If
+
+                'Remarks
+                If MyBase.EHSTransaction.TransactionAdditionFields.Remarks IsNot Nothing And MyBase.EHSTransaction.TransactionAdditionFields.Remarks <> String.Empty Then
+                    lblRemarksForCovid19.Text = MyBase.EHSTransaction.TransactionAdditionFields.Remarks
+                Else
+                    lblRemarksForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+                End If
+
+
+            End If
+            ' CRE20-0023 (Immu record) [End][Martin Tang]
         End Sub
 
         Public Overrides Sub SetupTableTitle(ByVal width As Integer)

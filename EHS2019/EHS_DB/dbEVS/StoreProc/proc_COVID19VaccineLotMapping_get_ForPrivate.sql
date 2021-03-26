@@ -20,6 +20,7 @@ GO
 -- Description:		Immu Record
 -- =============================================
 
+-- For Scheme (VSS)
 CREATE PROCEDURE [dbo].[proc_COVID19VaccineLotMapping_get_ForPrivate]
 	@SP_ID CHAR(8)  = NULL,
 	@Practice_Display_Seq SMALLINT = NULL
@@ -67,7 +68,14 @@ BEGIN
 		VLM.[Practice_Display_Seq],
 		VLM.[Record_Status],
 		VLM.[Service_Period_From],
-		VLM.[Service_Period_To]
+		-- VLM.[Service_Period_To],
+		[Service_Period_To] = 
+			CASE
+				WHEN VLM.[Service_Period_To] IS NULL THEN VLD.[Expiry_Date]
+				WHEN VLD.[Expiry_Date] < VLM.[Service_Period_To] THEN VLD.[Expiry_Date]
+				ELSE VLM.[Service_Period_To]
+			END,
+		VLD.[Expiry_Date]
 	FROM 
 		[COVID19VaccineLotMapping] VLM WITH(NOLOCK)
 			INNER JOIN [COVID19VaccineLotDetail] VLD WITH(NOLOCK)
@@ -75,12 +83,11 @@ BEGIN
 			INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)
 				ON VLD.[Brand_ID] = VBD.[Brand_ID]
 	WHERE
-		VLM.[Service_Type] = 'PRIVATE'
-		AND VLM.[Record_Status] = 'A'
-		AND VLM.[Lot_Status] = 'A'
+		VLM.[Record_Status] = 'A'
+		AND VLM.[Service_Type] = 'PRIVATE'
 	ORDER BY 
-		VBD.[Brand_Name],
-		VLM.[Vaccine_Lot_ID]
+		VBD.[Brand_Trade_Name],
+		VLM.[Vaccine_Lot_No]
 END
 GO
 

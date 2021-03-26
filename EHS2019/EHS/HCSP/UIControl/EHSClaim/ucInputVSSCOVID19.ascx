@@ -44,13 +44,15 @@
     </asp:Panel>
     <tr>
         <td style="width:205px;vertical-align:top">
-            <asp:Label ID="lblCMainCategoryText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Category%>" />
+            <asp:Label ID="lblCMainCategoryText" runat="server" CssClass="tableTitle" Height="25px" Text ="<%$ Resources:Text, Category%>" />
+            <asp:Imagebutton ID="imgCCategoryInfo" runat="server" AlternateText="<%$ Resources:Text, Category%>" ImageAlign="Top" 
+                ImageUrl="<%$ Resources:ImageUrl, Infobtn %>" style="position:relative;top:0px" OnClientClick="" />
         </td>
         <td style="vertical-align:top">
             <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
                 <tr>
                     <td style="vertical-align:top">
-                        <asp:dropdownlist ID="ddlCMainCategoryCovid19" runat="server" AutoPostBack="false" Style="width:660px;position:relative;top:-3px;left:-5px" />
+                        <asp:dropdownlist ID="ddlCMainCategoryCovid19" runat="server" CssClass="selectpicker1" AutoPostBack="false" Style="width:660px;position:relative;top:-3px;left:-5px" />
                         <asp:TextBox ID="txtCMainCategory" runat="server"  AutoPostBack="false"  Style="display:none;"/>
                     </td>
                     <td style="vertical-align:top">
@@ -68,7 +70,7 @@
             <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
                 <tr>
                     <td style="vertical-align:top">
-                        <asp:dropdownlist ID="ddlCSubCategoryCovid19" runat="server" AutoPostBack="false" Style="width:660px;position:relative;top:-3px;left:-5px" />
+                        <asp:dropdownlist ID="ddlCSubCategoryCovid19" runat="server" CssClass="selectpicker2" AutoPostBack="false" Style="width:660px;position:relative;top:-3px;left:-5px" />
                         <asp:TextBox ID="txtCSubCategory" runat="server"  AutoPostBack="false"  Style="display:none;"/>
                     </td>
                     <td style="vertical-align:top">

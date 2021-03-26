@@ -167,6 +167,24 @@ Partial Public Class ucInputVSS
     Protected WithEvents vwAdult As Global.System.Web.UI.WebControls.View
 
     '''<summary>
+    '''vmCOVID19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vmCOVID19 As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''ucInputVSSCOVID19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucInputVSSCOVID19 As Global.HCVU.ucInputVSSCOVID19
+
+    '''<summary>
     '''panVSSPlaceOfVaccination control.
     '''</summary>
     '''<remarks>

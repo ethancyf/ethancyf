@@ -119,6 +119,27 @@ Namespace Component
             End While
         End Sub
 
+        Shared Function GetDescriptionAllListFromDBEnumCode(ByVal strEnumCode As String) As DataTable
+
+            Dim dtCache As DataTable = GetStatusAllCache()
+            Dim dtResult As DataTable = dtCache.Clone
+
+            Dim i As Integer = 0
+
+            Dim drsCache As DataRow() = dtCache.Select("Enum_class='" + strEnumCode + "'", "Display_Order ASC")
+
+            For i = 0 To drsCache.Length - 1
+                Dim drRow As DataRow = dtResult.NewRow()
+                Dim j As Integer = 0
+                For j = 0 To dtCache.Columns.Count - 1
+                    drRow(j) = drsCache(i)(j)
+                Next
+                dtResult.Rows.Add(drRow)
+            Next
+
+            Return dtResult
+        End Function
+
         Shared Function GetDescriptionListFromDBEnumCode(ByVal strEnumCode As String) As DataTable
 
             Dim dtCache As DataTable = GetStatusCache()
@@ -2512,6 +2533,7 @@ Namespace Component
         Public Const COVID19Exporter As String = "COVID19Exporter" 'CRE20-0022 (Immu record)[Martin Tang]
         Public Const COVID19eHRIntegration As String = "COVID19eHRIntegration"  'CRE20-0022 (Immu record)[Martin Tang]
 
+        Public Const COVID19BatchConfirm As String = "COVID19BatchConfirm"  'CRE20-0023 (Immu record)[Winnie SUEN]
     End Class
 
     Public Class ScheduleJobFunctionCode

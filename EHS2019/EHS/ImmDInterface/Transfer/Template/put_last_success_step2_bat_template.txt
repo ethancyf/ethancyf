@@ -1,1 +1,1 @@
-E:\Attachmate\RSecure\rftpc.exe {eHSWebServer} /RFS {put_last_success_step1_generated_file} \L {sectionFolder}\log\ha_ftp_housekeep.log
+"C:\Program Files (x86)\Micro Focus\RSecure\rftpc.exe" {eHSWebServer} /RFS {put_last_success_step1_generated_file}
