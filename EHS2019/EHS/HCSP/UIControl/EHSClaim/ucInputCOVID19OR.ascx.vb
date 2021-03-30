@@ -276,11 +276,13 @@ Partial Public Class ucInputCOVID19OR
         BindSubCategory()
 
         'Get Vaccine Brand & Lot No.
-        Dim dtVaccineLotNo As DataTable = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID)
+        Dim dtVaccineLotNo As DataTable = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID, ServiceDate)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-
-            Dim drVaccineLotNo() As DataRow = _udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+            'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
+            Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
+            ' Dim drVaccineLotNo() As DataRow = _udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+            'CRE20-023 Fix the Lot Mapping table filter [End][Nichole]
 
             'Bind DropDownList Vaccine Brand
             BindCOVID19VaccineBrand(drVaccineLotNo)
@@ -666,12 +668,32 @@ Partial Public Class ucInputCOVID19OR
         End If
 
         'Check Vaccine Lot No.
+        Dim blnVaccineLotEmpty As Boolean = False
         If String.IsNullOrEmpty(Me.VaccineLotNo) OrElse Me.VaccineLotNoDDL.SelectedItem.Value = String.Empty Then
             blnResult = False
 
+            blnVaccineLotEmpty = True
+
             Me.SetVaccineLotNoError(True)
 
-            objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00462)
+        End If
+
+        'Get the value from request
+        Dim strOriginalSelectedValue As String = Me.Request.Form(Me.txtCVaccineLotNo.UniqueID)
+
+        'Check Vaccine Lot No. - UI value vs Request value
+        Dim blnVaccineLotDiff As Boolean = False
+        If Me.VaccineLotNo.Trim <> strOriginalSelectedValue.Trim Then
+            blnResult = False
+
+            blnVaccineLotDiff = True
+
+            Me.SetVaccineLotNoError(True)
+
+        End If
+
+        If blnVaccineLotEmpty AndAlso blnVaccineLotDiff Then
+            objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00475)
             If objMsgBox IsNot Nothing Then
                 objMsgBox.AddMessage(objMsg, _
                                      New String() {"%en", "%tc", "%sc"}, _
@@ -679,6 +701,30 @@ Partial Public Class ucInputCOVID19OR
                                                    HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
                                                    HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
                                                    })
+            End If
+        Else
+            If blnVaccineLotEmpty Then
+                objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00462)
+                If objMsgBox IsNot Nothing Then
+                    objMsgBox.AddMessage(objMsg, _
+                                         New String() {"%en", "%tc", "%sc"}, _
+                                         New String() {HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                       })
+                End If
+            End If
+
+            If blnVaccineLotDiff Then
+                objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00475)
+                If objMsgBox IsNot Nothing Then
+                    objMsgBox.AddMessage(objMsg, _
+                                         New String() {"%en", "%tc", "%sc"}, _
+                                         New String() {HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "VaccineLotNumber", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                       })
+                End If
             End If
         End If
 
@@ -752,10 +798,13 @@ Partial Public Class ucInputCOVID19OR
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(Me.CurrentPractice.SPID, Me.CurrentPractice.PracticeID)
+        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(Me.CurrentPractice.SPID, Me.CurrentPractice.PracticeID, ServiceDate)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+            'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
+            Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
+            '   Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+            'CRE20-023 Fix the Lot Mapping table filter [End][Nichole]
 
             If drVaccineLotNo.Length > 0 Then
                 For intCt As Integer = 0 To drVaccineLotNo.Length - 1

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			CRE20-018-02
+-- Modified by:		Koala CHENG
+-- Modified date:	10 Mar 2021
+-- Description:		DIsplay "eHS(S) from eHRSS" for eHRSS token
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -367,15 +374,15 @@ AS BEGIN
 
 	
 	-- For GOV SIV, move the display of GOV SIV to the end of VSS vaccine list
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '91' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPQIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '92' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VCQIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '93' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VCLAIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '94' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VAQIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '95' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VEQIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '96' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPIDQIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '97' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPIDLAIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '98' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VDAQIVG'
-	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '99' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VDALAIVG'	
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '901' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '902' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VCQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '903' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VCLAIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '904' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VAQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '905' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VEQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '906' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPIDQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '907' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VPIDLAIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '908' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VDAQIVG'
+	UPDATE @SubsidizeGroupBackOffice SET Display_Seq = '909' WHERE Scheme_Code = 'VSS' AND Subsidize_Code = 'VDALAIVG'	
 -- ---------------------------------------------
 -- @ServiceProviderStatus
 -- ---------------------------------------------
@@ -778,6 +785,9 @@ AS BEGIN
 	-- Create Report Result
 	SET @seq = @seq + 1
 
+	DECLARE @ProjectEHR AS NVARCHAR(MAX)
+	SELECT @ProjectEHR = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName in ('TokenEHR')
+
 	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25)
 	SELECT
 		@seq,
@@ -830,7 +840,7 @@ AS BEGIN
 				ORDER BY PL.Professional_Seq, PL.Service_Category_Code FOR XML PATH ('')),1,2,''),
 
 		T.Token_Serial_No,
-		SD1.Data_Value AS [Project],
+		CASE WHEN T_EHR_Current.Token_Serial_No IS NOT NULL THEN @ProjectEHR ELSE SD1.Data_Value END AS [Project],
 		[Is_Share_Token] = 
 		CASE
 			WHEN T.Is_Share_Token = 'Y' THEN 'Yes'
@@ -842,7 +852,7 @@ AS BEGIN
 		END,
 
 		T.Token_Serial_No_Replacement,
-		SD2.Data_Value AS [Project_Replacement],
+		CASE WHEN T_EHR_Replace.Token_Serial_No IS NOT NULL THEN @ProjectEHR ELSE SD2.Data_Value END AS [Project_Replacement],
 		[Is_Share_Token_Replacement] = 
 		CASE
 			WHEN T.Is_Share_Token_Replacement = 'Y' THEN 'Yes'
@@ -866,6 +876,10 @@ AS BEGIN
 			FULL OUTER JOIN Token T WITH (NOLOCK)
 			-- 'INT14-0035 - Fix eHSU0005-01 Missing SP who without token [End][Chris YIM]
 				ON SP.SP_ID = T.[User_ID] COLLATE DATABASE_DEFAULT
+			LEFT JOIN TokenEHR T_EHR_Current WITH (NOLOCK)
+				ON T.Token_Serial_No = T_EHR_Current.Token_Serial_No
+			LEFT JOIN TokenEHR T_EHR_Replace WITH (NOLOCK)
+				ON T.Token_Serial_No_Replacement = T_EHR_Replace.Token_Serial_No
 			INNER JOIN @ServiceProviderStatus SPS
 				ON SP.Record_Status = SPS.Status_Value COLLATE DATABASE_DEFAULT
 			LEFT JOIN StaticData SD1

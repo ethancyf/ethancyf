@@ -64,6 +64,8 @@ Partial Public Class ucInputEHSClaim
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         Public Const COVID19 As String = "ucInputEHSClaim_COVID19"
+        Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
+        Public Const COVID19OR As String = "ucInputEHSClaim_COVID19OR"
 
     End Class
 
@@ -187,7 +189,6 @@ Partial Public Class ucInputEHSClaim
 
                 Dim udcInputCOVID19 As ucInputCOVID19 = CType(udcInputEHSClaim, ucInputCOVID19)
                 AddHandler udcInputCOVID19.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
-                AddHandler udcInputCOVID19.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
 
                 'Case SchemeClaimModel.EnumControlType.COVID19CBD
                 '    udcInputEHSClaim = Me.ucInputEHSClaim_COVID19CBD
@@ -196,12 +197,13 @@ Partial Public Class ucInputEHSClaim
                 '    AddHandler udcInputCOVID19CBD.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
                 '    AddHandler udcInputCOVID19CBD.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
 
-                'Case SchemeClaimModel.EnumControlType.COVID19RVP
-                '    udcInputEHSClaim = Me.ucInputEHSClaim_COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19RVP
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19RVP.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19RVP
 
-                '    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = CType(udcInputEHSClaim, ucInputCOVID19RVP)
-                '    AddHandler udcInputCOVID19RVP.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
-                '    AddHandler udcInputCOVID19RVP.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
+                Dim udcInputCOVID19RVP As ucInputCOVID19RVP = CType(udcInputEHSClaim, ucInputCOVID19RVP)
+                AddHandler udcInputCOVID19RVP.SearchButtonClick, AddressOf udcInputCOVID19RVP_SearchButtonClick
+                AddHandler udcInputCOVID19RVP.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
 
         End Select
 
@@ -457,6 +459,10 @@ Partial Public Class ucInputEHSClaim
     End Sub
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+    Private Sub udcInputCOVID19RVP_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent ClaimControlEventFired(SchemeClaimModel.COVID19RVP, sender, e)
+    End Sub
+
     Private Sub udcInputEHSClaim_VaccineLegendClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent VaccineLegendClicked(sender, e)
     End Sub
@@ -618,6 +624,18 @@ Partial Public Class ucInputEHSClaim
         End If
     End Function
     ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetCOVID19RVPControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19RVP)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCOVID19RVP)
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 #End Region
 
 #Region "Property"

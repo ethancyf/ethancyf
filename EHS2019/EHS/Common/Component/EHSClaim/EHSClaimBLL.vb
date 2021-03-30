@@ -269,25 +269,37 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End Set
             End Property
 
-            ReadOnly Property MessageVariableName() As String
+            Property MessageVariableName() As String
                 Get
                     Return Me._strMessageVariableName
                 End Get
+                Set(value As String)
+                    Me._strMessageVariableName = value
+                End Set
             End Property
-            ReadOnly Property MessageVariableValue() As String
+            Property MessageVariableValue() As String
                 Get
                     Return Me._strMessageVariableValue
                 End Get
+                Set(value As String)
+                    Me._strMessageVariableValue = value
+                End Set
             End Property
-            ReadOnly Property MessageVariableNameChi() As String
+            Property MessageVariableNameChi() As String
                 Get
                     Return Me._strMessageVariableNameChi
                 End Get
+                Set(value As String)
+                    Me._strMessageVariableNameChi = value
+                End Set
             End Property
-            ReadOnly Property MessageVariableValueChi() As String
+            Property MessageVariableValueChi() As String
                 Get
                     Return Me._strMessageVariableValueChi
                 End Get
+                Set(value As String)
+                    Me._strMessageVariableValueChi = value
+                End Set
             End Property
 
             ReadOnly Property MessageVariableNameArrayList() As ArrayList
@@ -2415,6 +2427,12 @@ Namespace Component.EHSClaim.EHSClaimBLL
                             udtRuleResult.MessageVariableNameChiArrayList.Add(strReplaceTextTC)
                             udtRuleResult.MessageVariableValueChiArrayList.Add(strMessageTC)
                         Next
+
+                        udtRuleResult.MessageVariableName = ReturnMessageVariableAsString(udtRuleResult.MessageVariableNameArrayList)
+                        udtRuleResult.MessageVariableValue = ReturnMessageVariableAsString(udtRuleResult.MessageVariableValueArrayList)
+                        udtRuleResult.MessageVariableNameChi = ReturnMessageVariableAsString(udtRuleResult.MessageVariableNameChiArrayList)
+                        udtRuleResult.MessageVariableValueChi = ReturnMessageVariableAsString(udtRuleResult.MessageVariableValueChiArrayList)
+
                         udtRuleResultList.RuleResults.Add(udtRuleResult)
 
                     Case 2
@@ -3064,7 +3082,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             If Not alMessageVariable Is Nothing AndAlso alMessageVariable.Count > 0 Then
                 For i As Int32 = 0 To alMessageVariable.Count - 1
-                    strMessageVariable = alMessageVariable(i) + EHSClaimBLL.VariableDelimiter
+                    strMessageVariable = strMessageVariable + alMessageVariable(i) + EHSClaimBLL.VariableDelimiter
                 Next
 
                 strMessageVariable = strMessageVariable.Substring(0, strMessageVariable.Length - EHSClaimBLL.VariableDelimiter.Length)

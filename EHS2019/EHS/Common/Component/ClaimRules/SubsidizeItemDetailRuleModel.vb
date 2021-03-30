@@ -12,6 +12,7 @@ Namespace Component.ClaimRules
             Public Const USED As String = "USED"
             Public Const NOTELIGIBLE As String = "NOTELIGIBLE"
             Public Const SAMESP As String = "SAMESP"
+            Public Const SAMEPRACT As String = "SAMEPRACT"
             Public Const SAMESCHEME As String = "SAMESCHEME"
             Public Const SOURCE As String = "SOURCE"
         End Class

@@ -1003,18 +1003,6 @@ Partial Public Class EHSClaimV1
                                 Me.chkStep2aDeclareClaim.Checked = False
                                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
-                            Case SchemeClaimModel.EnumControlType.COVID19CBD
-                                _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
-
-                                Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl()
-                                If Not udcInputCOVID19CBD Is Nothing Then
-                                    If udcInputCOVID19CBD.VaccineBrandDDL.Items.Count <= 1 Then
-                                        udcInputCOVID19CBD.ClearVaccineAndLotNo()
-                                    End If
-                                End If
-
-                                Me.chkStep2aDeclareClaim.Checked = False
-
                             Case SchemeClaimModel.EnumControlType.COVID19RVP
                                 '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
                                 '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
@@ -1223,21 +1211,6 @@ Partial Public Class EHSClaimV1
                                 End If
                             End If
                             ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-                        Case SchemeClaimModel.EnumControlType.COVID19CBD
-                            Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl()
-                            If Not udcInputCOVID19CBD Is Nothing Then
-                                If udcInputCOVID19CBD.VaccineBrandDDL.Items.Count > 1 Then
-                                    udcInputCOVID19CBD.ClearVaccineAndLotNo()
-                                End If
-                                _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
-
-                                'Set Claim button
-                                If String.IsNullOrEmpty(udcInputCOVID19CBD.CategoryForCOVID19) Then
-                                    Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                End If
-                            End If
 
                         Case SchemeClaimModel.EnumControlType.COVID19RVP
                             Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
@@ -3885,10 +3858,6 @@ Partial Public Class EHSClaimV1
                 strCategory = udcInputCOVID19.CategoryForCOVID19
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
-            Case SchemeClaimModel.EnumControlType.COVID19CBD
-                Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl()
-                strCategory = udcInputCOVID19CBD.CategoryForCOVID19
-
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
                 strCategory = udcInputCOVID19RVP.CategoryForCOVID19
@@ -4117,15 +4086,6 @@ Partial Public Class EHSClaimV1
                                     _udtSessionHandler.ClaimCOVID19CategorySaveToSession(udcInputCOVID19.CategoryForCOVID19, FunctionCode)
                                     _udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
                                     _udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
-                                End If
-
-                            Case SchemeClaimModel.EnumControlType.COVID19CBD
-                                Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl()
-
-                                If udcInputCOVID19CBD IsNot Nothing Then
-                                    _udtSessionHandler.ClaimCOVID19CategorySaveToSession(udcInputCOVID19CBD.CategoryForCOVID19, FunctionCode)
-                                    _udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19CBD.VaccineBrand, FunctionCode)
-                                    _udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19CBD.VaccineLotNo, FunctionCode)
                                 End If
 
                             Case SchemeClaimModel.EnumControlType.COVID19RVP
@@ -4901,6 +4861,7 @@ Partial Public Class EHSClaimV1
         '----------------------------------------------------------------------------
 
         udtInputPicker.SPID = udtSP.SPID
+        udtInputPicker.PracticeDisplaySeq = intSelectedPracticeDisplay
 
         strServiceDate = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
 
@@ -5774,15 +5735,6 @@ Partial Public Class EHSClaimV1
                                 _udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
                             End If
 
-                        Case SchemeClaimModel.EnumControlType.COVID19CBD
-                            Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl()
-
-                            If udcInputCOVID19CBD IsNot Nothing Then
-                                '_udtSessionHandler.ClaimCOVID19CategorySaveToSession(udcInputCOVID19.CategoryForCOVID19, FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19CBD.VaccineBrand, FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19CBD.VaccineLotNo, FunctionCode)
-                            End If
-
                         Case SchemeClaimModel.EnumControlType.COVID19RVP
                             Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
 
@@ -6085,9 +6037,6 @@ Partial Public Class EHSClaimV1
                     isValid = Me.Step2aCOVID19Validation(blnIsConfirmed, Me._udtEHSTransaction)
                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
-                Case SchemeClaimModel.EnumControlType.COVID19CBD
-                    isValid = Me.Step2aCOVID19CBDValidation(blnIsConfirmed, Me._udtEHSTransaction)
-
                 Case SchemeClaimModel.EnumControlType.COVID19RVP
                     isValid = Me.Step2aCOVID19RVPValidation(blnIsConfirmed, Me._udtEHSTransaction)
 
@@ -6246,9 +6195,6 @@ Partial Public Class EHSClaimV1
                     Me.Step2aCleanCOVID19Error()
                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
-                Case SchemeClaimModel.EnumControlType.COVID19CBD
-                    Me.Step2aCleanCOVID19CBDError()
-
                 Case SchemeClaimModel.EnumControlType.COVID19RVP
                     Me.Step2aCleanCOVID19RVPError()
 
@@ -6404,17 +6350,6 @@ Partial Public Class EHSClaimV1
         End If
     End Sub
     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-    Private Sub Step2aCleanCOVID19CBDError()
-        Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl()
-        If Not udcInputCOVID19CBD Is Nothing Then
-            udcInputCOVID19CBD.SetBoothError(False)
-            udcInputCOVID19CBD.SetCategoryForCOVID19Error(False)
-            udcInputCOVID19CBD.SetVaccineBrandError(False)
-            udcInputCOVID19CBD.SetVaccineLotNoError(False)
-            udcInputCOVID19CBD.SetDoseForCOVID19Error(False)
-        End If
-    End Sub
 
     Private Sub Step2aCleanCOVID19RVPError()
         Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
@@ -7670,6 +7605,7 @@ Partial Public Class EHSClaimV1
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+        udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
 
         udcInputRVPCOVID19.SetDoseErrorImage(False)
 
@@ -8652,6 +8588,7 @@ Partial Public Class EHSClaimV1
         Dim udtInputPicker As New InputPickerModel()
         udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
         udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+        udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
 
         udcInputVSSCOVID19.SetDoseErrorImage(False)
 
@@ -9382,357 +9319,6 @@ Partial Public Class EHSClaimV1
                     Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
                     'JoinEHRSS
-                    Dim strJoinEHRSS As String = String.Empty
-
-                    If panStep2aDeclareJoineHRSS.Visible Then
-                        strJoinEHRSS = IIf(chkStep2aDeclareJoineHRSS.Checked, YesNo.Yes, YesNo.No)
-                    End If
-
-                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
-                    udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
-                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-                End If
-            End If
-
-        End If
-
-        Return isValid
-    End Function
-    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-    ' --------------------------------------------------------------------------------------
-    Private Function Step2aCOVID19CBDValidation(ByVal checkByConfirmationBox As Boolean, ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
-        ' ---------------------------------------------
-        ' Init
-        '----------------------------------------------
-        Dim isValid As Boolean = False
-        Dim strDOB As String
-
-        Dim udtSchemeDetailBLL As New Common.Component.SchemeDetails.SchemeDetailBLL()
-        Dim udtValidator As Validator = New Validator()
-
-        Dim udcInputCOVID19CBD As ucInputCOVID19CBD = Me.udcStep2aInputEHSClaim.GetCOVID19CBDControl
-        Dim udtEHSClaimVaccine As EHSClaimVaccineModel = Me._udtSessionHandler.EHSClaimVaccineGetFromSession()
-        Dim udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel = udtEHSClaimVaccine.SubsidizeList(0)
-
-        Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
-        Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
-        Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
-
-        ' For Eligible & Claim Rule Warning Checking
-        Dim udtEligibleResult As EligibleResult = Nothing
-        Dim udtClaimRuleResult As ClaimRuleResult = Nothing
-        Dim udtRuleResults As RuleResultCollection = Nothing
-        Dim strHeader As String = String.Empty
-        Dim strText As String = String.Empty
-        Dim strKey As String = String.Empty
-        Dim udtRuleResult As RuleResult = Nothing
-
-        Dim udtInputPicker As New InputPickerModel()
-        udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
-        udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
-
-        udcInputCOVID19CBD.SetDoseErrorImage(False)
-
-        udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
-
-        If Not checkByConfirmationBox Then
-
-            Me.ClearWarningRules(udtRuleResults)
-
-            ' -----------------------------------------------
-            ' UI Input Validation
-            '------------------------------------------------
-
-            'Claim Detial Part & Vaccine Part
-            isValid = udcInputCOVID19CBD.Validate(True, Me.udcMsgBoxErr)
-
-            If panStep2aRecipinetContactInfo.Visible Then
-                If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
-                    isValid = False
-
-                    imgStep2aContactNoError.Visible = True
-
-                    Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
-                    If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, _
-                                                                                    New String() {"%en", "%tc", "%sc"}, _
-                                                                                    New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
-                End If
-
-                If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) Then
-                    If Not Regex.IsMatch(Me.txtStep2aContactNo.Text, "^\d{8}$") Then
-                        isValid = False
-
-                        imgStep2aContactNoError.Visible = True
-
-                        Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00466)
-                        If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, _
-                                                                                    New String() {"%en", "%tc", "%sc"}, _
-                                                                                    New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
-                    End If
-
-                End If
-
-            End If
-
-            'If Not Me.chkStep2aDeclareClaim.Checked Then
-            '    isValid = False
-
-            '    imgStep2aDeclareClaimError.Visible = True
-
-            '    Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00367)
-            '    If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, "%s", "Verification Checklist")
-            'End If
-
-        End If
-
-        'Mark selected vaccine & dose in EHSClaimVaccineModel model
-        If isValid OrElse checkByConfirmationBox Then
-            udtInputPicker.Brand = udcInputCOVID19CBD.VaccineBrand
-            udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
-            udcInputCOVID19CBD.Selection()
-        End If
-
-        If Not checkByConfirmationBox Then
-            ' ------------------------------------------------------------------
-            ' Check Last Service Date of SubsidizeGroupClaim
-            ' ------------------------------------------------------------------
-            If isValid Then
-                isValid = Me.CheckLastServiceDate(udtEHSTransaction.ServiceDate, udtSchemeClaim, udtEHSClaimVaccine)
-            End If
-
-            If isValid Then
-                ' --------------------------------------------------------------
-                ' Check Eligibility:
-                ' --------------------------------------------------------------
-                If udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).DocCode = DocTypeModel.DocTypeCode.EC AndAlso udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).ExactDOB = EHSAccountModel.ExactDOBClass.AgeAndRegistration Then
-                    strDOB = _udtFormatter.formatDOB(udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).DOB, udtEHSPersonalInfo.ExactDOB, udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).ECAge, udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).ECDateOfRegistration)
-                Else
-                    strDOB = _udtFormatter.formatDOB(udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode).DOB, udtEHSPersonalInfo.ExactDOB, Nothing, Nothing)
-                End If
-
-                Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckEligibilityForEnterClaim(udtSchemeClaim, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo, GetVaccinationRecord(udtEHSAccount, udtSchemeClaim.SchemeCode), udtEligibleResult)
-
-                If Not Me._udtSystemMessage Is Nothing Then
-                    ' If Check Eligibility Block Show Error
-                    isValid = False
-                    Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
-                End If
-
-                ' --------------------------------------------------------------
-                ' Check Document Limit:
-                ' --------------------------------------------------------------
-                If isValid Then
-                    Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckExceedDocumentLimitForEnterClaim(udtSchemeClaim.SchemeCode, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo)
-                    If Not Me._udtSystemMessage Is Nothing Then
-                        isValid = False
-                        Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
-                    End If
-                End If
-
-                ' --------------------------------------------------------------
-                ' Check Claim Rules:
-                ' --------------------------------------------------------------
-                If isValid Then
-                    Me._udtSystemMessage = Me._udtEHSClaimBLL.CheckClaimRuleForEnterClaim(udtEHSTransaction.ServiceDate, udtEHSAccount, udtEHSPersonalInfo, Me._udtSessionHandler.EHSClaimVaccineGetFromSession(), GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), udtClaimRuleResult, udtInputPicker)
-                    If Not Me._udtSystemMessage Is Nothing Then
-                        ' If Check Claim Rules Block Show Error
-                        isValid = False
-
-                        HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
-                        udcInputCOVID19CBD.SetDoseErrorImage(True)
-
-                        If _udtSystemMessage.FunctionCode = "990000" AndAlso _udtSystemMessage.SeverityCode = "E" AndAlso _udtSystemMessage.MessageCode = "00464" Then
-                            udcInputCOVID19CBD.SetVaccineBrandError(True)
-                        End If
-                    End If
-                End If
-            End If
-
-            If isValid Then
-                udtRuleResults = Me._udtSessionHandler.EligibleResultGetFromSession()
-
-                If udtRuleResults Is Nothing Then
-                    udtRuleResults = New RuleResultCollection()
-                End If
-
-                ' --------------------------------------------------------------
-                ' Eligibility Warning / Declaration
-                ' --------------------------------------------------------------
-                If udtEligibleResult.IsEligible AndAlso _
-                    (udtEligibleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtEligibleResult.HandleMethod = HandleMethodENum.Warning) Then
-
-                    'Dim drClaimCategory As DataRow = (New ClaimCategoryBLL).getCategoryDesc(MyBase.EHSTransaction.CategoryCode)
-                    Dim strCategoryCode As String = String.Empty
-                    Dim strCategoryCodeForRule As String = String.Empty
-                    Dim strCategoryCodeForExceptionRule As String = String.Empty
-                    Dim udtClaimCategoryModelCollection As ClaimCategoryModelCollection = (New ClaimCategoryBLL).getAllCategoryCache
-                    For Each udtClaimCategoryModel As ClaimCategoryModel In udtClaimCategoryModelCollection
-                        If Not udtEligibleResult.RelatedEligibleRule Is Nothing Then
-                            If udtClaimCategoryModel.SchemeCode = udtEligibleResult.RelatedEligibleRule.SchemeCode And _
-                                udtClaimCategoryModel.SchemeSeq = udtEligibleResult.RelatedEligibleRule.SchemeSeq And _
-                                udtClaimCategoryModel.SubsidizeCode = udtEligibleResult.RelatedEligibleRule.SubsidizeCode Then
-                                strCategoryCodeForRule = udtClaimCategoryModel.CategoryCode
-                            End If
-                        ElseIf Not udtEligibleResult.RelatedEligibleExceptionRule Is Nothing Then
-                            If udtClaimCategoryModel.SchemeCode = udtEligibleResult.RelatedEligibleExceptionRule.SchemeCode And _
-                                udtClaimCategoryModel.SchemeSeq = udtEligibleResult.RelatedEligibleExceptionRule.SchemeSeq And _
-                                udtClaimCategoryModel.SubsidizeCode = udtEligibleResult.RelatedEligibleExceptionRule.SubsidizeCode Then
-                                strCategoryCodeForExceptionRule = udtClaimCategoryModel.CategoryCode
-                            End If
-                        End If
-                    Next
-
-                    If strCategoryCodeForRule <> String.Empty And strCategoryCodeForExceptionRule <> String.Empty And _
-                        strCategoryCodeForRule = strCategoryCodeForExceptionRule Then
-                        strCategoryCode = strCategoryCodeForRule
-                    End If
-
-                    If strCategoryCodeForRule <> String.Empty Then
-                        strCategoryCode = strCategoryCodeForRule
-                    End If
-
-                    If strCategoryCodeForExceptionRule <> String.Empty Then
-                        strCategoryCode = strCategoryCodeForExceptionRule
-                    End If
-
-                    If strCategoryCode = udcInputCOVID19CBD.CategoryForCOVID19 Then
-                        udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtEligibleResult.RuleType), udtEligibleResult)
-
-                        If Not udtEligibleResult.RelatedEligibleRule Is Nothing Then
-                            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleRule.ObjectName.Trim())
-                        ElseIf Not udtEligibleResult.RelatedEligibleExceptionRule Is Nothing Then
-                            strText = Me.GetGlobalResourceObject("Text", udtEligibleResult.RelatedEligibleExceptionRule.ObjectName.Trim())
-                        End If
-
-                        Me.ucNoticePopUpExclamationConfirm.MessageText = strText
-
-                        Me.ModalPopupExclamationConfirmationBox.Show()
-
-                        _udtAuditLogEntry.AddDescripton("Message", strText)
-                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
-
-                        isValid = False
-                    End If
-
-                End If
-
-                ' --------------------------------------------------------------
-                ' Claim Rules Warning / Declaration
-                ' --------------------------------------------------------------
-                If Not udtClaimRuleResult Is Nothing AndAlso Not udtClaimRuleResult.IsBlock AndAlso _
-                    (udtClaimRuleResult.HandleMethod = HandleMethodENum.Declaration OrElse udtClaimRuleResult.HandleMethod = HandleMethodENum.Warning) Then
-
-                    udtRuleResults.Add(Me.RuleResultKey(ActiveViewIndex.Step2a, udtClaimRuleResult.RuleType), udtClaimRuleResult)
-
-                    'not Popup prompt before
-                    If strText.Equals(String.Empty) AndAlso isValid Then
-                        'Get the prompt message from ClaimRule
-                        strText = Me.Step2aPromptClaimRule(udtClaimRuleResult)
-                        strHeader = Me.Step2aPromptHeader(udtClaimRuleResult)
-
-                        If strHeader <> String.Empty Then
-                            Me.ucNoticePopUpExclamationConfirm.CustomHeaderText = strHeader
-                        End If
-
-                        Me.ucNoticePopUpExclamationConfirm.MessageText = strText
-
-                        Me.ModalPopupExclamationConfirmationBox.Show()
-
-                        _udtAuditLogEntry.AddDescripton("Message", strText)
-                        EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
-
-                    End If
-
-                    isValid = False
-                End If
-
-                Me._udtSessionHandler.EligibleResultSaveToSession(udtRuleResults)
-            End If
-        Else
-            strKey = Me.RuleResultKey(ActiveViewIndex.Step2a, RuleTypeENum.EligibleResult)
-            udtRuleResult = udtRuleResults.Item(strKey)
-
-            If Not udtRuleResult Is Nothing Then
-
-                'Should have 2 rule in this collection
-                'first : After sreach this account -> rule added and auto make to confirmed
-                'Second : After press "Next" in Enter claim detail -> rule added but not confirmed
-                If Not udtRuleResult.PromptConfirmed Then
-                    udtEHSTransaction.PreSchool = "Y"
-                End If
-            End If
-
-            isValid = Me.RemoveRulesAfterConfirm(udtRuleResults, False)
-        End If
-
-        If isValid Then
-            udcInputCOVID19CBD.Save(udtEHSTransaction, udtEHSClaimVaccine)
-
-            'Clear old vaccination record for vaccination card
-            _udtSessionHandler.ClaimCOVID19VaccinationCardRemoveFromSession(FunctionCode)
-
-            'Find the nearest vaccination record for vaccination card
-            Dim udtVaccinationRecordList As TransactionDetailVaccineModelCollection = Nothing
-            udtVaccinationRecordList = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode).FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
-
-            If udtVaccinationRecordList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtVaccinationRecordList.FilterFindNearestRecord()
-
-                If udtEHSClaimVaccine.GetSelectedDoseForCOVID19.AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtInputPicker.Brand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    _udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
-
-            If Me.ClaimMode = ClaimMode.COVID19 AndAlso panStep2aRecipinetContactInfo.Visible Then
-                Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
-
-                If Me._udtEHSTransaction.TransactionAdditionFields(0) IsNot Nothing Then
-                    'Contact No.
-                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
-                    udtTransactAdditionfield.AdditionalFieldValueCode = txtStep2aContactNo.Text.Trim
-                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-
-                    ''Mobile
-                    'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Mobile
-                    'udtTransactAdditionfield.AdditionalFieldValueCode = IIf(Me.chkStep2aMobile.Checked, YesNo.Yes, YesNo.No)
-                    'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                    'udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    'udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    'udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    'Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-
-                    'Remarks
-                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Remarks
-                    udtTransactAdditionfield.AdditionalFieldValueCode = String.Empty
-                    udtTransactAdditionfield.AdditionalFieldValueDesc = txtStep2aRemark.Text.Trim
-                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-
-                    'Join EHRSS
                     Dim strJoinEHRSS As String = String.Empty
 
                     If panStep2aDeclareJoineHRSS.Visible Then
@@ -12979,7 +12565,12 @@ Partial Public Class EHSClaimV1
             ' Case of  Me._blnConcurrentUpdate = true
             Me._udtSessionHandler.EHSAccountRemoveFromSession(FunctCode)
 
-            Me._udtSystemMessage = New Common.ComObject.SystemMessage("020202", "I", "00005")
+            If udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
+                Me._udtSystemMessage = New Common.ComObject.SystemMessage("990000", "I", "00017")
+            Else
+                Me._udtSystemMessage = New Common.ComObject.SystemMessage("020202", "I", "00005")
+            End If
+
             Me.udcMsgBoxInfo.Type = CustomControls.InfoMessageBoxType.Information
             Me.udcMsgBoxInfo.AddMessage(Me._udtSystemMessage)
 
@@ -14703,13 +14294,17 @@ Partial Public Class EHSClaimV1
 
         Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
-        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMapping(strSPID, intPracticeID)
+        'CRE20-023 Fix the filter on the Lot Mapping table[Start][Nichole]
+        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMapping(strSPID, intPracticeID, dtmServiceDate)
+
         Dim drVaccineLotNo() As DataRow = Nothing
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            drVaccineLotNo = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            ' drVaccineLotNo = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            drVaccineLotNo = dtVaccineLotNo.Select
         End If
 
+        'CRE20-023 Fix the filter on the Lot Mapping table [End][Nichole]
         Return drVaccineLotNo
 
     End Function
@@ -14721,11 +14316,14 @@ Partial Public Class EHSClaimV1
 
         Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
-        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate()
+        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, dtmServiceDate)
         Dim drVaccineLotNo() As DataRow = Nothing
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            drVaccineLotNo = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
+            ' drVaccineLotNo = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            drVaccineLotNo = dtVaccineLotNo.Select
+            'CRE20-023 Fix the Lot Mapping table filter [End][Nichole]
         End If
 
         Return drVaccineLotNo
@@ -14738,14 +14336,15 @@ Partial Public Class EHSClaimV1
     Private Function GetCOVID19VaccineLotMappingForRCH(ByVal dtmServiceDate As Date) As DataRow()
 
         Dim udtCOVID19BLL As New COVID19.COVID19BLL
-
-        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH()
+        'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
+        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, dtmServiceDate)
         Dim drVaccineLotNo() As DataRow = Nothing
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            drVaccineLotNo = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            'drVaccineLotNo = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            drVaccineLotNo = dtVaccineLotNo.Select
         End If
-
+        'CRE20-023 Fix the Lot Mapping table filter [End][Nichole]
         Return drVaccineLotNo
 
     End Function
@@ -14757,14 +14356,15 @@ Partial Public Class EHSClaimV1
     Private Function GetCOVID19VaccineLotMappingForCentre(ByVal strSPID As String, ByVal intPracticeID As Integer, ByVal dtmServiceDate As Date) As DataRow()
 
         Dim udtCOVID19BLL As New COVID19.COVID19BLL
-
-        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(strSPID, intPracticeID)
+        'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
+        Dim dtVaccineLotNo As DataTable = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(strSPID, intPracticeID, dtmServiceDate)
         Dim drVaccineLotNo() As DataRow = Nothing
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            drVaccineLotNo = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
+            drVaccineLotNo = dtVaccineLotNo.Select
+            'drVaccineLotNo = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, dtmServiceDate)
         End If
-
+        'CRE20-023 Fix the Lot Mapping table filter [End][Nichole]
         Return drVaccineLotNo
 
     End Function

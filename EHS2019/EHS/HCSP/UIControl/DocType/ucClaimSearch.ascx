@@ -279,7 +279,7 @@
                 </table>
                 <table class="searchOption-container" cellpadding="0" cellspacing="0" runat="server">
                     <tr>
-                        <td id="tdManual" runat="server" style="vertical-align:top">                        
+                        <td id="tdManual" runat="server" style="vertical-align:top;width:305px">                        
                             <table id="tblManual" runat="server" cellpadding="0" cellspacing="0" class="searchOption">
                                 <tr style="height:25px">
                                     <td align="center" valign="middle">

@@ -889,20 +889,6 @@ Partial Public Class ucInputEHSClaim
     End Function
     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
-    Public Function GetCOVID19CBDControl() As ucInputEHSClaimBase
-        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19CBD)
-        If Not control Is Nothing Then
-            If Me._textOnlyVersion Then
-                'No Input Control
-            Else
-                Return CType(control, ucInputCOVID19CBD)
-            End If
-        End If
-
-        Return Nothing
-
-    End Function
-
     Public Function GetCOVID19RVPControl() As ucInputEHSClaimBase
         Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19RVP)
         If Not control Is Nothing Then

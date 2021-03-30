@@ -11,16 +11,16 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class ucInputVSS
+Partial Public Class ucInputCOVID19RVP
 
     '''<summary>
-    '''panVSSCategory control.
+    '''panCOVID19Category control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panVSSCategory As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents panCOVID19Category As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
     '''lblCategoryText control.
@@ -59,272 +59,344 @@ Partial Public Class ucInputVSS
     Protected WithEvents lblCategory As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''panVSSCategoryInput control.
+    '''panRCHCode control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panVSSCategoryInput As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents panRCHCode As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''mvCategory control.
+    '''lblRCHCodeText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents mvCategory As Global.System.Web.UI.WebControls.MultiView
+    Protected WithEvents lblRCHCodeText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''vwDefault control.
+    '''txtRCHCodeText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwDefault As Global.System.Web.UI.WebControls.View
+    Protected WithEvents txtRCHCodeText As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''vwPW control.
+    '''imgRCHCodeError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwPW As Global.System.Web.UI.WebControls.View
+    Protected WithEvents imgRCHCodeError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''vwChildren control.
+    '''btnSearchRCH control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwChildren As Global.System.Web.UI.WebControls.View
+    Protected WithEvents btnSearchRCH As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
-    '''panReminder control.
+    '''lblRCHCode control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panReminder As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents lblRCHCode As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblStep2aReminder control.
+    '''lblRCHNameText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblStep2aReminder As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblRCHNameText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''vwElders control.
+    '''lblRCHName control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwElders As Global.System.Web.UI.WebControls.View
+    Protected WithEvents lblRCHName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''vwPID control.
+    '''lblRCHNameChi control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwPID As Global.System.Web.UI.WebControls.View
+    Protected WithEvents lblRCHNameChi As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''ucInputVSSPID control.
+    '''panCOVID19Detail control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ucInputVSSPID As Global.HCSP.ucInputVSSPID
+    Protected WithEvents panCOVID19Detail As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''vwDA control.
+    '''panCategory control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwDA As Global.System.Web.UI.WebControls.View
+    Protected WithEvents panCategory As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''ucInputVSSDA control.
+    '''lblCCategoryText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ucInputVSSDA As Global.HCSP.ucInputVSSDA
+    Protected WithEvents lblCCategoryText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''vwAdult control.
+    '''ddlCCategoryCovid19 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents vwAdult As Global.System.Web.UI.WebControls.View
+    Protected WithEvents ddlCCategoryCovid19 As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''panVSSPlaceOfVaccination control.
+    '''imgCCategoryError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panVSSPlaceOfVaccination As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents imgCCategoryError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''trPlaceOfVaccination control.
+    '''lblCVaccineBrandText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents trPlaceOfVaccination As Global.System.Web.UI.HtmlControls.HtmlTableRow
+    Protected WithEvents lblCVaccineBrandText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblPlaceOfVaccinationTitle control.
+    '''ddlCVaccineBrandCovid19 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblPlaceOfVaccinationTitle As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents ddlCVaccineBrandCovid19 As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''ddlPlaceOfVaccination control.
+    '''txtCVaccineBrand control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlPlaceOfVaccination As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents txtCVaccineBrand As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''imgPlaceOfVaccinationError control.
+    '''imgCVaccineBrandError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgPlaceOfVaccinationError As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents imgCVaccineBrandError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''trPlaceOfVaccinationOther control.
+    '''lblCVaccineLotNoText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents trPlaceOfVaccinationOther As Global.System.Web.UI.HtmlControls.HtmlTableRow
+    Protected WithEvents lblCVaccineLotNoText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblPlaceOfVaccinationOtherTitle control.
+    '''ddlCVaccineLotNoCovid19 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblPlaceOfVaccinationOtherTitle As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents ddlCVaccineLotNoCovid19 As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''txtPlaceOfVaccinationOther control.
+    '''txtCVaccineLotNo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents txtPlaceOfVaccinationOther As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents txtCVaccineLotNo As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''imgPlaceOfVaccinationErrorOther control.
+    '''imgCVaccineLotNoError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgPlaceOfVaccinationErrorOther As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents imgCVaccineLotNoError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''udcClaimVaccineInputVSS control.
+    '''panDose control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents udcClaimVaccineInputVSS As Global.HCSP.ClaimVaccineInput
+    Protected WithEvents panDose As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''panVSSRecipientCondition control.
+    '''lblCDoseText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents panVSSRecipientCondition As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents lblCDoseText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''trRecipientCondition control.
+    '''ddlCDoseCovid19 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents trRecipientCondition As Global.System.Web.UI.HtmlControls.HtmlTableRow
+    Protected WithEvents ddlCDoseCovid19 As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''lblRecipientConditionTitle control.
+    '''imgCDoseError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblRecipientConditionTitle As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents imgCDoseError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''ImgBtnRecipientConditionHelp control.
+    '''trCContactNo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ImgBtnRecipientConditionHelp As Global.System.Web.UI.WebControls.ImageButton
+    Protected WithEvents trCContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
-    '''chkRecipientCondition control.
+    '''lblCContactNoText control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents chkRecipientCondition As Global.System.Web.UI.WebControls.CheckBox
+    Protected WithEvents lblCContactNoText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''rblRecipientCondition control.
+    '''txtCContactNo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rblRecipientCondition As Global.System.Web.UI.WebControls.RadioButtonList
+    Protected WithEvents txtCContactNo As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''imgRecipientConditionError control.
+    '''imgCContactNoError control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgRecipientConditionError As Global.System.Web.UI.WebControls.Image
+    Protected WithEvents imgCContactNoError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''fteCContactNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteCContactNo As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''lblCRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtCRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCRemark As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgCRemarkError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCRemarkError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''trJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trJoinEHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblCJoinEHRSSText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCJoinEHRSSText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''chkCJoinEHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkCJoinEHRSS As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''udcClaimVaccineInputCOVID19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcClaimVaccineInputCOVID19 As Global.HCVU.ClaimVaccineInput
 End Class

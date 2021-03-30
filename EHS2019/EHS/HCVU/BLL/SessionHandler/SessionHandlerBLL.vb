@@ -461,6 +461,25 @@ Namespace BLL
 
 
 #Region "COVID-19"
+
+#Region "Claim COVID-19 Selected"
+        Public Sub ClaimCOVID19SaveToSession(ByVal blnClaim As Boolean)
+            HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19) = blnClaim
+        End Sub
+
+        Public Function ClaimCOVID19GetFromSession() As Boolean
+            If HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(SessionName.SESS_ClaimCOVID19), Boolean)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19RemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ClaimCOVID19)
+        End Sub
+#End Region
+
         ' CRE20-0022 (Immu record) [Start][Raiman]
         ' ---------------------------------------------------------------------------------------------------------
 #Region "COVID-19 - Vaccination Card"

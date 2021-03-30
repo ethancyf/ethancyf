@@ -13,23 +13,13 @@ Imports System.Linq
 Imports Common.Component.EHSClaimVaccine
 
 
-Partial Public Class ucInputCOVID19
+Partial Public Class ucInputCOVID19RVP
     Inherits ucInputEHSClaimBase
 
     Dim _udtSessionHandler As New BLL.SessionHandlerBLL
     Dim _udtGeneralFunction As New GeneralFunction
 
 #Region "Constants"
-
-    Private Class ViewIndexCategory
-        Public Const NoCategory As Integer = 0
-        Public Const VSS_PW As Integer = 1
-        Public Const VSS_CHILD As Integer = 2
-        Public Const VSS_ELDER As Integer = 3
-        Public Const VSS_PID As Integer = 4
-        Public Const VSS_DA As Integer = 5
-        Public Const VSS_ADULT As Integer = 6
-    End Class
 
 #End Region
 
@@ -78,17 +68,12 @@ Partial Public Class ucInputCOVID19
     '    End Get
     'End Property
 
-    '' CRE20-0022 (Immu record) [Start][Chris YIM]
-    '' ---------------------------------------------------------------------------------------------------------
     'Public ReadOnly Property IsClaimCOVID19() As Boolean
     '    Get
     '        Return (New BLL.SessionHandlerBLL).ClaimCOVID19GetFromSession()
     '    End Get
     'End Property
-    '' CRE20-0022 (Immu record) [End][Chris YIM]
 
-    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public ReadOnly Property CategoryForCOVID19() As String
         Get
             If Me.ddlCCategoryCovid19.SelectedItem Is Nothing Then
@@ -98,10 +83,13 @@ Partial Public Class ucInputCOVID19
             End If
         End Get
     End Property
-    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property RCHCode() As String
+        Get
+            Return Me.txtRCHCodeText.Text.Trim
+        End Get
+    End Property
+
     Public ReadOnly Property VaccineBrand() As String
         Get
             'If Me.txtCVaccineBrand.Text = "" Then
@@ -116,19 +104,14 @@ Partial Public Class ucInputCOVID19
             End If
         End Get
     End Property
-    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
-    ' CRE20-0022 (Immu record) [Start][Martin Tang]
-    ' ---------------------------------------------------------------------------------------------------------
     Public ReadOnly Property VaccineLotNo() As String
         Get
-
             'If Me.txtCVaccineLotNo.Text = "" Then
             '    Return String.Empty
             'Else
             '    Return Me.txtCVaccineLotNo.Text
             'End If
-
 
             If Me.ddlCVaccineLotNoCovid19.SelectedItem Is Nothing Then
                 Return String.Empty
@@ -137,10 +120,7 @@ Partial Public Class ucInputCOVID19
             End If
         End Get
     End Property
-    ' CRE20-0022 (Immu record) [End][Martin Tang]
 
-    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public ReadOnly Property DoseForCOVID19() As String
         Get
             If Me.ddlCDoseCovid19.SelectedItem Is Nothing Then
@@ -150,7 +130,6 @@ Partial Public Class ucInputCOVID19
             End If
         End Get
     End Property
-    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
     Public ReadOnly Property ContactNo() As String
         Get
@@ -174,6 +153,7 @@ Partial Public Class ucInputCOVID19
 #End Region
 
 #Region "Event handlers"
+    Public Event SearchButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event SubsidizeDisabledRemarkClicked(ByVal sender As System.Object, ByVal e As EventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
@@ -192,6 +172,11 @@ Partial Public Class ucInputCOVID19
         Me.udcClaimVaccineInputCOVID19.VaccineLegendURL = Me.GetGlobalResourceObject("ImageUrl", "Infobtn")
 
         Me.lblCategoryText.Text = Me.GetGlobalResourceObject("Text", "Category")
+        Me.lblRCHCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
+        Me.lblRCHNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
+
+        Me.lblRCHName.Visible = True
+        Me.lblRCHNameChi.Visible = False
 
     End Sub
 
@@ -302,11 +287,8 @@ Partial Public Class ucInputCOVID19
             dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID)
 
             If dtVaccineLotNo.Rows.Count > 0 Then
-                'CRE20-023 Fix the vaccine lot not filtered by service date and record status [Start][Nichole]
-                Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
-                'CRE20-023 Fix the vaccine lot not filtered by service date and record status [End][Nichole]
 
-                'Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+                Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select()
 
                 'Bind DropDownList Vaccine Brand
                 BindCOVID19VaccineBrand(drVaccineLotNo)
@@ -459,16 +441,18 @@ Partial Public Class ucInputCOVID19
         Me.txtCRemark.Text = String.Empty
 
     End Sub
+
+    Public Sub SetRCHCode(ByVal strRCHCode As String)
+        Me.txtRCHCodeText.Text = strRCHCode.Trim().ToUpper()
+        Me.lookUpRCHCode()
+    End Sub
+
 #End Region
 
 #Region "Events"
 
-    Protected Sub udcClaimVaccineInputCOVID19_SubsidizeDisabledRemarkClicked(ByVal sender As Object, ByVal e As EventArgs)
-        RaiseEvent SubsidizeDisabledRemarkClicked(sender, e)
-    End Sub
-
-    Protected Sub udcClaimVaccineInputCOVID19_VaccineLegendClicked(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        RaiseEvent VaccineLegendClicked(sender, e)
+    Private Sub btnSearchRCH_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnSearchRCH.Click
+        RaiseEvent SearchButtonClick(sender, e)
     End Sub
 
     Private Sub rbCategory_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles rbCategorySelection.SelectedIndexChanged
@@ -487,7 +471,59 @@ Partial Public Class ucInputCOVID19
         End If
 
         RaiseEvent CategorySelected(sender, e)
+    End Sub
 
+    Private Sub txtRCHCodeText_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtRCHCodeText.TextChanged
+        If Me.txtRCHCodeText.Text.Trim() = String.Empty Then
+            Me.lblRCHCode.Text = String.Empty
+            Me.lblRCHName.Text = String.Empty
+            Me.lblRCHNameChi.Text = String.Empty
+
+            MyBase.SessionHandler.RVPRCHCodeRemoveFromSession(MyBase.FunctionCode)
+        Else
+            Me.lookUpRCHCode()
+        End If
+    End Sub
+
+    Private Sub lookUpRCHCode()
+        Dim udtRVPHomeListBLL As New Common.Component.RVPHomeList.RVPHomeListBLL()
+        Dim dtResult As DataTable = udtRVPHomeListBLL.getRVPHomeListActiveByCode(Me.txtRCHCodeText.Text.Trim())
+
+        Dim drResult() As DataRow = dtResult.Select("Type IN ('E','D')")
+
+        If drResult.Length > 0 Then
+            Dim dtRCH As DataTable = drResult.CopyToDataTable
+            Me.SetUpRCHInfo(dtRCH.Rows(0))
+            MyBase.SessionHandler.RVPRCHCodeSaveToSession(MyBase.FunctionCode, dtRCH.Rows(0)("RCH_Code").ToString().Trim().ToUpper())
+        Else
+            Me.lblRCHCode.Text = String.Empty
+            Me.lblRCHName.Text = String.Empty
+            Me.lblRCHNameChi.Text = String.Empty
+            MyBase.SessionHandler.RVPRCHCodeRemoveFromSession(MyBase.FunctionCode)
+        End If
+    End Sub
+
+    Private Sub SetUpRCHInfo(ByVal drRVPHome As DataRow)
+
+        Me.txtRCHCodeText.Text = drRVPHome("RCH_Code").ToString().Trim().ToUpper()
+        Me.lblRCHCode.Text = AntiXssEncoder.HtmlEncode(txtRCHCodeText.Text, True)
+
+        Me.lblRCHName.Text = drRVPHome("Homename_Eng").ToString().Trim()
+
+        If drRVPHome.IsNull("Homename_Chi") Then
+            Me.lblRCHNameChi.Text = Me.lblRCHName.Text
+        Else
+            Me.lblRCHNameChi.Text = drRVPHome("Homename_Chi").ToString().Trim()
+        End If
+
+    End Sub
+
+    Protected Sub udcClaimVaccineInputCOVID19_SubsidizeDisabledRemarkClicked(ByVal sender As Object, ByVal e As EventArgs)
+        RaiseEvent SubsidizeDisabledRemarkClicked(sender, e)
+    End Sub
+
+    Protected Sub udcClaimVaccineInputCOVID19_VaccineLegendClicked(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent VaccineLegendClicked(sender, e)
     End Sub
 
     'Private Sub ddlCBooth_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlCBooth.SelectedIndexChanged
@@ -505,6 +541,25 @@ Partial Public Class ucInputCOVID19
     Private Sub ddlCVaccineBrandCovid19_selectedindexchanged(sender As Object, e As EventArgs) Handles ddlCVaccineBrandCovid19.SelectedIndexChanged
         Me.ddlCVaccineBrandCovid19.SelectedValue = AntiXssEncoder.HtmlEncode(Me.Request.Form(Me.ddlCVaccineBrandCovid19.UniqueID), True)
         'sessionhandler.claimcovid19vaccinebrandsavetosession(Me.ddlcvaccinebrandcovid19.selectedvalue, functcode)
+
+        'Get Vaccine Brand & Lot No.
+        Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
+        Dim dtVaccineLotNo As DataTable = Nothing
+
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID)
+
+        If dtVaccineLotNo.Rows.Count > 0 Then
+
+            Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select()
+
+            ''Bind DropDownList Vaccine Brand
+            'BindCOVID19VaccineBrand(drVaccineLotNo)
+
+            'Bind DropDownList Vaccine Lot No.
+            BindCOVID19VaccineLotNo(drVaccineLotNo)
+
+        End If
+
     End Sub
 
     'Private Sub ddlCVaccineLotNoCovid19_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlCVaccineLotNoCovid19.SelectedIndexChanged
@@ -656,6 +711,26 @@ Partial Public Class ucInputCOVID19
 #Region "Save"
 
     Public Sub Save(ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtEHSClaimVaccine As EHSClaimVaccineModel)
+        'Get Vaccine Brand & Lot No.
+        Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
+        Dim dtVaccineLotNo As DataTable = Nothing
+        Dim strVaccineLotID As String = String.Empty
+
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID)
+
+        If dtVaccineLotNo.Rows.Count > 0 Then
+            'Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+
+            'If drVaccineLotNo.Length > 0 Then
+            For intCt As Integer = 0 To dtVaccineLotNo.Rows.Count - 1
+                If dtVaccineLotNo.Rows(intCt)("Vaccine_Lot_No").ToString.Trim.ToUpper = ddlCVaccineLotNoCovid19.SelectedValue.Trim.ToUpper Then
+                    strVaccineLotID = dtVaccineLotNo.Rows(intCt)("Vaccine_Lot_ID").ToString.Trim
+                    Exit For
+                End If
+            Next
+            'End If
+
+        End If
 
         'Category
         If rbCategorySelection.Visible And rbCategorySelection.SelectedValue <> String.Empty Then
@@ -696,48 +771,45 @@ Partial Public Class ucInputCOVID19
 
         If Not udtSubsidizeLatest Is Nothing Then
 
-            'Vaccine Brand
+            'RCH Code
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.VaccineBrand
-            udtTransactAdditionfield.AdditionalFieldValueCode = txtCVaccineBrand.Text.Trim
-            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.RCHCode
+            udtTransactAdditionfield.AdditionalFieldValueCode = RCHCode
+            udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(ddlCVaccineBrandCovid19.SelectedValue.Trim, FunctCode)
+            'Vaccine Brand
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.VaccineBrand
+            udtTransactAdditionfield.AdditionalFieldValueCode = ddlCVaccineBrandCovid19.SelectedValue.Trim
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
             'Vaccine Lot No.
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.VaccineLotNo
-            'udtTransactAdditionfield.AdditionalFieldValueCode = ddlCVaccineLotNoCovid19.SelectedValue.Trim
-            udtTransactAdditionfield.AdditionalFieldValueCode = txtCVaccineLotNo.Text.Trim
+            udtTransactAdditionfield.AdditionalFieldValueCode = ddlCVaccineLotNoCovid19.SelectedValue.Trim
             udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(txtCVaccineLotNo.Text.Trim, FunctCode)
-
+            'Vaccine Lot ID
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
-            udtTransactAdditionfield.AdditionalFieldValueCode = txtCContactNo.Text.Trim
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.VaccineLotID
+            udtTransactAdditionfield.AdditionalFieldValueCode = strVaccineLotID
             udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-
-            'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Mobile
-            'udtTransactAdditionfield.AdditionalFieldValueCode = IIf(Me.chkStep2aMobile.Checked, YesNo.Yes, YesNo.No)
-            'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-            'udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
-            'udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
-            'udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
-            'Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Remarks
@@ -748,25 +820,25 @@ Partial Public Class ucInputCOVID19
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            Dim strJoinEHRSS As String = String.Empty
+            'Dim strJoinEHRSS As String = String.Empty
 
-            If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
-                Select Case MyBase.EHSAccount.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW
-                        strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
-                    Case Else
-                        strJoinEHRSS = String.Empty
-                End Select
-            End If
+            'If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
+            '    Select Case MyBase.EHSAccount.SearchDocCode
+            '        Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW
+            '            strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
+            '        Case Else
+            '            strJoinEHRSS = String.Empty
+            '    End Select
+            'End If
 
-            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
-            udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
-            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
-            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
-            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
-            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+            'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
+            'udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+            'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            'udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            'udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            'udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            'udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
         End If
 
     End Sub

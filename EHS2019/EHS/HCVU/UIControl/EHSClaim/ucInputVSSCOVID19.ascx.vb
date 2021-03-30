@@ -94,11 +94,13 @@ Partial Public Class ucInputVSSCOVID19
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
         Dim dtVaccineLotNo As DataTable = Nothing
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForPrivate()
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-
-            Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, MyBase.ServiceDate)
+            'CRE20-023 Fix the vaccine lot not filtered by service date and record status [Start][Nichole]
+            Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
+            'Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, MyBase.ServiceDate)
+            'CRE20-023 Fix the vaccine lot not filtered by service date and record status [End][Nichole]
 
             'Bind DropDownList Vaccine Brand
             BindCOVID19VaccineBrand(drVaccineLotNo)
@@ -625,10 +627,13 @@ Partial Public Class ucInputVSSCOVID19
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate()
+        dtVaccineLotNo = udtCOVID19BLL.GetALLCOVID19VaccineLotMappingForPrivate()
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+            'CRE20-023 Fix the vaccine lot not filtered by service date and record status [Start][Nichole]
+            Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
+            'Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
+            'CRE20-023 Fix the vaccine lot not filtered by service date and record status [End][Nichole]
 
             If drVaccineLotNo.Length > 0 Then
                 For intCt As Integer = 0 To drVaccineLotNo.Length - 1
@@ -729,9 +734,20 @@ Partial Public Class ucInputVSSCOVID19
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
             'JoinEHRSS
+            Dim strJoinEHRSS As String = String.Empty
+
+            If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
+                Select Case udtEHSTransaction.EHSAcct.SearchDocCode
+                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW
+                        strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
+                    Case Else
+                        strJoinEHRSS = String.Empty
+                End Select
+            End If
+
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
             udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
-            udtTransactAdditionfield.AdditionalFieldValueCode = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
+            udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
             udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq

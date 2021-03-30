@@ -1968,6 +1968,17 @@ Partial Public Class ClaimCreation
 
                 Me.ModalPopupExtenderSchoolListSearch.Show()
 
+            Case SchemeClaimModel.COVID19RVP
+                Session(SESS_SearchRVPHomeList) = True
+                udtSessionHandlerBLL.ClaimCOVID19SaveToSession(True)
+                Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
+                Me.udcRVPHomeListSearch.ClearFilter()
+
+                Me.ibtnPopupRVPHomeListSearchSelect.Enabled = False
+                Me.ibtnPopupRVPHomeListSearchSelect.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SelectDisableBtn")
+
+                Me.ModalPopupExtenderRVPHomeListSearch.Show()
+
             Case Else
                 Throw New Exception(String.Format("No available popup for scheme({0}).", strSchemeCode))
 
@@ -2763,6 +2774,7 @@ Partial Public Class ClaimCreation
 
     Protected Sub ibtnPopupRVPHomeListSearchCancel_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Session.Remove(SESS_SearchRVPHomeList)
+        udtSessionHandlerBLL.ClaimCOVID19RemoveFromSession()
         Me.ModalPopupExtenderRVPHomeListSearch.Hide()
     End Sub
 
@@ -2773,12 +2785,15 @@ Partial Public Class ClaimCreation
         '-----------------------------------------------------------------------------------------
         Dim udtSelectedScheme As SchemeClaimModel = udtSessionHandlerBLL.SelectSchemeGetFromSession(FunctionCode)
 
-        Select Case udtSelectedScheme.SchemeCode
-            Case SchemeClaimModel.EnumControlType.RVP.ToString.Trim
+        Select Case udtSelectedScheme.SchemeCode.Trim
+            Case SchemeClaimModel.RVP
                 CType(Me.udInputEHSClaim.GetRVPControl(), ucInputRVP).SetRCHCode(strRCHCode)
 
-            Case SchemeClaimModel.EnumControlType.VSS.ToString.Trim
+            Case SchemeClaimModel.VSS
                 CType(Me.udInputEHSClaim.GetVSSControl(), ucInputVSS).SetPIDCode(strRCHCode)
+
+            Case SchemeClaimModel.COVID19RVP
+                CType(Me.udInputEHSClaim.GetCOVID19RVPControl(), ucInputCOVID19RVP).SetRCHCode(strRCHCode)
 
             Case Else
 
@@ -2786,6 +2801,7 @@ Partial Public Class ClaimCreation
         'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
         Session.Remove(SESS_SearchRVPHomeList)
+        udtSessionHandlerBLL.ClaimCOVID19RemoveFromSession()
         Me.ModalPopupExtenderRVPHomeListSearch.Hide()
     End Sub
 #End Region
@@ -4571,10 +4587,10 @@ Partial Public Class ClaimCreation
         '----------------------------------------------
         Dim isValid As Boolean = False
 
-        Dim udcInputCOVID19 As ucInputCOVID19 = Me.udInputEHSClaim.GetCOVID19Control
+        Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udInputEHSClaim.GetCOVID19RVPControl
         Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel = Me.udtSessionHandlerBLL.EHSClaimVaccineGetFromSession(FunctionCode)
 
-        udcInputCOVID19.SetDoseErrorImage(False)
+        udcInputCOVID19RVP.SetDoseErrorImage(False)
 
         ' -----------------------------------------------
         ' UI Input Validation
@@ -4582,20 +4598,20 @@ Partial Public Class ClaimCreation
         Dim isValidDetail, isValidVaccineSelection As Boolean
 
         'Claim Detial Part & Vaccine Part
-        If Not udcInputCOVID19.Validate(True, Me.udcMessageBox) Then
+        If Not udcInputCOVID19RVP.Validate(True, Me.udcMessageBox) Then
             isValidDetail = False
         Else
             isValidDetail = True
         End If
 
         'Select Vaccine Part
-        udtEHSClaimVaccine = udcInputCOVID19.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
+        udtEHSClaimVaccine = udcInputCOVID19RVP.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
         Me.udtSessionHandlerBLL.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine, FunctionCode)
 
         Dim udtSMList As Dictionary(Of SystemMessage, List(Of String())) = Nothing
         isValidVaccineSelection = udtEHSClaimVaccine.chkVaccineSelection(udtEHSClaimVaccine, udtSMList)
         If Not isValidVaccineSelection Then
-            udcInputCOVID19.SetDoseErrorImage(True)
+            udcInputCOVID19RVP.SetDoseErrorImage(True)
         End If
 
         'Combine Result
@@ -4616,7 +4632,7 @@ Partial Public Class ClaimCreation
         End If
 
         If isValid Then
-            udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
+            udcInputCOVID19RVP.Save(udtEHSTransaction, udtEHSClaimVaccine)
         End If
 
         Return isValid

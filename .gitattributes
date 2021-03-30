@@ -4938,6 +4938,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCIVSS.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19RVP.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19RVP.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19RVP.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputEHAPP.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputEHAPP.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputEHAPP.ascx.vb -text
@@ -8637,6 +8640,9 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMappingSummary_get_byLotNo.
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getActive_ByBoothLotNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getActive_ByCentre.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll_ForCentre.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll_ForPrivate.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll_ForRCH.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_get_ByLotId.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_get_ForCentre.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_get_ForPrivate.sql -text
@@ -9159,6 +9165,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeEnrolment_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeEnrolment_get_byERN.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeMigration_get_byERN.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticePermanent_add.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticePhysicalMapping_get_bySPID_DisplaySeq.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeRowCount_bySPIDProfSeq.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInfoEnrolment_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PracticeSchemeInfoEnrolment_get_byERN.sql -text
@@ -9926,6 +9933,8 @@ EHS2019/EHS_DB/dbEVS/Trigger/tri_MedicalOrganizationStaging_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_MedicalOrganization_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_PersonalInformation_after_del.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_PersonalInformation_after_upd.sql -text
+EHS2019/EHS_DB/dbEVS/Trigger/tri_PracticePhysicalMapping_after_del.sql -text
+EHS2019/EHS_DB/dbEVS/Trigger/tri_PracticePhysicalMapping_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_PracticeSchemeInfoStaging_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_PracticeSchemeInfo_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_PracticeStaging_after_del.sql -text

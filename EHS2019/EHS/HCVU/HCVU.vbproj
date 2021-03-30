@@ -387,6 +387,7 @@
     <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
@@ -1688,6 +1689,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCIVSS.ascx.vb">
       <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19RVP.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.vb">
+      <DependentUpon>ucInputCOVID19RVP.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19.ascx.designer.vb">

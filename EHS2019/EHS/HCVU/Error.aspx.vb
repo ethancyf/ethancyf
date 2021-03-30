@@ -1,5 +1,6 @@
 Imports Common.ComFunction
 Imports Common.Component
+Imports Common.ComObject
 
 Partial Public Class _Error
     Inherits System.Web.UI.Page
@@ -32,6 +33,16 @@ Partial Public Class _Error
                 Me.tblBanner.Style.Item("background-image") = "url(" + Me.GetGlobalResourceObject("ImageUrl", "IndexBanner").ToString + ")"
         End Select
         ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+        ' CRE20-022 (Immu record) [Start][Martin]
+        Try
+            Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT029901)
+            udtAuditLogEntry.AddDescripton("SubPlatform", strSubPlatform)
+            udtAuditLogEntry.WriteLog(LogID.LOG00003, "System Error")
+        Catch ex As Exception
+
+        End Try
+        ' CRE20-022 (Immu record) [End][Martin]
 
         Try
             If Not Session Is Nothing Then

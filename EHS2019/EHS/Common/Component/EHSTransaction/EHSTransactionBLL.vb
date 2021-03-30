@@ -906,13 +906,44 @@ Namespace Component.EHSTransaction
                 If strMsgCode = "" Then
                     If udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
                         ' Vaccine Benefit
-                        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-                        ' Remove parameter SchemeCode, SchemeSeq
-                        'blnError = udtClaimRulesBLL.chkVaccineTranBenefitUsed(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, _
-                        '    udtSchemeClaimModel.SchemeCode, udtSchemeClaimModel.SchemeSeq, udtEHSTransactionModel.TransactionDetails)
+
                         blnError = udtClaimRulesBLL.chkVaccineTranBenefitUsed(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtEHSTransactionModel.TransactionDetails)
-                        ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+
+                        'If claim COVID19, check vaccine lot no. whether exists
+                        If udtEHSTransactionModel.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
+                            Dim udtCOVID19BLL As New COVID19.COVID19BLL
+                            Dim strVaccineLotNo As String = udtEHSTransactionModel.TransactionAdditionFields.VaccineLotNo
+
+                            If strVaccineLotNo IsNot Nothing AndAlso strVaccineLotNo <> String.Empty Then
+                                Dim dtVaccineLot As DataTable = Nothing
+                                Dim drVaccineLot() As DataRow = Nothing
+
+                                Select Case udtEHSTransactionModel.SchemeCode.Trim
+                                    Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, _
+                                         SchemeClaimModel.COVID19RVP, SchemeClaimModel.COVID19OR, _
+                                         SchemeClaimModel.COVID19SR
+
+                                        dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(udtEHSTransactionModel.ServiceProviderID, udtEHSTransactionModel.PracticeID, udtEHSTransactionModel.ServiceDate)
+
+                                    Case SchemeClaimModel.VSS
+                                        dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, udtEHSTransactionModel.ServiceDate)
+
+                                    Case SchemeClaimModel.RVP
+                                        dtVaccineLot = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, udtEHSTransactionModel.ServiceDate)
+
+                                End Select
+
+                                drVaccineLot = dtVaccineLot.Select(String.Format("Vaccine_Lot_No='{0}'", strVaccineLotNo))
+
+                                If drVaccineLot.Length = 0 Then
+                                    blnError = True
+                                End If
+
+                            End If
+                        End If
+
                         If blnError Then strMsgCode = "00197"
+
                         ' CRE13-001 - EHAPP [Start][Tommy L]
                         ' -------------------------------------------------------------------------------------
                     ElseIf udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeRegistration Then

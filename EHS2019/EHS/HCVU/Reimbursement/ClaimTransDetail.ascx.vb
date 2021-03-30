@@ -528,10 +528,12 @@ Partial Public Class ClaimTransDetail
                 udcReadOnlyEHSClaim.Width = 204
 
                 If IsClaimCOVID19(udtEHSTransaction) Then
-                    udcReadOnlyEHSClaim.BuildRVPCOVID19()
-
                     If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
+                        'Reprint not show subsidize amount
+                        udcReadOnlyEHSClaim.BuildRVPCOVID19(False)
                         DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
+                    Else
+                        udcReadOnlyEHSClaim.BuildRVPCOVID19(True)
                     End If
 
                     DisplayRemarks(True)
@@ -557,10 +559,12 @@ Partial Public Class ClaimTransDetail
                 udcReadOnlyEHSClaim.Width = 204
 
                 If IsClaimCOVID19(udtEHSTransaction) Then
-                    udcReadOnlyEHSClaim.BuildVSSCOVID19()
-
                     If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
+                        'Reprint not show subsidize amount
+                        udcReadOnlyEHSClaim.BuildVSSCOVID19(False)
                         DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
+                    Else
+                        udcReadOnlyEHSClaim.BuildVSSCOVID19(True)
                     End If
 
                     DisplayContactNo(True)

@@ -132,7 +132,7 @@ Namespace Component.COVID19
 #End Region
 
 #Region "Get Vaccine Lot"
-        Public Function GetCOVID19VaccineLotMapping(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer)) As DataTable
+        Public Function GetCOVID19VaccineLotMapping(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer), ByVal dtmServiceDate As DateTime) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -143,7 +143,8 @@ Namespace Component.COVID19
 
             Dim parms() As SqlParameter = { _
                 db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 2, dtmServiceDate)}
 
             db.RunProc("proc_COVID19VaccineLotMapping_get_ForPrivate", parms, dt)
 
@@ -151,7 +152,8 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingForCentre(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer)) As DataTable
+        'CRE20-023 immue record [Start][Nichole]
+        Public Function GetCOVID19VaccineLotMappingForCentre(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer), ByVal dtmServiceDate As DateTime) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -162,7 +164,8 @@ Namespace Component.COVID19
 
             Dim parms() As SqlParameter = { _
                 db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
 
             db.RunProc("proc_COVID19VaccineLotMapping_get_ForCentre", parms, dt)
 
@@ -170,7 +173,7 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingForPrivate(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+        Public Function GetCOVID19VaccineLotMappingForPrivate(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing, Optional ByVal dtmServiceDate As DateTime = Nothing) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -181,7 +184,8 @@ Namespace Component.COVID19
 
             Dim parms() As SqlParameter = { _
                 db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
 
             db.RunProc("proc_COVID19VaccineLotMapping_get_ForPrivate", parms, dt)
 
@@ -189,7 +193,7 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+        Public Function GetCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing, Optional ByVal dtmServiceDate As DateTime = Nothing) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
 
@@ -200,13 +204,53 @@ Namespace Component.COVID19
 
             Dim parms() As SqlParameter = { _
                 db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
 
             db.RunProc("proc_COVID19VaccineLotMapping_get_ForRCH", parms, dt)
 
             Return dt
 
         End Function
+
+        Public Function GetALLCOVID19VaccineLotMappingForCentre(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            Dim objPracticeDisplaySeq As Object = DBNull.Value
+            If intPracticeDisplaySeq.HasValue Then
+                objPracticeDisplaySeq = intPracticeDisplaySeq.Value
+            End If
+
+            Dim parms() As SqlParameter = { _
+                    db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+
+            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForCentre", parms, dt)
+
+            Return dt
+
+        End Function
+
+        Public Function GetALLCOVID19VaccineLotMappingForPrivate(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            Dim objPracticeDisplaySeq As Object = DBNull.Value
+            If intPracticeDisplaySeq.HasValue Then
+                objPracticeDisplaySeq = intPracticeDisplaySeq.Value
+            End If
+
+            Dim parms() As SqlParameter = { _
+                    db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+
+            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForPrivate", parms, dt)
+
+            Return dt
+
+        End Function
+        'CRE20-023 Immu record [End][Nichole]
 
         Public Function GetCOVID19VaccineLotMappingByVaccineLotNo(ByVal strVaccineLotNo As String) As DataTable
             'Dim dt As DataTable = Me.GetCOVID19VaccineLotMapping()
@@ -315,6 +359,23 @@ Namespace Component.COVID19
             Else
                 Throw New Exception(String.Format("Invalid Vaccine Centre SP Mapping ('{0}','{1}'), row(s) more than 1 or no record", strSPID, intPracticeDisplaySeq))
             End If
+
+        End Function
+#End Region
+
+#Region "Get Physcial Practice & SP mapping"
+        Public Function GetPracticePhysicalMappingBySPIDPracticeDisplaySeq(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            Dim parms() As SqlParameter = { _
+                db.MakeInParam("@sp_id", SqlDbType.Char, 8, strSPID), _
+                db.MakeInParam("@practice_display_seq", SqlDbType.SmallInt, 2, intPracticeDisplaySeq) _
+            }
+
+            db.RunProc("proc_PracticePhysicalMapping_get_bySPID_DisplaySeq", parms, dt)
+
+            Return dt
 
         End Function
 #End Region
@@ -449,10 +510,12 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function FilterVaccineLotNoByServiceDate(ByVal dtVaccineLotNo As DataTable, ByVal dtmServiceDate As DateTime) As DataRow()
+        Public Function FilterActiveVaccineLotNoByServiceDate(ByVal dtVaccineLotNo As DataTable, ByVal dtmServiceDate As DateTime) As DataRow()
             Dim drVaccineLotNo() As DataRow = Nothing
 
-            drVaccineLotNo = dtVaccineLotNo.Select(String.Format("'{0}' >= Service_Period_From AND '{1}' <= Service_Period_To", dtmServiceDate, dtmServiceDate))
+            'CRE20-023 Fix the lot mapping filter for HCVU [Start][Nichole]
+            drVaccineLotNo = dtVaccineLotNo.Select(String.Format("'{0}' >= Service_Period_From AND '{1}' <= Service_Period_To and record_status= '{2}'", dtmServiceDate, dtmServiceDate, VaccineLotMappingRecordStatus.Active))
+            'CRE20-023 Fix the lot mapping filter for HCVU [End][Nichole]
 
             If drVaccineLotNo.Length > 0 Then
                 Dim dt As DataTable = drVaccineLotNo.CopyToDataTable

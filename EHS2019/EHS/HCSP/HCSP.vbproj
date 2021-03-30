@@ -423,7 +423,6 @@
     <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
-    <Content Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
@@ -2743,13 +2742,6 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.vb">
       <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx.designer.vb">
-      <DependentUpon>ucInputCOVID19CBD.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\EHSClaim\ucInputCOVID19CBD.ascx.vb">
-      <DependentUpon>ucInputCOVID19CBD.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.designer.vb">

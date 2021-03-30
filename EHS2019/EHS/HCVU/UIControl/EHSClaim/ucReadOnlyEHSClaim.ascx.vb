@@ -124,14 +124,14 @@ Partial Public Class ucReadOnlyEHSClaim
 
     ' CRE20-0023 (Immu record) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Public Sub BuildRVPCOVID19()
+    Public Sub BuildRVPCOVID19(ByVal blnShowSubsidizeAmount As Boolean)
         setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
         setSessionValue("_intWidth", _intWidth)
         setSessionValue("EHSClaimBuild", "RVPCOVID19")
 
         Dim udcReadOnlyRVPCOVID19 As ucReadOnlyRVPCOVID19 = Me.LoadControl(UserControlPath.RVPCOVID19)
 
-        udcReadOnlyRVPCOVID19.Build(_udtEHSTransaction, _intWidth)
+        udcReadOnlyRVPCOVID19.Build(_udtEHSTransaction, _intWidth, blnShowSubsidizeAmount)
 
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyRVPCOVID19)
     End Sub
@@ -165,14 +165,14 @@ Partial Public Class ucReadOnlyEHSClaim
 
     ' CRE20-0023 (Immu record) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    Public Sub BuildVSSCOVID19()
+    Public Sub BuildVSSCOVID19(ByVal blnShowSubsidizeAmount As Boolean)
         setSessionValue("_udtEHSTransaction", _udtEHSTransaction)
         setSessionValue("_intWidth", _intWidth)
         setSessionValue("EHSClaimBuild", "VSSCOVID19")
 
         Dim udcReadOnlyVSSCOVID19 As ucReadOnlyVSSCOVID19 = Me.LoadControl(UserControlPath.VSSCOVID19)
 
-        udcReadOnlyVSSCOVID19.Build(_udtEHSTransaction, _intWidth)
+        udcReadOnlyVSSCOVID19.Build(_udtEHSTransaction, _intWidth, blnShowSubsidizeAmount)
 
         phReadOnlyEHSClaim.Controls.Add(udcReadOnlyVSSCOVID19)
     End Sub
@@ -391,8 +391,6 @@ Partial Public Class ucReadOnlyEHSClaim
                     Me.BuildPIDVSS()
                 Case SchemeClaimModel.VSS
                     Me.BuildVSS()
-                Case "VSSCOVID19"
-                    Me.BuildVSSCOVID19()
                 Case SchemeClaimModel.SSSCMC
                     Me.BuildSSSCMC()
                     ' CRE20-0023 (Immu record) [Start][Winnie SUEN]

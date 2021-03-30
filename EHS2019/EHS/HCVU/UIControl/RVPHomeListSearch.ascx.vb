@@ -8,21 +8,19 @@ Partial Public Class RVPHomeListSearch
     Private Const Sess_RVPHomeList = "Grid_RVPHomeList"
     Private Const Sess_RVPSelectedCode = "Grid_RVPSelectedRCHCode"
 
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
-    Public Const FunctCode As String = Common.Component.FunctCode.FUNT010418
     Private _strScheme As String
 
     Private _udtSessionHandler As New SessionHandlerBLL
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+    Public Const FunctCode As String = Common.Component.FunctCode.FUNT010418
+
+    Private _enumClaimMode As ClaimMode
 
     'Events 
     Public Event RCHSelected(ByVal strRCHCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs)
 
     Public Event RCHSelectedChanged(ByVal blnSelected As Boolean, ByVal sender As System.Object)
 
-    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-    '-----------------------------------------------------------------------------------------
 #Region "Property"
     Public Property Scheme() As String
         Get
@@ -32,8 +30,21 @@ Partial Public Class RVPHomeListSearch
             Me._strScheme = value
         End Set
     End Property
+
+    Public ReadOnly Property ClaimMode() As ClaimMode
+        Get
+            Dim enumClaimMode As ClaimMode = Common.Component.ClaimMode.All
+
+            If (New BLL.SessionHandlerBLL).ClaimCOVID19GetFromSession() Then
+                enumClaimMode = Common.Component.ClaimMode.COVID19
+            End If
+
+            Return enumClaimMode
+
+        End Get
+    End Property
+
 #End Region
-    'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not Me.IsPostBack Then
@@ -53,17 +64,17 @@ Partial Public Class RVPHomeListSearch
     End Sub
 
     Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
-        'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        Select Case Me.Scheme
-            Case SchemeClaimModel.EnumControlType.RVP.ToString.Trim
-                lblRCHListFilter.Text = GetGlobalResourceObject("Text", "RCHNameFilter")
-            Case SchemeClaimModel.EnumControlType.VSS.ToString.Trim
-                lblRCHListFilter.Text = GetGlobalResourceObject("Text", "PIDInstitutionNameFilter")
-            Case Else
-                lblRCHListFilter.Text = GetGlobalResourceObject("Text", "RCHNameFilter")
-        End Select
-        'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+        If Me.Scheme IsNot Nothing Then
+            Select Case Me.Scheme.Trim
+                Case SchemeClaimModel.RVP
+                    lblRCHListFilter.Text = GetGlobalResourceObject("Text", "RCHNameFilter")
+                Case SchemeClaimModel.VSS
+                    lblRCHListFilter.Text = GetGlobalResourceObject("Text", "PIDInstitutionNameFilter")
+                Case Else
+                    lblRCHListFilter.Text = GetGlobalResourceObject("Text", "RCHNameFilter")
+            End Select
+        End If
 
         ' Register the Post Back Argument Eg. Select$1, Select$2...
         For i As Integer = 0 To Me.gvSelectedRCHRecord.PageSize - 1
@@ -81,28 +92,40 @@ Partial Public Class RVPHomeListSearch
 
         Dim strRCHType As String
 
-        Select Case udtRVPHomeListSearch.Scheme
-            Case SchemeClaimModel.EnumControlType.RVP.ToString.Trim
+        Select Case udtRVPHomeListSearch.Scheme.Trim
+            Case SchemeClaimModel.RVP
                 strRCHType = String.Empty
-            Case SchemeClaimModel.EnumControlType.VSS.ToString.Trim
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
+            Case SchemeClaimModel.VSS
                 strRCHType = RCH_TYPE.IPID
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+            Case SchemeClaimModel.COVID19RVP
+                strRCHType = String.Empty
             Case Else
                 strRCHType = String.Empty
         End Select
 
         Dim dtRVPHomeList As DataTable = udtRVPHomeListBLL.searchRVHHomeListByHomeName(Me.txtRCHListFilterCriteria.Text.Trim(), strRCHType)
+        Dim dtFilterRVPHomeList As DataTable = Nothing
 
-        If dtRVPHomeList.Rows.Count = 0 Then
+        Select Case udtRVPHomeListSearch.ClaimMode
+            Case Common.Component.ClaimMode.COVID19
+                Dim drRVP() As DataRow = dtRVPHomeList.Select("Type IN ('E','D')")
+
+                If drRVP.Length > 0 Then
+                    dtFilterRVPHomeList = drRVP.CopyToDataTable
+                End If
+            Case Else
+                dtFilterRVPHomeList = dtRVPHomeList
+        End Select
+
+        If dtFilterRVPHomeList Is Nothing OrElse dtFilterRVPHomeList.Rows.Count = 0 Then
             Me.udcMsgBoxInfo.AddMessage("990000", "I", "00001")
             Me.udcMsgBoxInfo.BuildMessageBox()
         Else
             Me.udcMsgBoxInfo.Clear()
         End If
 
-        Me.BindRVPHomeList(dtRVPHomeList)
+        Me.BindRVPHomeList(dtFilterRVPHomeList)
+
         Me.ClearSelection(sender)
     End Sub
 
@@ -152,32 +175,30 @@ Partial Public Class RVPHomeListSearch
 
             ' First Column
             Dim tcRCHCode As TableCell = New TableCell()
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            Select Case strSelectedScheme
-                Case SchemeClaimModel.EnumControlType.RVP.ToString.Trim
+
+            Select Case strSelectedScheme.Trim
+                Case SchemeClaimModel.RVP
                     tcRCHCode.Text = GetGlobalResourceObject("Text", "RCHCode")
-                Case SchemeClaimModel.EnumControlType.VSS.ToString.Trim
+                Case SchemeClaimModel.VSS
                     tcRCHCode.Text = GetGlobalResourceObject("Text", "PIDInstitutionCode")
                 Case Else
-                    'tcRCHCode.Text = GetGlobalResourceObject("Text", "RCHCode")
+                    tcRCHCode.Text = GetGlobalResourceObject("Text", "RCHCode")
             End Select
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
             tcRCHCode.ColumnSpan = 1
             gvHeaderRow.Cells.Add(tcRCHCode)
 
             Dim tcRCName As TableCell = New TableCell()
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
-            Select Case strSelectedScheme
-                Case SchemeClaimModel.EnumControlType.RVP.ToString.Trim
+
+            Select Case strSelectedScheme.Trim
+                Case SchemeClaimModel.RVP
                     tcRCName.Text = GetGlobalResourceObject("Text", "RCHName")
-                Case SchemeClaimModel.EnumControlType.VSS.ToString.Trim
+                Case SchemeClaimModel.VSS
                     tcRCName.Text = GetGlobalResourceObject("Text", "PIDInstitutionName")
                 Case Else
-                    'tcRCName.Text = GetGlobalResourceObject("Text", "RCHName")
+                    tcRCName.Text = GetGlobalResourceObject("Text", "RCHName")
             End Select
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
             tcRCName.ColumnSpan = 2
             gvHeaderRow.Cells.Add(tcRCName)
 

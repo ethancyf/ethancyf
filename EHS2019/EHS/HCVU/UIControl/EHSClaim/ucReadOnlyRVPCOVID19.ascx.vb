@@ -10,7 +10,7 @@ Imports Common.Component.Scheme
 Partial Public Class ucReadOnlyRVPCOVID19
     Inherits System.Web.UI.UserControl
 
-    Public Sub Build(ByVal udtEHSTransaction As EHSTransactionModel, ByVal intWidth As Integer)
+    Public Sub Build(ByVal udtEHSTransaction As EHSTransactionModel, ByVal intWidth As Integer, ByVal blnShowSubsidizeAmount As Boolean)
 
         ''Category                       
         'lblCategoryForCovid19.Text = (New ClaimCategoryBLL).GetClaimCategoryCache.Filter(udtEHSTransaction.CategoryCode).GetCategoryName
@@ -46,6 +46,10 @@ Partial Public Class ucReadOnlyRVPCOVID19
         'Dose Seq.
         If udtEHSTransaction.TransactionDetails IsNot Nothing And udtEHSTransaction.TransactionDetails(0).SubsidizeItemCode = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 Then
             lblDoseSeqForCovid19.Text = udtEHSTransaction.TransactionDetails(0).AvailableItemDesc
+
+            If blnShowSubsidizeAmount Then
+                lblDoseSeqForCovid19.Text = lblDoseSeqForCovid19.Text + " ($" + udtEHSTransaction.TransactionDetails(0).TotalAmount.ToString + ")"
+            End If
         End If
 
         ' Control the width of the first column

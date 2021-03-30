@@ -5341,6 +5341,65 @@ Namespace Component.ClaimRules
                                 blnMatched = False
                             End If
 
+                        Case SubsidizeItemDetailRuleModel.TypeClass.SAMEPRACT
+                            If udtInputPicker IsNot Nothing Then
+                                If udtInputPicker.LatestC19Transaction IsNot Nothing Then
+                                    Dim blnRes As Boolean
+
+                                    'Get Physical Practice Mapping
+                                    Dim dtPhysicalPractice As DataTable = (New COVID19BLL).GetPracticePhysicalMappingBySPIDPracticeDisplaySeq(udtInputPicker.SPID.Trim, _
+                                                                                                                                              udtInputPicker.PracticeDisplaySeq)
+
+                                    'Match SP ID
+                                    Select Case udtSubsidizeItemDetailRuleModel.Operator
+                                        Case "="
+                                            'Inital value
+                                            blnRes = False
+
+                                            'Any one is matched
+                                            For intRow As Integer = 0 To dtPhysicalPractice.Rows.Count - 1
+                                                If udtInputPicker.LatestC19Transaction.ServiceProviderID.Trim = dtPhysicalPractice.Rows(intRow)("Eqv_SP_ID").ToString().Trim AndAlso _
+                                                   udtInputPicker.LatestC19Transaction.PracticeID = CInt(dtPhysicalPractice.Rows(intRow)("Eqv_Practice_Display_Seq")) Then
+
+                                                    blnRes = True
+                                                    Exit For
+                                                End If
+                                            Next
+
+                                        Case "<>"
+                                            'Inital value
+                                            blnRes = True
+
+                                            'All are not matched
+                                            For intRow As Integer = 0 To dtPhysicalPractice.Rows.Count - 1
+                                                Dim blnTempRes As Boolean = True
+
+                                                If udtInputPicker.LatestC19Transaction.ServiceProviderID.Trim = dtPhysicalPractice.Rows(intRow)("Eqv_SP_ID").ToString().Trim AndAlso _
+                                                   udtInputPicker.LatestC19Transaction.PracticeID = CInt(dtPhysicalPractice.Rows(intRow)("Eqv_Practice_Display_Seq")) Then
+
+                                                    blnTempRes = False
+
+                                                End If
+
+                                                blnRes = blnRes AndAlso blnTempRes
+
+                                            Next
+
+                                        Case Else
+                                            Throw New Exception(String.Format("ClaimRulesBLL.CheckSubsidizeItemDetailRuleGroup: SAMEPRACT - Invalid Operator ({0}).", udtSubsidizeItemDetailRuleModel.Operator.Trim()))
+                                    End Select
+
+                                    blnMatched = blnMatched AndAlso blnRes
+
+                                Else
+                                    blnMatched = False
+
+                                End If
+                            Else
+                                blnMatched = False
+
+                            End If
+
                         Case SubsidizeItemDetailRuleModel.TypeClass.SAMESCHEME
                             If udtInputPicker IsNot Nothing Then
                                 If udtInputPicker.LatestC19Transaction IsNot Nothing Then

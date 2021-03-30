@@ -11,16 +11,15 @@
         Private _strHighRisk As String
         Private _strSchoolCode As String
         Private _strSPID As String
-
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Private _strBrand As String
-        Private _udtVaccinationRecord As EHSTransaction.TransactionDetailVaccineModelCollection
-        Private _udtC19Transaction As EHSTransaction.EHSTransactionModel
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        'Integer
+        Private _intPracticeDisplaySeq As Integer
 
         'User Define Type
         Private _udtInputVaccineModelCollection As InputPicker.InputVaccineModelCollection
+        Private _udtVaccinationRecord As EHSTransaction.TransactionDetailVaccineModelCollection
+        Private _udtC19Transaction As EHSTransaction.EHSTransactionModel
 
 #Region "Property"
 
@@ -78,6 +77,15 @@
             End Set
         End Property
 
+        Public Property PracticeDisplaySeq() As String
+            Get
+                Return _intPracticeDisplaySeq
+            End Get
+            Set(ByVal Value As String)
+                _intPracticeDisplaySeq = Value
+            End Set
+        End Property
+
         Public Property EHSClaimVaccine() As InputVaccineModelCollection
             Get
                 Return _udtInputVaccineModelCollection
@@ -87,8 +95,6 @@
             End Set
         End Property
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Property Brand() As String
             Get
                 Return _strBrand
@@ -115,24 +121,25 @@
                 _udtC19Transaction = Value
             End Set
         End Property
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
 #End Region
 
 #Region "Constructor"
 
         Public Sub New()
             _dtmServiceDate = Nothing
+
             _strCategoryCode = String.Empty
             _strRCHCode = String.Empty
             _strHighRisk = String.Empty
             _strSchoolCode = String.Empty
             _strSPID = String.Empty
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
             _strBrand = String.Empty
-            _udtVaccinationRecord = Nothing
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+            _intPracticeDisplaySeq = Nothing
+
+            _udtVaccinationRecord = Nothing
+            _udtC19Transaction = Nothing
             _udtInputVaccineModelCollection = Nothing
 
         End Sub
