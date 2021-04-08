@@ -40,6 +40,14 @@
             <hr />
         </td>
     </tr>
+    <tr id="trSubSpecialities" runat="server">
+        <td class="tableCellStyle" style="width:200px;padding-top:7px;padding-bottom:10px">
+            <asp:Label ID="lblSubSpecialitiesText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_SubSpecialities%>" />
+        </td>
+        <td class="tableCellStyle" colspan="2" style="width:400px">
+            <asp:Label ID="lblSubSpecialities" runat="server" CssClass="tableText" />
+        </td>
+    </tr>
     <tr>
         <td class="tableCellStyle" colspan="3" style="padding-top:7px;padding-bottom:10px">
             <asp:Label ID="lblMedicalServiceInfoText" runat="server" CssClass="tableTitle" 
@@ -92,7 +100,7 @@
         <td class="tableCellStyle" style="width:200px">
             <asp:Label ID="lblDrugFeeText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, SSSCMC_DrugFee%>" />
         </td>
-        <td class="tableCellStyle" style="width:150px">
+        <td class="tableCellStyle" colspan="2" style="width:150px">
             <table style="display: block;">
                 <tr>
                     <td style="width:10px">

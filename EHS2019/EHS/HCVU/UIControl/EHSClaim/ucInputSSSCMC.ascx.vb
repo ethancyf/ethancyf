@@ -16,6 +16,11 @@ Partial Public Class ucInputSSSCMC
 
     Private _udtSessionHandler As New SessionHandlerBLL
     Private _udtFormatter As New Format.Formatter
+    Private _udtEHSTransactionBLL As New EHSTransactionBLL
+
+    ' CRE20-015-06 (Special Support Scheme) [Start][Koala]
+    Private _dtmMinRegFeeChargedDate As New Date(2020, 11, 18)
+    ' CRE20-015-06 (Special Support Scheme) [Start][Koala]
 
 #Region "Private member"
     Private _dtHAPatient As DataTable
@@ -39,6 +44,28 @@ Partial Public Class ucInputSSSCMC
         Dim strJS As String
 
         strJS = "var PatientType = '" & strHAPatientType & "';"
+
+
+        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+        strJS += "var objExemptRegFee = "
+        strJS += "document.getElementById('" & Me.chkExemptRegFee.ClientID & "'); "
+        strJS += "var objRegFeeChargedDate = "
+        strJS += "document.getElementById('" & Me.txtRegFeeChargedDate.ClientID & "'); "
+        strJS += "var objCalRegFeeChargedDate = "
+        strJS += "document.getElementById('" & Me.ibtnRegFeeChargedDate.ClientID & "'); "
+        ' CRE20-015-07 (Special Support Scheme) [Start][Koala]
+        strJS += "var objConsultAndRegFee = "
+        strJS += "document.getElementById('" & Me.txtConsultAndRegFee.ClientID & "'); "
+        strJS += "var objTblExemptRegFeeReason = "
+        strJS += "document.getElementById('" & Me.tblExemptRegFeeReason.ClientID & "'); "
+
+        strJS += "if (objExemptRegFee.checked) {objRegFeeChargedDate.disabled = ''; objCalRegFeeChargedDate.disabled = ''; "
+        strJS += " objConsultAndRegFee.value = '0.00'; objConsultAndRegFee.disabled='disabled'; objTblExemptRegFeeReason.style.display='inline-block'; }"
+        strJS += "else {objRegFeeChargedDate.value = ''; "
+        strJS += "objRegFeeChargedDate.disabled = 'disabled'; objCalRegFeeChargedDate.disabled = 'disabled'; objConsultAndRegFee.disabled=''; objTblExemptRegFeeReason.style.display='none'; };"
+        ' CRE20-015-07 (Special Support Scheme) [End][Koala]
+
+
         strJS += "var ConsultAndRegFee = "
         strJS += "document.getElementById('" & Me.txtConsultAndRegFee.ClientID + "').value; "
         strJS += "var DrugFee = "
@@ -63,6 +90,7 @@ Partial Public Class ucInputSSSCMC
         strJS += "var objTotalSupportFee = "
         strJS += "document.getElementById('" & Me.lblTotalSupportFee.ClientID & "'); "
 
+
         strJS += "if (ConsultAndRegFee.toString().match(/\./g) != null) { if (ConsultAndRegFee.toString().match(/\./g).length > 1) { ConsultAndRegFee = '0'; } };"
         strJS += "if (DrugFee.toString().match(/\./g) != null) { if (DrugFee.toString().match(/\./g).length > 1) { DrugFee = '0'; } };"
         strJS += "if (InvestigationFee.toString().match(/\./g) != null) { if (InvestigationFee.toString().match(/\./g).length > 1) { InvestigationFee = '0'; } };"
@@ -83,23 +111,13 @@ Partial Public Class ucInputSSSCMC
         strJS += "if (isNaN(InvestigationFee)) {InvestigationFee = '0'};"
         strJS += "if (isNaN(OtherFee) == true) {OtherFee = '0'};"
 
+
         strJS += "var TotalAmt = parseFloat(ConsultAndRegFee) + parseFloat(DrugFee) + parseFloat(InvestigationFee) + parseFloat(OtherFee);"
         strJS += "TotalAmt = parseInt(TotalAmt * 100);"
         strJS += "TotalAmt = TotalAmt / 100;"
         'strJS += "var TotalAmtDisplay = TotalAmt.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');"
         'strJS += "objTotalAmt.innerHTML = TotalAmtDisplay;"
 
-        ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
-        strJS += "var objExemptRegFee = "
-        strJS += "document.getElementById('" & Me.chkExemptRegFee.ClientID & "'); "
-        strJS += "var objRegFeeChargedDate = "
-        strJS += "document.getElementById('" & Me.txtRegFeeChargedDate.ClientID & "'); "
-        strJS += "var objCalRegFeeChargedDate = "
-        strJS += "document.getElementById('" & Me.ibtnRegFeeChargedDate.ClientID & "'); "
-
-        strJS += "if (objExemptRegFee.checked) {objRegFeeChargedDate.disabled = ''; objCalRegFeeChargedDate.disabled = '';}"
-        strJS += "else {objRegFeeChargedDate.value = ''; "
-        strJS += "objRegFeeChargedDate.disabled = 'disabled'; objCalRegFeeChargedDate.disabled = 'disabled';};"
 
         strJS += "PatientPaidAmt = (objExemptRegFee.checked ? '0' : '100');"
 
@@ -305,6 +323,9 @@ Partial Public Class ucInputSSSCMC
         End If
         ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
+        'Bind DropDownList Sub-specialities
+        BindSubSpecialities()
+
         ' Available subsidy
         _decAvailableSubidy = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
 
@@ -315,6 +336,16 @@ Partial Public Class ucInputSSSCMC
         ' Fill value by temp save
         If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
             Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
+
+            ddlSubSpecialities.SelectedIndex = 0
+
+            If udtTAFList.SubSpecialities IsNot Nothing Then
+                For Each li As ListItem In ddlSubSpecialities.Items
+                    If udtTAFList.SubSpecialities.ToString.Trim = li.Value Then
+                        ddlSubSpecialities.SelectedValue = li.Value
+                    End If
+                Next
+            End If
 
             txtConsultAndRegFee.Text = udtTAFList.ConsultAndRegFeeRMB.ToString
             txtDrugFee.Text = udtTAFList.DrugFeeRMB.ToString
@@ -335,6 +366,7 @@ Partial Public Class ucInputSSSCMC
         End If
 
         If udtSessionHandler.NewClaimTransactionGetFromSession() = True Then
+            ddlSubSpecialities.SelectedIndex = 0
             txtConsultAndRegFee.Text = String.Empty
             txtDrugFee.Text = String.Empty
             txtInvestigationFee.Text = String.Empty
@@ -395,13 +427,24 @@ Partial Public Class ucInputSSSCMC
 
         ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
         'RegFeeChargedDate
+        Me.calRegFeeChargedDate.Format = _udtFormatter.EnterDateFormat(CultureLanguage.English)
+        Me.calRegFeeChargedDate.StartDate = _dtmMinRegFeeChargedDate
+
         If chkExemptRegFee.Checked Then
             txtRegFeeChargedDate.Enabled = True
             ibtnRegFeeChargedDate.Enabled = True
+            ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+            txtConsultAndRegFee.Enabled = False
+            tblExemptRegFeeReason.Style.Remove("display")
+            ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
         Else
             txtRegFeeChargedDate.Text = String.Empty
             txtRegFeeChargedDate.Enabled = False
             ibtnRegFeeChargedDate.Enabled = False
+            ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
+            txtConsultAndRegFee.Enabled = True
+            tblExemptRegFeeReason.Style.Add("display", "none")
+            ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
         End If
         ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
 
@@ -426,6 +469,7 @@ Partial Public Class ucInputSSSCMC
 #Region "Set Up Error Image"
 
     Public Sub SetError(ByVal blnVisible As Boolean)
+        Me.imgSubSpecialitiesError.Visible = blnVisible
         Me.imgConsultAndRegFeeError.Visible = blnVisible
         Me.imgRegFeeChargedDateError.Visible = blnVisible
         Me.imgDrugFeeError.Visible = blnVisible
@@ -433,6 +477,7 @@ Partial Public Class ucInputSSSCMC
         Me.imgOtherFeeError.Visible = blnVisible
         Me.imgOtherFeeRemarkError.Visible = blnVisible
         Me.ImageNetServiceFeeError.Visible = blnVisible
+        Me.ImageTotalServiceFeeError.Visible = blnVisible
 
     End Sub
 
@@ -550,6 +595,15 @@ Partial Public Class ucInputSSSCMC
         udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
 
         udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+        udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.SubSpecialities
+        udtTransactAdditionfield.AdditionalFieldValueCode = ddlSubSpecialities.SelectedValue.ToString.Trim()
+        udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
+        udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+        udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
+        udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
+        udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+        udtTransactAdditionfield = New TransactionAdditionalFieldModel()
         udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ClaimedPaymentType
         udtTransactAdditionfield.AdditionalFieldValueCode = Me.ClaimedPaymentType
         udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
@@ -557,6 +611,25 @@ Partial Public Class ucInputSSSCMC
         udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
         udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
         udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+        ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
+        'PaymentTypeMatch
+        Dim strPaymentTypeMatch As String = String.Empty
+        If Me.PaymentTypeResult = YesNo.No AndAlso Me.ClaimedPaymentTypeCode <> String.Empty Then
+            strPaymentTypeMatch = YesNo.No
+        Else
+            strPaymentTypeMatch = YesNo.Yes
+        End If
+
+        udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+        udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.PaymentTypeMatch
+        udtTransactAdditionfield.AdditionalFieldValueCode = strPaymentTypeMatch
+        udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
+        udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+        udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
+        udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
+        udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+        ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
         'RegistrationFeeRMB
         udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -648,30 +721,17 @@ Partial Public Class ucInputSSSCMC
         udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
         udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-        ' CRE20-015-05 (Special Support Scheme) [Start][Winnie]
-        'PaymentTypeMatch
-        Dim strPaymentTypeMatch As String = String.Empty
-        If Me.PaymentTypeResult = YesNo.No AndAlso Me.ClaimedPaymentTypeCode <> String.Empty Then
-            strPaymentTypeMatch = YesNo.No
-        Else
-            strPaymentTypeMatch = YesNo.Yes
-        End If
-        
-        udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-        udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.PaymentTypeMatch
-        udtTransactAdditionfield.AdditionalFieldValueCode = strPaymentTypeMatch
-        udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
-        udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
-        udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
-        udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
-        udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-        ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
-
         ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
         'ExemptRegFee
         Dim strChargedDate As String = String.Empty
         If chkExemptRegFee.Checked AndAlso txtRegFeeChargedDate.Text.Trim <> String.Empty Then
-            strChargedDate = Date.ParseExact(txtRegFeeChargedDate.Text.Trim, "dd-MM-yyyy", Nothing).ToString("yyyy-MM-dd")
+            ' CRE20-015-07 (Special Support Scheme) [Start][Koala]
+            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text, CultureLanguage.English)
+            Dim dtmRegFeeChargedDate As DateTime = Nothing
+            dtmRegFeeChargedDate = Date.ParseExact(strCheckDate, "dd-MM-yyyy", Nothing)
+            strChargedDate = dtmRegFeeChargedDate.ToString("yyyy-MM-dd")
+            'strChargedDate = Date.ParseExact(txtRegFeeChargedDate.Text.Trim, "yyyy-MM-dd", Nothing).ToString("yyyy-MM-dd")
+            ' CRE20-015-07 (Special Support Scheme) [End][Koala]
         End If
 
         udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -691,6 +751,19 @@ Partial Public Class ucInputSSSCMC
 
         Me.SetError(False)
 
+        'Sub-Specialities
+        If ddlSubSpecialities.SelectedIndex = 0 Then
+            If ddlSubSpecialities.Items.Count > 1 Then
+                imgSubSpecialitiesError.Visible = blnShowErrorImage
+                udtMsg = New ComObject.SystemMessage("990000", "E", "00367") ' Please select "%s".
+
+                If udtMsgBox IsNot Nothing Then
+                    udtMsgBox.AddMessage(udtMsg, "%s", lblSubSpecialitiesText.Text)
+                End If
+                blnRes = False
+            End If
+        End If
+
         'ConsultAndRegFee
         udtMsg = ValidateFee(blnShowErrorImage, txtConsultAndRegFee, imgConsultAndRegFeeError)
         If udtMsg IsNot Nothing Then
@@ -699,7 +772,8 @@ Partial Public Class ucInputSSSCMC
                     Case MsgCode.MSG00449
                         udtMsgBox.AddMessage(udtMsg, _
                                              New String() {"%s", "%d"}, _
-                                             New String() {lblConsultAndRegFeeText.Text, String.Format("{0} {1}", "¥", Me.UpperLimitFee)})
+                                             New String() {lblConsultAndRegFeeText.Text.Replace("&nbsp;", "").Replace("<br>", " "), _
+                                                           String.Format("{0} {1}", "¥", Me.UpperLimitFee)})
                     Case Else
                         udtMsgBox.AddMessage(udtMsg, "%s", lblConsultAndRegFeeText.Text.Replace("&nbsp;", "").Replace("<br>", " "))
                 End Select
@@ -711,7 +785,10 @@ Partial Public Class ucInputSSSCMC
             udtMsg = ValidateRegistrationFeeValue(blnShowErrorImage, txtConsultAndRegFee, imgConsultAndRegFeeError)
             If udtMsg IsNot Nothing Then
                 If udtMsgBox IsNot Nothing Then
-                    udtMsgBox.AddMessage(udtMsg, New String() {"%s", "%q"}, New String() {lblConsultAndRegFeeText.Text, Me.RegistrationFee.ToString})
+                    udtMsgBox.AddMessage(udtMsg, _
+                                         New String() {"%s", "%q", "%d"}, _
+                                         New String() {lblConsultAndRegFeeText.Text.Replace("&nbsp;", "").Replace("<br>", " "), _
+                                                       Me.RegistrationFee.ToString, "¥ 0"})
                 End If
                 blnRes = False
             End If
@@ -722,7 +799,8 @@ Partial Public Class ucInputSSSCMC
         udtMsg = ValidateRegFeeChargedDate(blnShowErrorImage)
         If udtMsg IsNot Nothing Then
             If udtMsgBox IsNot Nothing Then
-                udtMsgBox.AddMessage(udtMsg, "%s", Me.GetGlobalResourceObject("Text", "SSSCMC_ChargedDate"))
+                udtMsgBox.AddMessage(udtMsg, {"%s", "%d"}, {Me.GetGlobalResourceObject("Text", "SSSCMC_ChargedDate"), _
+                                                            _dtmMinRegFeeChargedDate.ToString("yyyy-MM-dd")})
             End If
             blnRes = False
         End If
@@ -785,16 +863,30 @@ Partial Public Class ucInputSSSCMC
             blnRes = False
         End If
 
-        'Net Service Fee
-        udtMsg = ValidateNetServiceFeeValue(blnShowErrorImage)
+        ' CRE20-015-11 (Special Support Scheme) [Start][Winnie]
+        'Total Service Fee ( 1 - 4 items)
+        udtMsg = ValidateTotalServiceFeeValue(blnShowErrorImage)
         If udtMsg IsNot Nothing Then
             If udtMsgBox IsNot Nothing Then
                 udtMsgBox.AddMessage(udtMsg, _
                                      New String() {"%s", "%d"}, _
-                                     New String() {lblNetServiceFeeText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
+                                     New String() {lblTotalAmountText.Text.Replace("&nbsp;", "").Replace("<br>", " "), _
+                                                   String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
             End If
             blnRes = False
         End If
+
+        ''Net Service Fee
+        'udtMsg = ValidateNetServiceFeeValue(blnShowErrorImage)
+        'If udtMsg IsNot Nothing Then
+        '    If udtMsgBox IsNot Nothing Then
+        '        udtMsgBox.AddMessage(udtMsg, _
+        '                             New String() {"%s", "%d"}, _
+        '                             New String() {lblNetServiceFeeText.Text, String.Format("{0} {1}", "¥", Me.LowerLimitFee)})
+        '    End If
+        '    blnRes = False
+        'End If
+        ' CRE20-015-11 (Special Support Scheme) [End][Winnie]
 
         Return blnRes
 
@@ -836,6 +928,36 @@ Partial Public Class ucInputSSSCMC
 
     End Function
 
+    ''' <summary>
+    ''' If checked chkExemptRegFee, Consultant fee must Zero
+    ''' </summary>
+    ''' <param name="blnShowErrorImage"></param>
+    ''' <param name="txtFee"></param>
+    ''' <param name="imgError"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function ValidateConsultAndRegFee(ByVal blnShowErrorImage As Boolean, txtFee As TextBox, imgError As Image) As ComObject.SystemMessage
+        imgError.Visible = False
+
+        If chkExemptRegFee.Checked = True Then
+            'Check Fee Value
+            Dim decFee As Decimal
+
+            If Decimal.TryParse(txtFee.Text, decFee) Then
+                If decFee <> 0 Then
+                    imgError.Visible = blnShowErrorImage
+                    Return New ComObject.SystemMessage("990000", "E", "00449") ' The "%s" should not be greater than %d.".
+                End If
+            Else
+                imgError.Visible = blnShowErrorImage
+                Return New ComObject.SystemMessage("990000", "E", "00029") ' The "%s" is invalid.
+            End If
+        End If
+
+        Return Nothing
+
+    End Function
+
     Public Function ValidateRegistrationFeeValue(ByVal blnShowErrorImage As Boolean, txtFee As TextBox, imgError As Image) As ComObject.SystemMessage
         imgError.Visible = False
 
@@ -843,9 +965,16 @@ Partial Public Class ucInputSSSCMC
         Dim decFee As Decimal
 
         If Decimal.TryParse(txtFee.Text, decFee) Then
-            If decFee < CDec(Me.RegistrationFee) Then
-                imgError.Visible = blnShowErrorImage
-                Return New ComObject.SystemMessage("990000", "E", "00458") ' The "%s" should be greater than "&yen; %q".
+            If chkExemptRegFee.Checked = False Then
+                If decFee < CDec(Me.RegistrationFee) Then
+                    imgError.Visible = blnShowErrorImage
+                    Return New ComObject.SystemMessage("990000", "E", "00458") ' The "%s" should be greater than "&yen; %q".
+                End If
+            Else ' checked chkExemptRegFee
+                If decFee <> 0 Then
+                    imgError.Visible = blnShowErrorImage
+                    Return New ComObject.SystemMessage("990000", "E", "00449") ' The "%s" should not be greater than %d.".
+                End If
             End If
         Else
             imgError.Visible = blnShowErrorImage
@@ -855,6 +984,52 @@ Partial Public Class ucInputSSSCMC
         Return Nothing
 
     End Function
+
+    ' CRE20-015-11 (Special Support Scheme) [Start][Winnie]
+    Public Function ValidateTotalServiceFeeValue(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
+        ImageTotalServiceFeeError.Visible = False
+
+        Dim decConsultAndRegFee As Decimal
+        Dim decDrugFee As Decimal
+        Dim decInvestigationFee As Decimal
+        Dim decOtherFee As Decimal
+        Dim decTotalServiceFee As Decimal
+
+        If txtConsultAndRegFee.Text = String.Empty Then
+            decConsultAndRegFee = 0
+        Else
+            Decimal.TryParse(txtConsultAndRegFee.Text, decConsultAndRegFee)
+        End If
+
+        If txtDrugFee.Text = String.Empty Then
+            decDrugFee = 0
+        Else
+            Decimal.TryParse(txtDrugFee.Text, decDrugFee)
+        End If
+
+        If txtInvestigationFee.Text = String.Empty Then
+            decInvestigationFee = 0
+        Else
+            Decimal.TryParse(txtInvestigationFee.Text, decInvestigationFee)
+        End If
+
+        If txtOtherFee.Text = String.Empty Then
+            decOtherFee = 0
+        Else
+            Decimal.TryParse(txtOtherFee.Text, decOtherFee)
+        End If
+
+        decTotalServiceFee = Math.Floor((Math.Floor((decConsultAndRegFee + decDrugFee + decInvestigationFee + decOtherFee) * 100) / 100.0) * 10) / 10.0
+
+        If decTotalServiceFee <= 0 Then
+            ImageTotalServiceFeeError.Visible = blnShowErrorImage
+            Return New ComObject.SystemMessage("990000", "E", "00446") ' The "%s" should be greater than %d.
+        End If
+
+        Return Nothing
+
+    End Function
+    ' CRE20-015-11 (Special Support Scheme) [End][Winnie]
 
     Public Function ValidateNetServiceFeeValue(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
         ImageNetServiceFeeError.Visible = False
@@ -928,11 +1103,21 @@ Partial Public Class ucInputSSSCMC
         imgRegFeeChargedDateError.Visible = False
 
         If chkExemptRegFee.Checked Then
-            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text)
+            ' General date validation, no future date
+            Dim strCheckDate As String = _udtFormatter.formatInputDate(Me.txtRegFeeChargedDate.Text, CultureLanguage.English)
             Dim sm As ComObject.SystemMessage = udtValidator.chkInputDate(strCheckDate, True, True)
 
             If sm IsNot Nothing Then
                 imgRegFeeChargedDateError.Visible = blnShowErrorImage
+                Return sm
+            End If
+
+            'Date cannot eariler then first claim date 18 Nov 2020
+            Dim dtmRegFeeChargedDate As DateTime = Nothing
+            dtmRegFeeChargedDate = Date.ParseExact(strCheckDate, "dd-MM-yyyy", Nothing)
+            If dtmRegFeeChargedDate < _dtmMinRegFeeChargedDate Then
+                imgRegFeeChargedDateError.Visible = blnShowErrorImage
+                sm = New ComObject.SystemMessage("990000", "E", "00460")
                 Return sm
             End If
 
@@ -1004,4 +1189,59 @@ Partial Public Class ucInputSSSCMC
         decTotalSupportFee = decBaseTotalSupportFee + decSubsidyUsed '+ IIf(strPatientType = "B", decCoPayemtFee, 0)
         'decCoPayemtFee = IIf(strPatientType = "B", 0, decCoPayemtFee)
     End Sub
+
+    Private Sub BindSubSpecialities()
+        Dim strSelectedValue As String = Nothing
+
+        'Temporary save the selected value
+        If ddlSubSpecialities.Items.Count > 0 Then
+            strSelectedValue = ddlSubSpecialities.SelectedValue
+        End If
+
+        'Bind Sub-Specialities into dropdownlist
+        Me.ddlSubSpecialities.Items.Clear()
+        Me.ddlSubSpecialities.SelectedIndex = -1
+        Me.ddlSubSpecialities.SelectedValue = Nothing
+        Me.ddlSubSpecialities.ClearSelection()
+
+        Dim dtSubSpecialities As DataTable = _udtEHSTransactionBLL.GetAllSubSpecialitiesByPractice(Me.CurrentPractice.PracticeID)
+
+        If dtSubSpecialities Is Nothing Then
+            'Selected practice without any sub-specialities
+            ddlSubSpecialities.DataSource = _udtEHSTransactionBLL.GetAllSubSpecialitiesByPractice(0)
+            ddlSubSpecialities.DataTextField = "Name_CN"
+            ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
+            ddlSubSpecialities.DataBind()
+        Else
+            If dtSubSpecialities.Rows.Count > 0 Then
+                ddlSubSpecialities.DataSource = dtSubSpecialities
+                ddlSubSpecialities.DataTextField = "Name_CN"
+                ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
+                ddlSubSpecialities.DataBind()
+            Else
+                ddlSubSpecialities.DataSource = _udtEHSTransactionBLL.GetAllSubSpecialitiesByPractice(0)
+                ddlSubSpecialities.DataTextField = "Name_CN"
+                ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
+                ddlSubSpecialities.DataBind()
+            End If
+
+            'If Sub-Specialities is more than 1, then add "Please Select" at the top of dropdownlist
+            If dtSubSpecialities.Rows.Count > 1 Then
+                ddlSubSpecialities.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+            End If
+        End If
+
+        ddlSubSpecialities.SelectedIndex = 0
+
+        'Restore the selected value if has value
+        If strSelectedValue IsNot Nothing Then
+            For Each li As ListItem In ddlSubSpecialities.Items
+                If strSelectedValue = li.Value Then
+                    ddlSubSpecialities.SelectedValue = li.Value
+                End If
+            Next
+        End If
+
+    End Sub
+
 End Class

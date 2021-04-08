@@ -5583,6 +5583,9 @@ Partial Public Class spProfile
 #Region "Tab - Practice Information - EHRSS"
 
     Private Sub SetPracticeAdditionalInfo(ByVal blnRequestEdit As Boolean)
+        Dim udtGeneralFunction As New GeneralFunction
+        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
+
         If blnExisingHKID Then
             Me.ibtnEHRSSEdit.Visible = True
             Me.ibtnEHRSSSave.Visible = False
@@ -5616,7 +5619,6 @@ Partial Public Class spProfile
             'Dim blnAutoEditModel As Boolean = False
             ' CRE17-016 Checking of PCD status during VSS enrolment [End][Koala]
 
-
             Dim udtProfessionalList As ProfessionalModelCollection
             Dim udtSP As ServiceProviderModel
 
@@ -5629,9 +5631,15 @@ Partial Public Class spProfile
                 For Each udtProfessionalModel As ProfessionalModel In udtProfessionalList.Values
 
                     Dim strHealthProf As String = udtProfessionalModel.ServiceCategoryCode
-                    If udtSPProfileBLL.AskHadJoinedEHRSSProfCode(strHealthProf.Trim) Then
-                        blnAskHadJoinedEHRSSProfCode = True
+
+                    ' CRE20-0023-02 (Fix Professional is not eligible to join PCD) [Start][Winnie SUEN]
+                    ' --------------------------------------------------------------------------------------
+                    If streHRSSToken = YesNo.Yes Then
+                        If udtSPProfileBLL.AskHadJoinedEHRSSProfCode(strHealthProf.Trim) Then
+                            blnAskHadJoinedEHRSSProfCode = True
+                        End If
                     End If
+                    ' CRE20-0023-02 ((Fix Professional is not eligible to join PCD)) [End][Winnie SUEN]
 
                     ' CRE17-016 Checking of PCD status during VSS enrolment [Start][Koala]
                     ' --------------------------------------------------------------------------------------------------------------------------------
@@ -5748,13 +5756,10 @@ Partial Public Class spProfile
         End If
 
         'CRE20-018 Stop Token Sharing [Start][Nichole]
-        Dim udtGeneralFunction As New GeneralFunction
-        Dim streHRSSToken As String = udtGeneralFunction.getSystemParameter("eHRSS_Token")
         If streHRSSToken = YesNo.No Then
             tbHadJoinedEHRSS.Visible = False
             rboHadJoinedEHRSS.SelectedValue = "N"
         End If
-
         'CRE20-018 Stop token sharing [End][Nichole]
     End Sub
 

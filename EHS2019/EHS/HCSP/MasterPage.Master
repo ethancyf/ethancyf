@@ -9,12 +9,7 @@
     <base id="basetag" runat="server" />
     <link href="CSS/ComboBoxStyle.css" rel="stylesheet" type="text/css" />
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
-<%--    <link href="CSS/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
-    <link href="CSS/bootstrap.min.css" rel="stylesheet " type="text/css"/>
-   
-    <script language="javascript" src="../JS/jquery-3.6.0.min.js" type="text/javascript"></script>
-    <script language="javascript" src="../JS/bootstrap-select.min.js" type="text/javascript"></script>
-    <script language="javascript" src="../JS/bootstrap.bundle.min.js" type="text/javascript"></script>--%>
+
     <script language="javascript" src="../JS/jquery-3.4.1.min.js" type="text/javascript"></script>   
     <script language="javascript" src="../JS/Common.js?ver=3" type="text/javascript" ></script>
     <script language="Javascript" src="../JS/ideasComboLib4Ra.js" type="text/javascript"></script>
@@ -131,7 +126,7 @@
                                         <!--<button ID="Button1" title="PPI-ePR"  onclick="javascript:return perform_SSO('UATApp');">PPI-ePR</button>-->
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <asp:ImageButton ID="ibtnReprintVaccinationRecord" runat="server" AlternateText="<%$ Resources:AlternateText, ReprintVaccinationRecordSmallBtn %>"
-                                            ImageUrl="<%$ Resources:ImageUrl, ReprintVaccinationRecordSmallBtn %>"  Visible="false"/>
+                                            ImageUrl="<%$ Resources:ImageUrl, ReprintVaccinationRecordSmallBtn %>"  Visible="false" OnClick="ibtnReprintVaccinationRecord_Click"/>
 
                                     </td>
                                     <td align="right">

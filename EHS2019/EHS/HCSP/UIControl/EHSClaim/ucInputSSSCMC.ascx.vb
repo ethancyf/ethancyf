@@ -16,6 +16,7 @@ Partial Public Class ucInputSSSCMC
     Private _udtSessionHandler As New SessionHandler
     Private _udtFormatter As New Format.Formatter
     Private _udtSubPlatformBLL As New SubPlatformBLL
+    Private _udtEHSTransactionBLL As New EHSTransactionBLL
 
     ' CRE20-015-06 (Special Support Scheme) [Start][Koala]
     Private _dtmMinRegFeeChargedDate As New Date(2020, 11, 18)
@@ -35,7 +36,7 @@ Partial Public Class ucInputSSSCMC
     End Sub
 
     Private Sub RegisterJSScript(ByVal strHAPatientType As String, ByVal intRegistrationFee As Integer, ByVal decSubsidyBeforeUse As Decimal)
-
+        
         Dim strJS As String
 
         strJS = "var PatientType = '" & strHAPatientType & "';"
@@ -72,7 +73,7 @@ Partial Public Class ucInputSSSCMC
         'strJS += "var objTotalAmt = "
         'strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "
         strJS += "var objActualTotalAmt = "
-        strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "
+        strJS += "document.getElementById('" & Me.lblTotalAmount.ClientID & "'); "        
         strJS += "var objNetServiceAmt = "
         strJS += "document.getElementById('" & Me.lblNetServiceFee.ClientID & "'); "
         strJS += "var objCoPaymentAmt = "
@@ -269,7 +270,6 @@ Partial Public Class ucInputSSSCMC
         Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
         Dim udtEHSClaimBLL As BLL.EHSClaimBLL = New BLL.EHSClaimBLL()
         Dim udtSchemeClaimBLL As SchemeClaimBLL = New SchemeClaimBLL()
-        Dim udtEHSTransactionBLL As New EHSTransactionBLL
         Dim udtHAServicePatientBLL As New HAServicePatientBLL
         Dim strSubidizeCode As String = String.Empty
 
@@ -309,8 +309,11 @@ Partial Public Class ucInputSSSCMC
         End If
         ' CRE20-015-05 (Special Support Scheme) [End][Winnie]
 
+        'Bind DropDownList Sub-specialities
+        BindSubSpecialities()
+
         ' Available subsidy
-        _decAvailableSubidy = udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
+        _decAvailableSubidy = _udtEHSTransactionBLL.getAvailableSubsidizeItem_SSSCMC(udtEHSPersonalInfo, udtSchemeClaim.SubsidizeGroupClaimList)
 
         If _decAvailableSubidy <= 0.0 Then
             _decAvailableSubidy = 0.0
@@ -319,6 +322,16 @@ Partial Public Class ucInputSSSCMC
         ' Fill value by temp save
         If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
             Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
+
+            ddlSubSpecialities.SelectedIndex = 0
+
+            If udtTAFList.SubSpecialities IsNot Nothing Then
+                For Each li As ListItem In ddlSubSpecialities.Items
+                    If udtTAFList.SubSpecialities.ToString.Trim = li.Value Then
+                        ddlSubSpecialities.SelectedValue = li.Value
+                    End If
+                Next
+            End If
 
             txtConsultAndRegFee.Text = udtTAFList.ConsultAndRegFeeRMB.ToString
             txtDrugFee.Text = udtTAFList.DrugFeeRMB.ToString
@@ -341,6 +354,7 @@ Partial Public Class ucInputSSSCMC
         End If
 
         If _udtSessionHandler.ClaimForSamePatientGetFromSession(FunctCode) Then
+            ddlSubSpecialities.SelectedIndex = 0
             txtConsultAndRegFee.Text = String.Empty
             txtDrugFee.Text = String.Empty
             txtInvestigationFee.Text = String.Empty
@@ -444,6 +458,7 @@ Partial Public Class ucInputSSSCMC
 #Region "Set Up Error Image"
 
     Public Sub SetError(ByVal blnVisible As Boolean)
+        Me.imgSubSpecialitiesError.Visible = blnVisible
         Me.imgConsultAndRegFeeError.Visible = blnVisible
         Me.imgRegFeeChargedDateError.Visible = blnVisible
         Me.imgDrugFeeError.Visible = blnVisible
@@ -567,6 +582,15 @@ Partial Public Class ucInputSSSCMC
         'Save TransactionAdditionalField model
         Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
         udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
+
+        udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+        udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.SubSpecialities
+        udtTransactAdditionfield.AdditionalFieldValueCode = ddlSubSpecialities.SelectedValue.ToString.Trim()
+        udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
+        udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+        udtTransactAdditionfield.SchemeSeq = udtResSubsidizeGroupClaim.SchemeSeq
+        udtTransactAdditionfield.SubsidizeCode = udtResSubsidizeGroupClaim.SubsidizeCode
+        udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
         udtTransactAdditionfield = New TransactionAdditionalFieldModel()
         udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ClaimedPaymentType
@@ -715,6 +739,19 @@ Partial Public Class ucInputSSSCMC
         Dim blnRes As Boolean = True
 
         Me.SetError(False)
+
+        'Sub-Specialities
+        If ddlSubSpecialities.SelectedIndex = 0 Then
+            If ddlSubSpecialities.Items.Count > 1 Then
+                imgSubSpecialitiesError.Visible = blnShowErrorImage
+                udtMsg = New ComObject.SystemMessage("990000", "E", "00367") ' Please select "%s".
+
+                If udtMsgBox IsNot Nothing Then
+                    udtMsgBox.AddMessage(udtMsg, "%s", lblSubSpecialitiesText.Text)
+                End If
+                blnRes = False
+            End If
+        End If
 
         'ConsultAndRegFee
         udtMsg = ValidateFee(blnShowErrorImage, txtConsultAndRegFee, imgConsultAndRegFeeError)
@@ -1047,7 +1084,7 @@ Partial Public Class ucInputSSSCMC
     ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
     Public Function ValidateRegFeeChargedDate(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
         Dim udtValidator As Validator = New Validator
-
+        
         imgRegFeeChargedDateError.Visible = False
 
         If chkExemptRegFee.Checked Then
@@ -1136,5 +1173,45 @@ Partial Public Class ucInputSSSCMC
         decCoPayemtFee = IIf(decNetServiceFee > decSubsidyBeforeUse, decNetServiceFee - decSubsidyBeforeUse, 0)
         decTotalSupportFee = decBaseTotalSupportFee + decSubsidyUsed '+ IIf(strPatientType = "B", decCoPayemtFee, 0)
         'decCoPayemtFee = IIf(strPatientType = "B", 0, decCoPayemtFee)
+    End Sub
+
+    Private Sub BindSubSpecialities()
+        Dim strSelectedValue As String = Nothing
+
+        'Temporary save the selected value
+        If ddlSubSpecialities.Items.Count > 0 Then
+            strSelectedValue = ddlSubSpecialities.SelectedValue
+        End If
+
+        'Bind Sub-Specialities into dropdownlist
+        Me.ddlSubSpecialities.Items.Clear()
+        Me.ddlSubSpecialities.SelectedIndex = -1
+        Me.ddlSubSpecialities.SelectedValue = Nothing
+        Me.ddlSubSpecialities.ClearSelection()
+
+        Dim dtSubSpecialities As DataTable = _udtEHSTransactionBLL.GetActiveSubSpecialitiesByPractice(Me.CurrentPractice.PracticeID)
+        If dtSubSpecialities.Rows.Count > 0 Then
+            ddlSubSpecialities.DataSource = dtSubSpecialities
+            ddlSubSpecialities.DataTextField = "Name_CN"
+            ddlSubSpecialities.DataValueField = "SubSpecialities_Code"
+            ddlSubSpecialities.DataBind()
+        End If
+
+        'If Sub-Specialities is more than 1, then add "Please Select" at the top of dropdownlist
+        If dtSubSpecialities.Rows.Count > 1 Then
+            ddlSubSpecialities.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+        End If
+
+        ddlSubSpecialities.SelectedIndex = 0
+
+        'Restore the selected value if has value
+        If strSelectedValue IsNot Nothing Then
+            For Each li As ListItem In ddlSubSpecialities.Items
+                If strSelectedValue = li.Value Then
+                    ddlSubSpecialities.SelectedValue = li.Value
+                End If
+            Next
+        End If
+
     End Sub
 End Class

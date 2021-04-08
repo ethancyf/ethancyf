@@ -85,7 +85,7 @@
                     Visible="False" />
             </ItemTemplate>
         </asp:TemplateField>
-         <asp:TemplateField>
+        <asp:TemplateField>
             <HeaderStyle VerticalAlign="Top" />
             <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
             <ItemTemplate>
@@ -93,7 +93,7 @@
                     Visible="False" />
             </ItemTemplate>
         </asp:TemplateField>
-         <asp:TemplateField>
+        <asp:TemplateField>
             <HeaderStyle VerticalAlign="Top" />
             <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
             <ItemTemplate>
@@ -101,11 +101,35 @@
                     Visible="False" />
             </ItemTemplate>
         </asp:TemplateField>
-         <asp:TemplateField>
+        <asp:TemplateField>
             <HeaderStyle VerticalAlign="Top" />
             <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
             <ItemTemplate>
                 <asp:Image ID="imgScheme12" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
+                    Visible="False" />
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField>
+            <HeaderStyle VerticalAlign="Top" />
+            <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
+            <ItemTemplate>
+                <asp:Image ID="imgScheme13" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
+                    Visible="False" />
+            </ItemTemplate>
+        </asp:TemplateField>
+        <asp:TemplateField>
+            <HeaderStyle VerticalAlign="Top" />
+            <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
+            <ItemTemplate>
+                <asp:Image ID="imgScheme14" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
+                    Visible="False" />
+            </ItemTemplate>
+        </asp:TemplateField>
+          <asp:TemplateField>
+            <HeaderStyle VerticalAlign="Top" />
+            <ItemStyle Width="140px" VerticalAlign="Top" HorizontalAlign="Center" />
+            <ItemTemplate>
+                <asp:Image ID="imgScheme15" runat="server" ImageUrl="<%$ Resources: ImageUrl, Tick %>"
                     Visible="False" />
             </ItemTemplate>
         </asp:TemplateField>

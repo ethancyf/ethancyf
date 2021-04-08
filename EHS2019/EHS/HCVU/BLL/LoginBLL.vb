@@ -128,7 +128,7 @@ Namespace BLL
                     Dim drHCVUUser As DataRow
                     drHCVUUser = dtHCVUUser.Rows(0)
                     udtHCVUUser = New HCVUUserModel
-                    udtHCVUUser.UserID = CStr(drHCVUUser.Item("User_ID")).Trim & "_" & strUserID
+                    udtHCVUUser.UserID = IIf(strUserID = String.Empty, CStr(drHCVUUser.Item("User_ID")).Trim, CStr(drHCVUUser.Item("User_ID")).Trim & "_" & strUserID)
                     udtHCVUUser.UserName = CStr(drHCVUUser.Item("User_Name")).Trim
                     udtHCVUUser.LastPwdChangeDtm = IIf(drHCVUUser.Item("Last_Pwd_Change_Dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Pwd_Change_Dtm"))
                     udtHCVUUser.LastLoginDtm = IIf(drHCVUUser.Item("Last_Login_dtm") Is DBNull.Value, Nothing, drHCVUUser.Item("Last_Login_dtm"))

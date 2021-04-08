@@ -174,7 +174,7 @@
                                     </ItemTemplate>
                                     <ItemStyle VerticalAlign="Top" Width="150px" />
                                 </asp:TemplateField>--%>
-                                <asp:TemplateField SortExpression="Service_Period_From" HeaderText="<%$ Resources:Text, VaccineLotEffectiveDateFrom %>">
+                                <asp:TemplateField SortExpression="New_Service_Period_From" HeaderText="<%$ Resources:Text, VaccineLotEffectiveDateFrom %>">
                                     <ItemTemplate>
                                         <asp:Label ID="lblSVLEffFrom" runat="server" Text='<%# Eval("Service_Period_From", "{0:dd MMM yyyy}")%>'></asp:Label>
                                         <asp:Label ID="lblSVLEffFromSymbol" runat="server" Text="<br>>>"  Visible="false"></asp:Label>

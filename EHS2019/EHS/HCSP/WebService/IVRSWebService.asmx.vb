@@ -1573,7 +1573,7 @@ Public Class IVRSWebService
                 Try
 
                     Dim udtEligibleResult As ClaimRules.ClaimRulesBLL.EligibleResult = Nothing
-                    udtSystemMessage = udtEHSClaimBLL.CheckEligibilityForEnterClaim(udtSchemeClaim, udtEHSTransaction.ServiceDate, udtEHSAccount.EHSPersonalInformationList(0), Nothing, udtEligibleResult)
+                    udtSystemMessage = udtEHSClaimBLL.CheckEligibilityForIVRSEnterClaim(udtSchemeClaim, udtEHSTransaction.ServiceDate, udtEHSAccount.EHSPersonalInformationList(0), Nothing, udtEligibleResult)
                     If Not udtSystemMessage Is Nothing OrElse Not udtEligibleResult.IsEligible Then
                         intRes = 1
                     Else

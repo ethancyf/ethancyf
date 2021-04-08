@@ -127,9 +127,14 @@ Partial Public Class MasterPage
         'Diable viewstate of the menu
         'caMenu.EnableViewState = False
 
-        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-        udtMenuController.BuildMenu(Me.ulMenu, DirectCast(Me.Page, BasePage).SubPlatform)
-        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+        ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+        Dim blnHideDisabledMenuItem As Boolean = False
+        If Session("HCVU_UserType") = "HCSPUser" Then
+            blnHideDisabledMenuItem = True
+        End If
+
+        udtMenuController.BuildMenu(Me.ulMenu, DirectCast(Me.Page, BasePage).SubPlatform, blnHideDisabledMenuItem)
+        ' CRE20-0023 (Immu record) [End][Winnie SUEN]
 
         ' Logic To Check New Message In Inbox:
         ' Check New Message Between Last Retrive Time & Current Time

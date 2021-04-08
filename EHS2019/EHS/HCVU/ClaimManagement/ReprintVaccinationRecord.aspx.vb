@@ -62,6 +62,11 @@ Partial Public Class ReprintVaccinationRecord
 #Region "Page Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
+        'CRE20-023 add session on the reprint form [Start][Nichole]
+        Dim udtHCVUUserBLL As New HCVUUserBLL
+        Dim udtHCVUUser As HCVUUserModel = udtHCVUUserBLL.GetHCVUUser()
+        'CRE20-023 add session on the reprint form [End][Nichole]
+
         If Not IsPostBack Then
             ' Set function code
             FunctionCode = FunctCode.FUNT010421

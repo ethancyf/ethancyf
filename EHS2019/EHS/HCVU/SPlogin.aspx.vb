@@ -75,7 +75,7 @@ Partial Public Class SPlogin
             ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT010001, Me)
-            udtAuditLogEntry.WriteLog(LogID.LOG00000, "Login loaded")
+            udtAuditLogEntry.WriteLog(LogID.LOG00000, "SP - Login loaded")
             Session("language") = "en-us"
 
             ' CRE20-0022 (Immu record) [Start][Chris YIM]
@@ -421,8 +421,8 @@ Partial Public Class SPlogin
             End If
 
             'INT11-0011
-            'udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Login", strLogUserID)
-            udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Login", Me.txtUsername.Text)
+            'udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "SP - Login", strLogUserID)
+            udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "SP - Login", Me.txtUsername.Text)
             'End INT11-0011
 
             If Not dtHCVUUser Is Nothing AndAlso dtHCVUUser.Rows.Count = 1 Then
@@ -432,7 +432,7 @@ Partial Public Class SPlogin
 
                 udtAuditLogEntry.AddDescripton("Login ID", Me.txtUsername.Text)
                 udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
-                udtAuditLogEntry.WriteLog(LogID.LOG00015, "Login fail: Incorrect UserID[" & Me.txtUsername.Text.Trim & "]", Me.txtUsername.Text.Trim)
+                udtAuditLogEntry.WriteLog(LogID.LOG00015, "SP - Login fail: Incorrect UserID[" & Me.txtUsername.Text.Trim & "]", Me.txtUsername.Text.Trim)
             End If
 
             If udtValidator.IsEmpty(strPassword) Then
@@ -465,8 +465,8 @@ Partial Public Class SPlogin
             End If
 
             'INT11-0011
-            'udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Login", strLogUserID)
-            udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "Login", Me.txtDEUsername.Text)
+            'udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "SP - Login", strLogUserID)
+            udtAuditLogEntry.WriteStartLog(LogID.LOG00001, "SP - Login", Me.txtDEUsername.Text)
             'End INT11-0011
 
             If Not dtHCVUUser Is Nothing AndAlso dtHCVUUser.Rows.Count = 1 Then
@@ -476,7 +476,7 @@ Partial Public Class SPlogin
 
                 udtAuditLogEntry.AddDescripton("Login ID", Me.txtDEUsername.Text)
                 udtAuditLogEntry.AddDescripton("Service Provider ID / Username", strDESPUsername)
-                udtAuditLogEntry.WriteLog(LogID.LOG00015, "Login fail: Incorrect UserID[" & Me.txtDEUsername.Text.Trim & "]", Me.txtDEUsername.Text.Trim)
+                udtAuditLogEntry.WriteLog(LogID.LOG00015, "SP - Login fail: Incorrect UserID[" & Me.txtDEUsername.Text.Trim & "]", Me.txtDEUsername.Text.Trim)
             End If
 
             If udtValidator.IsEmpty(strDEPassword) Then
@@ -511,7 +511,7 @@ Partial Public Class SPlogin
                 '            Dim udtTokenBLL As New Token.TokenBLL
                 '            If udtTokenBLL.AuthenTokenHCVU(strUserID, strPassCode) = False Then
                 '                blnPassLogin = False
-                '                udtAuditLogEntry.WriteLog(LogID.LOG00017, "Login fail: Incorrect Token Passcode[" & strPassCode.Trim & "]", strUserID)
+                '                udtAuditLogEntry.WriteLog(LogID.LOG00017, "SP - Login fail: Incorrect Token Passcode[" & strPassCode.Trim & "]", strUserID)
                 '                udtAuditLogEntry.AddDescripton("StackTrace", "Incorrect token passcode")
                 '            Else
                 '                blnNoUnsuccessLog = True
@@ -581,7 +581,7 @@ Partial Public Class SPlogin
                                 Dim udtTokenBLL As New Token.TokenBLL
                                 If udtTokenBLL.AuthenTokenHCVU(strUserID, strPassCode) = False Then
                                     blnPassLogin = False
-                                    udtAuditLogEntry.WriteLog(LogID.LOG00017, "Login fail: Incorrect Token Passcode[" & strPassCode.Trim & "]", strUserID)
+                                    udtAuditLogEntry.WriteLog(LogID.LOG00017, "SP - Login fail: Incorrect Token Passcode[" & strPassCode.Trim & "]", strUserID)
                                     udtAuditLogEntry.AddDescripton("StackTrace", "Incorrect token passcode")
                                 End If
                             Else
@@ -595,7 +595,7 @@ Partial Public Class SPlogin
                     blnPassLogin = False
                     udtAuditLogEntry.AddDescripton("Login ID", strSPID)
                     udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
-                    udtAuditLogEntry.WriteLog(LogID.LOG00016, "Login fail: Incorrect Password", strSPID)
+                    udtAuditLogEntry.WriteLog(LogID.LOG00016, "SP - Login fail: Incorrect Password", strSPID)
                     udtAuditLogEntry.AddDescripton("StackTrace", "Incorrect password")
                 End If
                 'End If
@@ -642,7 +642,7 @@ Partial Public Class SPlogin
                 '    Session("FirstChangePassword") = "R"
                 '    udtAuditLogEntry.AddDescripton("Login ID", strSPID)
                 '    udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
-                '    udtAuditLogEntry.WriteEndLog(LogID.LOG00021, "Login successful (Reset Password Force change password)", strLogUserID)
+                '    udtAuditLogEntry.WriteEndLog(LogID.LOG00021, "SP - Login successful (Reset Password Force change password)", strLogUserID)
                 '    Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserACFromSP(String.Empty, dtHCVUUser, Me.SubPlatform)
                 '    Session.Remove(HCVUUserBLL.SESS_HCVUUSER)
                 '    ' CRE19-026 (HCVS hotline service) [Start][Winnie]                                                                        
@@ -687,7 +687,7 @@ Partial Public Class SPlogin
                         If udcMessageBox.GetCodeTable.Rows.Count = 0 Then
                             udtAuditLogEntry.AddDescripton("Login ID", strSPID)
                             udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
-                            udtAuditLogEntry.WriteEndLog(LogID.LOG00002, "Login successful", strLogUserID)
+                            udtAuditLogEntry.WriteEndLog(LogID.LOG00002, "SP - Login successful", strLogUserID)
 
                             'Dim udtMenuBLL As New Component.Menu.MenuBLL
                             'Dim strEnquiryCallCentre_FuncCode As String = FunctCode.FUNT010309
@@ -711,7 +711,7 @@ Partial Public Class SPlogin
                         '    Session("FirstChangePassword") = "N"
                         '    udtAuditLogEntry.AddDescripton("Login ID", strSPID)
                         '    udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
-                        '    udtAuditLogEntry.WriteEndLog(LogID.LOG00004, "Login successful (Force change password)", strLogUserID)
+                        '    udtAuditLogEntry.WriteEndLog(LogID.LOG00004, "SP - Login successful (Force change password)", strLogUserID)
                         '    Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserACFromSP(String.Empty, dtHCVUUser, Me.SubPlatform)
                         '    Session.Remove(HCVUUserBLL.SESS_HCVUUSER)
 
@@ -727,7 +727,7 @@ Partial Public Class SPlogin
                         '    Session("FirstChangePassword") = "Y"
                         '    udtAuditLogEntry.AddDescripton("Login ID", strSPID)
                         '    udtAuditLogEntry.AddDescripton("Token PIN", strPassCode)
-                        '    udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "Login successful (First logon change password)", strLogUserID)
+                        '    udtAuditLogEntry.WriteEndLog(LogID.LOG00003, "SP - Login successful (First logon change password)", strLogUserID)
                         '    Session.Remove(HCVUUserBLL.SESS_HCVUUSER)
                         '    Session(SESS_ChangePasswordHCVUUser) = udtLoginBLL.LoginUserACFromSP(String.Empty, dtHCVUUser, Me.SubPlatform)
                         '    ' CRE19-026 (HCVS hotline service) [Start][Winnie]                                                                        

@@ -718,6 +718,24 @@ Namespace Component
         Public Const ClassCode As String = "TempAcctMaintenanceStatusByManualValidation"
     End Class
 
+    'CRE20-023 Immu record (Vaccine lot management/creation) [Start][Nichole]
+    Public Class VaccineLotMappingRecordStatus
+        Public Const Active As String = "A"
+        Public Const Pending As String = "P"
+        Public Const Remove As String = "D"
+
+        Public Const ClassCode As String = "VaccineLotRecordStatus"
+    End Class
+
+    Public Class VaccineLotDetailRecordStatus
+        Public Const Active As String = "A"
+        Public Const Pending As String = "P"
+        Public Const Remove As String = "D"
+
+        Public Const ClassCode As String = "VaccineLotRecordStatus"
+    End Class
+    'CRE20-023 Immue record (Vaccine lot management/creation) [End][Nichole]
+
     Public Class FunctCode
 
         ''' <summary>
@@ -765,6 +783,10 @@ Namespace Component
         Public Const FUNT010417 As String = "010417" ' Claim Management - Student File - Student File Enquiry
         Public Const FUNT010418 As String = "010418" ' Claim Management - Claim Creation
         Public Const FUNT010421 As String = "010421" ' Claim Management - Reprint Vaccination Record
+        Public Const FUNT010422 As String = "010422" ' Claim Management -  Vaccine Lot Management
+        Public Const FUNT010423 As String = "010423" ' Claim Management - Vaccine Lot Approval
+        Public Const FUNT010424 As String = "010424" ' Vaccine Lot Creation
+        Public Const FUNT010425 As String = "010425" ' Vaccine Lot Creation Approval
         Public Const FUNT010501 As String = "010501"
         Public Const FUNT010601 As String = "010601"
         Public Const FUNT010701 As String = "010701"
@@ -2924,6 +2946,29 @@ Namespace Component
         Public Const ClassCode As String = "RCHStatus"
     End Class
     ' CRE11-013 End
+
+    'CRE20-022 Immue Record COVID19 [Start][Nichole]
+    ' Public Class VaccineLotStatus
+    'Public Const Active As String = "A"
+    ' Public Const Inactive As String = "I"
+
+    ' Public Const LotClassCode As String = "VaccineLotStatus"
+    'Public Const RecordClassCode As String = "VaccineLotRecordStatus"
+    'Public Const BoothClassCode As String = "VaccineCentreBooth"
+    ' End Class
+    'CRE20-022 Immue Record COVID19 [End][Nichole]
+
+
+    'CRE20-022 Immue Record COVID19 [Start][Raiman]
+    Public Class VaccineLotRequestStatus
+        Public Const RequestAssign As String = "A"
+        Public Const RequestNew As String = "N"
+        Public Const RequestRemove As String = "R"
+
+        Public Const RequstTypeClassCode As String = "VaccineLotRequestType"
+    End Class
+    'CRE20-022 Immue Record COVID19 [End][Raiman]
+
 
 #Region "Print Letter"
     Public Class ApplicantType

@@ -35,7 +35,7 @@ Namespace BLL
 
         ' CRE19-026 (HCVS hotline service) [Start][Winnie]
         ' ------------------------------------------------------------------------
-        Public Sub BuildMenu(ByVal ulMenu As HtmlGenericControl, ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform)
+        Public Sub BuildMenu(ByVal ulMenu As HtmlGenericControl, ByVal enumHCVUSubPlatform As EnumHCVUSubPlatform, ByVal blnHideDisabledMenuItem As Boolean)
             Dim udtAccessRightCollection As AccessRightModelCollection = (New HCVUUserBLL).GetHCVUUser().AccessRightCollection
 
             Dim udtMenuBLL As New MenuBLL
@@ -53,7 +53,7 @@ Namespace BLL
                     Dim liParent As HtmlGenericControl = CreateParent(GetMenuGroupDesc(strGroupName, dtMenuGroup))
 
                     ' Retrieve the child of the parent (Level 2 & 3)
-                    PopulateSubItem(dtMenuItem, strGroupName, liParent, udtAccessRightCollection)
+                    PopulateSubItem(dtMenuItem, strGroupName, liParent, udtAccessRightCollection, blnHideDisabledMenuItem)
 
                     ' Add the parent to the menu
                     If liParent.Controls.Count > 1 Then
@@ -68,7 +68,7 @@ Namespace BLL
 
         '
 
-        Private Sub PopulateSubItem(ByVal dtMenuItem As DataTable, ByVal strGroupName As String, ByVal miParent As HtmlGenericControl, ByVal udtAccessRightCollection As AccessRightModelCollection)
+        Private Sub PopulateSubItem(ByVal dtMenuItem As DataTable, ByVal strGroupName As String, ByVal miParent As HtmlGenericControl, ByVal udtAccessRightCollection As AccessRightModelCollection, ByVal blnHideDisabledMenuItem As Boolean)
             Dim dicMenuItem As New Dictionary(Of String, HtmlGenericControl)
 
             Dim ulChild As New HtmlGenericControl("ul")
@@ -185,7 +185,7 @@ Namespace BLL
             ' CRE19-026 (HCVS hotline service) [Start][Winnie]
             ' ------------------------------------------------------------------------
             ' Remove menu item that cannot be access 
-            If IsTurnOnShowDisallowMenuItem() = False Then
+            If blnHideDisabledMenuItem = True Then
                 For Each liTarget As HtmlGenericControl In dicMenuItem.Values
                     If liTarget.Attributes("class") <> "DefaultMenuItem" Then
                         liTarget.Parent.Controls.Remove(liTarget)
@@ -253,22 +253,6 @@ Namespace BLL
             ' Add page key to URL after menu click
             RedirectHandler.ToURL(DirectCast(sender, LinkButton).CommandArgument)
         End Sub
-
-        Private Function IsTurnOnShowDisallowMenuItem() As Boolean
-
-            Dim isTurnOn As Boolean = True
-
-            'Dim strShowDisallowMenuItem As String = String.Empty
-
-            'strShowDisallowMenuItem = ConfigurationManager.AppSettings("ShowDisallowMenuItem")
-
-            'If strShowDisallowMenuItem.Trim.Equals("Y") Then
-            '    isTurnOn = True
-            'End If
-
-            Return isTurnOn
-
-        End Function
         ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
     End Class

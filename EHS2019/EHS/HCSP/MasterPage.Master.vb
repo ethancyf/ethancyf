@@ -468,7 +468,7 @@ Partial Public Class MasterPage
 
         ' CRE20-023-03 - COVID19 - DH CLinic [Start][Koala]
         Me.ibtnReprintVaccinationRecord.Visible = IsClaimCOVID19
-        Me.ibtnReprintVaccinationRecord.OnClientClick = "window.open('" + (New GeneralFunction).getSystemParameter("VaccinationCentreAdminSPLogin") + "', 'testpopupblocker', 'width=' + screen.width + ',height=' + screen.height + ',top=0,left=0,resizable=1,scrollbars=1'); return false;"
+        'Me.ibtnReprintVaccinationRecord.OnClientClick = "window.open('" + (New GeneralFunction).getSystemParameter("VaccinationCentreAdminSPLogin") + "', 'testpopupblocker', 'width=' + screen.width + ',height=' + screen.height + ',top=0,left=0,resizable=1,scrollbars=1'); return false;"
         ' CRE20-023-03 - COVID19 - DH CLinic [End][Koala]
 
     End Sub
@@ -993,6 +993,17 @@ Partial Public Class MasterPage
 #End Region
 
 #Region "Click Event"
+
+    '' CRE20-022 (Immu record) [Start][Martin]
+    Protected Sub ibtnReprintVaccinationRecord_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim strRedirctVCPage As String = "javascript:openNewWin('" + (New GeneralFunction).getSystemParameter("VaccinationCentreAdminSPLogin") + "');"
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctCode.FUNT029901)
+        udtAuditLogEntry.AddDescripton("Current function code", DirectCast(Me.Page, BasePage).FunctionCode)
+        udtAuditLogEntry.WriteLog(LogID.LOG00014, "Reprint Vaccination Record button click - Redirect to Vaccine Centre Admin platform")
+        ScriptManager.RegisterStartupScript(Page, Me.GetType, "RedirctVC", strRedirctVCPage, True)
+    End Sub
+    '' CRE20-022 (Immu record) [End][Martin]
+
 
     Protected Sub ibtnMenu_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         ' CRE13-026 - Repository [Start][Lawrence]
