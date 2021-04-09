@@ -52,21 +52,16 @@ Partial Public Class SchemeDocTypeLegend
         ' Scheme
         For Each udtSchemeC As SchemeClaimModel In udtSchemeClaimBLL.getValidClaimPeriodScheme()
             If Not dicIndexToSchemeCode.ContainsValue(udtSchemeC.SchemeCode.Trim) Then
-                ''CRE20-022 Immue Record (Phase 19) [Start][Martin]
-                Try
-                    If udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.HSIVSS OrElse udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.RVP Then
-                        lblHSIVSSRemark.Visible = True
-                        lblHSIVSSRemark.Text = Me.GetGlobalResourceObject("Text", "AcceptDocumentHSIVSSBelow11YearOld")
-                    End If
+                dicIndexToSchemeCode.Add(intScheme, udtSchemeC.SchemeCode.Trim)
+                gvDocument.Columns(intScheme).HeaderText = udtSchemeC.SchemeDesc(strLanguage)
 
-                    dicIndexToSchemeCode.Add(intScheme, udtSchemeC.SchemeCode.Trim)
-                    gvDocument.Columns(intScheme).HeaderText = udtSchemeC.SchemeDesc(strLanguage)
-                    intScheme += 1
+                'If udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.HSIVSS OrElse udtSchemeC.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                If udtSchemeC.SchemeCode = SchemeClaimModel.HSIVSS OrElse udtSchemeC.SchemeCode = SchemeClaimModel.RVP Then
+                    lblHSIVSSRemark.Visible = True
+                    lblHSIVSSRemark.Text = Me.GetGlobalResourceObject("Text", "AcceptDocumentHSIVSSBelow11YearOld")
+                End If
 
-                Catch ex As Exception
-                End Try
-                ''CRE20-022 Immue Record (Phase 19) [End][Martin]
-
+                intScheme += 1
             End If
 
         Next
