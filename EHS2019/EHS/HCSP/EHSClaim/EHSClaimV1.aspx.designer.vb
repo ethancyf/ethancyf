@@ -1823,6 +1823,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents panStep2aDeclareJoineHRSS As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''trStep2aDeclareJoineHRSS control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trStep2aDeclareJoineHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''chkStep2aDeclareJoineHRSS control.
     '''</summary>
     '''<remarks>

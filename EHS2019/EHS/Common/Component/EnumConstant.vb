@@ -731,8 +731,17 @@ Namespace Component
         Public Const Active As String = "A"
         Public Const Pending As String = "P"
         Public Const Remove As String = "D"
+        Public Const Expired As String = "E"
 
         Public Const ClassCode As String = "VaccineLotRecordStatus"
+    End Class
+
+    Public Class VaccineLotDetailLotAssignStatus
+        Public Const Available As String = "A"
+        Public Const Unavailable As String = "U"
+
+
+        Public Const ClassCode As String = "VaccineLotAssignStatus"
     End Class
     'CRE20-023 Immue record (Vaccine lot management/creation) [End][Nichole]
 
@@ -3170,6 +3179,17 @@ Namespace Component
     End Class
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
+    Public Class TYPE_OF_OUTREACH
+        Public Const RCH As String = "RCH"
+        Public Const OTHER As String = "O"
+    End Class
+
+    Public Class RECIPIENT_TYPE
+        Public Const RESIDENT As String = "RESIDENT"
+        Public Const RCH_STAFF As String = "RCH_STAFF"
+        Public Const CCSU_STAFF As String = "CCSU_STAFF"
+    End Class
+
     Public Class CategoryCode
         Public Const VSS_CHILD As String = "VSSCHILD"
         Public Const VSS_DA As String = "VSSDA"
@@ -3180,12 +3200,13 @@ Namespace Component
         Public Const EVSSO_CHILD As String = "EVSSOCHILD"
         Public Const PPP_CHILD As String = "PPPCHILD"
         Public Const PPPKG_CHILD As String = "PPPKGCHILD"
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
         Public Const VSS_NIA As String = "VSSNIA"
         Public Const VSS_VC As String = "VSSVC"
         Public Const VSS_COVID19 As String = "VSSCOVID19"
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+        Public Const RVP_COVID19 As String = "RVPCOVID19"
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
     End Class
 
     Public Enum Aspect
@@ -3275,6 +3296,13 @@ Namespace Component
         Public Const SSSCMCAdmin As String = "24"
         Public Const SSSCMCEnquiry As String = "25"
         ' CRE20-015-02 (Special Support Scheme) [End][Winnie]
+
+        ' CRE20-023 (Special Support Scheme) [End][Raiman]
+        Public Const CentreVaccineLotAdmin As String = "27"
+        Public Const CentreVaccineLotSupervisor As String = "28"
+        ' CRE20-023 (Special Support Scheme) [End][Raiman]
+
+
     End Class
 
     Public Class InspectionReportType

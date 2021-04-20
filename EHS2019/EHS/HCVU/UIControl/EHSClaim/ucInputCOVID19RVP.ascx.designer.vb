@@ -23,6 +23,15 @@ Partial Public Class ucInputCOVID19RVP
     Protected WithEvents panCOVID19Category As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
+    '''tblCOVID19Category control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblCOVID19Category As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
     '''lblCategoryText control.
     '''</summary>
     '''<remarks>
@@ -138,6 +147,33 @@ Partial Public Class ucInputCOVID19RVP
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRCHNameChi As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCRecipientTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCRecipientTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblCRecipientType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblCRecipientType As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''imgCRecipientTypeError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCRecipientTypeError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''panCOVID19Detail control.
@@ -327,6 +363,15 @@ Partial Public Class ucInputCOVID19RVP
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgCContactNoError As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''lblStep2aContactNoRecommendation control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aContactNoRecommendation As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''fteCContactNo control.

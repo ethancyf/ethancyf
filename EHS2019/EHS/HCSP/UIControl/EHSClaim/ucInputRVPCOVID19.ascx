@@ -21,8 +21,44 @@
             </table>
         </td>
     </tr>
+    <tr>
+        <td style="width:205px;vertical-align:top">
+            <asp:Label ID="lblCOutreachTypeText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, OutreachType%>" />
+        </td>
+        <td style="vertical-align:top">
+            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                <tr>
+                    <td style="vertical-align:top">
+                        <asp:radiobuttonlist ID="rblCOutreachType" runat="server" AutoPostBack="true" RepeatDirection="Horizontal" CssClass="tableText" Style="min-width:110px;position:relative;top:-3px;left:-9px" />
+                    </td>
+                    <td style="vertical-align:top">
+                        <asp:Image ID="imgCOutreachTypeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     </asp:Panel>
     <asp:Panel ID="panRCHCode" runat="server">
+    <tr>
+        <td style="width:205px;vertical-align:top">
+            <asp:Label ID="lblCRecipientTypeText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, RecipientType%>" />
+        </td>
+        <td style="vertical-align:top">
+            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                <tr>
+                    <td style="vertical-align:top">
+                        <asp:radiobuttonlist ID="rblCRecipientType" runat="server" AutoPostBack="false" RepeatDirection="Horizontal" CssClass="tableText" Style="min-width:110px;position:relative;top:-3px;left:-9px" />
+                    </td>
+                    <td style="vertical-align:top">
+                        <asp:Image ID="imgCRecipientTypeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     <tr>
         <td style="width: 185px;vertical-align:middle">
             <asp:Label ID="lblRCHCodeText" runat="server" CssClass="tableTitle" Width="160px"
@@ -44,6 +80,69 @@
         <td style="padding-bottom: 3px">
             <asp:Label ID="lblRCHName" runat="server" CssClass="tableText" style="position:relative;left:-3px" />
             <asp:Label ID="lblRCHNameChi" runat="server" CssClass="tableTextChi" style="position:relative;left:-3px" />
+        </td>
+    </tr>
+    </asp:Panel>
+    <asp:Panel ID="panOutreachCode" runat="server">
+    <tr>
+        <td style="width: 185px;vertical-align:middle">
+            <asp:Label ID="lblOutreachCodeText" runat="server" CssClass="tableTitle" Width="160px"
+                Height="25px"></asp:Label>
+        </td>
+        <td style="padding-bottom: 3px">
+            <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" style="position:relative;left:-4px;top:-2px" />
+            <asp:Image ID="imgOutreachCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-4px" />
+            <asp:ImageButton ID="btnSearchOutreach" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"
+                ImageAlign="AbsMiddle" style="position:relative;top:-2px" />
+            <asp:Label ID="lblOutreachCode" runat="server" CssClass="tableText" Style="display: none" />
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 185px;vertical-align:top">
+            <asp:Label ID="lblOutreachNameText" runat="server" CssClass="tableTitle" Width="160px" Height="25px" />
+        </td>
+        <td style="padding-bottom: 3px">
+            <asp:Label ID="lblOutreachName" runat="server" CssClass="tableText" style="position:relative;left:-3px;top:-2px" />
+            <asp:Label ID="lblOutreachNameChi" runat="server" CssClass="tableTextChi" style="position:relative;left:-3px;top:-2px" />
+        </td>
+    </tr>
+    <tr>
+        <td style="width:205px;vertical-align:top">
+            <asp:Label ID="lblCMainCategoryText" runat="server" CssClass="tableTitle" Height="25px" Text ="<%$ Resources:Text, Category%>" />
+            <asp:Imagebutton ID="imgCCategoryInfo" runat="server" AlternateText="<%$ Resources:Text, Category%>" ImageAlign="Top" 
+                ImageUrl="<%$ Resources:ImageUrl, Infobtn %>" style="position:relative;top:0px" OnClientClick="" />
+        </td>
+        <td style="vertical-align:top">
+            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                <tr>
+                    <td style="vertical-align:top">
+                        <asp:dropdownlist ID="ddlCMainCategoryCovid19" runat="server" CssClass="selectpicker1" AutoPostBack="false" Style="width:660px;position:relative;top:-3px;left:-5px" />
+                        <asp:TextBox ID="txtCMainCategory" runat="server"  AutoPostBack="false"  Style="display:none;"/>
+                    </td>
+                    <td style="vertical-align:top">
+                        <asp:Image ID="imgCMainCategoryError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" /></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="width:205px;vertical-align:top">
+            <asp:Label ID="lblCSubCategoryText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, SubCategory%>" />
+        </td>
+        <td style="vertical-align:top">
+            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                <tr>
+                    <td style="vertical-align:top">
+                        <asp:dropdownlist ID="ddlCSubCategoryCovid19" runat="server" CssClass="selectpicker2" AutoPostBack="false" Style="width:660px;position:relative;top:-3px;left:-5px" />
+                        <asp:TextBox ID="txtCSubCategory" runat="server"  AutoPostBack="false"  Style="display:none;"/>
+                    </td>
+                    <td style="vertical-align:top">
+                        <asp:Image ID="imgCSubCategoryError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" /></td>
+                </tr>
+            </table>
         </td>
     </tr>
     </asp:Panel>

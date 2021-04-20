@@ -981,7 +981,7 @@
                                         <tr style="min-height :4px">
                                             <td></td>
                                         </tr>             
-                                        <tr style="min-height :20px;background-color:#fff894">
+                                        <tr id="trStep2aDeclareJoineHRSS" runat="server" style="min-height :20px;background-color:#fff894">
                                             <td style="vertical-align:top;width:30px;padding-top:5px;padding-bottom:5px">
                                                 <asp:CheckBox ID="chkStep2aDeclareJoineHRSS" runat="server" AutoPostBack="false" style="position:relative;left:2px;top:3px;-ms-transform:scale(1.5)"/>
                                             </td>

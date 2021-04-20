@@ -17,6 +17,7 @@ Namespace Component.COVID19
             Public Const CACHE_ALL_COVID19VaccineBrandLotDetail As String = "COVID19BLL_ALL_COVID19VaccineBrandLotDetail"
             Public Const CACHE_ALL_COVID19VaccineLotMapping As String = "COVID19BLL_ALL_COVID19VaccineLotMapping"
             Public Const CACHE_ALL_VaccineCentreSPMapping As String = "COVID19BLL_ALL_VaccineCentreSPMapping"
+            Public Const CACHE_ALL_VaccineCentre As String = "COVID19BLL_ALL_VaccineCentre"
         End Class
 #End Region
 
@@ -120,6 +121,29 @@ Namespace Component.COVID19
                     db.RunProc("proc_VaccineCentreSPMapping_getAll", dt)
 
                     Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentreSPMapping, dt)
+                Catch ex As Exception
+                    Throw
+                End Try
+            End If
+
+            Return dt
+
+        End Function
+
+        Public Function GetVaccineCentre() As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentre)) Then
+
+                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentre), DataTable)
+
+            Else
+
+                Try
+                    db.RunProc("proc_VaccineCentre_getAll", dt)
+
+                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentre, dt)
                 Catch ex As Exception
                     Throw
                 End Try
@@ -252,6 +276,25 @@ Namespace Component.COVID19
         End Function
         'CRE20-023 Immu record [End][Nichole]
 
+        Public Function GetALLCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+
+            Dim objPracticeDisplaySeq As Object = DBNull.Value
+            If intPracticeDisplaySeq.HasValue Then
+                objPracticeDisplaySeq = intPracticeDisplaySeq.Value
+            End If
+
+            Dim parms() As SqlParameter = { _
+                    db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq)}
+
+            db.RunProc("proc_COVID19VaccineLotMapping_getAll_ForRCH", parms, dt)
+
+            Return dt
+
+        End Function
+
         Public Function GetCOVID19VaccineLotMappingByVaccineLotNo(ByVal strVaccineLotNo As String) As DataTable
             'Dim dt As DataTable = Me.GetCOVID19VaccineLotMapping()
             Dim dt As DataTable = Me.GetCOVID19VaccineBrandLotDetail()
@@ -363,6 +406,24 @@ Namespace Component.COVID19
         End Function
 #End Region
 
+#Region "Set Vaccination Centre"
+        Public Sub AddCOVID19VaccineCentreHCVUMapping(ByVal strVUID As String, ByVal strCentreId As String, ByVal strCreateBy As String, ByRef db As Database)
+            Dim parms() As SqlParameter = { _
+                db.MakeInParam("@User_ID", SqlDbType.VarChar, 20, strVUID), _
+                db.MakeInParam("@Centre_ID", SqlDbType.VarChar, 10, strCentreId), _
+                db.MakeInParam("@CreateBy", SqlDbType.VarChar, 20, strCreateBy)}
+
+            db.RunProc("proc_VaccineCentreVUMapping_add", parms)
+        End Sub
+
+        Public Sub RemoveCOVID19VaccineCentreHCVUMapping(ByVal strVUID As String, ByVal strCentreId As String, ByRef db As Database)
+            Dim parms() As SqlParameter = { _
+                db.MakeInParam("@User_ID", SqlDbType.VarChar, 20, strVUID), _
+                db.MakeInParam("@Centre_ID", SqlDbType.VarChar, 10, IIf(strCentreId.Trim.Equals(String.Empty), DBNull.Value, strCentreId))}
+            db.RunProc("proc_VaccineCentreVUMapping_del", parms)
+        End Sub
+#End Region
+
 #Region "Get Physcial Practice & SP mapping"
         Public Function GetPracticePhysicalMappingBySPIDPracticeDisplaySeq(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Integer) As DataTable
             Dim dt As New DataTable
@@ -426,8 +487,8 @@ Namespace Component.COVID19
             strJsBindingddlCVaccineLotNoCovid19 += "$(""[id$='ddlCCategoryCovid19']"").change(function () {"
             strJsBindingddlCVaccineLotNoCovid19 += "var Category = $(this).val();"
             strJsBindingddlCVaccineLotNoCovid19 += "$(""[id$='txtCCategory']"").val(Category);"
-            strJsBindingddlCVaccineLotNoCovid19 += "console.log(""checked ddl:  ""  + Category);"
-            strJsBindingddlCVaccineLotNoCovid19 += "console.log(""checked txtCCategory:  ""  + $(""[id$='txtCCategory']"").val());"
+            'strJsBindingddlCVaccineLotNoCovid19 += "console.log(""checked ddl:  ""  + Category);"
+            'strJsBindingddlCVaccineLotNoCovid19 += "console.log(""checked txtCCategory:  ""  + $(""[id$='txtCCategory']"").val());"
             strJsBindingddlCVaccineLotNoCovid19 += "});"
             'When the ddlCVaccineBrandCovid19 is changed, it focus to rerender the ddlCVaccineLotNoCovid19.
             strJsBindingddlCVaccineLotNoCovid19 += "$(""[id$='ddlCVaccineBrandCovid19']"").change(function () {"
@@ -507,6 +568,27 @@ Namespace Component.COVID19
             strJSBindingDDLCategory += "RemoveUsedBlockScript('" & guidText & "');"
 
             Return strJSBindingDDLCategory
+
+        End Function
+
+        Public Function GenerateRecipientTypeJavaScript() As String
+            Dim strJsRecipientType As String = String.Empty
+
+            Dim strPleaseSelect As String = HttpContext.GetGlobalResourceObject("Text", "PleaseSelect")
+
+            strJsRecipientType += "var $trJoineHRSS = $(""[id$='trStep2aDeclareJoineHRSS']"");"
+            strJsRecipientType += "var $trContactNo = $(""[id$='trStep2aContactNo']"");"
+            'When the rblCRecipientType is changed, save the selected value.
+            strJsRecipientType += "$(""[id$='rblCRecipientType']"").change(function () {"
+            strJsRecipientType += "var TypeOfRecipient = $(""input[id*='rblCRecipientType']:checked"").val();"
+            strJsRecipientType += "(TypeOfRecipient != 'RESIDENT') ? $trJoineHRSS.css('display', '') : $trJoineHRSS.css('display', 'none');"
+            strJsRecipientType += "(TypeOfRecipient != 'RESIDENT') ? $trContactNo.css('display', '') : $trContactNo.css('display', 'none');"
+            'strJsRecipientType += "console.log(""checked rbl:  ""  + TypeOfRecipient);"
+            strJsRecipientType += "});"
+            Dim guidText As String = Guid.NewGuid().ToString()
+            strJsRecipientType += "RemoveUsedBlockScript('" & guidText & "');"
+
+            Return strJsRecipientType
 
         End Function
 

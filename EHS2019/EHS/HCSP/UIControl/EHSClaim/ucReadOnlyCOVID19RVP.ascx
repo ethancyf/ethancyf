@@ -14,6 +14,14 @@
         </td>
     </tr>--%>
     <tr>
+        <td id="tdRecipientType" runat="server" valign="top" class="tableCellStyle">
+            <asp:Label ID="lblRecipientTypeText" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+            <asp:Label ID="lblRecipientType" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr>
         <td id="tdRCHCode" runat="server" valign="top" class="tableCellStyle">
             <asp:Label ID="lblRCHCodeText" runat="server" CssClass="tableTitle"></asp:Label>
         </td>

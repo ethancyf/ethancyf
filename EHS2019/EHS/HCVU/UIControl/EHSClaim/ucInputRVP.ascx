@@ -1,6 +1,7 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="ucInputRVP.ascx.vb" Inherits="HCVU.ucInputRVP" %>
 <%@ Register Assembly="HCVU" Namespace="HCVU" TagPrefix="cc1" %>
-<%--PS: Cannot remove panRVPDetail panl, for fiex viewstate proble--%>
+<%@ Register Src="~/UIControl/EHSClaim/ucInputRVPCOVID19.ascx" TagName="ucInputRVPCOVID19" TagPrefix="uc1" %>
+<%--PS: Cannot remove panRVPDetail panel, for fix viewstate problem--%>
 <asp:Panel ID="panRVPDetail" runat="server">
     <table runat="server" id="tblRVPDetail" border="0" cellpadding="0" cellspacing="0">
         <tr>
@@ -9,8 +10,8 @@
                     <table border="0" cellpadding="0" cellspacing="0">
                         <tr>
                             <td valign="top" style="width: 200px">
-                                <asp:Label ID="lblCategoryText" runat="server" CssClass="tableTitle" Height="25px"
-                                    Width="160px"></asp:Label></td>
+                                <asp:Label ID="lblCategoryText" runat="server" Height="25px" Width="160px" />
+                            </td>
                             <td>
                                 <table border="0" cellpadding="0" cellspacing="0">
                                     <tr>
@@ -23,7 +24,8 @@
                                                 ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" /></td>
                                     </tr>
                                 </table>
-                                <asp:Label ID="lblCategory" runat="server" CssClass="tableText"></asp:Label></td>
+                                <asp:Label ID="lblCategory" runat="server" CssClass="tableText" />
+                            </td>
                         </tr>
                     </table>
                 </asp:Panel>
@@ -34,8 +36,7 @@
         <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                 <td valign="middle" style="width: 200px">
-                    <asp:Label ID="lblRCHCodeText" runat="server" CssClass="tableTitle" Width="160px"
-                        Height="25px"></asp:Label>
+                    <asp:Label ID="lblRCHCodeText" runat="server" Width="160px" Height="25px" />
                 </td>
                 <td style="padding-bottom: 3px">
                     <asp:TextBox ID="txtRCHCodeText" runat="server" Width="100" MaxLength="6" AutoPostBack="true"></asp:TextBox>
@@ -47,7 +48,7 @@
             </tr>
             <tr>
                 <td valign="top" style="width: 200px">
-                    <asp:Label ID="lblRCHNameText" runat="server" CssClass="tableTitle" Width="160px"
+                    <asp:Label ID="lblRCHNameText" runat="server" Width="160px"
                         Height="25px"></asp:Label>
                 </td>
                 <td style="padding-bottom: 3px">
@@ -55,6 +56,16 @@
                     <asp:Label ID="lblRCHNameChi" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
         </table>
+    </asp:Panel>
+    <asp:Panel ID="panRVPCategoryInput" runat="server">
+        <asp:MultiView ID="mvCategory" runat="server" ActiveViewIndex="0" >
+            <asp:View ID="vwDefault" runat="server" />
+
+            <asp:View ID="vmCOVID19" runat="server">
+                <uc1:ucInputRVPCOVID19 id="ucInputRVPCOVID19" runat="server" Visible="True" EnableViewState="True"/>
+            </asp:view>
+
+        </asp:MultiView>
     </asp:Panel>
 </asp:Panel>
 

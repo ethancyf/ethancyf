@@ -17,6 +17,20 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-0023-29 (RVP support staff)
+-- Modified by:		Winnie SUEN
+-- Modified date:	13 Apr 2021
+-- Description:		1. Send [Phone_no] to Central DB for [RVP] scheme
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-27 (COVID19RVP support HCW)
+-- Modified by:		Winnie SUEN
+-- Modified date:	08 Apr 2021
+-- Description:		1. Send [Phone_no] to Central DB for [COVID19RVP] scheme
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-0023-24 (COVID19SR Claim)
 -- Modified by:		Winnie SUEN
 -- Modified date:	24 Mar 2021
@@ -268,7 +282,7 @@ AS
                    ELSE tpi.Encrypt_Field9
                END AS 'ccc6', 
                REPLACE(LTRIM(RTRIM(ISNULL(CASE 
-											  WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeCOVID19OR)                                              
+											  WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeCOVID19OR, @SchemeCodeCOVID19RVP, @SchemeCodeRVP)
                                               THEN ContactNo.AdditionalFieldValueCode
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'Phone_no', 

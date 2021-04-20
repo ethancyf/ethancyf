@@ -15,6 +15,12 @@ Partial Public Class ucReadOnlyCOVID19RVP
         ''Category                       
         'lblCategoryForCovid19.Text = (New ClaimCategoryBLL).GetClaimCategoryCache.Filter(udtEHSTransaction.CategoryCode).GetCategoryName
 
+        'Recipient Type
+        If udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty Then
+            Dim udtStaticData As StaticDataModel = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("RecipientType", udtEHSTransaction.TransactionAdditionFields.RecipientType.Trim)
+            Me.lblRecipientType.Text = udtStaticData.DataValue
+        End If
+
         'RCH Code & RCH Name
         Dim udtRVPHomeListBLL As New RVPHomeListBLL()
         Dim strRCHCode As String = String.Empty

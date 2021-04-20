@@ -30,17 +30,17 @@ Partial Public Class ucReadOnlyCOVID19RVP
 #Region "Must Override Function"
 
     Protected Overrides Sub RenderLanguage()
-        'CRE20-0XX (Immu record)  [Start][Raiman] 
+
         ' Text Field
         'lblCategoryForCovid19Text.Text = Me.GetGlobalResourceObject("Text", "Category")
+        Me.lblRecipientTypeText.Text = Me.GetGlobalResourceObject("Text", "RecipientType")
+        Me.lblRCHCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
+        Me.lblRCHNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
         lblVaccineLotNumForCovid19Text.Text = Me.GetGlobalResourceObject("Text", "VaccineLotNumber")
         lblVaccineForCovid19Text.Text = Me.GetGlobalResourceObject("Text", "Vaccines")
         lblDoseForCovid19Text.Text = Me.GetGlobalResourceObject("Text", "DoseSeq")
-        'CRE20-0XX (Immu record)   [End][Raiman] 
 
-        'Text Field
-        Me.lblRCHCodeText.Text = Me.GetGlobalResourceObject("Text", "RCHCode")
-        Me.lblRCHNameText.Text = Me.GetGlobalResourceObject("Text", "RCHName")
+
 
     End Sub
 
@@ -60,8 +60,20 @@ Partial Public Class ucReadOnlyCOVID19RVP
         '        lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name)
         'End Select
 
+        ' Recipient Type
+        Dim strRecipientType As String = MyBase.EHSTransaction.TransactionAdditionFields.RecipientType
+        Dim udtStaticData As StaticDataModel = (New StaticDataBLL).GetStaticDataByColumnNameItemNo("RecipientType", strRecipientType)
+
+        If udtStaticData IsNot Nothing Then
+            If MyBase.SessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
+                Me.lblRecipientType.Text = udtStaticData.DataValueChi
+            Else
+                Me.lblRecipientType.Text = udtStaticData.DataValue
+            End If
+        End If
+
         ' RCH Code
-        Dim strRCHCode As String = MyBase.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode").AdditionalFieldValueCode
+        Dim strRCHCode As String = MyBase.EHSTransaction.TransactionAdditionFields.RCHCode
         Dim dtRVPhomeList As DataTable = (New RVPHomeListBLL).getRVPHomeListByCode(strRCHCode)
         Me.lblRCHCode.Text = strRCHCode.Trim
 

@@ -158,6 +158,51 @@ Partial Public Class ucInputRVP
     Protected WithEvents lblRCHNameChi As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panRVPCategoryInput control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panRVPCategoryInput As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''mvCategory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents mvCategory As Global.System.Web.UI.WebControls.MultiView
+
+    '''<summary>
+    '''vwDefault control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vwDefault As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''vmCOVID19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents vmCOVID19 As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''ucInputRVPCOVID19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucInputRVPCOVID19 As Global.HCVU.ucInputRVPCOVID19
+
+    '''<summary>
     '''udcClaimVaccineInputRVP control.
     '''</summary>
     '''<remarks>

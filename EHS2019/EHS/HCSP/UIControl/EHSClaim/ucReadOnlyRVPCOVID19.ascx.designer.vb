@@ -14,13 +14,40 @@ Option Explicit On
 Partial Public Class ucReadOnlyRVPCOVID19
 
     '''<summary>
-    '''tdRCHCode control.
+    '''panRCHCode control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tdRCHCode As Global.System.Web.UI.HtmlControls.HtmlTableCell
+    Protected WithEvents panRCHCode As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''tdRecipientType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdRecipientType As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblRecipientTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecipientTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRecipientType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecipientType As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblRCHCodeText control.
@@ -41,15 +68,6 @@ Partial Public Class ucReadOnlyRVPCOVID19
     Protected WithEvents lblRCHCode As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tdRCHName control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tdRCHName As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
     '''lblRCHNameText control.
     '''</summary>
     '''<remarks>
@@ -68,13 +86,103 @@ Partial Public Class ucReadOnlyRVPCOVID19
     Protected WithEvents lblRCHName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tdCategoryForCovid19 control.
+    '''panOutreachCode control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tdCategoryForCovid19 As Global.System.Web.UI.HtmlControls.HtmlTableCell
+    Protected WithEvents panOutreachCode As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''tdOutreachCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdOutreachCode As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblOutreachCodeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachCodeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOutreachCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachCode As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOutreachNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOutreachName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblMainCategoryForCovid19Text control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMainCategoryForCovid19Text As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblMainCategoryForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMainCategoryForCovid19 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trSubCategory control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trSubCategory As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblSubCategoryForCovid19Text control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSubCategoryForCovid19Text As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblSubCategoryForCovid19 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblSubCategoryForCovid19 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblVaccineForCovid19Text control.

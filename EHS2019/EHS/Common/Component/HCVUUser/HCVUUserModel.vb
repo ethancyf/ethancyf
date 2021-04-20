@@ -22,6 +22,8 @@ Namespace Component.HCVUUser
 
         Private _udtUserRoleCollection As UserRoleModelCollection
         Private _udtAccessRightCollection As AccessRightModelCollection
+        Private _alVaccineCentre As ArrayList
+
 
         Private _dtmLastPwdChangeDtm As Nullable(Of DateTime)
 
@@ -80,6 +82,15 @@ Namespace Component.HCVUUser
             End Get
             Set(ByVal value As AccessRightModelCollection)
                 _udtAccessRightCollection = value
+            End Set
+        End Property
+
+        Public Property VaccineCentre() As ArrayList
+            Get
+                Return _alVaccineCentre
+            End Get
+            Set(ByVal value As ArrayList)
+                _alVaccineCentre = value
             End Set
         End Property
 

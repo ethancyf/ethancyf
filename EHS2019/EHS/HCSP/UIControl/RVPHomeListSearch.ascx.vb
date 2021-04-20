@@ -118,12 +118,20 @@ Partial Public Class RVPHomeListSearch
         Select Case _enumClaimMode
             Case Common.Component.ClaimMode.COVID19
                 Dim drRVP() As DataRow = dtRVPHomeList.Select("Type IN ('E','D')")
+                Dim dtTemp As DataTable = Nothing
 
                 If drRVP.Length > 0 Then
-                    dtFilterRVPHomeList = drRVP.CopyToDataTable
+                    dtTemp = drRVP.CopyToDataTable
+
+                    Dim dvFilterRVPHomeList As DataView = dtTemp.DefaultView
+                    dvFilterRVPHomeList.Sort = "RCH_code ASC"
+
+                    dtFilterRVPHomeList = dvFilterRVPHomeList.ToTable
                 End If
+
             Case Else
                 dtFilterRVPHomeList = dtRVPHomeList
+
         End Select
 
         If dtFilterRVPHomeList Is Nothing OrElse dtFilterRVPHomeList.Rows.Count = 0 Then

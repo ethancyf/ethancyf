@@ -387,6 +387,7 @@
     <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVS.ascx" />
@@ -396,13 +397,13 @@
     <Content Include="UIControl\EHSClaim\ucInputPPP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyRVPCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx" />
-    <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19CBD.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyHCVSChina.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPPP.ascx" />
@@ -412,6 +413,7 @@
     <Content Include="UIControl\EHSClaim\ucReadOnlyVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyPIDVSS.ascx" />
     <Content Include="UIControl\IDEASCombo\IDEASCombo.ascx" />
+    <Content Include="UIControl\OutreachListSearch.ascx" />
     <Content Include="UIControl\PCDIntegration\ucPCDWarningPopup.ascx" />
     <Content Include="UIControl\SchemeDocTypeLegend.ascx" />
     <Content Include="UIControl\SchoolListSearch.ascx" />
@@ -1691,6 +1693,13 @@
       <DependentUpon>ucInputCIVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx.designer.vb">
+      <DependentUpon>ucInputCOVID19OR.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx.vb">
+      <DependentUpon>ucInputCOVID19OR.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.designer.vb">
       <DependentUpon>ucInputCOVID19RVP.ascx</DependentUpon>
     </Compile>
@@ -1782,6 +1791,13 @@
       <DependentUpon>ucInputVSS.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx.designer.vb">
+      <DependentUpon>ucInputRVPCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx.vb">
+      <DependentUpon>ucInputRVPCOVID19.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSDA.ascx.designer.vb">
       <DependentUpon>ucInputVSSDA.ascx</DependentUpon>
     </Compile>
@@ -1830,14 +1846,6 @@
     <Compile Include="UIControl\EHSClaim\ucReadOnlyVSSCOVID19.ascx.vb">
       <DependentUpon>ucReadOnlyVSSCOVID19.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19CBD.ascx.designer.vb">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>ucReadOnlyCOVID19CBD.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19CBD.ascx.vb">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>ucReadOnlyCOVID19CBD.ascx</DependentUpon>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucReadOnlyCOVID19RVP.ascx.designer.vb">
       <DependentUpon>ucReadOnlyCOVID19RVP.ascx</DependentUpon>
@@ -1942,6 +1950,13 @@
     </Compile>
     <Compile Include="UIControl\IDEASCombo\IDEASCombo.ascx.vb">
       <DependentUpon>IDEASCombo.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\OutreachListSearch.ascx.designer.vb">
+      <DependentUpon>OutreachListSearch.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\OutreachListSearch.ascx.vb">
+      <DependentUpon>OutreachListSearch.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\PCDIntegration\ucEnrolmentCopyPopup.ascx.designer.vb">

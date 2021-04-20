@@ -80,7 +80,7 @@ Partial Public MustInherit Class BasePrintoutForm
                 ' CRE20-015 (HA Scheme) [End][Winnie]
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
                 'EHS Record for covid19 printing
                 Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
                 Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)

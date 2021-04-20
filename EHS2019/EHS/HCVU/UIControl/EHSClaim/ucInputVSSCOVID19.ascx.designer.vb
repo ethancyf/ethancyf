@@ -239,6 +239,15 @@ Partial Public Class ucInputVSSCOVID19
     Protected WithEvents imgCContactNoError As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''lblStep2aContactNoRecommendation control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblStep2aContactNoRecommendation As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''fteCContactNo control.
     '''</summary>
     '''<remarks>

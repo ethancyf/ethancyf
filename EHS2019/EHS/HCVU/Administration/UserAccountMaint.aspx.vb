@@ -15,6 +15,7 @@ Imports Common.Component
 Imports Common.DataAccess
 Imports Common.ComFunction.AccountSecurity
 Imports Common.Component.StaticData
+Imports Common.Component.COVID19.COVID19BLL
 
 Partial Public Class UserAccountMaint
     Inherits BasePage
@@ -70,6 +71,14 @@ Partial Public Class UserAccountMaint
         Me.chkSuspended.Enabled = blnEdit
 
         Me.ckbScheme.Enabled = blnEdit
+        ' CRE20-023 (Immu record) [Start][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.ckbVaccineCentre.Enabled = blnEdit
+        Me.chkSelectAllVaccineCentre.Enabled = blnEdit
+        ' CRE20-023 (Immu record) [End][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+
+
 
         ' CRE19-022 - Inspection [Begin][Golden]
         lblChineseName.Visible = Not blnEdit
@@ -105,12 +114,14 @@ Partial Public Class UserAccountMaint
                 Else
                     Me.chkAccountLocked.Enabled = False
                 End If
+
             Case StateType.ADD
                 Me.lblLoginID.Visible = False
                 Me.txtLoginID.Visible = True
                 Me.ibtnDeActivateToken.Visible = False
                 Me.chkAccountLocked.Enabled = False
                 SetControl(True)
+
         End Select
     End Sub
 
@@ -265,6 +276,28 @@ Partial Public Class UserAccountMaint
             Me.ckbScheme.DataSource = udtSchemeClaimModelCollection
             Me.ckbScheme.DataBind()
 
+
+            ' CRE20-023 (Immu record) [Start][Raiman Chong]
+            ' ---------------------------------------------------------------------------------------------------------
+
+            Dim udtCovid19BLL As New COVID19.COVID19BLL
+            Dim dvVaccineCentre As DataView = New DataView(udtCovid19BLL.GetVaccineCentre)
+            dvVaccineCentre.RowFilter = "Centre_ID like 'CVC%'"
+            Dim dtVaccineCentre As DataTable = dvVaccineCentre.ToTable()
+            ckbVaccineCentre.DataTextField = "Centre_Name"
+            ckbVaccineCentre.DataValueField = "Centre_ID"
+            Me.ckbVaccineCentre.DataSource = dtVaccineCentre
+            Me.ckbVaccineCentre.DataBind()
+            ' CRE20-023 (Immu record) [End][Raiman Chong]
+            ' ---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
             ' CRE19-022 -  [Begin][Golden]
             Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
             Me.rdlGender.Items.Clear()
@@ -280,6 +313,7 @@ Partial Public Class UserAccountMaint
         strScript = "document.getElementById('" & Me.pnlRole.ClientID & "').onscroll = pnlRoleOnScroll;" & vbCrLf
         strScript &= "document.getElementById('" & Me.pnlFuncAccessRight.ClientID & "').onscroll = pnlFuncAccessRightOnScroll;" & vbCrLf
         strScript &= "document.getElementById('" & Me.pnlFileGenerationRight.ClientID & "').onscroll = pnlFileGenerationRightOnScroll;" & vbCrLf
+        strScript &= "document.getElementById('" & Me.pnlVaccineCentre.ClientID & "').onscroll = pnlVaccineCentreOnScroll;" & vbCrLf
         ScriptManager.RegisterStartupScript(Me, Page.GetType(), "PnlOnScroll", strScript, True)
 
         KeepScrollPos()
@@ -291,6 +325,7 @@ Partial Public Class UserAccountMaint
         strScript = "pnlRoleScroll();" & vbCrLf
         strScript &= "pnlFuncAccessRightScroll();" & vbCrLf
         strScript &= "pnlFileGenerationRightScroll();" & vbCrLf
+        strScript &= "pnlVaccineCentreScroll();" & vbCrLf
         ScriptManager.RegisterStartupScript(Me, Page.GetType(), "PnlScroll", strScript, True)
     End Sub
 
@@ -298,6 +333,7 @@ Partial Public Class UserAccountMaint
         Me.hfRoleScrollTop.Value = 0
         Me.hfFuncAccessRightScrollTop.Value = 0
         Me.hfFileGenerationRightScrollTop.Value = 0
+        Me.hfVaccineCentreScrollTop.Value = 0
     End Sub
 
     Private Sub BindUserList()
@@ -589,11 +625,57 @@ Partial Public Class UserAccountMaint
         Next
     End Sub
 
+    Private Sub ClearUserVaccineCentre()
+        Dim li As ListItem
+        For Each li In Me.ckbVaccineCentre.Items
+            li.Selected = False
+        Next
+    End Sub
+
+    Private Sub SetUserVaccineCentre(ByRef udtHCVUUser As HCVUUserModel)
+        Dim strUserID As String
+        strUserID = udtHCVUUser.UserID
+
+        ClearUserVaccineCentre()
+
+        Dim udtCovid19BLL As New COVID19.COVID19BLL
+ 
+        Dim dvVUUserCentre As DataView = New DataView(udtCovid19BLL.GetCOVID19VaccineCentreHCVUMapping(strUserID))
+
+        Dim li As ListItem
+        For Each li In Me.ckbVaccineCentre.Items
+
+            dvVUUserCentre.RowFilter = "Centre_ID = '" + li.Value.Trim + "'"
+            If dvVUUserCentre.Count > 0 Then
+                li.Selected = True
+            End If
+        Next
+
+        IsAllCheckedUserVaccineCentre()
+    End Sub
+
+    Private Sub IsAllCheckedUserVaccineCentre()
+        Dim isAllChecked As Boolean = True
+        For Each item As ListItem In Me.ckbVaccineCentre.Items
+            If Not item.Selected Then
+                isAllChecked = False
+                Exit For
+            End If
+        Next
+
+        chkSelectAllVaccineCentre.Checked = isAllChecked
+    End Sub
+ 
+
+
+
+
     Private Sub ClearAll()
         Me.ClearUserInfo()
         Me.ClearUserRole()
         Me.ClearAccessRight()
         Me.ClearFileGenerationRight()
+        Me.ClearUserVaccineCentre()
         ResetScrollPos()
         Me.ibtnDeActivateToken.Visible = False
         Me.ClearUserScheme()
@@ -642,6 +724,9 @@ Partial Public Class UserAccountMaint
                 'Me.ckbScheme.Items(0).Selected = True
                 'Me.ckbScheme.Items(1).Selected = True
 
+                'Set the Vaccine Centre for the user
+                Me.SetUserVaccineCentre(udtHCVUUser)
+
                 ' I-CRE16-007-02 Refine system from CheckMarx findings [Start][Dickson Law]
                 displayInfoResetPWMsgBox(udtHCVUUser)
                 ' I-CRE16-007-02 Refine system from CheckMarx findings [End][Dickson Law]
@@ -681,10 +766,10 @@ Partial Public Class UserAccountMaint
         Me.imgTokenSNAlert.Visible = False
 
         ViewState("ddlUserList_SelectedValue") = ddlUserList.SelectedValue
-        ViewState("ddlUserList_SelectedIndex") = ddlUserList.SelectedIndex
+        ViewState("ddlUserList_SelectedIndex") = IIf(ddlUserList.SelectedIndex = -1, 0, ddlUserList.SelectedIndex)
 
         Me.ddlUserList.Items.Insert(0, New ListItem("(New User)", -1))
-        Me.ddlUserList.SelectedItem.Selected = False
+        Me.ddlUserList.ClearSelection()
         Me.ddlUserList.SelectedIndex = 0
 
         blnUserListIndexChange = False
@@ -696,6 +781,14 @@ Partial Public Class UserAccountMaint
         ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
         Me.ClearUserRole()
         Me.ClearAccessRight()
+
+
+        ' CRE20-023 (Immu record) [Start][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+        Me.ClearUserVaccineCentre()
+        ' CRE20-023 (Immu record) [End][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+
         Me.ClearFileGenerationRight()
 
         'CRE13-019-02 Extend HCVS to China [Start][Chris YIM]
@@ -756,6 +849,13 @@ Partial Public Class UserAccountMaint
         SetUserList(strUserID)
         udtHCVUUser = SetUserInfo(strUserID)
         SetUserRole(udtHCVUUser)
+        ' CRE20-023 (Immu record) [Start][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+        SetUserScheme(udtHCVUUser)
+        SetUserVaccineCentre(udtHCVUUser)
+        ' CRE20-023 (Immu record) [End][Raiman Chong]
+        ' ---------------------------------------------------------------------------------------------------------
+
         SetAccessRight()
         SetFileGenerationRight()
 
@@ -776,13 +876,28 @@ Partial Public Class UserAccountMaint
 
     End Sub
 
-    Private Sub chklRole_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chklRole.SelectedIndexChanged
+
+    Private Sub ckbVaccineCentre_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ckbVaccineCentre.SelectedIndexChanged
 
         Me.udcMessageBox.Visible = False
 
         KeepScrollPos()
+        IsAllCheckedUserVaccineCentre()
+
+
+    End Sub
+
+
+    Private Sub chklRole_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chklRole.SelectedIndexChanged
+
+        Me.udcMessageBox.Visible = False
+
+
+
+        KeepScrollPos()
         SetAccessRight()
         SetFileGenerationRight()
+
     End Sub
 
     Private Sub ibtnResetPassword_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnResetPassword.Click
@@ -861,6 +976,25 @@ Partial Public Class UserAccountMaint
             End If
         Next
         udtAuditLogEntry.AddDescripton("Scheme", strTemp)
+
+        strTemp = String.Empty
+
+        'Check for Centre selection
+        Dim liVaccineCentre As ListItem
+        For Each liVaccineCentre In Me.ckbVaccineCentre.Items
+            If liVaccineCentre.Selected Then
+                If strTemp.Equals(String.Empty) Then
+                    strTemp = liVaccineCentre.Text
+                Else
+                    strTemp = strTemp & ", " & liVaccineCentre.Text
+                End If
+            End If
+        Next
+        udtAuditLogEntry.AddDescripton("Vaccine Centre", strTemp)
+
+
+
+
 
         udtAuditLogEntry.WriteStartLog(strLogID, strAuditLogDesc)
 
@@ -1265,6 +1399,45 @@ Partial Public Class UserAccountMaint
             Me.imgRoleAlert.Visible = True
         End If
 
+
+        '--------------------------------------
+        'Check "Vaccine Centre"
+        '--------------------------------------
+
+        Dim blnSelectedVaccineCentreRole As Boolean = False
+        Dim blnSelectedVaccnineCentre As Boolean = False
+
+        Dim liRoleForCentre As ListItem
+        For Each liRoleForCentre In Me.chklRole.Items
+            If liRoleForCentre.Selected Then
+                If liRoleForCentre.Value = RoleType.CentreVaccineLotAdmin OrElse liRoleForCentre.Value = RoleType.CentreVaccineLotSupervisor Then
+                    blnSelectedVaccineCentreRole = True
+                    Exit For
+                End If
+            End If
+        Next
+
+        Dim liVaccineCentre As ListItem
+        For Each liVaccineCentre In Me.ckbVaccineCentre.Items
+            If liVaccineCentre.Selected Then
+                blnSelectedVaccnineCentre = True
+                Exit For
+            End If
+        Next
+
+        'selected centre role but no any selected vaccine centre
+        If blnSelectedVaccineCentreRole AndAlso Not blnSelectedVaccnineCentre Then
+            Me.udcMessageBox.AddMessage("010501", "E", "00022", "%s", strSelectedRoleDesc)
+            Me.imgRoleAlert.Visible = True
+        End If
+
+        'no any selected centre role but selected vaccine centre
+        If Not blnSelectedVaccineCentreRole AndAlso blnSelectedVaccnineCentre Then
+            Me.udcMessageBox.AddMessage("010501", "E", "00023", "%s", strSelectedRoleDesc)
+            Me.imgRoleAlert.Visible = True
+        End If
+
+
         '--------------------------------------
         'Check "Scheme" with "User Roles"
         '--------------------------------------
@@ -1341,9 +1514,11 @@ Partial Public Class UserAccountMaint
         udtHCVUUser = New HCVUUserModel
         Dim udtFormatter As New Formatter
         Dim liRole As ListItem
+        Dim liVaccineCentre As ListItem
         Dim i As Integer
         Dim udtUserRole As UserRoleModel
         Dim udtUserRoleCollection As New UserRoleModelCollection
+        Dim alVaccineCentre As New ArrayList
 
         With udtHCVUUser
             .UserID = Me.txtLoginID.Text.Trim.ToUpper()
@@ -1378,6 +1553,13 @@ Partial Public Class UserAccountMaint
                 End If
             Next
             .UserRoleCollection = udtUserRoleCollection
+            For i = 0 To Me.ckbVaccineCentre.Items.Count - 1
+                liVaccineCentre = CType(Me.ckbVaccineCentre.Items(i), ListItem)
+                If liVaccineCentre.Selected Then
+                    alVaccineCentre.Add(liVaccineCentre.Value)
+                End If
+            Next
+            .VaccineCentre = alVaccineCentre
 
             Dim udtToken As New TokenModel
             udtToken.TokenSerialNo = Me.txtTokenSN.Text.Trim

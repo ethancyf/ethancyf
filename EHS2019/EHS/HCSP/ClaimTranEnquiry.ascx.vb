@@ -91,18 +91,20 @@ Partial Public Class ClaimTranEnquiry
             lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "InjectionDate")
 
             'Contact No. & Mobile
-            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing Then
+            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
                 trContactNo.Visible = True
 
-                If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
-                    lblContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
+                'If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+                lblContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
 
-                    If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
-                        lblContactNo.Text = lblContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
-                    End If
-                Else
-                    lblContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
+                    lblContactNo.Text = lblContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
                 End If
+                'Else
+                '    lblContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                'End If
+            Else
+                trContactNo.Visible = False
 
             End If
 
@@ -115,11 +117,12 @@ Partial Public Class ClaimTranEnquiry
 
             'Join EHRSS
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
-                (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
+                ((udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
+                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
                  udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
                (udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
                 udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _

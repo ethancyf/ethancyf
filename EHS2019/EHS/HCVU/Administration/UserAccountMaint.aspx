@@ -5,17 +5,26 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %> 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <script type="text/javascript" src="../JS/Common.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap-multiselect.css" type="text/css">
+    <script type="text/javascript" src="../js/bootstrap.bundle-4.5.2.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-multiselect.js"></script>
     <script type="text/javascript">
     
         var hfRoleScrollTop_id = "<%=hfRoleScrollTop.ClientID%>";
         var pnlRole_id = "<%=pnlRole.ClientID%>";
+        var penVaccineCentre_id = "<%=pnlVaccineCentre.ClientID%>";
         var hfFuncAccessRightScrollTop_id = "<%=hfFuncAccessRightScrollTop.ClientID%>";
         var pnlFuncAccessRight_id = "<%=pnlFuncAccessRight.ClientID%>";
         var hfFileGenerationRightScrollTop_id = "<%=hfFileGenerationRightScrollTop.ClientID%>";
         var pnlFileGenerationRight_id = "<%=pnlFileGenerationRight.ClientID%>";
         var panConfirmMsg_id = "<%=panConfirmMsg.ClientID%>";
         var hfFileGenerationRightScrollTop_id = "<%=hfFileGenerationRightScrollTop.ClientID%>";
-        
+        var hfVaccineCentreScrollTop_id =  "<%=hfVaccineCentreScrollTop.ClientID%>";
+        var ddlUserList_id = "<%=ddlUserList.ClientID%>";
+        var chkSelectAllVaccineCentre_id = "<%=chkSelectAllVaccineCentre.ClientID%>"
+        var ckbVaccineCentre_id = "<%=ckbVaccineCentre.ClientID%>"
+
         function formatHKID(textbox) {
             textbox.value=textbox.value.toUpperCase();
             txt = textbox.value;
@@ -82,6 +91,25 @@
             setTimeout("document.getElementById(pnlFileGenerationRight_id).scrollTop = 0", 1);
         }
               
+        function pnlVaccineCentreOnScroll() {
+            var obj = event.srcElement;
+            document.getElementById(hfVaccineCentreScrollTop_id).value = obj.scrollTop;
+        }
+
+        function pnlVaccineCentreScroll() {
+            var y = document.getElementById(hfVaccineCentreScrollTop_id).value;
+            if (y != '') {
+                setTimeout("document.getElementById(penVaccineCentre_id).scrollTop = document.getElementById(hfVaccineCentreScrollTop_id).value", 1);
+            }
+        }
+
+        function pnlVaccineCentreScrollReset() {
+            setTimeout("document.getElementById(penVaccineCentre_id).scrollTop = 0", 1);
+        }
+
+
+
+
         function showResetPasswordConfirm(){
             var h = 122;
             var w = 600;
@@ -137,6 +165,106 @@
         }
         
     </script>
+
+    <style>
+        .multiselect-container.dropdown-menu.show {
+            width:inherit;
+            transform: none !important;
+            top:0px;
+        }
+        .multiselect-search.form-control {
+            height:23px;
+        }
+        .multiselect.dropdown-toggle.custom-select.text-center {
+             
+        }
+        </style>
+
+        <script type="text/javascript">
+            function bindMultiselectForUserList() {
+                $("#" + ddlUserList_id).multiselect({
+                    maxHeight: 300,
+                    buttonWidth: '400px',
+                    enableCaseInsensitiveFiltering: true,
+                    includeSelectAllOption: false,
+                    filterPlaceholder: 'Search for user...',
+                    nonSelectedText: 'Please Select',
+                    multiple: false
+                    ,onDropdownShown: function (e) {
+                        if (this.options.multiple == false) {
+                            this.$container.find(':radio').css("Display",'none')
+                            this.$container.find(':radio').hide();
+                        }
+                        this.$filter.find('.multiselect-search').focus();
+                    }
+                    ,onDropdownHidden: function (event) {
+                        this.$filter.find('.multiselect-search').val('').focus().blur().trigger('keydown');
+                    },
+                    templates: {
+                        filter: '<li class="multiselect-item multiselect-filter"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div><input class="form-control multiselect-search" type="text" /></div></li>',
+                    }
+
+                });
+
+                $("#" + ddlUserList_id).attr('multiple', function (idx, attr) {
+                        return (attr == undefined) ? 'multiple' : null;
+                });
+            }
+
+            function chkSelectAllVaccineCentre_click() {
+                $("#" + chkSelectAllVaccineCentre_id).click(function () {
+                    if ($(this).is(":checked")) {
+                        $('#' + ckbVaccineCentre_id).find('input[type="checkbox"]').each(function () {
+                            $(this).prop("checked", true);
+                        });
+                    }
+                    else {
+                        $('#' + ckbVaccineCentre_id).find('input[type="checkbox"]').each(function () {
+                            $(this).prop("checked", false);
+                        });
+                    }
+                });
+            }
+
+            function setVaccineCentreList_ClickEvent() {
+                $('#' + ckbVaccineCentre_id + ' input[type="checkbox"]').click(function () {
+                    isVaccineCentreListAllSelected();
+                });
+            }
+
+            function isVaccineCentreListAllSelected() {
+                var isAllChecked = true;
+                $('#' + ckbVaccineCentre_id).find('input[type="checkbox"]').each(function () {
+                    if (!$(this).is(":checked")) {
+                        isAllChecked = false;
+                        return false;
+                    }
+                });
+                $("#" + chkSelectAllVaccineCentre_id).prop("checked", isAllChecked);
+            }
+
+            var parameter = Sys.WebForms.PageRequestManager.getInstance();
+
+            parameter.add_pageLoaded(function () {
+                isVaccineCentreListAllSelected();
+
+                //check ddlUserList if disabled then shows fake user list dropdown list for display only
+                var attr = $("#" + ddlUserList_id).attr('disabled');
+                if (typeof attr !== 'undefined' && attr !== false && attr == "disabled") {
+                    $("#" + ddlUserList_id).hide();
+                    setVaccineCentreList_ClickEvent();
+                    chkSelectAllVaccineCentre_click();
+                    $("#ddlUserListUIOnly").show();
+                    $("#ddlUserListUIOnlyText").html($("#" + ddlUserList_id + " option:selected").text());
+                }
+                else {
+                    bindMultiselectForUserList();
+                    $("#ddlUserListUIOnly").hide();
+                }
+            });
+
+    </script>
+
     <asp:ScriptManager ID="ScriptManager1" runat="server">
     </asp:ScriptManager>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -144,6 +272,7 @@
             <asp:HiddenField ID="hfRoleScrollTop" runat="server" />
             <asp:HiddenField ID="hfFuncAccessRightScrollTop" runat="server" />
             <asp:HiddenField ID="hfFileGenerationRightScrollTop" runat="server" />
+             <asp:HiddenField ID="hfVaccineCentreScrollTop" runat="server" />
             <table cellpadding="0" cellspacing="0" style="width: 980px" border="0">
                 <tr>
                     <td style="height: 60px; width: 980px;" valign="top"  colspan="2">
@@ -154,7 +283,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Type="Complete" Width="980px" />
+                        <cc2:InfoMessageBox ID="udcInfoMessageBox" runat="server" Type="Complete" Width="780px" />
                         <cc2:MessageBox ID="udcMessageBox" runat="server" Width="980px" />
                     </td>
                 </tr>
@@ -177,8 +306,12 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <asp:DropDownList ID="ddlUserList" Visible="true" runat="server" Width="380px" AutoPostBack="true" DataTextField="Display_Text" DataValueField="User_ID" Enabled="true">
-                                    </asp:DropDownList>
+                                    <asp:ListBox ID="ddlUserList" Visible="true" runat="server" Width="280px" AutoPostBack="true" DataTextField="Display_Text" DataValueField="User_ID" Enabled="true" style="display:none;">
+                                    </asp:ListBox>
+
+                                    <button disabled="disabled" id="ddlUserListUIOnly" class="multiselect dropdown-toggle custom-select disabled text-center" style="width: 400px;" type="button">
+                                        <span class="multiselect-selected-text " id="ddlUserListUIOnlyText"></span>
+                                    </button>
                                 </td>
                             </tr>
                             <tr style="height: 15px">
@@ -327,39 +460,61 @@
                             </tr>
                         </table>
                         
-                        <table cellpadding="0" cellspacing="0" border="0">                            
+                       
+                    </td>
+                    <td valign="top" style="width: 500px">
+                        <table cellpadding="0" cellspacing="4" border="0" style="width: 500px">                            
                             <tr>
-                                <td>
-                                    <asp:Label ID="lblSchemeNameText" runat="server" Text="<%$Resources:Text, SchemeName %>" Font-Bold="true" Height="25px"></asp:Label>
+                                <td style="width: 150px; ">
+                                    <asp:Label ID="lblSchemeNameText" runat="server" Text="<%$Resources:Text, SchemeName %>" Font-Bold="true" Height="20px"></asp:Label>
                                     <span style="position: relative; top: -4px;">
                                         <asp:Image ID="imgSchemeAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif"  AlternateText="<%$ Resources:AlternateText, ErrorImg %>" style="position: absolute;"/>
                                     </span>
-                                    <asp:Panel ID="panScheme" runat="server" BorderWidth="1px" ScrollBars="Auto" Height="50px" Width="380px">
-                                        <asp:CheckBoxList ID="ckbScheme" runat="server" Enabled="false" RepeatDirection="Vertical">                                           
+                                    <asp:Panel ID="panScheme" runat="server" BorderWidth="1px" ScrollBars="Auto" Height="160px" Width="100%">
+                                        <asp:CheckBoxList ID="ckbScheme" runat="server" Enabled="false" RepeatDirection="Vertical">
                                         </asp:CheckBoxList>
                                     </asp:Panel>
                                 </td>
-                            </tr>
-                            <tr style="height: 28px">
-                                <td valign="middle">                                    
-                                    <asp:Label ID="lblRoleText" runat="server" Text="<%$Resources:Text, UserRole%>" Font-Bold="true"></asp:Label>
+                                <td style="width: 250px">
+                                    <asp:Label ID="lblRoleText" runat="server" Text="<%$Resources:Text, UserRole%>" Font-Bold="true" Height="20px"></asp:Label>
                                     <span style="position: relative; top: -4px;">
                                         <asp:Image ID="imgRoleAlert" runat="server" Visible="false" ImageUrl="~/Images/others/icon_caution.gif"  AlternateText="<%$ Resources:AlternateText, ErrorImg %>" style="position: absolute;"/>
                                     </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <asp:Panel ID="pnlRole" runat="server" BorderWidth="1px" ScrollBars="Auto" Height="71px" Width="380px">
+                                    <asp:Panel ID="pnlRole" runat="server" BorderWidth="1px" ScrollBars="Auto" Height="160px" Width="100%">
                                         <asp:CheckBoxList ID="chklRole" runat="server" Enabled="false" AutoPostBack="true" DataValueField="Role_Type" DataTextField="Role_Description">
                                         </asp:CheckBoxList>
                                     </asp:Panel>
                                 </td>
                             </tr>
+                            <tr><td></td></tr>
+                            <tr>
+                                <td colspan="2"><span style="font-weight: bold; font-size: 100%; min-width: 200%;">
+                                    <div  style="height:25px; white-space: nowrap;"><asp:Label ID="lblVaccineCentreUserRoleText" runat="server" Text="<%$Resources:Text, VaccineCentre2%>" Width="82%"> </asp:Label>
+                                    <asp:CheckBox ID="chkSelectAllVaccineCentre" runat="server" style=" text-align: left;" Text="<%$Resources:Text, SelectAll%>" /></div>
+                                    <asp:Label ID="lblVaccineCentreUserRoleDescText" runat="server" Style="font-size: 90%; top:-2px;" Text="<%$Resources:Text, VaccineCentreForUserRoleDesc%>"></asp:Label>
+                                    </span>
+                                    <asp:Panel ID="pnlVaccineCentre" runat="server" BorderWidth="1px" Height="138px" ScrollBars="Auto" Width="100%">
+                                        <asp:CheckBoxList ID="ckbVaccineCentre" runat="server" Enabled="false" RepeatDirection="Vertical">
+                                        </asp:CheckBoxList>
+                                    </asp:Panel>
+                                    <span style="float:right"></span></td>
+
+                            </tr>
                         </table>
+
+
+
+
                     </td>
-                    <td valign="top" style="width: 500px">
-                        <table cellpadding="0" cellspacing="0" border="0">
+
+
+                </tr>
+                <tr>
+                 <td colspan="2"><hr style="border-width:1; text-align:left;margin-left:0"></td>
+                </tr>
+                <tr>
+                  <td style="width: 470px;">
+                        <table cellpadding="0" cellspacing="0" border="0" width="470px">
                             <tr style="height: 28px">
                                 <td>
                                     <asp:Label ID="lblFuncAccessRightText" runat="server" Text="<%$Resources:Text, AccessRightOnFunctions%>" Font-Bold="true"></asp:Label>
@@ -367,17 +522,17 @@
                             </tr>
                             <tr>
                                 <td>
-                                <asp:Panel ID="pnlFuncAccessRight" runat="server" BorderWidth="1px" Height="250px" Width="510px" ScrollBars="auto">
+                                <asp:Panel ID="pnlFuncAccessRight" runat="server" BorderWidth="1px" Height="150px" Width="100%" ScrollBars="auto" style=" min-width:427px;">
                                     <asp:CheckBoxList ID="chklFuncAccessRight" runat="server" Enabled="false" DataTextField="Description" DataValueField="Function_Code">
                                     </asp:CheckBoxList>
                                 </asp:Panel>
                                 </td>
                             </tr>
-                            <tr style="height: 15px">
-                                <td></td>
-                            </tr>
                         </table>
-                        <table cellpadding="0" cellspacing="0" border="0">
+                  </td>
+
+                <td style="width: 500px;"> 
+                       <table cellpadding="0" cellspacing="0" border="0" width="500px">
                             <tr style="height: 28px">
                                 <td>
                                     <asp:Label ID="lblRptAccessRightText" runat="server" Text="<%$Resources:Text, AccessRightOnReports%>" Font-Bold="true"></asp:Label>
@@ -385,25 +540,21 @@
                             </tr>
                             <tr>
                                 <td>
-                                <asp:Panel ID="pnlFileGenerationRight" runat="server" BorderWidth="1px" Height="222px" Width="510px" ScrollBars="auto">
+                                <asp:Panel ID="pnlFileGenerationRight" runat="server" BorderWidth="1px" Height="150px" Width="100%" ScrollBars="auto">
                                     <asp:CheckBoxList id="chklFileGenerationRight" runat="server" Enabled="false" DataTextField="FileName" DataValueField="FileID">
                                     </asp:CheckBoxList>
                                 </asp:Panel>
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
+                </td>
+               </tr>
+                <tr> <td height="10 px"> </td></tr>
                 <tr>
-                    <td colspan="2">
-                    &nbsp;
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center">
+                    <td align="center" colspan="2">
                         <asp:ImageButton ID="ibtnEdit" runat="server" ImageUrl="<%$Resources:ImageUrl, EditBtn%>" />
                         <asp:ImageButton ID="ibtnNew" runat="server" ImageUrl="<%$Resources:ImageUrl, NewBtn%>" />
-                        <asp:ImageButton ID="ibtnResetPassword" runat="server" ImageUrl="<%$Resources:ImageUrl, ResetPasswordBtn%>" AlternateText="<%$Resources:AlternateText, ResetPasswordBtn%>" OnClientClick="" />
+                        <asp:ImageButton ID="ibtnResetPassword" runat="server" AlternateText="<%$Resources:AlternateText, ResetPasswordBtn%>" ImageUrl="<%$Resources:ImageUrl, ResetPasswordBtn%>" OnClientClick="" />
                         <asp:ImageButton ID="ibtnSave" runat="server" ImageUrl="<%$Resources:ImageUrl, SaveBtn%>" Visible="false" />
                         <asp:ImageButton ID="ibtnCancel" runat="server" ImageUrl="<%$Resources:ImageUrl, CancelBtn%>" Visible="false" />
                     </td>

@@ -626,11 +626,13 @@ Namespace BLL
 
                 udtdb.RunProc("proc_TempVRAcctCountFor4LevelAlert_get", parms, dt)
 
-                If dt.Rows.Count > 0 Then
-                    Return dt.Rows.Count
+                'CRE20-023 Tune performance [Start][Nichole]
+                If dt.Rows(0)(1) > 0 Then
+                    Return CInt(dt.Rows(0)(1))
                 Else
                     Return 0
                 End If
+                'CRE20-023 Tune performance [End][Nichole]
             Catch ex As Exception
                 Throw ex
             End Try
@@ -657,11 +659,13 @@ Namespace BLL
 
                 udtdb.RunProc("proc_TempVRAcctCountFor4LevelAlert_get", parms, dt)
 
-                If dt.Rows.Count > 0 Then
-                    Return dt.Rows.Count
+                'CRE20-023 Tune performance [Start][Nichole]
+                If dt.Rows(0)(1) > 0 Then
+                    Return CInt(dt.Rows(0)(1))
                 Else
                     Return 0
                 End If
+                'CRE20-023 Tune performance [End][Nichole]
             Catch ex As Exception
                 Throw ex
             End Try

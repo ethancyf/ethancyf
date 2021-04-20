@@ -11,6 +11,13 @@
         </td>
     </tr>--%>
     <tr style="height: 22px">
+        <td id="tdRecipientType" runat="server" class="tableCellStyle" style="vertical-align: top">
+            <asp:Label ID="lblRecipientTypeText" runat="server" Text="<%$ Resources:Text, RecipientType %>"></asp:Label>
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+            <asp:Label ID="lblRecipientType" runat="server" CssClass="tableText"></asp:Label></td>
+    </tr>
+    <tr style="height: 22px">
         <td id="tdRCHCode" runat="server" class="tableCellStyle" style="vertical-align: top">
             <asp:Label ID="lblRCHCodeText" runat="server" Text="<%$ Resources:Text, RCHCode %>"></asp:Label>
         </td>

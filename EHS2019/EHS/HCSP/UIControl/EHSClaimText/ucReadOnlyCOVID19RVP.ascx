@@ -3,6 +3,16 @@
 <table style="border-collapse: collapse">
     <tr>
         <td>
+            <asp:Label ID="lblRecipientTypeText" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Label ID="lblRecipientType" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <asp:Label ID="lblRCHCodeText" runat="server" CssClass="tableTitle"></asp:Label>
         </td>
     </tr>
@@ -21,7 +31,6 @@
             <asp:Label ID="lblRCHName" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
-   
 
     <tr>
         <td>
@@ -43,8 +52,6 @@
             <asp:Label ID="lblVaccineLotNumForCovid19" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
-
-
     <tr>
         <td>
             <asp:Label ID="lblDoseTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
@@ -55,7 +62,16 @@
             <asp:Label ID="lblDoseForCovid19" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
-
+    <tr id="trContactNoText" runat="server">
+        <td>
+            <asp:Label ID="lblContactNoTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+    </tr>
+    <tr id="trContactNo" runat="server">
+        <td>
+            <asp:Label ID="lblContactNoForCovid19" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
     <tr>
         <td>
             <asp:Label ID="lblRemarksTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
@@ -66,7 +82,7 @@
             <asp:Label ID="lblRemarksForCovid19" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
- <%--   <tr id="trJoinEHRSSText" runat="server">
+    <tr id="trJoinEHRSSText" runat="server">
         <td>
             <asp:Label ID="lblJoinEHRSSTextForCovid19" runat="server" CssClass="tableTitle"></asp:Label>
         </td>
@@ -75,7 +91,7 @@
         <td>
             <asp:Label ID="lblJoinEHRSSForCovid19" runat="server" CssClass="tableText"></asp:Label>
         </td>
-    </tr>--%>
+    </tr>
 
 </table>
 

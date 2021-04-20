@@ -894,11 +894,11 @@ Namespace BLL
 
             ' -------------------------------------------------------------------------------
             ' 7. Search Validate Account, Check Account Status (DOB Match)
-            ' -------------------------------------------------------------------------------
+            ' -------------------------------------------------------------------------------            
             Me.SearchValidatedAccount(strDocCode, strIdentityNum, udtEHSAccount, strSearchDocCode)
             If Not udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
                 ' Validate Account Found
-                If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) Then
+                If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = False Then
                     strMsgCode = "00108"
 
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
@@ -906,7 +906,8 @@ Namespace BLL
                 ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Terminated) Then
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
                     strMsgCode = "00109"
-                ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) Then
+                ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) OrElse _
+                      (udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True) Then
                     ' Check DOB Match
                     udtCurrEHSPersonalInfoModel = udtEHSAccount.EHSPersonalInformationList.Filter(strSearchDocCode)
                     If Not Me.chkEHSAccountInputDOBMatch(udtCurrEHSPersonalInfoModel, intAge, dtmDOR) Then
@@ -923,12 +924,23 @@ Namespace BLL
             Dim blnOnlyInValidAccountFound As Boolean = False
             Dim blnTempAccountNotMatchDOBFound As Boolean = False
 
-            If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
-                SearchTemporaryAccount(strDocCode, strIdentityNum, Nothing, Nothing, udtEHSAccount, _
-                    udtSearchAccountStatus, intAge, dtmDOR, Nothing, strSearchDocCode, udtEHSPersonalInfo)
-            End If
+            If enumClaimMode = ClaimMode.COVID19 Then
+                'Claim COVID19
+                If Not udtEHSAccount Is Nothing AndAlso (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) Then
+                    'Nothing to do
+                Else
+                    udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, intAge, dtmDOR, strSchemeCode)
+                End If
 
-            udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
+            Else
+                'Normal claim
+                If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
+                    SearchTemporaryAccount(strDocCode, strIdentityNum, Nothing, Nothing, udtEHSAccount, _
+                        udtSearchAccountStatus, intAge, dtmDOR, Nothing, strSearchDocCode, udtEHSPersonalInfo)
+                End If
+
+                udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
+            End If
 
             ' -------------------------------------------------------------------------------
             ' 9. Create New Account
@@ -1156,15 +1168,15 @@ Namespace BLL
             Me.SearchValidatedAccount(strDocCode, strIdentityNum, udtEHSAccount, strSearchDocCode)
             If Not udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
                 ' Validate Account Found
-                If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) Then
+                If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = False Then
                     strMsgCode = "00108"
-
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
                     ' -----------------------------------------------------------------------------------------
                 ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Terminated) Then
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
                     strMsgCode = "00109"
-                ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) Then
+                ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) OrElse _
+                       (udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True) Then
                     ' Check DOB Match
                     udtCurrEHSPersonalInfoModel = udtEHSAccount.EHSPersonalInformationList.Filter(strSearchDocCode)
                     If Not Me.chkEHSAccountInputDOBMatch(udtCurrEHSPersonalInfoModel, dtmDOB, strExactDOB) Then
@@ -1197,8 +1209,16 @@ Namespace BLL
             ' -------------------------------------------------------------------------------
             ' 8. Search Temporary Account, Check Account Status
             ' -------------------------------------------------------------------------------
-            'CRE20-0xx Immu Record [Start][Nichole]
-            If Not (New SessionHandler).ClaimCOVID19GetFromSession() Then
+            If enumClaimMode = ClaimMode.COVID19 Then
+                'Claim COVID19
+                If Not udtEHSAccount Is Nothing AndAlso (udtEHSAccount.RecordStatus = "A" OrElse (udtEHSAccount.RecordStatus = "S" AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True)) Then
+                    'Nothing to do
+                Else
+                    udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, strExactDOB, dtmDOB, strSchemeCode, strAdoptionPrefixNum, udtEHSPersonalInfo)
+                End If
+
+            Else
+                'Normal claim
                 If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
                     Me.SearchTemporaryAccount(strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtEHSAccount, _
                         udtSearchAccountStatus, Nothing, Nothing, strAdoptionPrefixNum, strSearchDocCode, _
@@ -1206,14 +1226,8 @@ Namespace BLL
                 End If
 
                 udtSearchAccountStatus.NotMatchAccountExist = udtSearchAccountStatus.OnlyInvalidAccountFound OrElse udtSearchAccountStatus.TempAccountNotMatchDOBFound
-            Else
-                If Not udtEHSAccount Is Nothing AndAlso udtEHSAccount.RecordStatus = "A" Then
-                    'If udtEHSAccount Is Nothing And Not udtEHSAccount.RecordStatus = "A" Then
-                Else
-                    udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, strExactDOB, dtmDOB, strSchemeCode, strAdoptionPrefixNum, udtEHSPersonalInfo)
-                End If
             End If
-            'CRE20-0xx Immu Record [End][Nichole]
+
             ' -------------------------------------------------------------------------------
             ' 9. Create New Account
             ' -------------------------------------------------------------------------------
@@ -2109,14 +2123,15 @@ Namespace BLL
 
             If Not udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
                 ' Validate Account Found
-                If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) Then
+                If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = False Then
                     strMsgCode = "00108"
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
                     ' -----------------------------------------------------------------------------------------
                 ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Terminated) Then
                     ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
                     strMsgCode = "00109"
-                ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) Then
+                ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) OrElse _
+                       (udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) AndAlso chkSuspendAccountClaimAllow(enumClaimMode) = True) Then
                     ' [INT11-0023] 
                     If enumSmartIDReadStatus = SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_LargerDOI Then
                         ' Reading card with Larger DOI, bypass DOB checking
@@ -2330,246 +2345,6 @@ Namespace BLL
             End If
 
         End Sub
-
-        'Public Function SearchEHSAccountSmartIDRectification(ByVal strSchemeCode As String, ByVal strDocCode As String, ByVal strIdentityNum As String, _
-        '                    ByVal strDOB As String, ByRef udtEHSAccount As EHSAccountModel, ByVal udtEHSAccountSmartID As EHSAccountModel, _
-        '                    ByRef udtEligibleResult As ClaimRulesBLL.EligibleResult, ByRef blnNoMatchRecordFound As Boolean, ByRef blnExceedDocTypeLimit As Boolean) As Common.ComObject.SystemMessage
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' Init
-        '    ' -------------------------------------------------------------------------------
-        '    strIdentityNum = Me._udtFormater.formatDocumentIdentityNumber(strDocCode, strIdentityNum)
-        '    Dim dtmCurrentDateTime As Date = Me._udtCommonGenFunc.GetSystemDateTime()
-        '    Dim dtmCurrentDate As Date = dtmCurrentDateTime.Date
-
-
-        '    ' Indicate the DocCode of EHS Account of Database
-        '    Dim strSearchDocCode As String = String.Empty
-        '    Dim strFunctCode As String = "990000"
-        '    Dim strSeverity As String = "E"
-        '    Dim strMsgCode As String = String.Empty
-
-        '    Dim sm As Common.ComObject.SystemMessage = Nothing
-        '    'Dim udtCurrEHSPersonalInfoModel As EHSAccountModel.EHSPersonalInformationModel = Nothing
-
-        '    Dim dtmDOB As Date = Nothing
-        '    Dim strExactDOB As String = Nothing
-        '    Dim blnWithTransaction As Boolean = False
-
-        '    Me._udtCommonGenFunc.chkDOBtype(strDOB, dtmDOB, strExactDOB)
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 1. Check Active SchemeClaim
-        '    ' -------------------------------------------------------------------------------
-        '    Dim udtSchemeClaimBLL As New SchemeClaimBLL()
-        '    Dim udtSchemeClaimModel As SchemeClaimModel = udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(strSchemeCode, dtmCurrentDateTime)
-
-        '    If udtSchemeClaimModel Is Nothing OrElse udtSchemeClaimModel.SubsidizeGroupClaimList.Count = 0 Then
-        '        strMsgCode = "00105"
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 2. Service Date Back
-        '    ' -------------------------------------------------------------------------------
-        '    Dim dtmServiceDateBack As Date = dtmCurrentDate
-        '    Dim strAllowDateBack As String = String.Empty
-        '    Dim strDummy As String = String.Empty
-        '    Dim strClaimDayLimit As String = String.Empty
-        '    Dim strMinDate As String = String.Empty
-
-        '    Dim udtGenFunct As New Common.ComFunction.GeneralFunction()
-        '    Dim enumSmartIDReadStatus As SmartIDHandler.SmartIDResultStatus
-
-        '    udtGenFunct.getSystemParameter("DateBackClaimAllow", strAllowDateBack, strDummy)
-
-        '    If strAllowDateBack = String.Empty Then
-        '        strAllowDateBack = "N"
-        '    End If
-
-        '    If strAllowDateBack = "Y" Then
-        '        udtGenFunct.getSystemParameter("DateBackClaimDayLimit", strClaimDayLimit, strDummy)
-        '        udtGenFunct.getSystemParameter("DateBackClaimMinDate", strMinDate, strDummy)
-        '        Dim intDayLimit As Integer = CInt(strClaimDayLimit)
-        '        Dim dtmMinDate As DateTime = Convert.ToDateTime(strMinDate)
-
-        '        dtmServiceDateBack = dtmCurrentDate.AddDays(-intDayLimit)
-        '        If dtmServiceDateBack < dtmMinDate Then dtmServiceDateBack = dtmMinDate
-        '        If dtmServiceDateBack < udtSchemeClaimModel.ClaimPeriodFrom Then dtmServiceDateBack = udtSchemeClaimModel.ClaimPeriodFrom
-        '    Else
-        '        dtmServiceDateBack = dtmCurrentDate
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 3. Check HKIC VS EC
-        '    ' -------------------------------------------------------------------------------
-        '    If strMsgCode.Trim() = "" Then
-        '        strMsgCode = Me._udtClaimRulesBLL.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.ValidateAccount, strDocCode, strIdentityNum)
-        '    End If
-        '    If strMsgCode.Trim() = "" Then
-        '        strMsgCode = Me._udtClaimRulesBLL.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.TemporaryAccount, strDocCode, strIdentityNum)
-        '    End If
-        '    If strMsgCode.Trim() = "" Then
-        '        strMsgCode = Me._udtClaimRulesBLL.chkEHSAccountHKICVsEC(EHSAccountModel.SysAccountSource.SpecialAccount, strDocCode, strIdentityNum)
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 3. Search Validate Account, Check Account Status, HKIC ONLY
-        '    ' -------------------------------------------------------------------------------
-        '    udtEHSAccount = Me._udtEHSAccountBLL.LoadEHSAccountByIdentity(strIdentityNum, DocType.DocTypeModel.DocTypeCode.HKIC)
-        '    If Not udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
-        '        ' Validate Account Found
-        '        '---------------------------------- Will not check this case -> Suspened can be reactivate --------------------------------------
-        '        'If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Suspended) Then
-        '        '    strMsgCode = "00108"
-        '        'Else
-        '        If udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Deceased) Then
-        '            strMsgCode = "00109"
-
-        '            '-------------------- Will not check this case -> After change personal paticual, the temp account may have diff DOB --------------------
-        '            'ElseIf udtEHSAccount.RecordStatus.Equals(EHSAccountModel.ValidatedAccountRecordStatusClass.Active) Then
-        '            '    ' Check DOB Match
-        '            '    'udtCurrEHSPersonalInfoModel = udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
-        '            '    If Not Me.chkEHSAccountInputDOBMatch(udtEHSAccount.EHSPersonalInformationList(0), dtmDOB, strExactDOB) Then
-        '            '        'DOB Not Match <- HKIC ONLY
-        '            '        strMsgCode = "00156"
-        '            '    End If
-        '        End If
-
-        '        '---------------------------------------------------------------------------------------
-        '        ' Check Smart ID Scenario
-        '        '---------------------------------------------------------------------------------------
-        '        If strMsgCode = String.Empty Then
-        '            enumSmartIDReadStatus = BLL.SmartIDHandler.CheckSmartIDCardStatus(udtEHSAccountSmartID, udtEHSAccount)
-
-        '            Select Case enumSmartIDReadStatus
-        '                Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_NotSameDOB
-        '                    strMsgCode = "00247"
-        '                Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_CreateBySmartID
-        '                    strMsgCode = "00248"
-        '                Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_SmallerDOI
-        '                    strMsgCode = "00249"
-        '            End Select
-        '        End If
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 6. Search Temporary Account, Check Account Status, HKIC ONLY
-        '    ' -------------------------------------------------------------------------------
-        '    Dim blnOnlyInValidAccountFound As Boolean = False
-        '    Dim blnTempAccountNotMatchDOBFound As Boolean = False
-
-        '    If udtEHSAccount Is Nothing AndAlso strMsgCode = String.Empty Then
-        '        Me.SearchTemporaryAccountSmartID(strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtEHSAccount, udtEHSAccountSmartID, _
-        '             enumSmartIDReadStatus, blnTempAccountNotMatchDOBFound, blnOnlyInValidAccountFound, strSearchDocCode)
-        '    End If
-
-        '    blnNoMatchRecordFound = blnOnlyInValidAccountFound Or blnTempAccountNotMatchDOBFound
-
-        '    If strMsgCode = String.Empty Then
-        '        Select Case enumSmartIDReadStatus
-        '            'Should only this block case
-        '            Case BLL.SmartIDHandler.SmartIDResultStatus.TempAccountExist_DiffDetail_CreateBySmartID_SameDOIDOB
-        '                strMsgCode = "00250"
-        '        End Select
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 7. Create New Account
-        '    ' -------------------------------------------------------------------------------
-        '    If udtEHSAccount Is Nothing And strMsgCode.Trim().Equals(String.Empty) Then
-        '        udtEHSAccount = Me.ConstructEHSTemporaryVoucherAccount(strIdentityNum, strDocCode, strExactDOB, dtmDOB, strSchemeCode, String.Empty)
-        '    End If
-
-
-        '    ' [2009Oct22] Performance Tuning
-        '    Dim udtEHSTransactionBLL As New EHSTransactionBLL()
-        '    Dim udtTranBenefitList As TransactionDetailModelCollection = Nothing
-
-        '    ' Transaction Checking will be only apply on Vaccine scheme
-        '    If udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
-        '        ' Retrieve the Transaction Detail related to the current Scheme (may have mutil SubsidizeCodes)
-        '        udtTranBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(strDocCode, strIdentityNum, udtSchemeClaimModel.SchemeCode, udtSchemeClaimModel.SchemeSeq)
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 8. Check Eligible
-        '    ' -------------------------------------------------------------------------------
-        '    If strMsgCode.Trim() = "" Then
-        '        udtEligibleResult = Me._udtClaimRulesBLL.CheckEligibilityFromEHSClaimSearch(udtSchemeClaimModel, strIdentityNum, strDocCode.Trim(), dtmDOB, strExactDOB, dtmCurrentDate, udtTranBenefitList)
-        '        If Not udtEligibleResult.IsEligible Then
-        '            strMsgCode = "00106"
-        '        End If
-        '    End If
-
-        '    ' -------------------------------------------------------------------------------
-        '    ' 2. Check Document Limit
-        '    ' -------------------------------------------------------------------------------
-        '    If strMsgCode.Trim() = "" Then
-        '        blnExceedDocTypeLimit = Me._udtClaimRulesBLL.CheckExceedDocumentLimitFromEHSClaimSearch(strSchemeCode, strDocCode, dtmDOB, strExactDOB, dtmCurrentDate)
-        '        If blnExceedDocTypeLimit Then
-        '            If strDocCode = DocTypeModel.DocTypeCode.EC Then
-        '                strMsgCode = "00185"
-        '            Else
-        '                strMsgCode = "00213"
-        '            End If
-        '        End If
-        '    End If
-
-
-        '    Dim udtEHSTransaction As EHSTransactionModel = Nothing
-        '    Dim dtmServiceDate As DateTime = udtEHSAccount.CreateDtm
-        '    If Not udtEHSAccount.TransactionID Is Nothing AndAlso udtEHSAccount.TransactionID.Trim() <> "" Then
-        '        Dim udtTransactionBLL As New EHSTransactionBLL()
-        '        udtEHSTransaction = udtTransactionBLL.LoadEHSTransaction(udtEHSAccount.TransactionID)
-        '        dtmServiceDate = udtEHSTransaction.ServiceDate
-        '        blnWithTransaction = True
-
-        '        ' EHSAccount Scheme Code Different with Transaction SchemeCode.
-        '        ' Eg. Re-use DataEntry create EHS Account Or Re-use self created EHS Account (without Transaction), Combine transaction with EHS Account
-
-        '        strSchemeCode = udtEHSTransaction.SchemeCode
-        '    End If
-
-        '    udtEligibleResult = Me._udtClaimRulesBLL.CheckEligibilityFromEHSRectify(udtSchemeClaimModel, udtEHSAccountSmartID.EHSPersonalInformationList(0).DOB, udtEHSAccountSmartID.EHSPersonalInformationList(0).ExactDOB, dtmServiceDate)
-        '    If Not udtEligibleResult.IsEligible Then
-        '        If blnWithTransaction Then
-        '            strMsgCode = "00241"
-        '        Else
-        '            strMsgCode = "00106"
-        '        End If
-        '    End If
-
-        '    '' -------------------------------------------------------------------------------
-        '    '' 9. Check Benefit
-        '    '' -------------------------------------------------------------------------------
-        '    'If strMsgCode.Trim() = "" Then
-        '    '    If udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeType = SubsidizeGroupClaimModel.SubsidizeTypeClass.SubsidizeTypeVaccine Then
-        '    '        If Not Me._udtClaimRulesBLL.chkVaccineAvailableBenefit(strDocCode, strIdentityNum, udtSchemeClaimModel, udtTranBenefitList, dtmDOB, strExactDOB, dtmCurrentDate, dtmServiceDateBack) Then
-        '    '            strMsgCode = "00195"
-        '    '        End If
-        '    '    Else
-        '    '        Dim intAvailable As Integer = Me._udtEHSTransactionBLL.getAvailableVoucher(dtmCurrentDate, strDocCode, strIdentityNum, dtmDOB, strExactDOB, udtSchemeClaimModel)
-        '    '        udtEHSAccount.AvailableVoucher = intAvailable
-        '    '        If intAvailable <= 0 Then
-        '    '            strMsgCode = "00107"
-        '    '        End If
-        '    '    End If
-        '    'End If
-        '    ' -------------------------------------------------------------------------------
-        '    ' Return
-        '    ' -------------------------------------------------------------------------------
-
-        '    If Not udtEHSAccount Is Nothing Then
-        '        ' For UI Setting
-        '        udtEHSAccount.SetSearchDocCode(strDocCode.Trim())
-        '    End If
-
-        '    If Not strMsgCode.Equals(String.Empty) Then
-        '        Return New Common.ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
-        '    Else
-        '        Return Nothing
-        '    End If
-        'End Function
 
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
@@ -3669,6 +3444,20 @@ Namespace BLL
             Return blnRes
         End Function
         ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
+
+        Public Function chkSuspendAccountClaimAllow(ByVal stClaimMode As String) As Boolean
+            Dim blResult As Boolean = False
+            Dim udtGenFunct As New Common.ComFunction.GeneralFunction()
+            Dim strAllowSuspendAccountClaim As String = udtGenFunct.getSystemParameter("SuspendAccountClaimAllow")
+
+            If strAllowSuspendAccountClaim = "Y" And stClaimMode = ClaimMode.COVID19 Then
+                blResult = True
+            End If
+
+            Return blResult
+
+        End Function
+
 #End Region
 
 #Region "EHSVaccine FOR EHSClaim UI"

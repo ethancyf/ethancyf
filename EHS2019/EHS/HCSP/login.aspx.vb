@@ -146,13 +146,15 @@ Partial Public Class login
 
             FunctionCode = FunctCode.FUNT020001
 
-            ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             udcSessionHandler.IDEASComboClientRemoveFormSession()
 
-            System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboClient", "checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);", True)
-            System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboVersion", "getIDEASComboVersion();", True)
-            ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+            If SmartIDHandler.EnableSmartID Then
+                System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboClient", "checkIdeasComboClient(checkIdeasComboClientSuccessEHS, checkIdeasComboClientFailureEHS);", True)
+                System.Web.UI.ScriptManager.RegisterStartupScript(Me, Me.GetType, "LoginCheckIdeasComboVersion", "getIDEASComboVersion();", True)
+            End If
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
         End If
 
         ' CRE16-004 (Enable SP to unlock account) [Start][Winnie]
@@ -224,13 +226,15 @@ Partial Public Class login
         SetDefaultButton(Me.txtPinNo, Me.ibtnLogin)
         SetDefaultButton(Me.txtSPID, Me.ibtnLogin)
 
-        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' CRE20-0022 (Immu record) [Start][Chris YIM]
         ' ---------------------------------------------------------------------------------------------------------
-        Me.txtUserName.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
-        Me.txtPassword.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
-        Me.txtPinNo.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
-        Me.txtSPID.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
-        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+        If SmartIDHandler.EnableSmartID Then
+            Me.txtUserName.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+            Me.txtPassword.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+            Me.txtPinNo.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+            Me.txtSPID.Attributes.Add("onfocusout", "checkIDEASComboClientAndVersion()")
+        End If
+        ' CRE20-0022 (Immu record) [End][Chris YIM]
 
         commfunc.getSystemParameter("EnableSPTextOnly", strEnableTextOnlyVersion, "")
         If strEnableTextOnlyVersion.Equals("Y") Then
@@ -1101,9 +1105,16 @@ Partial Public Class login
                         'Handle Level 4 alert
                         Dim udtVRAcctBLL As New BLL.VoucherAccountMaintenanceBLL
                         Dim dt As DataTable
+
                         dt = udtVRAcctBLL.getLevel4PopupVoucherAccount(strLogSPID, Me.SubPlatform)
                         If dt.Rows.Count > 0 Then
-                            Session("Show4thLevelAlertD28") = dt.Rows(0)(0)
+                            'CRE20-023 Invalidated ehs(S) account handlings [Start][Nichole]
+                            If dt.Rows(0)(0) IsNot DBNull.Value Then
+                                Session("Show4thLevelAlertD28") = dt.Rows(0)(0)
+                            Else
+                                Session("Show4thLevelAlertD28") = Nothing
+                            End If
+                            'CRE20-023 Invalidated ehs(S) account handlings [End][Nichole]
                         Else
                             Session("Show4thLevelAlertD28") = Nothing
                         End If

@@ -470,6 +470,19 @@ Partial Public Class EHSClaimV1
 
                                 '_udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctCode)
 
+                                'Convert sub-category -> Dictionary -> Json
+                                Dim udtCOVID19BLL As New COVID19.COVID19BLL
+                                Dim strSubCategoryMappingJavaScript As String = String.Empty
+                                Dim strCategoryJson As String = String.Empty
+                                Dim strCategoryTextEngJson As String = String.Empty
+                                Dim strCategoryTextChiJson As String = String.Empty
+
+                                udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+
+                                'Generate JavaScript
+                                strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+                                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
+
                         End Select
 
                         ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_Vaccine_LotNo_Mapping", strVaccineLotNoMappingJavaScript, True)
@@ -1338,6 +1351,18 @@ Partial Public Class EHSClaimV1
                                     End If
                                 End If
 
+                                'Convert sub-category -> Dictionary -> Json
+                                Dim strSubCategoryMappingJavaScript As String = String.Empty
+                                Dim strCategoryJson As String = String.Empty
+                                Dim strCategoryTextEngJson As String = String.Empty
+                                Dim strCategoryTextChiJson As String = String.Empty
+
+                                udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+
+                                'Generate JavaScript
+                                strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+                                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
+
                                 'Carry Forword: once times only
                                 If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
                                     _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
@@ -1804,6 +1829,14 @@ Partial Public Class EHSClaimV1
                 End If
 
                 CType(Me.udcStep2aInputEHSClaim.GetCOVID19ORControl(), ucInputCOVID19OR).SetOutreachCode(strOutreachCode)
+
+            Case SchemeClaimModel.RVP
+                If Not strOutreachCode Is Nothing AndAlso strOutreachCode.Trim() <> "" Then
+                    Me._udtSessionHandler.OutreachCodeSaveToSession(FunctCode, strOutreachCode.Trim())
+                End If
+
+                CType(Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control(), ucInputRVPCOVID19).SetOutreachCode(strOutreachCode)
+
 
             Case Else
                 'Nothing to do
@@ -2684,7 +2717,15 @@ Partial Public Class EHSClaimV1
                 End If
 
                 Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+
+                'Remove duplicate alert
+                Dim dtCode As DataTable = Me.udcMsgBoxErr.GetCodeTable
+                Dim drCode() As DataRow = dtCode.Select(String.Format("msgCode='{0}-{1}-{2}'", Me._udtSystemMessage.FunctionCode, Me._udtSystemMessage.SeverityCode, Me._udtSystemMessage.MessageCode))
+
+                If drCode.Length = 0 Then
+                    Me.udcMsgBoxErr.AddMessage(Me._udtSystemMessage)
+                End If
+
                 isValid = False
 
             Else
@@ -3364,6 +3405,36 @@ Partial Public Class EHSClaimV1
         Me.ModalPopupExtenderRVPHomeListSearch.Show()
     End Sub
 
+    Private Sub udcStep2aInputEHSClaim_OutreachTypeChanged(ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.EventArgs) Handles udcStep2aInputEHSClaim.OutreachTypeChange
+        If Me._blnIsRequireHandlePageRefresh Then
+            Return
+        End If
+
+        Select Case strSchemeCode
+            Case SchemeClaimModel.RVP
+                Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = udcStep2aInputEHSClaim.GetRVPCOVID19Control
+
+                If udcInputRVPCOVID19 IsNot Nothing Then
+                    Select Case udcInputRVPCOVID19.TypeOfOutreach
+                        Case "RCH"
+                            'trStep2aContactNo.Style.Add("display", "none")
+                            'trStep2aDeclareJoineHRSS.Style.Add("display", "none")
+
+                        Case "O"
+                            trStep2aContactNo.Style.Remove("display")
+                            trStep2aDeclareJoineHRSS.Style.Remove("display")
+
+                        Case Else
+                            trStep2aContactNo.Style.Add("display", "none")
+                            trStep2aDeclareJoineHRSS.Style.Add("display", "none")
+
+                    End Select
+
+                End If
+        End Select
+
+    End Sub
+
     Private Sub udcStep2aInputEHSClaim_OutreachListSearchClicked(ByVal strSchemeName As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcStep2aInputEHSClaim.OutreachListSearchClicked
         If Me._blnIsRequireHandlePageRefresh Then
             Return
@@ -3381,6 +3452,7 @@ Partial Public Class EHSClaimV1
 
         Me.ModalPopupExtenderOutreachListSearch.Show()
     End Sub
+
 
     'CRE16-026 (Add PCV13) [Start][Chris YIM]
     '-----------------------------------------------------------------------------------------
@@ -3788,6 +3860,23 @@ Partial Public Class EHSClaimV1
 
                 Case SchemeClaimModel.RVP
                     strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForRCHJavaScript(dtmServiceDate)
+
+                    'Convert sub-category -> Dictionary -> Json
+                    Dim strSubCategoryMappingJavaScript As String = String.Empty
+                    Dim strCategoryJson As String = String.Empty
+                    Dim strCategoryTextEngJson As String = String.Empty
+                    Dim strCategoryTextChiJson As String = String.Empty
+
+                    udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+
+                    'Generate JavaScript
+                    strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+                    ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
+
+                    'Carry Forword: once times only
+                    If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
+                        _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+                    End If
 
             End Select
 
@@ -5544,7 +5633,9 @@ Partial Public Class EHSClaimV1
             Dim udtTranDetailLatestVaccine As TransactionDetailVaccineModel = Nothing
 
             If (udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS OrElse _
+                udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP OrElse _
                 udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19 OrElse _
+                udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
                 udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19OR) _
                 AndAlso ClaimMode = Common.Component.ClaimMode.COVID19 Then
 
@@ -5591,77 +5682,113 @@ Partial Public Class EHSClaimV1
                             Me.chkStep2aDeclareClaim.Enabled = True
                         End If
 
-                        If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
-                            udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
-                            panStep2aDeclareJoineHRSS.Visible = False
-                        Else
-                            panStep2aDeclareJoineHRSS.Visible = False
+                        'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                        '    panStep2aDeclareJoineHRSS.Visible = False
+                        'Else
+                        panStep2aDeclareJoineHRSS.Visible = False
 
-                            If udtEHSAccount.SearchDocCode IsNot Nothing Then
-                                Dim intAge As Integer
+                        If udtEHSAccount.SearchDocCode IsNot Nothing Then
+                            Dim intAge As Integer
 
-                                If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
-                                    Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
-                                End If
+                            If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
+                                Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
+                            End If
 
-                                If Not CompareEligibleRuleByAge(dtmServiceDate, udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode), _
-                                                                intAge, "<", "Y", "DAY3") Then
+                            If Not CompareEligibleRuleByAge(dtmServiceDate, udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode), _
+                                                            intAge, "<", "Y", "DAY3") Then
 
-	                                Select Case udtEHSAccount.SearchDocCode
-	                                    Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.OW
-	                                        panStep2aDeclareJoineHRSS.Visible = True
-	                                        chkStep2aDeclareJoineHRSS.Enabled = True
-	
-	                                        'Carry Forward: Join eHealth
-	                                        If udtTranDetailLatestVaccine IsNot Nothing Then
-	                                            chkStep2aDeclareJoineHRSS.Enabled = False
-	                                            If udtEHSTransactionLatestVaccine IsNot Nothing Then
-	
-	                                                If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
-	                                                   udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS IsNot Nothing Then
-	
-	                                                    Select Case udtEHSTransactionLatestVaccine.SchemeCode.Trim.ToUpper
-	                                                        Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, _
-	                                                             SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, _
-	                                                            SchemeClaimModel.VSS
-	
-	                                                            If udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS = YesNo.Yes Then
-	                                                                panStep2aDeclareJoineHRSS.Visible = False
-	                                                                'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
-	                                                                '    chkStep2aDeclareJoineHRSS.Checked = True
-	                                                                'End If
-	                                                            Else
-	                                                                chkStep2aDeclareJoineHRSS.Enabled = True
-	                                                                'chkStep2aDeclareJoineHRSS.Checked = False
-	
-	                                                            End If
-	
-	                                                        Case Else
-	                                                            chkStep2aDeclareJoineHRSS.Enabled = True
-	                                                            'chkStep2aDeclareJoineHRSS.Checked = False
-	                                                    End Select
-	
-	                                                Else
-	                                                    chkStep2aDeclareJoineHRSS.Enabled = True
-	                                                    'chkStep2aDeclareJoineHRSS.Checked = False
-	
-	                                                End If
-	                                            Else
-	                                                chkStep2aDeclareJoineHRSS.Enabled = True
-	                                                'chkStep2aDeclareJoineHRSS.Checked = False
+                                Select Case udtEHSAccount.SearchDocCode
+                                    Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.OW
+                                        panStep2aDeclareJoineHRSS.Visible = True
+                                        chkStep2aDeclareJoineHRSS.Enabled = True
+                                        trStep2aDeclareJoineHRSS.Style.Remove("display")
 
-	                                            End If
-	                                        End If
-	
-	                                    Case Else
-	                                        'Nothing to do
-	                                End Select
-	                                
-	                        	End If        
-	                                
+                                        'Scheme & recipient option
+                                        If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
+                                           udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                                            trStep2aDeclareJoineHRSS.Style.Add("display", "none")
+
+                                            'COVID19RVP
+                                            Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
+
+                                            If udcInputCOVID19RVP IsNot Nothing Then
+                                                If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
+                                                    udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                                    udcInputCOVID19RVP.RecipientType <> String.Empty Then
+
+                                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
+                                                End If
+                                            End If
+
+                                            'RVPCOVID19
+                                            Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+
+                                            If udcInputRVPCOVID19 IsNot Nothing Then
+                                                If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
+                                                    If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
+                                                        udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                                        udcInputRVPCOVID19.RecipientType <> String.Empty Then
+
+                                                        trStep2aDeclareJoineHRSS.Style.Remove("display")
+                                                    End If
+
+                                                Else
+                                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
+
+                                                End If
+
+                                            End If
+                                        End If
+
+                                        'Carry Forward: Join eHealth
+                                        If udtTranDetailLatestVaccine IsNot Nothing Then
+                                            chkStep2aDeclareJoineHRSS.Enabled = False
+                                            If udtEHSTransactionLatestVaccine IsNot Nothing Then
+
+                                                If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
+                                                   udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS IsNot Nothing Then
+
+                                                    Select Case udtEHSTransactionLatestVaccine.SchemeCode.Trim.ToUpper
+                                                        Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19RVP, _
+                                                             SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.VSS, SchemeClaimModel.RVP
+
+                                                            If udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS = YesNo.Yes Then
+                                                                panStep2aDeclareJoineHRSS.Visible = False
+                                                                'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
+                                                                '    chkStep2aDeclareJoineHRSS.Checked = True
+                                                                'End If
+                                                            Else
+                                                                chkStep2aDeclareJoineHRSS.Enabled = True
+                                                                'chkStep2aDeclareJoineHRSS.Checked = False
+
+                                                            End If
+
+                                                        Case Else
+                                                            chkStep2aDeclareJoineHRSS.Enabled = True
+                                                            'chkStep2aDeclareJoineHRSS.Checked = False
+                                                    End Select
+
+                                                Else
+                                                    chkStep2aDeclareJoineHRSS.Enabled = True
+                                                    'chkStep2aDeclareJoineHRSS.Checked = False
+
+                                                End If
+                                            Else
+                                                chkStep2aDeclareJoineHRSS.Enabled = True
+                                                'chkStep2aDeclareJoineHRSS.Checked = False
+
+                                            End If
+                                        End If
+
+                                    Case Else
+                                        'Nothing to do
+                                End Select
+
                             End If
 
                         End If
+
+                        'End If
 
                         If Not blnCOVID19ForClaim Then
                             udcMsgBoxInfo.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVI, MsgCode.MSG00049)
@@ -5709,6 +5836,11 @@ Partial Public Class EHSClaimV1
 
                 'Generate JavaScript Declaimer checkbox
                 BuildbtnStep2aClaimEventForCOVID19()
+
+                'Generate JavaScript for recipient Type
+                Dim strRecipientTypeJavaScript As String = (New COVID19.COVID19BLL).GenerateRecipientTypeJavaScript()
+
+                ScriptManager.RegisterStartupScript(Me, Page.GetType(), "COVID19_Recipient_Function", strRecipientTypeJavaScript, True)
 
                 '----------------------------------------------------------
 
@@ -5768,21 +5900,63 @@ Partial Public Class EHSClaimV1
                     End Select
                 End If
 
+                'Contact No.
                 If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS OrElse _
-                   udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19OR Then
+                   udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP OrElse _
+                   udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19OR OrElse _
+                   udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP Then
+
                     trStep2aContactNo.Visible = True
+                    trStep2aContactNo.Style.Remove("display")
                     lblStep2aContactNoRecommendation.Visible = True
                     txtStep2aContactNo.Enabled = True
+
+                    If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
+                       udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+
+                        trStep2aContactNo.Style.Add("display", "none")
+
+                        Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
+
+                        If udcInputCOVID19RVP IsNot Nothing Then
+                            If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
+                                udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                udcInputCOVID19RVP.RecipientType <> String.Empty Then
+
+                                trStep2aContactNo.Style.Remove("display")
+                            End If
+                        End If
+
+                        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+
+                        If udcInputRVPCOVID19 IsNot Nothing Then
+                            If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
+                                If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
+                                    udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                    udcInputRVPCOVID19.RecipientType <> String.Empty Then
+
+                                    trStep2aContactNo.Style.Remove("display")
+                                End If
+
+                            Else
+                                trStep2aContactNo.Style.Remove("display")
+
+                            End If
+
+                        End If
+
+                    End If
 
                     'Carry Forward: Contact no.
                     If udtTranDetailLatestVaccine IsNot Nothing Then
                         txtStep2aContactNo.Enabled = False
                         If udtEHSTransactionLatestVaccine IsNot Nothing Then
                             If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
-                                udtEHSTransactionLatestVaccine.TransactionAdditionFields.ContactNo IsNot Nothing Then
+                                udtEHSTransactionLatestVaccine.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso _
+                                udtEHSTransactionLatestVaccine.TransactionAdditionFields.ContactNo <> String.Empty Then
 
                                 Select Case udtEHSTransactionLatestVaccine.SchemeCode.Trim.ToUpper
-                                    Case SchemeClaimModel.VSS, SchemeClaimModel.COVID19OR
+                                    Case SchemeClaimModel.VSS, SchemeClaimModel.RVP, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19RVP
                                         If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
                                             txtStep2aContactNo.Text = udtEHSTransactionLatestVaccine.TransactionAdditionFields.ContactNo
                                         End If
@@ -6162,7 +6336,11 @@ Partial Public Class EHSClaimV1
                     Me.Step2aCleanHSIVSSError()
 
                 Case SchemeClaimModel.EnumControlType.RVP
-                    Me.Step2aCleanRVPError()
+                    If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                        Me.Step2aCleanRVPCOVID19Error()
+                    Else
+                        Me.Step2aCleanRVPError()
+                    End If
 
                 Case SchemeClaimModel.EnumControlType.EHAPP
                     Me.Step2aCleanEHAPPError()
@@ -6260,6 +6438,25 @@ Partial Public Class EHSClaimV1
         End If
     End Sub
 
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Sub Step2aCleanRVPCOVID19Error()
+        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+        If Not udcInputRVPCOVID19 Is Nothing Then
+            udcInputRVPCOVID19.SetCategoryForCOVID19Error(False)
+            udcInputRVPCOVID19.SetOutreachTypeError(False)
+            udcInputRVPCOVID19.SetRecipientTypeError(False)
+            udcInputRVPCOVID19.SetRCHCodeError(False)
+            udcInputRVPCOVID19.SetOutreachCodeError(False)
+            udcInputRVPCOVID19.SetMainCategoryForCOVID19Error(False)
+            udcInputRVPCOVID19.SetSubCategoryForCOVID19Error(False)
+            udcInputRVPCOVID19.SetVaccineBrandError(False)
+            udcInputRVPCOVID19.SetVaccineLotNoError(False)
+            udcInputRVPCOVID19.SetDoseForCOVID19Error(False)
+        End If
+    End Sub
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
     ' CRE13-001 - EHAPP [Start][Tommy L]
     ' -------------------------------------------------------------------------------------
     Private Sub Step2aCleanEHAPPError()
@@ -6356,6 +6553,7 @@ Partial Public Class EHSClaimV1
         If Not udcInputCOVID19RVP Is Nothing Then
             'udcInputCOVID19RVP.SetBoothError(False)
             udcInputCOVID19RVP.SetCategoryForCOVID19Error(False)
+            udcInputCOVID19RVP.SetRecipientTypeError(False)
             udcInputCOVID19RVP.SetRCHCodeError(False)
             udcInputCOVID19RVP.SetVaccineBrandError(False)
             udcInputCOVID19RVP.SetVaccineLotNoError(False)
@@ -7623,8 +7821,14 @@ Partial Public Class EHSClaimV1
             isValid = udcInputRVPCOVID19.Validate(True, Me.udcMsgBoxErr)
 
             If panStep2aRecipinetContactInfo.Visible Then
-                If Me.txtStep2aContactNo.Enabled Then
-                    If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
+                If Me.txtStep2aContactNo.Enabled AndAlso _
+                    ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso _
+                        udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udcInputRVPCOVID19.RecipientType <> String.Empty) OrElse _
+                    udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
+
+                    'If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
+                    If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) Then
                         isValid = False
 
                         imgStep2aContactNoError.Visible = True
@@ -7869,15 +8073,15 @@ Partial Public Class EHSClaimV1
 
                             Me.ucNoticePopUpExclamationConfirm.MessageText = strHTMLList
 
-                        	Me.ModalPopupExclamationConfirmationBox.Show()
+                            Me.ModalPopupExclamationConfirmationBox.Show()
 
-                        	_udtAuditLogEntry.AddDescripton("Message", strText)
-                        	EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
+                            _udtAuditLogEntry.AddDescripton("Message", strText)
+                            EHSClaimBasePage.AuditLogShowClaimRulePopupBox(_udtAuditLogEntry)
 
-                   		End If
+                        End If
 
-                    	isValid = False
-                	End If
+                        isValid = False
+                    End If
                 End If
 
                 Me._udtSessionHandler.EligibleResultSaveToSession(udtRuleResults)
@@ -7925,15 +8129,26 @@ Partial Public Class EHSClaimV1
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
 
                 If Me._udtEHSTransaction.TransactionAdditionFields(0) IsNot Nothing Then
-                    ''Contact No.
-                    'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
-                    'udtTransactAdditionfield.AdditionalFieldValueCode = txtStep2aContactNo.Text.Trim
-                    'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                    'udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    'udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    'udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    'Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                    'Contact No.
+                    Dim strContactNo As String = String.Empty
+
+                    If ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udcInputRVPCOVID19.RecipientType <> String.Empty) _
+                        OrElse _
+                        udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
+
+                        strContactNo = txtStep2aContactNo.Text.Trim
+
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strContactNo
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
                     ''Mobile
                     'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -7955,15 +8170,28 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
                     Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-                    ''JoinEHRSS
-                    'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
-                    'udtTransactAdditionfield.AdditionalFieldValueCode = IIf(chkStep2aDeclareJoineHRSS.Checked, YesNo.Yes, YesNo.No)
-                    'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                    'udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    'udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    'udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    'Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                    'JoinEHRSS
+                    Dim strJoinEHRSS As String = String.Empty
+
+                    If panStep2aDeclareJoineHRSS.Visible AndAlso _
+                        ((udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH AndAlso udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udcInputRVPCOVID19.RecipientType <> String.Empty) _
+                        OrElse _
+                        udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.OTHER) Then
+
+                        strJoinEHRSS = IIf(chkStep2aDeclareJoineHRSS.Checked, YesNo.Yes, YesNo.No)
+
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
                 End If
             End If
 
@@ -9027,7 +9255,7 @@ Partial Public Class EHSClaimV1
                 End If
 
                 If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) Then
-                    If Not Regex.IsMatch(Me.txtStep2aContactNo.Text, "^\d{8}$") Then
+                    If Not Regex.IsMatch(Me.txtStep2aContactNo.Text, "^[2-9]\d{7}$") Then
                         isValid = False
 
                         imgStep2aContactNoError.Visible = True
@@ -9392,35 +9620,42 @@ Partial Public Class EHSClaimV1
             isValid = udcInputCOVID19RVP.Validate(True, Me.udcMsgBoxErr)
 
             If panStep2aRecipinetContactInfo.Visible Then
-                If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
-                    isValid = False
+                If Me.txtStep2aContactNo.Enabled AndAlso _
+                    udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                    udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
-                    imgStep2aContactNoError.Visible = True
-
-                    Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
-                    If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, _
-                                                                                    New String() {"%en", "%tc", "%sc"}, _
-                                                                                    New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
-                End If
-
-                If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) Then
-                    If Not Regex.IsMatch(Me.txtStep2aContactNo.Text, "^\d{8}$") Then
+                    'If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso Me.chkStep2aMobile.Checked Then
+                    If String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) Then
                         isValid = False
 
                         imgStep2aContactNoError.Visible = True
 
-                        Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00466)
+                        Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00463)
                         If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, _
-                                                                                    New String() {"%en", "%tc", "%sc"}, _
-                                                                                    New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
-                                                                                                  HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+                                                                                        New String() {"%en", "%tc", "%sc"}, _
+                                                                                        New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                                                                      HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                                                                      HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
                     End If
 
-                End If
+                    If Not String.IsNullOrEmpty(Me.txtStep2aContactNo.Text) AndAlso udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT _
+                        AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
+                        If Not Regex.IsMatch(Me.txtStep2aContactNo.Text, "^[2-9]\d{7}$") Then
+                            isValid = False
+
+                            imgStep2aContactNoError.Visible = True
+
+                            Dim udtMsg As SystemMessage = New SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00466)
+                            If Me.udcMsgBoxErr IsNot Nothing Then Me.udcMsgBoxErr.AddMessage(udtMsg, _
+                                                                                        New String() {"%en", "%tc", "%sc"}, _
+                                                                                        New String() {HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                                                                      HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                                                                      HttpContext.GetGlobalResourceObject("Text", "ContactNo2", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese))})
+                        End If
+
+                    End If
+                End If
             End If
 
             'If Not Me.chkStep2aDeclareClaim.Checked Then
@@ -9496,7 +9731,7 @@ Partial Public Class EHSClaimV1
                         For Each udtClaimRuleResult As ClaimRuleResult In udtClaimRuleResultList
                             HandleSystemMessage(Me._udtSystemMessage, udtClaimRuleResult)
                         Next
-                        
+
                         udcInputCOVID19RVP.SetDoseErrorImage(True)
 
                         If _udtSystemMessage.FunctionCode = "990000" AndAlso _udtSystemMessage.SeverityCode = "E" AndAlso _udtSystemMessage.MessageCode = "00464" Then
@@ -9668,15 +9903,21 @@ Partial Public Class EHSClaimV1
                 Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
 
                 If Me._udtEHSTransaction.TransactionAdditionFields(0) IsNot Nothing Then
-                    ''Contact No.
-                    'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                    'udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
-                    'udtTransactAdditionfield.AdditionalFieldValueCode = txtStep2aContactNo.Text.Trim
-                    'udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                    'udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
-                    'udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
-                    'udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
-                    'Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                    'Contact No.
+                    Dim strContactNo As String = String.Empty
+
+                    If udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                        strContactNo = txtStep2aContactNo.Text.Trim
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ContactNo
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strContactNo
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
                     ''Mobile
                     'udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -9693,6 +9934,26 @@ Partial Public Class EHSClaimV1
                     udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Remarks
                     udtTransactAdditionfield.AdditionalFieldValueCode = String.Empty
                     udtTransactAdditionfield.AdditionalFieldValueDesc = txtStep2aRemark.Text.Trim
+                    udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+                    Me._udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+                    'JoinEHRSS
+                    Dim strJoinEHRSS As String = String.Empty
+
+                    If panStep2aDeclareJoineHRSS.Visible AndAlso _
+                        udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udcInputCOVID19RVP.RecipientType <> String.Empty Then
+
+                        strJoinEHRSS = IIf(chkStep2aDeclareJoineHRSS.Checked, YesNo.Yes, YesNo.No)
+
+                    End If
+
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.JoinEHRSS
+                    udtTransactAdditionfield.AdditionalFieldValueCode = strJoinEHRSS
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
                     udtTransactAdditionfield.SchemeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
                     udtTransactAdditionfield.SchemeSeq = Me._udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
                     udtTransactAdditionfield.SubsidizeCode = Me._udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
@@ -11466,26 +11727,28 @@ Partial Public Class EHSClaimV1
             trStep2bServiceType.Style.Add("display", "none")
             lblStep2bContactNoNotAbleSMS.Visible = False
             'Contact No. & Mobile
-            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing Then
+            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
                 trStep2bContactNo.Visible = True
 
-                If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
-                    lblStep2bContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
+                'If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+                lblStep2bContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
 
-                    If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
-                        lblStep2bContactNo.Text = lblStep2bContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
-                    End If
-
-                    Select Case Left(udtEHSTransaction.TransactionAdditionFields.ContactNo, 1)
-                        Case "2", "3"
-                            lblStep2bContactNoNotAbleSMS.Visible = True
-                        Case Else
-                            lblStep2bContactNoNotAbleSMS.Visible = False
-                    End Select
-
-                Else
-                    lblStep2bContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
+                    lblStep2bContactNo.Text = lblStep2bContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
                 End If
+
+                Select Case Left(udtEHSTransaction.TransactionAdditionFields.ContactNo, 1)
+                    Case "2", "3"
+                        lblStep2bContactNoNotAbleSMS.Visible = True
+                    Case Else
+                        lblStep2bContactNoNotAbleSMS.Visible = False
+                End Select
+
+                'Else
+                '    lblStep2bContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                'End If
+            Else
+                trStep2bContactNo.Visible = False
             End If
 
             'Remarks
@@ -11497,11 +11760,12 @@ Partial Public Class EHSClaimV1
 
             'Join EHRSS
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS) AndAlso _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
                (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.HKIC OrElse _
                 udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.EC OrElse _
                 udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW) Then
@@ -12125,18 +12389,20 @@ Partial Public Class EHSClaimV1
             btnStep3Reprint.Visible = True
 
             'Contact No. & Mobile
-            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing Then
+            If udtEHSTransaction.TransactionAdditionFields.ContactNo IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
                 trStep3ContactNo.Visible = True
 
-                If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
-                    lblStep3ContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
+                'If udtEHSTransaction.TransactionAdditionFields.ContactNo <> String.Empty Then
+                lblStep3ContactNo.Text = udtEHSTransaction.TransactionAdditionFields.ContactNo
 
-                    If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
-                        lblStep3ContactNo.Text = lblStep2bContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
-                    End If
-                Else
-                    lblStep3ContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                If udtEHSTransaction.TransactionAdditionFields.Mobile IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.Mobile = YesNo.Yes Then
+                    lblStep3ContactNo.Text = lblStep2bContactNo.Text & " (" & GetGlobalResourceObject("Text", "Mobile") & ")"
                 End If
+                'Else
+                '    lblStep3ContactNo.Text = GetGlobalResourceObject("Text", "NotProvided")
+                'End If
+            Else
+                trStep3ContactNo.Visible = False
             End If
 
             'Remarks
@@ -12148,11 +12414,12 @@ Partial Public Class EHSClaimV1
 
             'Join EHRSS
             If (udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS) AndAlso _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
                (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.HKIC OrElse _
                 udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.EC OrElse _
                 udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW) Then

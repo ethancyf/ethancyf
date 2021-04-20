@@ -182,20 +182,24 @@ Partial Public Class MasterPage
             Me.ibtnInbox.AlternateText = HttpContext.GetGlobalResourceObject("AlternateText", "InboxBtn")
         End If
 
-        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+        ' CRE20-023-29 (Immu record) [Start][Winnie]
         Select Case DirectCast(Me.Page, BasePage).SubPlatform
             Case EnumHCVUSubPlatform.CC
                 Me.ibtnInbox.Visible = False
+
+            Case EnumHCVUSubPlatform.VC
+                Me.ibtnInbox.Visible = False
+
             Case Else
                 Me.ibtnInbox.Visible = True
         End Select
-        ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
-        If Session("HCVU_UserType") = "HCSPUser" Then
-            Me.ibtnInbox.Visible = False
-        Else
-            Me.ibtnInbox.Visible = True
-        End If
+        'If Session("HCVU_UserType") = "HCSPUser" Then
+        '    Me.ibtnInbox.Visible = False
+        'Else
+        '    Me.ibtnInbox.Visible = True
+        'End If
+        ' CRE20-023-29 (Immu record) [End][Winnie]
 
         ' Wait Cursor Panel Script
         ScriptManager.RegisterStartupScript(Page, Me.GetType, "ModalUpdProg", Me.GetWaitCursorPanelScript(), True)

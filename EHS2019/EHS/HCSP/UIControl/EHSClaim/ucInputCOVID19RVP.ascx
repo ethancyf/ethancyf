@@ -22,6 +22,24 @@
         </td>
     </tr>
     </asp:Panel>
+    <tr>
+        <td style="width:205px;vertical-align:top">
+            <asp:Label ID="lblCRecipientTypeText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, RecipientType%>" />
+        </td>
+        <td style="vertical-align:top">
+            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                <tr>
+                    <td style="vertical-align:top">
+                        <asp:radiobuttonlist ID="rblCRecipientType" runat="server" AutoPostBack="false" RepeatDirection="Horizontal" CssClass="tableText" Style="min-width:110px;position:relative;top:-3px;left:-9px" />
+                    </td>
+                    <td style="vertical-align:top">
+                        <asp:Image ID="imgCRecipientTypeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     <asp:Panel ID="panRCHCode" runat="server">
     <tr>
         <td style="width: 185px;vertical-align:middle">

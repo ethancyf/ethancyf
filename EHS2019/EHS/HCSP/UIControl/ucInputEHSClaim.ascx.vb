@@ -47,6 +47,7 @@ Partial Public Class ucInputEHSClaim
     Public Event RecipientConditionHelpClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
     Public Event RCHCodeTextChanged(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Public Event OutreachTypeChange(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.EventArgs)
 #End Region
 
 #Region "Constant"
@@ -69,7 +70,6 @@ Partial Public Class ucInputEHSClaim
         Public Const PPP As String = "ucInputEHSClaim_PPP"
         Public Const SSSCMC As String = "ucInputEHSClaim_SSSCMC"
         Public Const COVID19 As String = "ucInputEHSClaim_COVID19"  ' CRE20-0022 (Immu record) [Winnie SUEN]
-        Public Const COVID19CBD As String = "ucInputEHSClaim_COVID19CBD"
         Public Const COVID19RVP As String = "ucInputEHSClaim_COVID19RVP"
         Public Const COVID19OR As String = "ucInputEHSClaim_COVID19OR"
 
@@ -163,9 +163,6 @@ Partial Public Class ucInputEHSClaim
                 Case SchemeClaimModel.EnumControlType.COVID19
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19 Then BuiltSchemeControlOnly(True)
                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-                Case SchemeClaimModel.EnumControlType.COVID19CBD
-                    If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19CBD Then BuiltSchemeControlOnly(True)
 
                 Case SchemeClaimModel.EnumControlType.COVID19RVP
                     If _udcInputEHSClaim.ID <> EHSClaimControlID.COVID19RVP Then BuiltSchemeControlOnly(True)
@@ -303,6 +300,8 @@ Partial Public Class ucInputEHSClaim
                     Else
                         Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = CType(udcInputEHSClaim, ucInputRVPCOVID19)
                         AddHandler udcInputRVPCOVID19.SearchButtonClick, AddressOf udcInputRVP_SearchButtonClick
+                        AddHandler udcInputRVPCOVID19.SearchOutreachButtonClick, AddressOf udcInputRVP_SearchOutreachButtonClick
+                        AddHandler udcInputRVPCOVID19.OutreachTypeChange, AddressOf udcInputRVP_OutreachTypeChange
                     End If
 
                 Else
@@ -398,15 +397,6 @@ Partial Public Class ucInputEHSClaim
                     'Nothing to do
                 End If
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-            Case SchemeClaimModel.EnumControlType.COVID19CBD
-                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19CBD.ascx", strFolderPath))
-                udcInputEHSClaim.ID = EHSClaimControlID.COVID19CBD
-                If Me._textOnlyVersion Then
-                    'No Input Control
-                Else
-                    'Nothing to do
-                End If
 
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19RVP.ascx", strFolderPath))
@@ -640,6 +630,14 @@ Partial Public Class ucInputEHSClaim
 
     Private Sub udcInputCOVID19OR_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent OutreachListSearchClicked(SchemeClaimModel.COVID19OR, sender, e)
+    End Sub
+
+    Private Sub udcInputRVP_SearchOutreachButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent OutreachListSearchClicked(SchemeClaimModel.RVP, sender, e)
+    End Sub
+
+    Private Sub udcInputRVP_OutreachTypeChange(ByVal sender As Object, ByVal e As System.EventArgs)
+        RaiseEvent OutreachTypeChange(SchemeClaimModel.RVP, sender, e)
     End Sub
 
     Private Sub udcInputEHSClaim_VaccineLegendClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)

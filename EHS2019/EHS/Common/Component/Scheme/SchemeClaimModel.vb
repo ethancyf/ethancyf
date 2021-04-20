@@ -55,7 +55,6 @@ Namespace Component.Scheme
         Public Const HCVSDHC As String = "HCVSDHC"      ' CRE19-006 (DHC)
         Public Const SSSCMC As String = "SSSCMC"      ' CRE20-015 (HA Scheme)
         Public Const COVID19CVC As String = "COVID19CVC"      ' CRE20-0022 (Immu record) [Winnie SUEN]
-        Public Const COVID19CBD As String = "COVID19CBD"
         Public Const COVID19RVP As String = "COVID19RVP"
         Public Const COVID19DH As String = "COVID19DH"    ' CRE20-0023-04 (Immu record) [Winnie SUEN]
         Public Const COVID19OR As String = "COVID19OR"

@@ -93,7 +93,7 @@ Partial Public Class ucReadOnlyEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.RVP
-                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                If Me.IsClaimCOVID19 Then
                     udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyRVPCOVID19.ascx", strFolderPath))
                     udcReadOnlyEHSClaim.ID = EHSClaimControlID.RVPCOVID19
                 Else
@@ -120,7 +120,7 @@ Partial Public Class ucReadOnlyEHSClaim
                 End If
 
             Case SchemeClaimModel.EnumControlType.VSS
-                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                If Me.IsClaimCOVID19 Then
                     udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyVSSCOVID19.ascx", strFolderPath))
                     udcReadOnlyEHSClaim.ID = EHSClaimControlID.VSSCOVID19
                 Else
@@ -163,16 +163,7 @@ Partial Public Class ucReadOnlyEHSClaim
             Case SchemeClaimModel.EnumControlType.COVID19
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19.ascx", strFolderPath))
                 udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19
-                'If Me._textOnlyVersion Then
-                '    AddHandler CType(udcReadOnlyEHSClaim, UIControl.EHCClaimText.ucReadOnlyCOVID19).VaccineRemarkClicked, AddressOf udcClaimVaccineReadOnlyText_RemarkClicked
-                'Else
-                '    AddHandler CType(udcReadOnlyEHSClaim, ucReadOnlyCOVID19).VaccineLegendClicked, AddressOf udcClaimVaccineReadOnly_VaccineLegendClicked
-                'End If
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-            Case SchemeClaimModel.EnumControlType.COVID19CBD
-                udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19CBD.ascx", strFolderPath))
-                udcReadOnlyEHSClaim.ID = EHSClaimControlID.COVID19CBD
 
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcReadOnlyEHSClaim = Me.LoadControl(String.Format("{0}/ucReadOnlyCOVID19RVP.ascx", strFolderPath))
@@ -280,6 +271,21 @@ Partial Public Class ucReadOnlyEHSClaim
             _enumClaimMode = value
         End Set
     End Property
+
+#End Region
+
+#Region "Supported Function"
+    Public Function IsClaimCOVID19() As Boolean
+
+        Dim udtTranDetailList As TransactionDetailModelCollection = _udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+        If udtTranDetailList.Count > 0 Then
+            Return True
+        End If
+
+        Return False
+
+    End Function
 
 #End Region
 

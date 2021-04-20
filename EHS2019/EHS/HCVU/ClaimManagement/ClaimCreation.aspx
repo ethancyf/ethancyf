@@ -13,6 +13,7 @@
 <%@ Register Src="~/UIControl/ucCollapsibleSearchCriteriaReview.ascx" TagName="CollapsibleSearchCriteriaReview" TagPrefix="uc6" %>
 <%@ Register Src="../UIControl/DocTypeLegend.ascx" TagName="DocTypeLegend" TagPrefix="uc7" %>
 <%@ Register Src="~/UIControl/SchoolListSearch.ascx" TagName="SchoolListSearch" TagPrefix="uc8" %>
+<%@ Register Src="~/UIControl/OutreachListSearch.ascx" TagName="OutreachListSearch" TagPrefix="uc9" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
@@ -894,6 +895,53 @@
                 </asp:Panel>
                 <%-- End of Pop up for School List --%>
 
+                <%-- Pop up for Outreach List --%>
+                <asp:Button ID="btnModalPopupOutreachListSearch" runat="server" Style="display: none" />
+                <cc1:ModalPopupExtender ID="ModalPopupExtenderOutreachListSearch" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                    TargetControlID="btnModalPopupOutreachListSearch" PopupControlID="panPopupOutreachListSearch"
+                    PopupDragHandleControlID="panOutreachListHeading" RepositionMode="None">
+                </cc1:ModalPopupExtender>
+                <asp:Panel Style="display: none" ID="panPopupOutreachListSearch" runat="server">
+                    <asp:Panel Style="cursor: move" ID="panOutreachListHeading" runat="server">
+                        <table border="0" cellpadding="0" cellspacing="0" style="width: 980px">
+                            <tr>
+                                <td style="background-image: url(../Images/dialog/top-left.png); width: 7px; height: 35px"></td>
+                                <td style="font-weight: bold; font-size: 14px; background-image: url(../Images/dialog/top-mid.png); color: #ffffff; background-repeat: repeat-x; height: 35px;">
+                                    <asp:Label ID="lblOutreachSearchTitle" runat="server" Text="<%$ Resources:Text, Search %>"></asp:Label></td>
+                                <td style="background-image: url(../Images/dialog/top-right.png); width: 7px; height: 35px"></td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+                    <table style="width: 980px" cellspacing="0" cellpadding="0" border="0">
+                        <tbody>
+                            <tr>
+                                <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                                <td style="background-color: #ffffff; padding: 5px 5px 5px 5px" align="left">
+                                    <asp:Panel ID="panOutreachRecord" runat="server">
+                                        <uc9:OutreachListSearch ID="udcOutreachSearch" runat="server"></uc9:OutreachListSearch>
+                                    </asp:Panel>
+                                </td>
+                                <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                            </tr>
+                            <tr>
+                                <td style="background-image: url(../Images/dialog/left.png); width: 7px; background-repeat: repeat-y"></td>
+                                <td align="center" style="height: 30px; background-color: #ffffff" valign="middle">
+                                    <asp:ImageButton ID="btnPopupOutreachListSearchCancel" runat="server" AlternateText="<%$ Resources:AlternateText, CancelBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, CancelBtn %>" OnClick="ibtnPopupOutreachListSearchCancel_Click"></asp:ImageButton>
+                                    <asp:ImageButton ID="btnPopupOutreachListSearchSelect" runat="server" AlternateText="<%$ Resources:AlternateText, SelectBtn %>"
+                                        ImageUrl="<%$ Resources:ImageUrl, SelectBtn %>" OnClick="ibtnPopupOutreachListSearchSelect_Click" />
+                                </td>
+                                <td style="background-image: url(../Images/dialog/right.png); width: 7px; background-repeat: repeat-y"></td>
+                            </tr>
+                            <tr>
+                                <td style="background-image: url(../Images/dialog/bottom-left.png); width: 7px; height: 7px"></td>
+                                <td style="background-image: url(../Images/dialog/bottom-mid.png); background-repeat: repeat-x; height: 7px"></td>
+                                <td style="background-image: url(../Images/dialog/bottom-right.png); width: 7px; height: 7px"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </asp:Panel>
+                <%-- End of Pop up for Outreach List --%>
             </asp:Panel>
             
             <%-- Pop up for Warning Message --%>

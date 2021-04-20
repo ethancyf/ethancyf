@@ -161,7 +161,7 @@ Partial Public Class EHSClaimCondensedForm_CHI_RV
                 ' CRE17-018-04 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
                 'CRE20-022 (Immu record)  [Start][Raiman] 
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP, _
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19RVP, _
                 SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
                 If Not IsNothing(udtSP) _
                         AndAlso Not IsNothing(udtEHSTransaction) _

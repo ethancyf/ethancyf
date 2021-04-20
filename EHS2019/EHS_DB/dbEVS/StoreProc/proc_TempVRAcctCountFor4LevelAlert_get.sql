@@ -1,4 +1,4 @@
-﻿IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_TempVRAcctCountFor4LevelAlert_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[dbo].[proc_TempVRAcctCountFor4LevelAlert_get]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 	DROP PROCEDURE [dbo].[proc_TempVRAcctCountFor4LevelAlert_get]
 GO
 
@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE20-023
+-- Modified by:		Nichole IP
+-- Modified date:	14 Aprial 2021
+-- Description:		Tune Performance
+-- =============================================  
 -- =============================================  
 -- Modification History  
 -- CR No.:			I-CRE17-007
@@ -113,7 +120,8 @@ AS BEGIN
 -- =============================================
 
 	SELECT
-		TPV.First_Validate_Dtm	
+		TPV.First_Validate_Dtm	,TVA.Scheme_Code 
+	INTO #tempResult
 	FROM
 		(SELECT TVAPV.Voucher_Acc_ID, First_Validate_Dtm FROM TempVoucherAccPendingVerify TVAPV WITH (NOLOCK)
 			INNER JOIN
@@ -131,6 +139,19 @@ AS BEGIN
 	ORDER BY
 		TPV.First_Validate_Dtm
 
+	-- improve the sql performance (extract the  count and oldest validate date only)
+	IF @In_Level=4
+	BEGIN
+		SELECT min(First_Validate_Dtm) as First_Validate_Dtm, Count(*) as ct  FROM #tempResult 
+		WHERE Scheme_Code NOT IN ('COVID19CVC','COVID19DH','COVID19OR','COVID19SR','COVID19RVP')
+		 
+	END
+	ELSE
+	BEGIN
+		SELECT min(First_Validate_Dtm) as First_Validate_Dtm, Count(*) as ct  FROM #tempResult 
+		
+	END;
+
 	IF (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'EnableSProcPerformCapture' AND Scheme_Code = 'ALL') = 'Y' BEGIN
 		DECLARE @Performance_End_Dtm datetime
 		SET @Performance_End_Dtm = GETDATE()
@@ -144,6 +165,7 @@ AS BEGIN
 		
 	END
 
+	drop table #tempResult
 --drop table #VoucherAccountCreationLOG
 END
 GO

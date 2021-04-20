@@ -2107,7 +2107,6 @@ Namespace ComFunction
             'Overrides the scheme code to get the specific profile no.
             Select Case strSchemeCode.Trim.ToUpper()
                 Case Common.Component.Scheme.SchemeClaimModel.COVID19CVC, _
-                     Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19OR, _
@@ -2161,7 +2160,6 @@ Namespace ComFunction
             'Overrides the scheme code to get the specific profile no.
             Select Case strSchemeCode.Trim.ToUpper()
                 Case Common.Component.Scheme.SchemeClaimModel.COVID19CVC, _
-                     Common.Component.Scheme.SchemeClaimModel.COVID19CBD, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19RVP, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19OR, _

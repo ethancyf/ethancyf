@@ -650,7 +650,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
         End Function
 
-        ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
         ''' <summary>
         ''' Validate claim creation
         ''' </summary>
@@ -668,12 +667,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                                                   ByVal udtAuditLogEntry As Common.ComObject.AuditLogEntry, _
                                                   Optional ByVal udtCurrentTransactionModelCollection As EHSTransactionModelCollection = Nothing, _
                                                   Optional ByVal udtTransactionBenefitDetailList As TransactionDetailVaccineModelCollection = Nothing) As RuleResultList
-            'Public Function ValidateClaimCreationCore(ByVal udtEHSTransaction As EHSTransactionModel, _
-            '                                      ByVal udtHAVaccineResult As Common.WebService.Interface.HAVaccineResult, _
-            '                                      ByVal udtDHVaccineResult As Common.WebService.Interface.DHVaccineResult, _
-            '                                      ByVal udtAuditLogEntry As Common.ComObject.AuditLogEntry, _
-            '                                      Optional ByVal udtCurrentTransactionModelCollection As EHSTransactionModelCollection = Nothing) As RuleResultList
-            ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
+
             Dim blnIsEligible As Boolean = True
             Dim udtRuleResultList As New RuleResultList()
             udtRuleResultList.RuleResults = New List(Of RuleResult)
@@ -691,25 +685,19 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim strSchemeCode As String = udtEHSTransaction.SchemeCode
             Dim strCategoryCode As String = String.Empty
 
-            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-            '-----------------------------------------------------------------------------------------
             If Not udtEHSTransaction.CategoryCode Is Nothing Then
                 strCategoryCode = udtEHSTransaction.CategoryCode
             End If
-            'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
             Dim udtEHSAccount As EHSAccountModel = udtEHSTransaction.EHSAcct
             Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode)
 
             Dim udtSchemeClaimBLL As New SchemeClaimBLL()
             Dim udtSchemeClaimModel As SchemeClaimModel = Nothing
+
             udtSchemeClaimModel = Me._SchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode, udtEHSTransaction.ServiceDate.AddDays(1).AddMinutes(-1))
 
             Dim udtSchemeInfoModelCollection As Common.Component.SchemeInformation.SchemeInformationModelCollection = udtServiceProvider.SchemeInfoList
-
-
-            'Dim strSchemeCodeEnrol As String = udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtSchemeClaimModel.SchemeCode)
-            'Dim udtSchemeInfoModel As Common.Component.SchemeInformation.SchemeInformationModel = udtServiceProvider.SchemeInfoList().Filter(strSchemeCodeEnrol)
 
             Dim udtSchemeInfoModel As New Common.Component.SchemeInformation.SchemeInformationModel
             For Each udtScheme As SchemeInformation.SchemeInformationModel In udtSchemeInfoModelCollection.Values
@@ -718,8 +706,13 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End If
             Next
 
-            ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]
             Dim udtEHSTransactionBLL As New EHSTransactionBLL()
+
+            Dim udtInputPicker As New InputPickerModel
+
+            udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+            udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
+            udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
 
             '----------------------------------------------------------------
             ' a1. If has inputted benefit, use it. If not, get benefit again
@@ -730,8 +723,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                 Dim objVaccinationBLL As New VaccinationBLL
 
-                ' CRE18-004 (CIMS Vaccination Sharing) [Start][Chris YIM]
-                ' ----------------------------------------------------------
                 If objVaccinationBLL.SchemeContainVaccine(udtSchemeClaimModel) Then
                     If Not udtHAVaccineResult Is Nothing Then
                         udtTransactionBenefitDetailList.JoinVaccineList(udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode), udtHAVaccineResult.SinglePatient.VaccineList, udtAuditLogEntry, strSchemeCode)
@@ -742,7 +733,6 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     End If
 
                 End If
-                ' CRE18-001(CIMS Vaccination Sharing) [End][Chris YIM]
             End If
 
             '-----------------------------------------------------------------------------
@@ -755,23 +745,63 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 udtTransDetailBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtEHSTransaction.SchemeCode)
             End If
 
-            ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [End][Koala]
-
             If Not udtCurrentTransactionModelCollection Is Nothing Then
                 For Each udtEHSTransactionModel As EHSTransactionModel In udtCurrentTransactionModelCollection
                     If udtEHSTransactionModel.VoucherClaim > 0 Then
                         intCurrentTransactionClaimedVoucher = intCurrentTransactionClaimedVoucher + udtEHSTransactionModel.VoucherClaim
                     End If
+
                     For Each udtCurrentTransactionDetailVaccineModel As TransactionDetailModel In udtEHSTransactionModel.TransactionDetails
                         udtTransactionBenefitDetailList.Add(udtCurrentTransactionDetailVaccineModel)
                     Next
                 Next
             End If
-            'udtTransactionBenefitDetailList = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSTransaction.DocCode, udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode).IdentityNum, udtSchemeClaimModel.SchemeCode, udtSchemeClaimModel.SchemeSeq)
+
+            '-----------------------------------------------------------------------------
+            ' a3. Get latest COVID19 vaccination if claim COVID19
+            '-----------------------------------------------------------------------------
+            If udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19CVC) OrElse _
+               udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19DH) OrElse _
+               udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19RVP) OrElse _
+               udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19OR) OrElse _
+               udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19SR) OrElse _
+               (udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.VSS) AndAlso _
+                udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0) OrElse _
+               (udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.RVP) AndAlso _
+                udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0) Then
+
+                Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = udtTransactionBenefitDetailList
+                Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+                Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
+                Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
+
+                For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
+                    'Find the latest COVID19 transaction in EHS
+                    If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = "1STDOSE" Then
+                        If udtLatestC19Vaccine Is Nothing Then
+                            udtLatestC19Vaccine = udtC19Vaccine
+                        Else
+                            If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
+                                udtLatestC19Vaccine = udtC19Vaccine
+                            End If
+                        End If
+                    End If
+                Next
+
+                'Only allow EHS Transaction, not include CMS / CIMS record
+                If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
+                    udtLatestC19Transaction = udtEHSTransactionBLL.LoadClaimTran(udtLatestC19Vaccine.TransactionID.Trim)
+                    udtInputPicker.LatestC19Transaction = udtLatestC19Transaction
+                End If
+
+            End If
+
+            ' ------------------------------------------------------------------------------------------------------------------------------------
+            ' Initial for checking
+            ' ------------------------------------------------------------------------------------------------------------------------------------
 
             Dim udtRuleResult As RuleResult = Nothing
             Dim udtTempClaimRuleList As RuleResultList = Nothing
-
 
             ' ------------------------------------------------------------------------------------------------------------------------------------
             ' Rule added for external interface
@@ -966,7 +996,9 @@ Namespace Component.EHSClaim.EHSClaimBLL
             ' ------------------------------------------------------------------------------------------------------------------------------------
             ' Rule 8: Check Available Subsidy, it must be after check eligibility
             ' ------------------------------------------------------------------------------------------------------------------------------------
-            udtTempClaimRuleList = CheckAvailableSubsidyNew(strCategoryCode, udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, udtEHSTransaction.TransactionDetails, udtTransDetailBenefitList, blnIsEligible, intCurrentTransactionClaimedVoucher, udtPractice)
+            udtTempClaimRuleList = CheckAvailableSubsidyNew(strCategoryCode, udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, _
+                                                            udtEHSAccount, udtEHSTransaction.TransactionDetails, udtTransDetailBenefitList, _
+                                                            blnIsEligible, intCurrentTransactionClaimedVoucher, udtPractice, udtInputPicker)
 
             If Not udtTempClaimRuleList Is Nothing Then
                 If udtTempClaimRuleList.RuleResults.Count > 0 Then
@@ -1003,11 +1035,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
             End If
 
             Dim EnumControlType As SchemeClaimModel.EnumControlType = _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode)
-            Dim udtInputPicker As New InputPickerModel
             Dim udtInputVaccineCollection As New InputVaccineModelCollection
-
-            udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
-            udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
 
             '------------------------------------------------------------------------------
             ' 1. Retrieve and concat the current claiming vaccination from TransactionDetail
@@ -1649,7 +1677,17 @@ Namespace Component.EHSClaim.EHSClaimBLL
         ' CRE19-006 (DHC) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         ' Add input parm - [udtPractice]
-        Private Function CheckAvailableSubsidyNew(ByVal strCategoryCode As String, ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtEHSAccount As EHSAccountModel, ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, ByVal blnIsEligible As Boolean, ByVal intCurrentTransactionClaimedVoucher As Integer, ByVal udtPractice As Practice.PracticeModel) As RuleResultList
+        Private Function CheckAvailableSubsidyNew(ByVal strCategoryCode As String, _
+                                                  ByVal udtEHSTransaction As EHSTransactionModel, _
+                                                  ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                  ByVal udtSchemeClaimModel As SchemeClaimModel, _
+                                                  ByVal udtEHSAccount As EHSAccountModel, _
+                                                  ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, _
+                                                  ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, _
+                                                  ByVal blnIsEligible As Boolean, _
+                                                  ByVal intCurrentTransactionClaimedVoucher As Integer, _
+                                                  ByVal udtPractice As Practice.PracticeModel, _
+                                                  ByVal udtInputPicker As InputPickerModel) As RuleResultList
 
             Dim udtRuleResultList As New RuleResultList()
 
@@ -1738,26 +1776,23 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 ' CRE13-001 - EHAPP [End][Tommy L]
 
             Else
-                ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-                ' Move to ClaimRule
-                'If Me.IsSameVaccineEntitlementTaken(strCategoryCode, udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, udtEHSClaimVaccine, udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList) = True Then
-                '    'Dim udtSystemMessage As New SystemMessage(cFunctionCode, "E", "00107")
-                '    'udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.AvailableSubsidyChecking, udtSystemMessage))
-                '    udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.AvailableSubsidyVaccineSameTaken))
-                'End If
-                ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                If Me.IsClaimingVaccineExceedEntitlement(udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, _
+                                                         udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList, udtInputPicker) Then
 
-                If Me.IsClaimingVaccineExceedEntitlement(udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList) = True Then
-                    'Dim udtSystemMessage As New SystemMessage(cFunctionCode, "E", "00107")
-                    'udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.AvailableSubsidyChecking, udtSystemMessage))
                     udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.AvailableSubsidyVaccineExceedEntitlement))
                 End If
 
                 If blnIsEligible Then
-                    If Me.IsClaimingVaccineNotEntitled(udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList) = True Then
+                    If Me.IsClaimingVaccineNotEntitled(udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, _
+                                                       udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList, udtInputPicker) Then
+
                         udtRuleResultList.RuleResults.Add(New RuleResult(RuleID.AvailableSubsidyVaccineNotEntitled))
                     End If
                 End If
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
+
             End If
 
             Return udtRuleResultList
@@ -3162,12 +3197,16 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Return strResult
         End Function
 
-        ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-        ' -----------------------------------------------------------------------------------------
-        Public Function GetVaccineEntitlementBySubsidize(ByVal strSchemeCode As String, ByVal intSchemeSeq As Integer, ByVal strSubsidizeCode As String, ByVal strSubsidizeItemCode As String, _
-            ByVal dtmServiceDate As DateTime, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
-            ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection) As SubsidizeGroupClaimItemDetailsModelCollection
-            ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function GetVaccineEntitlementBySubsidize(ByVal strSchemeCode As String, _
+                                                         ByVal intSchemeSeq As Integer, _
+                                                         ByVal strSubsidizeCode As String, _
+                                                         ByVal strSubsidizeItemCode As String, _
+                                                         ByVal dtmServiceDate As DateTime, _
+                                                         ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                         ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, _
+                                                         ByVal udtInputPicker As InputPickerModel) As SubsidizeGroupClaimItemDetailsModelCollection
 
             Dim SchemeDetailBLL As New SchemeDetailBLL()
             Dim ClaimRulesBLL As New ClaimRulesBLL()
@@ -3180,14 +3219,9 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 For Each udtSubsidizeGroupClaimItemDetail As SubsidizeGroupClaimItemDetailsModel In udtSubsidizeGroupClaimItemDetailList
                     ' Check Dose Rule
 
-                    'CRE16-026 (Add PCV13) [Start][Chris YIM]
-                    '-----------------------------------------------------------------------------------------
-                    ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                    ' -----------------------------------------------------------------------------------------
                     Dim udtDoseRuleResult As ClaimRulesBLL.DoseRuleResult = ClaimRulesBLL.CheckSubsidizeItemDetailRuleByDose(udtBenefitTransactionDetailList, _
                     strSchemeCode, intSchemeSeq, strSubsidizeCode, strSubsidizeItemCode, udtSubsidizeGroupClaimItemDetail.AvailableItemCode, _
-                    udtEHSPersonalInfo, dtmServiceDate.Date, Nothing)
-                    ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+                    udtEHSPersonalInfo, dtmServiceDate.Date, udtInputPicker)
 
                     If udtDoseRuleResult.IsMatch AndAlso _
                         (udtDoseRuleResult.HandlingMethod = ClaimRulesBLL.DoseRuleHandlingMethod.ALL Or _
@@ -3195,14 +3229,21 @@ Namespace Component.EHSClaim.EHSClaimBLL
                             udtDoseRuleResult.HandlingMethod = ClaimRulesBLL.DoseRuleHandlingMethod.HIDE) Then
                         udtAvailableSubsidizeGroupClaimItemDetaillList.Add(udtSubsidizeGroupClaimItemDetail)
                     End If
-                    'CRE16-026 (Add PCV13) [End][Chris YIM]
 
                 Next
             End If
             Return udtAvailableSubsidizeGroupClaimItemDetaillList
         End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-        Public Function GetVaccineEntitlement(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, ByVal udtSchemeClaimModel As SchemeClaimModel) As SubsidizeGroupClaimItemDetailsModelCollection
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function GetVaccineEntitlement(ByVal udtEHSTransaction As EHSTransactionModel, _
+                                              ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                              ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, _
+                                              ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, _
+                                              ByVal udtSchemeClaimModel As SchemeClaimModel, _
+                                              ByVal udtInputPicker As InputPickerModel) As SubsidizeGroupClaimItemDetailsModelCollection
 
             Dim SchemeDetailBLL As New SchemeDetailBLL()
             Dim ClaimRulesBLL As New ClaimRulesBLL()
@@ -3223,19 +3264,17 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     For Each udtSubsidizeGroupClaimItemDetail As SubsidizeGroupClaimItemDetailsModel In udtSubsidizeGroupClaimItemDetailList
                         ' Check Dose Rule
 
-                        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-                        '-----------------------------------------------------------------------------------------
-                        ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                        ' -----------------------------------------------------------------------------------------
                         Dim udtDoseRuleResult As ClaimRulesBLL.DoseRuleResult = ClaimRulesBLL.CheckSubsidizeItemDetailRuleByDose(udtTranRelatedBenefit, _
                         udtSchemeClaimModel.SchemeCode, udtClaimingTransactionDetails(i).SchemeSeq, udtClaimingTransactionDetails(i).SubsidizeCode, _
-                         udtClaimingTransactionDetails(i).SubsidizeItemCode, udtSubsidizeGroupClaimItemDetail.AvailableItemCode, udtEHSPersonalInfo, udtEHSTransaction.ServiceDate, Nothing)
-                        ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+                         udtClaimingTransactionDetails(i).SubsidizeItemCode, udtSubsidizeGroupClaimItemDetail.AvailableItemCode, udtEHSPersonalInfo, udtEHSTransaction.ServiceDate, udtInputPicker)
 
-                        If udtDoseRuleResult.IsMatch AndAlso (udtDoseRuleResult.HandlingMethod = ClaimRulesBLL.DoseRuleHandlingMethod.READONLY Or udtDoseRuleResult.HandlingMethod = ClaimRulesBLL.DoseRuleHandlingMethod.ALL) Then
+                        If udtDoseRuleResult.IsMatch AndAlso _
+                            (udtDoseRuleResult.HandlingMethod = DoseRuleHandlingMethod.ALL OrElse _
+                             udtDoseRuleResult.HandlingMethod = DoseRuleHandlingMethod.HIDE OrElse _
+                             udtDoseRuleResult.HandlingMethod = DoseRuleHandlingMethod.READONLY) Then
+
                             udtAvailableSubsidizeGroupClaimItemDetaillList.Add(udtSubsidizeGroupClaimItemDetail)
                         End If
-                        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
                     Next
                 End If
@@ -3243,19 +3282,32 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Return udtAvailableSubsidizeGroupClaimItemDetaillList
 
         End Function
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-        Public Function IsClaimingVaccineNotEntitled(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtEHSAccount As EHSAccountModel, ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection) As Boolean
+        Public Function IsClaimingVaccineNotEntitled(ByVal udtEHSTransaction As EHSTransactionModel, _
+                                                     ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                     ByVal udtSchemeClaimModel As SchemeClaimModel, _
+                                                     ByVal udtEHSAccount As EHSAccountModel, _
+                                                     ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, _
+                                                     ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, _
+                                                     ByVal udtInputPicker As InputPickerModel) As Boolean
 
             Dim blnIsClaimingNotEntitled As Boolean = False
             For i As Integer = 0 To udtClaimingTransactionDetails.Count - 1
 
-                ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                ' -----------------------------------------------------------------------------------------
-                'Dim udtAvailableSubsidizeGroupClaimItemDetailList As SubsidizeGroupClaimItemDetailsModelCollection = Me.GetVaccineEntitlementBySubsidize(udtClaimingTransactionDetails(i).SchemeCode, udtClaimingTransactionDetails(i).SchemeSeq, udtClaimingTransactionDetails(i).SubsidizeCode, udtClaimingTransactionDetails(i).SubsidizeItemCode, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, udtBenefitTransactionDetailList)
-                Dim udtAvailableSubsidizeGroupClaimItemDetailList As SubsidizeGroupClaimItemDetailsModelCollection = Me.GetVaccineEntitlementBySubsidize(udtClaimingTransactionDetails(i).SchemeCode, udtClaimingTransactionDetails(i).SchemeSeq, udtClaimingTransactionDetails(i).SubsidizeCode, udtClaimingTransactionDetails(i).SubsidizeItemCode, udtEHSTransaction.ServiceDate, udtEHSPersonalInfo, udtBenefitTransactionDetailList)
-                ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+                Dim udtAvailableSubsidizeGroupClaimItemDetailList As SubsidizeGroupClaimItemDetailsModelCollection = Nothing
 
-                If udtAvailableSubsidizeGroupClaimItemDetailList.Filter(udtClaimingTransactionDetails(i).SubsidizeItemCode, udtClaimingTransactionDetails(i).AvailableItemCode).Count <= 0 Then
+                udtAvailableSubsidizeGroupClaimItemDetailList = Me.GetVaccineEntitlementBySubsidize(udtClaimingTransactionDetails(i).SchemeCode, _
+                                                                                                    udtClaimingTransactionDetails(i).SchemeSeq, _
+                                                                                                    udtClaimingTransactionDetails(i).SubsidizeCode, _
+                                                                                                    udtClaimingTransactionDetails(i).SubsidizeItemCode, _
+                                                                                                    udtEHSTransaction.ServiceDate, _
+                                                                                                    udtEHSPersonalInfo, _
+                                                                                                    udtBenefitTransactionDetailList, _
+                                                                                                    udtInputPicker)
+
+                If udtAvailableSubsidizeGroupClaimItemDetailList.Filter(udtClaimingTransactionDetails(i).SubsidizeItemCode, _
+                                                                        udtClaimingTransactionDetails(i).AvailableItemCode).Count <= 0 Then
                     blnIsClaimingNotEntitled = True
                 End If
             Next
@@ -3264,9 +3316,24 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
         End Function
 
-        Public Function IsClaimingVaccineExceedEntitlement(ByVal udtEHSTransaction As EHSTransactionModel, ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, ByVal udtSchemeClaimModel As SchemeClaimModel, ByVal udtEHSAccount As EHSAccountModel, ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection) As Boolean
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Function IsClaimingVaccineExceedEntitlement(ByVal udtEHSTransaction As EHSTransactionModel, _
+                                                           ByVal udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel, _
+                                                           ByVal udtSchemeClaimModel As SchemeClaimModel, _
+                                                           ByVal udtEHSAccount As EHSAccountModel, _
+                                                           ByVal udtClaimingTransactionDetails As TransactionDetailModelCollection, _
+                                                           ByVal udtBenefitTransactionDetailList As TransactionDetailModelCollection, _
+                                                           ByVal udtInputPicker As InputPickerModel) As Boolean
 
-            Dim udtAvailableSubsidizeGroupClaimItemDetailList As SubsidizeGroupClaimItemDetailsModelCollection = Me.GetVaccineEntitlement(udtEHSTransaction, udtEHSPersonalInfo, udtClaimingTransactionDetails, udtBenefitTransactionDetailList, udtSchemeClaimModel)
+            Dim udtAvailableSubsidizeGroupClaimItemDetailList As SubsidizeGroupClaimItemDetailsModelCollection = Nothing
+
+            udtAvailableSubsidizeGroupClaimItemDetailList = Me.GetVaccineEntitlement(udtEHSTransaction, _
+                                                                                     udtEHSPersonalInfo, _
+                                                                                     udtClaimingTransactionDetails, _
+                                                                                     udtBenefitTransactionDetailList, _
+                                                                                     udtSchemeClaimModel, _
+                                                                                     udtInputPicker)
 
             Dim iNumOfAvailableEntitlement As Int32 = 0
             Dim iNumOfUsedEntitlement As Int32 = 0
@@ -3283,7 +3350,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Return blnIsClaimingVaccineExceedEntitlement
 
         End Function
-
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
         ''' <summary>
         ''' Check Entitlement all used per subsidize

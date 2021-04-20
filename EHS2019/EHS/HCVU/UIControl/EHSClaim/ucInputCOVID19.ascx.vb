@@ -413,9 +413,9 @@ Partial Public Class ucInputCOVID19
         Me.imgCategoryError.Visible = visible
     End Sub
 
-    Public Sub SetCategoryForCOVID19Error(ByVal visible As Boolean)
-        Me.imgCCategoryError.Visible = visible
-    End Sub
+    'Public Sub SetCategoryForCOVID19Error(ByVal visible As Boolean)
+    '    Me.imgCCategoryError.Visible = visible
+    'End Sub
 
     Public Sub SetVaccineBrandError(ByVal visible As Boolean)
         Me.imgCVaccineBrandError.Visible = visible
@@ -425,9 +425,9 @@ Partial Public Class ucInputCOVID19
         Me.imgCVaccineLotNoError.Visible = visible
     End Sub
 
-    Public Sub SetDoseForCOVID19Error(ByVal visible As Boolean)
-        Me.imgCDoseError.Visible = visible
-    End Sub
+    'Public Sub SetDoseForCOVID19Error(ByVal visible As Boolean)
+    '    Me.imgCDoseError.Visible = visible
+    'End Sub
 
 
     Public Sub SetContactNoCOVID19Error(ByVal visible As Boolean)

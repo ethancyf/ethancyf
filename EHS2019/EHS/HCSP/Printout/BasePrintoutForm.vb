@@ -68,7 +68,7 @@ Public MustInherit Class BasePrintoutForm
                 ' CRE20-015 (HA Scheme) [End][Winnie]
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19CBD, SchemeClaimModel.COVID19RVP, _
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19RVP, _
                 SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
                 rpt = GetReport()
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]

@@ -28,8 +28,6 @@
         </table>
     </asp:Panel>
 
-    
-
     <asp:Panel ID="panVSSCategoryInput" runat="server">
         <asp:MultiView ID="mvCategory" runat="server" ActiveViewIndex="0" >
             <asp:View ID="vwDefault" runat="server" />

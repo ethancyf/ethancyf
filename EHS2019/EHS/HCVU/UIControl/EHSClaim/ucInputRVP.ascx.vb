@@ -1,4 +1,5 @@
 Imports Common
+Imports Common.ComFunction
 Imports Common.Component
 Imports Common.Component.ClaimCategory
 Imports Common.Component.ClaimRules.ClaimRulesBLL
@@ -7,13 +8,11 @@ Imports Common.Component.EHSClaimVaccine
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Component.StaticData
-Imports Common.ComFunction
 Imports Common.ComObject
 Imports HCVU.BLL
 Imports System.Web.Security.AntiXss
 
 Partial Public Class ucInputRVP
-    'Inherits System.Web.UI.UserControl
     Inherits ucInputEHSClaimBase
 
     'Events  
@@ -21,9 +20,19 @@ Partial Public Class ucInputRVP
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-    Dim _udtClaimCategoryBLL As ClaimCategoryBLL = New ClaimCategoryBLL()
-    Dim _udtSessionHandler As New SessionHandlerBLL
-    Dim _udtGeneralFunction As New GeneralFunction
+    Private _udtClaimCategoryBLL As ClaimCategoryBLL = New ClaimCategoryBLL()
+    Private _udtSessionHandler As New SessionHandlerBLL
+    Private _udtGeneralFunction As New GeneralFunction
+    Private _strRCHType As String
+
+#Region "Constants"
+
+    Private Class ViewIndexCategory
+        Public Const NoCategory As Integer = 0
+        Public Const RVP_COVID19 As Integer = 1
+    End Class
+
+#End Region
 
 #Region "Must Override Function"
     Protected Overrides Sub Setup(ByVal blnPostbackRebuild As Boolean)
@@ -118,7 +127,7 @@ Partial Public Class ucInputRVP
         If updateByTransactionModel Then
 
             'RCH Code
-            dtRVPhomeList = udtRVPHomeListBLL.getRVPHomeListActiveByCode(Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode").AdditionalFieldValueCode)
+            dtRVPhomeList = udtRVPHomeListBLL.getRVPHomeListByCode(Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID("RHCCode").AdditionalFieldValueCode)
 
             If dtRVPhomeList.Rows.Count > 0 Then
                 Me.SetUpRCHInfo(dtRVPhomeList.Rows(0))
@@ -132,6 +141,15 @@ Partial Public Class ucInputRVP
                 'CRE16-002 (Revamp VSS) [End][Chris YIM]
             End If
 
+            'Category List
+            ShowCategoryDetail(Me.Category)
+
+            Select Case mvCategory.ActiveViewIndex
+                Case ViewIndexCategory.RVP_COVID19
+                    Me.ucInputRVPCOVID19.EHSTransaction = MyBase.EHSTransaction
+                    Me.ucInputRVPCOVID19.SetupContent(True)
+            End Select
+
             Me.udcClaimVaccineInputRVP.Visible = True
         Else
 
@@ -141,7 +159,7 @@ Partial Public Class ucInputRVP
                 Dim strRCHCodeFromSession As String = MyBase.SessionHandler.RVPRCHCodeGetFromSession(MyBase.FunctionCode)
 
                 If Not strRCHCodeFromSession Is Nothing AndAlso strRCHCodeFromSession.Trim() <> "" Then
-                    dtRVPhomeList = udtRVPHomeListBLL.getRVPHomeListActiveByCode(strRCHCodeFromSession)
+                    dtRVPhomeList = udtRVPHomeListBLL.getRVPHomeListByCode(strRCHCodeFromSession)
                     If dtRVPhomeList.Rows.Count > 0 Then
                         Me.SetUpRCHInfo(dtRVPhomeList.Rows(0))
                     End If
@@ -162,6 +180,9 @@ Partial Public Class ucInputRVP
         AddHandler Me.udcClaimVaccineInputRVP.VaccineLegendClicked, AddressOf udcClaimVaccineInputRVP_VaccineLegendClicked
 
         If Not MyBase.EHSClaimVaccine Is Nothing AndAlso MyBase.EHSClaimVaccine.SubsidizeList.Count > 0 Then
+
+            'Category List
+            showCategoryDetail(Me.Category)
 
             'If turned on high risk option, the high risk option is shown.
             If HighRiskOptionShown = SubsidizeGroupClaimModel.HighRiskOptionClass.ShowForInput Then
@@ -227,6 +248,10 @@ Partial Public Class ucInputRVP
         Me.imgRecipientConditionError.Visible = visible
     End Sub
     'CRE16-026 (Add PCV13) [End][Chris YIM]
+
+    Public Sub SetCOVID19DetailError(ByVal blnVisible As Boolean)
+        ucInputRVPCOVID19.SetDetailError(blnVisible)
+    End Sub
 #End Region
 
 #Region "Events"
@@ -236,17 +261,27 @@ Partial Public Class ucInputRVP
     End Sub
 
     Private Sub rbCategory_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles rbCategorySelection.SelectedIndexChanged
+        SetCOVID19DetailError(False)
+        SetRecipientConditionError(False)
+
+        Me.rbCategorySelection.SelectedValue = AntiXssEncoder.HtmlEncode(Me.Request.Form(Me.rbCategorySelection.UniqueID), True)
+
+        Me.udcClaimVaccineInputRVP.Controls.Clear()
+
+        ' Claim Detail Input by Category
+        ShowCategoryDetail(Me.rbCategorySelection.SelectedValue)
+
+        If Not String.IsNullOrEmpty(Me.rbCategorySelection.SelectedValue) AndAlso Me.rbCategorySelection.SelectedValue = "RVPCOVID19" Then
+            Me.panRCHCode.Visible = False
+        Else
+            Me.panRCHCode.Visible = True
+        End If
 
         If String.IsNullOrEmpty(Me.rbCategorySelection.SelectedValue) Then
             Me.udcClaimVaccineInputRVP.Visible = False
         Else
             Me.udcClaimVaccineInputRVP.Visible = True
         End If
-
-        'CRE16-026 (Add PCV13) [Start][Chris YIM]
-        '-----------------------------------------------------------------------------------------
-        SetRecipientConditionError(False)
-        'CRE16-026 (Add PCV13) [End][Chris YIM]
 
         RaiseEvent CategorySelected(sender, e)
     End Sub
@@ -266,12 +301,19 @@ Partial Public Class ucInputRVP
 
     Private Sub lookUpRCHCode()
         Dim udtRVPHomeListBLL As New Common.Component.RVPHomeList.RVPHomeListBLL()
-        Dim dtResult As DataTable = udtRVPHomeListBLL.getRVPHomeListActiveByCode(Me.txtRCHCodeText.Text.Trim())
+        Dim dtResult As DataTable = udtRVPHomeListBLL.getRVPHomeListByCode(Me.txtRCHCodeText.Text.Trim())
         ' Dim udtSessionHandler As New BLL.SessionHandlerBLL
+        Dim drResult() As DataRow = Nothing
 
-        If dtResult.Rows.Count > 0 Then
-            Me.SetUpRCHInfo(dtResult.Rows(0))
-            MyBase.SessionHandler.RVPRCHCodeSaveToSession(MyBase.FunctionCode, dtResult.Rows(0)("RCH_Code").ToString().Trim().ToUpper())
+        If Me.Category.Trim = CategoryCode.RVP_COVID19 Then
+            drResult = dtResult.Select("Type IN ('E','D')")
+        Else
+            drResult = dtResult.Select()
+        End If
+
+        If drResult.Length > 0 Then
+            Me.SetUpRCHInfo(drResult(0))
+            MyBase.SessionHandler.RVPRCHCodeSaveToSession(MyBase.FunctionCode, drResult(0)("RCH_Code").ToString().Trim().ToUpper())
         Else
             Me.lblRCHCode.Text = String.Empty
             Me.lblRCHName.Text = String.Empty
@@ -335,6 +377,17 @@ Partial Public Class ucInputRVP
         End If
     End Sub
 
+    Private Sub ShowCategoryDetail(ByVal strSelectedCategory As String)
+
+        Select Case strSelectedCategory
+            Case CategoryCode.RVP_COVID19
+                mvCategory.ActiveViewIndex = ViewIndexCategory.RVP_COVID19
+            Case Else
+                mvCategory.ActiveViewIndex = ViewIndexCategory.NoCategory
+        End Select
+
+    End Sub
+
 #End Region
 
 #Region "SetValue"
@@ -386,6 +439,12 @@ Partial Public Class ucInputRVP
         Get
             'Return Me.lblRCHCode.Text
             Return Me.txtRCHCodeText.Text
+        End Get
+    End Property
+
+    Public ReadOnly Property RCHType() As String
+        Get
+            Return Me._strRCHType
         End Get
     End Property
 
@@ -594,15 +653,34 @@ Partial Public Class ucInputRVP
         Else
             ' Check RCH Code Valid
             Dim udtRVPHomeListBLL As New Common.Component.RVPHomeList.RVPHomeListBLL()
-            Dim dtResult As DataTable = udtRVPHomeListBLL.getRVPHomeListActiveByCode(RCHCode.Trim())
-            If dtResult.Rows.Count = 0 Then
+            Dim dtResult As DataTable = udtRVPHomeListBLL.getRVPHomeListByCode(RCHCode.Trim())
+
+            Dim drResult() As DataRow = Nothing
+
+            If Me.Category.Trim = CategoryCode.RVP_COVID19 Then
+                drResult = dtResult.Select("Type IN ('E','D')")
+            Else
+                drResult = dtResult.Select()
+            End If
+
+            If drResult.Length = 0 Then
                 blnResult = False
                 Me._udtSessionHandler.RVPRCHCodeRemoveFromSession(FunctCode)
                 SetRCHCodeError(True)
                 objMsg = New ComObject.SystemMessage("990000", "E", "00219")
                 objMsgBox.AddMessage(objMsg)
+
+            Else
+                Me._strRCHType = drResult(0)("Type").ToString.Trim
+
             End If
         End If
+
+        'Check Claim detail
+        Select Case mvCategory.ActiveViewIndex
+            Case ViewIndexCategory.RVP_COVID19
+                blnResult = blnResult And Me.ucInputRVPCOVID19.Validate(blnShowErrorImage, objMsgBox)
+        End Select
 
         'Check High Risk option if turned on 
         If HighRiskOptionShown = SubsidizeGroupClaimModel.HighRiskOptionClass.ShowForInput Then
@@ -726,6 +804,12 @@ Partial Public Class ucInputRVP
         Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
         udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
 
+        'Each Category Claim Detail
+        Select Case mvCategory.ActiveViewIndex
+            Case ViewIndexCategory.RVP_COVID19
+                Me.ucInputRVPCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine, _strRCHType)
+        End Select
+
         ' -----------------------------------------------
         ' Get Latest SchemeSeq Selected
         '------------------------------------------------
@@ -736,14 +820,16 @@ Partial Public Class ucInputRVP
             ' Set up Transaction Model Additional Fields : RHCCode
             '-----------------------------------------------------
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            udtTransactAdditionfield.AdditionalFieldID = "RHCCode"
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.RCHCode
             udtTransactAdditionfield.AdditionalFieldValueCode = RCHCode
-            udtTransactAdditionfield.AdditionalFieldValueDesc = String.Empty
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
             udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
             udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
             udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode.Trim()
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
         End If
+
+
 
     End Sub
     'CRE16-026 (Add PCV13) [End][Chris YIM]
@@ -766,25 +852,25 @@ Partial Public Class ucInputRVP
         Me.rbCategorySelection.Visible = False
         Me.lblCategory.Visible = False
 
+        'Check selected category whether exists when practice is changed
+        Dim udtSelectedCategory As ClaimCategoryModel = udtClaimCategorys.Filter(strSelectedValue)
+        If udtSelectedCategory Is Nothing Then
+            strSelectedValue = String.Empty
+            Me.rbCategorySelection.Items.Clear()
+            Me.rbCategorySelection.SelectedIndex = -1
+            Me.rbCategorySelection.SelectedValue = Nothing
+            Me.rbCategorySelection.ClearSelection()
+            ShowCategoryDetail(strSelectedValue)
+            SessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
+        End If
+
         'Build Drop Down List
         dtClaimCategory = ClaimCategoryBLL.ConvertCategoryToDatatable(udtClaimCategorys)
 
         If dtClaimCategory.Rows.Count > 1 Then
             Me.rbCategorySelection.Visible = True
 
-            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-            ' ---------------------------------------------------------------------------------------------------------
-            'Temporary hide the COVID19 category
-            Dim drClaimCategory() As DataRow = dtClaimCategory.Select(String.Format("Category_Code <> '{0}'", "RVPCOVID19"))
-
-            If drClaimCategory IsNot Nothing AndAlso drClaimCategory.Length > 0 Then
-                Me.rbCategorySelection.DataSource = drClaimCategory.CopyToDataTable
-            Else
-                Me.rbCategorySelection.DataSource = dtClaimCategory
-            End If
-
-            'Me.rbCategorySelection.DataSource = dtClaimCategory
-            ' CRE20-0023 (Immu record) [End][Chris YIM]
+            Me.rbCategorySelection.DataSource = dtClaimCategory
 
             Me.rbCategorySelection.DataValueField = ClaimCategoryModel._Category_Code
 
@@ -795,36 +881,37 @@ Partial Public Class ucInputRVP
             End If
 
             Me.rbCategorySelection.DataBind()
+            Me.rbCategorySelection.ClearSelection()
 
             If updateByTransactionModel Then
-                'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
                 strSelectedValue = MyBase.EHSTransaction.CategoryCode
-                'CRE16-002 (Revamp VSS) [End][Chris YIM]
             End If
 
             If Not String.IsNullOrEmpty(strSelectedValue) _
                 AndAlso Not Me.rbCategorySelection.Items.FindByValue(strSelectedValue) Is Nothing Then
 
                 Me.rbCategorySelection.SelectedValue = strSelectedValue
+                Me.ShowCategoryDetail(strSelectedValue)
                 Me.udcClaimVaccineInputRVP.Visible = True
             Else
                 Me.udcClaimVaccineInputRVP.Visible = False
             End If
+
         ElseIf dtClaimCategory.Rows.Count > 0 Then
             Me.lblCategory.Visible = True
             Me.lblCategory.Attributes("SelectedValue") = dtClaimCategory.Rows(0)(ClaimCategoryModel._Category_Code)
 
             If MyBase.SessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
                 Me.lblCategory.Text = dtClaimCategory.Rows(0)(ClaimCategoryModel._Category_Name_Chi)
+            ElseIf MyBase.SessionHandler.Language = Common.Component.CultureLanguage.SimpChinese Then
+                Me.lblCategory.Text = dtClaimCategory.Rows(0)(ClaimCategoryModel._Category_Name_CN)
             Else
                 Me.lblCategory.Text = dtClaimCategory.Rows(0)(ClaimCategoryModel._Category_Name)
             End If
 
-
             Me.udcClaimVaccineInputRVP.Visible = True
-        End If
 
+        End If
 
     End Sub
 #End Region

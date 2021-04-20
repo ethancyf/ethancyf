@@ -101,6 +101,7 @@ Namespace BLL
             Dim db As New Database
             Dim udtUserRoleBLL As New UserRoleBLL
             Dim udtHCVUUserBLL As New HCVUUserBLL
+            Dim udtCovid19BLL As New COVID19.COVID19BLL
             Dim udtTokenBLL As New TokenBLL
             Try
                 db.BeginTransaction()
@@ -112,6 +113,11 @@ Namespace BLL
                 udtUserRoleCollection = udtHCVUUser.UserRoleCollection
                 For Each udtUserRole In udtUserRoleCollection.Values
                     udtUserRoleBLL.AddUserRole(udtHCVUUser.UserID, udtUserRole.RoleType, udtUserRole.SchemeCode, strCreateBy, db)
+                Next
+
+                Dim alVaccineCentre As ArrayList = udtHCVUUser.VaccineCentre
+                For Each strVaccineCentreId As String In alVaccineCentre
+                    udtCovid19BLL.AddCOVID19VaccineCentreHCVUMapping(udtHCVUUser.UserID, strVaccineCentreId, strCreateBy, db)
                 Next
 
                 If Not udtHCVUUser.Token.TokenSerialNo = "" Then
@@ -226,10 +232,12 @@ Namespace BLL
             Dim db As New Database
             Dim udtUserRoleBLL As New UserRoleBLL
             Dim udtHCVUUserBLL As New HCVUUserBLL
+            Dim udtCovid19BLL As New COVID19.COVID19BLL
             Try
                 db.BeginTransaction()
                 udtHCVUUserBLL.UpdateHCVUUserAC(udtHCVUUser, strUpdateBy, tsmp, db)
                 udtUserRoleBLL.RemoveUserRole(udtHCVUUser.UserID, -1, db)
+                udtCovid19BLL.RemoveCOVID19VaccineCentreHCVUMapping(udtHCVUUser.UserID, String.Empty, db)
                 Dim udtUserRoleCollection As UserRoleModelCollection
                 Dim udtUserRole As UserRoleModel
                 udtUserRoleCollection = udtHCVUUser.UserRoleCollection
@@ -237,8 +245,12 @@ Namespace BLL
                     udtUserRoleBLL.AddUserRole(udtHCVUUser.UserID, udtUserRole.RoleType, udtUserRole.SchemeCode, strUpdateBy, db)
                 Next
 
-                Dim udtTokenBLL As New TokenBLL
+                Dim alVaccineCentre As ArrayList = udtHCVUUser.VaccineCentre
+                For Each strVaccineCentreId As String In alVaccineCentre
+                    udtCovid19BLL.AddCOVID19VaccineCentreHCVUMapping(udtHCVUUser.UserID, strVaccineCentreId, strUpdateBy, db)
+                Next
 
+                Dim udtTokenBLL As New TokenBLL
                 Dim udtToken As New TokenModel
                 udtToken.UserID = udtHCVUUser.UserID
                 udtToken.UpdateBy = strUpdateBy

@@ -15,6 +15,24 @@ Namespace UIControl.EHCClaimText
     Partial Public Class ucReadOnlyCOVID19RVP
 
         '''<summary>
+        '''lblRecipientTypeText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblRecipientTypeText As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblRecipientType control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblRecipientType As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''lblRCHCodeText control.
         '''</summary>
         '''<remarks>
@@ -105,6 +123,42 @@ Namespace UIControl.EHCClaimText
         Protected WithEvents lblDoseForCovid19 As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''trContactNoText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trContactNoText As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblContactNoTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblContactNoTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trContactNo control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trContactNo As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblContactNoForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblContactNoForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''lblRemarksTextForCovid19 control.
         '''</summary>
         '''<remarks>
@@ -121,5 +175,41 @@ Namespace UIControl.EHCClaimText
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents lblRemarksForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trJoinEHRSSText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trJoinEHRSSText As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblJoinEHRSSTextForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblJoinEHRSSTextForCovid19 As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''trJoinEHRSS control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trJoinEHRSS As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''lblJoinEHRSSForCovid19 control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblJoinEHRSSForCovid19 As Global.System.Web.UI.WebControls.Label
     End Class
 End Namespace

@@ -59,6 +59,15 @@ Partial Public Class UserAccountMaint
     Protected WithEvents hfFileGenerationRightScrollTop As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''hfVaccineCentreScrollTop control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hfVaccineCentreScrollTop As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''imgHeader control.
     '''</summary>
     '''<remarks>
@@ -110,7 +119,7 @@ Partial Public Class UserAccountMaint
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlUserList As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents ddlUserList As Global.System.Web.UI.WebControls.ListBox
 
     '''<summary>
     '''lblUserInfoText control.
@@ -678,6 +687,51 @@ Partial Public Class UserAccountMaint
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chklRole As Global.System.Web.UI.WebControls.CheckBoxList
+
+    '''<summary>
+    '''lblVaccineCentreUserRoleText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccineCentreUserRoleText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVaccineCentreUserRoleDescText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVaccineCentreUserRoleDescText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''pnlVaccineCentre control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlVaccineCentre As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ckbVaccineCentre control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ckbVaccineCentre As Global.System.Web.UI.WebControls.CheckBoxList
+
+    '''<summary>
+    '''chkSelectAllVaccineCentre control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkSelectAllVaccineCentre As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
     '''lblFuncAccessRightText control.

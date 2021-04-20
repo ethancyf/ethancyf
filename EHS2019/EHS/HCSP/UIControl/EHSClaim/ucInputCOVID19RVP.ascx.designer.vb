@@ -14,42 +14,6 @@ Option Explicit On
 Partial Public Class ucInputCOVID19RVP
 
     '''<summary>
-    '''panBooth control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents panBooth As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''lblCBoothText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblCBoothText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''ddlCBooth control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlCBooth As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''imgCBoothError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgCBoothError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
     '''panCategory control.
     '''</summary>
     '''<remarks>
@@ -93,6 +57,33 @@ Partial Public Class ucInputCOVID19RVP
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgCCategoryError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblCRecipientTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCRecipientTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rblCRecipientType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rblCRecipientType As Global.System.Web.UI.WebControls.RadioButtonList
+
+    '''<summary>
+    '''imgCRecipientTypeError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCRecipientTypeError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''panRCHCode control.

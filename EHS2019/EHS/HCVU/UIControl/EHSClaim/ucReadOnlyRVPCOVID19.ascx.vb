@@ -12,24 +12,98 @@ Partial Public Class ucReadOnlyRVPCOVID19
 
     Public Sub Build(ByVal udtEHSTransaction As EHSTransactionModel, ByVal intWidth As Integer, ByVal blnShowSubsidizeAmount As Boolean)
 
+        Dim udtStaticDataBLL As New StaticDataBLL
+        Dim udtStaticData As StaticDataModel = Nothing
+
         ''Category                       
         'lblCategoryForCovid19.Text = (New ClaimCategoryBLL).GetClaimCategoryCache.Filter(udtEHSTransaction.CategoryCode).GetCategoryName
 
-        'RCH Code & RCH Name
-        Dim udtRVPHomeListBLL As New RVPHomeListBLL()
-        Dim strRCHCode As String = String.Empty
+        ' Outreach Type
+        Dim strOutreachType As String = udtEHSTransaction.TransactionAdditionFields.OutreachType
+        'udtStaticData = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("OutreachType", strOutreachType)
 
-        If udtEHSTransaction.TransactionAdditionFields.RCHCode IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.RCHCode <> String.Empty Then
-            strRCHCode = udtEHSTransaction.TransactionAdditionFields.RCHCode
+        'If udtStaticData IsNot Nothing Then
+        '   Me.lblOutreachType.Text = udtStaticData.DataValue
+        'End If
+
+        panRCHCode.Visible = False
+        panOutreachCode.Visible = False
+
+        If strOutreachType = TYPE_OF_OUTREACH.RCH Then
+            panRCHCode.Visible = True
+
+            ' Recipient Type
+            Dim strRecipientType As String = udtEHSTransaction.TransactionAdditionFields.RecipientType
+            udtStaticData = udtStaticDataBLL.GetStaticDataByColumnNameItemNo("RecipientType", strRecipientType)
+
+            If udtStaticData IsNot Nothing Then
+                Me.lblRecipientType.Text = udtStaticData.DataValue
+            End If
+
+            'RCH Code & RCH Name
+            Dim udtRVPHomeListBLL As New RVPHomeListBLL()
+            Dim strRCHCode As String = String.Empty
+
+            If udtEHSTransaction.TransactionAdditionFields.RCHCode IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.RCHCode <> String.Empty Then
+                strRCHCode = udtEHSTransaction.TransactionAdditionFields.RCHCode
+            End If
+
+            Dim dtRVPhomeList As DataTable = udtRVPHomeListBLL.getRVPHomeListByCode(strRCHCode)
+            Me.lblRCHCode.Text = strRCHCode
+
+            If dtRVPhomeList.Rows.Count > 0 Then
+                Dim dr As DataRow = dtRVPhomeList.Rows(0)
+
+                lblRCHName.Text = dr("Homename_Eng").ToString().Trim()
+            End If
+
         End If
 
-        Dim dtRVPhomeList As DataTable = udtRVPHomeListBLL.getRVPHomeListByCode(strRCHCode)
-        Me.lblRCHCode.Text = strRCHCode
+        If strOutreachType = TYPE_OF_OUTREACH.OTHER Then
+            panOutreachCode.Visible = True
 
-        If dtRVPhomeList.Rows.Count > 0 Then
-            Dim dr As DataRow = dtRVPhomeList.Rows(0)
+            ' Outreach Code
+            Dim strOutreachCode As String = udtEHSTransaction.TransactionAdditionFields.OutreachCode
+            Dim dtOutreachList As DataTable = (New COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+            Me.lblOutreachCode.Text = strOutreachCode.Trim
 
-            lblRCHName.Text = dr("Homename_Eng").ToString().Trim()
+            If dtOutreachList.Rows.Count > 0 Then
+                Dim dr As DataRow = dtOutreachList.Rows(0)
+                Me.lblOutreachName.Text = dr("Outreach_Name_Eng").ToString().Trim()
+                Me.lblOutreachName.CssClass = "tableText"
+
+            End If
+
+            'Main Category
+            Dim strMainCategoryEng As String = String.Empty
+            Dim strMainCategoryChi As String = String.Empty
+            Dim strMainCategoryCN As String = String.Empty
+
+            If udtEHSTransaction.TransactionAdditionFields.MainCategory <> String.Empty Then
+                Status.GetDescriptionAllFromDBCode("VSSC19MainCategory", udtEHSTransaction.TransactionAdditionFields.MainCategory, strMainCategoryEng, strMainCategoryChi, strMainCategoryCN)
+                lblMainCategoryForCovid19.Text = strMainCategoryEng
+            Else
+                lblMainCategoryForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+            End If
+
+            'Sub Category
+            Dim strSubCategoryEng As String = String.Empty
+            Dim strSubCategoryChi As String = String.Empty
+            Dim strSubCategoryCN As String = String.Empty
+
+            If udtEHSTransaction.TransactionAdditionFields.SubCategory <> String.Empty Then
+                'trSubCategory.Style.Remove("display")
+                Status.GetDescriptionAllFromDBCode("VSSC19SubCategory", udtEHSTransaction.TransactionAdditionFields.SubCategory, strSubCategoryEng, strSubCategoryChi, strSubCategoryCN)
+                lblSubCategoryForCovid19.Text = strSubCategoryEng
+            Else
+                'trSubCategory.Style.Add("display", "none")
+                If udtEHSTransaction.TransactionAdditionFields.MainCategory = String.Empty Then
+                    lblSubCategoryForCovid19.Text = GetGlobalResourceObject("Text", "NotProvided")
+                Else
+                    lblSubCategoryForCovid19.Text = GetGlobalResourceObject("Text", "NA")
+                End If
+            End If
+
         End If
 
         'table for VaccineLotNumber and Vaccine
@@ -53,7 +127,8 @@ Partial Public Class ucReadOnlyRVPCOVID19
         End If
 
         ' Control the width of the first column
-        tdRCHCode.Width = intWidth
+        tdRecipientType.Width = intWidth
+        tdOutreachCode.Width = intWidth
 
     End Sub
 

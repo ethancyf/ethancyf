@@ -266,7 +266,6 @@ Namespace UIControl.EHCClaimText
 
                 'Join EHRSS
                 If (MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
-                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CBD OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _

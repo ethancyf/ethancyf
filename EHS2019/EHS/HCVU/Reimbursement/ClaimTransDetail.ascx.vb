@@ -265,7 +265,7 @@ Partial Public Class ClaimTransDetail
         End If
 
         'Override Reason Warning
-        If _blnEnableToShowWarning = False OrElse IsNothing(udtEHSTransaction.WarningMessage) Then
+        If _blnEnableToShowWarning = False OrElse IsNothing(udtEHSTransaction.WarningMessage) OrElse _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
             Me.pnlWarning.Visible = False
         Else
             If udtEHSTransaction.WarningMessage.RuleResults.Count = 0 Then
@@ -536,9 +536,39 @@ Partial Public Class ClaimTransDetail
                         udcReadOnlyEHSClaim.BuildRVPCOVID19(True)
                     End If
 
-                    DisplayRemarks(True)
+                    'Contact No.
+                    If (udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty) _
+                        OrElse _
+                        (udtEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.OutreachType = TYPE_OF_OUTREACH.OTHER) Then
 
+                        DisplayContactNo(True)
+                        FillContactNo(udtEHSTransaction)
+                    Else
+                        DisplayContactNo(False)
+                    End If
+
+                    DisplayJoinEHRSS(False)
+
+                    'Remark
+                    DisplayRemarks(True)
                     FillRemarks(udtEHSTransaction)
+
+                    'Join EHRSS
+                    If (udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty) _
+                        OrElse _
+                        (udtEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.OutreachType = TYPE_OF_OUTREACH.OTHER) Then
+
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                    End If
 
                 Else
                     udcReadOnlyEHSClaim.BuildRVP()
@@ -639,55 +669,43 @@ Partial Public Class ClaimTransDetail
                 End If
                 ' CRE20-0XX (Immu record) [End][Raiman Chong]
 
-            Case SchemeClaimModel.EnumControlType.COVID19CBD
-                udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
-                udcReadOnlyEHSClaim.Width = 204
-                udcReadOnlyEHSClaim.BuildCOVID19CBD()
-
-                If IsClaimCOVID19(udtEHSTransaction) Then
-                    ' CRE20-0022 (Immu record) [Start][Martin]
-                    If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
-                        DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
-                    End If
-                    ' CRE20-0022 (Immu record) [End][Martin]
-
-                    DisplayContactNo(True)
-                    DisplayRemarks(True)
-                    If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.OW Then
-                        DisplayJoinEHRSS(True)
-                    End If
-
-                    FillContactNo(udtEHSTransaction)
-                    FillRemarks(udtEHSTransaction)
-                    FillJoinEHRSS(udtEHSTransaction)
-
-                Else
-                    DisplayContactNo(False)
-                    DisplayRemarks(False)
-                    DisplayJoinEHRSS(False)
-                End If
-
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcReadOnlyEHSClaim.EHSTransaction = udtEHSTransaction
                 udcReadOnlyEHSClaim.Width = 204
                 udcReadOnlyEHSClaim.BuildCOVID19RVP()
 
                 If IsClaimCOVID19(udtEHSTransaction) Then
-                    ' CRE20-0022 (Immu record) [Start][Martin]
                     If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
                         DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
                     End If
-                    ' CRE20-0022 (Immu record) [End][Martin]
 
-                    DisplayContactNo(False)
-                    DisplayRemarks(True)
+                    'Contact No.
+                    If udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty Then
+
+                        DisplayContactNo(True)
+                        FillContactNo(udtEHSTransaction)
+                    Else
+                        DisplayContactNo(False)
+                    End If
+
                     DisplayJoinEHRSS(False)
 
-                    'FillContactNo(udtEHSTransaction)
+                    'Remark
+                    DisplayRemarks(True)
                     FillRemarks(udtEHSTransaction)
-                    'FillJoinEHRSS(udtEHSTransaction)
+
+                    'Join EHRSS
+                    If udtEHSTransaction.TransactionAdditionFields.RecipientType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty Then
+
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                    End If
 
                 Else
                     DisplayContactNo(False)

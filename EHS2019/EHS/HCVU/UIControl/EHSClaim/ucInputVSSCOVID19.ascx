@@ -122,6 +122,7 @@
                 <asp:textbox ID="txtCContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px;top:-2px" Width="100px"/>
                 <asp:ImageButton ID="imgCContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                <asp:Label ID="lblStep2aContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" style="font-size:14px" />
                 <cc2:FilteredTextBoxExtender ID="fteCContactNo" runat="server" TargetControlID="txtCContactNo"
                                             FilterType="Numbers" />
             </td>

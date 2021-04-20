@@ -40,6 +40,7 @@ Partial Public Class ucInputEHSClaim
     Public Event ChangeReasonForVisitClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event VaccineRemarkClicked(ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event ClaimControlEventFired(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event OutreachListSearchClicked(ByVal strSchemeCode As String, ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
     'Public Event PerConditionSelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
@@ -190,13 +191,6 @@ Partial Public Class ucInputEHSClaim
                 Dim udcInputCOVID19 As ucInputCOVID19 = CType(udcInputEHSClaim, ucInputCOVID19)
                 AddHandler udcInputCOVID19.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
 
-                'Case SchemeClaimModel.EnumControlType.COVID19CBD
-                '    udcInputEHSClaim = Me.ucInputEHSClaim_COVID19CBD
-
-                '    Dim udcInputCOVID19CBD As ucInputCOVID19CBD = CType(udcInputEHSClaim, ucInputCOVID19CBD)
-                '    AddHandler udcInputCOVID19CBD.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
-                '    AddHandler udcInputCOVID19CBD.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
-
             Case SchemeClaimModel.EnumControlType.COVID19RVP
                 udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19RVP.ascx", strFolderPath))
                 udcInputEHSClaim.ID = EHSClaimControlID.COVID19RVP
@@ -204,6 +198,14 @@ Partial Public Class ucInputEHSClaim
                 Dim udcInputCOVID19RVP As ucInputCOVID19RVP = CType(udcInputEHSClaim, ucInputCOVID19RVP)
                 AddHandler udcInputCOVID19RVP.SearchButtonClick, AddressOf udcInputCOVID19RVP_SearchButtonClick
                 AddHandler udcInputCOVID19RVP.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
+
+            Case SchemeClaimModel.EnumControlType.COVID19OR
+                udcInputEHSClaim = Me.LoadControl(String.Format("{0}/ucInputCOVID19OR.ascx", strFolderPath))
+                udcInputEHSClaim.ID = EHSClaimControlID.COVID19OR
+
+                Dim udcInputCOVID19OR As ucInputCOVID19OR = CType(udcInputEHSClaim, ucInputCOVID19OR)
+                AddHandler udcInputCOVID19OR.SearchButtonClick, AddressOf udcInputCOVID19OR_SearchButtonClick
+                AddHandler udcInputCOVID19OR.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
 
         End Select
 
@@ -463,6 +465,10 @@ Partial Public Class ucInputEHSClaim
         RaiseEvent ClaimControlEventFired(SchemeClaimModel.COVID19RVP, sender, e)
     End Sub
 
+    Private Sub udcInputCOVID19OR_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent OutreachListSearchClicked(SchemeClaimModel.COVID19OR, sender, e)
+    End Sub
+
     Private Sub udcInputEHSClaim_VaccineLegendClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent VaccineLegendClicked(sender, e)
     End Sub
@@ -631,6 +637,18 @@ Partial Public Class ucInputEHSClaim
         Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19RVP)
         If Not control Is Nothing Then
             Return CType(control, ucInputCOVID19RVP)
+        Else
+            Return Nothing
+        End If
+    End Function
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Function GetCOVID19ORControl() As ucInputEHSClaimBase
+        Dim control As Control = Me.FindControl(EHSClaimControlID.COVID19OR)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCOVID19OR)
         Else
             Return Nothing
         End If

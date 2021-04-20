@@ -186,10 +186,19 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
                 ElseIf (_udtEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP OrElse _
                         _udtEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.RVP) Then
-                    Dim strRCHCode As String = _udtEHSTransaction.TransactionAdditionFields.RCHCode
-                    Dim udtRVP As RVPHomeListModel = (New Component.RVPHomeList.RVPHomeListBLL()).GetRVPHomeListModalByCode(strRCHCode)
-                    VaccinationCenter.Text = udtRVP.HomenameEng
-                    VaccinationCenterChi.Text = udtRVP.HomenameChi
+
+                    If _udtEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso _udtEHSTransaction.TransactionAdditionFields.OutreachType = TYPE_OF_OUTREACH.OTHER Then
+                        Dim strOutreachCode As String = _udtEHSTransaction.TransactionAdditionFields.OutreachCode
+                        Dim dtOutreach As DataTable = (New Component.COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+                        VaccinationCenter.Text = dtOutreach.Rows(0)("Outreach_Name_Eng").ToString().Trim()
+                        VaccinationCenterChi.Text = dtOutreach.Rows(0)("Outreach_Name_Chi").ToString().Trim()
+                    Else
+                        Dim strRCHCode As String = _udtEHSTransaction.TransactionAdditionFields.RCHCode
+                        Dim udtRVP As RVPHomeListModel = (New Component.RVPHomeList.RVPHomeListBLL()).GetRVPHomeListModalByCode(strRCHCode)
+                        VaccinationCenter.Text = udtRVP.HomenameEng
+                        VaccinationCenterChi.Text = udtRVP.HomenameChi
+                    End If
+
 
                 ElseIf (_udtEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19OR) Then
                     Dim strOutreachCode As String = _udtEHSTransaction.TransactionAdditionFields.OutreachCode
@@ -227,14 +236,23 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                         Dim udtEHSTransactionBLL As New EHSTransactionBLL
                         Dim udtHistoryEHSTransaction As EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(_udtVaccinationRecordHistory.TransactionID)
 
-                        If udtHistoryEHSTransaction.TransactionAdditionFields.RCHCode IsNot Nothing AndAlso udtHistoryEHSTransaction.TransactionAdditionFields.RCHCode <> String.Empty Then
-                            Dim udtRVP As RVPHomeListModel = (New Component.RVPHomeList.RVPHomeListBLL()).GetRVPHomeListModalByCode(udtHistoryEHSTransaction.TransactionAdditionFields.RCHCode)
-                            VaccinationCenter.Text = udtRVP.HomenameEng
-                            VaccinationCenterChi.Text = udtRVP.HomenameChi
+                        If udtHistoryEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso udtHistoryEHSTransaction.TransactionAdditionFields.OutreachType = TYPE_OF_OUTREACH.OTHER Then
+                            Dim strOutreachCode As String = udtHistoryEHSTransaction.TransactionAdditionFields.OutreachCode
+                            Dim dtOutreach As DataTable = (New Component.COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+                            VaccinationCenter.Text = dtOutreach.Rows(0)("Outreach_Name_Eng").ToString().Trim()
+                            VaccinationCenterChi.Text = dtOutreach.Rows(0)("Outreach_Name_Chi").ToString().Trim()
+
                         Else
-                            VaccinationCenter.Text = _udtEHSTransaction.PracticeName
-                            VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
+                            If udtHistoryEHSTransaction.TransactionAdditionFields.RCHCode IsNot Nothing AndAlso udtHistoryEHSTransaction.TransactionAdditionFields.RCHCode <> String.Empty Then
+                                Dim udtRVP As RVPHomeListModel = (New Component.RVPHomeList.RVPHomeListBLL()).GetRVPHomeListModalByCode(udtHistoryEHSTransaction.TransactionAdditionFields.RCHCode)
+                                VaccinationCenter.Text = udtRVP.HomenameEng
+                                VaccinationCenterChi.Text = udtRVP.HomenameChi
+                            Else
+                                VaccinationCenter.Text = _udtEHSTransaction.PracticeName
+                                VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
+                            End If
                         End If
+
                     Else
                         'CMS/CMIS Vaccination Record
                         VaccinationCenter.Text = _udtVaccinationRecordHistory.PracticeName

@@ -3462,6 +3462,9 @@ EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyPPP.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyRVP.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyRVP.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyRVP.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyRVPCOVID19.ascx -text
+EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyRVPCOVID19.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyRVPCOVID19.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyVSS.ascx -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyVSS.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/EHSClaimText/ucReadOnlyVSS.ascx.vb -text
@@ -4967,6 +4970,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCIVSS.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19OR.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19OR.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19OR.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19RVP.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19RVP.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputCOVID19RVP.ascx.vb -text
@@ -4997,6 +5003,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputPPP.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVP.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVP.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVP.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVPCOVID19.ascx -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVPCOVID19.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputRVPCOVID19.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputSSSCMC.ascx -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputSSSCMC.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/EHSClaim/ucInputSSSCMC.ascx.vb -text
@@ -5079,6 +5088,9 @@ EHS2019/EHS/HCVU/UIControl/EHSClaim/ucReadOnlyVoucherSlim.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/IDEASCombo/IDEASCombo.ascx -text
 EHS2019/EHS/HCVU/UIControl/IDEASCombo/IDEASCombo.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/IDEASCombo/IDEASCombo.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/OutreachListSearch.ascx -text
+EHS2019/EHS/HCVU/UIControl/OutreachListSearch.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/OutreachListSearch.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/PCDIntegration/ucEnrolmentCopyPopup.ascx -text
 EHS2019/EHS/HCVU/UIControl/PCDIntegration/ucEnrolmentCopyPopup.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/PCDIntegration/ucEnrolmentCopyPopup.ascx.vb -text
@@ -9814,6 +9826,9 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_UserRole_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_UserRole_del.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_UserRole_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VaccineCentreSPMapping_getAll.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_VaccineCentreVUMapping_add.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_VaccineCentreVUMapping_del.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_VaccineCentre_getAll.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ValidationRule_Get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_VersionControl_get_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_ViewEqvSubsidizeMap_get_all_cache.sql -text

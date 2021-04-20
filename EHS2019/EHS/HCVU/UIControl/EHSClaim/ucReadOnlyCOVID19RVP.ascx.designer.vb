@@ -14,6 +14,33 @@ Option Explicit On
 Partial Public Class ucReadOnlyCOVID19RVP
 
     '''<summary>
+    '''tdRecipientType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdRecipientType As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblRecipientTypeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecipientTypeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblRecipientType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblRecipientType As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''tdRCHCode control.
     '''</summary>
     '''<remarks>

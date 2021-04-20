@@ -2,8 +2,8 @@
 <%@ Register Assembly="HCVU" Namespace="HCVU" TagPrefix="cc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
 
-<asp:Panel ID="panCOVID19Category" runat="server">
-    <table style="padding:0px;border-spacing:0px;border-collapse:collapse;position:relative;left:-1px">
+<asp:Panel ID="panCOVID19Category" runat="server" visible="false">
+    <table id="tblCOVID19Category" runat="server" style="padding:0px;border-spacing:0px;border-collapse:collapse;position:relative;left:-1px">
         <tr>
             <td style="vertical-align:top;width:200px">
                 <asp:Label ID="lblCategoryText" runat="server" Height="25px" Width="160px"></asp:Label>
@@ -25,7 +25,6 @@
         </tr>
     </table>
 </asp:Panel>
-
 <asp:Panel ID="panRCHCode" runat="server">
     <table style="padding:0px;border-spacing:0px;border-collapse:collapse;position:relative;left:-1px">
         <tr>
@@ -52,7 +51,26 @@
         </tr>
     </table>
 </asp:Panel>
-
+    <table style="padding:0px;border-spacing:0px;border-collapse:collapse;position:relative;left:-1px">
+        <tr>
+            <td style="width:205px;vertical-align:top">
+                <asp:Label ID="lblCRecipientTypeText" runat="server" Height="25px" Width="160px" Text ="<%$ Resources:Text, RecipientType%>" />
+            </td>
+            <td style="vertical-align:top">
+                <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
+                    <tr>
+                        <td style="vertical-align:top">
+                            <asp:radiobuttonlist ID="rblCRecipientType" runat="server" AutoPostBack="true" RepeatDirection="Vertical" CssClass="tableText" Style="min-width:110px;position:relative;top:-3px;left:-9px" />
+                        </td>
+                        <td style="vertical-align:top">
+                            <asp:Image ID="imgCRecipientTypeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 <asp:Panel ID="panCOVID19Detail" runat="server">
     <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
         <asp:Panel ID ="panCategory" runat="server" Visible ="false">
@@ -130,14 +148,15 @@
             </td>
         </tr>
         </asp:Panel>
-        <tr id="trCContactNo" runat="server" visible="false">
+        <tr id="trCContactNo" runat="server">
             <td style="width:200px;height:25px;vertical-align:top">
-                <asp:Label ID="lblCContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
+                <asp:Label ID="lblCContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" Width="160px" />
             </td>
             <td style="height:25px;vertical-align:top">
-                <asp:textbox ID="txtCContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px" Width="100px"/>
+                <asp:textbox ID="txtCContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px;top:-2px" Width="100px"/>
                 <asp:ImageButton ID="imgCContactNoError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                <asp:Label ID="lblStep2aContactNoRecommendation" runat="server" Text="<%$ Resources:Text, ProvideContactNoWithSMS%>" style="font-size:14px;position:relative;top:-2px" />
                 <cc2:FilteredTextBoxExtender ID="fteCContactNo" runat="server" TargetControlID="txtCContactNo"
                                             FilterType="Numbers" />
             </td>
@@ -152,7 +171,7 @@
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
             </td>
         </tr>
-        <tr id="trJoinEHRSS" runat="server" visible="false">
+        <tr id="trJoinEHRSS" runat="server">
             <td style="width:200px;height:25px;vertical-align:top;padding-bottom:5px">
                 <asp:Label ID="lblCJoinEHRSSText" runat="server" Text="<%$ Resources:Text, JoinEHRSS%>" CssClass="tableTitle" Width="160px" />
             </td>
