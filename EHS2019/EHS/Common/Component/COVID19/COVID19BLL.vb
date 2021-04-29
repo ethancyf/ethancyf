@@ -14,8 +14,6 @@ Namespace Component.COVID19
 #Region "Constant"
         Public Class CACHE_STATIC_DATA
             Public Const CACHE_ALL_COVID19VaccineBrand As String = "COVID19BLL_ALL_COVID19VaccineBrand"
-            Public Const CACHE_ALL_COVID19VaccineBrandLotDetail As String = "COVID19BLL_ALL_COVID19VaccineBrandLotDetail"
-            Public Const CACHE_ALL_COVID19VaccineLotMapping As String = "COVID19BLL_ALL_COVID19VaccineLotMapping"
             Public Const CACHE_ALL_VaccineCentreSPMapping As String = "COVID19BLL_ALL_VaccineCentreSPMapping"
             Public Const CACHE_ALL_VaccineCentre As String = "COVID19BLL_ALL_VaccineCentre"
         End Class
@@ -63,49 +61,7 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineBrandLotDetail() As DataTable
-            Dim dt As New DataTable
-            Dim db As New Database
 
-            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail)) Then
-                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail), DataTable)
-
-            Else
-                Try
-                    db.RunProc("proc_COVID19VaccineBrandLotDetail_getAll", dt)
-
-                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail, dt)
-                Catch ex As Exception
-                    Throw
-                End Try
-            End If
-
-            Return dt
-
-        End Function
-
-        Public Function GetCOVID19VaccineLotMapping() As DataTable
-            Dim dt As New DataTable
-            Dim db As New Database
-
-            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineLotMapping)) Then
-
-                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineLotMapping), DataTable)
-
-            Else
-
-                Try
-                    db.RunProc("proc_COVID19VaccineLotMapping_getAll", dt)
-
-                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineLotMapping, dt)
-                Catch ex As Exception
-                    Throw
-                End Try
-            End If
-
-            Return dt
-
-        End Function
 
         Public Function GetVaccineCentreSPMapping() As DataTable
             Dim dt As New DataTable
@@ -156,6 +112,32 @@ Namespace Component.COVID19
 #End Region
 
 #Region "Get Vaccine Lot"
+        Public Function GetCOVID19VaccineBrandLotDetail() As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+            Try
+                db.RunProc("proc_COVID19VaccineBrandLotDetail_getAll", dt)
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+
+        End Function
+
+        Public Function GetCOVID19VaccineLotMapping() As DataTable
+            Dim dt As New DataTable
+            Dim db As New Database
+            Try
+                db.RunProc("proc_COVID19VaccineLotMapping_getAll", dt)
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+
+        End Function
+
         Public Function GetCOVID19VaccineLotMapping(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer), ByVal dtmServiceDate As DateTime) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
@@ -671,6 +653,35 @@ Namespace Component.COVID19
 
         End Sub
 
+        Function FilterActiveBrand() As String
+            Dim strToday As String = (DateTime.Now).ToString("MM/dd/yyyy")
+            Dim rowFilterSubCondition1 As String = "Lot_Assign_Status = 'A' "
+            Dim rowFilterSubCondition2 As String = "[Expiry_Date] >= '" + strToday + "'"
+            Dim rowFilterSubCondition3 As String = "[Record_Status] = 'A'"
+            'Dim rowFilterSubCondition1 As String = "(([New_Record_Status] = 'P' and [Request_Type] = 'R') or ([New_Record_Status] is null and [Request_Type] is null))"
+            'Dim rowFilterSubCondition2 As String = "[Expiry_Date] >= '" + strToday + "'"
+            'Dim rowFilterSubCondition3 As String = "[Record_Status] <> 'D'"
+            Dim rowFilterCondition As String = rowFilterSubCondition1 + " and " + rowFilterSubCondition2 + " and " + rowFilterSubCondition3
+
+            Return rowFilterCondition
+        End Function
+
+        Function FilterActiveVaccineLot(ByVal strBarndID As String) As String
+            Dim strToday As String = (DateTime.Now).ToString("MM/dd/yyyy")
+            Dim rowFilterSubCondition1 As String = "[Brand_ID] = '" + strBarndID + "'"
+            Dim rowFilterSubCondition2 As String = "Lot_Assign_Status = 'A' "
+            Dim rowFilterSubCondition3 As String = "[Expiry_Date] >= '" + strToday + "'"
+            Dim rowFilterSubCondition4 As String = "[Record_Status] = 'A'"
+
+            'Dim rowFilterSubCondition1 As String = "[Brand_ID] = '" + strBarndID + "'"
+            'Dim rowFilterSubCondition2 As String = "(([New_Record_Status] = 'P' and [Request_Type] = 'R') or ([New_Record_Status] is null and [Request_Type] is null))"
+            'Dim rowFilterSubCondition3 As String = "[Expiry_Date] >= '" + strToday + "'"
+            'Dim rowFilterSubCondition4 As String = "[Record_Status] <> 'D'"
+
+            Dim rowFilterCondition As String = rowFilterSubCondition1 + " and " + rowFilterSubCondition2 + " and " + rowFilterSubCondition3 + " and " + rowFilterSubCondition4
+
+            Return rowFilterCondition
+        End Function
 #End Region
 
 #Region "QR Code"

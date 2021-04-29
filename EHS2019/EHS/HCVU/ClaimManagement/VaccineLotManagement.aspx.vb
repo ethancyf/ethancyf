@@ -11,6 +11,7 @@ Imports HCVU.BLL
 Imports Common.Component.VaccineLot
 Imports Common.ComFunction
 Imports Common.Component.VaccineLot.VaccineLotBLL
+Imports Common.Component.COVID19
 
 Partial Public Class VaccineLotManagement
     Inherits BasePageWithControl
@@ -37,6 +38,7 @@ Partial Public Class VaccineLotManagement
 
     Private udtHCVUUserBLL As New HCVUUserBLL
     Private udtVaccineLotBLL As New VaccineLotBLL
+    Private udtCOVID19BLL As New COVID19BLL
 
     Private udtFormatter As New Formatter
     Private udtValidator As New Validator
@@ -271,7 +273,7 @@ Partial Public Class VaccineLotManagement
             btnBatchAssign.ImageUrl = GetGlobalResourceObject("ImageUrl", "BatchAssignDisableBtn")
             btnBatchRemove.ImageUrl = GetGlobalResourceObject("ImageUrl", "BatchRemoveDisableBtn")
         Else
-            Dim dtVaccinCentreSP As DataTable = udtVaccineLotBLL.GetVaccineCentreSPMapping()
+            Dim dtVaccinCentreSP As DataTable = udtCOVID19BLL.GetVaccineCentreSPMapping()
             Dim dr() As DataRow
 
             dr = dtVaccinCentreSP.Select(String.Format("Centre_ID = '{0}'", ddlVaccCentre.SelectedValue))
@@ -400,14 +402,10 @@ Partial Public Class VaccineLotManagement
         Select Case ViewState("state")
             Case StateType.ADD, StateType.EDIT
 
-                dtAllBrand = udtVaccineLotBLL.GetCOVID19VaccineBrandLotDetail()
+                dtAllBrand = udtCOVID19BLL.GetCOVID19VaccineBrandLotDetail()
                 dvAllBrand = New DataView(dtAllBrand)
-                Dim strToday As String = (DateTime.Now).ToString("MM/dd/yyyy")
-                Dim rowFilterSubCondition1 As String = "(([New_Record_Status] = 'P' and [Request_Type] = 'R') or ([New_Record_Status] is null and [Request_Type] is null))"
-                Dim rowFilterSubCondition2 As String = "[Expiry_Date] >= '" + strToday + "'"
-                Dim rowFilterSubCondition3 As String = "[Record_Status] <> 'D'"
-                Dim rowFilterCondition As String = rowFilterSubCondition1 + " and " + rowFilterSubCondition2 + " and " + rowFilterSubCondition3
-                dvAllBrand.RowFilter = rowFilterCondition
+                'filter out the active brand
+                dvAllBrand.RowFilter = udtCOVID19BLL.FilterActiveBrand
             Case StateType.BatchRemove
                 dtAllBrand = udtVaccineLotBLL.GetCOVID19VaccineBrandDetailByCentre(ddlVaccCentre.SelectedItem.Value.Trim)
                 Session(SESS_BatchRemoveBrandLotList) = dtAllBrand
@@ -441,6 +439,8 @@ Partial Public Class VaccineLotManagement
 
     End Sub
 
+   
+
     Protected Sub ddlVaccineBrandName_SelectedIndexChanged(sender As Object, e As EventArgs)
         If (ddlVaccineBrandName.SelectedValue <> String.Empty) Then
             BuildVaccineLotNo(Me.ddlVaccineLotNo, ddlVaccineBrandName.SelectedValue)
@@ -452,24 +452,17 @@ Partial Public Class VaccineLotManagement
 
     End Sub
 
-    Private Sub BuildVaccineLotNo(ByVal ddl As DropDownList, ByVal BrandId As String)
+    Private Sub BuildVaccineLotNo(ByVal ddl As DropDownList, ByVal strBrandId As String)
 
         Dim dtAllVaccine As DataTable = Nothing
         Dim dvVaccineLotNo As DataView = Nothing
         Select Case ViewState("state")
             Case StateType.ADD, StateType.EDIT
-                dtAllVaccine = udtVaccineLotBLL.GetCOVID19VaccineBrandLotDetail()
+                dtAllVaccine = udtCOVID19BLL.GetCOVID19VaccineBrandLotDetail()
 
                 dvVaccineLotNo = New DataView(dtAllVaccine)
-                Dim strToday As String = (DateTime.Now).ToString("MM/dd/yyyy")
-                Dim rowFilterSubCondition1 As String = "[Brand_ID] = '" + BrandId + "'"
-                Dim rowFilterSubCondition2 As String = "(([New_Record_Status] = 'P' and [Request_Type] = 'R') or ([New_Record_Status] is null and [Request_Type] is null))"
-                Dim rowFilterSubCondition3 As String = "[Expiry_Date] >= '" + strToday + "'"
-                Dim rowFilterSubCondition4 As String = "[Record_Status] <> 'D'"
 
-                Dim rowFilterCondition As String = rowFilterSubCondition1 + " and " + rowFilterSubCondition2 + " and " + rowFilterSubCondition3 + " and " + rowFilterSubCondition4
-
-                dvVaccineLotNo.RowFilter = rowFilterCondition
+                dvVaccineLotNo.RowFilter = udtCOVID19BLL.FilterActiveVaccineLot(strBrandId)
             Case StateType.BatchRemove
                 If (Not IsNothing(Session(SESS_BatchRemoveBrandLotList))) Then
                     dtAllVaccine = CType(Session(SESS_BatchRemoveBrandLotList), DataTable)
@@ -477,11 +470,8 @@ Partial Public Class VaccineLotManagement
                     dtAllVaccine = udtVaccineLotBLL.GetCOVID19VaccineBrandDetailByCentre(ddlVaccCentre.SelectedItem.Value.Trim)
                 End If
                 dvVaccineLotNo = New DataView(dtAllVaccine)
-                dvVaccineLotNo.RowFilter = "[Brand_ID] = '" + BrandId + "'"
+                dvVaccineLotNo.RowFilter = "[Brand_ID] = '" + strBrandId + "'"
         End Select
-
-
-
 
         If dvVaccineLotNo IsNot Nothing AndAlso dvVaccineLotNo.Count > 0 Then
             ddl.Items.Clear()
@@ -505,16 +495,16 @@ Partial Public Class VaccineLotManagement
 
 
 
-    Private Sub BuildVaccineLotRecordStatus(ByVal ddl As DropDownList)
-        Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
-        ddl.DataSource = udtStaticDataBLL.GetStaticDataListByColumnName("VaccineLotRecordStatus")
-        ddl.DataValueField = "ItemNo"
-        ddl.DataTextField = "DataValue"
-        ddl.DataBind()
-        ddl.Items.Remove(ddl.Items.FindByValue(VaccineLotMappingRecordStatus.Remove))
-        ddl.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), ""))
-        ddl.SelectedIndex = 0
-    End Sub
+    'Private Sub BuildVaccineLotRecordStatus(ByVal ddl As DropDownList)
+    '    Dim udtStaticDataBLL As StaticDataBLL = New StaticDataBLL
+    '    ddl.DataSource = udtStaticDataBLL.GetStaticDataListByColumnName("VaccineLotRecordStatus")
+    '    ddl.DataValueField = "ItemNo"
+    '    ddl.DataTextField = "DataValue"
+    '    ddl.DataBind()
+    '    ddl.Items.Remove(ddl.Items.FindByValue(VaccineLotMappingRecordStatus.Remove))
+    '    ddl.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "Any"), ""))
+    '    ddl.SelectedIndex = 0
+    'End Sub
 
     Protected Sub ddlVaccineLotNo_SelectedIndexChanged(sender As Object, e As EventArgs)
         SetlblExpiryDateText()
@@ -523,7 +513,7 @@ Partial Public Class VaccineLotManagement
     Private Sub SetlblExpiryDateText()
 
         If (ddlVaccineLotNo.SelectedValue <> String.Empty And ddlVaccineLotNo.Enabled <> False) Then
-            Dim dvVaccineWithExpiryDate As DataView = New DataView(udtVaccineLotBLL.GetCOVID19VaccineBrandLotDetail())
+            Dim dvVaccineWithExpiryDate As DataView = New DataView(udtCOVID19BLL.GetCOVID19VaccineBrandLotDetail())
             dvVaccineWithExpiryDate.RowFilter = "[Brand_Id] = '" + ddlVaccineBrandName.SelectedValue + "' and [Vaccine_Lot_NO] = '" + ddlVaccineLotNo.SelectedValue + "'"
 
             If dvVaccineWithExpiryDate IsNot Nothing AndAlso dvVaccineWithExpiryDate.Count = 1 Then
@@ -740,6 +730,9 @@ Partial Public Class VaccineLotManagement
             End If
 
             If ViewState("state") = StateType.ADD Then
+                ibtnRecordConfirm.Enabled = True
+                ibtnRecordConfirm.ImageUrl = GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
+
                 udtAuditLogEntry.AddDescripton("Centre Id", ddlVaccineCentre.SelectedValue.ToString)
                 udtAuditLogEntry.AddDescripton("Booth", strBooth)
                 udtAuditLogEntry.AddDescripton("Lot Number", ddlVaccineLotNo.SelectedValue.ToString)
@@ -899,6 +892,9 @@ Partial Public Class VaccineLotManagement
     Protected Sub ibtnRecordConfirm_Click(sender As Object, e As ImageClickEventArgs)
         Dim udtVaccineLotList As VaccineLotModel = New VaccineLotModel()
         Dim blnValid As Boolean = True
+        Dim dtLotDetail As DataTable = Nothing
+        Dim dvLotDetailFilterWithRecordStatus As DataView = Nothing
+        Dim dvLotDetailFilterWithAssignStatus As DataView = Nothing
 
         udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
 
@@ -914,8 +910,40 @@ Partial Public Class VaccineLotManagement
             udcInfoBox.Visible = False
             blnValid = False
         End If
+
+        If ViewState("state") = StateType.ADD Then
+            dtLotDetail = udtVaccineLotBLL.CheckVaccineLotDetailExist(lblConVaccineLotNo.Text.Trim)
+            'check the lot detail is removed  
+            If (blnValid) Then
+
+                dvLotDetailFilterWithRecordStatus = New DataView(dtLotDetail)
+                dvLotDetailFilterWithRecordStatus.RowFilter = udtVaccineLotBLL.FilterLotDetailByRecordStatus(VaccineLotDetailRecordStatus.Remove)
+
+                If dvLotDetailFilterWithRecordStatus.Count > 0 Then
+                    msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00009), "%s", lblConVaccineLotNo.Text.Trim)
+                    blnValid = False
+                End If
+            End If
+
+            'check the lot detail is marked at unavailable
+            If (blnValid) Then
+                dvLotDetailFilterWithAssignStatus = New DataView(dtLotDetail)
+                dvLotDetailFilterWithAssignStatus.RowFilter = udtVaccineLotBLL.FilterLotDetailByLotAssignStatus(VaccineLotDetailLotAssignStatus.Unavailable)
+
+                If dvLotDetailFilterWithAssignStatus.Count > 0 Then
+                    msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00010), "%s", lblConVaccineLotNo.Text.Trim)
+                    blnValid = False
+                End If
+            End If
+        End If
+
         Try
             If (blnValid) Then
+                msgBox.Visible = False
+                udcInfoBox.Visible = True
+                ibtnRecordConfirm.Enabled = True
+                ibtnRecordConfirm.ImageUrl = GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
+
                 udtVaccineLotList.CentreId = hfConVaccineCentreId.Text
                 udtVaccineLotList.BoothId = lblConVaccineBoothID.Text.Trim
                 udtVaccineLotList.BrandTradeName = lblConVaccineBrandName.Text.Trim
@@ -984,6 +1012,11 @@ Partial Public Class VaccineLotManagement
 
                 Session.Remove(SESS_BatchRemoveBrandLotList)
                 Session.Remove(SESS_Confirm_HistoryView)
+            Else
+                msgBox.Visible = True
+                udcInfoBox.Visible = False
+                ibtnRecordConfirm.Enabled = False
+                ibtnRecordConfirm.ImageUrl = GetGlobalResourceObject("ImageUrl", "ConfirmDisableBtn")
             End If
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")

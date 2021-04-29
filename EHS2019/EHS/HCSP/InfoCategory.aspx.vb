@@ -9,8 +9,10 @@ Public Class InfoCategory
     Private udtFormatter As New Formatter
     Private _udtCommfunct As GeneralFunction = New GeneralFunction
 
-    Public Const ZH As String = "ZH"
-    Public Const EN As String = "EN"
+    'Public Const ZH As String = "ZH"
+    'Public Const EN As String = "EN"
+    Public Const ZH As String = "ZH-TW"
+    Public Const EN As String = "EN-US"
 
     Public Const TradChinese As String = "zh-tw"
     Public Const SimpChinese As String = "zh-cn"
@@ -19,7 +21,8 @@ Public Class InfoCategory
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-        Dim strLang As String = Request.QueryString("Language")
+        'Dim strLang As String = Request.QueryString("Language")
+        Dim strLang As String = Session("language")
         Dim strLanguage As String = English
 
         Select Case strLang.ToUpper

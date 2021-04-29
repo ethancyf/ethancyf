@@ -426,10 +426,13 @@ Partial Public Class VaccineLotApproval
     End Sub
 
     Protected Sub ibtnApproval_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim blnValid As Boolean = True
         udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
         udtAuditLogEntry.WriteLog(LogID.LOG00008, AuditMsg00008)
 
+
         Me.ModalPopupConfirmApproval.Show()
+
     End Sub
 
 
@@ -543,14 +546,33 @@ Partial Public Class VaccineLotApproval
 #Region "Popup box events"
 
     Private Sub ucNoticePopUpConfirmApproval_ButtonClick(ByVal e As ucNoticePopUp.enumButtonClick) Handles ucNoticePopUpConfirmApproval.ButtonClick
+        Dim blnValid As Boolean = True
+
+        Dim dvLotDetailFilterWithLotAssign As DataView = Nothing
+        
         udcInfoBox.Visible = False
         udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
 
         Select Case e
             Case ucNoticePopUp.enumButtonClick.OK
+
+                'check the lot detail is marked at unavailable
+                If (blnValid) Then
+                    dvLotDetailFilterWithLotAssign = New DataView(udtVaccineLotBLL.CheckVaccineLotDetailExist(lblDetailVaccineLotNo.Text.Trim))
+                    dvLotDetailFilterWithLotAssign.RowFilter = udtVaccineLotBLL.FilterLotDetailByLotAssignStatus(VaccineLotDetailLotAssignStatus.Unavailable)
+                    If dvLotDetailFilterWithLotAssign.Count > 0 Then
+                        'If udtVaccineLotBLL.CheckVaccineLotDetailExist(lblDetailVaccineLotNo.Text.Trim, String.Empty, String.Empty, VaccineLotDetailLotAssignStatus.Unavailable) Then
+                        msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00003), "%s", lblDetailVaccineLotNo.Text.Trim)
+                        blnValid = False
+                    End If
+                End If
+
                 udtAuditLogEntry.AddDescripton("Request Id", lblDetailRequestID.Text)
                 udtAuditLogEntry.WriteLog(LogID.LOG00009, AuditMsg00009)
-                ApproveLotRecord()
+
+                If (blnValid) Then
+                    ApproveLotRecord()
+                End If
             Case Else
                 udtAuditLogEntry.WriteLog(LogID.LOG00010, AuditMsg00010)
         End Select

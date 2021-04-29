@@ -1,0 +1,15 @@
+SET ABORT-ON-ERROR NO
+SET CONFIRM-DELETE NO
+BINARY
+lcd E:\ImmdInterface\ImmdInterface\Transfer\ImmdTransferSectionFile\EHS_DOC_74c\sent
+cd /HCVS/Production/InterfaceFile/CentralDB/Backup/
+CONTINUE ON
+MPUT CVP-EHS-VAC-*.zip
+CONTINUE ON
+MPUT CVP-EHS-VAC-*.ctl
+cd /HCVS/Production/InterfaceFile/CentralDB/
+MDEL CVP-EHS-VAC-*.zip
+MDEL CVP-EHS-VAC-*.ctl
+SET CONFIRM-DELETE YES
+SET ABORT-ON-ERROR YES
+quit

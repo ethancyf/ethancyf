@@ -290,7 +290,7 @@ Partial Public Class ucInputRVPCOVID19
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents imgCCategoryInfo As Global.System.Web.UI.WebControls.ImageButton
+    Protected WithEvents imgCCategoryInfo As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''ddlCMainCategoryCovid19 control.

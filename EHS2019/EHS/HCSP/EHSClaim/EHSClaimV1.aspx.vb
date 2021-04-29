@@ -1,4 +1,4 @@
-Imports AjaxControlToolkit
+ï»¿Imports AjaxControlToolkit
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
@@ -383,7 +383,7 @@ Partial Public Class EHSClaimV1
             Case ActiveViewIndex.Step2a
                 Me.panClaimValidatedTimelineStep2.CssClass = strHightLight
 
-                Dim dtmServiceDate As Date = Me._udtGeneralFunction.GetSystemDateTime()
+                Dim dtmServiceDate As Date = Me._udtGeneralFunction.GetSystemDateTime().Date
 
                 'setup Service date
                 If udtEHSTransaction Is Nothing Then
@@ -5558,6 +5558,20 @@ Partial Public Class EHSClaimV1
                 ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
             End If
 
+            '' CRE20-0023 (Immu record) [Start][Chris YIM]
+            '' ---------------------------------------------------------------------------------------------------------
+            '' Temporary handling to block document (Passport, One-way Permit) to claim COVID19 under VSS scheme
+            'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS AndAlso Me.ClaimMode = ClaimMode.COVID19 Then
+            '    If udtEHSAccount.SearchDocCode IsNot Nothing AndAlso _
+            '        (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW OrElse udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.PASS) Then
+            '        If udtLatestC19Vaccine Is Nothing Then
+            '            notAvailableForClaim = True
+            '            isEligibleForClaim = False
+            '        End If
+            '    End If
+            'End If
+            '' CRE20-0023 (Immu record) [End][Chris YIM]
+
             If blnInClaimPeriod Then
 
                 If notAvailableForClaim Then
@@ -5668,7 +5682,7 @@ Partial Public Class EHSClaimV1
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 Case SchemeClaimModel.EnumControlType.HSIVSS, SchemeClaimModel.EnumControlType.RVP, SchemeClaimModel.EnumControlType.VSS, _
                     SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP, SchemeClaimModel.EnumControlType.COVID19, _
-                    SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+                    SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                     ' CRE20-0022 (Immu record) [Start][Chris YIM]
@@ -14270,7 +14284,7 @@ Partial Public Class EHSClaimV1
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = "d MMMM, yyyy"
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case TradChinese, SimpChinese
-                chineseTodayDateFormat = CStr(Today.Year) + "¦~" + CStr(Today.Month) + "¤ë" + CStr(Today.Day) & "¤é"
+                chineseTodayDateFormat = CStr(Today.Year) + "å¹´" + CStr(Today.Month) + "æœˆ" + CStr(Today.Day) & "æ—¥"
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = chineseTodayDateFormat
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case Else

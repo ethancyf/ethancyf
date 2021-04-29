@@ -606,25 +606,24 @@ Partial Public Class ucInputCOVID19OR
             End If
         End If
 
-        ''Check Main Category
-        'If ddlCMainCategoryCovid19.Enabled Then
-        '    If String.IsNullOrEmpty(Me.MainCategoryForCOVID19) Then
-        '        blnResult = False
+        'Check Main Category
+        If ddlCMainCategoryCovid19.Enabled Then
+            If String.IsNullOrEmpty(Me.MainCategoryForCOVID19) Then
+                blnResult = False
 
-        '        Me.SetMainCategoryForCOVID19Error(True)
+                Me.SetMainCategoryForCOVID19Error(True)
 
-        '        objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00462)
-        '        If objMsgBox IsNot Nothing Then
-        '            objMsgBox.AddMessage(objMsg, _
-        '                                 New String() {"%en", "%tc", "%sc"}, _
-        '                                 New String() {HttpContext.GetGlobalResourceObject("Text", "Category", New System.Globalization.CultureInfo(CultureLanguage.English)), _
-        '                                               HttpContext.GetGlobalResourceObject("Text", "Category", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
-        '                                               HttpContext.GetGlobalResourceObject("Text", "Category", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
-        '                                               })
-        '        End If
-        '    End If
-        'End If
-
+                objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00462)
+                If objMsgBox IsNot Nothing Then
+                    objMsgBox.AddMessage(objMsg, _
+                                         New String() {"%en", "%tc", "%sc"}, _
+                                         New String() {HttpContext.GetGlobalResourceObject("Text", "Category", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "Category", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "Category", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                       })
+                End If
+            End If
+        End If
 
         'Check Sub Category
         If ddlCSubCategoryCovid19.Enabled Then
@@ -1015,7 +1014,8 @@ Partial Public Class ucInputCOVID19OR
         If MyBase.TranDetailLatestVaccineRecord IsNot Nothing AndAlso _
             MyBase.EHSTransactionLatestVaccineRecord IsNot Nothing AndAlso _
             MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
-            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory IsNot Nothing Then
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory IsNot Nothing AndAlso _
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory <> String.Empty Then
             'Carry Forward
             dtMainCategory = Status.GetDescriptionAllListFromDBEnumCode("VSSC19MainCategory")
         Else
@@ -1604,9 +1604,9 @@ Partial Public Class ucInputCOVID19OR
 
 #End Region
 
-    Private Sub imgCCategoryInfo_Click(sender As Object, e As ImageClickEventArgs) Handles imgCCategoryInfo.Click
-        ScriptManager.RegisterStartupScript(Me, Page.GetType, "CategoryList", String.Format("javascript:showCategoryInfo('{0}');", Session("language")), True)
+    'Private Sub imgCCategoryInfo_Click(sender As Object, e As ImageClickEventArgs) Handles imgCCategoryInfo.Click
+    '    ScriptManager.RegisterStartupScript(Me, Page.GetType, "CategoryList", String.Format("javascript:showCategoryInfo('{0}');", Session("language")), True)
 
-    End Sub
+    'End Sub
 
 End Class

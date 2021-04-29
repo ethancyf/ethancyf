@@ -741,9 +741,9 @@ Partial Public Class ucInputRVPCOVID19
     End Sub
 #End Region
 
-    Private Sub imgCCategoryInfo_Click(sender As Object, e As ImageClickEventArgs) Handles imgCCategoryInfo.Click
-        ScriptManager.RegisterStartupScript(Me, Page.GetType, "CategoryList", String.Format("javascript:showCategoryInfo('{0}');", Session("language")), True)
-    End Sub
+    'Private Sub imgCCategoryInfo_Click(sender As Object, e As ImageClickEventArgs) Handles imgCCategoryInfo.Click
+    '    ScriptManager.RegisterStartupScript(Me, Page.GetType, "CategoryList", String.Format("javascript:showCategoryInfo('{0}');", Session("language")), True)
+    'End Sub
 
 #End Region
 
@@ -1461,7 +1461,8 @@ Partial Public Class ucInputRVPCOVID19
         If MyBase.TranDetailLatestVaccineRecord IsNot Nothing AndAlso _
             MyBase.EHSTransactionLatestVaccineRecord IsNot Nothing AndAlso _
             MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
-            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory IsNot Nothing Then
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory IsNot Nothing AndAlso _
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory <> String.Empty Then
             'Carry Forward
             dtMainCategory = Status.GetDescriptionAllListFromDBEnumCode("VSSC19MainCategory")
         Else

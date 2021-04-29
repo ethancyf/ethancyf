@@ -4100,6 +4100,7 @@ EHS2019/EHS/HCVU/Images/button/btn_Continue_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_ConversionRateHistory.png -text
 EHS2019/EHS/HCVU/Images/button/btn_ConversionRateHistory_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_CreateConversionRate.png -text
+EHS2019/EHS/HCVU/Images/button/btn_CreateNewLot.png -text
 EHS2019/EHS/HCVU/Images/button/btn_DataMigration.png -text
 EHS2019/EHS/HCVU/Images/button/btn_DataMigration_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_Deactivate.png -text
@@ -5267,6 +5268,14 @@ EHS2019/EHS/ImmDInterface/Monitor/ImmdMonitorReceive.bat -text
 EHS2019/EHS/ImmDInterface/Monitor/ImmdMonitorSend.bat -text
 EHS2019/EHS/ImmDInterface/Monitor/Settings/ImmdMonitorReceive.ini -text
 EHS2019/EHS/ImmDInterface/Monitor/Settings/ImmdMonitorSend.ini -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/send_step1.rfs -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/send_step2.bat -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/send_step3.bat -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/send_step4.bat -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/send_step5.rfs -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/send_step6.bat -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/autoGenScript/sftp_account.txt -text
+EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EHS_DOC_74c/send_EHS_job.bat -text
 EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EVS_ADOPC/autoGenScript/sftp_account.txt -text
 EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EVS_ADOPC/last_success_adopc_receive.txt -text
 EHS2019/EHS/ImmDInterface/Transfer/ImmdTransferSectionFile/EVS_ADOPC/last_success_adopc_receive_syn.txt -text
@@ -8680,6 +8689,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMappingRequest_add.sql -tex
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMappingSummary_get_byLotNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getActive_ByBoothLotNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getActive_ByCentre.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getActive_ByLotNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll_ForCentre.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineLotMapping_getAll_ForPrivate.sql -text
@@ -9958,6 +9968,8 @@ EHS2019/EHS_DB/dbEVS/Trigger/ProfessionalSubmissionResult_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccVerification_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccountStaging_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccount_after_upd.sql -text
+EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotDetailHistory_after_del.sql -text
+EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotDetailHistory_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotMapping_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_DataEntryPracticeMapping_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_DataEntryUserAC_after_upd.sql -text

@@ -212,22 +212,22 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents imgExpiryDateFromErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''lblNewRecordStatus control.
+    '''lblRecordStatus control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblNewRecordStatus As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblRecordStatus As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''ddlNewRecordStatus control.
+    '''ddlRecordStatus control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlNewRecordStatus As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents ddlRecordStatus As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
     '''ibtnSearch control.
@@ -410,13 +410,22 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents lblConVaccineBrandName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblBrandWarning control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblBrandWarning As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''hfConVaccineBrandId control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents hfConVaccineBrandId As Global.System.Web.UI.WebControls.HiddenField
+    Protected WithEvents hfConVaccineBrandId As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblConVaccineLotNo control.
@@ -428,13 +437,13 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents lblConVaccineLotNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''hfConVaccineLotNo control.
+    '''lblLotNoWarning control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents hfConVaccineLotNo As Global.System.Web.UI.WebControls.HiddenField
+    Protected WithEvents lblLotNoWarning As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblConVaccineExpiryDateText control.
@@ -446,13 +455,40 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents lblConVaccineExpiryDateText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''hfConVaccineExpiryDateText control.
+    '''lblExpiryDateWarming control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents hfConVaccineExpiryDateText As Global.System.Web.UI.WebControls.HiddenField
+    Protected WithEvents lblExpiryDateWarming As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConLotAssignStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConLotAssignStatusItem control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConLotAssignStatusItem As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConLotNewAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConLotNewAssignStatus As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''ibtnRecordBackToInput control.
@@ -554,6 +590,24 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents ddlVaccineBrandName As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''lblEditBrandName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEditBrandName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEditBrandID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEditBrandID As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''imgVaccineBrandNameErr control.
     '''</summary>
     '''<remarks>
@@ -581,6 +635,15 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents txtVaccineLotNo As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''lblEditVaccineLotNo control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEditVaccineLotNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''imgVaccineLotNoErr control.
     '''</summary>
     '''<remarks>
@@ -597,6 +660,15 @@ Partial Public Class VaccineLotCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVaccineExpiryDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEditExpiryDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEditExpiryDateText As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''txtVaccineExpiryDateText control.
@@ -644,6 +716,33 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents imgVaccineExpiryDateTextErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblLotAssignStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlVaccineLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlVaccineLotAssignStatus As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgLotAssignErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgLotAssignErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''txtVaccineLotNoFilter control.
     '''</summary>
     '''<remarks>
@@ -689,13 +788,22 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents lblERecordHeading As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''panEditRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panEditRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''hfEVaccineLotNo control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents hfEVaccineLotNo As Global.System.Web.UI.WebControls.HiddenField
+    Protected WithEvents hfEVaccineLotNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''hfEVaccineLotBrand control.
@@ -704,7 +812,7 @@ Partial Public Class VaccineLotCreation
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents hfEVaccineLotBrand As Global.System.Web.UI.WebControls.HiddenField
+    Protected WithEvents hfEVaccineLotBrand As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblEConVaccineBrandName control.
@@ -714,6 +822,15 @@ Partial Public Class VaccineLotCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblEConVaccineBrandName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEConVaccineBrandTradeName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEConVaccineBrandTradeName As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblEConVaccineLotNo control.
@@ -732,6 +849,33 @@ Partial Public Class VaccineLotCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblEConVaccineExpiryDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEConVaccineLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEConVaccineLotAssignStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEConNewVaccineLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEConNewVaccineLotAssignStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEConVaccineLotAssignStatusItem control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEConVaccineLotAssignStatusItem As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblEConVaccineNewRecordStatus control.
@@ -842,6 +986,15 @@ Partial Public Class VaccineLotCreation
     Protected WithEvents ibtnEditRecordBack As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''ibtnEditRecordEdit control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnEditRecordEdit As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
     '''ibtnEditRecordRemove control.
     '''</summary>
     '''<remarks>
@@ -858,6 +1011,15 @@ Partial Public Class VaccineLotCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnEditRecordCancel As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenEditRecordRemove control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenEditRecordRemove As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''ModalPopupConfirmRemove control.
@@ -912,4 +1074,85 @@ Partial Public Class VaccineLotCreation
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ucNoticePopUpConfirmCancel As Global.HCVU.ucNoticePopUp
+
+    '''<summary>
+    '''panCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCentreList As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panCentreListHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCentreListHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCentreListHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCentreListHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panCentreContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCentreContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''popupMsgBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents popupMsgBox As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''gvCentre control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvCentre As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''ibtnCloseCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnCloseCentreList As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenCentreList As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''popupCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents popupCentreList As Global.AjaxControlToolkit.ModalPopupExtender
 End Class

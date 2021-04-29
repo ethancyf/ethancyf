@@ -31,7 +31,7 @@
         <td style="padding-bottom: 3px">
             <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" style="position:relative;left:-4px;top:-2px" />
             <asp:Image ID="imgOutreachCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
+                ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False"  style="position:relative;top:-2px" />
             <asp:ImageButton ID="btnSearchOutreach" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"
                 ImageAlign="AbsMiddle" style="position:relative;top:-2px" />
             <asp:Label ID="lblOutreachCode" runat="server" CssClass="tableText" Style="display: none" />
@@ -50,8 +50,8 @@
     <tr>
         <td style="width:205px;vertical-align:top">
             <asp:Label ID="lblCMainCategoryText" runat="server" CssClass="tableTitle" Height="25px" Text ="<%$ Resources:Text, Category%>" />
-            <asp:Imagebutton ID="imgCCategoryInfo" runat="server" AlternateText="<%$ Resources:Text, Category%>" ImageAlign="Top" 
-                ImageUrl="<%$ Resources:ImageUrl, Infobtn %>" style="position:relative;top:0px" OnClientClick="" />
+            <asp:Image ID="imgCCategoryInfo" runat="server" AlternateText="<%$ Resources:Text, Category%>" ImageUrl="<%$ Resources:ImageUrl, Infobtn %>" 
+                style="vertical-align:top;position:relative;top:0px" onclick="javascript:showCategoryInfo()" onmouseover="this.style.cursor='pointer'" />
         </td>
         <td style="vertical-align:top">
             <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">

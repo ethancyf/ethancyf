@@ -16,7 +16,14 @@ GO
 -- Modified date:   
 -- CR No.:     
 -- Description:    
--- =============================================   
+-- =============================================
+-- =============================================  
+-- Modification History  
+-- Modified by:  Nichole Ip
+-- Modified date:   01 Apr 2021
+-- CR No.:     CRe20-023 
+-- Description: Vaccine lot detail contains a field called lot_assign_Status for control the display on lot management
+-- =============================================
 -- =============================================  
 -- Modification History  
 -- Created by:  Raiman Chong  
@@ -73,7 +80,8 @@ BEGIN
   VLD.[Expiry_Date] , 
   VLD.[New_Record_Status],
   VLD.[Record_Status],
-  VLD.[Request_Type]
+  VLD.[Request_Type],
+  VLD.[Lot_Assign_Status]
  FROM   
   [COVID19VaccineLotDetail] VLD WITH(NOLOCK)  
    INNER JOIN [COVID19VaccineBrandDetail] VBD WITH(NOLOCK)  

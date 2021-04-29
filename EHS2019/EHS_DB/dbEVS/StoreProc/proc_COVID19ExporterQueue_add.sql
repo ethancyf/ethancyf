@@ -17,6 +17,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			INT20-0088
+-- Modified by:		Winnie SUEN
+-- Modified date:	23 Apr 2021
+-- Description:		1. Fix duplicate sub category code
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-0023-29 (RVP support staff)
 -- Modified by:		Winnie SUEN
 -- Modified date:	13 Apr 2021
@@ -548,7 +555,7 @@ AS
                 AND VSSMainCat.Status_Value = MainCategory.AdditionalFieldValueCode
              LEFT OUTER JOIN StatusData AS VSSSubCat WITH(NOLOCK)
              ON VSSSubCat.Enum_Class = 'VSSC19SubCategory'
-                AND VSSMainCat.Column_Name = MainCategory.AdditionalFieldValueCode
+                AND VSSSubCat.Column_Name = MainCategory.AdditionalFieldValueCode
                 AND VSSSubCat.Status_Value = SubCategory.AdditionalFieldValueCode
         WHERE vt.Create_Dtm < @In_Period_To
               AND ((pinfo.Update_Dtm >= @In_Period_From

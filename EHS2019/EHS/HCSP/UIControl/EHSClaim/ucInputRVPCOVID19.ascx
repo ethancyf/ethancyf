@@ -110,8 +110,8 @@
     <tr>
         <td style="width:205px;vertical-align:top">
             <asp:Label ID="lblCMainCategoryText" runat="server" CssClass="tableTitle" Height="25px" Text ="<%$ Resources:Text, Category%>" />
-            <asp:Imagebutton ID="imgCCategoryInfo" runat="server" AlternateText="<%$ Resources:Text, Category%>" ImageAlign="Top" 
-                ImageUrl="<%$ Resources:ImageUrl, Infobtn %>" style="position:relative;top:0px" OnClientClick="" />
+            <asp:Image ID="imgCCategoryInfo" runat="server" AlternateText="<%$ Resources:Text, Category%>" ImageUrl="<%$ Resources:ImageUrl, Infobtn %>" 
+                style="vertical-align:top;position:relative;top:0px" onclick="javascript:showCategoryInfo()" onmouseover="this.style.cursor='pointer'" />
         </td>
         <td style="vertical-align:top">
             <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">

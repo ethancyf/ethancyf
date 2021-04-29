@@ -733,7 +733,8 @@ Namespace Component
         Public Const Remove As String = "D"
         Public Const Expired As String = "E"
 
-        Public Const ClassCode As String = "VaccineLotRecordStatus"
+        Public Const ClassCode As String = "VaccineLotCreationRecordStatus"
+        'Public Const ClassCode As String = "VaccineLotRecordStatus"
     End Class
 
     Public Class VaccineLotDetailLotAssignStatus

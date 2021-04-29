@@ -203,12 +203,9 @@ Namespace Component.ClaimRules
             Public Const ClaimRuleBlock = "ClaimRuleBlock"
         End Class
 
-        ' CRE20-0XX (Gov SIV 2020/21) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         Public Class CheckList
             Public Const GovSIVList As String = "GOVSIVLIST"
         End Class
-        ' CRE20-0XX (Gov SIV 2020/21) [End][Chris YIM]
 
 #Region "RuleResult Class"
         <Serializable()> MustInherit Class RuleResult
@@ -2227,9 +2224,9 @@ Namespace Component.ClaimRules
             ' If No Transaction, use Account Creation Date, with ServiceDateBack Limit
             ' --------------------------------------------------------------------------
             Dim dtmServiceDate As DateTime = udtEHSAccount.CreateDtm
+            Dim udtTransactionBLL As New EHSTransactionBLL()
 
             If Not udtEHSAccount.TransactionID Is Nothing AndAlso udtEHSAccount.TransactionID.Trim() <> "" Then
-                Dim udtTransactionBLL As New EHSTransactionBLL()
                 udtEHSTransaction = udtTransactionBLL.LoadEHSTransaction(udtEHSAccount.TransactionID)
                 dtmServiceDate = udtEHSTransaction.ServiceDate
                 blnWithTransaction = True
@@ -2460,6 +2457,9 @@ Namespace Component.ClaimRules
                     ' Check vaccine only
                     Dim udtInputPicker As New InputPickerModel()
 
+                    udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+                    udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
+
                     ' Exclude the current transaction
                     Dim udtFilterEHSClaimTranDetail As TransactionDetailModelCollection = udtTranDetailVaccineList.RemoveByTransactionID(udtEHSTransaction.TransactionID)
 
@@ -2489,6 +2489,34 @@ Namespace Component.ClaimRules
                                                                                             udtTranDetail.SubsidizeCode)
 
                                 Dim udtSubsidizeItemDetailList As SubsidizeItemDetailsModelCollection = Me._udtSchemeDetailBLL.getSubsidizeItemDetails(udtSubsidizeGroupClaim.SubsidizeItemCode)
+
+                                If udtTranDetail.SubsidizeItemCode.Trim = SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19 AndAlso _
+                                    udtTranDetail.AvailableItemCode.Trim <> "1STDOSE" Then
+
+                                    Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
+                                    Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
+                                    Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+                                    For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
+                                        'Find the latest COVID19 transaction in EHS
+                                        If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = "1STDOSE" Then
+                                            If udtLatestC19Vaccine Is Nothing Then
+                                                udtLatestC19Vaccine = udtC19Vaccine
+                                            Else
+                                                If udtC19Vaccine.ServiceReceiveDtm > udtLatestC19Vaccine.ServiceReceiveDtm Then
+                                                    udtLatestC19Vaccine = udtC19Vaccine
+                                                End If
+                                            End If
+                                        End If
+                                    Next
+
+                                    'Only allow EHS Transaction, not include CMS / CIMS record
+                                    If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
+                                        udtLatestC19Transaction = udtTransactionBLL.LoadClaimTran(udtLatestC19Vaccine.TransactionID.Trim)
+                                        udtInputPicker.LatestC19Transaction = udtLatestC19Transaction
+                                    End If
+
+                                End If
 
                                 ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
                                 ' -----------------------------------------------------------------------------------------

@@ -14,9 +14,6 @@ Namespace Component.VaccineLot
 
 #Region "Constant"
         Public Class CACHE_STATIC_DATA
-            Public Const CACHE_ALL_COVID19VaccineBrandLotDetail As String = "COVID19BLL_ALL_COVID19VaccineBrandLotDetail"
-            Public Const CACHE_ALL_VaccineCentreSPMapping As String = "COVID19BLL_ALL_VaccineCentreSPMapping"
-            'Public Const CACHE_ALL_VaccineCentre As String = "VaccineLotBLL_ALL_VaccineCentre"
             Public Const CACHE_ALL_VaccineBrand As String = "VaccineLotBLL_ALL_VaccineBrand"
             Public Const CACHE_ALL_VaccineBooth As String = "VaccineLotBLL_ALL_VaccineBooth"
         End Class
@@ -26,6 +23,7 @@ Namespace Component.VaccineLot
             Public Const ACTION_EDIT As String = "E"
             Public Const ACTION_REJECT As String = "R"
             Public Const ACTION_CANCELREQUEST As String = "C"
+            Public Const ACTION_UPDATE As String = "U"
         End Class
 
         Public Class VaccineLotRecordConstantType
@@ -36,6 +34,12 @@ Namespace Component.VaccineLot
 
         End Class
         Public Class VaccineLotRequestType
+            Public Const REQUESTTYPE_REMOVE = "R"
+            Public Const REQUESTTYPE_NEW = "N"
+            Public Const REQUESTTYPE_AMEND = "A"
+        End Class
+
+        Public Class VaccineLotDetailRequestType
             Public Const REQUESTTYPE_REMOVE = "R"
             Public Const REQUESTTYPE_NEW = "N"
             Public Const REQUESTTYPE_AMEND = "A"
@@ -206,24 +210,43 @@ Namespace Component.VaccineLot
         End Function
 
 
-        Public Function CheckTransactionAdditionalFieldByVaccineLotNo(ByVal strVaccineLotNo As String, Optional ByVal udtDB As Database = Nothing) As Boolean
-            'Validation for checking the pending record on Tx (Lot Creation)
-            If udtDB Is Nothing Then udtDB = New Database()
-            Dim dt As New DataTable()
+        'Public Function CheckTransactionAdditionalFieldByVaccineLotNo(ByVal strVaccineLotNo As String, Optional ByVal udtDB As Database = Nothing) As Boolean
+        '    'Validation for checking the pending record on Tx (Lot Creation)
+        '    If udtDB Is Nothing Then udtDB = New Database()
+        '    Dim dt As New DataTable()
 
-            Try
-                Dim prams() As SqlParameter = {udtDB.MakeInParam("@VaccineLotNo", SqlDbType.Char, 20, strVaccineLotNo)}
-                udtDB.RunProc("proc_COVID19TransactionAdditionalField_check_byVaccineLotNo", prams, dt)
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@VaccineLotNo", SqlDbType.Char, 20, strVaccineLotNo)}
+        '        udtDB.RunProc("proc_COVID19TransactionAdditionalField_check_byVaccineLotNo", prams, dt)
 
-                Return CBool(dt.Rows(0)(0))
+        '        Return CBool(dt.Rows(0)(0))
 
-            Catch eSQL As SqlException
-                Throw eSQL
-            Catch ex As Exception
-                Throw
-            End Try
+        '    Catch eSQL As SqlException
+        '        Throw eSQL
+        '    Catch ex As Exception
+        '        Throw
+        '    End Try
 
-        End Function
+        'End Function
+
+        'Public Function CheckMappingServicePeriodByVaccineLotNo(ByVal strVaccineLotNo As String, Optional ByVal udtDB As Database = Nothing) As String
+
+        '    If udtDB Is Nothing Then udtDB = New Database()
+        '    Dim dt As New DataTable()
+
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@VaccineLotNo", SqlDbType.Char, 20, strVaccineLotNo)}
+        '        udtDB.RunProc("proc_COVID19VaccineLotMapping_get_byVaccineLotNo", prams, dt)
+
+        '        Return dt.Rows(0)("Service_Period_To").ToString()
+
+        '    Catch eSQL As SqlException
+        '        Throw eSQL
+        '    Catch ex As Exception
+        '        Throw
+        '    End Try
+
+        'End Function
 
         Public Function GetVaccineLotCreationSearch(ByVal strBrand As String, ByVal strVaccLotNo As String, ByVal strExpiryDtmFrom As String, ByVal strExpiryDtmTo As String, ByVal strRecordStatus As String, Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
             'Lot Creation
@@ -244,7 +267,7 @@ Namespace Component.VaccineLot
                                                 udtDB.MakeInParam("@vaccine_lot_no", SqlDbType.VarChar, 20, IIf(strVaccLotNo.Trim.Equals(String.Empty), DBNull.Value, strVaccLotNo.Trim)), _
                                                 udtDB.MakeInParam("@expiry_date_from", SqlDbType.DateTime, 8, IIf(strExpiryDtmFrom.Trim.Equals(String.Empty), DBNull.Value, udtFormatter.convertDate(strExpiryDtmFrom.Trim, String.Empty))), _
                                                 udtDB.MakeInParam("@expiry_date_to", SqlDbType.DateTime, 8, IIf(strExpiryDtmTo.Trim.Equals(String.Empty), DBNull.Value, udtFormatter.convertDate(strExpiryDtmTo.Trim, String.Empty))), _
-                                                 udtDB.MakeInParam("@new_record_status", SqlDbType.VarChar, 10, IIf(strRecordStatus.Trim.Equals(String.Empty), DBNull.Value, strRecordStatus.Trim))}
+                                                 udtDB.MakeInParam("@record_status", SqlDbType.VarChar, 10, IIf(strRecordStatus.Trim.Equals(String.Empty), DBNull.Value, strRecordStatus.Trim))}
 
 
 
@@ -266,13 +289,34 @@ Namespace Component.VaccineLot
             End Try
         End Function
 
+        Public Function CheckVaccineLotDetailExist(ByVal strVaccineLotNo As String, Optional ByVal udtDB As Database = Nothing) As DataTable
+            'Validation for checking the pending record on Tx (Lot Creation)
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim dt As New DataTable()
 
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@brand", SqlDbType.VarChar, 10, DBNull.Value), _
+                                               udtDB.MakeInParam("@vaccine_lot_no", SqlDbType.VarChar, 20, strVaccineLotNo)}
+               
+                'udtDB.RunProc("proc_COVID19VaccineLotDetail_check_byLotNo", prams, dt)
+                'Return CBool(dt.Rows(0)(0))
+                udtDB.RunProc("proc_COVID19VaccineLotDetail_get_ByLotNo", prams, dt)
+
+                Return dt
+
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+        End Function
         Public Function GetVaccineLotCreationModalByLotNo(ByVal strVaccineLotNo As String, ByVal strVaccineLotBrandId As String) As VaccineLotCreationModel
             Dim udtDB As New Database()
             Dim dt As New DataTable()
             Dim udtVaccineLotCreationList As VaccineLotCreationModel = Nothing
             ' dt = GetVaccineLotCreationListByLotNo(strVaccineLotId)
-            Dim parms() As SqlParameter = {udtDB.MakeInParam("@brand", SqlDbType.VarChar, 10, strVaccineLotBrandId), _
+            Dim parms() As SqlParameter = {udtDB.MakeInParam("@brand", SqlDbType.VarChar, 10, IIf(strVaccineLotBrandId.Trim.Equals(String.Empty), DBNull.Value, strVaccineLotBrandId.Trim)), _
                                             udtDB.MakeInParam("@vaccine_lot_no", SqlDbType.VarChar, 20, strVaccineLotNo)}
 
             udtDB.RunProc("proc_COVID19VaccineLotDetail_get_byLotNo", parms, dt)
@@ -282,9 +326,9 @@ Namespace Component.VaccineLot
                     Dim dr As DataRow = dt.Rows(0)
                     udtVaccineLotCreationList = New VaccineLotCreationModel(
                         CType(dr.Item("Vaccine_Lot_No"), String).Trim, _
-                        CType(dr.Item("BrandName"), String).Trim, _
-                        CType(dr.Item("BrandID"), String).Trim, _
-                        CType(dr.Item("ExpiryDate"), String).Trim, _
+                        CType(dr.Item("Brand_Name"), String).Trim, _
+                        CType(dr.Item("Brand_ID"), String).Trim, _
+                        CType(dr.Item("Expiry_Date"), String).Trim, _
                         CType(dr.Item("Record_Status"), String).Trim, _
                         CStr(IIf(dr.Item("New_Record_Status") Is DBNull.Value, String.Empty, dr.Item("New_Record_Status"))).Trim, _
                         CType(dr.Item("Create_By"), String).Trim, _
@@ -297,34 +341,18 @@ Namespace Component.VaccineLot
                         CType(IIf(dr.Item("Request_Dtm") Is DBNull.Value, Nothing, dr.Item("Request_Dtm")), DateTime), _
                         CStr(IIf(dr.Item("New_Expiry_date") Is DBNull.Value, String.Empty, dr.Item("New_Expiry_date"))).Trim, _
                         CStr(IIf(dr.Item("Approve_By") Is DBNull.Value, String.Empty, dr.Item("Approve_By"))).Trim, _
-                        CType(IIf(dr.Item("Approve_Dtm") Is DBNull.Value, Nothing, dr.Item("Approve_Dtm")), DateTime))
+                        CType(IIf(dr.Item("Approve_Dtm") Is DBNull.Value, Nothing, dr.Item("Approve_Dtm")), DateTime), _
+                        CType(dr.Item("Brand_Trade_Name"), String).Trim, _
+                         CStr(IIf(dr.Item("Lot_Assign_Status") Is DBNull.Value, String.Empty, dr.Item("Lot_Assign_Status"))).Trim, _
+                         CStr(IIf(dr.Item("New_Lot_Assign_Status") Is DBNull.Value, String.Empty, dr.Item("New_Lot_Assign_Status"))).Trim)
                 End If
             End If
 
             Return udtVaccineLotCreationList
 
         End Function
-        Public Function GetVaccineLotCreationListByLotNo(ByVal strVaccLotNo As String) As DataTable
 
-            Dim udtDB As New Database()
-            Dim dtResult As New DataTable()
-
-
-            Dim parms() As SqlParameter = {udtDB.MakeInParam("@brand", SqlDbType.VarChar, 10, DBNull.Value), _
-                                                udtDB.MakeInParam("@vaccine_lot_no", SqlDbType.VarChar, 20, IIf(strVaccLotNo.Trim.Equals(String.Empty), DBNull.Value, strVaccLotNo.Trim)), _
-                                                udtDB.MakeInParam("@expiry_date_from", SqlDbType.DateTime, 8, DBNull.Value), _
-                                                udtDB.MakeInParam("@expiry_date_to", SqlDbType.DateTime, 8, DBNull.Value), _
-                                                 udtDB.MakeInParam("@new_record_status", SqlDbType.VarChar, 10, DBNull.Value), _
-                                               udtDB.MakeInParam("@result_limit_1st_enable", SqlDbType.Bit, 10, 1), _
-                                               udtDB.MakeInParam("@result_limit_override_enable", SqlDbType.Bit, 10, 1), _
-                                               udtDB.MakeInParam("@override_result_limit  ", SqlDbType.Bit, 10, 1)}
-
-            udtDB.RunProc("proc_COVID19VaccineLotDetail_search", parms, dtResult)
-            Return dtResult
-
-        End Function
-
-        Public Function VaccineLotCreationAction(ByVal strVaccineLotNo As String, ByVal strActionType As String, ByVal tsmp As Byte()) As Boolean
+        Public Function VaccineLotCreationAction(ByVal strVaccineLotNo As String, ByVal strActionType As String, ByVal tsmp As Byte(), Optional ByVal strlotAssignStatus As String = Nothing) As Boolean
             Dim udtHCVUUser As HCVUUserModel
             Dim udtHCVUUserBLL As New HCVUUserBLL
 
@@ -335,8 +363,8 @@ Namespace Component.VaccineLot
 
             Dim parms() As SqlParameter = {udtDB.MakeInParam("@Vaccine_Lot_No", SqlDbType.VarChar, 20, strVaccineLotNo.Trim()), _
                                           udtDB.MakeInParam("@Action_Type", SqlDbType.VarChar, 2, strActionType), _
-                                          udtDB.MakeInParam("@update_by", SqlDbType.VarChar, 20, udtHCVUUser.UserID), _
-                                          udtDB.MakeInParam("@request_by", SqlDbType.VarChar, 20, udtHCVUUser.UserID), _
+                                          udtDB.MakeInParam("@user_id", SqlDbType.VarChar, 20, udtHCVUUser.UserID), _
+                                          udtDB.MakeInParam("@lot_assign_status", SqlDbType.Char, 1, strlotAssignStatus), _
                                           udtDB.MakeInParam("@tsmp", SqlDbType.Timestamp, 8, tsmp)}
 
             Try
@@ -358,22 +386,23 @@ Namespace Component.VaccineLot
 
         End Function
 
-
         Public Function SaveVaccineLotCreationRecord(ByVal udtVaccineLotCreationRecord As VaccineLotCreationModel) As Boolean
             Dim dtResult As New DataTable
             Dim udtDB As New Database
             Try
 
                 Dim Parms() As SqlParameter = { _
-                udtDB.MakeInParam("@Vaccine_Lot_No", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.VaccineLotNo), _
-                udtDB.MakeInParam("@Brand_ID", SqlDbType.VarChar, 10, udtVaccineLotCreationRecord.BrandId), _
-                udtDB.MakeInParam("@Expiry_Date", SqlDbType.DateTime, 20, udtVaccineLotCreationRecord.VaccineExpiryDate), _
-                udtDB.MakeInParam("@record_Status", SqlDbType.Char, 1, VaccineLotRecordConstantType.VaccineLotRecordStatus_Active), _
-                udtDB.MakeInParam("@New_Record_Status", SqlDbType.Char, 1, VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval), _
+                udtDB.MakeInParam("@vaccine_Lot_No", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.VaccineLotNo), _
+                udtDB.MakeInParam("@brand_ID", SqlDbType.VarChar, 10, udtVaccineLotCreationRecord.BrandId), _
+                udtDB.MakeInParam("@expiry_Date", SqlDbType.DateTime, 20, udtVaccineLotCreationRecord.VaccineExpiryDate), _
+                udtDB.MakeInParam("@record_Status", SqlDbType.Char, 1, VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval), _
+                udtDB.MakeInParam("@new_Record_Status", SqlDbType.Char, 1, VaccineLotRecordConstantType.VaccineLotRecordStatus_PendingApproval), _
+                udtDB.MakeInParam("@lot_assign_status", SqlDbType.VarChar, 10, udtVaccineLotCreationRecord.VaccineLotAssignStatus), _
                 udtDB.MakeInParam("@request_Type", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.RequestType), _
-                udtDB.MakeInParam("@Create_By", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.CreateBy), _
-                udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.UpdateBy), _
-                udtDB.MakeInParam("@Request_By", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.RequestBy)}
+                udtDB.MakeInParam("@create_By", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.CreateBy), _
+                udtDB.MakeInParam("@update_By", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.UpdateBy), _
+                udtDB.MakeInParam("@request_By", SqlDbType.VarChar, 20, udtVaccineLotCreationRecord.RequestBy), _
+                udtDB.MakeInParam("@tsmp", SqlDbType.Timestamp, 8, udtVaccineLotCreationRecord.TSMP)}
 
                 udtDB.RunProc("proc_COVID19VaccineLotDetail_add", Parms)
 
@@ -474,14 +503,6 @@ Namespace Component.VaccineLot
             dt = GetVaccineLotRequestByRequestID(strRequestId, strRecordStatus)
 
 
-            '(ByVal strRequestID As String, ByVal strVaccineLotNo As String, ByVal strCentreName As String, ByVal strBooth As String, ByVal strBrandName As String,
-            '    ByVal strExpiryDate As String, _
-            '            ByVal strEffectiveFrom As String, ByVal strEffectiveTo As String, ByVal strRecordStatus As String, ByVal strRequestType As String, _
-            '            ByVal strCreateBy As String, ByVal dtmCreateDtm As Nullable(Of DateTime), ByVal strUpdateBy As String, _
-            '            ByVal dtmUpdateDtm As Nullable(Of DateTime), ByVal byteTSMP As Byte(), ByVal strRequestBy As String, _
-            '            ByVal dtmRequestDtm As Nullable(Of DateTime), ByVal strApproveBy As String, ByVal dtmApproveDtm As Nullable(Of DateTime), _
-            '            ByVal strRejectedBy As String, ByVal dtmRejectedDtm As Nullable(Of DateTime))
-
             If Not IsNothing(dt) Then
                 If dt.Rows.Count > 0 Then
                     Dim dr As DataRow = dt.Rows(0)
@@ -575,60 +596,93 @@ Namespace Component.VaccineLot
 
 
         End Function
+        Public Function GetVaccineLotLotMappingInUseByLotNo(ByVal strVaccLotNo As String) As DataTable
+
+            Dim udtDB As New Database()
+            Dim dtResult As New DataTable()
+
+
+            Dim parms() As SqlParameter = {udtDB.MakeInParam("@VaccineLotNo", SqlDbType.VarChar, 20, strVaccLotNo.Trim)}
+
+            udtDB.RunProc("proc_COVID19VaccineLotMapping_getActive_ByLotNo", parms, dtResult)
+            Return dtResult
+
+        End Function
+
+        Public Function FilterCentreByServiceType(ByVal strServiceType1 As String, Optional ByVal strServiceType2 As String = Nothing) As String
+
+            Dim strFilterServiceType As String
+
+            strFilterServiceType = "[Service_Type] IN ('" + strServiceType1 + "'"
+            If strServiceType2 IsNot String.Empty Then
+                strFilterServiceType += ",'" + strServiceType2 + "'"
+            End If
+            strFilterServiceType += ")"
+
+            Return strFilterServiceType
+
+        End Function
+
+        Public Function FilterLotDetailByRecordStatus(ByVal strRecordStatus As String) As String
+
+            Dim strFilterServiceType As String
+
+            strFilterServiceType = "[Record_status] ='" + strRecordStatus + "'"
+
+
+            Return strFilterServiceType
+
+        End Function
+
+        Public Function FilterLotDetailByNewRecordStatus(ByVal strNewRecordStatus As String) As String
+            'new record status='p' is a pending record
+            Dim strFilterServiceType As String
+
+            strFilterServiceType = "[New_Record_Status] ='" + strNewRecordStatus + "'"
+
+
+            Return strFilterServiceType
+
+        End Function
+
+
+        Public Function FilterLotDetailByLotAssignStatus(ByVal strLotAssignStatus As String) As String
+
+            Dim strFilterServiceType As String
+
+            strFilterServiceType = "[Lot_Assign_status] ='" + strLotAssignStatus + "'"
+
+
+            Return strFilterServiceType
+
+        End Function
 
 
 
 #Region "Cache"
+        'Public Function GetCOVID19VaccineBrandDetail() As DataTable
+        '    'Get the detail of vaccine brand information
+        '    Dim dt As New DataTable
+        '    Dim db As New Database
 
+        '    If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineBrand)) Then
 
-        Public Function GetCOVID19VaccineBrandLotDetail() As DataTable
-            'Get the detail of vaccine brand information
-            Dim dt As New DataTable
-            Dim db As New Database
+        '        dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineBrand), DataTable)
 
-            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail)) Then
+        '    Else
 
-                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail), DataTable)
+        '        Try
+        '            db.RunProc("proc_COVID19VaccineBrandDetail_getAll", dt)
 
-            Else
+        '            Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_VaccineBrand, dt)
+        '        Catch ex As Exception
+        '            Throw
+        '        End Try
+        '    End If
 
-                Try
-                    db.RunProc("proc_COVID19VaccineBrandLotDetail_getAll", dt)
+        '    Return dt
 
-                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_COVID19VaccineBrandLotDetail, dt)
-                Catch ex As Exception
-                    Throw
-                End Try
-            End If
-
-            Return dt
-
-        End Function
-
-
-        Public Function GetCOVID19VaccineBrandDetail() As DataTable
-            'Get the detail of vaccine brand information
-            Dim dt As New DataTable
-            Dim db As New Database
-
-            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineBrand)) Then
-
-                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineBrand), DataTable)
-
-            Else
-
-                Try
-                    db.RunProc("proc_COVID19VaccineBrandDetail_getAll", dt)
-
-                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_VaccineBrand, dt)
-                Catch ex As Exception
-                    Throw
-                End Try
-            End If
-
-            Return dt
-
-        End Function
+        'End Function
 
 
 
@@ -676,32 +730,6 @@ Namespace Component.VaccineLot
             Return dt
 
         End Function
-
-
-        Public Function GetVaccineCentreSPMapping() As DataTable
-            Dim dt As New DataTable
-            Dim db As New Database
-
-            If Not IsNothing(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentreSPMapping)) Then
-
-                dt = CType(HttpRuntime.Cache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentreSPMapping), DataTable)
-
-            Else
-
-                Try
-                    db.RunProc("proc_VaccineCentreSPMapping_getAll", dt)
-
-                    Common.ComObject.CacheHandler.InsertCache(CACHE_STATIC_DATA.CACHE_ALL_VaccineCentreSPMapping, dt)
-                Catch ex As Exception
-                    Throw
-                End Try
-            End If
-
-            Return dt
-
-        End Function
-
-
 
 #End Region
 

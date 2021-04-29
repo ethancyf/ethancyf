@@ -21,12 +21,11 @@ Namespace Component.VaccineLot
         Private _strApproveBy As String
         Private _dtmApproveDtm As Nullable(Of DateTime)
         Private _byteTSMP As Byte()
-
-
-
-
-
         Private _strRequestType As String
+        Private _strBrandTradeName As String
+        Private _strLotAssignStatus As String
+        Private _strNewLotAssignStatus As String
+
 
 
         Public Property VaccineLotNo() As String
@@ -192,6 +191,34 @@ Namespace Component.VaccineLot
             End Set
         End Property
 
+
+        Public Property BrandTradeName() As String
+            Get
+                Return _strBrandTradeName
+            End Get
+            Set(ByVal value As String)
+                _strBrandTradeName = value
+            End Set
+        End Property
+
+        Public Property NewVaccineLotAssignStatus() As String
+            Get
+                Return _strNewLotAssignStatus
+            End Get
+            Set(ByVal value As String)
+                _strNewLotAssignStatus = value
+            End Set
+        End Property
+
+        Public Property VaccineLotAssignStatus() As String
+            Get
+                Return _strLotAssignStatus
+            End Get
+            Set(ByVal value As String)
+                _strLotAssignStatus = value
+            End Set
+        End Property
+
         Public Sub New()
 
         End Sub
@@ -213,12 +240,16 @@ Namespace Component.VaccineLot
             _dtmApproveDtm = udtVaccineLotModel.ApproveDtm
             _byteTSMP = udtVaccineLotModel.TSMP
             _strRequestType = udtVaccineLotModel.RequestType
+            _strBrandTradeName = udtVaccineLotModel.BrandTradeName
+            _strLotAssignStatus = udtVaccineLotModel.VaccineLotAssignStatus
+            _strNewLotAssignStatus = udtVaccineLotModel.NewVaccineLotAssignStatus
         End Sub
 
         Public Sub New(ByVal strVaccineLotNo As String, ByVal strBrandName As String, ByVal strBrandId As String, ByVal strVaccineExpiryDate As String, _
                         ByVal strRecordStatus As String, ByVal strNewRecordStatus As String, ByVal strCreateBy As String, ByVal dtmCreateDtm As Nullable(Of DateTime), ByVal strUpdateBy As String, _
                         ByVal dtmUpdateDtm As Nullable(Of DateTime), ByVal byteTSMP As Byte(), ByVal strRequestType As String, ByVal strRequestBy As String, _
-                        ByVal dtmRequestDtm As Nullable(Of DateTime), ByVal strNewVaccineLotExpiryDate As String, ByVal strApproveBy As String, ByVal dtmApproveDtm As Nullable(Of DateTime))
+                        ByVal dtmRequestDtm As Nullable(Of DateTime), ByVal strNewVaccineLotExpiryDate As String, ByVal strApproveBy As String, _
+                        ByVal dtmApproveDtm As Nullable(Of DateTime), ByVal strBrandTradeName As String, ByVal strLotAssignStatus As String, ByVal strNewLotAssignStatus As String)
 
             _strVaccineLotNo = strVaccineLotNo
             _strBrandId = strBrandId
@@ -240,6 +271,9 @@ Namespace Component.VaccineLot
 
 
             _strRequestType = IIf(strRequestType Is DBNull.Value, "", strRequestType)
+            _strBrandTradeName = strBrandTradeName
+            _strLotAssignStatus = strLotAssignStatus
+            _strNewLotAssignStatus = strNewLotAssignStatus
         End Sub
 
     End Class

@@ -7,10 +7,12 @@ var timer;
 var lang;
 var initialTime;
 var displayTime;
-var remainTime;
 var reminderID;
 var reminderMessageID;
 var reminderMessage;
+var exccessSessionTime;
+var exccessReminderTime;
+var reminderPopuped;
 
 // Execute ResetRemainTime() on every async postback
 Sys.Application.add_init(AppInit);
@@ -26,16 +28,22 @@ function StartTimeoutReminder(_initialTime, _displayTime, _lang, _reminderID, _r
     reminderID = _reminderID;
     reminderMessageID = _reminderMessageID;
     displayTime = _displayTime;
-
-    remainTime = initialTime;
+    reminderPopuped = false;
+    reminderMessage = document.getElementById(reminderMessageID).innerHTML;
     clearTimeout(timer);
 
-    if (displayTime != 0 )
+    var now = Date.now();
+    exccessSessionTime = now + (initialTime * 1000);
+    exccessReminderTime = now + ((initialTime * 1000) - (displayTime * 60 * 1000));
+
+    if (displayTime != 0)
         CountDown();
 }
 
 function CountDown() {
-    if (remainTime <= 0) {
+    var currentTime = Date.now();
+
+    if (exccessSessionTime <= currentTime) {
         if (lang == "")
             window.location = "../SessionTimeout.aspx";
         else
@@ -44,11 +52,10 @@ function CountDown() {
         return;
     }
 
-    if (remainTime == (displayTime * 60)) {
+    if (exccessReminderTime <= currentTime && !reminderPopuped) {
         ShowReminder();
+        reminderPopuped = true;
     }
-
-    remainTime = remainTime - 1;
 
     timer = setTimeout("CountDown()", 1000);
 }
@@ -86,7 +93,10 @@ function ReminderOK_Click() {
 }
 
 function ResetRemainTime() {
-    remainTime = initialTime;
+    var now = Date.now();
+    exccessSessionTime = now + (initialTime * 1000);
+    exccessReminderTime = now + ((initialTime * 1000) - (displayTime * 60 * 1000));
+    reminderPopuped = false;
 }
 
 function GetCurrentTime() {

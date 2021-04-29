@@ -18,6 +18,9 @@
 
 
     <script type="text/javascript">
+
+        var lbVaccineCentreBooth_id = "<%=lbVaccineCentreBooth.ClientID%>";
+
         $(document).ready(function () {
 
             bindMultiselectForBooth();
@@ -26,14 +29,15 @@
 
         });
         function bindMultiselectForBooth() {
-            $("#ctl00_ContentPlaceHolder1_lbVaccineCentreBooth").hide();
-
-            $("#ctl00_ContentPlaceHolder1_lbVaccineCentreBooth").multiselect({
+            $("#" + lbVaccineCentreBooth_id).hide();
+            
+            
+            $("#" + lbVaccineCentreBooth_id).multiselect({
                 includeSelectAllOption: true,
                 maxHeight: 350,
                 numberDisplayed: 1,
                 onChange: function (element, checked) {
-                    var brands = $('#ctl00_ContentPlaceHolder1_lbVaccineCentreBooth option:selected');
+                    var brands = $('#' + lbVaccineCentreBooth_id + ' option:selected');
                     var selected = 'Selected: ';
                     var i = 0;
                     $(brands).each(function (index, brand) {
@@ -45,7 +49,7 @@
                     $('#lbVaccineCentreSelectedLabel').html(selected);
                 },
                 onSelectAll: function (element, checked) {
-                    var brands = $('#ctl00_ContentPlaceHolder1_lbVaccineCentreBooth option:selected');
+                    var brands = $('#' + lbVaccineCentreBooth_id +' option:selected');
                     var selected = 'Selected: ';
                     var i = 0;
                     $(brands).each(function (index, brand) {
@@ -57,7 +61,7 @@
                     $('#lbVaccineCentreSelectedLabel').html(selected);
                 },
                 onDeselectAll: function (element, checked) {
-                    var brands = $('#ctl00_ContentPlaceHolder1_lbVaccineCentreBooth option:selected');
+                    var brands = $('#' + lbVaccineCentreBooth_id + ' option:selected');
                     var selected = 'Selected: ';
                     var i = 0;
                     $(brands).each(function (index, brand) {
@@ -80,7 +84,7 @@
 
         }
         function bindBoothSelectedLabel() {
-            var brands = $('#ctl00_ContentPlaceHolder1_lbVaccineCentreBooth option:selected');
+            var brands = $('#' + lbVaccineCentreBooth_id + ' option:selected');
             var selected = 'Selected: ';
             var i = 0;
             $(brands).each(function (index, brand) {
@@ -174,7 +178,7 @@
                                     </ItemTemplate>
                                     <ItemStyle VerticalAlign="Top" Width="150px" />
                                 </asp:TemplateField>--%>
-                                <asp:TemplateField SortExpression="New_Service_Period_From" HeaderText="<%$ Resources:Text, VaccineLotEffectiveDateFrom %>">
+                                <asp:TemplateField SortExpression="Service_Period_From" HeaderText="<%$ Resources:Text, VaccineLotEffectiveDateFrom %>">
                                     <ItemTemplate>
                                         <asp:Label ID="lblSVLEffFrom" runat="server" Text='<%# Eval("Service_Period_From", "{0:dd MMM yyyy}")%>'></asp:Label>
                                         <asp:Label ID="lblSVLEffFromSymbol" runat="server" Text="<br>>>"  Visible="false"></asp:Label>

@@ -176,13 +176,31 @@ Partial Public Class VaccineLotCreationApproval
     Protected WithEvents lblDetailExpiryD As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblDetailNewExpiryD control.
+    '''lblDetailTitleLotAssignStatus control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblDetailNewExpiryD As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblDetailTitleLotAssignStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDetailLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDetailLotAssignStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDetailNewLotAssignStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDetailNewLotAssignStatus As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblDetailTitleRecordStatus control.
@@ -372,4 +390,85 @@ Partial Public Class VaccineLotCreationApproval
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ucNoticePopUpConfirmReject As Global.HCVU.ucNoticePopUp
+
+    '''<summary>
+    '''panCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCentreList As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''panCentreListHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCentreListHeading As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCentreListHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCentreListHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''panCentreContent control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panCentreContent As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''popupMsgBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents popupMsgBox As Global.CustomControls.MessageBox
+
+    '''<summary>
+    '''gvCentre control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents gvCentre As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''ibtnCloseCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnCloseCentreList As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''btnHiddenCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnHiddenCentreList As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''popupCentreList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents popupCentreList As Global.AjaxControlToolkit.ModalPopupExtender
 End Class
