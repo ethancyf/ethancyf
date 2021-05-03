@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -126,8 +132,8 @@ BEGIN
 		source char(1),
 		create_dtm datetime,
 		dataentry_by varchar(20),
-		practice_name varchar(100),
-		practice_name_chi nvarchar(100),
+		practice_name nvarchar(300),
+		practice_name_chi nvarchar(300),
 		original_acc_id char(20),
 		Display_Acc_ID	char(20),
 		transaction_id char(20),
@@ -344,7 +350,7 @@ EXEC [proc_SymmetricKey_open]
 		t.voucher_acc_id,
 		t.scheme_code,
 		convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-		convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as Eng_Name,
+		convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as Eng_Name,
 		convert(nvarchar, DecryptByKey(t.Encrypt_Field3)) as Chi_Name,
 		t.dob,
 		t.exact_dob,

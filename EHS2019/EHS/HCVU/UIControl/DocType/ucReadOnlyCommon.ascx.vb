@@ -67,6 +67,7 @@ Partial Public Class ucReadOnlyCommon
                     DocTypeCode.IR,
                     DocTypeCode.HKP,
                     DocTypeCode.RFNo8,
+                    DocTypeCode.ROP140,
                     DocTypeCode.OTHER
                     ' CRE19-001 (VSS 2019) [End][Winnie]
                     lblVCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
@@ -167,6 +168,7 @@ Partial Public Class ucReadOnlyCommon
                     DocTypeCode.IR,
                     DocTypeCode.HKP,
                     DocTypeCode.RFNo8,
+                    DocTypeCode.ROP140,
                     DocTypeCode.OTHER
                     ' CRE19-001 (VSS 2019) [End][Winnie]
                     lblHCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)

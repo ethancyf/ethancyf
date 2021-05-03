@@ -6,13 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
--- =============================================  
--- Modification History  
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
--- =============================================  
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -58,7 +58,7 @@ AS BEGIN
 		DOD,
 		Exact_DOD,
 		DOR,
-		CONVERT(varchar, DecryptByKey(Encrypt_Field2)) AS [Death_English_Name],
+		CONVERT(varchar(100), DecryptByKey(Encrypt_Field2)) AS [Death_English_Name],
 		Record_Status
 	FROM
 		DeathRecordEntry

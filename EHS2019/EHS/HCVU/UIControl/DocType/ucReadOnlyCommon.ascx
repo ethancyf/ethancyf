@@ -14,7 +14,7 @@
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
                 <td style="vertical-align: top">
-                    <asp:Label ID="lblHEName" runat="server" CssClass="tableText"></asp:Label>
+                    <asp:Label ID="lblHEName" runat="server" CssClass="tableText" style="word-wrap: break-word; word-break:break-all"></asp:Label>
                     <asp:Label ID="lblHCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHDOBGenderText" runat="server" Text="<%$ Resources:Text, DOBLongGender %>"></asp:Label></td>

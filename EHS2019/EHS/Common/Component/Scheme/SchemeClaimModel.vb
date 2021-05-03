@@ -140,11 +140,13 @@ Namespace Component.Scheme
         Private _enumAvailableHCSPSubPlatform As EnumAvailableHCSPSubPlatform
         Private _strProperPracticeAvail As String
         Private _strProperPracticeSectionID As String
-
-        ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Private _strReadonlyHCSP As String
-        ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Private _strAllowTempAccBOClaim As String
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+
 
 #End Region
 
@@ -537,8 +539,6 @@ Namespace Component.Scheme
             End Set
         End Property
 
-        ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Public Property ReadonlyHCSP() As Boolean
             Get
                 If _strReadonlyHCSP = YesNo.Yes Then
@@ -557,7 +557,29 @@ Namespace Component.Scheme
 
             End Set
         End Property
-        ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public Property AllowTempAccBOClaim() As Boolean
+            Get
+                If _strAllowTempAccBOClaim = YesNo.Yes Then
+                    Return True
+                Else
+                    Return False
+                End If
+
+            End Get
+            Set(ByVal value As Boolean)
+                If value = True Then
+                    _strAllowTempAccBOClaim = YesNo.Yes
+                Else
+                    _strAllowTempAccBOClaim = YesNo.No
+                End If
+
+            End Set
+        End Property
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 #End Region
 
 #Region "Constructor"
@@ -595,11 +617,11 @@ Namespace Component.Scheme
             Me._strProperPracticeAvail = udtSchemeClaimModel._strProperPracticeAvail
             Me._strProperPracticeSectionID = udtSchemeClaimModel._strProperPracticeSectionID
             Me._udtSubsidizeGroupClaimModelList = udtSchemeClaimModel._udtSubsidizeGroupClaimModelList
-
-            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Me.ReadonlyHCSP = udtSchemeClaimModel.ReadonlyHCSP
-            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me.AllowTempAccBOClaim = udtSchemeClaimModel.AllowTempAccBOClaim
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
         End Sub
 
@@ -612,7 +634,8 @@ Namespace Component.Scheme
                         ByVal strTSWCheckingEnable As String, ByVal strControlType As String, ByVal dicControlSetting As Dictionary(Of String, String), _
                         ByVal strConfirmedTransactionStatus As String, _
                         ByVal strReimbursementMode As String, ByVal strReimbursementCurrency As String, ByVal strAvailableHCSPSubPlatform As String, _
-                        ByVal strProperPracticeAvail As String, ByVal strProperPracticeSectionID As String, ByVal strReadonlyHCSP As String)
+                        ByVal strProperPracticeAvail As String, ByVal strProperPracticeSectionID As String, ByVal strReadonlyHCSP As String, _
+                        ByVal strAllowTempAccBOClaim As String)
 
             Me._strSchemeCode = strSchemeCode
             Me._intSchemeSeq = intSchemeSeq
@@ -642,17 +665,16 @@ Namespace Component.Scheme
             Me._enumAvailableHCSPSubPlatform = [Enum].Parse(GetType(EnumAvailableHCSPSubPlatform), strAvailableHCSPSubPlatform)
             Me._strProperPracticeAvail = strProperPracticeAvail
             Me._strProperPracticeSectionID = strProperPracticeSectionID
-
-            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Me._strReadonlyHCSP = strReadonlyHCSP
-            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Me._strAllowTempAccBOClaim = strAllowTempAccBOClaim
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
         End Sub
 #End Region
 
 #Region "Addition Memeber"
-
         Private _udtSubsidizeGroupClaimModelList As SubsidizeGroupClaimModelCollection
 
         Public Property SubsidizeGroupClaimList() As SubsidizeGroupClaimModelCollection

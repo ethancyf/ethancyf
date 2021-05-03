@@ -480,7 +480,7 @@
                                                     <tr>
                                                         <td>
                                                             <asp:TextBox ID="txtTabeHSAccountName" runat="server" Width="176" onChange="convertToUpper(this)"
-                                                                ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>" MaxLength="40"/>
+                                                                ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>" MaxLength="70"/>
                                                         </td>
                                                         <td>
                                                             <asp:Image ID="imgTabeHSAccountNameErr" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" Visible="False"  style="position:relative;top:-1px;left:1px"/>
@@ -2133,7 +2133,7 @@
                                                 <asp:Label ID="lblAdvancedSearchNameText" runat="server" Text="<%$ Resources:Text, ServiceProviderName %>"></asp:Label>
                                             </td>
                                             <td style="width: 220px">
-                                                <asp:TextBox ID="txtAdvancedSearchName" runat="server" MaxLength="40" onBlur="Upper(event,this)"
+                                                <asp:TextBox ID="txtAdvancedSearchName" runat="server" MaxLength="70" onBlur="Upper(event,this)"
                                                     ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>"></asp:TextBox>
                                             </td>
                                             <td style="width: 180px">

@@ -707,6 +707,24 @@ Partial Public Class EHSClaimV1
     Protected WithEvents btnRecipientConditionHelpClose As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''panConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panConfirmSelectPractice As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpConfirmSelectPractice As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
     '''ModalPopupConfirmCancel control.
     '''</summary>
     '''<remarks>
@@ -939,6 +957,24 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnModalPopupRecipientConditionHelp As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExtenderConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderConfirmSelectPractice As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupConfirmSelectPractice As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''imgHeaderClaimVoucher control.

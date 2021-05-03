@@ -14,7 +14,13 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023 
+-- Modified by:		Martin Tang
+-- Modified date:	27 Apr 2021
+-- Description:		1. Performance turning 
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT20-0088
@@ -113,7 +119,7 @@ AS
         DECLARE @VBarWithQuote AS CHAR(3)= '"|"';
         DECLARE @PendingStatus AS CHAR(1)= 'P';
         DECLARE @SkipedStatus AS CHAR(1)= 'S';
-        DECLARE @CompleteStatus AS CHAR(1)= 'C';
+        --DECLARE @CompleteStatus AS CHAR(1)= 'C';
         DECLARE @Insert AS CHAR(1)= 'I';
         DECLARE @Update AS CHAR(1)= 'U';
         DECLARE @Delete AS CHAR(1)= 'D';
@@ -131,6 +137,77 @@ AS
 
         EXEC [proc_SymmetricKey_open];
 
+        --check COVID19ExporterForceSendList
+        SELECT cefsl.Transaction_ID
+        INTO #ResultsWithTx
+        FROM COVID19ExporterForceSendList AS cefsl WITH(NOLOCK);
+
+        --get TX within the period
+        INSERT INTO #ResultsWithTx
+        SELECT DISTINCT 
+               vt.Transaction_ID
+        FROM VoucherTransaction AS vt WITH(NOLOCK)
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
+             ON vt.Transaction_ID = td.Transaction_ID
+                AND td.Subsidize_Item_Code = 'C19'
+        WHERE vt.Create_Dtm < @In_Period_To
+              AND ((vt.Transaction_Dtm >= @In_Period_From
+                    AND vt.Transaction_Dtm < @In_Period_To)
+                   OR (vt.Update_Dtm >= @In_Period_From
+                       AND vt.Update_Dtm < @In_Period_To));
+        --get updated PersonalInformation within the period
+        SELECT pinfo.Voucher_Acc_ID, 
+               pinfo.Doc_Code
+        INTO #ResultsWithVccIdOnly
+        FROM PersonalInformation AS pinfo WITH(NOLOCK)
+        WHERE(pinfo.Update_Dtm >= @In_Period_From
+              AND pinfo.Update_Dtm < @In_Period_To);
+        --get updated tempPersonalInformation within the period
+        SELECT pinfo.Voucher_Acc_ID, 
+               pinfo.Doc_Code
+        INTO #ResultsWithTempVccIdOnly
+        FROM tempPersonalInformation AS pinfo WITH(NOLOCK)
+        WHERE(pinfo.Update_Dtm >= @In_Period_From
+              AND pinfo.Update_Dtm < @In_Period_To);
+        --[Start]get active C19 Transaction_ID to query--
+        SELECT vt.Transaction_ID
+        INTO #ResultsWithActiveTx
+        FROM VoucherTransaction AS vt WITH(NOLOCK)
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
+             ON vt.Transaction_ID = td.Transaction_id
+                AND td.Subsidize_Item_Code = 'C19'
+             INNER JOIN #ResultsWithTx AS r
+             ON r.Transaction_ID = td.Transaction_id
+        WHERE vt.Create_Dtm < @In_Period_To;
+
+        INSERT INTO #ResultsWithActiveTx
+        SELECT vt.Transaction_ID
+        FROM VoucherTransaction AS vt WITH(NOLOCK)
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
+             ON vt.Transaction_ID = td.Transaction_id
+                AND td.Subsidize_Item_Code = 'C19'
+             INNER JOIN #ResultsWithVccIdOnly AS rv
+             ON vt.Voucher_Acc_ID = rv.Voucher_Acc_ID
+                AND vt.Doc_Code = rv.Doc_Code
+        WHERE vt.Create_Dtm < @In_Period_To;
+
+        INSERT INTO #ResultsWithActiveTx
+        SELECT vt.Transaction_ID
+        FROM VoucherTransaction AS vt WITH(NOLOCK)
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
+             ON vt.Transaction_ID = td.Transaction_id
+                AND td.Subsidize_Item_Code = 'C19'
+             INNER JOIN #ResultsWithTempVccIdOnly AS rtv
+             ON vt.Temp_Voucher_Acc_ID = rtv.Voucher_Acc_ID
+                AND vt.Doc_Code = rtv.Doc_Code
+        WHERE vt.Create_Dtm < @In_Period_To;
+
+        SELECT DISTINCT 
+               vt.Transaction_ID
+        INTO #ResultsWithActiveDistinctTx
+        FROM #ResultsWithActiveTx AS vt;
+        --[End] get active C19 Transaction_ID to query--
+        --get the details
         SELECT CASE
                    WHEN vt.Voucher_Acc_ID <> ''
                    THEN CASE pinfo.Doc_Code
@@ -288,8 +365,8 @@ AS
                    THEN pinfo.Encrypt_Field9
                    ELSE tpi.Encrypt_Field9
                END AS 'ccc6', 
-               REPLACE(LTRIM(RTRIM(ISNULL(CASE 
-											  WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeCOVID19OR, @SchemeCodeCOVID19RVP, @SchemeCodeRVP)
+               REPLACE(LTRIM(RTRIM(ISNULL(CASE
+                                              WHEN vt.Scheme_Code IN(@SchemeCodeVSS, @SchemeCodeCOVID19OR, @SchemeCodeCOVID19RVP, @SchemeCodeRVP)
                                               THEN ContactNo.AdditionalFieldValueCode
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'Phone_no', 
@@ -397,7 +474,7 @@ AS
                    THEN 'Other vaccination provider'
                    ELSE ''
                END AS 'Vaccination_provider_description', 
-			   'Department of Health COVID-19 Vaccination Programme' AS 'Vaccination_provider_local_description', 
+               'Department of Health COVID-19 Vaccination Programme' AS 'Vaccination_provider_local_description', 
                REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
                                               WHEN @SchemeCodeRVP
                                               THEN rvpl.Homename_Eng
@@ -428,11 +505,16 @@ AS
                '' AS 'Side_effect', --b 
                '' AS 'Route_of_administration_local_description', --b 
                '' AS 'Site_of_administration_local_description', --b 
-               CASE WHEN LTRIM(RTRIM(ISNULL(JoinEHRSS.AdditionalFieldValueCode, 'N'))) = 'Y' THEN 'Y' ELSE 'N' END AS 'eHRSS_Consent', 
+               CASE
+                   WHEN LTRIM(RTRIM(ISNULL(JoinEHRSS.AdditionalFieldValueCode, 'N'))) = 'Y'
+                   THEN 'Y'
+                   ELSE 'N'
+               END AS 'eHRSS_Consent', 
                LTRIM(RTRIM(CONVERT(VARCHAR(19), vt.Create_Dtm, 120))) AS 'Source_record_create_datetime', 
                LTRIM(RTRIM(ISNULL(vt.Create_By_SmartID, 'N'))) AS 'Reserved_field_1', -- Create by Smart IC: Y/N
                LTRIM(RTRIM(ISNULL(CASE
-                                      WHEN vt.Scheme_Code IN (@SchemeCodeCOVID19CVC, @SchemeCodeCOVID19DH, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR, @SchemeCodeCOVID19SR)
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeCOVID19CVC, @SchemeCodeCOVID19DH, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR,
+                                      @SchemeCodeCOVID19SR)
                                       THEN vcsm.Centre_ID
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_2', -- Centre Code
@@ -442,17 +524,17 @@ AS
                    ELSE REPLACE(LTRIM(RTRIM(ISNULL(tpi.EC_Serial_No, ''))), @VBar, @VBarWithQuote)
                END AS 'Reserved_field_3', -- EC Serial No.
                LTRIM(RTRIM(ISNULL(CASE
-                                      WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeRVP, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR)
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeVSS, @SchemeCodeRVP, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR)
                                       THEN MainCategory.AdditionalFieldValueCode
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_4', -- Main Category
-               LTRIM(RTRIM(ISNULL(CASE 
-									  WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeRVP, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR)
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeVSS, @SchemeCodeRVP, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR)
                                       THEN SubCategory.AdditionalFieldValueCode
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_5', -- Sub Category
-               LTRIM(RTRIM(ISNULL(CASE 
-                                      WHEN vt.Scheme_Code IN (@SchemeCodeVSS, @SchemeCodeRVP)
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeVSS, @SchemeCodeRVP)
                                       THEN pro.Registration_Code
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_6', -- Professional Registration no.
@@ -461,13 +543,13 @@ AS
                                       THEN CONVERT(VARCHAR(2), vt.Practice_Display_Seq)
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_7', --Practice Display Seq
-               LTRIM(RTRIM(ISNULL(CASE 
-                                      WHEN vt.Scheme_Code IN (@SchemeCodeRVP, @SchemeCodeCOVID19RVP)
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeRVP, @SchemeCodeCOVID19RVP)
                                       THEN rvpl.RCH_code
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_8', --RCH Code
-               LTRIM(RTRIM(ISNULL(CASE 
-                                      WHEN vt.Scheme_Code IN (@SchemeCodeCOVID19OR)
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeCOVID19OR)
                                       THEN orl.Outreach_code
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_9', --Outreach Code
@@ -485,7 +567,9 @@ AS
                @PendingStatus AS 'Record_Status', 
                vt.Transaction_ID
         INTO #Results
-        FROM VoucherTransaction AS vt WITH(NOLOCK)
+        FROM #ResultsWithActiveDistinctTx AS rwt
+             INNER JOIN VoucherTransaction AS vt WITH(NOLOCK)
+             ON rwt.Transaction_ID = vt.Transaction_ID
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
@@ -556,97 +640,97 @@ AS
              LEFT OUTER JOIN StatusData AS VSSSubCat WITH(NOLOCK)
              ON VSSSubCat.Enum_Class = 'VSSC19SubCategory'
                 AND VSSSubCat.Column_Name = MainCategory.AdditionalFieldValueCode
-                AND VSSSubCat.Status_Value = SubCategory.AdditionalFieldValueCode
-        WHERE vt.Create_Dtm < @In_Period_To
-              AND ((pinfo.Update_Dtm >= @In_Period_From
-                    AND pinfo.Update_Dtm < @In_Period_To)
-                   OR (tpi.Update_Dtm >= @In_Period_From
-                       AND tpi.Update_Dtm < @In_Period_To)
-                   OR (vt.Transaction_Dtm >= @In_Period_From
-                       AND vt.Transaction_Dtm < @In_Period_To)
-                   OR (vt.Update_Dtm >= @In_Period_From
-                       AND vt.Update_Dtm < @In_Period_To)
-                   OR EXISTS
-                            (
-                                SELECT 1
-                                FROM COVID19ExporterForceSendList AS cefsl
-                                WHERE vt.Transaction_ID = cefsl.Transaction_ID
-                             ));
+                AND VSSSubCat.Status_Value = SubCategory.AdditionalFieldValueCode;
+
+        --the Table of the lastest transaction
+        SELECT ceq.Transaction_ID, 
+               ceq.transaction_Type, 
+               ceq.Encrypt_Field2, 
+               ceq.Doc_Type, 
+               ceq.Sex, 
+               ceq.DOB, 
+               ceq.Exact_DOB, 
+               ceq.Encrypt_Field3, 
+               ceq.Encrypt_Field4, 
+               ceq.Encrypt_Field5, 
+               ceq.Encrypt_Field6, 
+               ceq.Encrypt_Field7, 
+               ceq.Encrypt_Field8, 
+               ceq.Encrypt_Field9
+        INTO #ResultsLatestByTransaction
+        FROM
+            (
+                SELECT c.Transaction_ID, 
+                       c.transaction_Type, 
+                       c.Encrypt_Field2, 
+                       c.Doc_Type, 
+                       c.Sex, 
+                       c.DOB, 
+                       c.Exact_DOB, 
+                       c.Encrypt_Field3, 
+                       c.Encrypt_Field4, 
+                       c.Encrypt_Field5, 
+                       c.Encrypt_Field6, 
+                       c.Encrypt_Field7, 
+                       c.Encrypt_Field8, 
+                       c.Encrypt_Field9, 
+                       ROW_NUMBER() OVER(PARTITION BY c.Transaction_ID
+                       ORDER BY c.Update_Dtm DESC) AS rn
+                FROM COVID19ExporterQueue AS c WITH(NOLOCK)--which is using a filtered index "IX_COVID19ExporterQueue"
+                WHERE c.Record_Status = 'C'
+             ) AS ceq
+            INNER JOIN #Results AS r
+            ON r.Transaction_ID = ceq.Transaction_ID
+        WHERE ceq.rn = 1;
 
         --handle Update case
         --Only send the 'Update' record, when the latest record:
         --the Record_Status is complete(C) and
         --personal information is different
-        WITH cteCOVID19Queue -- the view of the lastest transaction
-             AS (SELECT Transaction_ID, 
-                        Encrypt_Field2, 
-                        Doc_Type, 
-                        Sex, 
-                        DOB, 
-                        Exact_DOB, 
-                        Encrypt_Field3, 
-                        Encrypt_Field4, 
-                        Encrypt_Field5, 
-                        Encrypt_Field6, 
-                        Encrypt_Field7, 
-                        Encrypt_Field8, 
-                        Encrypt_Field9, 
-                        ROW_NUMBER() OVER(PARTITION BY Transaction_ID
-                        ORDER BY Update_Dtm DESC) AS rn
-                 FROM COVID19ExporterQueue
-                 WHERE Record_Status = @CompleteStatus)
-             UPDATE r
-               SET transaction_Type = @Update, 
-                   Record_Status = CASE
-                                       WHEN ISNULL(r.HKICDocID, r.otherDocID) = ctecq.Encrypt_Field2
-                                            AND r.Doc_Type = ctecq.Doc_Type
-                                            AND r.Sex = ctecq.Sex
-                                            AND r.DOB = ctecq.DOB
-                                            AND r.Exact_DOB = ctecq.Exact_DOB
-                                            AND r.full_name = ctecq.Encrypt_Field3
-                                            AND r.ccc1 = ctecq.Encrypt_Field4
-                                            AND r.ccc2 = ctecq.Encrypt_Field5
-                                            AND r.ccc3 = ctecq.Encrypt_Field6
-                                            AND r.ccc4 = ctecq.Encrypt_Field7
-                                            AND r.ccc5 = ctecq.Encrypt_Field8
-                                            AND r.ccc6 = ctecq.Encrypt_Field9
-                                       THEN @SkipedStatus
-                                       ELSE @PendingStatus
-                                   END
-             FROM #Results r
-                  INNER JOIN cteCOVID19Queue ctecq
-                  ON r.Transaction_ID = ctecq.Transaction_ID
-                     AND ctecq.rn = 1
-             WHERE r.transaction_Type = @Insert;
+
+        UPDATE r
+          SET transaction_Type = @Update, 
+              Record_Status = CASE
+                                  WHEN ISNULL(r.HKICDocID, r.otherDocID) = ctecq.Encrypt_Field2
+                                       AND r.Doc_Type = ctecq.Doc_Type
+                                       AND r.Sex = ctecq.Sex
+                                       AND r.DOB = ctecq.DOB
+                                       AND r.Exact_DOB = ctecq.Exact_DOB
+                                       AND r.full_name = ctecq.Encrypt_Field3
+                                       AND r.ccc1 = ctecq.Encrypt_Field4
+                                       AND r.ccc2 = ctecq.Encrypt_Field5
+                                       AND r.ccc3 = ctecq.Encrypt_Field6
+                                       AND r.ccc4 = ctecq.Encrypt_Field7
+                                       AND r.ccc5 = ctecq.Encrypt_Field8
+                                       AND r.ccc6 = ctecq.Encrypt_Field9
+                                  THEN @SkipedStatus
+                                  ELSE @PendingStatus
+                              END
+        FROM #Results r
+             INNER JOIN #ResultsLatestByTransaction ctecq
+             ON r.Transaction_ID = ctecq.Transaction_ID
+        WHERE r.transaction_Type = @Insert;
 
         --handle Del case
         --Only send the 'Del' record, when the latest record:
         --the Record_Status is complete(C) and
-        --transaction type is Insert(I) or Update(U) 
-        WITH cteCOVID19Queue -- the view of the lastest transaction
-             AS (SELECT Transaction_ID, 
-                        transaction_Type, 
-                        ROW_NUMBER() OVER(PARTITION BY Transaction_ID
-                        ORDER BY Update_Dtm DESC) AS rn
-                 FROM COVID19ExporterQueue
-                 WHERE Record_Status = @CompleteStatus)
-             UPDATE r
-               SET Record_Status = CASE
-                                       WHEN ctecq.transaction_Type IN(@Insert, @Update)
-                                       THEN @PendingStatus
-                                       ELSE @SkipedStatus
-                                   END
-             FROM #Results r
-                  LEFT OUTER JOIN cteCOVID19Queue ctecq
-                  ON r.Transaction_ID = ctecq.Transaction_ID
-                     AND ctecq.rn = 1
-             WHERE r.transaction_Type = @Delete;
+        --transaction type is Insert(I) or Update(U)        
+        UPDATE r
+          SET Record_Status = CASE
+                                  WHEN ctecq.transaction_Type IN(@Insert, @Update)
+                                  THEN @PendingStatus
+                                  ELSE @SkipedStatus
+                              END
+        FROM #Results r
+             INNER JOIN #ResultsLatestByTransaction ctecq
+             ON r.Transaction_ID = ctecq.Transaction_ID
+        WHERE r.transaction_Type = @Delete;
         -------------------------------------------------------------
         --The transactions are skipped to send in COVID19ExporterException table
         UPDATE r
           SET Record_Status = @SkipedStatus
         FROM #Results r
-             INNER JOIN COVID19ExporterException cee
+             INNER JOIN COVID19ExporterException cee WITH(NOLOCK)
              ON r.Transaction_ID = cee.Transaction_ID;
 
         --The transactions must be send in COVID19ExporterForceSendList table.
@@ -655,27 +739,26 @@ AS
         UPDATE r
           SET Record_Status = @PendingStatus
         FROM #Results r
-             INNER JOIN COVID19ExporterForceSendList cefsl
+             INNER JOIN COVID19ExporterForceSendList cefsl WITH(NOLOCK)
              ON r.Transaction_ID = cefsl.Transaction_ID
         WHERE NOT EXISTS
                         (
                             SELECT 1
-                            FROM COVID19ExporterException AS cee
+                            FROM COVID19ExporterException AS cee WITH(NOLOCK)
                             WHERE r.Transaction_ID = cee.Transaction_ID
                          );
 
         DELETE cefsl
         FROM #Results r
-             INNER JOIN COVID19ExporterForceSendList cefsl
+             INNER JOIN COVID19ExporterForceSendList cefsl WITH(NOLOCK)
              ON r.Transaction_ID = cefsl.Transaction_ID
         WHERE NOT EXISTS
                         (
                             SELECT 1
-                            FROM COVID19ExporterException AS cee
+                            FROM COVID19ExporterException AS cee WITH(NOLOCK)
                             WHERE r.Transaction_ID = cee.Transaction_ID
                          );
         --------------------------------------------------------------
-
         INSERT INTO COVID19ExporterQueue
                (Batch_ID, 
                 Transaction_ID, 
@@ -743,12 +826,44 @@ AS
         FROM #Results;
 
         EXEC [proc_SymmetricKey_close];
+        IF OBJECT_ID('tempdb..#ResultsWithTx') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsWithTx;
+            END;
+        IF OBJECT_ID('tempdb..#ResultsWithActiveDistinctTx') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsWithActiveDistinctTx;
+            END;
 
+        IF OBJECT_ID('tempdb..#ResultsWithActiveDistinctTx') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsWithActiveDistinctTx;
+            END;
+        IF OBJECT_ID('tempdb..#ResultsWithActiveTx') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsWithActiveTx;
+            END;
         IF OBJECT_ID('tempdb..#Results') IS NOT NULL
             BEGIN
                 DROP TABLE #Results;
             END;
+
+        IF OBJECT_ID('tempdb..#ResultsLatestByTransaction') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsLatestByTransaction;
+            END;
+
+        IF OBJECT_ID('tempdb..#ResultsWithVccIdOnly') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsWithVccIdOnly;
+            END;
+
+        IF OBJECT_ID('tempdb..#ResultsWithTempVccIdOnly') IS NOT NULL
+            BEGIN
+                DROP TABLE #ResultsWithTempVccIdOnly;
+            END;
     END;
+
 GO
 
 GRANT EXECUTE ON [dbo].[proc_COVID19ExporterQueue_add] TO HCVU;

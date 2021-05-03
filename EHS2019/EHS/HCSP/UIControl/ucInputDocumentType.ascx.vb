@@ -30,7 +30,7 @@ Partial Public Class ucInputDocumentType
     End Class
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
-    Public Event SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event SelectChineseName_HKIC(ByVal udcInputDocumentType As ucInputDocTypeBase, ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event SelectGender(ByVal udcInputHKIC As ucInputDocTypeBase, ByVal sender As Object, ByVal e As System.EventArgs)
     Public Event SmartIDGenderTips(ByVal sender As Object, ByVal e As System.EventArgs)
 
@@ -76,12 +76,10 @@ Partial Public Class ucInputDocumentType
                     If Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
                         Select Case Me._udtSmartIDContent.SmartIDReadStatus
 
-                            ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                            ' ----------------------------------------------------------------------------------------
                             Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_DiffDOI_LargerDOI, _
                                  BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_SameDOB, _
                                  BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOIDOB_CreateBySmartID_WithoutGender_SameName
-                                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
                                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputHKIDSmartID.ascx", strFolderPath))
                                 udcInputDocumentType.ID = DocumentControlID.HKIDSmartID
                                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList(0)
@@ -114,18 +112,6 @@ Partial Public Class ucInputDocumentType
 
                         End Select
                     Else
-
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                        ' ----------------------------------------------------------------------------------------
-                        'If Me._textOnlyVersion Then
-                        '    Dim udcInputHKIDSmartID As UIControl.DocTypeText.ucInputHKIDSmartID = CType(udcInputDocumentType, UIControl.DocTypeText.ucInputHKIDSmartID)
-                        '    udcInputHKIDSmartID.SmartIDContentModel = Me._udtSmartIDContent
-                        '    AddHandler udcInputHKIDSmartID.SelectedGender, AddressOf udcInputHKID_SelectedGender
-                        'Else
-                        '    Dim udcInputHKIDSmartID As ucInputHKIDSmartID = CType(udcInputDocumentType, ucInputHKIDSmartID)
-                        '    udcInputHKIDSmartID.SmartIDContentModel = Me._udtSmartIDContent
-                        '    AddHandler udcInputHKIDSmartID.SelectedGender, AddressOf udcInputHKID_SelectedGender
-                        'End If
 
                         Select Case Me._udtSmartIDContent.SmartIDReadStatus
 
@@ -166,7 +152,6 @@ Partial Public Class ucInputDocumentType
                                     AddHandler udcInputHKIDSmartIDSignal.SelectedGender, AddressOf udcInputHKID_SelectedGender
                                 End If
                         End Select
-                        ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                     End If
 
@@ -178,119 +163,93 @@ Partial Public Class ucInputDocumentType
                         AddHandler CType(udcInputDocumentType, ucInputHKID).SelectChineseName, AddressOf udcInputHKID_SelectChineseName
                     End If
                 End If
+
             Case DocTypeModel.DocTypeCode.EC
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputEC.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.EC
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.EC)
 
             Case DocTypeModel.DocTypeCode.HKBC
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputHKBC.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.HKBC
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList(0)
 
-                ' CRE16-012 Removal of DOB InWord [Start][Winnie]
                 If Me._udtOrgEHSAccount Is Nothing Then
                     udcInputDocumentType.OrgEHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList(0)
                 Else
                     udcInputDocumentType.OrgEHSPersonalInfo = Me._udtOrgEHSAccount.EHSPersonalInformationList(0)
                 End If
-                ' CRE16-012 Removal of DOB InWord [End][Winnie]
 
             Case DocTypeModel.DocTypeCode.DI
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputDI.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.DI
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.DI)
 
-
             Case DocTypeModel.DocTypeCode.REPMT
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputReentryPermit.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.REPMT
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.REPMT)
 
-
             Case DocTypeModel.DocTypeCode.ID235B
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputID235B.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.ID235B
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ID235B)
 
-
             Case DocTypeModel.DocTypeCode.VISA
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputVISA.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.VISA
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.VISA)
 
-
             Case DocTypeModel.DocTypeCode.ADOPC
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputAdoption.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.ADOPC
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ADOPC)
 
-                ' CRE16-012 Removal of DOB InWord [Start][Winnie]
                 If Me._udtOrgEHSAccount Is Nothing Then
                     udcInputDocumentType.OrgEHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ADOPC)
                 Else
                     udcInputDocumentType.OrgEHSPersonalInfo = Me._udtOrgEHSAccount.EHSPersonalInformationList(0)
                 End If
-                ' CRE16-012 Removal of DOB InWord [End][Winnie]
 
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
             Case DocTypeModel.DocTypeCode.OW
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputOW.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.OW
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OW)
 
             Case DocTypeModel.DocTypeCode.TW
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputTW.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.TW
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.TW)
 
             Case DocTypeModel.DocTypeCode.RFNo8
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputRFNo8.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.RFNo8
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.RFNo8)
 
             Case DocTypeModel.DocTypeCode.OTHER
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputOTHER.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.OTHER
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OTHER)
 
-                ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
-
-
                 ' CRE20-0022 (Immu record) [Start][Martin]
             Case DocTypeModel.DocTypeCode.CCIC
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputCCIC.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.CCIC
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.CCIC)
 
             Case DocTypeModel.DocTypeCode.ROP140
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputROP140.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.ROP140
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+                If Not Me._textOnlyVersion Then
+                    AddHandler CType(udcInputDocumentType, ucInputROP140).SelectChineseName, AddressOf udcInputROP140_SelectChineseName
+                End If
 
             Case DocTypeModel.DocTypeCode.PASS
-
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputPASS.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.PASS
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
-
-
-
                 ' CRE20-0022 (Immu record) [End][Martin]
-
         End Select
 
         udcInputDocumentType.UpdateValue = Me._fillValue
@@ -299,10 +258,7 @@ Partial Public Class ucInputDocumentType
         udcInputDocumentType.ActiveViewChanged = Me.ActiveViewChanged
         udcInputDocumentType.AuditLogEntry = Me._udtAuditLogEntry
         udcInputDocumentType.FixEnglishNameGender = Me._blnFixEnglishNameGender
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
         udcInputDocumentType.EditDocumentNo = Me.EditDocumentNo
-        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
         Me.Built(udcInputDocumentType)
     End Sub
@@ -329,7 +285,7 @@ Partial Public Class ucInputDocumentType
 #Region "Events"
 
     Private Sub udcInputHKID_SelectChineseName(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        RaiseEvent SelectChineseName_HKIC(Me.GetHKICControl(), sender, e)
+        RaiseEvent SelectChineseName_HKIC(Me.GetHKICControl(), DocTypeModel.DocTypeCode.HKIC, sender, e)
     End Sub
 
     Private Sub udcInputHKID_SelectedGender(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -368,6 +324,9 @@ Partial Public Class ucInputDocumentType
         RaiseEvent SmartIDGenderTips(sender, e)
     End Sub
 
+    Private Sub udcInputROP140_SelectChineseName(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent SelectChineseName_HKIC(Me.GetROP140Control(), DocTypeModel.DocTypeCode.ROP140, sender, e)
+    End Sub
 #End Region
 
 #Region "Get Function"

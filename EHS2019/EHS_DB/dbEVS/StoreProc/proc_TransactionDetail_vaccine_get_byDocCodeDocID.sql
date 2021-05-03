@@ -9,6 +9,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	05 Feb 2021
 -- CR No.:			CRE20-022 (Immu record)
@@ -560,7 +567,7 @@ EXEC [proc_SymmetricKey_open]
 		R.[Transaction_Dtm],
 		R.[Ext_Ref_Status],
 		'' AS [Remark],
-		CONVERT(VARCHAR(40), DecryptByKey(R.[Encrypt_Field2])) AS [Eng_Name],
+		CONVERT(VARCHAR(100), DecryptByKey(R.[Encrypt_Field2])) AS [Eng_Name],
 		R.[DOB],
 		R.[Exact_DOB],
 		R.[Sex],

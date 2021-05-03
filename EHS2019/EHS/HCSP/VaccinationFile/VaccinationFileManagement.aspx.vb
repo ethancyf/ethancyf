@@ -9001,7 +9001,7 @@ Partial Public Class VaccinationFileManagement ' 020901
         udcCCCode.BindCCCode()
     End Sub
 
-    Private Sub udcRectifyAccount_SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcRectifyAccount.SelectChineseName_HKIC
+    Private Sub udcRectifyAccount_SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcRectifyAccount.SelectChineseName_HKIC
         Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
 
         'Audit Log
@@ -9076,7 +9076,7 @@ Partial Public Class VaccinationFileManagement ' 020901
 
         ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
         'Sender <> Nothing => User Click "Chinese Name" Btn, build msg box here
-        If Not IsNothing(sender) Then            
+        If Not IsNothing(sender) Then
             Me.udcAcctEditErrorMessage.BuildMessageBox(strValidationFail, udtAuditLog, LogID.LOG00046, AuditLogDesc.Msg00046)
         End If
         ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
@@ -9123,7 +9123,7 @@ Partial Public Class VaccinationFileManagement ' 020901
         Me.ModalPopupExtenderChooseCCCode.Hide()
     End Sub
 
-    Private Sub udcChooseCCCode_Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
+    Private Sub udcChooseCCCode_Confirm(ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
 
         Dim udcIputHKIC As ucInputHKID = Me.udcRectifyAccount.GetHKICControl
         Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctionCode)
@@ -9215,7 +9215,7 @@ Partial Public Class VaccinationFileManagement ' 020901
                     Else
                         'Check CCCode
                         If Me.NeedPopupCCCodeDialog Then
-                            Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputHKIC, Nothing, Nothing)
+                            Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
                             Return False
 
                             Exit Function

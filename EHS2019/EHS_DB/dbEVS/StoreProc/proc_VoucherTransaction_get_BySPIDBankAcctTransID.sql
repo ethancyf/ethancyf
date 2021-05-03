@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-0XX (Immu record)
@@ -1456,7 +1462,7 @@ AS BEGIN
 		T.Total_Claim_Amount,
 		T.Total_Claim_Amount_RMB,
 		CONVERT(varchar, DecryptByKey(T.Encrypt_Field1)) AS [IDNo], 
-		CONVERT(varchar(40), DecryptByKey(T.Encrypt_Field2)) AS [Eng_Name], 
+		CONVERT(varchar(100), DecryptByKey(T.Encrypt_Field2)) AS [Eng_Name], 
 		CONVERT(nvarchar, DecryptByKey(T.Encrypt_Field3)) AS [Chi_Name], 
 		CONVERT(varchar, DecryptByKey(T.Encrypt_Field11)) AS [IDNo2], 
 		T.DataEntry_By,

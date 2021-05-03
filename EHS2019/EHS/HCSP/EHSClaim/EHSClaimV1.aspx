@@ -44,13 +44,13 @@
                 <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationConfirm" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel"
                     MessageText="" />
             </asp:Panel>
-            <asp:Panel Style="display: none" ID="panPopupPracticeSelection" runat="server" BorderStyle="Solid"
+            <asp:Panel Style="display: none;" ID="panPopupPracticeSelection" runat="server" BorderStyle="Solid"
                 BackColor="#E0E0E0" BorderWidth="1px">
                 <div style="padding: 10px 10px 10px 10px; overflow: auto;">
                     <cc3:PracticeRadioButtonGroup runat="server" ID="udcPopupPracticeRadioButtonGroup"
                         HeaderText="<%$ Resources:Text, SelectPractice%>" HeaderTextCss="tableText" PracticeRadioButtonCss="tableText"
                         PracticeTextCss="tableTextChi" HeaderCss="" SchemeLabelCss="tableTitle" SelectButtonURL="~/Images/button/icon_button/btn_Arrow_to_Right.png"
-                        MaskBankAccountNo="True" PanelHeight="400" ShowCloseButton="True" />
+                        MaskBankAccountNo="True" PanelHeight="400" ShowCloseButton="True"    />
                 </div>
             </asp:Panel>
             <asp:Panel Style="display: none" ID="panPopupPrintOptionSelection" runat="server"
@@ -433,6 +433,13 @@
                 </table>
             </asp:Panel>
 
+             <asp:Panel Style="display: none; z-index:10003;" ID="panConfirmSelectPractice" runat="server" Width="600px">
+                <uc1:ucNoticePopUp ID="ucNoticePopUpConfirmSelectPractice" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel" 
+                    MessageText="<%$ Resources:Text, SelectPracticePopup %>"  />
+            </asp:Panel>
+
+
+
             <cc1:ModalPopupExtender ID="ModalPopupConfirmCancel" runat="server" BackgroundCssClass="modalBackgroundTransparent"
                 TargetControlID="btnStep2aCancel" PopupControlID="panPopupConfirmCancel"
                 PopupDragHandleControlID="" RepositionMode="None">
@@ -445,7 +452,7 @@
             <asp:Button Style="display: none" ID="btnModelPopupDuplicateClaimAlert" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupPracticeSelection" runat="server" BackgroundCssClass="modalBackground"
                 TargetControlID="btnModalPopupPracticeSelection" PopupControlID="panPopupPracticeSelection"
-                RepositionMode="None">
+                RepositionMode="None" BehaviorID="panPopupPracticeSelection">
             </cc1:ModalPopupExtender>
             <asp:Button Style="display: none" ID="btnModalPopupPracticeSelection" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupPrintOptionSelection" runat="server" BackgroundCssClass="modalBackground"
@@ -507,6 +514,17 @@
             </cc1:ModalPopupExtender>
             <asp:Button ID="btnModalPopupRecipientConditionHelp" runat="server" Style="display: none" />
             <%-- End of Popup for Subsidize Disabled Remark --%>
+
+            <%-- Popup for Select Practice Confirmation in covid-19 program --%>
+            <cc1:ModalPopupExtender ID="ModalPopupExtenderConfirmSelectPractice" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupConfirmSelectPractice" PopupControlID="panConfirmSelectPractice"
+                PopupDragHandleControlID="panConfirmSelectPracticeHeading" RepositionMode="None" BehaviorID="panConfirmSelectPractice" DropShadow="False">
+            </cc1:ModalPopupExtender>
+          <asp:Button Style="display: none" ID="btnModalPopupConfirmSelectPractice" runat="server"></asp:Button>
+            <%-- End of Popup for Select Practice Confirmation in covid-19 program  --%>
+
+
+
 
             <table style="width: 965px; height: 78px" cellspacing="0" cellpadding="0">
                 <tbody>
@@ -1385,7 +1403,7 @@
                     <cc3:PracticeRadioButtonGroup runat="server" ID="PracticeRadioButtonGroup" HeaderText="<%$ Resources:Text, SelectPractice%>"
                         HeaderTextCss="tableText" PracticeRadioButtonCss="tableText" PracticeTextCss="tableTextChi"
                         SchemeLabelCss="tableTitle" SelectButtonURL="~/Images/button/icon_button/btn_Arrow_to_Right.png"
-                        MaskBankAccountNo="True" ShowCloseButton="False" />
+                        MaskBankAccountNo="True" ShowCloseButton="False"/>
                 </asp:View>
                 <asp:View ID="vEHSClaimError" runat="server">
                     <asp:ImageButton ID="btnInternalErrorBack" TabIndex="2" runat="server"></asp:ImageButton>

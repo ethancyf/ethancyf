@@ -8889,7 +8889,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         Me.ModalPopupExtenderChooseCCCode.Hide()
     End Sub
 
-    Private Sub udcChooseCCCode_Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
+    Private Sub udcChooseCCCode_Confirm(ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
 
         Dim udcIputHKIC As UIControl.DocTypeHCSP.ucInputHKID = Me.udcRectifyAccount.GetHKICControl
         Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctionCode)

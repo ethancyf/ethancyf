@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -66,7 +72,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_VoucherAccountListForMaintR1_get]
 	-- Add the parameters for the stored procedure here
 	--@Scheme_Code char(10),
-	@Eng_Name varchar(40),
+	@Eng_Name varchar(100),
 	@From_Date datetime,
 	@To_Date datetime,
 	@Acct_Type varchar(2),
@@ -210,7 +216,7 @@ BEGIN
 	select t.Voucher_Acc_ID,
 		t.Scheme_Code, 
 		convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-		convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as EName,
+		convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as EName,
 		isNull(convert(nvarchar, DecryptByKey(t.Encrypt_Field3)),'') as CName,
 		t.DOB,
 		t.Exact_DOB,
@@ -335,7 +341,7 @@ BEGIN
 	select t.Voucher_Acc_ID,
 		t.Scheme_Code, 
 		convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-		convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as EName,
+		convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as EName,
 		isNull(convert(nvarchar, DecryptByKey(t.Encrypt_Field3)),'') as CName,
 		t.DOB,
 		t.Exact_DOB,
@@ -458,7 +464,7 @@ BEGIN
 	select t.Voucher_Acc_ID,
 		t.Scheme_Code, 
 		convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-		convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as EName,
+		convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as EName,
 		isNull(convert(nvarchar, DecryptByKey(t.Encrypt_Field3)),'') as CName,
 		t.DOB,
 		t.Exact_DOB,
@@ -604,7 +610,7 @@ BEGIN
 	select t.Voucher_Acc_ID,
 		t.Scheme_Code, 
 		convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-		convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as EName,
+		convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as EName,
 		isNull(convert(nvarchar, DecryptByKey(t.Encrypt_Field3)),'') as CName,
 		t.DOB,
 		t.Exact_DOB,
@@ -726,7 +732,7 @@ BEGIN
 	select t.Voucher_Acc_ID,
 		t.Scheme_Code, 
 		convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-		convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as EName,
+		convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as EName,
 		isNull(convert(nvarchar, DecryptByKey(t.Encrypt_Field3)),'') as CName,
 		t.DOB,
 		t.Exact_DOB,

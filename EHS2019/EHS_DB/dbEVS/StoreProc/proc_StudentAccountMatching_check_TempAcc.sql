@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -55,9 +61,9 @@ AS BEGIN
 		Temp_Acc_Validate_Dtm	datetime,
 		Validated_Acc_Found		char(1),
 		Acc_Doc_Code			char(20),
-		Name_EN					VARCHAR(40),
-		Surname_EN				VARCHAR(40),
-		Given_Name_EN			VARCHAR(40),
+		Name_EN					VARCHAR(100),
+		Surname_EN				VARCHAR(100),
+		Given_Name_EN			VARCHAR(100),
 		Name_CH					NVARCHAR(6),
 		DOB						Datetime,
 		Exact_DOB				CHAR(1),

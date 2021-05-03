@@ -211,7 +211,7 @@ Public Class PracticeRadioButtonGroup
     End Sub
 
 #Region "Event"
-    Private Sub btnPracticeSelection_click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Sub btnPracticeSelection_click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         Dim imageButton As ImageButton = CType(sender, ImageButton)
         Dim strPracticeName As String = imageButton.Attributes("DataTextField")
         Dim strBankAcctNo As String = imageButton.Attributes("DataValueField")
@@ -298,6 +298,7 @@ Public Class PracticeRadioButtonGroup
             Me._blnMaskBankAccountNo = value
         End Set
     End Property
+
 
     Public Property SelectButtonURL() As String
         Get
@@ -488,6 +489,12 @@ Public Class PracticeRadioButtonGroup
             Dim udtGF As New Common.ComFunction.GeneralFunction()
             Dim dtmDate As DateTime = udtGF.GetSystemDateTime()
 
+            'get the scheme list from system parameter to determind that whether show the practice popup in covid-19 program.
+            ' CRE20-023  (Immu record) [Start][Raiman]
+            Dim strSchemeListForSelectPracticePopup As String = udtGF.getSystemParameter("Covid19_PracticeSelectPopup_Scheme")
+            Dim alSchemeListForSelectPracticePopup As ArrayList = New ArrayList(strSchemeListForSelectPracticePopup.Split(";"))
+            ' CRE20-023  (Immu record) [End][Raiman]
+
             For Each practiceDisplay As BLL.PracticeDisplayModel In practiceDisplays
                 ' CRE11-024-01 HCVS Pilot Extension Part 1 [Start]
                 ' -----------------------------------------------------------------------------------------
@@ -584,6 +591,11 @@ Public Class PracticeRadioButtonGroup
                 udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(DirectCast(Me.Page, BasePage).SubPlatform)
                 ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+                ' CRE20-023  (Immu record) [Start][Raiman]
+                Dim blnIsContainCovid19Scheme = False
+                blnIsContainCovid19Scheme = alSchemeListForSelectPracticePopup.Contains("ALL")
+                ' CRE20-023  (Immu record) [End][Raiman]
+
                 For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
                     'Add Space label
                     label = New Label()
@@ -647,6 +659,12 @@ Public Class PracticeRadioButtonGroup
                     End If
                     'CRE16-002 (Revamp VSS) [End][Chris YIM]
 
+
+                    ' CRE20-023  (Immu record) [Start][Raiman]
+                    If (Not blnIsContainCovid19Scheme) Then
+                        blnIsContainCovid19Scheme = alSchemeListForSelectPracticePopup.Contains(udtSchemeClaimModel.SchemeCode)
+                    End If
+                    ' CRE20-023  (Immu record) [End][Raiman]
                 Next
 
                 If blnContainsSelectedScheme = False Then
@@ -676,8 +694,14 @@ Public Class PracticeRadioButtonGroup
                 btnPracticeSelection.ID = String.Format("{0}_PracticeSchemeImageButton_{1}", MyBase.ID, practiceIndex)
                 btnPracticeSelection.ImageUrl = Me._strSelectButtonImgURL
                 btnPracticeSelection.Attributes("DataTextField") = practiceDisplay.PracticeName
-                btnPracticeSelection.Attributes("DataValueField") = practiceDisplay.BankAccountNo
+                btnPracticeSelection.Attributes("DataValueField") = bankAccountNo
                 btnPracticeSelection.Attributes("PracticeDisplaySeq") = practiceDisplay.PracticeID
+
+                ' CRE20-023  (Immu record) [Start][Raiman]
+                btnPracticeSelection.Attributes("PracticeDisplayText") = String.Format("{0} ({1}) ", strPracticeName, practiceDisplay.PracticeID)
+                btnPracticeSelection.Attributes("blnShowPopUp") = blnIsContainCovid19Scheme
+                ' CRE20-023  (Immu record) [End][Raiman]
+
                 AddHandler btnPracticeSelection.Click, AddressOf btnPracticeSelection_click
 
                 tableCell = New TableCell

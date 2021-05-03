@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	27 April 2021
+-- CR No.:			CRE20-023
+-- Description:		Add Column    - [SchemeClaim].[AllowTempAccBOClaim]
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -101,7 +107,8 @@ SELECT a.*,
 		b.[Available_HCSP_SubPlatform],
 		b.[ProperPractice_Avail],
 		b.[ProperPractice_SectionID],
-		b.[Readonly_HCSP]
+		b.[Readonly_HCSP],
+		b.[AllowTempAccBOClaim]	
 FROM
 (select   
 	 [Scheme_Code],  

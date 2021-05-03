@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -73,7 +79,7 @@ EXEC [proc_SymmetricKey_open]
 		--P.CCcode1, P.CCcode2, P.CCcode3, 
 		--P.CCcode4, P.CCcode5, P.CCcode6, 
 		convert(varchar, DecryptByKey(PInfo.[Encrypt_Field1])) as HKID,
-		convert(varchar(40), DecryptByKey(PInfo.[Encrypt_Field2])) as Eng_Name,
+		convert(varchar(100), DecryptByKey(PInfo.[Encrypt_Field2])) as Eng_Name,
 		convert(nvarchar, DecryptByKey(PInfo.[Encrypt_Field3])) as Chi_Name,
 		convert(varchar, DecryptByKey(PInfo.[Encrypt_Field4])) as CCcode1,
 		convert(varchar, DecryptByKey(PInfo.[Encrypt_Field5])) as CCcode2,

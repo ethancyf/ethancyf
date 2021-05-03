@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -383,7 +390,7 @@ AS BEGIN
 	SELECT
 		ROW_NUMBER() OVER(ORDER BY VT.Age, VT.Transaction_ID) as [S/N],
 		VT.Age,
-		dbo.func_get_surname_n_initial(CONVERT(VARCHAR, DecryptByKey(VT.E_Name))) AS [Patient_Name_In_English],
+		dbo.func_get_surname_n_initial(CONVERT(VARCHAR(100), DecryptByKey(VT.E_Name))) AS [Patient_Name_In_English],
 		case VT.Gender			
 				when 'F' then 'Female'
 				when 'M' then 'Male' end as [Gender],
@@ -396,7 +403,7 @@ AS BEGIN
 		CONVERT(VARCHAR(10), VT.Service_Receive_Dtm, 120) AS [Service_Date],
 		[DHC_Service] = CASE WHEN VT.DHC_Service IS NULL THEN 'N' ELSE VT.DHC_Service END,
 		ISNULL(VT.Co_Payment, '') AS [Co_Payment],
-		CONVERT(VARCHAR, DecryptByKey(SP.Encrypt_Field2)) AS [SP_Name_In_English],
+		CONVERT(VARCHAR(100), DecryptByKey(SP.Encrypt_Field2)) AS [SP_Name_In_English],
 		CONVERT(nVARCHAR, DecryptByKey(SP.Encrypt_Field3)) AS [SP_Name_In_Chinese],
 		VT.SP_ID,
 		VT.Service_Type,
@@ -497,7 +504,7 @@ AS BEGIN
 	SELECT
 		ROW_NUMBER() OVER(ORDER BY VT.Age, VT.Transaction_ID) as [S/N],
 		VT.Age,
-		dbo.func_get_surname_n_initial(CONVERT(VARCHAR, DecryptByKey(VT.E_Name))) AS [Patient_Name_In_English],
+		dbo.func_get_surname_n_initial(CONVERT(VARCHAR(100), DecryptByKey(VT.E_Name))) AS [Patient_Name_In_English],
 		case VT.Gender			
 				when 'F' then 'Female'
 				when 'M' then 'Male' end as [Gender],
@@ -509,7 +516,7 @@ AS BEGIN
 		VT.Amount,
 		CONVERT(VARCHAR(10), VT.Service_Receive_Dtm, 120) AS [Service_Date],
 		ISNULL(VT.Co_Payment, '') AS [Co_Payment],
-		CONVERT(VARCHAR, DecryptByKey(SP.Encrypt_Field2)) AS [SP_Name_In_English],
+		CONVERT(VARCHAR(100), DecryptByKey(SP.Encrypt_Field2)) AS [SP_Name_In_English],
 		CONVERT(NVARCHAR, DecryptByKey(SP.Encrypt_Field3)) AS [SP_Name_In_Chinese],
 		VT.SP_ID,
 		VT.Service_Type,
@@ -610,7 +617,7 @@ AS BEGIN
 	SELECT
 		ROW_NUMBER() OVER(ORDER BY VT.Age, VT.Transaction_ID) as [S/N],
 		VT.Age,
-		dbo.func_get_surname_n_initial(CONVERT(VARCHAR, DecryptByKey(VT.E_Name))) AS [Patient_Name_In_English],
+		dbo.func_get_surname_n_initial(CONVERT(VARCHAR(100), DecryptByKey(VT.E_Name))) AS [Patient_Name_In_English],
 		case VT.Gender			
 				when 'F' then 'Female'
 				when 'M' then 'Male' end as [Gender],
@@ -623,7 +630,7 @@ AS BEGIN
 		VT.Amount_RMB,
 		CONVERT(VARCHAR(10), VT.Service_Receive_Dtm, 120) AS [Service_Date],
 		ISNULL(VT.Co_Payment_RMB, '') AS [Co_Payment],
-		CONVERT(VARCHAR, DecryptByKey(SP.Encrypt_Field2)) AS [SP_Name_In_English],
+		CONVERT(VARCHAR(100), DecryptByKey(SP.Encrypt_Field2)) AS [SP_Name_In_English],
 		CONVERT(nVARCHAR, DecryptByKey(SP.Encrypt_Field3)) AS [SP_Name_In_Chinese],
 		VT.SP_ID,
 		VT.Service_Type,

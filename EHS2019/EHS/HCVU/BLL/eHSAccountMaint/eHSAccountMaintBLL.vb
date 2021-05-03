@@ -7,6 +7,7 @@ Imports Common.Component
 Imports Common.Component.ClaimRules
 Imports Common.ComFunction
 Imports Common.Component.DocType
+Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
 
 Public Class eHSAccountMaintBLL
 
@@ -361,7 +362,7 @@ Public Class eHSAccountMaintBLL
                             db.MakeInParam("@Doc_Code", SqlDbType.VarChar, 5000, strDocType), _
                             db.MakeInParam("@IdentityNum", SqlDbType.VarChar, 20, strIdentityNum), _
                             db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, strAdoptionPrefixNum), _
-                            db.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, strEname), _
+                            db.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, strEname), _
                             db.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 6, strCname), _
                             db.MakeInParam("@DOB", SqlDbType.DateTime, 8, IIf(Not dtDOB.HasValue, DBNull.Value, dtDOB)), _
                             db.MakeInParam("@Voucher_Acc_ID", SqlDbType.VarChar, 500, strAccountID), _
@@ -1274,6 +1275,7 @@ Public Class eHSAccountMaintBLL
         Dim udtEHSTransactionBLL As EHSTransaction.EHSTransactionBLL = New EHSTransaction.EHSTransactionBLL
         Dim udtImmDBLL As ImmD.ImmDBLL = New ImmD.ImmDBLL
         Dim strVoidReason As String = String.Empty
+        Dim strVoidReasonBO As String = String.Empty
 
         Dim arrStrSPIDLevel3 As New List(Of String)
 
@@ -1339,43 +1341,68 @@ Public Class eHSAccountMaintBLL
             Else
 
                 strVoidReason = "Remove Temp Account Only whose first validation time over 29 Days by Back Office"
+                strVoidReasonBO = "Remove Temp Account Only by Back Office"
 
-                If Not IsNothing(udtEHSTransactionModel) Then
-                    'CRE13-006 HCVS Ceiling [Start][Karl]                    
+                If Not IsNothing(udtEHSTransactionModel) Then               
                     Dim udtEHSTransaction As EHSTransaction.EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(udtEHSTransactionModel.TransactionID, False, False, udtDB)
                     Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSTransaction.EHSAcct.EHSPersonalInformationList.Filter(udtEHSTransaction.DocCode)
                     Dim drTSMPRow As DataRow = udtEHSTransactionBLL.getEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum)
-                    'CRE13-006 HCVS Ceiling [End][Karl]
 
-                    udtReimbursementBLL.VoidVoucherTransaction(udtEHSTransactionModel.TransactionID, String.Empty, strVoidReason, strUpdateBy, dtmCurrent, udtEHSTransactionModel.TSMP, udtDB)
+                    Select Case udtEHSTransactionModel.RecordStatus
+                        Case EHSTransaction.EHSTransactionModel.TransRecordStatusClass.Reimbursed
+                            'Make Invalid
+                            udtReimbursementBLL.MarkInvalid(udtEHSTransactionModel.TransactionID, udtEHSTransactionModel.TSMP, strUpdateBy, "O", strVoidReasonBO)
 
-                    'CRE13-006 HCVS Ceiling [Start][Karl]
+                            'Refresh EHSTransaction TSMP
+                            Dim udtLatestEHSTransaction As EHSTransaction.EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(udtEHSTransactionModel.TransactionID, False, False)
+
+                            'Confirm Invalid
+                            udtReimbursementBLL.ConfirmInvalid(udtLatestEHSTransaction.TransactionID, udtLatestEHSTransaction.TSMP, udtLatestEHSTransaction.TransactionInvalidation.TSMP, strUpdateBy)
+
+                            'Refresh TempVoucherAccount TSMP
+                            Dim udtLatestTempEHSAccount As EHSAccount.EHSAccountModel = udtEHSAccountBLL.LoadTempEHSAccountByVRID(udtEHSPersonalInfo.VoucherAccID)
+                            udtEHSAccount.TSMP = udtLatestTempEHSAccount.TSMP
+
+                            'Refresh EHSAccountTSMP
+                            drTSMPRow = udtEHSTransactionBLL.getEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum)
+
+                            If drTSMPRow Is Nothing Then
+                                udtEHSTransactionBLL.insertEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strUpdateBy)
+                            Else
+                                udtEHSTransactionBLL.updateEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strUpdateBy, CType(drTSMPRow("TSMP"), Byte()))
+                            End If
+
+                        Case EHSTransaction.EHSTransactionModel.TransRecordStatusClass.PendingApprovalForNonReimbursedClaim
+                            udtEHSTransactionBLL.DeleteEHSTransactionManualReimburse(udtEHSTransaction, strUpdateBy, dtmCurrent)
+
+                            'Refresh TempVoucherAccount TSMP
+                            Dim udtLatestTempEHSAccount As EHSAccount.EHSAccountModel = udtEHSAccountBLL.LoadTempEHSAccountByVRID(udtEHSPersonalInfo.VoucherAccID)
+                            udtEHSAccount.TSMP = udtLatestTempEHSAccount.TSMP
+
+                        Case Else
+                            udtReimbursementBLL.VoidVoucherTransaction(udtEHSTransactionModel.TransactionID, String.Empty, strVoidReason, strUpdateBy, dtmCurrent, udtEHSTransactionModel.TSMP, udtDB)
+
+                            If drTSMPRow Is Nothing Then
+                                udtEHSTransactionBLL.insertEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strUpdateBy)
+                            Else
+                                udtEHSTransactionBLL.updateEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strUpdateBy, CType(drTSMPRow("TSMP"), Byte()))
+                            End If
+
+                    End Select
+
                     'Transaction void , update writeoff for related account (same doc code & doc no)
                     Dim udtSubsidizeWriteOffBLL As New SubsidizeWriteOffBLL
 
-
                     If String.IsNullOrEmpty(udtEHSPersonalInfo.DocCode) = False AndAlso String.IsNullOrEmpty(udtEHSPersonalInfo.IdentityNum) = False _
                     AndAlso String.IsNullOrEmpty(udtEHSPersonalInfo.ExactDOB) = False Then
-                        'CRE14-016 (To introduce "Deceased" status into eHS) [Start][Chris YIM]
-                        '-----------------------------------------------------------------------------------------
                         udtSubsidizeWriteOffBLL.UpdateWriteOff(udtEHSTransactionModel.ServiceDate, _
                                                                udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, _
                                                                udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, _
                                                                udtEHSPersonalInfo.DOD, udtEHSPersonalInfo.ExactDOD, _
                                                                udtEHSTransactionModel.SchemeCode, udtEHSTransactionModel.TransactionDetails(0).SubsidizeCode, _
                                                                eHASubsidizeWriteOff_CreateReason.TxRemoval, udtDB)
-                        'CRE14-016 (To introduce "Deceased" status into eHS) [End][Chris YIM]
 
                     End If
-
-
-                    If drTSMPRow Is Nothing Then
-                        udtEHSTransactionBLL.insertEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strUpdateBy)
-                    Else
-                        udtEHSTransactionBLL.updateEHSAccountTSMP(udtDB, udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, strUpdateBy, CType(drTSMPRow("TSMP"), Byte()))
-                    End If
-                    'CRE13-006 HCVS Ceiling [End][Karl]
-
 
                 End If
 

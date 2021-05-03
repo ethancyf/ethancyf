@@ -71,7 +71,7 @@
                                             <asp:Label ID="lblSearchENameText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, AccountNameInEnglish %>"></asp:Label>
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="txtSearchEName" runat="server" Width="200px" MaxLength="40" onChange="convertToUpper(this);"></asp:TextBox>
+                                            <asp:TextBox ID="txtSearchEName" runat="server" Width="200px" MaxLength="70" onChange="convertToUpper(this);"></asp:TextBox>
                                             <asp:Image ID="imgENameError" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                                                 Visible="False" ImageAlign="AbsMiddle" />
                                             <cc1:FilteredTextBoxExtender ID="FilteredTextBoxEname" runat="server" Enabled="True"

@@ -1,11 +1,11 @@
-SET ABORT-ON-ERROR NO
+SET ABORT-ON-ERROR YES
 cd HCVS\Production\InterfaceFile\CentralDB
 lcd E:\ImmdInterface\ImmdInterface\Transfer\ImmdTransferSectionFile\EHS_DOC_74c\sent
 BINARY
-CONTINUE ON
+CONTINUE OFF
 MGET CVP-EHS-VAC-*.zip
-CONTINUE ON
+MDEL CVP-EHS-VAC-*.zip
+CONTINUE OFF
 MGET CVP-EHS-VAC-*.ctl
-SET ABORT-ON-ERROR YES
+MDEL CVP-EHS-VAC-*.ctl
 quit
-

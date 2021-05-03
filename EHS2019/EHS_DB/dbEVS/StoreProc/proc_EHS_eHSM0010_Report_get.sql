@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -558,7 +565,7 @@ SET NOCOUNT ON;
 		CASE	WHEN VT.Voucher_Acc_ID <> ''		THEN dbo.func_format_voucher_account_number('V', VT.Voucher_Acc_ID)
 				WHEN VT.Temp_Voucher_Acc_ID <> ''	THEN dbo.func_format_voucher_account_number('T', VT.Temp_Voucher_Acc_ID)
 		END AS ehs_account_id,
-		dbo.func_get_surname_n_initial(CONVERT(varchar, DecryptByKey(VT.Encrypt_Field2))) AS [ehs_account_eng_name],
+		dbo.func_get_surname_n_initial(CONVERT(varchar(100), DecryptByKey(VT.Encrypt_Field2))) AS [ehs_account_eng_name],
 		dbo.func_mask_doc_id(VT.Doc_Code, CONVERT(varchar, DecryptByKey(VT.Encrypt_Field1)), CONVERT(varchar, DecryptByKey(VT.Encrypt_Field11))) AS [Encrypt_Field1entity_id],		
 		SD3.Status_Description AS [HKIC_Symbol],
 		'N' AS [With_OCSSS_Checking],

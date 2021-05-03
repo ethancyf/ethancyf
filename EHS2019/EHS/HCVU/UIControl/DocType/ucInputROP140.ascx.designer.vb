@@ -158,6 +158,105 @@ Partial Public Class ucInputROP140
     Protected WithEvents imgEName As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblCCCodeOrginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCCCodeOrginal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtCCCode1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCCCode1 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtCCCode2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCCCode2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtCCCode3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCCCode3 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtCCCode4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCCCode4 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtCCCode5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCCCode5 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtCCCode6 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtCCCode6 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''btnSearchCCCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSearchCCCode As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgCCCodeError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgCCCodeError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblCNameOriginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCNameOriginal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblGenderOriginalText control.
     '''</summary>
     '''<remarks>
@@ -293,6 +392,60 @@ Partial Public Class ucInputROP140
     Protected WithEvents filtereditEnameFirstname As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
+    '''filtererditCCcode1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtererditCCcode1 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtererditCCcode2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtererditCCcode2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtererditCCcode3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtererditCCcode3 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtererditCCcode4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtererditCCcode4 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtererditCCcode5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtererditCCcode5 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filtererditCCcode6 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filtererditCCcode6 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''filtereditDOB control.
     '''</summary>
     '''<remarks>
@@ -419,6 +572,105 @@ Partial Public Class ucInputROP140
     Protected WithEvents lblNewENameGivenNameTips As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblNewCCCodeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewCCCodeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtNewCCCode1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCCCode1 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtNewCCCode2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCCCode2 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtNewCCCode3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCCCode3 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtNewCCCode4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCCCode4 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtNewCCCode5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCCCode5 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtNewCCCode6 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewCCCode6 As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ibtnNewCCCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnNewCCCode As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''imgNewCCCodeErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgNewCCCodeErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblNewCNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewCNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblNewCName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewCName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblNewGenderText control.
     '''</summary>
     '''<remarks>
@@ -516,6 +768,60 @@ Partial Public Class ucInputROP140
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents FilteredTextNewENameGivenname As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filteredNewCCCode1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filteredNewCCCode1 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filteredNewCCCode2 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filteredNewCCCode2 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filteredNewCCCode3 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filteredNewCCCode3 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filteredNewCCCode4 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filteredNewCCCode4 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filteredNewCCCode5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filteredNewCCCode5 As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
+    '''filteredNewCCCode6 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents filteredNewCCCode6 As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
     '''FilteredTextNewDOB control.

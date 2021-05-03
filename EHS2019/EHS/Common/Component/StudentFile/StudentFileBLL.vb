@@ -7,6 +7,7 @@ Imports Common.DataAccess
 Imports Common.Format
 Imports Common.Component.Scheme
 Imports Common.Component.SchemeDetails
+Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
 
 Namespace Component.StudentFile
 
@@ -468,7 +469,7 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Class_No", SqlDbType.NVarChar, 10, .ClassNo), _
                     udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, .ContactNo), _
                     udtDB.MakeInParam("@Doc_No", SqlDbType.VarChar, 20, .DocNo), _
-                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, 40, .NameEN), _
+                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .NameEN), _
                     udtDB.MakeInParam("@Surname_EN_Original", SqlDbType.VarChar, 40, .SurnameENOriginal), _
                     udtDB.MakeInParam("@Given_Name_EN_Original", SqlDbType.VarChar, 40, .GivenNameENOriginal), _
                     udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 40, .NameCH), _
@@ -685,7 +686,7 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Class_No", SqlDbType.NVarChar, 10, dr("Class_No")), _
                     udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, dr("Contact_No")), _
                     udtDB.MakeInParam("@Doc_No", SqlDbType.VarChar, 20, dr("Doc_No")), _
-                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, 40, dr("Name_EN")), _
+                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, dr("Name_EN")), _
                     udtDB.MakeInParam("@Surname_EN_Original", SqlDbType.VarChar, 40, dr("Surname_EN")), _
                     udtDB.MakeInParam("@Given_Name_EN_Original", SqlDbType.VarChar, 40, dr("Given_Name_EN")), _
                     udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 40, dr("Name_CH")), _
@@ -1716,7 +1717,7 @@ Namespace Component.StudentFile
                 Dim prams() As SqlParameter = { _
                     udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
                     udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, .StudentSeq), _
-                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, 40, .NameEN), _
+                    udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .NameEN), _
                     udtDB.MakeInParam("@Surname_EN", SqlDbType.VarChar, 40, .SurnameENOriginal), _
                     udtDB.MakeInParam("@Given_Name_EN", SqlDbType.VarChar, 40, .GivenNameENOriginal), _
                     udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 6, .NameCH), _

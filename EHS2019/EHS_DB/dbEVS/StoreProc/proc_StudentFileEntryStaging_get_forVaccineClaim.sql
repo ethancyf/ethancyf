@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -100,7 +106,7 @@ AS BEGIN
 		PI.Exact_DOB,
 		PI.Sex,
 		convert(varchar, DecryptByKey(PI.[Encrypt_Field1])) as Doc_No,
-		convert(varchar(40), DecryptByKey(PI.[Encrypt_Field2])) as Eng_Name,
+		convert(varchar(100), DecryptByKey(PI.[Encrypt_Field2])) as Eng_Name,
 		PI.EC_Serial_No
 	FROM
 		StudentFileEntryStaging E WITH (NOLOCK)
@@ -153,7 +159,7 @@ AS BEGIN
 		PI.Exact_DOB,
 		PI.Sex,
 		convert(varchar, DecryptByKey(PI.[Encrypt_Field1])) as Doc_No,
-		convert(varchar(40), DecryptByKey(PI.[Encrypt_Field2])) as Eng_Name,
+		convert(varchar(100), DecryptByKey(PI.[Encrypt_Field2])) as Eng_Name,
 		PI.EC_Serial_No
 	FROM
 		StudentFileEntryStaging E WITH (NOLOCK)

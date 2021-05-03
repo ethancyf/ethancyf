@@ -508,7 +508,7 @@ Partial Public Class eHSAccountMaint
                     Else
                         Me.lblAcctListENameR2.Text = Me.txtSearchENameR2.Text.Trim
                     End If
-                    
+
                     ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
                     'Chinese Name
                     If Me.txtSearchCNameR2.Text.Equals(String.Empty) Then
@@ -524,7 +524,7 @@ Partial Public Class eHSAccountMaint
                     Else
                         Dim dtDOBValue As DateTime
                         'DOB passed to "chkDOB" must be of DateTime instead of Nullable(of DateTime) 
-                        udtSM = Me.udtvalidator.chkDOB(strDocCode, Me.txtSearchDOBR2.Text.Trim, dtDOBValue, strExactDOB)
+                        udtSM = Me.udtValidator.chkDOB(strDocCode, Me.txtSearchDOBR2.Text.Trim, dtDOBValue, strExactDOB)
                         If Not IsNothing(udtSM) Then
                             Me.imgDOBError.Visible = True
                             Me.udcMsgBox.AddMessage(udtSM)
@@ -581,7 +581,7 @@ Partial Public Class eHSAccountMaint
                         Me.lblAcctListRefNoR2.Text = Me.GetGlobalResourceObject("Text", "Any")
                     Else
                         Me.lblAcctListRefNoR2.Text = Me.txtSearchRefNo.Text.Trim
-                        If udtvalidator.chkSystemNumber(Me.txtSearchRefNo.Text.Trim) Then
+                        If udtValidator.chkSystemNumber(Me.txtSearchRefNo.Text.Trim) Then
                             strRefNo = Common.Format.Formatter.ReverseSystemNumber(Me.txtSearchRefNo.Text.Trim)
                         Else
                             strRefNo = Me.txtSearchRefNo.Text.Trim
@@ -607,7 +607,7 @@ Partial Public Class eHSAccountMaint
                         Me.lblAcctListCreateDateR2.Text = Me.GetGlobalResourceObject("Text", "Any")
                     Else
                         'Creation Date From
-                        udtSM = udtvalidator.chkInputDate(Me.txtSearchCreationDateFromR2.Text, True, True)
+                        udtSM = udtValidator.chkInputDate(Me.txtSearchCreationDateFromR2.Text, True, True)
 
                         If Not udtSM Is Nothing Then
                             Me.imgDateError.Visible = True
@@ -633,7 +633,7 @@ Partial Public Class eHSAccountMaint
                         End If
 
                         'Creation Date To
-                        udtSM = udtvalidator.chkInputDate(Me.txtSearchCreationDateToR2.Text, True, True)
+                        udtSM = udtValidator.chkInputDate(Me.txtSearchCreationDateToR2.Text, True, True)
 
                         If Not udtSM Is Nothing Then
                             Me.imgDateError.Visible = True
@@ -660,7 +660,7 @@ Partial Public Class eHSAccountMaint
                     End If
 
                     If blnIsValid AndAlso Not String.IsNullOrEmpty(strCreationDateFrom) AndAlso Not String.IsNullOrEmpty(strCreationDateTo) Then
-                        udtSM = udtvalidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00136, strCreationDateFrom, strCreationDateTo)
+                        udtSM = udtValidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00136, strCreationDateFrom, strCreationDateTo)
                         If Not udtSM Is Nothing Then
                             Me.imgDateError.Visible = True
                             blnIsValid = False
@@ -709,7 +709,7 @@ Partial Public Class eHSAccountMaint
                     Me.lblAcctListCreationDateR3.Text = Me.GetGlobalResourceObject("Text", "Any")
                 Else
                     'Creation Date From
-                    udtSM = udtvalidator.chkInputDate(Me.txtCreationDateFromR3.Text, True, True)
+                    udtSM = udtValidator.chkInputDate(Me.txtCreationDateFromR3.Text, True, True)
 
                     If Not udtSM Is Nothing Then
                         Me.imgCreationDateErrorR3.Visible = True
@@ -735,7 +735,7 @@ Partial Public Class eHSAccountMaint
                     End If
 
                     'Creation Date To
-                    udtSM = udtvalidator.chkInputDate(Me.txtCreationDateToR3.Text, True, True)
+                    udtSM = udtValidator.chkInputDate(Me.txtCreationDateToR3.Text, True, True)
 
                     If Not udtSM Is Nothing Then
                         Me.imgCreationDateErrorR3.Visible = True
@@ -762,7 +762,7 @@ Partial Public Class eHSAccountMaint
                 End If
 
                 If blnCDIsValid AndAlso Not String.IsNullOrEmpty(strCreationDateFrom) AndAlso Not String.IsNullOrEmpty(strCreationDateTo) Then
-                    udtSM = udtvalidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00136, strCreationDateFrom, strCreationDateTo)
+                    udtSM = udtValidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00136, strCreationDateFrom, strCreationDateTo)
                     If Not udtSM Is Nothing Then
                         Me.imgCreationDateErrorR3.Visible = True
                         blnCDIsValid = False
@@ -804,7 +804,7 @@ Partial Public Class eHSAccountMaint
                         Me.lblAcctListDateofDeathR3.Text = Me.GetGlobalResourceObject("Text", "Any")
                     Else
                         'Date of Death From
-                        udtSM = udtvalidator.chkInputDate(Me.txtDateofDeathFromR3.Text, True, True)
+                        udtSM = udtValidator.chkInputDate(Me.txtDateofDeathFromR3.Text, True, True)
 
                         If Not udtSM Is Nothing Then
                             Me.imgDateofDeathErrorR3.Visible = True
@@ -830,7 +830,7 @@ Partial Public Class eHSAccountMaint
                         End If
 
                         'Date of Death To
-                        udtSM = udtvalidator.chkInputDate(Me.txtDateofDeathToR3.Text, True, True)
+                        udtSM = udtValidator.chkInputDate(Me.txtDateofDeathToR3.Text, True, True)
 
                         If Not udtSM Is Nothing Then
                             Me.imgDateofDeathErrorR3.Visible = True
@@ -857,7 +857,7 @@ Partial Public Class eHSAccountMaint
                     End If
 
                     If blnDateofDeathIsValid AndAlso Not String.IsNullOrEmpty(strDateofDeathFrom) AndAlso Not String.IsNullOrEmpty(strDateofDeathTo) Then
-                        udtSM = udtvalidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00402, strDateofDeathFrom, strDateofDeathTo)
+                        udtSM = udtValidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00402, strDateofDeathFrom, strDateofDeathTo)
                         If Not udtSM Is Nothing Then
                             Me.imgDateofDeathErrorR3.Visible = True
                             blnDateofDeathIsValid = False
@@ -973,18 +973,18 @@ Partial Public Class eHSAccountMaint
                     If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
                         strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
                     Else
-                    Dim strIdentityNumFullTemp As String
-                    strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+                        Dim strIdentityNumFullTemp As String
+                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
 
-                    Dim strIdentityNumFull() As String
-                    strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
-                    If strIdentityNumFull.Length > 1 Then
-                        strIdentityNum = strIdentityNumFull(1)
-                        strAdoptionPrefixNum = strIdentityNumFull(0)
-                    Else
-                        strIdentityNum = strIdentityNumFullTemp
+                        Dim strIdentityNumFull() As String
+                        strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
+                        If strIdentityNumFull.Length > 1 Then
+                            strIdentityNum = strIdentityNumFull(1)
+                            strAdoptionPrefixNum = strIdentityNumFull(0)
+                        Else
+                            strIdentityNum = strIdentityNumFullTemp
+                        End If
                     End If
-                End If
 
                 End If
 
@@ -994,7 +994,7 @@ Partial Public Class eHSAccountMaint
                 Else
                     Me.lblAcctListENameR2.Text = Me.txtSearchENameR2.Text.Trim
                 End If
-                
+
                 ' CRE17-012 (Add Chinese Search for SP and EHA) [Start][Marco]
                 'Chinese Name
                 If Me.txtSearchCNameR2.Text.Equals(String.Empty) Then
@@ -1010,7 +1010,7 @@ Partial Public Class eHSAccountMaint
                 Else
                     Dim dtDOBValue As DateTime
                     'DOB passed to "chkDOB" must be of DateTime instead of Nullable(of DateTime) 
-                    udtSM = Me.udtvalidator.chkDOB(strDocCode, Me.txtSearchDOBR2.Text.Trim, dtDOBValue, strExactDOB)
+                    udtSM = Me.udtValidator.chkDOB(strDocCode, Me.txtSearchDOBR2.Text.Trim, dtDOBValue, strExactDOB)
                     If Not IsNothing(udtSM) Then
                         Me.imgDOBError.Visible = True
                         Me.udcMsgBox.AddMessage(udtSM)
@@ -1060,7 +1060,7 @@ Partial Public Class eHSAccountMaint
                     Me.lblAcctListRefNoR2.Text = Me.GetGlobalResourceObject("Text", "Any")
                 Else
                     Me.lblAcctListRefNoR2.Text = Me.txtSearchRefNo.Text.Trim
-                    If udtvalidator.chkSystemNumber(Me.txtSearchRefNo.Text.Trim) Then
+                    If udtValidator.chkSystemNumber(Me.txtSearchRefNo.Text.Trim) Then
                         strRefNo = Common.Format.Formatter.ReverseSystemNumber(Me.txtSearchRefNo.Text.Trim)
                     Else
                         strRefNo = Me.txtSearchRefNo.Text.Trim
@@ -2023,7 +2023,7 @@ Partial Public Class eHSAccountMaint
             End If
             ' CRE20-0022 (Immu record) [End][Martin]
 
-            udtSM = Me.udtvalidator.chkIdentityNumber(strDocCode, strIdentityNum, strAdoptionPrefixNum)
+            udtSM = Me.udtValidator.chkIdentityNumber(strDocCode, strIdentityNum, strAdoptionPrefixNum)
             If Not IsNothing(udtSM) Then
                 Me.imgIdentityNumErr.Visible = True
                 Me.udcMsgBox.AddMessage(udtSM)
@@ -2041,7 +2041,7 @@ Partial Public Class eHSAccountMaint
 
             'DOB
             If Not Me.txtSearchDOBR2.Text.Trim = String.Empty Then
-                udtSM = Me.udtvalidator.chkDOB(strDocCode, Me.txtSearchDOBR2.Text.Trim, dtDOBValue, strExactDOB)
+                udtSM = Me.udtValidator.chkDOB(strDocCode, Me.txtSearchDOBR2.Text.Trim, dtDOBValue, strExactDOB)
                 If Not IsNothing(udtSM) Then
                     Me.imgDOBError.Visible = True
                     Me.udcMsgBox.AddMessage(udtSM)
@@ -3167,8 +3167,8 @@ Partial Public Class eHSAccountMaint
                     udcInputHKIC.SetCnameAmend(String.Empty)
                     Me.udcCCCode.Clean()
                 Else
-                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification) Then
-                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputHKIC, Nothing, Nothing)
+                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification, DocTypeModel.DocTypeCode.HKIC) Then
+                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
                         blnProceed = False
                     End If
                 End If
@@ -3217,9 +3217,21 @@ Partial Public Class eHSAccountMaint
                 blnProceed = Me.ValidateRectifyDetail_CCIC(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
 
             Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = Me.ucInputDocumentType.GetROP140Control
 
-                blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
+                If udcInputROP140.CCCodeIsEmpty Then
+                    udcInputROP140.SetCnameAmend(String.Empty)
+                    Me.udcCCCode.Clean()
+                Else
+                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification, DocTypeModel.DocTypeCode.ROP140) Then
+                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                        blnProceed = False
+                    End If
+                End If
 
+                If blnProceed Then
+                    blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
+                End If
             Case DocTypeModel.DocTypeCode.PASS
 
                 blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
@@ -4736,8 +4748,8 @@ Partial Public Class eHSAccountMaint
                     udcInputHKIC.SetCnameAmend(String.Empty)
                     Me.udcCCCode.Clean()
                 Else
-                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation) Then
-                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputHKIC, Nothing, Nothing)
+                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation, DocTypeModel.DocTypeCode.HKIC) Then
+                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
                         blnProceed = False
                     End If
                 End If
@@ -4788,7 +4800,21 @@ Partial Public Class eHSAccountMaint
 
             Case DocTypeModel.DocTypeCode.ROP140
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.ROP140
-                blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
+                Dim udcInputROP140 As ucInputROP140 = Me.ucInputDocumentType_NewAcc.GetROP140Control
+
+                If udcInputROP140.CCCodeIsEmpty Then
+                    udcInputROP140.SetCnameAmend(String.Empty)
+                    Me.udcCCCode.Clean()
+                Else
+                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation, DocTypeModel.DocTypeCode.ROP140) Then
+                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                        blnProceed = False
+                    End If
+                End If
+
+                If blnProceed Then
+                    blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
+                End If
 
             Case DocTypeModel.DocTypeCode.PASS
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.PASS
@@ -4921,7 +4947,7 @@ Partial Public Class eHSAccountMaint
 
         Dim sm As SystemMessage
 
-        sm = Me.udtvalidator.chkSPID(Me.txtEnterCreationDetailSPID.Text.Trim)
+        sm = Me.udtValidator.chkSPID(Me.txtEnterCreationDetailSPID.Text.Trim)
 
         If IsNothing(sm) Then
             If Me.txtEnterCreationDetailSPID.Text.Trim.Length = 8 Then
@@ -5052,7 +5078,7 @@ Partial Public Class eHSAccountMaint
             End If
 
             If Not Me.txtAdvancedSearchHKIC.Text.Trim.Equals(String.Empty) Then
-                udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.HKIC, Me.txtAdvancedSearchHKIC.Text.Trim, String.Empty)
+                udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.HKIC, Me.txtAdvancedSearchHKIC.Text.Trim, String.Empty)
                 If IsNothing(udtSM) Then
                     blnKeywordSearch = True
                 Else
@@ -5726,7 +5752,7 @@ Partial Public Class eHSAccountMaint
                 ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Dickson]
                 If udtEHSAccount.RecordStatus = EHSAccountModel.TempAccountRecordStatusClass.PendingVerify Then
                     ' Manual Checking to Immd
-                    blnManualCheckingToImmd = udtvalidator.chkManualValidation(Me.txtDocCode.Text.Trim, udteHSAccountPersonalInfo)
+                    blnManualCheckingToImmd = udtValidator.chkManualValidation(Me.txtDocCode.Text.Trim, udteHSAccountPersonalInfo)
 
                 End If
 
@@ -6161,24 +6187,29 @@ Partial Public Class eHSAccountMaint
                 blnSetCCCode = CBool(Session(SESS_DefaultSetCCCode))
 
                 If blnSetCCCode Then
-                    If ucInputDocumentType.DocType.Trim.Equals(DocType.DocTypeModel.DocTypeCode.HKIC) Then
-                        Dim udcInputHKID As ucInputHKID = Me.ucInputDocumentType.GetHKICControl
+                    If ucInputDocumentType.DocType.Trim.Equals(DocType.DocTypeModel.DocTypeCode.HKIC) Or ucInputDocumentType.DocType.Trim.Equals(DocType.DocTypeModel.DocTypeCode.ROP140) Then
 
-                        'If udcInputHKID.CCCodeIsEmpty_M Then
+                        Select Case ucInputDocumentType.DocType.Trim
+                            Case DocType.DocTypeModel.DocTypeCode.HKIC
+                                Dim udcInputHKID As ucInputHKID = Me.ucInputDocumentType.GetHKICControl
+                                Me.udcCCCode.CCCode1 = IIf(IsNothing(udcInputHKID.CCCode1), String.Empty, udcInputHKID.CCCode1)
+                                Me.udcCCCode.CCCode2 = IIf(IsNothing(udcInputHKID.CCCode2), String.Empty, udcInputHKID.CCCode2)
+                                Me.udcCCCode.CCCode3 = IIf(IsNothing(udcInputHKID.CCCode3), String.Empty, udcInputHKID.CCCode3)
+                                Me.udcCCCode.CCCode4 = IIf(IsNothing(udcInputHKID.CCCode4), String.Empty, udcInputHKID.CCCode4)
+                                Me.udcCCCode.CCCode5 = IIf(IsNothing(udcInputHKID.CCCode5), String.Empty, udcInputHKID.CCCode5)
+                                Me.udcCCCode.CCCode6 = IIf(IsNothing(udcInputHKID.CCCode6), String.Empty, udcInputHKID.CCCode6)
 
-                        'No CCCode
-                        'udcInputHKID.SetCName_M(String.Empty)
-
-                        'Else
-                        Me.udcCCCode.CCCode1 = IIf(IsNothing(udcInputHKID.CCCode1), String.Empty, udcInputHKID.CCCode1)
-                        Me.udcCCCode.CCCode2 = IIf(IsNothing(udcInputHKID.CCCode2), String.Empty, udcInputHKID.CCCode2)
-                        Me.udcCCCode.CCCode3 = IIf(IsNothing(udcInputHKID.CCCode3), String.Empty, udcInputHKID.CCCode3)
-                        Me.udcCCCode.CCCode4 = IIf(IsNothing(udcInputHKID.CCCode4), String.Empty, udcInputHKID.CCCode4)
-                        Me.udcCCCode.CCCode5 = IIf(IsNothing(udcInputHKID.CCCode5), String.Empty, udcInputHKID.CCCode5)
-                        Me.udcCCCode.CCCode6 = IIf(IsNothing(udcInputHKID.CCCode6), String.Empty, udcInputHKID.CCCode6)
+                            Case DocType.DocTypeModel.DocTypeCode.ROP140
+                                Dim udcInputROP140 As ucInputROP140 = Me.ucInputDocumentType.GetROP140Control
+                                Me.udcCCCode.CCCode1 = IIf(IsNothing(udcInputROP140.CCCode1), String.Empty, udcInputROP140.CCCode1)
+                                Me.udcCCCode.CCCode2 = IIf(IsNothing(udcInputROP140.CCCode2), String.Empty, udcInputROP140.CCCode2)
+                                Me.udcCCCode.CCCode3 = IIf(IsNothing(udcInputROP140.CCCode3), String.Empty, udcInputROP140.CCCode3)
+                                Me.udcCCCode.CCCode4 = IIf(IsNothing(udcInputROP140.CCCode4), String.Empty, udcInputROP140.CCCode4)
+                                Me.udcCCCode.CCCode5 = IIf(IsNothing(udcInputROP140.CCCode5), String.Empty, udcInputROP140.CCCode5)
+                                Me.udcCCCode.CCCode6 = IIf(IsNothing(udcInputROP140.CCCode6), String.Empty, udcInputROP140.CCCode6)
+                        End Select
 
                         udcCCCode.BindCCCode()
-
                         Me.udcCCCode.GetChineseName(FunctionCode, True)
                         'End If
 
@@ -6274,7 +6305,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
         'HKIC
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.HKIC, udcInputHKIC.HKID.Trim, String.Empty)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.HKIC, udcInputHKIC.HKID.Trim, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKIC.SetHKIDError(True)
@@ -6287,7 +6318,7 @@ Partial Public Class eHSAccountMaint
         Dim dtmDOB As Date
 
         strDOB = udcInputHKIC.DOB
-        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.HKIC, strDOB, dtmDOB, strExactDOB)
+        Me.udtSM = Me.udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.HKIC, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKIC.SetDOBError(True)
@@ -6295,7 +6326,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKIC.SetENameError(True)
@@ -6303,7 +6334,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'CCCode
-        Me.udtSM = Me.udtvalidator.chkCCCode_UsingDDL(String.Format("{0}{1}", udcInputHKIC.CCCode1, Me.udcCCCode.SelectedCCCodeTail1), _
+        Me.udtSM = Me.udtValidator.chkCCCode_UsingDDL(String.Format("{0}{1}", udcInputHKIC.CCCode1, Me.udcCCCode.SelectedCCCodeTail1), _
                                                 String.Format("{0}{1}", udcInputHKIC.CCCode2, Me.udcCCCode.SelectedCCCodeTail2), _
                                                 String.Format("{0}{1}", udcInputHKIC.CCCode3, Me.udcCCCode.SelectedCCCodeTail3), _
                                                 String.Format("{0}{1}", udcInputHKIC.CCCode4, Me.udcCCCode.SelectedCCCodeTail4), _
@@ -6316,7 +6347,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'HKIC Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputHKIC.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputHKIC.Gender)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKIC.SetGenderError(True)
@@ -6328,7 +6359,7 @@ Partial Public Class eHSAccountMaint
         Dim dtHKIDIssueDate As DateTime
         strHKIDIssueDate = Me.udtformatter.formatHKIDIssueDateBeforeValidate(udcInputHKIC.HKIDIssuseDate)
         'Me.udtSM = Me.udtvalidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.HKIC, udcInputHKIC.HKIDIssuseDate, dtmDOB)
-        Me.udtSM = Me.udtvalidator.chkHKIDIssueDate(strHKIDIssueDate, dtmDOB)
+        Me.udtSM = Me.udtValidator.chkHKIDIssueDate(strHKIDIssueDate, dtmDOB)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKIC.SetHKIDIssueDateError(True)
@@ -6410,7 +6441,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
         ' Serial No.
-        Me.udtSM = Me.udtvalidator.chkSerialNo(udcInputEC.SerialNumber, udcInputEC.SerialNumberNotProvided)
+        Me.udtSM = Me.udtValidator.chkSerialNo(udcInputEC.SerialNumber, udcInputEC.SerialNumberNotProvided)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetECSerialNoError(True)
@@ -6418,7 +6449,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         ' Reference
-        Me.udtSM = Me.udtvalidator.chkReferenceNo(udcInputEC.Reference, udcInputEC.ReferenceOtherFormat)
+        Me.udtSM = Me.udtValidator.chkReferenceNo(udcInputEC.Reference, udcInputEC.ReferenceOtherFormat)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetECReferenceError(True)
@@ -6452,7 +6483,7 @@ Partial Public Class eHSAccountMaint
                 sm_DOB = New SystemMessage(CommonFunctionCode, SeverityCode.SEVE, MsgCode.MSG00003)
             Case ucInputEC.DOBSelection.AgeWithDateOfRegistration
                 'Check Age
-                sm_DOB = Me.udtvalidator.chkECAge(udcInputEC.ECAge)
+                sm_DOB = Me.udtValidator.chkECAge(udcInputEC.ECAge)
                 If Not sm_DOB Is Nothing Then
                     isValid = False
                     udcInputEC.SetDOBAgeError(True)
@@ -6461,7 +6492,7 @@ Partial Public Class eHSAccountMaint
                 End If
 
                 ' validate Date of Age
-                sm_DOR = Me.udtvalidator.chkECDOAge(strDateOfRegDay, strDateOfRegMth, strDateOfRegYr)
+                sm_DOR = Me.udtValidator.chkECDOAge(strDateOfRegDay, strDateOfRegMth, strDateOfRegYr)
                 If Not sm_DOR Is Nothing Then
                     isValid = False
                     udcInputEC.SetDateOfRegError(True)
@@ -6473,7 +6504,7 @@ Partial Public Class eHSAccountMaint
 
                 ' validate Age + Date of Age if Within Age
                 If isValid Then
-                    sm_DOB = Me.udtvalidator.chkECAgeAndDOAge(udcInputEC.ECAge, strDateOfRegDay, strDateOfRegMth, strDateOfRegYr)
+                    sm_DOB = Me.udtValidator.chkECAgeAndDOAge(udcInputEC.ECAge, strDateOfRegDay, strDateOfRegMth, strDateOfRegYr)
                     If Not sm_DOB Is Nothing Then
                         isValid = False
                         udcInputEC.SetDOBAgeError(True)
@@ -6497,7 +6528,7 @@ Partial Public Class eHSAccountMaint
                 'End If
 
             Case Else
-                sm_DOB = Me.udtvalidator.chkDOB(DocTypeModel.DocTypeCode.EC, strDOB, dtmDOB, strExactDOB)
+                sm_DOB = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.EC, strDOB, dtmDOB, strExactDOB)
 
                 If Not IsNothing(sm_DOB) Then
                     'Error Found, Invalid Data
@@ -6560,7 +6591,7 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
         'Me.udtSM = Me.udtvalidator.chkECDate(strECDateDay, strECDateMonth, strECDateYear, dtmDOB)
-        Me.udtSM = Me.udtvalidator.chkECDate(strECDateDay, strECDateMonth, strECDateYear, dtmDOB)
+        Me.udtSM = Me.udtValidator.chkECDate(strECDateDay, strECDateMonth, strECDateYear, dtmDOB)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetECDateError(True)
@@ -6569,7 +6600,7 @@ Partial Public Class eHSAccountMaint
 
         'HKIC No
         If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
-            Me.udtSM = Me.udtvalidator.chkHKID(udcInputEC.HKID)
+            Me.udtSM = Me.udtValidator.chkHKID(udcInputEC.HKID)
             If Not IsNothing(udtSM) Then
                 isValid = False
                 udcInputEC.SetHKICNoError(True)
@@ -6578,7 +6609,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetENameError(True)
@@ -6587,7 +6618,7 @@ Partial Public Class eHSAccountMaint
 
         ' CRE15-014 HA_MingLiu UTF32 [Start][Winnie]
         'Chinese Name
-        Me.udtSM = Me.udtvalidator.chkChiName(udcInputEC.CName)
+        Me.udtSM = Me.udtValidator.chkChiName(udcInputEC.CName)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetCNameError(True)
@@ -6596,7 +6627,7 @@ Partial Public Class eHSAccountMaint
         ' CRE15-014 HA_MingLiu UTF32 [End][Winnie]
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputEC.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputEC.Gender)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetGenderError(True)
@@ -6624,7 +6655,7 @@ Partial Public Class eHSAccountMaint
 
             Dim dtmECDate As Date = Date.ParseExact(strECDate, "dd-MM-yyyy", Nothing)
 
-            udtSM = udtvalidator.chkSerialNoNotProvidedAllow(dtmECDate, udcInputEC.SerialNumberNotProvided)
+            udtSM = udtValidator.chkSerialNoNotProvidedAllow(dtmECDate, udcInputEC.SerialNumberNotProvided)
             If Not IsNothing(udtSM) Then
                 isValid = False
                 udcInputEC.SetECSerialNoError(True)
@@ -6635,12 +6666,12 @@ Partial Public Class eHSAccountMaint
             If isValid Then
                 If udcInputEC.ReferenceOtherFormat Then
                     Dim dtmECDOI As New Date(udcInputEC.ECDateYear, udcInputEC.ECDateMonth, udcInputEC.ECDateDay)
-                    udtvalidator.TryParseECReference(udcInputEC.Reference, udcInputEC.ReferenceOtherFormat, dtmECDOI)
+                    udtValidator.TryParseECReference(udcInputEC.Reference, udcInputEC.ReferenceOtherFormat, dtmECDOI)
                 End If
 
             End If
 
-            udtSM = udtvalidator.chkReferenceOtherFormatAllow(dtmECDate, udcInputEC.ReferenceOtherFormat)
+            udtSM = udtValidator.chkReferenceOtherFormatAllow(dtmECDate, udcInputEC.ReferenceOtherFormat)
             If Not IsNothing(udtSM) Then
                 isValid = False
                 udcInputEC.SetECReferenceError(True)
@@ -6731,7 +6762,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
         'RegNo.
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.HKBC, udcInputHKBC.RegistrationNo.Trim, String.Empty)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.HKBC, udcInputHKBC.RegistrationNo.Trim, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKBC.SetRegNoError(True)
@@ -6756,7 +6787,7 @@ Partial Public Class eHSAccountMaint
                     udcInputHKBC.SetDOBError(True)
                 End If
             Case Else
-                udtSM = Me.udtvalidator.chkDOB(DocTypeModel.DocTypeCode.HKBC, strDOB, dtmDOB, strExactDOB)
+                udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.HKBC, strDOB, dtmDOB, strExactDOB)
 
                 If udtSM Is Nothing Then
                     'If DOBInWordCase = true , it implies that the exact DOB must be "T", "U" or "V"
@@ -6797,7 +6828,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKBC.SetENameError(True)
@@ -6805,7 +6836,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputHKBC.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputHKBC.Gender)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKBC.SetGenderError(True)
@@ -6863,7 +6894,7 @@ Partial Public Class eHSAccountMaint
         '    Me.udcMsgBox.AddMessage(New SystemMessage("990000", "E", "00210"))
         'End If
 
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.ADOPC, udcInputAdopt.IdentityNo, udcInputAdopt.PerfixNo)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.ADOPC, udcInputAdopt.IdentityNo, udcInputAdopt.PerfixNo)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputAdopt.SetEntryNoError(True)
@@ -6871,7 +6902,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputAdopt.ENameSurName, udcInputAdopt.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputAdopt.ENameSurName, udcInputAdopt.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputAdopt.SetENameError(True)
@@ -6879,7 +6910,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputAdopt.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputAdopt.Gender)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputAdopt.SetGenderError(True)
@@ -6903,7 +6934,7 @@ Partial Public Class eHSAccountMaint
                     udcInputAdopt.SetDOBError(True)
                 End If
             Case Else
-                udtSM = Me.udtvalidator.chkDOB(DocTypeModel.DocTypeCode.ADOPC, strDOB, dtmDOB, strExactDOB)
+                udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.ADOPC, strDOB, dtmDOB, strExactDOB)
 
                 If udtSM Is Nothing Then
                     'If DOBInWordCase = true , it implies that the exact DOB must be "T", "U" or "V"
@@ -6987,7 +7018,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
         'TravelDocNo
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.DI, udcInputDI.TravelDocNo.Trim, String.Empty)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.DI, udcInputDI.TravelDocNo.Trim, String.Empty)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetTDError(True)
@@ -6995,7 +7026,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetENameError(True)
@@ -7003,7 +7034,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputDI.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputDI.Gender)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetGenderError(True)
@@ -7017,7 +7048,7 @@ Partial Public Class eHSAccountMaint
 
         strDOB = udcInputDI.DOB
 
-        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.DI, strDOB, dtmDOB, strExactDOB)
+        Me.udtSM = Me.udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.DI, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetDOBError(True)
@@ -7036,7 +7067,7 @@ Partial Public Class eHSAccountMaint
         'Me.udtSM = Me.udtvalidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.DI, udcInputDI.DateOfIssue, dtmDOB)
         Dim strDOI As String = String.Empty
         strDOI = Me.udtformatter.formatDateBeforValidation_DDMMYYYY(udcInputDI.DateOfIssue)
-        Me.udtSM = Me.udtvalidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.DI, strDOI, udtEHSAccountPersonalInfo.DOB)
+        Me.udtSM = Me.udtValidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.DI, strDOI, udtEHSAccountPersonalInfo.DOB)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetDOIError(True)
@@ -7091,7 +7122,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
         'BirthEntryNo
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.ID235B, udcInputID235B.BirthEntryNo.Trim, String.Empty)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.ID235B, udcInputID235B.BirthEntryNo.Trim, String.Empty)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetBirthEntryNoError(True)
@@ -7099,7 +7130,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetENameError(True)
@@ -7107,7 +7138,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputID235B.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputID235B.Gender)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetGenderError(True)
@@ -7120,7 +7151,7 @@ Partial Public Class eHSAccountMaint
         Dim dtmDOB As Date
 
         strDOB = udcInputID235B.DateOfBirth
-        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.ID235B, strDOB, dtmDOB, strExactDOB)
+        Me.udtSM = Me.udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.ID235B, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetDOBError(True)
@@ -7137,7 +7168,7 @@ Partial Public Class eHSAccountMaint
         'strPermit = Me.udtformatter.formatPermitToReminUntilBeforeValidate(udcInputID235B.PermitRemain)
         'Me.udtSM = Me.udtvalidator.chkPremitToRemainUntil(strPermit, dtmDOB)
         strPermit = Me.udtformatter.formatDateBeforValidation_DDMMYYYY(udcInputID235B.PermitRemain)
-        Me.udtSM = Me.udtvalidator.chkPremitToRemainUntil(strPermit, udtEHSAccountPersonalInfo.DOB, DocType.DocTypeModel.DocTypeCode.ID235B)
+        Me.udtSM = Me.udtValidator.chkPremitToRemainUntil(strPermit, udtEHSAccountPersonalInfo.DOB, DocType.DocTypeModel.DocTypeCode.ID235B)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetPermitRemainError(True)
@@ -7190,7 +7221,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
         'REPMTNo
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.REPMT, udcInputReentryPermit.REPMTNo.Trim, String.Empty)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.REPMT, udcInputReentryPermit.REPMTNo.Trim, String.Empty)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetREPMTNoError(True)
@@ -7198,7 +7229,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetENameError(True)
@@ -7206,7 +7237,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputReentryPermit.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputReentryPermit.Gender)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetGenderError(True)
@@ -7219,7 +7250,7 @@ Partial Public Class eHSAccountMaint
         Dim dtmDOB As Date
 
         strDOB = udcInputReentryPermit.DateOfBirth
-        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.REPMT, strDOB, dtmDOB, strExactDOB)
+        Me.udtSM = Me.udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.REPMT, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetDOBError(True)
@@ -7237,7 +7268,7 @@ Partial Public Class eHSAccountMaint
         'strIssueDate = Me.udtformatter.formatDateBeforValidation_DDMMYYYY(udcInputReentryPermit.DateOfIssue)
         'Me.udtSM = Me.udtvalidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.REPMT, strIssueDate, dtmDOB)
         strIssueDate = Me.udtformatter.formatDateBeforValidation_DDMMYYYY(udcInputReentryPermit.DateOfIssue)
-        Me.udtSM = Me.udtvalidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.REPMT, strIssueDate, udtEHSAccountPersonalInfo.DOB)
+        Me.udtSM = Me.udtValidator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.REPMT, strIssueDate, udtEHSAccountPersonalInfo.DOB)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetDOIError(True)
@@ -7288,7 +7319,7 @@ Partial Public Class eHSAccountMaint
 
 
         'VISANo
-        Me.udtSM = Me.udtvalidator.chkIdentityNumber(DocTypeModel.DocTypeCode.VISA, udcInputVisa.VISANo.Trim, String.Empty)
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.VISA, udcInputVisa.VISANo.Trim, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputVisa.SetVISANoError(True)
@@ -7303,7 +7334,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputVisa.ENameSurName, udcInputVisa.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputVisa.ENameSurName, udcInputVisa.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputVisa.SetENameError(True)
@@ -7311,7 +7342,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'Gender
-        Me.udtSM = Me.udtvalidator.chkGender(udcInputVisa.Gender)
+        Me.udtSM = Me.udtValidator.chkGender(udcInputVisa.Gender)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputVisa.SetGenderError(True)
@@ -7324,7 +7355,7 @@ Partial Public Class eHSAccountMaint
         Dim dtmDOB As Date
 
         strDOB = udcInputVisa.DOB
-        Me.udtSM = Me.udtvalidator.chkDOB(DocType.DocTypeModel.DocTypeCode.VISA, strDOB, dtmDOB, strExactDOB)
+        Me.udtSM = Me.udtValidator.chkDOB(DocType.DocTypeModel.DocTypeCode.VISA, strDOB, dtmDOB, strExactDOB)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputVisa.SetDOBError(True)
@@ -7472,7 +7503,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtValidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputCCIC.SetENameError(True)
@@ -7555,6 +7586,13 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputROP140.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputROP140.Gender)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputROP140.DateOfIssue)
+        _udtAuditLogEntry.AddDescripton("Chiname", udcInputROP140.CName)
+        _udtAuditLogEntry.AddDescripton("CCCode1", udcInputROP140.CCCode1)
+        _udtAuditLogEntry.AddDescripton("CCCode2", udcInputROP140.CCCode2)
+        _udtAuditLogEntry.AddDescripton("CCCode3", udcInputROP140.CCCode3)
+        _udtAuditLogEntry.AddDescripton("CCCode4", udcInputROP140.CCCode4)
+        _udtAuditLogEntry.AddDescripton("CCCode5", udcInputROP140.CCCode5)
+        _udtAuditLogEntry.AddDescripton("CCCode6", udcInputROP140.CCCode6)
         '_udtAuditLogEntry.AddDescripton("ExactDOB", udcInputROP140.ExactDOB)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
@@ -7571,6 +7609,19 @@ Partial Public Class eHSAccountMaint
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputROP140.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'CCCode
+        Me.udtSM = Me.udtValidator.chkCCCode_UsingDDL(String.Format("{0}{1}", udcInputROP140.CCCode1, Me.udcCCCode.SelectedCCCodeTail1), _
+                                                String.Format("{0}{1}", udcInputROP140.CCCode2, Me.udcCCCode.SelectedCCCodeTail2), _
+                                                String.Format("{0}{1}", udcInputROP140.CCCode3, Me.udcCCCode.SelectedCCCodeTail3), _
+                                                String.Format("{0}{1}", udcInputROP140.CCCode4, Me.udcCCCode.SelectedCCCodeTail4), _
+                                                String.Format("{0}{1}", udcInputROP140.CCCode5, Me.udcCCCode.SelectedCCCodeTail5), _
+                                                String.Format("{0}{1}", udcInputROP140.CCCode6, Me.udcCCCode.SelectedCCCodeTail6))
+        If Not Me.udtSM Is Nothing Then
+            isvalid = False
+            udcInputROP140.SetCCCodeError(True)
             Me.udcMsgBox.AddMessage(udtSM)
         End If
 
@@ -7623,6 +7674,23 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
             udtEHSAccountPersonalInfo.DateofIssue = dtIssueDate
+
+            udtEHSAccountPersonalInfo.CCCode1 = String.Format("{0}{1}", udcInputROP140.CCCode1, Me.udcCCCode.SelectedCCCodeTail1)
+            udtEHSAccountPersonalInfo.CCCode2 = String.Format("{0}{1}", udcInputROP140.CCCode2, Me.udcCCCode.SelectedCCCodeTail2)
+            udtEHSAccountPersonalInfo.CCCode3 = String.Format("{0}{1}", udcInputROP140.CCCode3, Me.udcCCCode.SelectedCCCodeTail3)
+            udtEHSAccountPersonalInfo.CCCode4 = String.Format("{0}{1}", udcInputROP140.CCCode4, Me.udcCCCode.SelectedCCCodeTail4)
+            udtEHSAccountPersonalInfo.CCCode5 = String.Format("{0}{1}", udcInputROP140.CCCode5, Me.udcCCCode.SelectedCCCodeTail5)
+            udtEHSAccountPersonalInfo.CCCode6 = String.Format("{0}{1}", udcInputROP140.CCCode6, Me.udcCCCode.SelectedCCCodeTail6)
+
+            'Retervie Chinese Name from Choose
+            udcInputROP140.CCCode1 = udtEHSAccountPersonalInfo.CCCode1
+            udcInputROP140.CCCode2 = udtEHSAccountPersonalInfo.CCCode2
+            udcInputROP140.CCCode3 = udtEHSAccountPersonalInfo.CCCode3
+            udcInputROP140.CCCode4 = udtEHSAccountPersonalInfo.CCCode4
+            udcInputROP140.CCCode5 = udtEHSAccountPersonalInfo.CCCode5
+            udcInputROP140.CCCode6 = udtEHSAccountPersonalInfo.CCCode6
+            udcInputROP140.SetCName()
+            udtEHSAccountPersonalInfo.CName = udcInputROP140.CName
         End If
 
         Return isvalid
@@ -7662,7 +7730,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtValidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputPASS.SetENameError(True)
@@ -7774,7 +7842,7 @@ Partial Public Class eHSAccountMaint
 #Region "CCCode"
 
 
-    Protected Sub ucInputDocumentType_SelectChineseName_HKIC(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ucInputDocumentType.SelectChineseName_HKIC_mode, ucInputDocumentType_NewAcc.SelectChineseName_HKIC_mode
+    Protected Sub ucInputDocumentType_SelectChineseName_HKIC(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal udcInputDocumentType As ucInputDocTypeBase, ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ucInputDocumentType.SelectChineseName_mode, ucInputDocumentType_NewAcc.SelectChineseName_mode
         'Audit Log
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
         Me.udtAuditLogEntry.WriteStartLog(Common.Component.LogID.LOG00084, AuditLogDesc.ClickSelectChineseNameButton)
@@ -7788,51 +7856,102 @@ Partial Public Class eHSAccountMaint
             Session(SESS_ClickSave) = True
         End If
 
-        udcInputHKID.SetErrorImage(False)
-        udcInputHKID.SetProperty(mode)
+        Select strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKID As ucInputHKID = CType(udcInputDocumentType, ucInputHKID)
+                udcInputHKID.SetErrorImage(False)
+                udcInputHKID.SetProperty(mode)
 
-        If udcInputHKID.CCCodeIsEmpty Then
+                If udcInputHKID.CCCodeIsEmpty Then
 
-            'No CCCode
-            udcInputHKID.SetCnameAmend(String.Empty)
+                    'No CCCode
+                    udcInputHKID.SetCnameAmend(String.Empty)
 
-            sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00143)
-            Me.udcMsgBox.AddMessage(sm)
-            udcInputHKID.SetCCCodeError(True)
+                    sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00143)
+                    Me.udcMsgBox.AddMessage(sm)
+                    udcInputHKID.SetCCCodeError(True)
 
-        Else
-            ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [Start][Winnie] Step 1
-            Me.udcCCCode.CCCode1 = udcInputHKID.GetCCCode(udcInputHKID.CCCode1, Me.udcCCCode.getCCCodeFromSession(1, FuncCode))
-            Me.udcCCCode.CCCode2 = udcInputHKID.GetCCCode(udcInputHKID.CCCode2, Me.udcCCCode.getCCCodeFromSession(2, FuncCode))
-            Me.udcCCCode.CCCode3 = udcInputHKID.GetCCCode(udcInputHKID.CCCode3, Me.udcCCCode.getCCCodeFromSession(3, FuncCode))
-            Me.udcCCCode.CCCode4 = udcInputHKID.GetCCCode(udcInputHKID.CCCode4, Me.udcCCCode.getCCCodeFromSession(4, FuncCode))
-            Me.udcCCCode.CCCode5 = udcInputHKID.GetCCCode(udcInputHKID.CCCode5, Me.udcCCCode.getCCCodeFromSession(5, FuncCode))
-            Me.udcCCCode.CCCode6 = udcInputHKID.GetCCCode(udcInputHKID.CCCode6, Me.udcCCCode.getCCCodeFromSession(6, FuncCode))
-            ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [End][Winnie] Step 1
+                Else
+                    ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [Start][Winnie] Step 1
+                    Me.udcCCCode.DocCode = DocTypeModel.DocTypeCode.HKIC
+                    Me.udcCCCode.CCCode1 = udcInputHKID.GetCCCode(udcInputHKID.CCCode1, Me.udcCCCode.getCCCodeFromSession(1, FuncCode))
+                    Me.udcCCCode.CCCode2 = udcInputHKID.GetCCCode(udcInputHKID.CCCode2, Me.udcCCCode.getCCCodeFromSession(2, FuncCode))
+                    Me.udcCCCode.CCCode3 = udcInputHKID.GetCCCode(udcInputHKID.CCCode3, Me.udcCCCode.getCCCodeFromSession(3, FuncCode))
+                    Me.udcCCCode.CCCode4 = udcInputHKID.GetCCCode(udcInputHKID.CCCode4, Me.udcCCCode.getCCCodeFromSession(4, FuncCode))
+                    Me.udcCCCode.CCCode5 = udcInputHKID.GetCCCode(udcInputHKID.CCCode5, Me.udcCCCode.getCCCodeFromSession(5, FuncCode))
+                    Me.udcCCCode.CCCode6 = udcInputHKID.GetCCCode(udcInputHKID.CCCode6, Me.udcCCCode.getCCCodeFromSession(6, FuncCode))
+                    ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [End][Winnie] Step 1
 
-            Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
+                    Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
 
-            ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
-            Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
-            Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
-            Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
-            Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
-            Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
-            Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
-            ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
+                    ' INT20-0047 (Fix throw error for invalid CCCode) [Start][Winnie]
+                    Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
+                    ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
-            sm = Me.udcCCCode.BindCCCode()
-            'Bind CCCode Drop Down List
-            If sm Is Nothing Then
-                udcInputHKID.SetCCCodeError(False)
-                Me.ModalPopupExtenderChooseCCCode.Show()
-                Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00085, AuditLogDesc.ChineseNameCodeCheckingSuccess)
-            Else
-                sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00039)
-                Me.udcMsgBox.AddMessage(sm)
-                udcInputHKID.SetCCCodeError(True)
-            End If
-        End If
+                    sm = Me.udcCCCode.BindCCCode()
+                    'Bind CCCode Drop Down List
+                    If sm Is Nothing Then
+                        udcInputHKID.SetCCCodeError(False)
+                        Me.ModalPopupExtenderChooseCCCode.Show()
+                        Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00085, AuditLogDesc.ChineseNameCodeCheckingSuccess)
+                    Else
+                        sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00039)
+                        Me.udcMsgBox.AddMessage(sm)
+                        udcInputHKID.SetCCCodeError(True)
+                    End If
+                End If
+
+
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = CType(udcInputDocumentType, ucInputROP140)
+                udcInputROP140.SetErrorImage(mode, False)
+                udcInputROP140.SetProperty(mode)
+
+                If udcInputROP140.CCCodeIsEmpty Then
+                    'No CCCode
+                    udcInputROP140.SetCnameAmend(String.Empty)
+
+                    sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00143)
+                    Me.udcMsgBox.AddMessage(sm)
+                    udcInputROP140.SetCCCodeError(True)
+
+                Else
+                    Me.udcCCCode.DocCode = DocTypeModel.DocTypeCode.ROP140
+                    Me.udcCCCode.CCCode1 = udcInputROP140.GetCCCode(udcInputROP140.CCCode1, Me.udcCCCode.getCCCodeFromSession(1, FuncCode))
+                    Me.udcCCCode.CCCode2 = udcInputROP140.GetCCCode(udcInputROP140.CCCode2, Me.udcCCCode.getCCCodeFromSession(2, FuncCode))
+                    Me.udcCCCode.CCCode3 = udcInputROP140.GetCCCode(udcInputROP140.CCCode3, Me.udcCCCode.getCCCodeFromSession(3, FuncCode))
+                    Me.udcCCCode.CCCode4 = udcInputROP140.GetCCCode(udcInputROP140.CCCode4, Me.udcCCCode.getCCCodeFromSession(4, FuncCode))
+                    Me.udcCCCode.CCCode5 = udcInputROP140.GetCCCode(udcInputROP140.CCCode5, Me.udcCCCode.getCCCodeFromSession(5, FuncCode))
+                    Me.udcCCCode.CCCode6 = udcInputROP140.GetCCCode(udcInputROP140.CCCode6, Me.udcCCCode.getCCCodeFromSession(6, FuncCode))
+
+                    Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
+
+                    Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
+                    Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
+
+                    sm = Me.udcCCCode.BindCCCode()
+                    'Bind CCCode Drop Down List
+                    If sm Is Nothing Then
+                        udcInputROP140.SetCCCodeError(False)
+                        Me.ModalPopupExtenderChooseCCCode.Show()
+                        Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00085, AuditLogDesc.ChineseNameCodeCheckingSuccess)
+                    Else
+                        sm = New SystemMessage(CommonFunctionCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00039)
+                        Me.udcMsgBox.AddMessage(sm)
+                        udcInputROP140.SetCCCodeError(True)
+                    End If
+                End If
+        End Select
 
         If Not IsNothing(sender) Then
             Me.udcMsgBox.BuildMessageBox(strValidationFail, udtAuditLogEntry, LogID.LOG00086, AuditLogDesc.ChineseNameCodeCheckingFail)
@@ -7840,36 +7959,70 @@ Partial Public Class eHSAccountMaint
 
     End Sub
 
-    Private Function NeedPopupCCCodeDialog(ByVal mode As ucInputDocTypeBase.BuildMode) As Boolean
+    Private Function NeedPopupCCCodeDialog(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal strDocCode As String) As Boolean
         'isDiff is using for check the sessoion CCCode is same as current CCCode 
         'isDiff = true : sessoion CCCode <> current CCCode 
         Dim isDiff As Boolean = True
-        Dim udcInputHKIC As ucInputHKID
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKIC As ucInputHKID
 
-        If mode = ucInputDocTypeBase.BuildMode.Creation Then
-            udcInputHKIC = Me.ucInputDocumentType_NewAcc.GetHKICControl()
-        Else
-            udcInputHKIC = Me.ucInputDocumentType.GetHKICControl()
-        End If
+                If mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputHKIC = Me.ucInputDocumentType_NewAcc.GetHKICControl()
+                Else
+                    udcInputHKIC = Me.ucInputDocumentType.GetHKICControl()
+                End If
 
-        udcInputHKIC.SetProperty(mode)
-        isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode1, FuncCode, 1)
+                udcInputHKIC.SetProperty(mode)
+                isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode1, FuncCode, 1)
 
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode2, FuncCode, 2)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode3, FuncCode, 3)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode4, FuncCode, 4)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode5, FuncCode, 5)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode6, FuncCode, 6)
-        End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode2, FuncCode, 2)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode3, FuncCode, 3)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode4, FuncCode, 4)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode5, FuncCode, 5)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode6, FuncCode, 6)
+                End If
+
+            Case DocTypeModel.DocTypeCode.ROP140
+
+                Dim udcInputROP140 As ucInputROP140
+
+                If mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputROP140 = Me.ucInputDocumentType_NewAcc.GetROP140Control()
+                Else
+                    udcInputROP140 = Me.ucInputDocumentType.GetROP140Control()
+                End If
+
+                udcInputROP140.SetProperty(mode)
+                isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode1, FuncCode, 1)
+
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode2, FuncCode, 2)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode3, FuncCode, 3)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode4, FuncCode, 4)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode5, FuncCode, 5)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode6, FuncCode, 6)
+                End If
+
+        End Select
+
 
         Return isDiff
     End Function
@@ -7882,53 +8035,102 @@ Partial Public Class eHSAccountMaint
         Me.ModalPopupExtenderChooseCCCode.Hide()
     End Sub
 
-    Private Sub udcChooseCCCode_Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
-
-        Dim udcIputHKIC As ucInputHKID = Me.ucInputDocumentType.GetHKICControl
+    Private Sub udcChooseCCCode_Confirm(ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
         Dim _udtEHSAccount As EHSAccountModel
         Dim mode As ucInputDocTypeBase.BuildMode
+        Dim strCName As String = String.Empty
 
-        If udcIputHKIC Is Nothing Then
-            'it indicates that the current mode is "Creation Mode"
-            udcIputHKIC = Me.ucInputDocumentType_NewAcc.GetHKICControl
-            udcIputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
-            _udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccountGetFromSession(FuncCode)
-            mode = ucInputDocTypeBase.BuildMode.Creation
-        Else
-            'Modification mode
-            udcIputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
-            _udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccount_Amend_GetFromSession(FuncCode)
-            mode = ucInputDocTypeBase.BuildMode.Modification
-        End If
 
-        'Dim _udtEHSAccount As EHSAccountModel = Me.udteHSAccountMaintBLL.EHSAccount_Amend_GetFromSession(FuncCode)
-        Dim strCName As String
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
 
-        Me.udcCCCode.CCCode1 = udcIputHKIC.CCCode1
-        Me.udcCCCode.CCCode2 = udcIputHKIC.CCCode2
-        Me.udcCCCode.CCCode3 = udcIputHKIC.CCCode3
-        Me.udcCCCode.CCCode4 = udcIputHKIC.CCCode4
-        Me.udcCCCode.CCCode5 = udcIputHKIC.CCCode5
-        Me.udcCCCode.CCCode6 = udcIputHKIC.CCCode6
+                Dim udcIputHKIC As ucInputHKID = Me.ucInputDocumentType.GetHKICControl
 
-        'Get Chinese Name from Drop Down List, Save to Session
-        udcCCCode.CleanSession(FuncCode)
-        strCName = Me.udcCCCode.GetChineseName(FuncCode, True)
-        'udcIputHKIC.SetCName(strCName)
-        udcIputHKIC.SetCnameAmend(strCName)
+                If udcIputHKIC Is Nothing Then
+                    'it indicates that the current mode is "Creation Mode"
+                    udcIputHKIC = Me.ucInputDocumentType_NewAcc.GetHKICControl
+                    udcIputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                    _udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccountGetFromSession(FuncCode)
+                    mode = ucInputDocTypeBase.BuildMode.Creation
+                Else
+                    'Modification mode
+                    udcIputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+                    _udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccount_Amend_GetFromSession(FuncCode)
+                    mode = ucInputDocTypeBase.BuildMode.Modification
+                End If
+
+                'Dim _udtEHSAccount As EHSAccountModel = Me.udteHSAccountMaintBLL.EHSAccount_Amend_GetFromSession(FuncCode)
+                Me.udcCCCode.DocCode = DocTypeModel.DocTypeCode.HKIC
+                Me.udcCCCode.CCCode1 = udcIputHKIC.CCCode1
+                Me.udcCCCode.CCCode2 = udcIputHKIC.CCCode2
+                Me.udcCCCode.CCCode3 = udcIputHKIC.CCCode3
+                Me.udcCCCode.CCCode4 = udcIputHKIC.CCCode4
+                Me.udcCCCode.CCCode5 = udcIputHKIC.CCCode5
+                Me.udcCCCode.CCCode6 = udcIputHKIC.CCCode6
+
+
+                'Get Chinese Name from Drop Down List, Save to Session
+                udcCCCode.CleanSession(FuncCode)
+                strCName = Me.udcCCCode.GetChineseName(FuncCode, True)
+                'udcIputHKIC.SetCName(strCName)
+                udcIputHKIC.SetCnameAmend(strCName)
+
+                _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC).CName = strCName
+
+                If mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    Me.udteHSAccountMaintBLL.EHSAccountSaveToSession(_udtEHSAccount, FuncCode)
+                Else
+                    Me.udteHSAccountMaintBLL.EHSAccount_Amend_SaveToSession(_udtEHSAccount, FuncCode)
+                End If
+
+
+
+
+            Case DocTypeModel.DocTypeCode.ROP140
+
+                Dim udcIputROP140 As ucInputROP140 = Me.ucInputDocumentType.GetROP140Control
+
+                If udcIputROP140 Is Nothing Then
+                    'it indicates that the current mode is "Creation Mode"
+                    udcIputROP140 = Me.ucInputDocumentType_NewAcc.GetROP140Control
+                    udcIputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                    _udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccountGetFromSession(FuncCode)
+                    mode = ucInputDocTypeBase.BuildMode.Creation
+                Else
+                    'Modification mode
+                    udcIputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+                    _udtEHSAccount = Me.udteHSAccountMaintBLL.EHSAccount_Amend_GetFromSession(FuncCode)
+                    mode = ucInputDocTypeBase.BuildMode.Modification
+                End If
+
+                Me.udcCCCode.DocCode = DocTypeModel.DocTypeCode.ROP140
+                Me.udcCCCode.CCCode1 = udcIputROP140.CCCode1
+                Me.udcCCCode.CCCode2 = udcIputROP140.CCCode2
+                Me.udcCCCode.CCCode3 = udcIputROP140.CCCode3
+                Me.udcCCCode.CCCode4 = udcIputROP140.CCCode4
+                Me.udcCCCode.CCCode5 = udcIputROP140.CCCode5
+                Me.udcCCCode.CCCode6 = udcIputROP140.CCCode6
+
+
+                'Get Chinese Name from Drop Down List, Save to Session
+                udcCCCode.CleanSession(FuncCode)
+                strCName = Me.udcCCCode.GetChineseName(FuncCode, True)
+                'udcIputHKIC.SetCName(strCName)
+                udcIputROP140.SetCnameAmend(strCName)
+
+                _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.ROP140).CName = strCName
+
+                If mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    Me.udteHSAccountMaintBLL.EHSAccountSaveToSession(_udtEHSAccount, FuncCode)
+                Else
+                    Me.udteHSAccountMaintBLL.EHSAccount_Amend_SaveToSession(_udtEHSAccount, FuncCode)
+                End If
+        End Select
 
         'Audit Log
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
         Me.udtAuditLogEntry.AddDescripton("ChineseName", strCName)
         Me.udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00087, AuditLogDesc.ConfirmChineseName)
-
-        _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC).CName = strCName
-
-        If mode = ucInputDocTypeBase.BuildMode.Creation Then
-            Me.udteHSAccountMaintBLL.EHSAccountSaveToSession(_udtEHSAccount, FuncCode)
-        Else
-            Me.udteHSAccountMaintBLL.EHSAccount_Amend_SaveToSession(_udtEHSAccount, FuncCode)
-        End If
 
         Me.ModalPopupExtenderChooseCCCode.Hide()
 
@@ -8009,7 +8211,7 @@ Partial Public Class eHSAccountMaint
         For i As Integer = 0 To arrAccountID.Length - 1
             'CRE13-006 HCVS Ceiling [Start][Karl]
             If arrAccountID(i).Trim() <> String.Empty Then
-                If Not udtvalidator.chkValidatedEHSAccountNumber(arrAccountID(i).Trim()) Then
+                If Not udtValidator.chkValidatedEHSAccountNumber(arrAccountID(i).Trim()) Then
                     'If arrAccountID(0).Trim() <> String.Empty Then
                     '    If Not udtvalidator.chkValidatedEHSAccountNumber(arrAccountID(0).Trim()) Then
                     'CRE13-006 HCVS Ceiling [End][Karl]

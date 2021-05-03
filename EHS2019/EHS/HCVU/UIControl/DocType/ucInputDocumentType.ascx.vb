@@ -32,8 +32,9 @@ Partial Public Class ucInputDocumentType
         ' CRE20-0022 (Immu record) [End][Martin]
     End Class
 
-    Public Event SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-    Public Event SelectChineseName_HKIC_mode(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event SelectChineseName(ByVal udcInputDocumentType As ucInputDocTypeBase, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event SelectChineseName_mode(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal udcInputDocumentType As ucInputDocTypeBase, ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+
 
 #Region "Private Members"
     Private _docType As String
@@ -377,6 +378,7 @@ Partial Public Class ucInputDocumentType
                 Dim udcInputROP140 As ucInputROP140 = Me.LoadControl("~/UIControl/DocType/ucInputROP140.ascx")
                 udcInputROP140.ID = DocumentControlID.ROP140
                 If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputROP140.UpdateValue = Me._fillValue
                     udcInputROP140.Visible = Me._fillValue
                     udcInputROP140.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
                     If IsNothing(Me._udtEHSAccountAmend) Then
@@ -387,11 +389,15 @@ Partial Public Class ucInputDocumentType
                 Else
                     If Not IsNothing(Me._udtEHSAccountAmend) Then
                         udcInputROP140.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.ROP140)
+                        udcInputROP140.SetCnameAmend(udcInputROP140.EHSPersonalInfoAmend.CName)
                     End If
                 End If
                 udcInputROP140.Mode = Me._mode
                 udcInputROP140.ActiveViewChanged = Me.ActiveViewChanged
                 udcInputROP140.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+
+                AddHandler udcInputROP140.SelectChineseName, AddressOf udcInputROP140_SelectChineseName
+                AddHandler udcInputROP140.SelectChineseName_CreateMode, AddressOf udcInputROP140_SelectChineseName_mode
                 Me.Built(udcInputROP140)
 
             Case DocTypeModel.DocTypeCode.PASS
@@ -439,12 +445,21 @@ Partial Public Class ucInputDocumentType
 #Region "Events"
 
     Private Sub udcInputHKID_SelectChineseName(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        RaiseEvent SelectChineseName_HKIC(Me.GetHKICControl(), sender, e)
+        RaiseEvent SelectChineseName(Me.GetHKICControl(), sender, e)
     End Sub
 
     Private Sub udcInputHKID_SelectChineseName_mode(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        RaiseEvent SelectChineseName_HKIC_mode(mode, Me.GetHKICControl(), sender, e)
+        RaiseEvent SelectChineseName_mode(mode, Me.GetHKICControl(), DocTypeModel.DocTypeCode.HKIC, sender, e)
     End Sub
+
+    Private Sub udcInputROP140_SelectChineseName(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent SelectChineseName(Me.GetROP140Control(), sender, e)
+    End Sub
+
+    Private Sub udcInputROP140_SelectChineseName_mode(ByVal mode As ucInputDocTypeBase.BuildMode, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent SelectChineseName_mode(mode, Me.GetROP140Control(), DocTypeModel.DocTypeCode.ROP140, sender, e)
+    End Sub
+
 #End Region
 
 #Region "Get Function"

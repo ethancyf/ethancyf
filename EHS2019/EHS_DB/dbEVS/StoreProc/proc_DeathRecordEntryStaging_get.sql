@@ -111,7 +111,7 @@ AS BEGIN
 		DOD,
 		Exact_DOD,
 		DOR,
-		CONVERT(varchar, DecryptByKey(Encrypt_Field2)) AS [English_Name],
+		CONVERT(varchar(100), DecryptByKey(Encrypt_Field2)) AS [English_Name],
 		Result,
 		Fail_Type
 	FROM

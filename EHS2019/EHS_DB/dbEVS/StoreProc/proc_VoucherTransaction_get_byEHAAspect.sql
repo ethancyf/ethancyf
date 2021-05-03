@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Chris YIM
 -- Modified date:	22 Oct 2020
 -- CR No.			CRE20-015 (HA Scheme)
@@ -70,7 +77,7 @@ CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byEHAAspect]
     @Means_Of_Input               CHAR(1), 
     @SchoolOrRCH_code             CHAR(50), 
     @user_id                      VARCHAR(20), 
-    @eHA_name                     VARCHAR(40), 
+    @eHA_name                     VARCHAR(100), 
     @eHA_chi_name                 NVARCHAR(6), 
     @result_limit_1st_enable      BIT, 
     @result_limit_override_enable BIT, 
@@ -916,7 +923,7 @@ ON #TempTransaction
 
         SELECT T.Transaction_ID AS [tranNum], 
                T.Transaction_Dtm AS [tranDate], 
-               CONVERT(VARCHAR(40), DECRYPTBYKEY(T.Encrypt_Field2)) AS [SPName], 
+               CONVERT(VARCHAR(100), DECRYPTBYKEY(T.Encrypt_Field2)) AS [SPName], 
                CONVERT(NVARCHAR, DECRYPTBYKEY(T.Encrypt_Field3)) AS [SPChiName], 
                T.SP_ID AS [SPID], 
                T.Bank_Account_No AS [BankAccountNo], 

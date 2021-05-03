@@ -10,6 +10,7 @@ Imports Common.Validation
 Imports System.Data.SqlClient
 Imports System.IO
 Imports Common.Component.EHSAccount
+Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
 
 Namespace Component.eHealthAccountDeathRecord
 
@@ -134,7 +135,7 @@ Namespace Component.eHealthAccountDeathRecord
                     udtDB.MakeInParam("@DOD", SqlDbType.DateTime, 40, dr("DOD")), _
                     udtDB.MakeInParam("@Exact_DOD", SqlDbType.Char, 1, dr("Exact_DOD")), _
                     udtDB.MakeInParam("@DOR", SqlDbType.DateTime, 40, dr("DOR")), _
-                    udtDB.MakeInParam("@English_Name", SqlDbType.VarChar, 40, dr("English_Name")) _
+                    udtDB.MakeInParam("@English_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, dr("English_Name")) _
                 }
 
                 udtDB.RunProc("proc_DeathRecordEntryStaging_add", prams)

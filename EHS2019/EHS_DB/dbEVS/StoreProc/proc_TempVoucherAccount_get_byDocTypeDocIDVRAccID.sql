@@ -15,6 +15,13 @@ GO
 -- =============================================
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -92,7 +99,7 @@ BEGIN
 		TP.[Date_of_Issue],  
   
 		CONVERT(VARCHAR, DecryptByKey(TP.[Encrypt_Field1])) AS IdentityNum,  
-		CONVERT(VARCHAR(40), DecryptByKey(TP.[Encrypt_Field2])) AS EName,  
+		CONVERT(VARCHAR(100), DecryptByKey(TP.[Encrypt_Field2])) AS EName,  
 		CONVERT(NVARCHAR, DecryptByKey(TP.[Encrypt_Field3])) AS CName,     
      
 		TP.[EC_Age],  

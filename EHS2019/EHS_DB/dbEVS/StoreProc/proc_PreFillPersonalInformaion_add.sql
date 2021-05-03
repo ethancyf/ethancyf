@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -48,7 +54,7 @@ CREATE PROCEDURE [dbo].[proc_PreFillPersonalInformaion_add]
 	@Other_Info	varchar(10),
 --	@DataEntry_By varchar(20),
 	@Identity varchar(20),
-	@Eng_Name varchar(40),
+	@Eng_Name varchar(100),
 	@Chi_Name nvarchar(12),
 	@CCcode1 char(5),
 	@CCcode2 char(5),

@@ -8,6 +8,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	17 Sep 2019
 -- CR No.:			CRE19-001 (VSS 2019/20)
@@ -30,7 +37,7 @@ BEGIN
 	DECLARE @separator_index int
 	DECLARE @temp_name varchar(40)
 	
-	DECLARE @result varchar(20)
+	DECLARE @result varchar(40)
 
 	-- =============================================
 	-- Validation 

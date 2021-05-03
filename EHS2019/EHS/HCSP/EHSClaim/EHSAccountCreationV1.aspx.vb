@@ -270,6 +270,9 @@ Partial Public Class EHSAccountCreationV1
         End If
 
         'CRE20-xxx COVID-19 [End][Nichole]
+
+        Me.ModalPopupExtenderConfirmSelectPractice.PopupDragHandleControlID = Me.ucNoticePopUpConfirmSelectPractice.Header.ClientID
+
     End Sub
 
     Private Sub StepRenderLanguage(ByVal udtEHSAccount As EHSAccountModel)
@@ -438,21 +441,42 @@ Partial Public Class EHSAccountCreationV1
         EHSAccountCreationBase.AuditLogStep1b1PromptCCCodeCancel(udtAuditLogEntry)
     End Sub
 
-    Private Sub udcChooseCCCode_Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcChooseCCCode.Confirm
-        Dim udcInputHKIC As ucInputHKID = Me.udcStep1b1InputDocumentType.GetHKICControl
+    Private Sub udcChooseCCCode_Confirm(ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcChooseCCCode.Confirm
         Dim udtEHSAccount As EHSAccountModel = Me._udtSessionHandler.EHSAccountGetFromSession(FunctCode)
-        Dim strChineseName As String
-        udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
-        Me.udcChooseCCCode.CCCode1 = udcInputHKIC.CCCode1
-        Me.udcChooseCCCode.CCCode2 = udcInputHKIC.CCCode2
-        Me.udcChooseCCCode.CCCode3 = udcInputHKIC.CCCode3
-        Me.udcChooseCCCode.CCCode4 = udcInputHKIC.CCCode4
-        Me.udcChooseCCCode.CCCode5 = udcInputHKIC.CCCode5
-        Me.udcChooseCCCode.CCCode6 = udcInputHKIC.CCCode6
+        Dim strChineseName As String = String.Empty
 
-        'Get Chinese From drop down list, and Save CCCode in Session
-        strChineseName = Me.udcChooseCCCode.GetChineseName(FunctCode, True)
-        udcInputHKIC.SetCName(strChineseName)
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKIC As ucInputHKID = Me.udcStep1b1InputDocumentType.GetHKICControl
+
+                udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                Me.udcChooseCCCode.CCCode1 = udcInputHKIC.CCCode1
+                Me.udcChooseCCCode.CCCode2 = udcInputHKIC.CCCode2
+                Me.udcChooseCCCode.CCCode3 = udcInputHKIC.CCCode3
+                Me.udcChooseCCCode.CCCode4 = udcInputHKIC.CCCode4
+                Me.udcChooseCCCode.CCCode5 = udcInputHKIC.CCCode5
+                Me.udcChooseCCCode.CCCode6 = udcInputHKIC.CCCode6
+
+                'Get Chinese From drop down list, and Save CCCode in Session
+                strChineseName = Me.udcChooseCCCode.GetChineseName(FunctCode, True)
+                udcInputHKIC.SetCName(strChineseName)
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = Me.udcStep1b1InputDocumentType.GetROP140Control
+
+                udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                Me.udcChooseCCCode.CCCode1 = udcInputROP140.CCCode1
+                Me.udcChooseCCCode.CCCode2 = udcInputROP140.CCCode2
+                Me.udcChooseCCCode.CCCode3 = udcInputROP140.CCCode3
+                Me.udcChooseCCCode.CCCode4 = udcInputROP140.CCCode4
+                Me.udcChooseCCCode.CCCode5 = udcInputROP140.CCCode5
+                Me.udcChooseCCCode.CCCode6 = udcInputROP140.CCCode6
+
+                'Get Chinese From drop down list, and Save CCCode in Session
+                strChineseName = Me.udcChooseCCCode.GetChineseName(FunctCode, True)
+                udcInputROP140.SetCName(strChineseName)
+
+        End Select
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
         udtAuditLogEntry.AddDescripton("Chinese Name", strChineseName)
@@ -465,14 +489,18 @@ Partial Public Class EHSAccountCreationV1
         Me.ModalPopupExtenderChooseCCCode.Hide()
 
         Dim blnPressedNext As Boolean = False
+
         If Not IsNothing(Me.Session(SessionName.PressedNext)) Then
             'Since CCCode is incorrect and user pressed "Next" Button in step1b1 (Enter Account Detail) page
             blnPressedNext = CType(Me.Session(SessionName.PressedNext), Boolean)
+
             If blnPressedNext Then
                 Me.Session.Remove(SessionName.PressedNext)
                 Me.btnStep1b1Next_Click(Nothing, Nothing)
             End If
+
         End If
+
     End Sub
 
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -488,64 +516,96 @@ Partial Public Class EHSAccountCreationV1
         Dim udtSchemeClaimBLL As Scheme.SchemeClaimBLL = New Scheme.SchemeClaimBLL()
         Dim udtSchemeClaim As Scheme.SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
 
-        udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
-        udtSelectedPracticedisplay = udtPracticeDisplays.Filter(intBankAccountDisplaySeqas)
-        Me._udtSessionHandler.PracticeDisplaySaveToSession(udtSelectedPracticedisplay, FunctCode)
+        ' CRE20-023  (Immu record) [Start][Raiman]
+        'Get sender(which is image button created by PracticeRadioButtonGroup.vb) contain attributes. and pass attribute value to popup ok button for calling PracticeRadioButtonGroup_PracticeSelected sub again.
+        Dim selectPracticeImageButton As ImageButton = CType(sender, ImageButton)
+        Dim IsContainCovid19Scheme As Boolean = CType(selectPracticeImageButton.Attributes("blnShowPopUp"), Boolean)
 
-        ' Save the new selected Scheme to session
-        _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
+        If (Me.ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso Not _udtSessionHandler.ConfirmedPracticePopUpGetFromSession AndAlso IsContainCovid19Scheme) Then
+            ModalPopupExtenderConfirmSelectPractice.Show()
+            ModalPopupPracticeSelection.Show()
 
-        Select Case Me.mvAccountCreation.ActiveViewIndex
-            Case ActiveViewIndex.Step1b1
-                Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataTextField") = selectPracticeImageButton.Attributes("DataTextField")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataValueField") = selectPracticeImageButton.Attributes("DataValueField")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplaySeq") = selectPracticeImageButton.Attributes("PracticeDisplaySeq")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplayText") = selectPracticeImageButton.Attributes("PracticeDisplayText")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("blnShowPopUp") = selectPracticeImageButton.Attributes("blnShowPopUp")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = udcPracticeRadioButtonGroup.ClientID
 
-                'if Selected practice is not same as the current practice
-                If Not udtPracticedisplay.PracticeID.Equals(intBankAccountDisplaySeqas) Then
+            ucNoticePopUpConfirmSelectPractice.MessageText = String.Format(HttpContext.GetGlobalResourceObject("Text", "SelectPracticePopup"), selectPracticeImageButton.Attributes("PracticeDisplayText"))
 
-                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
-                    ' Practice Scheme Info List Filter by COVID-19
-                    Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfo.PracticeSchemeInfoModelCollection = (New Scheme.SchemeClaimBLL).FilterPracticeSchemeInfo(Me._udtSP.PracticeList, intBankAccountDisplaySeqas, Me.ClaimMode)
+        Else
+            ' CRE20-023  (Immu record) [End][Raiman]
 
-                    udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(udtFilterPracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
-                    ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-                    udtSchemeClaim = udtSchemeClaimModelCollection.Filter(udtSchemeClaim.SchemeCode)
 
-                    'Practice do not have this scheme for creation account -> show pop up message message
-                    If udtSchemeClaim Is Nothing Then
-                        EHSAccountCreationBase.AuditLogPracticeSelected(udtAuditLogEntry, True, udtSelectedPracticedisplay, Nothing, False)
-                        Me._udtSessionHandler.SchemeSelectedRemoveFromSession(FunctCode)
+            udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
+            udtSelectedPracticedisplay = udtPracticeDisplays.Filter(intBankAccountDisplaySeqas)
+            Me._udtSessionHandler.PracticeDisplaySaveToSession(udtSelectedPracticedisplay, FunctCode)
 
-                        isValidForCreation = False
+            'this session for always show select practice popup.
+            _udtSessionHandler.ConfirmedPracticePopUpSaveToSession(False)
+
+            ' Save the new selected Scheme to session
+            _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
+
+            Select Case Me.mvAccountCreation.ActiveViewIndex
+                Case ActiveViewIndex.Step1b1
+                    Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+
+                    'if Selected practice is not same as the current practice
+                    If Not udtPracticedisplay.PracticeID.Equals(intBankAccountDisplaySeqas) Then
+
+                        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        ' Practice Scheme Info List Filter by COVID-19
+                        Dim udtFilterPracticeSchemeInfoList As PracticeSchemeInfo.PracticeSchemeInfoModelCollection = (New Scheme.SchemeClaimBLL).FilterPracticeSchemeInfo(Me._udtSP.PracticeList, intBankAccountDisplaySeqas, Me.ClaimMode)
+
+                        udtSchemeClaimModelCollection = udtSchemeClaimBLL.searchValidClaimPeriodSchemeClaimByPracticeSchemeInfoSubsidizeCode(udtFilterPracticeSchemeInfoList, Me._udtSP.SchemeInfoList)
+                        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+                        udtSchemeClaim = udtSchemeClaimModelCollection.Filter(udtSchemeClaim.SchemeCode)
+
+                        'Practice do not have this scheme for creation account -> show pop up message message
+                        If udtSchemeClaim Is Nothing Then
+                            EHSAccountCreationBase.AuditLogPracticeSelected(udtAuditLogEntry, True, udtSelectedPracticedisplay, Nothing, False)
+                            Me._udtSessionHandler.SchemeSelectedRemoveFromSession(FunctCode)
+
+                            isValidForCreation = False
+                        Else
+                            EHSAccountCreationBase.AuditLogPracticeSelected(udtAuditLogEntry, True, udtSelectedPracticedisplay, udtSchemeClaim, True)
+                        End If
+
+                        'CRE16-002 (Revamp VSS) [Start][Chris YIM]
+                        '-----------------------------------------------------------------------------------------
+                        Me._udtSessionHandler.NonClinicSettingRemoveFromSession(FunctCode)
+                        'Me._udtSessionHandler.DocumentaryProofForPIDRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PIDInstitutionCodeRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PlaceVaccinationRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PlaceVaccinationOtherRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
+                        'CRE16-002 (Revamp VSS) [End][Chris YIM]
                     Else
                         EHSAccountCreationBase.AuditLogPracticeSelected(udtAuditLogEntry, True, udtSelectedPracticedisplay, udtSchemeClaim, True)
                     End If
 
-                    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-                    '-----------------------------------------------------------------------------------------
-                    Me._udtSessionHandler.NonClinicSettingRemoveFromSession(FunctCode)
-                    'Me._udtSessionHandler.DocumentaryProofForPIDRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PIDInstitutionCodeRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PlaceVaccinationRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PlaceVaccinationOtherRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
-                    'CRE16-002 (Revamp VSS) [End][Chris YIM]
-                Else
-                    EHSAccountCreationBase.AuditLogPracticeSelected(udtAuditLogEntry, True, udtSelectedPracticedisplay, udtSchemeClaim, True)
-                End If
-
-                'case 1 : SP selected the same practice -> procced account normally
-                'case 2 : SP selected the diff practice and have same scheme -> procced account normally
-                If isValidForCreation Then
+                    'case 1 : SP selected the same practice -> procced account normally
+                    'case 2 : SP selected the diff practice and have same scheme -> procced account normally
+                    If isValidForCreation Then
 
 
-                    Me.SetupStep1b1(udtEHSAccount, False, False)
-                Else
-                    Me.lblPopupConfirmOnlyMessage.Text = Me.GetGlobalResourceObject("Text", "PracticeNoAvailSchemeForEHSAccountCreateion")
-                    Me.ModalPopupConfirmOnly.Show()
-                End If
-        End Select
+                        Me.SetupStep1b1(udtEHSAccount, False, False)
+                    Else
+                        Me.lblPopupConfirmOnlyMessage.Text = Me.GetGlobalResourceObject("Text", "PracticeNoAvailSchemeForEHSAccountCreateion")
+                        Me.ModalPopupConfirmOnly.Show()
+                    End If
+            End Select
+
+
+            ' CRE20-023  (Immu record) [Start][Raiman]
+        End If
+        ' CRE20-023  (Immu record) [End][Raiman]
+
     End Sub
 
     ' CRE20-0XX (HA Scheme) [Start][Winnie]
@@ -559,6 +619,28 @@ Partial Public Class EHSAccountCreationV1
     '------------------------------------------------------------------------------------------------------------------------------------------------------------
     Private Sub btnPopupConfirmOnlyConfirm_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnPopupConfirmOnlyConfirm.Click
         Me.BackToClaim(False)
+    End Sub
+
+
+    Private Sub ucNoticePopUpConfirmSelectPractice_ButtonClick(ByVal e As ucNoticePopUp.enumButtonClick) Handles ucNoticePopUpConfirmSelectPractice.ButtonClick
+        Select Case e
+            Case ucNoticePopUp.enumButtonClick.OK
+                Dim imageButton As ImageButton = New ImageButton
+                _udtSessionHandler.ConfirmedPracticePopUpSaveToSession(True)
+                imageButton.Attributes("DataTextField") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataTextField")
+                imageButton.Attributes("DataValueField") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataValueField")
+                imageButton.Attributes("PracticeDisplaySeq") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplaySeq")
+                imageButton.Attributes("PracticeDisplayText") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplayText")
+                imageButton.Attributes("blnShowPopUp") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("blnShowPopUp")
+
+                udcPracticeRadioButtonGroup.btnPracticeSelection_click(imageButton, Nothing)
+            Case Else
+                If (ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = udcPracticeRadioButtonGroup.ClientID) Then
+                    ModalPopupPracticeSelection.Show()
+                End If
+                ' Do nothing
+        End Select
+
     End Sub
 
 #End Region
@@ -1015,10 +1097,10 @@ Partial Public Class EHSAccountCreationV1
 
         EHSAccountCreationBase.AuditLogStep1b1Start(_udtAuditLogEntry)
 
-        Dim udcInputHKIC As ucInputHKID = Me.udcStep1b1InputDocumentType.GetHKICControl()
-
         Select Case Me._udtEHSAccount.SearchDocCode
             Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKIC As ucInputHKID = Me.udcStep1b1InputDocumentType.GetHKICControl()
+
                 If udcInputHKIC.CCCodeIsEmpty() Then
                     udcInputHKIC.SetCName(String.Empty)
                     Me.udcChooseCCCode.Clean()
@@ -1036,9 +1118,9 @@ Partial Public Class EHSAccountCreationV1
 
                         'Check for select chinese name/CCCode 
                         'if cccode is changed (different between session value and input box), or incorrect CCCode
-                        If Me.NeedPopupChineseNameDialog() Then
+                        If Me.NeedPopupChineseNameDialog(DocTypeModel.DocTypeCode.HKIC) Then
 
-                            systemMessage = Me.Step1b1ShowCCCodeSelection(udcInputHKIC, True)
+                            systemMessage = Me.Step1b1ShowCCCodeSelection(udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, True)
                             If Not systemMessage Is Nothing Then
                                 Me.udcMsgBoxErr.AddMessage(systemMessage)
                             Else
@@ -1102,8 +1184,51 @@ Partial Public Class EHSAccountCreationV1
                 'Fields checking for CCIC only
                 blnProceed = Me.Step1b1CCICValidation(Me._udtEHSAccount)
             Case DocTypeModel.DocTypeCode.ROP140
-                'Fields checking for ROP140 only
-                blnProceed = Me.Step1b1ROP140Validation(Me._udtEHSAccount)
+                Dim udcInputROP140 As ucInputROP140 = Me.udcStep1b1InputDocumentType.GetROP140Control()
+
+                If udcInputROP140.CCCodeIsEmpty() Then
+                    udcInputROP140.SetCName(String.Empty)
+                    Me.udcChooseCCCode.Clean()
+                    Me._udtSessionHandler.CCCodeRemoveFromSession(FunctCode)
+                Else
+                    udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+                    udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+                    If (udcInputROP140.CCCode1.Length = 4 OrElse udcInputROP140.CCCode1.Length = 0) AndAlso _
+                       (udcInputROP140.CCCode2.Length = 4 OrElse udcInputROP140.CCCode2.Length = 0) AndAlso _
+                       (udcInputROP140.CCCode3.Length = 4 OrElse udcInputROP140.CCCode3.Length = 0) AndAlso _
+                       (udcInputROP140.CCCode4.Length = 4 OrElse udcInputROP140.CCCode4.Length = 0) AndAlso _
+                       (udcInputROP140.CCCode5.Length = 4 OrElse udcInputROP140.CCCode5.Length = 0) AndAlso _
+                       (udcInputROP140.CCCode6.Length = 4 OrElse udcInputROP140.CCCode6.Length = 0) Then
+
+                        'Check for select chinese name/CCCode 
+                        'if cccode is changed (different between session value and input box), or incorrect CCCode
+                        If Me.NeedPopupChineseNameDialog(DocTypeModel.DocTypeCode.ROP140) Then
+
+                            systemMessage = Me.Step1b1ShowCCCodeSelection(udcInputROP140, DocTypeModel.DocTypeCode.ROP140, True)
+                            If Not systemMessage Is Nothing Then
+                                Me.udcMsgBoxErr.AddMessage(systemMessage)
+                            Else
+                                EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(_udtAuditLogEntry)
+
+                            End If
+                            blnProceed = False
+                        End If
+
+                    Else
+                        Me.udcMsgBoxErr.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputROP140.SetCCCodeError(True)
+                        blnProceed = False
+
+                    End If
+
+                End If
+
+                If blnProceed Then
+                    'Fields checking for ROP140 only
+                    blnProceed = Me.Step1b1ROP140Validation(Me._udtEHSAccount)
+                End If
+
             Case DocTypeModel.DocTypeCode.PASS
                 'Fields checking for PASS only
                 blnProceed = Me.Step1b1PASSValidation(Me._udtEHSAccount)
@@ -1996,7 +2121,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputCCIC.SetENameError(True)
@@ -2057,13 +2182,24 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(_systemMessage)
         End If
 
+        Me._systemMessage = Me._validator.chkCCCode_UsingDDL(String.Format("{0}{1}", udcInputROP140.CCCode1, Me.udcChooseCCCode.SelectedCCCodeTail1), _
+                                                             String.Format("{0}{1}", udcInputROP140.CCCode2, Me.udcChooseCCCode.SelectedCCCodeTail2), _
+                                                             String.Format("{0}{1}", udcInputROP140.CCCode3, Me.udcChooseCCCode.SelectedCCCodeTail3), _
+                                                             String.Format("{0}{1}", udcInputROP140.CCCode4, Me.udcChooseCCCode.SelectedCCCodeTail4), _
+                                                             String.Format("{0}{1}", udcInputROP140.CCCode5, Me.udcChooseCCCode.SelectedCCCodeTail5), _
+                                                             String.Format("{0}{1}", udcInputROP140.CCCode6, Me.udcChooseCCCode.SelectedCCCodeTail6))
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputROP140.SetCCCodeError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
         Me._systemMessage = Me._validator.chkGender(udcInputROP140.Gender)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputROP140.SetGenderError(True)
             Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
         End If
-
 
         strDOI = Me._udtFormatter.formatDateBeforValidation_DDMMYYYY(udcInputROP140.DateOfIssue)
         Me._systemMessage = Me._validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.ROP140, strDOI, udtEHSAccountPersonalInfo.DOB)
@@ -2075,10 +2211,27 @@ Partial Public Class EHSAccountCreationV1
             dtDateOfIssue = Me._udtFormatter.convertDate(Me._udtFormatter.formatInputDate(strDOI), Me._udtSessionHandler.Language())
         End If
 
-
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputROP140.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputROP140.ENameFirstName
+
+            udtEHSAccountPersonalInfo.CCCode1 = String.Format("{0}{1}", udcInputROP140.CCCode1, Me.udcChooseCCCode.SelectedCCCodeTail1)
+            udtEHSAccountPersonalInfo.CCCode2 = String.Format("{0}{1}", udcInputROP140.CCCode2, Me.udcChooseCCCode.SelectedCCCodeTail2)
+            udtEHSAccountPersonalInfo.CCCode3 = String.Format("{0}{1}", udcInputROP140.CCCode3, Me.udcChooseCCCode.SelectedCCCodeTail3)
+            udtEHSAccountPersonalInfo.CCCode4 = String.Format("{0}{1}", udcInputROP140.CCCode4, Me.udcChooseCCCode.SelectedCCCodeTail4)
+            udtEHSAccountPersonalInfo.CCCode5 = String.Format("{0}{1}", udcInputROP140.CCCode5, Me.udcChooseCCCode.SelectedCCCodeTail5)
+            udtEHSAccountPersonalInfo.CCCode6 = String.Format("{0}{1}", udcInputROP140.CCCode6, Me.udcChooseCCCode.SelectedCCCodeTail6)
+
+            'Retervie Chinese Name from Choose
+            udcInputROP140.CCCode1 = udtEHSAccountPersonalInfo.CCCode1
+            udcInputROP140.CCCode2 = udtEHSAccountPersonalInfo.CCCode2
+            udcInputROP140.CCCode3 = udtEHSAccountPersonalInfo.CCCode3
+            udcInputROP140.CCCode4 = udtEHSAccountPersonalInfo.CCCode4
+            udcInputROP140.CCCode5 = udtEHSAccountPersonalInfo.CCCode5
+            udcInputROP140.CCCode6 = udtEHSAccountPersonalInfo.CCCode6
+            udcInputROP140.SetCName()
+            udtEHSAccountPersonalInfo.CName = udcInputROP140.CName
+
             udtEHSAccountPersonalInfo.Gender = udcInputROP140.Gender
             udtEHSAccountPersonalInfo.DateofIssue = dtDateOfIssue
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.ROP140
@@ -2103,7 +2256,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputPASS.SetENameError(True)
@@ -2144,58 +2297,120 @@ Partial Public Class EHSAccountCreationV1
 
 #Region "Step 1b1 CCCode related function/ Event "
 
-    Private Function NeedPopupChineseNameDialog() As Boolean
+    Private Function NeedPopupChineseNameDialog(ByVal strDocCode As String) As Boolean
         'isDiff is using for check the sessoion CCCode is same as current CCCode 
         'isDiff = true : sessoion CCCode <> current CCCode 
         Dim isDiff As Boolean = True
-        Dim udcInputHKIC As ucInputHKID = Me.udcStep1b1InputDocumentType.GetHKICControl()
-        udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
-        isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode1, FunctCode, 1)
 
-        If Not isDiff Then
-            isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode2, FunctCode, 2)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode3, FunctCode, 3)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode4, FunctCode, 4)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode5, FunctCode, 5)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode6, FunctCode, 6)
-        End If
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKIC As ucInputHKID = Me.udcStep1b1InputDocumentType.GetHKICControl()
+
+                udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+                isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode1, FunctCode, 1)
+
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode2, FunctCode, 2)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode3, FunctCode, 3)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode4, FunctCode, 4)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode5, FunctCode, 5)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputHKIC.CCCode6, FunctCode, 6)
+                End If
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = Me.udcStep1b1InputDocumentType.GetROP140Control()
+
+                udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+                isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputROP140.CCCode1, FunctCode, 1)
+
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputROP140.CCCode2, FunctCode, 2)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputROP140.CCCode3, FunctCode, 3)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputROP140.CCCode4, FunctCode, 4)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputROP140.CCCode5, FunctCode, 5)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcChooseCCCode.CCCodeDiff(udcInputROP140.CCCode6, FunctCode, 6)
+                End If
+
+        End Select
 
         Return isDiff
+
     End Function
 
-    'For HKIC Case Only
-    Private Sub udcStep1b1InputDocumentType_SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) _
-        Handles udcStep1b1InputDocumentType.SelectChineseName_HKIC
-        Dim systemMessage As SystemMessage
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    'For HKIC / ROP140 Case Only
+    Private Sub udcStep1b1InputDocumentType_SelectChineseName_HKIC(ByVal udcInputDocumentType As ucInputDocTypeBase, _
+                                                                   ByVal strDocCode As String, _
+                                                                   ByVal sender As Object, _
+                                                                   ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcStep1b1InputDocumentType.SelectChineseName_HKIC
+
+        Dim systemMessage As SystemMessage = Nothing
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
-        udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
-        udtAuditLogEntry.AddDescripton("CCCode1", udcInputHKID.CCCode1)
-        udtAuditLogEntry.AddDescripton("CCCode2", udcInputHKID.CCCode2)
-        udtAuditLogEntry.AddDescripton("CCCode3", udcInputHKID.CCCode3)
-        udtAuditLogEntry.AddDescripton("CCCode4", udcInputHKID.CCCode4)
-        udtAuditLogEntry.AddDescripton("CCCode5", udcInputHKID.CCCode5)
-        udtAuditLogEntry.AddDescripton("CCCode6", udcInputHKID.CCCode6)
 
-        EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(udtAuditLogEntry)
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKID As ucInputHKID = CType(udcInputDocumentType, ucInputHKID)
+                udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                udtAuditLogEntry.AddDescripton("CCCode1", udcInputHKID.CCCode1)
+                udtAuditLogEntry.AddDescripton("CCCode2", udcInputHKID.CCCode2)
+                udtAuditLogEntry.AddDescripton("CCCode3", udcInputHKID.CCCode3)
+                udtAuditLogEntry.AddDescripton("CCCode4", udcInputHKID.CCCode4)
+                udtAuditLogEntry.AddDescripton("CCCode5", udcInputHKID.CCCode5)
+                udtAuditLogEntry.AddDescripton("CCCode6", udcInputHKID.CCCode6)
 
-        systemMessage = Step1b1ShowCCCodeSelection(udcInputHKID, False)
+                EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(udtAuditLogEntry)
+
+                systemMessage = Step1b1ShowCCCodeSelection(udcInputHKID, strDocCode, False)
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = CType(udcInputDocumentType, ucInputROP140)
+                udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                udtAuditLogEntry.AddDescripton("CCCode1", udcInputROP140.CCCode1)
+                udtAuditLogEntry.AddDescripton("CCCode2", udcInputROP140.CCCode2)
+                udtAuditLogEntry.AddDescripton("CCCode3", udcInputROP140.CCCode3)
+                udtAuditLogEntry.AddDescripton("CCCode4", udcInputROP140.CCCode4)
+                udtAuditLogEntry.AddDescripton("CCCode5", udcInputROP140.CCCode5)
+                udtAuditLogEntry.AddDescripton("CCCode6", udcInputROP140.CCCode6)
+
+                EHSAccountCreationBase.AuditLogStep1b1PromptCCCode(udtAuditLogEntry)
+
+                systemMessage = Step1b1ShowCCCodeSelection(udcInputROP140, strDocCode, False)
+
+        End Select
+
         If Not systemMessage Is Nothing Then
             Me.udcMsgBoxErr.AddMessage(systemMessage)
         End If
 
         Me.udcMsgBoxErr.BuildMessageBox(_strValidationFail)
     End Sub
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
-    Private Function Step1b1ShowCCCodeSelection(ByVal udcInputHKID As ucInputHKID, ByVal isPressedNext As Boolean) As SystemMessage
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Private Function Step1b1ShowCCCodeSelection(ByVal udcInputDocumentType As ucInputDocTypeBase, _
+                                                ByVal strDocCode As String, _
+                                                ByVal isPressedNext As Boolean) As SystemMessage
 
         Me.Session.Remove(SessionName.PressedNext)
 
@@ -2204,47 +2419,81 @@ Partial Public Class EHSAccountCreationV1
             Me.Session(SessionName.PressedNext) = isPressedNext
         End If
 
-
         Dim systemMessage As SystemMessage = Nothing
-        udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
-        If udcInputHKID.CCCodeIsEmpty() Then
 
-            'No CCCode
-            udcInputHKID.SetCName(String.Empty)
+        Select strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKID As ucInputHKID = CType(udcInputDocumentType, ucInputHKID)
+                udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                If udcInputHKID.CCCodeIsEmpty() Then
 
-            'display error
-            systemMessage = New SystemMessage("990000", "E", "00143")
-            udcInputHKID.SetCCCodeError(True)
-            Me.udcChooseCCCode.Clean()
-        Else
+                    'No CCCode
+                    udcInputHKID.SetCName(String.Empty)
 
-            ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [Start][Winnie] Step 1
-            'Me.udcChooseCCCode.CCCode1 = udcInputHKID.CCCode1
-            'Me.udcChooseCCCode.CCCode2 = udcInputHKID.CCCode2
-            'Me.udcChooseCCCode.CCCode3 = udcInputHKID.CCCode3
-            'Me.udcChooseCCCode.CCCode4 = udcInputHKID.CCCode4
-            'Me.udcChooseCCCode.CCCode5 = udcInputHKID.CCCode5
-            'Me.udcChooseCCCode.CCCode6 = udcInputHKID.CCCode6
+                    'display error
+                    systemMessage = New SystemMessage("990000", "E", "00143")
+                    udcInputHKID.SetCCCodeError(True)
+                    Me.udcChooseCCCode.Clean()
+                Else
+                    Me.udcChooseCCCode.DocCode = DocTypeModel.DocTypeCode.HKIC
+                    Me.udcChooseCCCode.CCCode1 = udcInputHKID.GetCCCode(udcInputHKID.CCCode1, Me.udcChooseCCCode.getCCCodeFromSession(1, FunctCode))
+                    Me.udcChooseCCCode.CCCode2 = udcInputHKID.GetCCCode(udcInputHKID.CCCode2, Me.udcChooseCCCode.getCCCodeFromSession(2, FunctCode))
+                    Me.udcChooseCCCode.CCCode3 = udcInputHKID.GetCCCode(udcInputHKID.CCCode3, Me.udcChooseCCCode.getCCCodeFromSession(3, FunctCode))
+                    Me.udcChooseCCCode.CCCode4 = udcInputHKID.GetCCCode(udcInputHKID.CCCode4, Me.udcChooseCCCode.getCCCodeFromSession(4, FunctCode))
+                    Me.udcChooseCCCode.CCCode5 = udcInputHKID.GetCCCode(udcInputHKID.CCCode5, Me.udcChooseCCCode.getCCCodeFromSession(5, FunctCode))
+                    Me.udcChooseCCCode.CCCode6 = udcInputHKID.GetCCCode(udcInputHKID.CCCode6, Me.udcChooseCCCode.getCCCodeFromSession(6, FunctCode))
 
-            Me.udcChooseCCCode.CCCode1 = udcInputHKID.GetCCCode(udcInputHKID.CCCode1, Me.udcChooseCCCode.getCCCodeFromSession(1, FunctCode))
-            Me.udcChooseCCCode.CCCode2 = udcInputHKID.GetCCCode(udcInputHKID.CCCode2, Me.udcChooseCCCode.getCCCodeFromSession(2, FunctCode))
-            Me.udcChooseCCCode.CCCode3 = udcInputHKID.GetCCCode(udcInputHKID.CCCode3, Me.udcChooseCCCode.getCCCodeFromSession(3, FunctCode))
-            Me.udcChooseCCCode.CCCode4 = udcInputHKID.GetCCCode(udcInputHKID.CCCode4, Me.udcChooseCCCode.getCCCodeFromSession(4, FunctCode))
-            Me.udcChooseCCCode.CCCode5 = udcInputHKID.GetCCCode(udcInputHKID.CCCode5, Me.udcChooseCCCode.getCCCodeFromSession(5, FunctCode))
-            Me.udcChooseCCCode.CCCode6 = udcInputHKID.GetCCCode(udcInputHKID.CCCode6, Me.udcChooseCCCode.getCCCodeFromSession(6, FunctCode))
-            ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [End][Winnie] Step 1
+                    'Bind related chinese words into Drop Down List
+                    systemMessage = Me.udcChooseCCCode.BindCCCode()
 
-            'Bind related chinese words into Drop Down List
-            systemMessage = Me.udcChooseCCCode.BindCCCode()
-            If systemMessage Is Nothing Then
-                udcInputHKID.SetCCCodeError(False)
-                Me.ModalPopupExtenderChooseCCCode.Show()
-            Else
-                udcInputHKID.SetCCCodeError(True)
-            End If
-        End If
+                    If systemMessage Is Nothing Then
+                        udcInputHKID.SetCCCodeError(False)
+                        Me.ModalPopupExtenderChooseCCCode.Show()
+                    Else
+                        udcInputHKID.SetCCCodeError(True)
+                    End If
+
+                End If
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = CType(udcInputDocumentType, ucInputROP140)
+                udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+                If udcInputROP140.CCCodeIsEmpty() Then
+
+                    'No CCCode
+                    udcInputROP140.SetCName(String.Empty)
+
+                    'display error
+                    systemMessage = New SystemMessage("990000", "E", "00143")
+                    udcInputROP140.SetCCCodeError(True)
+                    Me.udcChooseCCCode.Clean()
+                Else
+                    Me.udcChooseCCCode.DocCode = DocTypeModel.DocTypeCode.ROP140
+                    Me.udcChooseCCCode.CCCode1 = udcInputROP140.GetCCCode(udcInputROP140.CCCode1, Me.udcChooseCCCode.getCCCodeFromSession(1, FunctCode))
+                    Me.udcChooseCCCode.CCCode2 = udcInputROP140.GetCCCode(udcInputROP140.CCCode2, Me.udcChooseCCCode.getCCCodeFromSession(2, FunctCode))
+                    Me.udcChooseCCCode.CCCode3 = udcInputROP140.GetCCCode(udcInputROP140.CCCode3, Me.udcChooseCCCode.getCCCodeFromSession(3, FunctCode))
+                    Me.udcChooseCCCode.CCCode4 = udcInputROP140.GetCCCode(udcInputROP140.CCCode4, Me.udcChooseCCCode.getCCCodeFromSession(4, FunctCode))
+                    Me.udcChooseCCCode.CCCode5 = udcInputROP140.GetCCCode(udcInputROP140.CCCode5, Me.udcChooseCCCode.getCCCodeFromSession(5, FunctCode))
+                    Me.udcChooseCCCode.CCCode6 = udcInputROP140.GetCCCode(udcInputROP140.CCCode6, Me.udcChooseCCCode.getCCCodeFromSession(6, FunctCode))
+
+                    'Bind related chinese words into Drop Down List
+                    systemMessage = Me.udcChooseCCCode.BindCCCode()
+
+                    If systemMessage Is Nothing Then
+                        udcInputROP140.SetCCCodeError(False)
+                        Me.ModalPopupExtenderChooseCCCode.Show()
+                    Else
+                        udcInputROP140.SetCCCodeError(True)
+                    End If
+
+                End If
+
+        End Select
+
         Return systemMessage
+
     End Function
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #End Region
 

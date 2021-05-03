@@ -8,10 +8,10 @@ GO
 
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
+-- Modified by:		Chris YIM
+-- Modified date:	27 April 2021
+-- CR No.:			CRE20-023
+-- Description:		Add Column    - [SchemeClaim].[AllowTempAccBOClaim]
 -- =============================================
 -- =============================================
 -- Author:			Chris YIM
@@ -65,7 +65,8 @@ SELECT
 	SC.[Available_HCSP_SubPlatform],
 	SC.[ProperPractice_Avail],
 	SC.[ProperPractice_SectionID],
-	SC.[Readonly_HCSP]
+	SC.[Readonly_HCSP],
+	SC.[AllowTempAccBOClaim]
 FROM
 	SchemeClaim SC WITH (NOLOCK)
 WHERE 

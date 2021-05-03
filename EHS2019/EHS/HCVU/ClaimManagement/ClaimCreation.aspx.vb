@@ -1120,7 +1120,10 @@ Partial Public Class ClaimCreation
                 End If
 
                 'Get Temp Account(Not for ImmD Validation), and claims with PPP scheme only  
-                If udtManualEHSTransaction.SchemeCode = SchemeClaimModel.PPP Then
+                Dim udtSchemeClaimList As SchemeClaimModelCollection = Me.udtSessionHandlerBLL.SchemeListGetFromSession(FunctionCode)
+                Dim udtSchemeClaim As SchemeClaimModel = udtSchemeClaimList.Filter(Me.ddlEnterCreationDetailScheme.SelectedValue.Trim)
+
+                If udtSchemeClaim.AllowTempAccBOClaim Then
                     If (strOriginalDocID <> String.Empty Or _
                         strReferenceID <> String.Empty) And _
                         strValidatedAccID = String.Empty Then

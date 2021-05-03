@@ -818,8 +818,6 @@ Public Class AccountMatchingBLL
             Case DocTypeModel.DocTypeCode.EC
                 blnIsValid = Validate_EC(udtEHSPersonalInfo)
 
-                ' CRE19-001 (VSS 2019) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 ' Non eHS Doc Type
             Case DocTypeModel.DocTypeCode.OC,
                 DocTypeModel.DocTypeCode.OW,
@@ -830,7 +828,15 @@ Public Class AccountMatchingBLL
                 DocTypeModel.DocTypeCode.OTHER
 
                 blnIsValid = Validate_NonEHSDocType(udtEHSPersonalInfo)
-                ' CRE19-001 (VSS 2019) [End][Winnie]
+
+                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.CCIC
+                blnIsValid = Validate_CCIC(udtEHSPersonalInfo)
+            Case DocTypeModel.DocTypeCode.ROP140
+                blnIsValid = Validate_ROP140(udtEHSPersonalInfo)
+            Case DocTypeModel.DocTypeCode.PASS
+                blnIsValid = Validate_PASS(udtEHSPersonalInfo)
+                ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
         ' If all are valid, pass to ImmD for validation
@@ -1057,13 +1063,18 @@ Public Class AccountMatchingBLL
 
                     ' CRE20-003 Enhancement on Programme or Scheme using batch upload [Start][Winnie]
                     ' -------------------------------------------------------------------------------
+                    ' CRE20-0022 (Immu record) [Start][Martin]
                 Case DocTypeModel.DocTypeCode.OC,
                     DocTypeModel.DocTypeCode.OW,
                     DocTypeModel.DocTypeCode.TW,
                     DocTypeModel.DocTypeCode.IR,
                     DocTypeModel.DocTypeCode.HKP,
                     DocTypeModel.DocTypeCode.RFNo8,
-                    DocTypeModel.DocTypeCode.OTHER
+                    DocTypeModel.DocTypeCode.OTHER,
+                    DocTypeModel.DocTypeCode.CCIC,
+                    DocTypeModel.DocTypeCode.ROP140,
+                    DocTypeModel.DocTypeCode.PASS
+                    ' CRE20-0022 (Immu record) [End][Martin]
 
                     udtEHSPersonalInfo.IdentityNum = strIdentityNo
                     udtEHSPersonalInfo.ENameSurName = udtStudent.SurnameENOriginal
@@ -1071,6 +1082,8 @@ Public Class AccountMatchingBLL
                     udtEHSPersonalInfo.DOB = udtStudent.DOB
                     udtEHSPersonalInfo.ExactDOB = udtStudent.Exact_DOB
                     udtEHSPersonalInfo.Gender = udtStudent.Sex
+
+              
 
                 Case Else
                     blnFillAll = True
@@ -1948,6 +1961,120 @@ Public Class AccountMatchingBLL
         Return isValid
     End Function
     ' CRE19-001 (VSS 2019) [End][Winnie]
+
+    ' CRE20-0022 (Immu record) [Start][Martin]
+    'CCIC
+    Private Function Validate_CCIC(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udtSM As SystemMessage = Nothing
+        Dim udtformatter As New Common.Format.Formatter
+
+        'TravelDocNo
+        udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.CCIC, udtEHSPersonalInfo.IdentityNum, String.Empty)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'DOB
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
+        Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
+
+        udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.CCIC, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'English Name
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Gender
+        udtSM = Me.udtValidator.chkGender(udtEHSPersonalInfo.Gender)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+    
+        Return isValid
+    End Function
+
+    'ROP140
+    Private Function Validate_ROP140(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udtSM As SystemMessage = Nothing
+        Dim udtformatter As New Common.Format.Formatter
+
+        'TravelDocNo
+        udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.ROP140, udtEHSPersonalInfo.IdentityNum, String.Empty)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'DOB
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
+        Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
+
+        udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.ROP140, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'English Name
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Gender
+        udtSM = Me.udtValidator.chkGender(udtEHSPersonalInfo.Gender)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    'PASS
+    Private Function Validate_PASS(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udtSM As SystemMessage = Nothing
+        Dim udtformatter As New Common.Format.Formatter
+
+        'TravelDocNo
+        udtSM = Me.udtValidator.chkIdentityNumber(DocTypeModel.DocTypeCode.PASS, udtEHSPersonalInfo.IdentityNum, String.Empty)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'DOB
+        Dim strExactDOB As String = udtEHSPersonalInfo.ExactDOB 'Must be D/M/Y
+        Dim strDOB As String = udtformatter.formatDOB(udtEHSPersonalInfo.DOB, strExactDOB, String.Empty, Nothing, Nothing)
+        Dim dtmDOB As Date = udtEHSPersonalInfo.DOB
+
+        udtSM = Me.udtValidator.chkDOB(DocTypeModel.DocTypeCode.PASS, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'English Name
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        'Gender
+        udtSM = Me.udtValidator.chkGender(udtEHSPersonalInfo.Gender)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+        End If
+
+        Return isValid
+    End Function
+
+    ' CRE20-0022 (Immu record) [End][Martin]
 
     Public Function CheckFieldLimit(ByVal udtPersonalInfo As EHSPersonalInformationModel) As Boolean
         Dim blnValid As Boolean = True

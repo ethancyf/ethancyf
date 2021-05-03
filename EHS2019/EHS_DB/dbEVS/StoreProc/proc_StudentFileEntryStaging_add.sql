@@ -64,7 +64,7 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_add]
 	@Contact_No						VARCHAR(20),
 	@Doc_Code						CHAR(20),
 	@Doc_No							VARCHAR(20),
-	@Name_EN						VARCHAR(40),
+	@Name_EN						VARCHAR(100),
 	@Surname_EN_Original			VARCHAR(40),
 	@Given_Name_EN_Original			VARCHAR(40),
 	@Name_CH						NVARCHAR(40),

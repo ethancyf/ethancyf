@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================  
 -- Modification History
 -- Modified by:		Winnie SUEN
@@ -40,7 +46,7 @@ CREATE PROCEDURE [dbo].[proc_VoucherAccountListForMaint_byParticular_get]
 	@Doc_Code varchar(5000),
 	@IdentityNum varchar(20),
 	@Adoption_Prefix_Num char(7),
-	@Eng_Name varchar(40),
+	@Eng_Name varchar(100),
 	@Chi_Name nvarchar(6),
 	@DOB datetime,
 	@Voucher_Acc_ID char(15),
@@ -1058,7 +1064,7 @@ select
 	t.Public_Enquiry_Status,
 	t.Public_Enq_Status_Remark,
 	convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-	convert(varchar(40), DecryptByKey(t.Encrypt_Field2)) as Eng_name,
+	convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as Eng_name,
 	isnull(convert(nvarchar, DecryptByKey(t.Encrypt_Field3)),'') as Chi_Name,
 	convert(varchar, DecryptByKey(t.Encrypt_Field4)) as CCcode1,
 	convert(varchar, DecryptByKey(t.Encrypt_Field5)) as CCcode2,

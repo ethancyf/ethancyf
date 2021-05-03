@@ -15,7 +15,7 @@
     <link href="CSS/DialogStyle.css" rel="stylesheet" type="text/css" />
     <link href="CSS/comboBoxStyle.css" rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="../JS/Common.js"></script>
+    <script type="text/javascript" src="../JS/Common.js?ver=1"></script>
     <script type="text/javascript" src="../JS/Clock.js"></script>
     <script type="text/javascript" src="../JS/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="../JS/hoverIntent.js"></script>

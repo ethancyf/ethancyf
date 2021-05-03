@@ -8,6 +8,13 @@ go
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	30 Dec 2020
@@ -56,7 +63,7 @@ EXEC [proc_SymmetricKey_open]
 			as [identifyNo],	
 			Date_of_Issue as [dtIcReg],
 			DOB as [dobOnCard],
-			LTRIM(RTRIM(CONVERT(char,DecryptByKey(Encrypt_Field2)))) as [nameOnCard],
+			LTRIM(RTRIM(CONVERT(varchar(100),DecryptByKey(Encrypt_Field2)))) as [nameOnCard],
 			Sex as [sexOnCard],
 			--TVASL.App_Seq_No,
 			TVASL.Doc_Code

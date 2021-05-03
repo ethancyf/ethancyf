@@ -14,7 +14,13 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -272,7 +278,7 @@ CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byAny]
     @status                       CHAR(1), 
     @authorised_status            CHAR(1), 
     @sp_id                        CHAR(8), 
-    @sp_name                      VARCHAR(40), 
+    @sp_name                      VARCHAR(100), 
     @sp_hkid                      CHAR(9), 
     @bank_acc                     VARCHAR(30), 
     @service_type                 CHAR(5), 
@@ -1186,7 +1192,7 @@ AS
 
         SELECT T.Transaction_ID AS [tranNum], 
                T.Transaction_Dtm AS [tranDate], 
-               CONVERT(VARCHAR(40), DECRYPTBYKEY(T.Encrypt_Field2)) AS [SPName], 
+               CONVERT(VARCHAR(100), DECRYPTBYKEY(T.Encrypt_Field2)) AS [SPName], 
                CONVERT(NVARCHAR, DECRYPTBYKEY(T.Encrypt_Field3)) AS [SPChiName], 
                T.SP_ID AS [SPID], 
                T.Bank_Account_No AS [BankAccountNo], 

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -279,7 +286,7 @@ select TOP ([dbo].[func_get_top_row](@result_limit_1st_enable,@result_limit_over
 	t.voucher_acc_id,
 	t.scheme_code,
 	convert(varchar, DecryptByKey(t.Encrypt_Field1)) as IdentityNum,
-	convert(varchar, DecryptByKey(t.Encrypt_Field2)) as EName,
+	convert(varchar(100), DecryptByKey(t.Encrypt_Field2)) as EName,
 	convert(nvarchar, DecryptByKey(t.Encrypt_Field3)) as CName,
 	convert(varchar, DecryptByKey(t.Encrypt_Field4)) as CCcode1,
 	convert(varchar, DecryptByKey(t.Encrypt_Field5)) as CCcode2,

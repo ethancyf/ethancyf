@@ -380,7 +380,7 @@ AS
                T.Doc_Code, 
                DT.Doc_Display_Code, 
                CONVERT(CHAR, DECRYPTBYKEY(T.Encrypt_Field1)) AS [IDNo], 
-               CONVERT(VARCHAR(40), DECRYPTBYKEY(T.Encrypt_Field2)) AS [Eng_Name], 
+               CONVERT(VARCHAR(100), DECRYPTBYKEY(T.Encrypt_Field2)) AS [Eng_Name], 
                CONVERT(NVARCHAR, DECRYPTBYKEY(T.Encrypt_Field3)) AS [Chi_Name], 
                CONVERT(CHAR, DECRYPTBYKEY(T.Encrypt_Field11)) AS [IDNo2], 
                T.TotalUnit AS [Total_Unit], 

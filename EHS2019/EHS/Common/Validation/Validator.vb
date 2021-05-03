@@ -11,26 +11,36 @@ Namespace Validation
         Dim sm As ComObject.SystemMessage
         Dim udtcomfunct As ComFunction.GeneralFunction = New ComFunction.GeneralFunction
 
-        Public Function chkEngName(ByVal strOriSurname As String, ByVal strOriFirstname As String) As ComObject.SystemMessage
+        Public Function chkEngName(ByVal strOriSurname As String, ByVal strOriFirstname As String, Optional ByVal strDocType As String = "") As ComObject.SystemMessage
             Dim sm As ComObject.SystemMessage
             Dim strFunctCode, strSeverity, strMsgCode As String
             Dim strErrMsg As String
+            Dim intEngNameDataSize As Integer
+            Dim strNameLengthMsgCode As String
+
             strFunctCode = "990000"
             strSeverity = "E"
             strMsgCode = ""
             strErrMsg = ""
 
-            ' I-CRP16-002 Fix invalid input on English name [Start][Lawrence]
+            If strDocType = DocTypeModel.DocTypeCode.PASS Or strDocType = DocTypeModel.DocTypeCode.CCIC Then
+                intEngNameDataSize = 70
+                strNameLengthMsgCode = MsgCode.MSG00479
+            Else
+                intEngNameDataSize = 40
+                strNameLengthMsgCode = MsgCode.MSG00068
+            End If
+
             strOriSurname = strOriSurname.Trim
             strOriFirstname = strOriFirstname.Trim
-            ' I-CRP16-002 Fix invalid input on English name [End][Lawrence]
+
 
             If IsEmpty(strOriSurname) Then
                 strMsgCode = "00007"
             Else
                 If IsEmpty(strOriFirstname) Then
-                    If strOriSurname.Length > 40 Then
-                        strMsgCode = "00068"
+                    If strOriSurname.Length > intEngNameDataSize Then
+                        strMsgCode = strNameLengthMsgCode
                     Else
                         If Not IsValidEngName(strOriSurname) Then
                             strMsgCode = "00021"
@@ -38,9 +48,9 @@ Namespace Validation
                     End If
                 Else
                     'total length 40 for the name, and a comma and a space is reserved, so the value is 38
-                    If strOriSurname.Trim.Length + strOriFirstname.Trim.Length > 38 Then
+                    If strOriSurname.Trim.Length + strOriFirstname.Trim.Length > intEngNameDataSize - 2 Then
                         'strMsgCode = "00021"
-                        strMsgCode = "00068"
+                        strMsgCode = strNameLengthMsgCode
                     Else
                         'Check whether Surname and/or Firstname has invalid character
                         If IsValidEngName(strOriSurname) Then

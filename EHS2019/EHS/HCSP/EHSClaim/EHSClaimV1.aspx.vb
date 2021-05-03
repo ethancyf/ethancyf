@@ -1,4 +1,4 @@
-ï»¿Imports AjaxControlToolkit
+Imports AjaxControlToolkit
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
@@ -288,6 +288,9 @@ Partial Public Class EHSClaimV1
         ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [Start][Winnie]
         Me.ModelPopupDuplicateClaimAlert.PopupDragHandleControlID = Me.ucNoticePopUpDuplicateClaimAlert.Header.ClientID
         ' CRE16-007 (Pop-up message to avoid duplicate voucher claim) [End][Winnie]
+
+        Me.ModalPopupExtenderConfirmSelectPractice.PopupDragHandleControlID = Me.ucNoticePopUpConfirmSelectPractice.Header.ClientID
+
     End Sub
 
     Private Sub EHSClaim_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
@@ -855,6 +858,32 @@ Partial Public Class EHSClaimV1
 
     End Sub
 
+    Private Sub ucNoticePopUpConfirmSelectPractice_ButtonClick(ByVal e As ucNoticePopUp.enumButtonClick) Handles ucNoticePopUpConfirmSelectPractice.ButtonClick
+        Select Case e
+            Case ucNoticePopUp.enumButtonClick.OK
+                Dim imageButton As ImageButton = New ImageButton
+                _udtSessionHandler.ConfirmedPracticePopUpSaveToSession(True)
+                imageButton.Attributes("DataTextField") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataTextField")
+                imageButton.Attributes("DataValueField") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataValueField")
+                imageButton.Attributes("PracticeDisplaySeq") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplaySeq")
+                imageButton.Attributes("PracticeDisplayText") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplayText")
+                imageButton.Attributes("blnShowPopUp") = ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("blnShowPopUp")
+
+                If (ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = PracticeRadioButtonGroup.ClientID) Then
+                    PracticeRadioButtonGroup.btnPracticeSelection_click(imageButton, Nothing)
+                ElseIf (ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = udcPopupPracticeRadioButtonGroup.ClientID) Then
+                    udcPopupPracticeRadioButtonGroup.btnPracticeSelection_click(imageButton, Nothing)
+                End If
+
+            Case Else
+                If (ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = udcPopupPracticeRadioButtonGroup.ClientID) Then
+                    ModalPopupPracticeSelection.Show()
+                End If
+                ' Do nothing
+        End Select
+
+    End Sub
+
     'Protected Sub btnPopupConfirmCancelConfirm_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnPopupConfirmCancelConfirm.Click
     '    Me.Clear()
     '    _udtSessionHandler.ClearVREClaim()
@@ -877,422 +906,477 @@ Partial Public Class EHSClaimV1
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub udcPopupPracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcPopupPracticeRadioButtonGroup.PracticeSelected
-        ' Get current user account
-        Dim udtDataEntryModel As DataEntryUserModel = Nothing
-        GetCurrentUserAccount(_udtSP, udtDataEntryModel, False)
 
-        ' Get old and new selected Practice
-        Dim udtOldPracticeDisplay As PracticeDisplayModel = _udtSessionHandler.PracticeDisplayGetFromSession(FunctCode)
-        Dim udtNewPracticeDisplay As PracticeDisplayModel = _udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode).Filter(intBankAccountDisplaySeq)
 
-        ' Save the new selected Practice to session
-        _udtSessionHandler.PracticeDisplaySaveToSession(udtNewPracticeDisplay, FunctCode)
+        ' CRE20-023  (Immu record) [Start][Raiman]
+        'Get sender(which is image button created by PracticeRadioButtonGroup.vb) contain attributes. and pass attribute value to popup ok button for calling PracticeRadioButtonGroup_PracticeSelected sub again.
+        Dim selectPracticeImageButton As ImageButton = CType(sender, ImageButton)
+        Dim IsContainCovid19Scheme As Boolean = CType(selectPracticeImageButton.Attributes("blnShowPopUp"), Boolean)
 
-        ' Save the new selected Scheme to session
-        _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
+        If (Me.ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso Not _udtSessionHandler.ConfirmedPracticePopUpGetFromSession AndAlso IsContainCovid19Scheme) Then
+            panPopupPracticeSelection.Visible = True
+            ModalPopupExtenderConfirmSelectPractice.Show()
+            ModalPopupPracticeSelection.Show()
 
-        'Init Carry Forward
-        _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(False, FunctCode)
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataTextField") = selectPracticeImageButton.Attributes("DataTextField")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataValueField") = selectPracticeImageButton.Attributes("DataValueField")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplaySeq") = selectPracticeImageButton.Attributes("PracticeDisplaySeq")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplayText") = selectPracticeImageButton.Attributes("PracticeDisplayText")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("blnShowPopUp") = selectPracticeImageButton.Attributes("blnShowPopUp")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = udcPopupPracticeRadioButtonGroup.ClientID
 
-        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-        ' ---------------------------------------------------------------------------------------------------------
-        ' Audit log
-        Dim udtSchemeClaim As SchemeClaimModel = _udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
-        Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FunctionCode, Me)
-        Dim udtCOVID19BLL As New COVID19.COVID19BLL
+            ucNoticePopUpConfirmSelectPractice.MessageText = String.Format(HttpContext.GetGlobalResourceObject("Text", "SelectPracticePopup"), selectPracticeImageButton.Attributes("PracticeDisplayText"))
 
-        If udtSchemeClaim IsNot Nothing Then
-            If ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso udtSchemeClaim.SchemeCode = SchemeClaimModel.COVID19CVC Then
-                EHSClaimBasePage.AddDescriptionCentreBooth(udtAuditLogEntry, udtOldPracticeDisplay.SPID, udtOldPracticeDisplay.PracticeID)
-            End If
-        End If
-        EHSClaimBasePage.AuditLogPracticeSelected(udtAuditLogEntry, True, udtNewPracticeDisplay, udtSchemeClaim, False)
-        ' CRE20-0022 (Immu record) [End][Chris YIM]
+        Else
+            ' CRE20-023  (Immu record) [End][Raiman]
 
-        Select Case mvEHSClaim.ActiveViewIndex
-            Case ActiveViewIndex.Step1
-                Me.udcMsgBoxErr.Clear()
-                Me.udcMsgBoxInfo.Clear()
+            ' Get current user account
+            Dim udtDataEntryModel As DataEntryUserModel = Nothing
+            GetCurrentUserAccount(_udtSP, udtDataEntryModel, False)
 
-                'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-                '-----------------------------------------------------------------------------------------
-                If udtNewPracticeDisplay.PracticeID <> udtOldPracticeDisplay.PracticeID Then
-                    'Me._udtSessionHandler.DocumentaryProofForPIDRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PIDInstitutionCodeRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PlaceVaccinationRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PlaceVaccinationOtherRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.ForceToReadSmartICSaveToSession(True)
+            ' Get old and new selected Practice
+            Dim udtOldPracticeDisplay As PracticeDisplayModel = _udtSessionHandler.PracticeDisplayGetFromSession(FunctCode)
+            Dim udtNewPracticeDisplay As PracticeDisplayModel = _udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode).Filter(intBankAccountDisplaySeq)
+
+            ' Save the new selected Practice to session
+            _udtSessionHandler.PracticeDisplaySaveToSession(udtNewPracticeDisplay, FunctCode)
+
+            ' Save the new selected Scheme to session
+            _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
+
+            'Init Carry Forward
+            _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(False, FunctCode)
+
+            'this session for always show select practice popup.
+            _udtSessionHandler.ConfirmedPracticePopUpSaveToSession(False)
+
+            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            ' Audit log
+            Dim udtSchemeClaim As SchemeClaimModel = _udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
+            Dim udtAuditLogEntry As AuditLogEntry = New AuditLogEntry(FunctionCode, Me)
+            Dim udtCOVID19BLL As New COVID19.COVID19BLL
+
+            If udtSchemeClaim IsNot Nothing Then
+                If ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso udtSchemeClaim.SchemeCode = SchemeClaimModel.COVID19CVC Then
+                    EHSClaimBasePage.AddDescriptionCentreBooth(udtAuditLogEntry, udtOldPracticeDisplay.SPID, udtOldPracticeDisplay.PracticeID)
                 End If
-                'CRE16-002 (Revamp VSS) [End][Chris YIM]
+            End If
+            EHSClaimBasePage.AuditLogPracticeSelected(udtAuditLogEntry, True, udtNewPracticeDisplay, udtSchemeClaim, False)
+            ' CRE20-0022 (Immu record) [End][Chris YIM]
 
-                SetupStep1(False, True)
-
-                Return
-
-            Case ActiveViewIndex.Step2a
-                Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(FunctCode)
-                Dim udtSchemeClaimUpdated As SchemeClaimModel = Nothing
-                Dim isValid As Boolean = False
-
-                'Get the orignal Scheme
-                'Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
-
-                If udtNewPracticeDisplay.PracticeID <> udtOldPracticeDisplay.PracticeID Then
-
-                    ' Clear Session
-                    Me._udtSessionHandler.EHSClaimVaccineRemoveFromSession()
-                    Me._udtSessionHandler.PIDInstitutionCodeRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PlaceVaccinationRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.PlaceVaccinationOtherRemoveFromSession(FunctCode)
-                    Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
-                    'Me._udtSessionHandler.ExceedDocTypeLimitRemoveFromSession()
-
+            Select Case mvEHSClaim.ActiveViewIndex
+                Case ActiveViewIndex.Step1
                     Me.udcMsgBoxErr.Clear()
                     Me.udcMsgBoxInfo.Clear()
 
-                    If Not udtSchemeClaim Is Nothing Then
-                        Select Case udtSchemeClaim.ControlType
-                            Case SchemeClaimModel.EnumControlType.RVP
-                                If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                    'CRE16-002 (Revamp VSS) [Start][Chris YIM]
+                    '-----------------------------------------------------------------------------------------
+                    If udtNewPracticeDisplay.PracticeID <> udtOldPracticeDisplay.PracticeID Then
+                        'Me._udtSessionHandler.DocumentaryProofForPIDRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PIDInstitutionCodeRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PlaceVaccinationRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PlaceVaccinationOtherRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.ForceToReadSmartICSaveToSession(True)
+                    End If
+                    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+                    SetupStep1(False, True)
+
+                    Return
+
+                Case ActiveViewIndex.Step2a
+                    Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(FunctCode)
+                    Dim udtSchemeClaimUpdated As SchemeClaimModel = Nothing
+                    Dim isValid As Boolean = False
+
+                    'Get the orignal Scheme
+                    'Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
+
+                    If udtNewPracticeDisplay.PracticeID <> udtOldPracticeDisplay.PracticeID Then
+
+                        ' Clear Session
+                        Me._udtSessionHandler.EHSClaimVaccineRemoveFromSession()
+                        Me._udtSessionHandler.PIDInstitutionCodeRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PlaceVaccinationRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.PlaceVaccinationOtherRemoveFromSession(FunctCode)
+                        Me._udtSessionHandler.ClaimCategoryRemoveFromSession(FunctCode)
+                        'Me._udtSessionHandler.ExceedDocTypeLimitRemoveFromSession()
+
+                        Me.udcMsgBoxErr.Clear()
+                        Me.udcMsgBoxInfo.Clear()
+
+                        If Not udtSchemeClaim Is Nothing Then
+                            Select Case udtSchemeClaim.ControlType
+                                Case SchemeClaimModel.EnumControlType.RVP
+                                    If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                                        _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
+
+                                        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+                                        If Not udcInputRVPCOVID19 Is Nothing Then
+                                            If udcInputRVPCOVID19.VaccineBrandDDL.Items.Count <= 1 Then
+                                                udcInputRVPCOVID19.ClearVaccineAndLotNo()
+                                            End If
+                                        End If
+
+                                        Me.chkStep2aDeclareClaim.Checked = False
+                                    Else
+                                        Dim udcInputRVP As ucInputRVP = Me.udcStep2aInputEHSClaim.GetRVPControl()
+
+                                        If udcInputRVP IsNot Nothing Then udcInputRVP.ClearClaimDetail()
+
+                                    End If
+
+                                Case SchemeClaimModel.EnumControlType.VSS
+                                    If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                                        _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
+
+                                        Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control()
+                                        If Not udcInputVSSCOVID19 Is Nothing Then
+                                            If udcInputVSSCOVID19.VaccineBrandDDL.Items.Count <= 1 Then
+                                                udcInputVSSCOVID19.ClearVaccineAndLotNo()
+                                            End If
+                                        End If
+
+                                        Me.chkStep2aDeclareClaim.Checked = False
+                                    Else
+                                        Dim udcInputVSS As ucInputVSS = Me.udcStep2aInputEHSClaim.GetVSSControl()
+
+                                        If udcInputVSS IsNot Nothing Then
+                                            udcInputVSS.ClearClaimDetail()
+                                        End If
+
+                                    End If
+
+                                Case SchemeClaimModel.EnumControlType.ENHVSSO
+                                    Dim udcInputENHVSSO As ucInputENHVSSO = Me.udcStep2aInputEHSClaim.GetENHVSSOControl()
+
+                                    If udcInputENHVSSO IsNot Nothing Then udcInputENHVSSO.ClearClaimDetail()
+
+                                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
+                                    ' --------------------------------------------------------------------------------------
+                                Case SchemeClaimModel.EnumControlType.COVID19
+                                    '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
+                                    '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
+                                    '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
                                     _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
 
-                                    Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
-                                    If Not udcInputRVPCOVID19 Is Nothing Then
-                                        If udcInputRVPCOVID19.VaccineBrandDDL.Items.Count <= 1 Then
-                                            udcInputRVPCOVID19.ClearVaccineAndLotNo()
+                                    Dim udcInputCOVID19 As ucInputCOVID19 = Me.udcStep2aInputEHSClaim.GetCOVID19Control()
+                                    If Not udcInputCOVID19 Is Nothing Then
+                                        If udcInputCOVID19.VaccineBrandDDL.Items.Count <= 1 Then
+                                            udcInputCOVID19.ClearVaccineAndLotNo()
                                         End If
                                     End If
 
                                     Me.chkStep2aDeclareClaim.Checked = False
+                                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
+                                Case SchemeClaimModel.EnumControlType.COVID19RVP
+                                    '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
+                                    '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
+                                    '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
+                                    _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
+
+                                    Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
+                                    If Not udcInputCOVID19RVP Is Nothing Then
+                                        If udcInputCOVID19RVP.VaccineBrandDDL.Items.Count <= 1 Then
+                                            udcInputCOVID19RVP.ClearVaccineAndLotNo()
+                                        End If
+                                    End If
+
+                                    Me.chkStep2aDeclareClaim.Checked = False
+                                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+
+                                Case SchemeClaimModel.EnumControlType.COVID19OR
+                                    '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
+                                    '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
+                                    '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
+                                    _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
+
+                                    Dim udcInputCOVID19OR As ucInputCOVID19OR = Me.udcStep2aInputEHSClaim.GetCOVID19ORControl()
+                                    If Not udcInputCOVID19OR Is Nothing Then
+                                        If udcInputCOVID19OR.VaccineBrandDDL.Items.Count <= 1 Then
+                                            udcInputCOVID19OR.ClearVaccineAndLotNo()
+                                        End If
+                                    End If
+
+                                    Me.chkStep2aDeclareClaim.Checked = False
+
+                            End Select
+                        End If
+
+                        ' CRE19-003 (Opt voucher capping) [Start][Winnie]
+                        ' ----------------------------------------------------------------------------------------'
+                        ' Profession is changed, need to recalculate quota
+                        If Not udtOldPracticeDisplay.ServiceCategoryCode.Equals(udtNewPracticeDisplay.ServiceCategoryCode) Then
+
+                            ' Clear AvailableVoucher to trigger recalculation
+                            udtEHSAccount.VoucherInfo = Nothing
+                        End If
+                        ' CRE19-003 (Opt voucher capping) [End][Winnie]
+
+                        isValid = Me.CheckSchemeAvailableForEHSAccount(udtEHSAccount, udtNewPracticeDisplay, udtSchemeClaim)
+                    End If
+
+                    'Log
+                    udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
+                    EHSClaimBasePage.AddDescriptionCentreBooth(udtAuditLogEntry, udtOldPracticeDisplay.SPID, udtOldPracticeDisplay.PracticeID)
+
+                    If isValid Then
+
+                        ''add the true boolean if practice ExceedDocTypeLimit checked in CheckSchemeAvailableForEHSAccount => 
+                        'Me._udtSessionHandler.ExceedDocTypeLimitSaveToSession(True)
+
+                        'Log Practice Selection
+                        EHSClaimBasePage.AuditLogPracticeSelected(udtAuditLogEntry, True, udtNewPracticeDisplay, udtSchemeClaim, True)
+
+                        ' Scheme Available in new Practice
+                        If Not udtOldPracticeDisplay.PracticeID.Equals(intBankAccountDisplaySeq) Then
+
+                            Me._udtSessionHandler.EHSTransactionRemoveFromSession(FunctCode)
+
+                            '' Default Scheme = False to keep retain the Scheme
+                            Me.udcStep2aInputEHSClaim.ResetSchemeType()
+
+                            Me.SetupStep2a(udtEHSAccount, False, False, False)
+                            Me.Step2aCleanSchemeErrorImage()
+
+                            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                            ' ---------------------------------------------------------------------------------------------------------
+                            If Me.ClaimMode = ClaimMode.COVID19 Then
+                                If Me.ddlStep2aScheme.Visible Then
+                                    Me.ddlStep2aScheme.SelectedValue = udtSchemeClaim.SchemeCode
+                                End If
+                            End If
+                            ' CRE20-0022 (Immu record) [End][Chris YIM]
+                        End If
+
+                    Else
+
+                        'Log Practice Selection
+                        EHSClaimBasePage.AuditLogPracticeSelected(udtAuditLogEntry, True, udtNewPracticeDisplay, udtSchemeClaim, False)
+
+                        ' Scheme not Available in new Practice
+                        If Not udtOldPracticeDisplay.PracticeID.Equals(intBankAccountDisplaySeq) Then
+                            Me._udtSessionHandler.SchemeSelectedRemoveFromSession(FunctCode)
+                            'CRE16-002 (Revamp VSS) [Start][Chris YIM]
+                            '-----------------------------------------------------------------------------------------
+                            Me._udtSessionHandler.NonClinicSettingRemoveFromSession(FunctCode)
+                            'CRE16-002 (Revamp VSS) [End][Chris YIM]
+                            Me._udtSessionHandler.EHSTransactionRemoveFromSession(FunctCode)
+                            Me.ddlStep2aScheme.Items.Clear()
+                        End If
+                        Me.SetupStep2a(udtEHSAccount, False, True, False)
+                        Me.Step2aCleanSchemeErrorImage()
+                    End If
+
+                    'After SetupStep2a -> Scheme may be changed by default
+                    'Scheme can be empty, if the current practice is no scheme for recipient
+                    udtSchemeClaimUpdated = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
+                    If Not udtSchemeClaimUpdated Is Nothing Then
+                        Dim udtConvertedSchemeCode As String = _udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtSchemeClaimUpdated.SchemeCode)
+                        _udtSessionHandler.NonClinicSettingSaveToSession(_udtSP.PracticeList(udtNewPracticeDisplay.PracticeID).PracticeSchemeInfoList.Filter(udtConvertedSchemeCode).IsNonClinic, FunctCode)
+
+                        If udtSchemeClaim Is Nothing OrElse Not udtSchemeClaim.SchemeCode.Equals(udtSchemeClaimUpdated.SchemeCode) Then
+                            Me.SetupStep2aClaimContent(udtSchemeClaimUpdated, udtEHSAccount)
+                        End If
+
+                        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        Me.SetupServiceDate(udtSchemeClaimUpdated.SchemeCode)
+                        ' CRE20-0022 (Immu record) [End][Chris YIM]
+                    End If
+
+                    If Not udcMsgBoxErr.Visible Then
+                        If udcMsgBoxErr.GetCodeTable.Rows.Count <> 0 Then Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail)
+                    End If
+
+                    Me.SetupSchemeLogo()
+
+                    If Not udtSchemeClaim Is Nothing Then
+                        Select Case udtSchemeClaim.ControlType
+                            Case SchemeClaimModel.EnumControlType.HSIVSS
+                                Dim udcInputHSIVSS As ucInputHSIVSS = Me.udcStep2aInputEHSClaim.GetHSIVSSControl()
+                                If Not udcInputHSIVSS Is Nothing Then
+                                    If String.IsNullOrEmpty(udcInputHSIVSS.Category) Then
+                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                    End If
+                                End If
+
+                            Case SchemeClaimModel.EnumControlType.RVP
+                                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                                    Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+                                    If Not udcInputRVPCOVID19 Is Nothing Then
+                                        If udcInputRVPCOVID19.VaccineBrandDDL.Items.Count > 1 Then
+                                            udcInputRVPCOVID19.ClearVaccineAndLotNo()
+                                        End If
+                                        _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
+                                        _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
+
+                                        'Set Claim button
+                                        If String.IsNullOrEmpty(udcInputRVPCOVID19.CategoryForCOVID19) Then
+                                            Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                        End If
+                                    End If
+
                                 Else
                                     Dim udcInputRVP As ucInputRVP = Me.udcStep2aInputEHSClaim.GetRVPControl()
-
-                                    If udcInputRVP IsNot Nothing Then udcInputRVP.ClearClaimDetail()
-
+                                    If Not udcInputRVP Is Nothing Then
+                                        If String.IsNullOrEmpty(udcInputRVP.Category) Then
+                                            Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                        End If
+                                    End If
                                 End If
 
                             Case SchemeClaimModel.EnumControlType.VSS
-                                If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                    _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
-
+                                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
                                     Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control()
                                     If Not udcInputVSSCOVID19 Is Nothing Then
-                                        If udcInputVSSCOVID19.VaccineBrandDDL.Items.Count <= 1 Then
+                                        If udcInputVSSCOVID19.VaccineBrandDDL.Items.Count > 1 Then
                                             udcInputVSSCOVID19.ClearVaccineAndLotNo()
+                                        End If
+                                        _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
+                                        _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
+
+                                        'Set Claim button
+                                        If String.IsNullOrEmpty(udcInputVSSCOVID19.CategoryForCOVID19) Then
+                                            Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
                                         End If
                                     End If
 
-                                    Me.chkStep2aDeclareClaim.Checked = False
                                 Else
                                     Dim udcInputVSS As ucInputVSS = Me.udcStep2aInputEHSClaim.GetVSSControl()
-
-                                    If udcInputVSS IsNot Nothing Then
-                                        udcInputVSS.ClearClaimDetail()
+                                    If Not udcInputVSS Is Nothing Then
+                                        If String.IsNullOrEmpty(udcInputVSS.Category) Then
+                                            Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                        End If
                                     End If
 
                                 End If
 
                             Case SchemeClaimModel.EnumControlType.ENHVSSO
                                 Dim udcInputENHVSSO As ucInputENHVSSO = Me.udcStep2aInputEHSClaim.GetENHVSSOControl()
-
-                                If udcInputENHVSSO IsNot Nothing Then udcInputENHVSSO.ClearClaimDetail()
+                                If Not udcInputENHVSSO Is Nothing Then
+                                    If String.IsNullOrEmpty(udcInputENHVSSO.Category) Then
+                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                    End If
+                                End If
 
                                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                                 ' --------------------------------------------------------------------------------------
                             Case SchemeClaimModel.EnumControlType.COVID19
-                                '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
-                                '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
-                                '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
-
                                 Dim udcInputCOVID19 As ucInputCOVID19 = Me.udcStep2aInputEHSClaim.GetCOVID19Control()
                                 If Not udcInputCOVID19 Is Nothing Then
-                                    If udcInputCOVID19.VaccineBrandDDL.Items.Count <= 1 Then
+                                    If udcInputCOVID19.VaccineBrandDDL.Items.Count > 1 Then
                                         udcInputCOVID19.ClearVaccineAndLotNo()
                                     End If
-                                End If
+                                    _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
+                                    _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
 
-                                Me.chkStep2aDeclareClaim.Checked = False
+                                    'Set Claim button
+                                    If String.IsNullOrEmpty(udcInputCOVID19.CategoryForCOVID19) Then
+                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                    End If
+                                End If
                                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                             Case SchemeClaimModel.EnumControlType.COVID19RVP
-                                '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
-                                '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
-                                '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
-
                                 Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
                                 If Not udcInputCOVID19RVP Is Nothing Then
-                                    If udcInputCOVID19RVP.VaccineBrandDDL.Items.Count <= 1 Then
+                                    If udcInputCOVID19RVP.VaccineBrandDDL.Items.Count > 1 Then
                                         udcInputCOVID19RVP.ClearVaccineAndLotNo()
                                     End If
-                                End If
+                                    _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
+                                    _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
 
-                                Me.chkStep2aDeclareClaim.Checked = False
-                                ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+                                    'Set Claim button
+                                    If String.IsNullOrEmpty(udcInputCOVID19RVP.CategoryForCOVID19) Then
+                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                    End If
+                                End If
 
                             Case SchemeClaimModel.EnumControlType.COVID19OR
-                                '_udtSessionHandler.ClaimCOVID19CategoryRemoveFromSession(FunctionCode)
-                                '_udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(udcInputCOVID19.VaccineBrand, FunctionCode)
-                                '_udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(udcInputCOVID19.VaccineLotNo, FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
-
                                 Dim udcInputCOVID19OR As ucInputCOVID19OR = Me.udcStep2aInputEHSClaim.GetCOVID19ORControl()
                                 If Not udcInputCOVID19OR Is Nothing Then
-                                    If udcInputCOVID19OR.VaccineBrandDDL.Items.Count <= 1 Then
+                                    If udcInputCOVID19OR.VaccineBrandDDL.Items.Count > 1 Then
                                         udcInputCOVID19OR.ClearVaccineAndLotNo()
                                     End If
-                                End If
+                                    _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
+                                    _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
 
-                                Me.chkStep2aDeclareClaim.Checked = False
+                                    'Set Claim button
+                                    If String.IsNullOrEmpty(udcInputCOVID19OR.CategoryForCOVID19) Then
+                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
+                                    End If
+                                End If
 
                         End Select
+
                     End If
 
-                    ' CRE19-003 (Opt voucher capping) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------'
-                    ' Profession is changed, need to recalculate quota
-                    If Not udtOldPracticeDisplay.ServiceCategoryCode.Equals(udtNewPracticeDisplay.ServiceCategoryCode) Then
+                    If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                        Dim udtFormatter As New Formatter
 
-                        ' Clear AvailableVoucher to trigger recalculation
-                        udtEHSAccount.VoucherInfo = Nothing
-                    End If
-                    ' CRE19-003 (Opt voucher capping) [End][Winnie]
+                        Dim strServiceDate As String = udtFormatter.formatInputDate(Me.txtStep2aServiceDate.Text, (New SubPlatformBLL).GetDateFormatLocale(Me.SubPlatform))
 
-                    isValid = Me.CheckSchemeAvailableForEHSAccount(udtEHSAccount, udtNewPracticeDisplay, udtSchemeClaim)
-                End If
+                        Dim dtmServiceDate As DateTime = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
 
-                'Log
-                udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
-                EHSClaimBasePage.AddDescriptionCentreBooth(udtAuditLogEntry, udtOldPracticeDisplay.SPID, udtOldPracticeDisplay.PracticeID)
+                        'Get Vaccine Brand & Lot No.
+                        Dim strVaccineLotNoMappingJavaScript As String = String.Empty
 
-                If isValid Then
+                        Dim udtNewSchemeClaim As SchemeClaimModel = Nothing
 
-                    ''add the true boolean if practice ExceedDocTypeLimit checked in CheckSchemeAvailableForEHSAccount => 
-                    'Me._udtSessionHandler.ExceedDocTypeLimitSaveToSession(True)
-
-                    'Log Practice Selection
-                    EHSClaimBasePage.AuditLogPracticeSelected(udtAuditLogEntry, True, udtNewPracticeDisplay, udtSchemeClaim, True)
-
-                    ' Scheme Available in new Practice
-                    If Not udtOldPracticeDisplay.PracticeID.Equals(intBankAccountDisplaySeq) Then
-
-                        Me._udtSessionHandler.EHSTransactionRemoveFromSession(FunctCode)
-
-                        '' Default Scheme = False to keep retain the Scheme
-                        Me.udcStep2aInputEHSClaim.ResetSchemeType()
-
-                        Me.SetupStep2a(udtEHSAccount, False, False, False)
-                        Me.Step2aCleanSchemeErrorImage()
-
-                        ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                        ' ---------------------------------------------------------------------------------------------------------
-                        If Me.ClaimMode = ClaimMode.COVID19 Then
-                            If Me.ddlStep2aScheme.Visible Then
-                                Me.ddlStep2aScheme.SelectedValue = udtSchemeClaim.SchemeCode
-                            End If
-                        End If
-                        ' CRE20-0022 (Immu record) [End][Chris YIM]
-                    End If
-
-                Else
-
-                    'Log Practice Selection
-                    EHSClaimBasePage.AuditLogPracticeSelected(udtAuditLogEntry, True, udtNewPracticeDisplay, udtSchemeClaim, False)
-
-                    ' Scheme not Available in new Practice
-                    If Not udtOldPracticeDisplay.PracticeID.Equals(intBankAccountDisplaySeq) Then
-                        Me._udtSessionHandler.SchemeSelectedRemoveFromSession(FunctCode)
-                        'CRE16-002 (Revamp VSS) [Start][Chris YIM]
-                        '-----------------------------------------------------------------------------------------
-                        Me._udtSessionHandler.NonClinicSettingRemoveFromSession(FunctCode)
-                        'CRE16-002 (Revamp VSS) [End][Chris YIM]
-                        Me._udtSessionHandler.EHSTransactionRemoveFromSession(FunctCode)
-                        Me.ddlStep2aScheme.Items.Clear()
-                    End If
-                    Me.SetupStep2a(udtEHSAccount, False, True, False)
-                    Me.Step2aCleanSchemeErrorImage()
-                End If
-
-                'After SetupStep2a -> Scheme may be changed by default
-                'Scheme can be empty, if the current practice is no scheme for recipient
-                udtSchemeClaimUpdated = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
-                If Not udtSchemeClaimUpdated Is Nothing Then
-                    Dim udtConvertedSchemeCode As String = _udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtSchemeClaimUpdated.SchemeCode)
-                    _udtSessionHandler.NonClinicSettingSaveToSession(_udtSP.PracticeList(udtNewPracticeDisplay.PracticeID).PracticeSchemeInfoList.Filter(udtConvertedSchemeCode).IsNonClinic, FunctCode)
-
-                    If udtSchemeClaim Is Nothing OrElse Not udtSchemeClaim.SchemeCode.Equals(udtSchemeClaimUpdated.SchemeCode) Then
-                        Me.SetupStep2aClaimContent(udtSchemeClaimUpdated, udtEHSAccount)
-                    End If
-
-                    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                    ' ---------------------------------------------------------------------------------------------------------
-                    Me.SetupServiceDate(udtSchemeClaimUpdated.SchemeCode)
-                    ' CRE20-0022 (Immu record) [End][Chris YIM]
-                End If
-
-                If Not udcMsgBoxErr.Visible Then
-                    If udcMsgBoxErr.GetCodeTable.Rows.Count <> 0 Then Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail)
-                End If
-
-                Me.SetupSchemeLogo()
-
-                If Not udtSchemeClaim Is Nothing Then
-                    Select Case udtSchemeClaim.ControlType
-                        Case SchemeClaimModel.EnumControlType.HSIVSS
-                            Dim udcInputHSIVSS As ucInputHSIVSS = Me.udcStep2aInputEHSClaim.GetHSIVSSControl()
-                            If Not udcInputHSIVSS Is Nothing Then
-                                If String.IsNullOrEmpty(udcInputHSIVSS.Category) Then
-                                    Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                End If
-                            End If
-
-                        Case SchemeClaimModel.EnumControlType.RVP
-                            If ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
-                                If Not udcInputRVPCOVID19 Is Nothing Then
-                                    If udcInputRVPCOVID19.VaccineBrandDDL.Items.Count > 1 Then
-                                        udcInputRVPCOVID19.ClearVaccineAndLotNo()
-                                    End If
-                                    _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
-                                    _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
-
-                                    'Set Claim button
-                                    If String.IsNullOrEmpty(udcInputRVPCOVID19.CategoryForCOVID19) Then
-                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                    End If
-                                End If
-
-                            Else
-                                Dim udcInputRVP As ucInputRVP = Me.udcStep2aInputEHSClaim.GetRVPControl()
-                                If Not udcInputRVP Is Nothing Then
-                                    If String.IsNullOrEmpty(udcInputRVP.Category) Then
-                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                    End If
-                                End If
-                            End If
-
-                        Case SchemeClaimModel.EnumControlType.VSS
-                            If ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control()
-                                If Not udcInputVSSCOVID19 Is Nothing Then
-                                    If udcInputVSSCOVID19.VaccineBrandDDL.Items.Count > 1 Then
-                                        udcInputVSSCOVID19.ClearVaccineAndLotNo()
-                                    End If
-                                    _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
-                                    _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
-
-                                    'Set Claim button
-                                    If String.IsNullOrEmpty(udcInputVSSCOVID19.CategoryForCOVID19) Then
-                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                    End If
-                                End If
-
-                            Else
-                                Dim udcInputVSS As ucInputVSS = Me.udcStep2aInputEHSClaim.GetVSSControl()
-                                If Not udcInputVSS Is Nothing Then
-                                    If String.IsNullOrEmpty(udcInputVSS.Category) Then
-                                        Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                    End If
-                                End If
-
-                            End If
-
-                        Case SchemeClaimModel.EnumControlType.ENHVSSO
-                            Dim udcInputENHVSSO As ucInputENHVSSO = Me.udcStep2aInputEHSClaim.GetENHVSSOControl()
-                            If Not udcInputENHVSSO Is Nothing Then
-                                If String.IsNullOrEmpty(udcInputENHVSSO.Category) Then
-                                    Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                End If
-                            End If
-
-                            ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                            ' --------------------------------------------------------------------------------------
-                        Case SchemeClaimModel.EnumControlType.COVID19
-                            Dim udcInputCOVID19 As ucInputCOVID19 = Me.udcStep2aInputEHSClaim.GetCOVID19Control()
-                            If Not udcInputCOVID19 Is Nothing Then
-                                If udcInputCOVID19.VaccineBrandDDL.Items.Count > 1 Then
-                                    udcInputCOVID19.ClearVaccineAndLotNo()
-                                End If
-                                _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
-
-                                'Set Claim button
-                                If String.IsNullOrEmpty(udcInputCOVID19.CategoryForCOVID19) Then
-                                    Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                End If
-                            End If
-                            ' CRE20-0022 (Immu record) [End][Winnie SUEN]
-
-                        Case SchemeClaimModel.EnumControlType.COVID19RVP
-                            Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
-                            If Not udcInputCOVID19RVP Is Nothing Then
-                                If udcInputCOVID19RVP.VaccineBrandDDL.Items.Count > 1 Then
-                                    udcInputCOVID19RVP.ClearVaccineAndLotNo()
-                                End If
-                                _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
-
-                                'Set Claim button
-                                If String.IsNullOrEmpty(udcInputCOVID19RVP.CategoryForCOVID19) Then
-                                    Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                End If
-                            End If
-
-                        Case SchemeClaimModel.EnumControlType.COVID19OR
-                            Dim udcInputCOVID19OR As ucInputCOVID19OR = Me.udcStep2aInputEHSClaim.GetCOVID19ORControl()
-                            If Not udcInputCOVID19OR Is Nothing Then
-                                If udcInputCOVID19OR.VaccineBrandDDL.Items.Count > 1 Then
-                                    udcInputCOVID19OR.ClearVaccineAndLotNo()
-                                End If
-                                _udtSessionHandler.ClaimCOVID19VaccineBrandRemoveFromSession(FunctionCode)
-                                _udtSessionHandler.ClaimCOVID19VaccineLotNoRemoveFromSession(FunctionCode)
-
-                                'Set Claim button
-                                If String.IsNullOrEmpty(udcInputCOVID19OR.CategoryForCOVID19) Then
-                                    Me.SetConfirmButtonEnable(Me.btnStep2aClaim, False)
-                                End If
-                            End If
-
-                    End Select
-
-                End If
-
-                If ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                    Dim udtFormatter As New Formatter
-
-                    Dim strServiceDate As String = udtFormatter.formatInputDate(Me.txtStep2aServiceDate.Text, (New SubPlatformBLL).GetDateFormatLocale(Me.SubPlatform))
-
-                    Dim dtmServiceDate As DateTime = udtFormatter.convertDate(strServiceDate, Common.Component.CultureLanguage.English)
-
-                    'Get Vaccine Brand & Lot No.
-                    Dim strVaccineLotNoMappingJavaScript As String = String.Empty
-
-                    Dim udtNewSchemeClaim As SchemeClaimModel = Nothing
-
-                    If udtSchemeClaim Is Nothing Then
-                        udtNewSchemeClaim = udtSchemeClaimUpdated
-                    Else
-
-                        If udtSchemeClaimUpdated Is Nothing OrElse udtSchemeClaim.SchemeCode <> udtSchemeClaimUpdated.SchemeCode Then
+                        If udtSchemeClaim Is Nothing Then
                             udtNewSchemeClaim = udtSchemeClaimUpdated
                         Else
-                            udtNewSchemeClaim = udtSchemeClaim
+
+                            If udtSchemeClaimUpdated Is Nothing OrElse udtSchemeClaim.SchemeCode <> udtSchemeClaimUpdated.SchemeCode Then
+                                udtNewSchemeClaim = udtSchemeClaimUpdated
+                            Else
+                                udtNewSchemeClaim = udtSchemeClaim
+                            End If
+
                         End If
 
-                    End If
+                        If udtNewSchemeClaim IsNot Nothing Then
+                            Select Case udtNewSchemeClaim.ControlType
+                                Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+                                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForCentreJavaScript(udtNewPracticeDisplay.SPID, udtNewPracticeDisplay.PracticeID, dtmServiceDate)
 
-                    If udtNewSchemeClaim IsNot Nothing Then
-                        Select Case udtNewSchemeClaim.ControlType
-                            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
-                                strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForCentreJavaScript(udtNewPracticeDisplay.SPID, udtNewPracticeDisplay.PracticeID, dtmServiceDate)
+                                    If udtNewSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19OR Then
+                                        Dim udcInputCOVID19OR As ucInputCOVID19OR = Me.udcStep2aInputEHSClaim.GetCOVID19ORControl()
+                                        If Not udcInputCOVID19OR Is Nothing Then
+                                            If udcInputCOVID19OR.VaccineBrandDDL.Items.Count > 1 Then
+                                                udcInputCOVID19OR.ClearVaccineAndLotNo()
+                                            End If
+                                        End If
 
-                                If udtNewSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19OR Then
-                                    Dim udcInputCOVID19OR As ucInputCOVID19OR = Me.udcStep2aInputEHSClaim.GetCOVID19ORControl()
-                                    If Not udcInputCOVID19OR Is Nothing Then
-                                        If udcInputCOVID19OR.VaccineBrandDDL.Items.Count > 1 Then
-                                            udcInputCOVID19OR.ClearVaccineAndLotNo()
+                                        'Convert sub-category -> Dictionary -> Json
+                                        Dim strSubCategoryMappingJavaScript As String = String.Empty
+                                        Dim strCategoryJson As String = String.Empty
+                                        Dim strCategoryTextEngJson As String = String.Empty
+                                        Dim strCategoryTextChiJson As String = String.Empty
+
+                                        udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+
+                                        'Generate JavaScript
+                                        strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+                                        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
+                                    End If
+
+                                    'Carry Forword: once times only
+                                    If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
+                                        _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+                                    End If
+
+                                Case SchemeClaimModel.EnumControlType.VSS
+                                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(dtmServiceDate)
+
+                                    Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control()
+                                    If Not udcInputVSSCOVID19 Is Nothing Then
+                                        If udcInputVSSCOVID19.VaccineBrandDDL.Items.Count > 1 Then
+                                            udcInputVSSCOVID19.ClearVaccineAndLotNo()
                                         End If
                                     End If
 
@@ -1307,74 +1391,52 @@ Partial Public Class EHSClaimV1
                                     'Generate JavaScript
                                     strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
                                     ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
-                                End If
 
-                                'Carry Forword: once times only
-                                If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
-                                    _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
-                                End If
-
-                            Case SchemeClaimModel.EnumControlType.VSS
-                                strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForPrivateJavaScript(dtmServiceDate)
-
-                                Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control()
-                                If Not udcInputVSSCOVID19 Is Nothing Then
-                                    If udcInputVSSCOVID19.VaccineBrandDDL.Items.Count > 1 Then
-                                        udcInputVSSCOVID19.ClearVaccineAndLotNo()
+                                    'Carry Forword: once times only
+                                    If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
+                                        _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
                                     End If
-                                End If
 
-                                'Convert sub-category -> Dictionary -> Json
-                                Dim strSubCategoryMappingJavaScript As String = String.Empty
-                                Dim strCategoryJson As String = String.Empty
-                                Dim strCategoryTextEngJson As String = String.Empty
-                                Dim strCategoryTextChiJson As String = String.Empty
+                                Case SchemeClaimModel.EnumControlType.RVP
+                                    strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForRCHJavaScript(dtmServiceDate)
 
-                                udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
-
-                                'Generate JavaScript
-                                strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
-                                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
-
-                                'Carry Forword: once times only
-                                If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
-                                    _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
-                                End If
-
-                            Case SchemeClaimModel.EnumControlType.RVP
-                                strVaccineLotNoMappingJavaScript = Me.GetVaccineLotNoMappingForRCHJavaScript(dtmServiceDate)
-
-                                Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
-                                If Not udcInputRVPCOVID19 Is Nothing Then
-                                    If udcInputRVPCOVID19.VaccineBrandDDL.Items.Count > 1 Then
-                                        udcInputRVPCOVID19.ClearVaccineAndLotNo()
+                                    Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+                                    If Not udcInputRVPCOVID19 Is Nothing Then
+                                        If udcInputRVPCOVID19.VaccineBrandDDL.Items.Count > 1 Then
+                                            udcInputRVPCOVID19.ClearVaccineAndLotNo()
+                                        End If
                                     End If
-                                End If
 
-                                'Convert sub-category -> Dictionary -> Json
-                                Dim strSubCategoryMappingJavaScript As String = String.Empty
-                                Dim strCategoryJson As String = String.Empty
-                                Dim strCategoryTextEngJson As String = String.Empty
-                                Dim strCategoryTextChiJson As String = String.Empty
+                                    'Convert sub-category -> Dictionary -> Json
+                                    Dim strSubCategoryMappingJavaScript As String = String.Empty
+                                    Dim strCategoryJson As String = String.Empty
+                                    Dim strCategoryTextEngJson As String = String.Empty
+                                    Dim strCategoryTextChiJson As String = String.Empty
 
-                                udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+                                    udtCOVID19BLL.GenerateCategoryJson(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
 
-                                'Generate JavaScript
-                                strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
-                                ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
+                                    'Generate JavaScript
+                                    strSubCategoryMappingJavaScript = udtCOVID19BLL.GenerateCategoryMappingJavaScript(strCategoryJson, strCategoryTextEngJson, strCategoryTextChiJson)
+                                    ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_SubCategory_Mapping", strSubCategoryMappingJavaScript, True)
 
-                                'Carry Forword: once times only
-                                If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
-                                    _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
-                                End If
-                        End Select
+                                    'Carry Forword: once times only
+                                    If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
+                                        _udtSessionHandler.ClaimCOVID19CarryForwordSaveToSession(True, FunctCode)
+                                    End If
+                            End Select
+
+                        End If
+
+                        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_Vaccine_LotNo_Mapping", strVaccineLotNoMappingJavaScript, True)
 
                     End If
+            End Select
 
-                    ScriptManager.RegisterStartupScript(Me, Me.GetType(), "COVID19_Vaccine_LotNo_Mapping", strVaccineLotNoMappingJavaScript, True)
 
-                End If
-        End Select
+            ' CRE20-023  (Immu record) [Start][Raiman]
+        End If
+        ' CRE20-023  (Immu record) [END][Raiman]
+
 
     End Sub
 
@@ -5094,13 +5156,6 @@ Partial Public Class EHSClaimV1
                                                 blnCOVID19ForClaim = True
                                             End If
 
-                                        Case SchemeClaimModel.EnumControlType.COVID19CBD
-                                            Dim drVaccineLotNo() As DataRow = Me.GetCOVID19VaccineLotMapping(udtSP.SPID, udtSelectedPracticeDisplay.PracticeID, dtmServiceDate)
-
-                                            If drVaccineLotNo IsNot Nothing AndAlso drVaccineLotNo.Length > 0 Then
-                                                blnCOVID19ForClaim = True
-                                            End If
-
                                     End Select
 
                                 End If
@@ -5238,7 +5293,6 @@ Partial Public Class EHSClaimV1
                                 '--------------------------------------
                                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                                 If udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19) OrElse _
-                                   udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19CBD) OrElse _
                                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19RVP) OrElse _
                                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19OR) OrElse _
                                    (udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.VSS) AndAlso Me.ClaimMode = Common.Component.ClaimMode.COVID19) OrElse _
@@ -12733,31 +12787,58 @@ Partial Public Class EHSClaimV1
 
     'Select Practice in MuiltView
     Protected Sub PracticeRadioButtonGroup_PracticeSelected(ByVal strPracticeName As String, ByVal strBankAcctNo As String, ByVal intBankAccountDisplaySeq As Integer, ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles PracticeRadioButtonGroup.PracticeSelected
-        If Me._blnIsRequireHandlePageRefresh Then
-            Return
+
+        ' CRE20-023  (Immu record) [Start][Raiman]
+        'Get sender(which is image button created by PracticeRadioButtonGroup.vb) contain attributes. and pass attribute value to popup ok button for calling PracticeRadioButtonGroup_PracticeSelected sub again.
+        Dim selectPracticeImageButton As ImageButton = CType(sender, ImageButton)
+        Dim IsContainCovid19Scheme As Boolean = CType(selectPracticeImageButton.Attributes("blnShowPopUp"), Boolean)
+
+        If (Me.ClaimMode = Common.Component.ClaimMode.COVID19 AndAlso Not _udtSessionHandler.ConfirmedPracticePopUpGetFromSession AndAlso IsContainCovid19Scheme) Then
+            ModalPopupExtenderConfirmSelectPractice.Show()
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataTextField") = selectPracticeImageButton.Attributes("DataTextField")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("DataValueField") = selectPracticeImageButton.Attributes("DataValueField")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplaySeq") = selectPracticeImageButton.Attributes("PracticeDisplaySeq")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PracticeDisplayText") = selectPracticeImageButton.Attributes("PracticeDisplayText")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("blnShowPopUp") = selectPracticeImageButton.Attributes("blnShowPopUp")
+            ucNoticePopUpConfirmSelectPractice.ButtonOK.Attributes("PopupCallFrom") = PracticeRadioButtonGroup.ClientID
+            ucNoticePopUpConfirmSelectPractice.MessageText = String.Format(HttpContext.GetGlobalResourceObject("Text", "SelectPracticePopup"), selectPracticeImageButton.Attributes("PracticeDisplayText"))
+
+        Else
+            ' CRE20-023  (Immu record) [End][Raiman]
+
+            If Me._blnIsRequireHandlePageRefresh Then
+                Return
+            End If
+
+            'this session for always show select practice popup.
+            _udtSessionHandler.ConfirmedPracticePopUpSaveToSession(False)
+
+            Dim formatter As Formatter = New Formatter()
+            Dim udtDataEntryModel As DataEntryUserModel = Nothing
+            Dim strSelectedPractice As String = String.Format("{0} ({1})", strPracticeName, intBankAccountDisplaySeq)
+            Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Nothing
+            Dim udtPracticeDisplay As BLL.PracticeDisplayModel
+
+            Me.GetCurrentUserAccount(Me._udtSP, udtDataEntryModel, False)
+
+            udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
+
+            udtPracticeDisplay = udtPracticeDisplays.Filter(intBankAccountDisplaySeq)
+
+            Me._udtSessionHandler.PracticeDisplaySaveToSession(udtPracticeDisplay, FunctCode)
+
+            ' Save the new selected Scheme to session
+            _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
+
+            'Log Practice Selection
+            EHSClaimBasePage.AuditLogPracticeSelected(New AuditLogEntry(FunctionCode, Me), False, udtPracticeDisplay, Nothing, False)
+
+            Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+
+            ' CRE20-023  (Immu record) [Start][Raiman]
         End If
+        ' CRE20-023  (Immu record) [End][Raiman]
 
-        Dim formatter As Formatter = New Formatter()
-        Dim udtDataEntryModel As DataEntryUserModel = Nothing
-        Dim strSelectedPractice As String = String.Format("{0} ({1})", strPracticeName, intBankAccountDisplaySeq)
-        Dim udtPracticeDisplays As BLL.PracticeDisplayModelCollection = Nothing
-        Dim udtPracticeDisplay As BLL.PracticeDisplayModel
-
-        Me.GetCurrentUserAccount(Me._udtSP, udtDataEntryModel, False)
-
-        udtPracticeDisplays = Me._udtSessionHandler.PracticeDisplayListGetFromSession(FunctCode)
-
-        udtPracticeDisplay = udtPracticeDisplays.Filter(intBankAccountDisplaySeq)
-
-        Me._udtSessionHandler.PracticeDisplaySaveToSession(udtPracticeDisplay, FunctCode)
-
-        ' Save the new selected Scheme to session
-        _udtSessionHandler.SchemeSelectedForPracticeSaveToSession(strSchemeCode, FunctCode)
-
-        'Log Practice Selection
-        EHSClaimBasePage.AuditLogPracticeSelected(New AuditLogEntry(FunctionCode, Me), False, udtPracticeDisplay, Nothing, False)
-
-        Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
     End Sub
 
     'Setup Practice Selection
@@ -14284,7 +14365,7 @@ Partial Public Class EHSClaimV1
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = "d MMMM, yyyy"
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case TradChinese, SimpChinese
-                chineseTodayDateFormat = CStr(Today.Year) + "å¹´" + CStr(Today.Month) + "æœˆ" + CStr(Today.Day) & "æ—¥"
+                chineseTodayDateFormat = CStr(Today.Year) + "¦~" + CStr(Today.Month) + "¤ë" + CStr(Today.Day) & "¤é"
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = chineseTodayDateFormat
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case Else

@@ -5,6 +5,7 @@ Imports Common.Format
 Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSAccount.EHSAccountModel
+Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
 
 Namespace Component.EHSAccount
     Public Class EHSAccountBLL
@@ -1526,7 +1527,7 @@ Namespace Component.EHSAccount
                     udtDB.MakeInParam("@Create_By", SqlDbType.VarChar, 20, .CreateBy), _
                     udtDB.MakeInParam("@DataEntry_By", SqlDbType.VarChar, 20, strDataEntry), _
                     udtDB.MakeInParam("@Identity", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
-                    udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                    udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                     udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                     udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                     udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _
@@ -1719,7 +1720,7 @@ Namespace Component.EHSAccount
                     udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, .UpdateBy), _
                     udtDB.MakeInParam("@DataEntry_By", SqlDbType.VarChar, 20, strDataEntry), _
                     udtDB.MakeInParam("@Encrypt_Field1", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, _udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
-                    udtDB.MakeInParam("@Encrypt_Field2", SqlDbType.VarChar, 40, _udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                    udtDB.MakeInParam("@Encrypt_Field2", SqlDbType.VarChar, SProcParameter.EngNameDataSize, _udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                     udtDB.MakeInParam("@Encrypt_Field3", SqlDbType.NVarChar, 12, strCName), _
                     udtDB.MakeInParam("@Encrypt_Field4", SqlDbType.Char, 5, strCCCode1), _
                     udtDB.MakeInParam("@Encrypt_Field5", SqlDbType.Char, 5, strCCCode2), _
@@ -1895,7 +1896,7 @@ Namespace Component.EHSAccount
                         udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, strUpdateBy), _
                         udtDB.MakeInParam("@DataEntry_By", SqlDbType.VarChar, 20, .DataEntryBy), _
                         udtDB.MakeInParam("@Identity", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
-                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                         udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                         udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                         udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _
@@ -1985,7 +1986,7 @@ Namespace Component.EHSAccount
                         udtDB.MakeInParam("@Update_By", SqlDbType.VarChar, 20, strUpdateBy), _
                         udtDB.MakeInParam("@DataEntry_By", SqlDbType.VarChar, 20, .DataEntryBy), _
                         udtDB.MakeInParam("@Identity", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
-                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                         udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                         udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                         udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _
@@ -2066,7 +2067,7 @@ Namespace Component.EHSAccount
                 ' Add [Create_By_SmartID], [SmartID_Ver]
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, .VoucherAccID), _
-                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                         udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                         udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                         udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _
@@ -2171,7 +2172,7 @@ Namespace Component.EHSAccount
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, udtEHSAccountModel.ValidatedAccID), _
                         udtDB.MakeInParam("@IdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
-                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                         udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                         udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                         udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _
@@ -2280,7 +2281,7 @@ Namespace Component.EHSAccount
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, udtEHSPersonalInformation.VoucherAccID), _
                         udtDB.MakeInParam("@IdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
-                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                         udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                         udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                         udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _
@@ -2377,7 +2378,7 @@ Namespace Component.EHSAccount
                 ' Add [SmartID_Ver]
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, .VoucherAccID), _
-                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, 40, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
+                        udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
                         udtDB.MakeInParam("@Chi_Name", SqlDbType.NVarChar, 12, strCName), _
                         udtDB.MakeInParam("@CCcode1", SqlDbType.Char, 5, strCCCode1), _
                         udtDB.MakeInParam("@CCcode2", SqlDbType.Char, 5, strCCCode2), _

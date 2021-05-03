@@ -2,6 +2,7 @@ Imports System.Data
 Imports System.Data.SqlClient
 Imports Common.Component
 Imports Common.DataAccess
+Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
 
 Public Class SearchEngineBLL
     Private AuthorizeLevel As String
@@ -1576,7 +1577,7 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@Means_Of_Input", SqlDbType.Char, 1, IIf(udtSearchCriteria.MeansOfInput = String.Empty, DBNull.Value, udtSearchCriteria.MeansOfInput)), _
                                                     db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID), _
-                                                    db.MakeInParam("@eHA_name", SqlDbType.VarChar, 40, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientName), DBNull.Value, udtSearchCriteria.VoucherRecipientName)), _
+                                                    db.MakeInParam("@eHA_name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientName), DBNull.Value, udtSearchCriteria.VoucherRecipientName)), _
                                                     db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)) _
                                                     }
 
@@ -1587,7 +1588,7 @@ Public Class SearchEngineBLL
                                                   db.MakeInParam("@status", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.TransStatus), DBNull.Value, udtSearchCriteria.TransStatus)), _
                                                   db.MakeInParam("@authorised_status", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.AuthorizedStatus), DBNull.Value, udtSearchCriteria.AuthorizedStatus)), _
                                                   db.MakeInParam("@sp_id", SqlDbType.Char, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderID), DBNull.Value, udtSearchCriteria.ServiceProviderID)), _
-                                                  db.MakeInParam("@sp_name", SqlDbType.VarChar, 40, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderName), DBNull.Value, udtSearchCriteria.ServiceProviderName)), _
+                                                  db.MakeInParam("@sp_name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderName), DBNull.Value, udtSearchCriteria.ServiceProviderName)), _
                                                   db.MakeInParam("@sp_hkid", SqlDbType.Char, 9, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderHKIC), DBNull.Value, udtSearchCriteria.ServiceProviderHKIC)), _
                                                   db.MakeInParam("@bank_acc", SqlDbType.VarChar, 30, IIf(udcValidator.IsEmpty(udtSearchCriteria.BankAcctNo), DBNull.Value, udtSearchCriteria.BankAcctNo)), _
                                                   db.MakeInParam("@service_type", SqlDbType.Char, 5, IIf(udcValidator.IsEmpty(udtSearchCriteria.HealthProf), DBNull.Value, udtSearchCriteria.HealthProf)), _
@@ -1722,7 +1723,7 @@ Public Class SearchEngineBLL
                                             db.MakeInParam("@status", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.TransStatus), DBNull.Value, udtSearchCriteria.TransStatus)), _
                                             db.MakeInParam("@authorised_status", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.AuthorizedStatus), DBNull.Value, udtSearchCriteria.AuthorizedStatus)), _
                                             db.MakeInParam("@sp_id", SqlDbType.Char, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderID), DBNull.Value, udtSearchCriteria.ServiceProviderID)), _
-                                            db.MakeInParam("@sp_name", SqlDbType.VarChar, 40, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderName), DBNull.Value, udtSearchCriteria.ServiceProviderName)), _
+                                            db.MakeInParam("@sp_name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderName), DBNull.Value, udtSearchCriteria.ServiceProviderName)), _
                                             db.MakeInParam("@sp_hkid", SqlDbType.Char, 9, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceProviderHKIC), DBNull.Value, udtSearchCriteria.ServiceProviderHKIC)), _
                                             db.MakeInParam("@bank_acc", SqlDbType.VarChar, 30, IIf(udcValidator.IsEmpty(udtSearchCriteria.BankAcctNo), DBNull.Value, udtSearchCriteria.BankAcctNo)), _
                                             db.MakeInParam("@service_type", SqlDbType.Char, 5, IIf(udcValidator.IsEmpty(udtSearchCriteria.HealthProf), DBNull.Value, udtSearchCriteria.HealthProf)), _
@@ -1813,6 +1814,7 @@ Public Class SearchEngineBLL
         Return dt
 
     End Function
+
 
     Public Function GetFilteredTxn(ByVal dtSrc As DataTable, ByVal fieldname As ArrayList, ByVal fieldType As ArrayList, ByVal fieldValue As ArrayList, Optional ByVal distinctField As String = "") As DataTable
         Dim dtnew As New DataTable

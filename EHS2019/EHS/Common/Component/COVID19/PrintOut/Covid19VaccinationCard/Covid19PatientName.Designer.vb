@@ -77,8 +77,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Me.txtName.HyperLink = Nothing
             Me.txtName.Left = 0.036!
             Me.txtName.Name = "txtName"
+            Me.txtName.ShrinkToFit = True
             Me.txtName.Style = "font-family: Times New Roman; font-size: 14pt; text-align: center; vertical-align" & _
-        ": middle; ddo-char-set: 1"
+        ": middle; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.txtName.Text = ""
             Me.txtName.Top = 0.492!
             Me.txtName.Width = 3.54!

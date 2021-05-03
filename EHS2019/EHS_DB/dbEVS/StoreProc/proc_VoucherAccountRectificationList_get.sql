@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-35
+-- Modified by:		Winnie SUEN
+-- Modified date:	27 Apr 2021
+-- Description:		Add with nolock
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -157,7 +165,7 @@ insert into @tempVR
  TempAcc_Status  
 )  
 select TVA.Validated_Acc_ID, P.Doc_Code, TVA.Last_Fail_Validate_Dtm, TVA.Record_status  
- from TempVoucherAccount TVA, TempPersonalInformation TP, PersonalInformation P  
+ from TempVoucherAccount TVA WITH(NOLOCK), TempPersonalInformation TP WITH(NOLOCK), PersonalInformation P  WITH(NOLOCK)
  where   
  P.Voucher_Acc_ID = TVA.Validated_Acc_ID   
  and P.Record_Status = 'U'  
@@ -210,7 +218,7 @@ select TVA.Validated_Acc_ID, P.Doc_Code, TVA.Last_Fail_Validate_Dtm, TVA.Record_
   VA.Record_status,  
   T.Last_Fail_Validate_Dtm,  
   T.TempAcc_Status  
- from VoucherAccount VA, PersonalInformation P, @tempVR T  
+ from VoucherAccount VA WITH(NOLOCK), PersonalInformation P WITH(NOLOCK), @tempVR T  
  where   
  VA.Voucher_Acc_ID = P.Voucher_Acc_ID   
  and VA.Voucher_Acc_ID = T.Vaildated_Acc_ID  
@@ -286,7 +294,7 @@ select  TOP ([dbo].[func_get_top_row](@result_limit_1st_enable,@result_limit_ove
    TA.Record_Status,   
    TA.Last_Fail_Validate_Dtm,  
    ''   
- from TempVoucherAccount TA, TempPersonalInformation TP, VoucherAccountCreationLOG C  
+ from TempVoucherAccount TA WITH(NOLOCK), TempPersonalInformation TP WITH(NOLOCK), VoucherAccountCreationLOG C WITH(NOLOCK)
  where       
  TA.Voucher_acc_id = TP.Voucher_acc_id       
  and TA.Record_Status in ('P','I','R')      
@@ -369,7 +377,7 @@ BEGIN
     VA.Record_Status,   
     VA.Last_Fail_Validate_Dtm,  
     ''     
-  from SpecialAccount VA, SpecialPersonalInformation P, VoucherAccountCreationLOG C    
+  from SpecialAccount VA WITH(NOLOCK), SpecialPersonalInformation P WITH(NOLOCK), VoucherAccountCreationLOG C WITH(NOLOCK)   
   where       
   VA.Special_acc_id = P.Special_acc_id       
   and VA.Record_Status in ('P','I')      
@@ -427,7 +435,7 @@ IF isnull(@row_cnt_error,'') = @errCode_lower
 
 select  voucher_acc_id,  
   convert(varchar, DecryptByKey(Encrypt_Field1)) as IdentityNum,  
-  convert(varchar, DecryptByKey(Encrypt_Field2)) as Eng_name,  
+  convert(varchar(100), DecryptByKey(Encrypt_Field2)) as Eng_name,  
   isnull(convert(nvarchar, DecryptByKey(Encrypt_Field3)),'') as Chi_Name,  
   isnull(convert(char, DecryptByKey(Encrypt_Field11)),'') as Adoption_Prefix_Num,  
   dob,  
@@ -443,7 +451,7 @@ select  voucher_acc_id,
   Account_Status,  
   Last_Fail_Validate_Dtm,  
   TempAcc_Status  
- from @result r, DocType DT  
+ from @result r, DocType DT WITH(NOLOCK)  
  where DT.Doc_code = r.Doc_Code  
  order by convert(varchar, DecryptByKey(Encrypt_Field1))  
    

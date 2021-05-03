@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -19,13 +25,6 @@ GO
 -- CR No.:			CRE11-007
 -- Description:		Add DeathRecordEntryStaging
 -- =============================================
--- =============================================
--- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
--- =============================================
 
 CREATE PROCEDURE [dbo].[proc_DeathRecordEntryStaging_add]
 	@Death_Record_File_ID	char(15),
@@ -34,7 +33,7 @@ CREATE PROCEDURE [dbo].[proc_DeathRecordEntryStaging_add]
 	@DOD					datetime,
 	@Exact_DOD				char(1),
 	@DOR					datetime,
-	@English_Name			varchar(40)
+	@English_Name			varchar(100)
 AS BEGIN
 
 	SET NOCOUNT ON;

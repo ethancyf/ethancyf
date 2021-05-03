@@ -11,6 +11,7 @@ Imports Common.ComObject
 Imports System.Data.SqlClient
 Imports HCSP.BLL
 Imports Common.Component.EHSAccount
+Imports Common.Component.DocType.DocTypeModel
 Imports Common.Component.DocType
 Imports Common.Component.SortedGridviewHeader
 Imports System.Globalization
@@ -696,8 +697,8 @@ Partial Public Class EHSRectification
                     Else
                         'Check CCCode
                         ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
-                        If Me.NeedPopupCCCodeDialog Then
-                            Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputHKIC, Nothing, Nothing)
+                        If Me.NeedPopupCCCodeDialog(DocTypeModel.DocTypeCode.HKIC) Then
+                            Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
                             blnProceed = False
 
                             Exit Sub
@@ -757,8 +758,28 @@ Partial Public Class EHSRectification
 
                 blnProceed = Me.ValidateRectifyDetail_CCIC(udtEHSAccount, udtAuditLogEntry)
             Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = Me.udcRectifyAccount.GetROP140Control
 
-                blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount, udtAuditLogEntry)
+                If udcInputROP140.CCCodeIsEmpty Then
+                    udcInputROP140.SetCName(String.Empty)
+                    Me.udcCCCode.Clean()
+                    Me.udcCCCode.CleanSeesion(FuncCode)
+
+                Else
+                    'Check CCCode
+                    ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                    If Me.NeedPopupCCCodeDialog(DocTypeModel.DocTypeCode.ROP140) Then
+                        Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                        blnProceed = False
+
+                        Exit Sub
+                    End If
+                End If
+
+                If blnProceed Then
+                    blnProceed = Me.ValidateRectifyDetail_ROP140(udtEHSAccount, udtAuditLogEntry)
+                End If
+
             Case DocTypeModel.DocTypeCode.PASS
 
                 blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount, udtAuditLogEntry)
@@ -3308,7 +3329,7 @@ Partial Public Class EHSRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
 
         'English Name
-        Me.sm = Me.validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        Me.sm = Me.validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
         If Not IsNothing(sm) Then
             isvalid = False
             udcInputCCIC.SetENameError(True)
@@ -3379,8 +3400,14 @@ Partial Public Class EHSRectification
         _udtAuditLogEntry.AddDescripton("DOB", udcInputCROP140.DOB)
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputCROP140.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCROP140.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("ChiName", udcInputCROP140.CName)
+        _udtAuditLogEntry.AddDescripton("CCCode1", udcInputCROP140.CCCode1)
+        _udtAuditLogEntry.AddDescripton("CCCode2", udcInputCROP140.CCCode2)
+        _udtAuditLogEntry.AddDescripton("CCCode3", udcInputCROP140.CCCode3)
+        _udtAuditLogEntry.AddDescripton("CCCode4", udcInputCROP140.CCCode4)
+        _udtAuditLogEntry.AddDescripton("CCCode5", udcInputCROP140.CCCode5)
+        _udtAuditLogEntry.AddDescripton("CCCode6", udcInputCROP140.CCCode6)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputCROP140.Gender)
-        _udtAuditLogEntry.AddDescripton("DOB", udcInputCROP140.DOB)
         _udtAuditLogEntry.AddDescripton("DOI", udcInputCROP140.DateOfIssue)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
 
@@ -3389,6 +3416,19 @@ Partial Public Class EHSRectification
         If Not IsNothing(sm) Then
             isvalid = False
             udcInputCROP140.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(sm)
+        End If
+
+        'CCCode
+        Me.sm = Me.validator.chkCCCode_UsingDDL(String.Format("{0}{1}", udcInputCROP140.CCCode1, Me.udcCCCode.SelectedCCCodeTail1), _
+                                                String.Format("{0}{1}", udcInputCROP140.CCCode2, Me.udcCCCode.SelectedCCCodeTail2), _
+                                                String.Format("{0}{1}", udcInputCROP140.CCCode3, Me.udcCCCode.SelectedCCCodeTail3), _
+                                                String.Format("{0}{1}", udcInputCROP140.CCCode4, Me.udcCCCode.SelectedCCCodeTail4), _
+                                                String.Format("{0}{1}", udcInputCROP140.CCCode5, Me.udcCCCode.SelectedCCCodeTail5), _
+                                                String.Format("{0}{1}", udcInputCROP140.CCCode6, Me.udcCCCode.SelectedCCCodeTail6))
+        If Not Me.sm Is Nothing Then
+            isvalid = False
+            udcInputCROP140.SetCCCodeError(True)
             Me.udcMsgBoxErr.AddMessage(sm)
         End If
 
@@ -3415,12 +3455,10 @@ Partial Public Class EHSRectification
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
-
-
         'DOI        
         Dim strIssueDate As String = Nothing
         Dim dtIssueDate As DateTime
-      
+
         Dim strDOI As String = String.Empty
         strDOI = Me.formatter.formatDateBeforValidation_DDMMYYYY(udcInputCROP140.DateOfIssue)
         sm = Me.validator.chkDataOfIssue(DocType.DocTypeModel.DocTypeCode.DI, strDOI, udtEHSAccountPersonalInfo.DOB)
@@ -3436,6 +3474,24 @@ Partial Public Class EHSRectification
         If isvalid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputCROP140.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputCROP140.ENameFirstName
+
+            udtEHSAccountPersonalInfo.CCCode1 = String.Format("{0}{1}", udcInputCROP140.CCCode1, Me.udcCCCode.SelectedCCCodeTail1)
+            udtEHSAccountPersonalInfo.CCCode2 = String.Format("{0}{1}", udcInputCROP140.CCCode2, Me.udcCCCode.SelectedCCCodeTail2)
+            udtEHSAccountPersonalInfo.CCCode3 = String.Format("{0}{1}", udcInputCROP140.CCCode3, Me.udcCCCode.SelectedCCCodeTail3)
+            udtEHSAccountPersonalInfo.CCCode4 = String.Format("{0}{1}", udcInputCROP140.CCCode4, Me.udcCCCode.SelectedCCCodeTail4)
+            udtEHSAccountPersonalInfo.CCCode5 = String.Format("{0}{1}", udcInputCROP140.CCCode5, Me.udcCCCode.SelectedCCCodeTail5)
+            udtEHSAccountPersonalInfo.CCCode6 = String.Format("{0}{1}", udcInputCROP140.CCCode6, Me.udcCCCode.SelectedCCCodeTail6)
+
+            'Retervie Chinese Name from Choose
+            udcInputCROP140.CCCode1 = udtEHSAccountPersonalInfo.CCCode1
+            udcInputCROP140.CCCode2 = udtEHSAccountPersonalInfo.CCCode2
+            udcInputCROP140.CCCode3 = udtEHSAccountPersonalInfo.CCCode3
+            udcInputCROP140.CCCode4 = udtEHSAccountPersonalInfo.CCCode4
+            udcInputCROP140.CCCode5 = udtEHSAccountPersonalInfo.CCCode5
+            udcInputCROP140.CCCode6 = udtEHSAccountPersonalInfo.CCCode6
+            udcInputCROP140.SetCName()
+            udtEHSAccountPersonalInfo.CName = udcInputCROP140.CName
+
             udtEHSAccountPersonalInfo.Gender = udcInputCROP140.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
@@ -3465,7 +3521,7 @@ Partial Public Class EHSRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00014, AuditLogDesc.ValidateRectifiedAccount)
 
         'English Name
-        Me.sm = Me.validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        Me.sm = Me.validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
         If Not IsNothing(sm) Then
             isvalid = False
             udcInputPASS.SetENameError(True)
@@ -3568,22 +3624,6 @@ Partial Public Class EHSRectification
                     If udcRectifyAccount.DocType.Trim.Equals(DocType.DocTypeModel.DocTypeCode.HKIC) Then
                         Dim udcInputHKID As ucInputHKID = Me.udcRectifyAccount.GetHKICControl
 
-                        'If udcInputHKID.CCCodeIsEmpty_M Then
-
-                        'No CCCode
-                        'udcInputHKID.SetCName_M(String.Empty)
-
-                        'Else
-                        'Me.udcCCCode.CCCode1 = udcInputHKID.CCCode1
-                        'Me.udcCCCode.CCCode2 = udcInputHKID.CCCode2
-                        'Me.udcCCCode.CCCode3 = udcInputHKID.CCCode3
-                        'Me.udcCCCode.CCCode4 = udcInputHKID.CCCode4
-                        'Me.udcCCCode.CCCode5 = udcInputHKID.CCCode5
-                        'Me.udcCCCode.CCCode6 = udcInputHKID.CCCode6
-                        'Me.BuildCCCode(udcInputHKID.CCCode1, udcInputHKID.CCCode2, udcInputHKID.CCCode3, udcInputHKID.CCCode4, udcInputHKID.CCCode5, udcInputHKID.CCCode6)
-
-                        ' CRE16-026 (Add PCV13) [Start][Dickson Law]
-                        ' Fix eHA Rectification CCCode checking
                         Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
                         Me.BuildCCCode(udtEHSAccountPersonalInfo.CCCode1, _
                                       udtEHSAccountPersonalInfo.CCCode2, _
@@ -3591,10 +3631,25 @@ Partial Public Class EHSRectification
                                       udtEHSAccountPersonalInfo.CCCode4, _
                                       udtEHSAccountPersonalInfo.CCCode5, _
                                       udtEHSAccountPersonalInfo.CCCode6)
-                        ' CRE16-026 (Add PCV13) [End][Dickson Law]
 
                         Me.udcCCCode.GetChineseName(FuncCode, True)
-                        'End If
+
+                        Session(SESS_DefaultSetCCCode) = Nothing
+                        Session.Remove(SESS_DefaultSetCCCode)
+                    End If
+
+                    If udcRectifyAccount.DocType.Trim.Equals(DocType.DocTypeModel.DocTypeCode.ROP140) Then
+                        Dim udcInputROP140 As ucInputROP140 = Me.udcRectifyAccount.GetROP140Control
+
+                        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.ROP140)
+                        Me.BuildCCCode(udtEHSAccountPersonalInfo.CCCode1, _
+                                      udtEHSAccountPersonalInfo.CCCode2, _
+                                      udtEHSAccountPersonalInfo.CCCode3, _
+                                      udtEHSAccountPersonalInfo.CCCode4, _
+                                      udtEHSAccountPersonalInfo.CCCode5, _
+                                      udtEHSAccountPersonalInfo.CCCode6)
+
+                        Me.udcCCCode.GetChineseName(FuncCode, True)
 
                         Session(SESS_DefaultSetCCCode) = Nothing
                         Session.Remove(SESS_DefaultSetCCCode)
@@ -3686,7 +3741,7 @@ Partial Public Class EHSRectification
 
 #Region "CCCode"
 
-    Private Sub udcRectifyAccount_SelectChineseName_HKIC(ByVal udcInputHKID As ucInputHKID, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcRectifyAccount.SelectChineseName_HKIC
+    Private Sub udcRectifyAccount_SelectChineseName_HKIC(ByVal udcInputDocumentType As ucInputDocTypeBase, ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcRectifyAccount.SelectChineseName_HKIC
         Me.udtEHSAccount = Me.udtSessionHandler.EHSAccountGetFromSession(FuncCode)
 
         'Audit Log
@@ -3703,55 +3758,100 @@ Partial Public Class EHSRectification
             Session(SESS_ClickSave) = True
         End If
 
-        udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKID As ucInputHKID = CType(udcInputDocumentType, ucInputHKID)
 
-        If udcInputHKID.CCCodeIsEmptyModification Then
+                udcInputHKID.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
 
-            'No CCCode
-            udcInputHKID.SetCNameModification(String.Empty)
+                If udcInputHKID.CCCodeIsEmptyModification Then
 
-            sm = New SystemMessage(CommonFuncCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00143)
-            Me.udcMsgBoxErr.AddMessage(sm)
-            udcInputHKID.SetCCCodeModificationError(True)
+                    'No CCCode
+                    udcInputHKID.SetCNameModification(String.Empty)
 
-        Else
-            ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [Start][Winnie] Step 1
-            'Me.udcCCCode.CCCode1 = udcInputHKID.CCCode1
-            'Me.udcCCCode.CCCode2 = udcInputHKID.CCCode2
-            'Me.udcCCCode.CCCode3 = udcInputHKID.CCCode3
-            'Me.udcCCCode.CCCode4 = udcInputHKID.CCCode4
-            'Me.udcCCCode.CCCode5 = udcInputHKID.CCCode5
-            'Me.udcCCCode.CCCode6 = udcInputHKID.CCCode6
+                    sm = New SystemMessage(CommonFuncCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00143)
+                    Me.udcMsgBoxErr.AddMessage(sm)
+                    udcInputHKID.SetCCCodeModificationError(True)
 
-            Me.udcCCCode.CCCode1 = udcInputHKID.GetCCCode(udcInputHKID.CCCode1, Me.udcCCCode.getCCCodeFromSession(1, FuncCode))
-            Me.udcCCCode.CCCode2 = udcInputHKID.GetCCCode(udcInputHKID.CCCode2, Me.udcCCCode.getCCCodeFromSession(2, FuncCode))
-            Me.udcCCCode.CCCode3 = udcInputHKID.GetCCCode(udcInputHKID.CCCode3, Me.udcCCCode.getCCCodeFromSession(3, FuncCode))
-            Me.udcCCCode.CCCode4 = udcInputHKID.GetCCCode(udcInputHKID.CCCode4, Me.udcCCCode.getCCCodeFromSession(4, FuncCode))
-            Me.udcCCCode.CCCode5 = udcInputHKID.GetCCCode(udcInputHKID.CCCode5, Me.udcCCCode.getCCCodeFromSession(5, FuncCode))
-            Me.udcCCCode.CCCode6 = udcInputHKID.GetCCCode(udcInputHKID.CCCode6, Me.udcCCCode.getCCCodeFromSession(6, FuncCode))
-            ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [End][Winnie] Step 1
+                Else
+                    Me.udcCCCode.DocCode = DocTypeModel.DocTypeCode.HKIC
 
-            Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
+                    Me.udcCCCode.CCCode1 = udcInputHKID.GetCCCode(udcInputHKID.CCCode1, Me.udcCCCode.getCCCodeFromSession(1, FuncCode))
+                    Me.udcCCCode.CCCode2 = udcInputHKID.GetCCCode(udcInputHKID.CCCode2, Me.udcCCCode.getCCCodeFromSession(2, FuncCode))
+                    Me.udcCCCode.CCCode3 = udcInputHKID.GetCCCode(udcInputHKID.CCCode3, Me.udcCCCode.getCCCodeFromSession(3, FuncCode))
+                    Me.udcCCCode.CCCode4 = udcInputHKID.GetCCCode(udcInputHKID.CCCode4, Me.udcCCCode.getCCCodeFromSession(4, FuncCode))
+                    Me.udcCCCode.CCCode5 = udcInputHKID.GetCCCode(udcInputHKID.CCCode5, Me.udcCCCode.getCCCodeFromSession(5, FuncCode))
+                    Me.udcCCCode.CCCode6 = udcInputHKID.GetCCCode(udcInputHKID.CCCode6, Me.udcCCCode.getCCCodeFromSession(6, FuncCode))
 
-            sm = Me.udcCCCode.BindCCCode()
-            'Bind CCCode Drop Down List
-            If sm Is Nothing Then
-                udcInputHKID.SetCCCodeModificationError(False)
-                Me.ModalPopupExtenderChooseCCCode.Show()
+                    Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
 
-                Me.udtAuditLogEntry.AddDescripton("AccountID", Me.udtEHSAccount.VoucherAccID.Trim)
-                Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
-                Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
-                Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
-                Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
-                Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
-                Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
-                Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00036, AuditLogDesc.ChineseNameCodeCheckingSuccess)
-            Else
-                Me.udcMsgBoxErr.AddMessage(sm)
-                udcInputHKID.SetCCCodeModificationError(True)
-            End If
-        End If
+                    sm = Me.udcCCCode.BindCCCode()
+                    'Bind CCCode Drop Down List
+                    If sm Is Nothing Then
+                        udcInputHKID.SetCCCodeModificationError(False)
+                        Me.ModalPopupExtenderChooseCCCode.Show()
+
+                        Me.udtAuditLogEntry.AddDescripton("AccountID", Me.udtEHSAccount.VoucherAccID.Trim)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
+                        Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00036, AuditLogDesc.ChineseNameCodeCheckingSuccess)
+                    Else
+                        Me.udcMsgBoxErr.AddMessage(sm)
+                        udcInputHKID.SetCCCodeModificationError(True)
+                    End If
+                End If
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = CType(udcInputDocumentType, ucInputROP140)
+
+                udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+
+                If udcInputROP140.CCCodeIsEmpty Then
+
+                    'No CCCode
+                    udcInputROP140.SetCName(String.Empty)
+
+                    sm = New SystemMessage(CommonFuncCode, Common.Component.SeverityCode.SEVE, Common.Component.MsgCode.MSG00143)
+                    Me.udcMsgBoxErr.AddMessage(sm)
+                    udcInputROP140.SetCCCodeError(True)
+
+                Else
+                    Me.udcCCCode.DocCode = DocTypeModel.DocTypeCode.ROP140
+
+                    Me.udcCCCode.CCCode1 = udcInputROP140.GetCCCode(udcInputROP140.CCCode1, Me.udcCCCode.getCCCodeFromSession(1, FuncCode))
+                    Me.udcCCCode.CCCode2 = udcInputROP140.GetCCCode(udcInputROP140.CCCode2, Me.udcCCCode.getCCCodeFromSession(2, FuncCode))
+                    Me.udcCCCode.CCCode3 = udcInputROP140.GetCCCode(udcInputROP140.CCCode3, Me.udcCCCode.getCCCodeFromSession(3, FuncCode))
+                    Me.udcCCCode.CCCode4 = udcInputROP140.GetCCCode(udcInputROP140.CCCode4, Me.udcCCCode.getCCCodeFromSession(4, FuncCode))
+                    Me.udcCCCode.CCCode5 = udcInputROP140.GetCCCode(udcInputROP140.CCCode5, Me.udcCCCode.getCCCodeFromSession(5, FuncCode))
+                    Me.udcCCCode.CCCode6 = udcInputROP140.GetCCCode(udcInputROP140.CCCode6, Me.udcCCCode.getCCCodeFromSession(6, FuncCode))
+
+                    Me.udcCCCode.RowDisplayStyle = ChooseCCCode.DisplayStyle.SingalRow
+
+                    sm = Me.udcCCCode.BindCCCode()
+                    'Bind CCCode Drop Down List
+                    If sm Is Nothing Then
+                        udcInputROP140.SetCCCodeError(False)
+                        Me.ModalPopupExtenderChooseCCCode.Show()
+
+                        Me.udtAuditLogEntry.AddDescripton("AccountID", Me.udtEHSAccount.VoucherAccID.Trim)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode2", Me.udcCCCode.CCCode2)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode3", Me.udcCCCode.CCCode3)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode4", Me.udcCCCode.CCCode4)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode5", Me.udcCCCode.CCCode5)
+                        Me.udtAuditLogEntry.AddDescripton("CCCode6", Me.udcCCCode.CCCode6)
+                        Me.udtAuditLogEntry.WriteEndLog(Common.Component.LogID.LOG00036, AuditLogDesc.ChineseNameCodeCheckingSuccess)
+                    Else
+                        Me.udcMsgBoxErr.AddMessage(sm)
+                        udcInputROP140.SetCCCodeError(True)
+                    End If
+                End If
+
+        End Select
 
         Me.udtAuditLogEntry.AddDescripton("AccountID", Me.udtEHSAccount.VoucherAccID.Trim)
         Me.udtAuditLogEntry.AddDescripton("CCCode1", Me.udcCCCode.CCCode1)
@@ -3764,31 +3864,62 @@ Partial Public Class EHSRectification
 
     End Sub
 
-    Private Function NeedPopupCCCodeDialog() As Boolean
+    Private Function NeedPopupCCCodeDialog(ByVal strDocCode As String) As Boolean
         'isDiff is using for check the sessoion CCCode is same as current CCCode 
         'isDiff = true : sessoion CCCode <> current CCCode 
         Dim isDiff As Boolean = True
-        Dim udcInputHKIC As ucInputHKID = Me.udcRectifyAccount.GetHKICControl()
-        udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
-        isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode1, FuncCode, 1)
 
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode2, FuncCode, 2)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode3, FuncCode, 3)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode4, FuncCode, 4)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode5, FuncCode, 5)
-        End If
-        If Not isDiff Then
-            isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode6, FuncCode, 6)
-        End If
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcInputHKIC As ucInputHKID = Me.udcRectifyAccount.GetHKICControl()
+
+                udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+
+                isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode1, FuncCode, 1)
+
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode2, FuncCode, 2)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode3, FuncCode, 3)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode4, FuncCode, 4)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode5, FuncCode, 5)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputHKIC.CCCode6, FuncCode, 6)
+                End If
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcInputROP140 As ucInputROP140 = Me.udcRectifyAccount.GetROP140Control()
+
+                udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+
+                isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode1, FuncCode, 1)
+
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode2, FuncCode, 2)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode3, FuncCode, 3)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode4, FuncCode, 4)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode5, FuncCode, 5)
+                End If
+                If Not isDiff Then
+                    isDiff = Me.udcCCCode.CCCodeDiff(udcInputROP140.CCCode6, FuncCode, 6)
+                End If
+
+        End Select
 
         Return isDiff
+
     End Function
 
     Private Sub udcChooseCCCode_Cancel(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Cancel
@@ -3809,24 +3940,50 @@ Partial Public Class EHSRectification
         Me.ModalPopupExtenderChooseCCCode.Hide()
     End Sub
 
-    Private Sub udcChooseCCCode_Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
-
-        Dim udcIputHKIC As ucInputHKID = Me.udcRectifyAccount.GetHKICControl
+    Private Sub udcChooseCCCode_Confirm(ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udcCCCode.Confirm
         Dim _udtEHSAccount As EHSAccountModel = Me.udtSessionHandler.EHSAccountGetFromSession(FuncCode)
-        Dim strCName As String
+        Dim strCName As String = String.Empty
 
-        udcIputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
-        Me.udcCCCode.CCCode1 = udcIputHKIC.CCCode1
-        Me.udcCCCode.CCCode2 = udcIputHKIC.CCCode2
-        Me.udcCCCode.CCCode3 = udcIputHKIC.CCCode3
-        Me.udcCCCode.CCCode4 = udcIputHKIC.CCCode4
-        Me.udcCCCode.CCCode5 = udcIputHKIC.CCCode5
-        Me.udcCCCode.CCCode6 = udcIputHKIC.CCCode6
+        Select Case strDocCode
+            Case DocTypeModel.DocTypeCode.HKIC
+                Dim udcIputHKIC As ucInputHKID = Me.udcRectifyAccount.GetHKICControl
 
-        'Get Chinese Name from Drop Down List, Save to Session
-        udcCCCode.CleanSeesion(FuncCode)
-        strCName = Me.udcCCCode.GetChineseName(FuncCode, True)
-        udcIputHKIC.SetCNameModification(strCName)
+                udcIputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+
+                Me.udcCCCode.CCCode1 = udcIputHKIC.CCCode1
+                Me.udcCCCode.CCCode2 = udcIputHKIC.CCCode2
+                Me.udcCCCode.CCCode3 = udcIputHKIC.CCCode3
+                Me.udcCCCode.CCCode4 = udcIputHKIC.CCCode4
+                Me.udcCCCode.CCCode5 = udcIputHKIC.CCCode5
+                Me.udcCCCode.CCCode6 = udcIputHKIC.CCCode6
+
+                'Get Chinese Name from Drop Down List, Save to Session
+                udcCCCode.CleanSeesion(FuncCode)
+                strCName = Me.udcCCCode.GetChineseName(FuncCode, True)
+                udcIputHKIC.SetCNameModification(strCName)
+
+                _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC).CName = strCName
+
+            Case DocTypeModel.DocTypeCode.ROP140
+                Dim udcIputROP140 As ucInputROP140 = Me.udcRectifyAccount.GetROP140Control
+
+                udcIputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+
+                Me.udcCCCode.CCCode1 = udcIputROP140.CCCode1
+                Me.udcCCCode.CCCode2 = udcIputROP140.CCCode2
+                Me.udcCCCode.CCCode3 = udcIputROP140.CCCode3
+                Me.udcCCCode.CCCode4 = udcIputROP140.CCCode4
+                Me.udcCCCode.CCCode5 = udcIputROP140.CCCode5
+                Me.udcCCCode.CCCode6 = udcIputROP140.CCCode6
+
+                'Get Chinese Name from Drop Down List, Save to Session
+                udcCCCode.CleanSeesion(FuncCode)
+                strCName = Me.udcCCCode.GetChineseName(FuncCode, True)
+                udcIputROP140.SetCName(strCName)
+
+                _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.ROP140).CName = strCName
+
+        End Select
 
         'Audit Log
         Me.udtAuditLogEntry = New AuditLogEntry(FuncCode, Me)
@@ -3834,7 +3991,6 @@ Partial Public Class EHSRectification
         Me.udtAuditLogEntry.AddDescripton("ChineseName", strCName)
         Me.udtAuditLogEntry.WriteLog(Common.Component.LogID.LOG00038, AuditLogDesc.ConfirmChineseName)
 
-        _udtEHSAccount.EHSPersonalInformationList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC).CName = strCName
         Me.udtSessionHandler.EHSAccountSaveToSession(_udtEHSAccount, FuncCode)
 
         Me.ModalPopupExtenderChooseCCCode.Hide()
@@ -3850,7 +4006,6 @@ Partial Public Class EHSRectification
             End If
 
         End If
-
 
     End Sub
 

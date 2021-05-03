@@ -38,6 +38,7 @@ Public Class ucReadOnlyROP140
 
             ' Name
             lblVEName.Text = udtFormatter.formatEnglishName(udtEHSPersonalInformation.ENameSurName, udtEHSPersonalInformation.ENameFirstName)
+            lblVCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
 
             ' Gender
             Select Case udtEHSPersonalInformation.Gender.Trim
@@ -71,6 +72,7 @@ Public Class ucReadOnlyROP140
 
             ' Name
             lblHEName.Text = udtFormatter.formatEnglishName(udtEHSPersonalInformation.ENameSurName, udtEHSPersonalInformation.ENameFirstName)
+            lblHCName.Text = udtFormatter.formatChineseName(udtEHSPersonalInformation.CName)
 
             ' Date of Birth
             lblHDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInformation.DOB, udtEHSPersonalInformation.ExactDOB, String.Empty, Nothing, Nothing)

@@ -314,49 +314,48 @@ function openNewModalWin(link, winname)
 
 function autoTab(txtbox, tabToTxtbox, len)
 {
-    var agent  = navigator.userAgent.toLowerCase();
+    /*var agent  = navigator.userAgent.toLowerCase();
     var isNN = (agent.indexOf("netscape")!=-1);
     var isOpera = (agent.indexOf("opera")!=-1);
-    var isIE = (agent.indexOf("msie") != -1);
+    var isIE = (agent.indexOf("msie") != -1);*/
 
     var keyCode;
-      var filter;
+    var filter;
 
-      if (isOpera | isIE)
-      {
-         keyCode = event.keyCode;
-         filter = [0,8,9,16,17,18,37,38,39,40,46];
-      }
-      else if (isNN)
-      {
-         keyCode = event.which;
-         filter = [0,8,9];
-      }
+    /*if (isOpera | isIE)
+    {
+       keyCode = event.keyCode;
+       filter = [0,8,9,16,17,18,37,38,39,40,46];
+    }
+    else if (isNN)
+    {
+       keyCode = event.which;
+       filter = [0,8,9];
+    }*/
 
-      if(txtbox.value.length >= len && !containsElement(filter,keyCode))
-      {
-         txtbox.value = txtbox.value.slice(0, len);
-         tabToTxtbox.focus();
-      }
+    keyCode = event.which || event.keyCode;
+    filter = [0, 8, 9, 16, 17, 18, 37, 38, 39, 40, 46];
 
+    if (txtbox.value.length >= len && !containsElement(filter, keyCode) && event.ctrlKey == false) {
+        txtbox.value = txtbox.value.slice(0, len);
+        tabToTxtbox.focus();
+    }
 
-      function containsElement(arr, ele)
-      {
+    function containsElement(arr, ele) {
+        var found = false, index = 0;
 
-         var found = false, index = 0;
+        while(!found && index < arr.length)
 
-         while(!found && index < arr.length)
+        if(arr[index] == ele)
+            found = true;
+        else
+            index++;
 
-            if(arr[index] == ele)
-               found = true;
-            else
-               index++;
+        return found;
+    }
 
-         return found;
-      }
-
-      return true;
-   }
+    return true;
+}
    
    // Filter continuous "-" character in the textbox control
 function filterDateInput(tb)

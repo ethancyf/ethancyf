@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -31,7 +37,7 @@ GO
 CREATE PROCEDURE [dbo].[proc_StudentFileEntryStaging_upd_OverWriteByValidatedAcct]
 	@Student_File_ID				VARCHAR(15)	,
 	@Student_Seq					INT,
-	@Name_EN						VARCHAR(40),
+	@Name_EN						VARCHAR(100),
 	@Surname_EN						VARCHAR(40),
 	@Given_Name_EN					VARCHAR(40),
 	@Name_CH						NVARCHAR(6),

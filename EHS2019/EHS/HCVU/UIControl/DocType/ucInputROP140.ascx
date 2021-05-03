@@ -6,11 +6,11 @@
             <td valign="top">
                 <table>
                     <tr>
-                        <td valign="top" style="width: 220px"></td>
-                        <td style="width: 200px">
+                        <td valign="top" style="width: 140px"></td>
+                        <td style="width: 160px">
                             <asp:Label ID="lblOriginalRecordText" Text="<%$ Resources:Text, OriginalRecord %>"
                                 runat="server" /></td>
-                        <td style="width: 350px;">
+                        <td style="width: 500px;">
                             <asp:Label ID="lblAmendingRecordText" Text="<%$ Resources:Text, AmendingRecord %>"
                                 runat="server" /></td>
                         <td valign="top"></td>
@@ -18,8 +18,10 @@
                     <tr>
                         <td valign="top">
                             <asp:Label ID="lblDocumentTypeOriginalText" runat="server" Text="<%$ Resources:Text, DocumentType %>"></asp:Label></td>
-                        <td colspan="3">
-                            <asp:Label ID="lblDocumentTypeOriginal" runat="server" CssClass="tableText"></asp:Label></td>
+                        <td >
+                            <asp:Label ID="lblDocumentTypeOriginal" runat="server"   CssClass="tableText"></asp:Label>
+                        </td>
+                        <td valign="top"></td><td valign="top"></td>
                     </tr>
                     <tr>
                         <td valign="top">
@@ -47,6 +49,51 @@
                                 ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
                         <td valign="top"></td>
                     </tr>
+                    <tr>
+                        <td valign="top" style="height: 20"></td>
+                        <%--<td>
+                            <asp:Label ID="lblCCCodeOrginalText" runat="server" CssClass="tableText"></asp:Label>
+                        </td>--%>
+                        <td style="width: 470px;">
+                            <asp:Label ID="lblCCCodeOrginal" runat="server" CssClass="tableText"></asp:Label>
+                            <%--    <asp:Label ID="lblCCCode2Original" runat="server" Width="40px"></asp:Label>
+                            <asp:Label ID="lblCCCode3Original" runat="server" Width="40px"></asp:Label>&nbsp;
+                            <asp:Label ID="lblCCCode4Original" runat="server" Width="40px"></asp:Label>
+                            <asp:Label ID="lblCCCode5Original" runat="server" Width="40px"></asp:Label>
+                            <asp:Label ID="lblCCCode6Original" runat="server" Width="40px"></asp:Label>--%>
+                         
+                        </td>
+                        <td style="width: 470px;">
+                            <asp:TextBox ID="txtCCCode1" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                                Width="40px"></asp:TextBox>
+                            <asp:TextBox ID="txtCCCode2" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                                Width="40px"></asp:TextBox>
+                            <asp:TextBox ID="txtCCCode3" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                                Width="40px"></asp:TextBox>&nbsp;
+                            <asp:TextBox ID="txtCCCode4" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                                Width="40px"></asp:TextBox>
+                            <asp:TextBox ID="txtCCCode5" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                                Width="40px"></asp:TextBox>
+                            <asp:TextBox ID="txtCCCode6" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                                Width="40px"></asp:TextBox>
+                            <asp:ImageButton ID="btnSearchCCCode" ImageUrl="<%$ Resources:ImageUrl, ChineseNameSBtn %>"
+                                runat="server" Visible="true" OnClick="btnSearchCCCode_Click" />
+                            <asp:Image ID="imgCCCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td valign="top" style="height: 28"></td>
+                        <td>
+                            <asp:Label ID="lblCNameOriginal" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"
+                                Text=""></asp:Label></td>
+                        <td style="width: 350px;">
+                            <asp:Label ID="lblCName" runat="server" MaxLength="10" Width="150px" Font-Names="HA_MingLiu"
+                                CssClass="tableText"></asp:Label></td>
+                        <td></td>
+                    </tr>
+
                     <tr>
                         <td valign="top">
                             <asp:Label ID="lblGenderOriginalText" runat="server" Text="<%$ Resources:Text, Gender %>"></asp:Label>
@@ -88,8 +135,7 @@
                                 onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);" onblur="filterDateInput(this);"></asp:TextBox>
                             <asp:Image ID="imgDOIDate" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                                 ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
-                        <td valign="top">
-                        </td>
+                        <td valign="top"></td>
                     </tr>
 
                 </table>
@@ -102,11 +148,22 @@
         TargetControlID="txtENameSurname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="filtereditEnameFirstname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtENameFirstname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtererditCCcode1" runat="server" FilterType="Numbers"
+        TargetControlID="txtCCCode1"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtererditCCcode2" runat="server" FilterType="Numbers"
+        TargetControlID="txtCCCode2"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtererditCCcode3" runat="server" FilterType="Numbers"
+        TargetControlID="txtCCCode3"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtererditCCcode4" runat="server" FilterType="Numbers"
+        TargetControlID="txtCCCode4"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtererditCCcode5" runat="server" FilterType="Numbers"
+        TargetControlID="txtCCCode5"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtererditCCcode6" runat="server" FilterType="Numbers"
+        TargetControlID="txtCCCode6"></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="filtereditDOB" runat="server" FilterType="Numbers, Custom"
         TargetControlID="txtDOB" ValidChars="-"></cc1:FilteredTextBoxExtender>
-     <cc1:FilteredTextBoxExtender ID="filtereditDOI" runat="server" FilterType="Numbers, Custom"
-        TargetControlID="txtDOI" ValidChars="-">
-    </cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filtereditDOI" runat="server" FilterType="Numbers, Custom"
+        TargetControlID="txtDOI" ValidChars="-"></cc1:FilteredTextBoxExtender>
 
 </asp:Panel>
 <asp:Panel runat="server" ID="pnlNew">
@@ -149,6 +206,37 @@
         </tr>
         <tr>
             <td valign="top" style="width: 220px; height: 25px;">
+                <asp:Label ID="lblNewCCCodeText" runat="server" Height="25px"></asp:Label>
+            </td>
+            <td style="width: 470px;">
+                <asp:TextBox ID="txtNewCCCode1" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                    Width="40px"></asp:TextBox>
+                <asp:TextBox ID="txtNewCCCode2" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                    Width="40px"></asp:TextBox>
+                <asp:TextBox ID="txtNewCCCode3" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                    Width="40px"></asp:TextBox>&nbsp;
+                <asp:TextBox ID="txtNewCCCode4" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                    Width="40px"></asp:TextBox>
+                <asp:TextBox ID="txtNewCCCode5" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                    Width="40px"></asp:TextBox>
+                <asp:TextBox ID="txtNewCCCode6" runat="server" AutoCompleteType="Disabled" MaxLength="4"
+                    Width="40px"></asp:TextBox>
+                <asp:ImageButton ID="ibtnNewCCCode" ImageUrl="<%$ Resources:ImageUrl, ChineseNameSBtn %>"
+                    runat="server" Visible="true" OnClick="ibtnNewCCCode_Click" />
+                <asp:Image ID="imgNewCCCodeErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                    ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 220px; height: 25px;">
+                <asp:Label ID="lblNewCNameText" runat="server" Height="25px"></asp:Label>
+            </td>
+            <td style="width: 470px;">
+                <asp:Label ID="lblNewCName" runat="server" MaxLength="10" Width="150px" Font-Names="HA_MingLiu"
+                    CssClass="tableText"></asp:Label></td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 220px; height: 25px;">
                 <asp:Label ID="lblNewGenderText" runat="server" Height="25px"></asp:Label></td>
             <td style="width: 470px;">
                 <asp:RadioButtonList ID="rboNewGender" runat="server" CssClass="tableText" RepeatDirection="Horizontal"
@@ -185,6 +273,18 @@
         TargetControlID="txtNewSurname" ValidChars="-' "></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewENameGivenname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"
         TargetControlID="txtNewGivenName" ValidChars="-' "></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filteredNewCCCode1" runat="server" FilterType="Numbers"
+        TargetControlID="txtNewCCCode1"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filteredNewCCCode2" runat="server" FilterType="Numbers"
+        TargetControlID="txtNewCCCode2"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filteredNewCCCode3" runat="server" FilterType="Numbers"
+        TargetControlID="txtNewCCCode3"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filteredNewCCCode4" runat="server" FilterType="Numbers"
+        TargetControlID="txtNewCCCode4"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filteredNewCCCode5" runat="server" FilterType="Numbers"
+        TargetControlID="txtNewCCCode5"></cc1:FilteredTextBoxExtender>
+    <cc1:FilteredTextBoxExtender ID="filteredNewCCCode6" runat="server" FilterType="Numbers"
+        TargetControlID="txtNewCCCode6"></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextNewDOB" runat="server" FilterType="Numbers, Custom"
         TargetControlID="txtNewDOB" ValidChars="-"></cc1:FilteredTextBoxExtender>
     <cc1:FilteredTextBoxExtender ID="FilteredTextBNewBOI" runat="server" FilterType="Numbers, Custom"

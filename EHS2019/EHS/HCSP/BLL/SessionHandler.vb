@@ -16,11 +16,13 @@ Namespace BLL
             Public Const SESS_EHSAccount As String = "SESS_EHSACCOUNT"
             Public Const SESS_SelectedPracticeDsiplay As String = "SESS_SELECTEDPRACTICEDISPLAY"
             Public Const SESS_SelectedPracticeDsiplayList As String = "SESS_SELECTEDPRACTICEDISPLAYLIST"
+            Public Const SESS_ConfirmedPracticePopup As String = "SESS_CONFIRMEDPRACTICEPOPUP"
             Public Const SESS_AccountCreationProceedClaim As String = "SESS_ACCOUNTCREATIONPROCEEDCLAIM"
             Public Const SESS_AccountCreationComeFromClaim As String = "SESS_ACCOUNTCREATIONCOMEFROMCLAIM"
             Public Const SESS_SchemeSelected As String = "SESS_SCHEMESELECTED"
             Public Const SESS_SchemeSubsidizeList As String = "SESS_SCHEMESUBSIDIZELIST"
             Public Const SESS_DocumentTypeSelected As String = "SESS_DOCUMENTTYPESELECTED"
+
 
             Public Const SESS_ServiceProvider As String = "SESS_SERVICEPROVIDER"
             Public Const SESS_DataEntry As String = "SESS_DATAENTRY"
@@ -819,6 +821,7 @@ Namespace BLL
         Public Sub PracticeDisplayListRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SelectedPracticeDsiplayList))
         End Sub
+
 #End Region
 
 #Region "Selected Practice Display"
@@ -833,6 +836,19 @@ Namespace BLL
         Public Sub PracticeDisplayRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_SelectedPracticeDsiplay))
         End Sub
+
+        Public Sub ConfirmedPracticePopUpSaveToSession(ByVal isConfirmedPracticePopUp As Boolean)
+            HttpContext.Current.Session(SessionName.SESS_ConfirmedPracticePopup) = isConfirmedPracticePopUp
+        End Sub
+
+        Public Function ConfirmedPracticePopUpGetFromSession() As Boolean
+            Return CType(HttpContext.Current.Session(SessionName.SESS_ConfirmedPracticePopup), Boolean)
+        End Function
+
+        Public Sub ConfirmedPracticePopUpRemoveFromSession()
+            HttpContext.Current.Session.Remove(SessionName.SESS_ConfirmedPracticePopup)
+        End Sub
+
 #End Region
 
 #Region "eHealth Account"

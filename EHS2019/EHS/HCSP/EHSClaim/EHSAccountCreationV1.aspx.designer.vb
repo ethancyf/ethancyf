@@ -257,6 +257,24 @@ Partial Public Class EHSAccountCreationV1
     Protected WithEvents udcChooseCCCode As Global.HCSP.ChooseCCCode
 
     '''<summary>
+    '''panConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panConfirmSelectPractice As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpConfirmSelectPractice As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
     '''ModalPopupPracticeSelection control.
     '''</summary>
     '''<remarks>
@@ -336,6 +354,24 @@ Partial Public Class EHSAccountCreationV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ModalPopupConfirmOnly As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''ModalPopupExtenderConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExtenderConfirmSelectPractice As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupConfirmSelectPractice control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupConfirmSelectPractice As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''btnModalPopupConfirmOnly control.

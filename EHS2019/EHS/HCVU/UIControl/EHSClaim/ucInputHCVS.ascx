@@ -5,7 +5,7 @@
 <table cellpadding="0" cellspacing="0" style="width: 753px">
     <tr id="trDHCRelatedService" runat="server">
         <td valign="top" class="tableCellStyle">
-            <asp:Label ID="lblDHCRelatedServiceTitle" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, DHCRelatedService%>" />
+            <asp:Label ID="lblDHCRelatedServiceTitle" runat="server" Text="<%$ Resources:Text, DHCRelatedService%>" />
         </td>
         <td valign="top" class="tableCellStyle" style="padding-left: 3px">
             <asp:CheckBox ID="chkDHCRelatedService" runat="server" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
@@ -13,7 +13,7 @@
     </tr>
     <tr style="height: 22px">
         <td valign="top" style="width: 200px" class="tableCellStyle">
-            <asp:Label ID="lblAvailableVoucherText" runat="server" CssClass="tableTitle" Width="160px"></asp:Label></td>
+            <asp:Label ID="lblAvailableVoucherText" runat="server" Width="160px"></asp:Label></td>
         <td valign="top"  class="tableCellStyle" style="padding-left: 3px">
             <asp:Label ID="lblAvailableVoucher" runat="server" CssClass="tableText">$0</asp:Label></td>        
     </tr>
@@ -44,7 +44,7 @@
                         -         
                     </td>
                     <td style="vertical-align:top">
-                        <asp:Label ID="lblMaximumVoucherAmountText" runat="server" CssClass="tableTitle" />
+                        <asp:Label ID="lblMaximumVoucherAmountText" runat="server" />
                     </td>
                 </tr>
             </table>
@@ -56,7 +56,7 @@
     </asp:Panel>
     <tr>
         <td valign="top" style="width: 200px" class="tableCellStyle">
-            <asp:Label ID="lblVoucherRedeemText" runat="server" CssClass="tableTitle" Width="160px" Height="25px"></asp:Label>
+            <asp:Label ID="lblVoucherRedeemText" runat="server" Width="160px" Height="25px"></asp:Label>
         </td>
         <td valign="top">
             <table cellpadding="0" cellspacing="0">
@@ -86,7 +86,7 @@
     </tr>
     <tr id="trCoPaymentFee" runat="server">
         <td valign="top" style="width: 175px;" class="tableCellStyle">
-            <asp:Label ID="lblCoPaymentFee" runat="server" CssClass="tableTitle"></asp:Label></td>
+            <asp:Label ID="lblCoPaymentFee" runat="server"></asp:Label></td>
         <td valign="top" class="tableCellStyle" style="padding-left: 3px">
             <table cellpadding="0" cellspacing="0">
                 <tr>
@@ -108,7 +108,7 @@
     </tr>
     <tr>
         <td valign="top" style="width: 200px" class="tableCellStyle">
-            <asp:Label ID="lblTotalReasonVisitText" runat="server" CssClass="tableTitle" Width="160px"></asp:Label></td>
+            <asp:Label ID="lblTotalReasonVisitText" runat="server" Width="160px"></asp:Label></td>
         <td valign="top" class="tableCellStyle">
         </td>
     </tr>

@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -49,7 +55,7 @@ GO
 
 CREATE PROCEDURE [dbo].[proc_TempVoucherAccountDeletionList_get]
 	-- Add the parameters for the stored procedure here
-	@Eng_Name varchar(40),
+	@Eng_Name varchar(100),
 	@From_Date datetime,
 	@To_Date datetime,
 	@result_limit_1st_enable BIT, 
@@ -76,7 +82,7 @@ DECLARE @tmp_VR_Delete table ( Voucher_Acc_ID char(15),
 						Public_Enquiry_Status char(1),
 						Public_Enq_Status_Remark nvarchar(255),
 						IdentityNum varchar(20),
-						EName varchar(50),
+						EName varchar(100),
 						CName nvarchar(50),
 						CCcode1 char(5),
 						CCcode2 char(5),
@@ -155,7 +161,7 @@ DECLARE @tmp_VR_Delete table ( Voucher_Acc_ID char(15),
 		'A' as Public_Enquiry_Status,
 		'' as Public_Enq_Status_Remark,
 		convert(varchar, DecryptByKey(P.Encrypt_Field1)),
-		convert(varchar, DecryptByKey(P.Encrypt_Field2)),
+		convert(varchar(100), DecryptByKey(P.Encrypt_Field2)),
 		convert(nvarchar, DecryptByKey(P.Encrypt_Field3)),
 		convert(varchar, DecryptByKey(P.Encrypt_Field4)),
 		convert(varchar, DecryptByKey(P.Encrypt_Field5)),

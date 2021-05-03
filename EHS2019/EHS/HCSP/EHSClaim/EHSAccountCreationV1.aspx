@@ -11,6 +11,7 @@
     TagPrefix="uc2" %>
 <%@ Register Src="../PracticeSelection.ascx" TagName="PracticeSelection" TagPrefix="uc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/UIControl/Assessories/ucNoticePopUp.ascx" TagName="ucNoticePopUp" TagPrefix="uc5" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
@@ -219,6 +220,17 @@
                     </tbody>
                 </table>
             </asp:Panel>
+
+             <asp:Panel Style="display: none; z-index:10003;" ID="panConfirmSelectPractice" runat="server" Width="600px">
+                <uc5:ucNoticePopUp ID="ucNoticePopUpConfirmSelectPractice" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel" 
+                    MessageText="<%$ Resources:Text, SelectPracticePopup %>"  />
+            </asp:Panel>
+
+
+
+
+
+
             <!--Chinese CCCode End----------------------------------------------------------------------->
             <!-- Popup Panel Section End ----------------------------------------------------------------------->
             <!--ModalPopupExtender ----------------------------------------------------------------------->
@@ -247,6 +259,15 @@
                 TargetControlID="btnModalPopupConfirmOnly" PopupControlID="panPopupConfirmOnly"
                 PopupDragHandleControlID="panPopupConfirmOnlyHeading" RepositionMode="None">
             </cc1:ModalPopupExtender>
+
+            <%-- Popup for Select Practice Confirmation in covid-19 program --%>
+            <cc1:ModalPopupExtender ID="ModalPopupExtenderConfirmSelectPractice" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupConfirmSelectPractice" PopupControlID="panConfirmSelectPractice"
+                PopupDragHandleControlID="panConfirmSelectPracticeHeading" RepositionMode="None" BehaviorID="panConfirmSelectPractice" DropShadow="False">
+            </cc1:ModalPopupExtender>
+          <asp:Button Style="display: none" ID="btnModalPopupConfirmSelectPractice" runat="server"></asp:Button>
+            <%-- End of Popup for Select Practice Confirmation in covid-19 program  --%>
+
             <asp:Button ID="btnModalPopupConfirmOnly" runat="server" Style="display: none" /><!-- ModalPopupExtender Create End -----------------------------------------------------------------------><table
                 cellpadding="0" cellspacing="0" style="width: 100%">
                 <tbody>

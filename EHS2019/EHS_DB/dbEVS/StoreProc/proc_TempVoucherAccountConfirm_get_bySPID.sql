@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			INT20-0086
@@ -159,7 +165,7 @@ create table #tempVoucherAcc
 	Transaction_Dtm datetime,
 	IdentityNum		varchar(20),
 	Date_Of_Issue	datetime,
-	Eng_Name		varchar(40),
+	Eng_Name		varchar(100),
 	Chi_Name		nvarchar(12),
 	DOB				datetime,
 	Exact_DOB		char(1),
@@ -278,7 +284,7 @@ insert into #tempVoucherAcc
 select	c.Transaction_Dtm,
 		convert(varchar, DecryptByKey(p.Encrypt_Field1)),
 		p.Date_of_Issue,
-		convert(varchar(40), DecryptByKey(p.Encrypt_Field2)),
+		convert(varchar(100), DecryptByKey(p.Encrypt_Field2)),
 		convert(nvarchar, DecryptByKey(p.Encrypt_Field3)),
 		p.DOB,
 		p.Exact_DOB,

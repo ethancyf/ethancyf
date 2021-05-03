@@ -18,6 +18,12 @@ Namespace Component.EHSAccount
                 LASTDAYOFMONTHYEAR
             End Enum
             ' CRE14-016 (To introduce 'Deceased' status into eHS) [End][Winnie]
+
+            ' CRE20-0023 (Immu record) [Start][Martin]
+            Public Enum SProcParameter
+                EngNameDataSize = 100
+            End Enum
+            ' CRE20-0023 (Immu record) [End][Martin]
 #End Region
 
 #Region "Schema"

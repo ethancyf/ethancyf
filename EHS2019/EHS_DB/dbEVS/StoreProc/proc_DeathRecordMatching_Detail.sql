@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -17,13 +25,6 @@ GO
 -- Create date:		09 May 2011
 -- CR No.:			CRE11-007
 -- Description:		View detail function for Death Record Matching
--- =============================================
--- =============================================
--- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.:			
--- Description:		
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_DeathRecordMatching_Detail]
@@ -161,7 +162,7 @@ AS BEGIN
 		With_Claim,
 		With_Suspicious_Claim,
 		Match_Dtm,
-		CONVERT(varchar, DecryptByKey(Death_Encrypt_Field2)) AS [Death_English_Name],
+		CONVERT(varchar(100), DecryptByKey(Death_Encrypt_Field2)) AS [Death_English_Name],
 		DOD,
 		Exact_DOD,
 		DOR

@@ -9,6 +9,7 @@ Partial Public Class ChooseCCCode
         SingalRow
     End Enum
 
+    Private _strDocCode As String
     Private _strCCCode1 As String
     Private _strCCCode2 As String
     Private _strCCCode3 As String
@@ -21,7 +22,7 @@ Partial Public Class ChooseCCCode
     'Dim udtSessionHandler As BLL.SessionHandler = New BLL.SessionHandler()
     Dim udteHSAccountMaintBLL As eHSAccountMaintBLL = New eHSAccountMaintBLL
     'Events
-    Public Event Confirm(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event Confirm(ByVal strDocCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
     Public Event Cancel(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
 
     Public Const SESS_CCCode1 As String = "SESS_CHOOSECCCODE_CCCODE1"
@@ -51,7 +52,10 @@ Partial Public Class ChooseCCCode
     End Sub
 
     Protected Sub ibtnCCCodeConfirm_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnCCCodeConfirm.Click
-        RaiseEvent Confirm(sender, e)
+        Dim ibtn As ImageButton = CType(sender, ImageButton)
+        Dim strDocCode As String = ibtn.CommandArgument.Trim
+
+        RaiseEvent Confirm(strDocCode, sender, e)
     End Sub
 
     Protected Sub ibtnCCCodeCancel_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnCCCodeCancel.Click
@@ -246,6 +250,7 @@ Partial Public Class ChooseCCCode
             End If
         End If
 
+        ibtnCCCodeConfirm.CommandArgument = Me.DocCode
         Return systemMessage
     End Function
 
@@ -303,6 +308,16 @@ Partial Public Class ChooseCCCode
         Me.ddlCCCode5.Items.Clear()
         Me.ddlCCCode6.Items.Clear()
     End Sub
+
+    Public Property DocCode() As String
+        Get
+            Return Me._strDocCode
+        End Get
+        Set(value As String)
+            Me._strDocCode = value
+        End Set
+    End Property
+
 
     Public Property CCCode1() As String
         Get

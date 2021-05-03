@@ -8,7 +8,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -379,7 +385,7 @@ AS BEGIN
 	SELECT
 		T.Transaction_ID AS [tranNum],
 		T.Transaction_Dtm AS [tranDate],
-		CONVERT(varchar(40), DecryptByKey(T.Encrypt_Field2)) AS [SPName],
+		CONVERT(varchar(100), DecryptByKey(T.Encrypt_Field2)) AS [SPName],
 		CONVERT(nvarchar, DecryptByKey(T.Encrypt_Field3)) AS [SPChiName],
 		T.SP_ID AS [SPID],
 		T.Bank_Account_No AS [BankAccountNo],

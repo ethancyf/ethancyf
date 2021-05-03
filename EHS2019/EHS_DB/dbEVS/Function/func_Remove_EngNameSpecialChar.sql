@@ -7,6 +7,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
+-- Modification History
+-- CR No.:			I-CRE20-005
+-- Modified by:		Martin Tang
+-- Modified date:	10 Dec 2020
+-- Description:		Fine tune Performance (Open Key with Dynamic SQL)
+-- =============================================
+-- =============================================
 -- Author:			Winnie SUEN
 -- Create date:		27 Apr 2016
 -- Description:		Return the Eng Name which removed the special char
@@ -19,9 +26,9 @@ GO
 -- =============================================
 CREATE FUNCTION [dbo].[func_Remove_EngNameSpecialChar]
 (
-	@eng_name varchar(40)
+	@eng_name varchar(100)
 )
-RETURNS varchar(40)
+RETURNS varchar(100)
 AS
 BEGIN
 

@@ -7,6 +7,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
 -- Author:			Vincent
 -- Create date:	2 FEB 2010
 -- Description:	Return Surname and Initial for the Given English Number
@@ -19,9 +26,9 @@ GO
 -- =============================================
 CREATE FUNCTION [dbo].[func_get_surname_n_initial]
 (
-	@eng_name varchar(40)
+	@eng_name varchar(100)
 )
-RETURNS varchar(40)
+RETURNS varchar(100)
 AS
 BEGIN
 	-- =============================================
@@ -30,9 +37,9 @@ BEGIN
 	DECLARE @separator char
 	DECLARE @separator_surname char
 	DECLARE @separator_index int
-	DECLARE @temp_name varchar(40)
+	DECLARE @temp_name varchar(100)
 	
-	DECLARE @result varchar(20)
+	DECLARE @result varchar(100)
 
 	-- =============================================
 	-- Validation 

@@ -54,11 +54,8 @@ Namespace Component.Scheme
             Public Const Available_HCSP_SubPlatform As String = "Available_HCSP_SubPlatform"
             Public Const ProperPractice_Avail As String = "ProperPractice_Avail"
             Public Const ProperPractice_SectionID As String = "ProperPractice_SectionID"
-
-            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-            ' --------------------------------------------------------------------------------------
             Public Const Readonly_HCSP As String = "Readonly_HCSP"
-            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
+            Public Const AllowTempAccBOClaim As String = "AllowTempAccBOClaim"
 
         End Class
 
@@ -1236,8 +1233,6 @@ Namespace Component.Scheme
 
                         End If
 
-                        ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-                        ' --------------------------------------------------------------------------------------
                         udtSchemeClaimModel = New SchemeClaimModel( _
                             CStr(dr.Item(tableSchemeClaim.Scheme_Code)).Trim(), _
                             CInt(dr.Item(tableSchemeClaim.Scheme_Seq)), _
@@ -1267,9 +1262,9 @@ Namespace Component.Scheme
                             CStr(dr.Item(tableSchemeClaim.Available_HCSP_SubPlatform)).Trim(), _
                             CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                             CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
-                            CStr(dr(tableSchemeClaim.Readonly_HCSP))
+                            CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
+                            CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
                             )
-                        ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
                         udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
                     Next
@@ -1283,8 +1278,6 @@ Namespace Component.Scheme
         End Function
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
 
-        ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-        ' --------------------------------------------------------------------------------------
         Private Function GetSchemeClaim_By_BOUserID_SPID_PracticeID_FunctionCode(ByVal strUserID As String, ByVal strFunctionCode As String, ByVal strSPID As String, ByVal intPracticeID As Integer, Optional ByVal udtDB As Database = Nothing) As SchemeClaimModelCollection
 
             Dim udtSchemeClaimModelCollection As SchemeClaimModelCollection = Nothing
@@ -1346,7 +1339,8 @@ Namespace Component.Scheme
                             CStr(dr.Item(tableSchemeClaim.Available_HCSP_SubPlatform)).Trim(), _
                             CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                             CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
-                            CStr(dr(tableSchemeClaim.Readonly_HCSP))
+                            CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
+                            CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
                             )
 
                         udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
@@ -1359,7 +1353,6 @@ Namespace Component.Scheme
 
             Return udtSchemeClaimModelCollection
         End Function
-        ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
 #End Region
 
@@ -1587,8 +1580,6 @@ Namespace Component.Scheme
 
                             End If
 
-                            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-                            ' --------------------------------------------------------------------------------------
                             udtSchemeClaimModel = New SchemeClaimModel( _
                                 CStr(dr.Item(tableSchemeClaim.Scheme_Code)).Trim(), _
                                 CInt(dr.Item(tableSchemeClaim.Scheme_Seq)), _
@@ -1618,11 +1609,9 @@ Namespace Component.Scheme
                                 CStr(dr.Item(tableSchemeClaim.Available_HCSP_SubPlatform)).Trim(), _
                                 CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                                 CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
-                                CStr(dr(tableSchemeClaim.Readonly_HCSP))
+                                CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
+                                CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
                                 )
-
-                            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
-
 
                             udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
                         Next
@@ -1772,8 +1761,6 @@ Namespace Component.Scheme
 
                             End If
 
-                            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
-                            ' --------------------------------------------------------------------------------------
                             udtSchemeClaimModel = New SchemeClaimModel( _
                                 CStr(dr.Item(tableSchemeClaim.Scheme_Code)).Trim(), _
                                 CInt(dr.Item(tableSchemeClaim.Scheme_Seq)), _
@@ -1803,9 +1790,9 @@ Namespace Component.Scheme
                                 CStr(dr.Item(tableSchemeClaim.Available_HCSP_SubPlatform)).Trim(), _
                                 CStr(dr.Item(tableSchemeClaim.ProperPractice_Avail)).Trim, _
                                 CStr(IIf(IsDBNull(dr(tableSchemeClaim.ProperPractice_SectionID)), String.Empty, dr(tableSchemeClaim.ProperPractice_SectionID))).Trim, _
-                                CStr(dr(tableSchemeClaim.Readonly_HCSP))
+                                CStr(dr(tableSchemeClaim.Readonly_HCSP)), _
+                                CStr(dr(tableSchemeClaim.AllowTempAccBOClaim))
                                 )
-                            ' CRE17-018 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
                             udtSchemeClaimModelCollection.Add(udtSchemeClaimModel)
                         Next

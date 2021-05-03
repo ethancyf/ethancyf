@@ -1387,7 +1387,6 @@ Partial Public Class claimTransEnquiry
                     udtSearchCriteria.SubsidizeItemCode = Me.ddlTabTransactionVaccines.SelectedValue.Trim 'CRE20-003 (add search criteria) [Martin]
                     udtSearchCriteria.DoseCode = Me.ddlTabTransactionDose.SelectedValue.Trim 'CRE20-003 (add search criteria) [Martin]
 
-
                     'Group: Common
                     If rblTabTransactionTypeOfDate.SelectedValue = TypeOfDate.ServiceDate Then
                         udtSearchCriteria.ServiceDateFrom = IIf(Me.txtTabTransactionDateFrom.Text.Trim = String.Empty, String.Empty, udtFormatter.convertDate(Me.txtTabTransactionDateFrom.Text.Trim, String.Empty))
@@ -1466,6 +1465,10 @@ Partial Public Class claimTransEnquiry
                     udtSearchCriteria.VoucherAccID = String.Empty
                     udtSearchCriteria.DocumentNo1 = String.Empty
                     udtSearchCriteria.DocumentNo2 = String.Empty
+                    udtSearchCriteria.VoucherRecipientName = String.Empty
+                    udtSearchCriteria.VoucherRecipientChiName = String.Empty
+
+
 
                 Case Aspect.eHSAccount
                     EnumSelectedStoredProc = Aspect.eHSAccount
@@ -1526,6 +1529,7 @@ Partial Public Class claimTransEnquiry
                     udtSearchCriteria.VoucherRecipientName = Me.txtTabeHSAccountName.Text.Trim
                     udtSearchCriteria.VoucherRecipientChiName = Me.txtTabeHSAccountChiName.Text.Trim
 
+
                 Case Aspect.AdvancedSearch
                     EnumSelectedStoredProc = Aspect.AdvancedSearch
 
@@ -1585,19 +1589,37 @@ Partial Public Class claimTransEnquiry
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
-
                     EnumSelectedStoredProc = SearchAspectRedirection()
+
+
+
+                    'Update Aspect
+                    udtSearchCriteria.Aspect = EnumSelectedStoredProc
+
+
 
             End Select
             ' CRE17-012 (Add Chinese Search for SP and EHA) [End]  [Marco]
 
             Session(SESS_SearchCriteria) = udtSearchCriteria
 
+
+
+            'If criteria is collected, reload the Aspect from model in session
+        Else
+
+            If IsNothing(udtSearchCriteria.Aspect) Then
+                EnumSelectedStoredProc = Aspect.AdvancedSearch
+            Else
+                EnumSelectedStoredProc = udtSearchCriteria.Aspect
+            End If
+
+
         End If
 
         udtBLLSearchResult = udtReimbursementBLL.GetTransactionByAny(FunctionCode, udtSearchCriteria, udtHCVUUserBLL.GetHCVUUser.UserID.Trim, blnOverrideResultLimit, EnumSelectedStoredProc)
 
-        ClearSearchCriteriaInput(udtSearchCriteria.Aspect)
+        ClearSearchCriteriaInput(Session(SESS.SelectedTabIndex))
         'CRE13-012 (RCH Code sorting) [End][Chris YIM]
 
         Return udtBLLSearchResult

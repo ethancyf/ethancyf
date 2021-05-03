@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -397,7 +404,7 @@ AS BEGIN
 			Doc_Code,
 			DOB,
 			Exact_DOB,
-			dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar, DecryptByKey(Encrypt_Field2))) AS EngName			
+			dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar(100), DecryptByKey(Encrypt_Field2))) AS EngName			
 	FROM
 			PersonalInfoAmendHistory H1 WITH (NOLOCK)			
 	WHERE	
@@ -461,7 +468,7 @@ AS BEGIN
 			DOB = [PI].DOB,
 			DOB_Adjust = CASE	WHEN [PI].Exact_DOB IN ('M','U') THEN DATEADD(M, DATEDIFF(M, 0, DATEADD(M, 1, [PI].DOB)), -1) --Format the Exact_DOB is month case, date value become the last day of that month   
 								ELSE [PI].DOB END,
-			Eng_Name = dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar, DecryptByKey([PI].Encrypt_Field2))),
+			Eng_Name = dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar(100), DecryptByKey([PI].Encrypt_Field2))),
 			Doc_Code = CASE	WHEN [PI].Doc_Code IN ('HKIC', 'HKBC') THEN 'HKICBC'  
 							ELSE [PI].Doc_Code END,  -- Consider HKIC & HKBC as same person
 			Exact_DOB = CASE [PI].Exact_DOB WHEN 'T' THEN 'D'
@@ -567,7 +574,7 @@ AS BEGIN
 			AND VT.Voucher_Acc_ID <> RG.Voucher_Acc_ID
 			AND ((RG.DOC_Code = 'HKICBC' AND VT.Doc_Code NOT IN ('HKIC', 'HKBC'))
 				OR (RG.DOC_Code <> 'HKICBC' AND VT.Doc_Code <> RG.Doc_Code))
-			AND dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar, DecryptByKey([PI].Encrypt_Field2))) = RG.Eng_Name
+			AND dbo.func_Remove_EngNameSpecialChar(CONVERT(varchar(100), DecryptByKey([PI].Encrypt_Field2))) = RG.Eng_Name
 			
 	ORDER BY 
 			Aberrant_Group, transaction_dtm ASC				
@@ -708,7 +715,7 @@ AS BEGIN
 				T.Aberrant_Group,
 				dbo.func_format_voucher_account_number('V', [PI].Voucher_Acc_ID) AS ehs_account_id,
 				[PI].Doc_Code,
-				dbo.func_get_surname_n_initial(CONVERT(varchar, DecryptByKey([PI].Encrypt_Field2))) AS ehs_account_eng_name,
+				dbo.func_get_surname_n_initial(CONVERT(varchar(100), DecryptByKey([PI].Encrypt_Field2))) AS ehs_account_eng_name,
 				[PI].Sex,
 				CONVERT(varchar(10), [PI].DOB, 111) AS DOB,
 				[PI].Exact_DOB,

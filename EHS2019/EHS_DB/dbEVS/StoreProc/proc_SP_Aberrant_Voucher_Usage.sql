@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	20 Apr 2021
+-- Description:		Extend patient name's maximum length
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -80,7 +87,7 @@ AS BEGIN
 		Special_Acc_ID char(15) collate database_default,
 		Invalid_Acc_ID char(15) collate database_default,
 		SP_ID char(8) collate database_default,
-		SP_Name varchar(50) collate database_default,
+		SP_Name varchar(100) collate database_default,
 		Practice_Display_Seq smallint,
 		Practice_Name varchar(100) collate database_default,
 		Practice_Profession varchar(20) collate database_default,
@@ -183,7 +190,7 @@ AS BEGIN
 							VT.Special_Acc_ID,
 							VT.Invalid_Acc_ID,
 							SPCount.SP_ID,
-							CONVERT(varchar, DecryptByKey(SP.Encrypt_Field2)),
+							CONVERT(varchar(100), DecryptByKey(SP.Encrypt_Field2)),
 							VT.Practice_Display_Seq,
 							P.Practice_Name,
 							Prof.Service_Category_Code,
@@ -271,10 +278,10 @@ AS BEGIN
 										WHEN [PI].Voucher_Acc_ID IS NOT NULL		THEN dbo.func_mask_doc_id([PI].Doc_Code, CONVERT(varchar, DecryptByKey([PI].Encrypt_Field1)), CONVERT(varchar, DecryptByKey([PI].Encrypt_Field11)))
 										WHEN [TPI].Voucher_Acc_ID IS NOT NULL		THEN dbo.func_mask_doc_id([TPI].Doc_Code, CONVERT(varchar, DecryptByKey([TPI].Encrypt_Field1)), CONVERT(varchar, DecryptByKey([TPI].Encrypt_Field11)))
 							END AS doc_identity_id,
-							CASE	WHEN [IPI].Invalid_Acc_ID IS NOT NULL			THEN dbo.func_get_surname_n_initial(CONVERT(varchar, DecryptByKey([IPI].Encrypt_Field2)))
-										WHEN [SPI].Special_Acc_ID IS NOT NULL		THEN dbo.func_get_surname_n_initial(CONVERT(varchar, DecryptByKey([SPI].Encrypt_Field2)))
-										WHEN [PI].Voucher_Acc_ID IS NOT NULL		THEN dbo.func_get_surname_n_initial(CONVERT(varchar, DecryptByKey([PI].Encrypt_Field2)))
-										WHEN [TPI].Voucher_Acc_ID IS NOT NULL		THEN dbo.func_get_surname_n_initial(CONVERT(varchar, DecryptByKey([TPI].Encrypt_Field2)))
+							CASE	WHEN [IPI].Invalid_Acc_ID IS NOT NULL			THEN dbo.func_get_surname_n_initial(CONVERT(varchar(100), DecryptByKey([IPI].Encrypt_Field2)))
+										WHEN [SPI].Special_Acc_ID IS NOT NULL		THEN dbo.func_get_surname_n_initial(CONVERT(varchar(100), DecryptByKey([SPI].Encrypt_Field2)))
+										WHEN [PI].Voucher_Acc_ID IS NOT NULL		THEN dbo.func_get_surname_n_initial(CONVERT(varchar(100), DecryptByKey([PI].Encrypt_Field2)))
+										WHEN [TPI].Voucher_Acc_ID IS NOT NULL		THEN dbo.func_get_surname_n_initial(CONVERT(varchar(100), DecryptByKey([TPI].Encrypt_Field2)))
 							END AS ehs_account_eng_name,
 							CASE	WHEN [IPI].Invalid_Acc_ID IS NOT NULL			THEN [IPI].Sex
 										WHEN [SPI].Special_Acc_ID IS NOT NULL		THEN [SPI].Sex
