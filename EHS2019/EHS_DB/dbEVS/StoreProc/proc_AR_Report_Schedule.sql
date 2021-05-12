@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================  
+-- Modification History  
+-- Modified by:  Raiman Chong  
+-- Modified date: 15 April 2021  
+-- CR No.:   CRE20-023-26 (VSS Weekly Report)   
+-- Description:  New Weekly Report eHSW0010
+-- =============================================  
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -197,6 +204,10 @@ AS BEGIN
 
 		-- Report_Using_Government_Supplied_Vaccine_Template
 		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0008' ,'' ,'eHS(S)'
+
+		-- Covid19 Claim under VSS Scheme Report
+		EXEC proc_FileGenerationQueue_add_byFileID  'eHSW0010' ,'' ,'eHS(S)'  
+
 	END
 
 	---------------------------------------------------------------------------------------------

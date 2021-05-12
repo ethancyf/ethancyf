@@ -976,6 +976,8 @@ EHS2019/EHS/ExcelGenerator/Template/eHSW0004-Vaccination_Weekly_Template.xlsx -t
 EHS2019/EHS/ExcelGenerator/Template/eHSW0005-Inspection_Weekly_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSW0006-VSS_Non-immune_Adults_Weekly_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/Template/eHSW0008-VSS_Gov_Vaccine_Template.xlsx -text
+EHS2019/EHS/ExcelGenerator/Template/eHSW0010-VSS_Under_COVID-19_Template.xlsx -text
+EHS2019/EHS/ExcelGenerator/Template/~$eHSW0010-VSS_Under_COVID19_Template.xlsx -text
 EHS2019/EHS/ExcelGenerator/app.config -text
 EHS2019/EHS/ExcelGenerator/app.config.bak -text
 EHS2019/EHS/ExtractFiles/ExtractFiles.vbproj -text
@@ -8945,6 +8947,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0004_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0005_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0006_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0008_Report_get.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHSW0010_Report_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHealthAccountClaimByDocumentType_EVSS_Stat_New.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHealthAccountClaimByDocumentType_HSIVSS_Stat.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_EHS_eHealthAccountClaimByDocumentType_RVP_Stat.sql -text

@@ -342,6 +342,7 @@ Namespace Component.COVID19.PrintOut.Common.Format
                             strRes = strDocIDNo.Trim
                         End If
 
+
                     Case Else
                         ' No formatting for doc no. with invalid format
 
@@ -469,7 +470,7 @@ Namespace Component.COVID19.PrintOut.Common.Format
                         'Before Mark:   1234
                         'After Mark:    XXXXX1234
 
- 
+
                         If blnMask Then
                             If strDocIDNo.Length <= 4 Then
                                 ' XXXXX1234
@@ -547,32 +548,33 @@ Namespace Component.COVID19.PrintOut.Common.Format
 
         Public Shared Function maskEnglishNameByStar(ByVal strName As String) As String
 
-            ' Extract Name delimiter
-            Dim intNameDelimiter As Integer = InStr(strName, ",")
+            Dim strFullName() As String = strName.Trim().Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
+            Dim strExtractedName As String = ""
 
-            ' Get the Last Name
-            If intNameDelimiter <= 0 Then
-                Return strName
-            Else
-                Dim strLastName As String = Left(strName, intNameDelimiter - 1)
-                Dim strGivenName() As String = Mid(strName, intNameDelimiter + 2).Trim().Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
-                Dim strExtractedName As String = ""
+            ' Example: 
+            ' Input: AU YEUNG, TAI MAN
+            ' Output: AU Y****, T** M**
 
+            For y As Integer = 0 To strFullName.Length - 1
+                Dim strNameTemp As String = strFullName(y)
+                Dim strExtractedWord As String = ""
 
-                For Each strTemp As String In strGivenName
-                    Dim strExtractedWord As String = ""
-
-                    For x As Integer = 0 To strTemp.Length - 2
-                        strExtractedWord += "*"
+                If y = 0 Then 'except the first word
+                    strExtractedName &= strNameTemp + " "
+                Else
+                    For x As Integer = 0 To strNameTemp.Length - 1
+                        If x = 0 Or strNameTemp(x) = "," Then 'keep the first character and the ","
+                            strExtractedWord += strNameTemp(x)
+                        Else
+                            strExtractedWord += "*"
+                        End If
                     Next
-
-                    strExtractedName &= Left(strTemp, 1) & strExtractedWord + " "
-                Next
-
-                Return String.Format("{0}, {1}", strLastName, strExtractedName).TrimEnd(" ")
-            End If
-
+                    strExtractedName &= strExtractedWord + " "
+                End If
+            Next
+            Return strExtractedName.TrimEnd(" ")
         End Function
+
 
 
     End Class
