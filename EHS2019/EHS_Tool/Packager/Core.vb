@@ -49,7 +49,7 @@ Public Class Core
 
         Dim strMode As String = ConfigurationManager.AppSettings("Mode")
 
-        Me.Text = String.Format("{0} Packager v1.3.1", strMode)
+        Me.Text = String.Format("{0} Packager v1.4.0", strMode)
         lblStatus.Text = "Ready"
     End Sub
 
@@ -987,7 +987,7 @@ Public Class Core
 
             ElseIf strInName.ToLower.StartsWith("staticpage\") Then
                 Dim strSpecificPath As String
-                strSpecificPath = GetSpecificPath(strInName)
+                strSpecificPath = GetSpecificPath2Level(strInName)
                 For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
 
                     strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
@@ -997,27 +997,39 @@ Public Class Core
                     _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
                 Next
 
-                '==================================================================================================
+                strSpecificPath = GetSpecificPath3Level(strInName)
+                If strSpecificPath <> String.Empty Then
+                    For Each strFolderDestination As String In GetStaticFolderDestination(strSpecificPath)
 
-            ElseIf strInName.ToLower.StartsWith("commonbin\") Then
-                ' CommonBin folder is not a project, no compiled file will be copied
+                        strBuildFileName = String.Format("{0}{1}", strFolderDestination, StaticpageGetFileFromFile(strInName, strSpecificPath))
 
-                '==================================================================================================
-            Else
-                For Each strFileDestination As String In GetProjectFileDestination(strProject)
-
-                    If Me.dicConsoleProject.ContainsKey(strProject.ToLower) And strInName.EndsWith(".config") Then
-                        strBuildFileName = String.Format("{0}{1}.exe.config", strFileDestination, strProject)
-                        strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.exe.config", strProject, strProject)
-                    Else
-                        strBuildFileName = String.Format("{0}{1}", strFileDestination, GetFileFromFile(strInName))
                         strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
-                    End If
 
-                    _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                Next
+                        _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                    Next
+                End If
 
-            End If
+                '==================================================================================================
+
+                ElseIf strInName.ToLower.StartsWith("commonbin\") Then
+                    ' CommonBin folder is not a project, no compiled file will be copied
+
+                    '==================================================================================================
+                Else
+                    For Each strFileDestination As String In GetProjectFileDestination(strProject)
+
+                        If Me.dicConsoleProject.ContainsKey(strProject.ToLower) And strInName.EndsWith(".config") Then
+                            strBuildFileName = String.Format("{0}{1}.exe.config", strFileDestination, strProject)
+                            strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.exe.config", strProject, strProject)
+                        Else
+                            strBuildFileName = String.Format("{0}{1}", strFileDestination, GetFileFromFile(strInName))
+                            strBuildFileCopyFrom = String.Format("{0}\{1}", strProject, GetFileFromFile(strInName))
+                        End If
+
+                        _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                    Next
+
+                End If
 
         Next
 
@@ -1214,10 +1226,19 @@ Public Class Core
         Return strFileName.Substring(0, strFileName.IndexOf("\"))
     End Function
 
-    Private Function GetSpecificPath(ByVal strFileName As String) As String
+    Private Function GetSpecificPath2Level(ByVal strFileName As String) As String
         Dim first As String = strFileName.Split("\")(0).Trim
         Dim second As String = strFileName.Split("\")(1).Trim
         Return first + "\" + second
+    End Function
+
+    Private Function GetSpecificPath3Level(ByVal strFileName As String) As String
+        If strFileName.Split("\").Length < 3 Then Return String.Empty
+
+        Dim first As String = strFileName.Split("\")(0).Trim
+        Dim second As String = strFileName.Split("\")(1).Trim
+        Dim thrid As String = strFileName.Split("\")(2).Trim
+        Return first + "\" + second + "\" + thrid
     End Function
 
     Private Function GetFileFromFile(ByVal strFileName As String) As String
