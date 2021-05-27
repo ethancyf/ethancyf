@@ -110,7 +110,7 @@ Public Class ProgramMgr
             C19Logger.LogLine("[" + m_strFileID + "]Start Process RegenerateCases Records")
             objLogStartKeyStack.Push(C19Logger.Log(Common.Component.LogID.LOG00000, Nothing, "<Start><RegenerateMode>Start Process RegenerateCases Records..."))
             'update all case with the file id m_strFileID to pending status
-            udtC19BLL.UpdateC19QueueStatus(udtDB, m_strFileID, String.Empty, String.Empty, COVID19ExporterQueueStatus.Pending)
+            udtC19BLL.UpdateC19QueueStatus(udtDB, m_strFileID, String.Empty, COVID19ExporterQueueStatus.Pending)
             ExportAndZipFile()
             C19Logger.LogLine("[" + m_strFileID + "]Process RegenerateCases Records Finish")
             C19Logger.Log(Common.Component.LogID.LOG00000, objLogStartKeyStack.Pop, "<Success><RegenerateMode>Process RegenerateCases Records Finish...")
@@ -129,7 +129,7 @@ Public Class ProgramMgr
             C19Logger.LogLine("Start Process Fail Records")
             objLogStartKeyStack.Push(C19Logger.Log(Common.Component.LogID.LOG00000, Nothing, "<Start><chkFailRecord>Start Process Fail Records..."))
             'update fail cases to pending status
-            udtC19BLL.UpdateC19QueueStatus(udtDB, String.Empty, String.Empty, COVID19ExporterQueueStatus.Fail, COVID19ExporterQueueStatus.Pending)
+            udtC19BLL.UpdateC19QueueStatus(udtDB, String.Empty, COVID19ExporterQueueStatus.Fail, COVID19ExporterQueueStatus.Pending)
             ExportAndZipFile()
             C19Logger.LogLine("Process Fail Records Finish")
             C19Logger.Log(Common.Component.LogID.LOG00000, objLogStartKeyStack.Pop, "<Success><chkFailRecord>Process Fail Records Finish...")
@@ -284,7 +284,7 @@ Public Class ProgramMgr
                     'update status to complete
                     C19Logger.LogLine("[" + strFileId + "] Strat Update Status to Complete By File_id ")
                     objLogStartKeyStack.Push(C19Logger.Log(Common.Component.LogID.LOG00007, Nothing, "<Start><updateStatus>[" + strFileId + "]Update Status to Complete By File_id..."))
-                    udtC19BLL.UpdateC19QueueStatus(udtDB, strFileId, String.Empty, COVID19ExporterQueueStatus.Processing, COVID19ExporterQueueStatus.Complete)
+                    udtC19BLL.UpdateC19QueueStatus(udtDB, strFileId, COVID19ExporterQueueStatus.Processing, COVID19ExporterQueueStatus.Complete)
                     C19Logger.LogLine("[" + strFileId + "] Update Status to Complete By File_id Success")
                     C19Logger.Log(Common.Component.LogID.LOG00007, objLogStartKeyStack.Pop, "<Success><updateStatus>[" + strFileId + "]Update Status to Complete By File_id...")
 
@@ -293,8 +293,10 @@ Public Class ProgramMgr
 
                 Catch ex As Exception
                     C19Logger.LogLine("[" + strFileId + "] [Error]Export File Fail")
-                    C19Logger.Log(strErrorLogid, objLogStartKeyStack.Peek, "<Error>[" + strFileId + "]Export File Fail...")
-                    udtC19BLL.UpdateC19QueueStatus(udtDB, strFileId, String.Empty, COVID19ExporterQueueStatus.Processing, COVID19ExporterQueueStatus.Fail)
+                    C19Logger.LogLine(ex.ToString())
+                    C19Logger.Log(strErrorLogid, objLogStartKeyStack.Peek, "<Error>[" + strFileId + "]Export File Fail..." + ex.ToString())
+                    C19Logger.ErrorLog(ex)
+                    udtC19BLL.UpdateC19QueueStatus(udtDB, strFileId, COVID19ExporterQueueStatus.Processing, COVID19ExporterQueueStatus.Fail)
                     deleteAllFiles(strFileId)
                     Continue Do
                 End Try

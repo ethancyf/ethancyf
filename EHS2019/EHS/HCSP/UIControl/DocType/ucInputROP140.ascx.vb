@@ -80,44 +80,47 @@ Public Class ucInputROP140
         Dim commfunct As Common.ComFunction.GeneralFunction = New Common.ComFunction.GeneralFunction
 
         Me._strTDNumber = MyBase.Formatter.FormatDocIdentityNoForDisplay(DocTypeCode.ROP140, MyBase.EHSPersonalInfo.IdentityNum, False)
-        Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
-        Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
-
-        'CName may assiged for display only
-        'CName will update by the changing of CCCode(s), after step of "Enter-Detail" Confirmed
-        Me._strCName = MyBase.EHSPersonalInfo.CName
-
-        If Not MyBase.EHSPersonalInfo.CCCode1 Is Nothing Then
-            Me._strCCCode1 = MyBase.EHSPersonalInfo.CCCode1.Trim()
-        End If
-
-        If Not MyBase.EHSPersonalInfo.CCCode2 Is Nothing Then
-            Me._strCCCode2 = MyBase.EHSPersonalInfo.CCCode2.Trim()
-        End If
-
-        If Not MyBase.EHSPersonalInfo.CCCode3 Is Nothing Then
-            Me._strCCCode3 = MyBase.EHSPersonalInfo.CCCode3.Trim()
-        End If
-
-        If Not MyBase.EHSPersonalInfo.CCCode4 Is Nothing Then
-            Me._strCCCode4 = MyBase.EHSPersonalInfo.CCCode4.Trim()
-        End If
-
-        If Not MyBase.EHSPersonalInfo.CCCode5 Is Nothing Then
-            Me._strCCCode5 = MyBase.EHSPersonalInfo.CCCode5.Trim()
-        End If
-
-        If Not MyBase.EHSPersonalInfo.CCCode6 Is Nothing Then
-            Me._strCCCode6 = MyBase.EHSPersonalInfo.CCCode6.Trim()
-        End If
-
-        Me._strGender = MyBase.EHSPersonalInfo.Gender
         Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
 
-        If MyBase.EHSPersonalInfo.DateofIssue.HasValue Then
-            Me._strDOI = MyBase.Formatter.formatInputDate(CDate(MyBase.EHSPersonalInfo.DateofIssue))
-        Else
-            Me._strDOI = String.Empty
+        If MyBase.UpdateValue Then
+            Me._strENameFirstName = MyBase.EHSPersonalInfo.ENameFirstName
+            Me._strENameSurName = MyBase.EHSPersonalInfo.ENameSurName
+            Me._strGender = MyBase.EHSPersonalInfo.Gender
+
+            'CName may assiged for display only
+            'CName will update by the changing of CCCode(s), after step of "Enter-Detail" Confirmed
+            Me._strCName = MyBase.EHSPersonalInfo.CName
+
+            If MyBase.EHSPersonalInfo.DateofIssue.HasValue Then
+                Me._strDOI = MyBase.Formatter.formatInputDate(CDate(MyBase.EHSPersonalInfo.DateofIssue))
+            Else
+                Me._strDOI = String.Empty
+            End If
+
+            If Not MyBase.EHSPersonalInfo.CCCode1 Is Nothing Then
+                Me._strCCCode1 = MyBase.EHSPersonalInfo.CCCode1.Trim()
+            End If
+
+            If Not MyBase.EHSPersonalInfo.CCCode2 Is Nothing Then
+                Me._strCCCode2 = MyBase.EHSPersonalInfo.CCCode2.Trim()
+            End If
+
+            If Not MyBase.EHSPersonalInfo.CCCode3 Is Nothing Then
+                Me._strCCCode3 = MyBase.EHSPersonalInfo.CCCode3.Trim()
+            End If
+
+            If Not MyBase.EHSPersonalInfo.CCCode4 Is Nothing Then
+                Me._strCCCode4 = MyBase.EHSPersonalInfo.CCCode4.Trim()
+            End If
+
+            If Not MyBase.EHSPersonalInfo.CCCode5 Is Nothing Then
+                Me._strCCCode5 = MyBase.EHSPersonalInfo.CCCode5.Trim()
+            End If
+
+            If Not MyBase.EHSPersonalInfo.CCCode6 Is Nothing Then
+                Me._strCCCode6 = MyBase.EHSPersonalInfo.CCCode6.Trim()
+            End If
+
         End If
 
         Me.SetValue(modeType)
@@ -204,7 +207,9 @@ Public Class ucInputROP140
 #Region "Set Up Text Box Value"
 
     Public Overrides Sub SetValue(ByVal mode As ucInputDocTypeBase.BuildMode)
-        Me.SetCName()
+        If MyBase.ActiveViewChanged Then
+            Me.SetCName()
+        End If
         SetupTDNumber()
         Me.SetEName()
         SetupGender()
@@ -605,6 +610,24 @@ Public Class ucInputROP140
 
         Return strInputCCCode
 
+    End Function
+
+    Public Function IsValidCCCodeInput() As Boolean
+        Return (Me.txtCCCode1.Text.Length = 4 OrElse Me.txtCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtCCCode2.Text.Length = 4 OrElse Me.txtCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtCCCode3.Text.Length = 4 OrElse Me.txtCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtCCCode4.Text.Length = 4 OrElse Me.txtCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtCCCode5.Text.Length = 4 OrElse Me.txtCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtCCCode6.Text.Length = 4 OrElse Me.txtCCCode6.Text.Length = 0)
+    End Function
+
+    Public Function IsValidCCCodeModificationInput() As Boolean
+        Return (Me.txtCCCode1.Text.Length = 4 OrElse Me.txtCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtCCCode2.Text.Length = 4 OrElse Me.txtCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtCCCode3.Text.Length = 4 OrElse Me.txtCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtCCCode4.Text.Length = 4 OrElse Me.txtCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtCCCode5.Text.Length = 4 OrElse Me.txtCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtCCCode6.Text.Length = 4 OrElse Me.txtCCCode6.Text.Length = 0)
     End Function
 
 #End Region

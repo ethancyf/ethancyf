@@ -250,11 +250,8 @@ Partial Public Class ucReadOnlyDocumnetType
                             SetNormal(udcReadOnlyADOPC)
                         End If
 
-                        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-                        ' ---------------------------------------------------------------------------------------------------------
                     Case DocTypeCode.OW,
-                         DocTypeCode.TW,
-                         DocTypeCode.RFNo8
+                        DocTypeCode.RFNo8
 
                         Dim udcReadOnlyOW As ucReadOnlyOW = LoadControl(UserControlPath.OW)
                         udcReadOnlyOW.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
@@ -265,7 +262,20 @@ Partial Public Class ucReadOnlyDocumnetType
                         Else
                             SetNormal(udcReadOnlyOW)
                         End If
-                        ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+
+                        'CRE20-0023 (Immu record) [Start][Martin]
+                    Case DocTypeCode.TW
+
+                        Dim udcReadOnlyTW As ucReadOnlyTW = LoadControl(UserControlPath.TW)
+                        udcReadOnlyTW.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyTW)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyTW)
+                        End If
+                        ' CRE20-0023 (Immu record) [End][Martin]
 
                         ' CRE17-018-03 Enhancement to meet the new initiatives for VSS and RVP starting from 2018-19 - Phase 3 - Claim [Start][Koala]                        
                         ' CRE19-001 (VSS 2019) [Start][Winnie]

@@ -36,6 +36,15 @@ Partial Public MustInherit Class BasePrintoutForm
 
         Dim udtEHSTransaction As EHSTransactionModel = udtSessionHandler.EHSTransactionGetFromSession(strFunctCode)
 
+        Dim udtDischargeResult As COVID19.DischargeResultModel = udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(strFunctCode)
+        Dim blnDischarge As Boolean = False
+
+        If udtDischargeResult IsNot Nothing AndAlso _
+            (udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
+            udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch) Then
+            blnDischarge = True
+        End If
+
         Dim rpt As GrapeCity.ActiveReports.SectionReport = Nothing
 
         Select Case udtEHSTransaction.SchemeCode.Trim
@@ -57,7 +66,7 @@ Partial Public MustInherit Class BasePrintoutForm
                     Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
                     Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
 
-                    rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                    rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
                 End If
 
             Case SchemeClaimModel.VSS
@@ -66,7 +75,7 @@ Partial Public MustInherit Class BasePrintoutForm
                     Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
                     Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
 
-                    rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                    rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
                 End If
 
                 'rpt = GetReport()
@@ -80,19 +89,19 @@ Partial Public MustInherit Class BasePrintoutForm
                 ' CRE20-015 (HA Scheme) [End][Winnie]
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
+            Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB
                 'EHS Record for covid19 printing
                 Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
                 Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
 
-                rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
             Case SchemeClaimModel.COVID19RVP
 
                 Dim udtEHSAccount As EHSAccountModel = udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
                 Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
 
-                rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                rpt = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
 
             Case Else
                 rpt = Nothing

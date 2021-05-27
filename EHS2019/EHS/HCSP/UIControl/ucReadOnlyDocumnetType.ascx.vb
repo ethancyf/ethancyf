@@ -127,7 +127,7 @@ Partial Public Class ucReadOnlyDocumnetType
 
                 Case DocTypeModel.DocTypeCode.TW
 
-                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyRFNo8.ascx", strFolderPath))
+                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyTW.ascx", strFolderPath))
                     udcReadOnlyDocumentType.ID = DocumentControlID.TW
                     udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.TW)
 

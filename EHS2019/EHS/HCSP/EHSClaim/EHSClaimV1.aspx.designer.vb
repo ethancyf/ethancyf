@@ -86,6 +86,78 @@ Partial Public Class EHSClaimV1
     Protected WithEvents ucNoticePopUpExclamationConfirm As Global.HCSP.ucNoticePopUp
 
     '''<summary>
+    '''panPopupExclamationErrorBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panPopupExclamationErrorBox As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpExclamationError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpExclamationError As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
+    '''panPopupExclamationImportantReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panPopupExclamationImportantReminder As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpExclamationImportantReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpExclamationImportantReminder As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
+    '''panPopupExclamationDemographicReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panPopupExclamationDemographicReminder As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpExclamationDemographicReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpExclamationDemographicReminder As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
+    '''panPopupExclamationImportantReminderWithReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panPopupExclamationImportantReminderWithReason As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpExclamationImportantReminderWithReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpExclamationImportantReminderWithReason As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
     '''panPopupPracticeSelection control.
     '''</summary>
     '''<remarks>
@@ -806,6 +878,78 @@ Partial Public Class EHSClaimV1
     Protected WithEvents ModalPopupExclamationConfirmationBox As Global.AjaxControlToolkit.ModalPopupExtender
 
     '''<summary>
+    '''btnModalPopupExclamationErrorBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupExclamationErrorBox As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExclamationErrorBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExclamationErrorBox As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupExclamationImportantReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupExclamationImportantReminder As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExclamationImportantReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExclamationImportantReminder As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupExclamationDemographicReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupExclamationDemographicReminder As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExclamationDemographicReminder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExclamationDemographicReminder As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupExclamationImportantReminderWithReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupExclamationImportantReminderWithReason As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''ModalPopupExclamationImportantReminderWithReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupExclamationImportantReminderWithReason As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
     '''btnModalPopupExclamationConfirmationBox control.
     '''</summary>
     '''<remarks>
@@ -1380,6 +1524,60 @@ Partial Public Class EHSClaimV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents gvCVaccinationRecord As Global.System.Web.UI.WebControls.GridView
+
+    '''<summary>
+    '''panStep2aDischargeRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aDischargeRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCDischargeRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeRemark As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblStep2aClaimInfo control.

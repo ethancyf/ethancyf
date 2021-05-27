@@ -172,7 +172,7 @@ Partial Public Class ucInputCOVID19
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
         Dim dtVaccineLotNo As DataTable = Nothing
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID, ServiceDate)
+        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID, ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
@@ -552,7 +552,7 @@ Partial Public Class ucInputCOVID19
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID, ServiceDate)
+        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForCentre(CurrentPractice.SPID, CurrentPractice.PracticeID, ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
@@ -971,8 +971,8 @@ Partial Public Class ucInputCOVID19
         'Set selected if "1st Dose" exists
         If strSelectedValue = String.Empty AndAlso _udtSessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
             For Each li As ListItem In ddlCDoseCovid19.Items
-                If li.Value = "1STDOSE" Then
-                    strSelectedValue = "1STDOSE"
+                If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
                 End If
             Next
         End If
@@ -1019,6 +1019,7 @@ Partial Public Class ucInputCOVID19
 
             If ddlCDoseCovid19.Items.Count > 0 Then
                 ddlCDoseCovid19.SelectedIndex = 0
+                ddlCDoseCovid19.Enabled = True
             Else
                 ddlCDoseCovid19.Enabled = False
                 ddlCDoseCovid19.Dispose()
@@ -1031,6 +1032,7 @@ Partial Public Class ucInputCOVID19
             For Each li As ListItem In ddlCDoseCovid19.Items
                 If strSelectedValue = li.Value Then
                     ddlCDoseCovid19.SelectedValue = li.Value
+                    ddlCDoseCovid19.Enabled = True
                 End If
             Next
         End If

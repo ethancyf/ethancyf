@@ -111,6 +111,7 @@ Partial Public Class VaccineLotCreationApproval
 
         Try
             dt = CType(udtBLLSearchResult.Data, DataTable)
+            Session(SESS_SearchResultList) = dt
         Catch ex As Exception
             Throw
         End Try
@@ -123,23 +124,17 @@ Partial Public Class VaccineLotCreationApproval
                 blnShowResultList = False
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00002, AuditMsg00002)
                 ibtnMsgBack.Visible = False
+                gvResult.DataSource = dt
+                gvResult.DataBind()
             Case Else
                 blnShowResultList = True
 
         End Select
 
         If blnShowResultList Then
-            gvResult.DataSource = dt
-            gvResult.DataBind()
-
-            Session(SESS_SearchResultList) = dt
-
             Me.GridViewDataBind(gvResult, dt, "Brand_Trade_Name", "ASC", False)
-
             ChangeViewIndex(ViewIndex.SearchResult)
-
             udtAuditLogEntry.WriteEndLog(LogID.LOG00003, AuditMsg00003)
-
         End If
 
         Return intRowCount
@@ -284,6 +279,7 @@ Partial Public Class VaccineLotCreationApproval
 
     Private Sub BindVLSummaryView(ByVal strVLNo As String, ByVal strVLBrand As String)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         If IsNothing(strVLNo) OrElse strVLNo.Trim = String.Empty Then Return
 
         Dim blnNotFind As Boolean = False
@@ -418,10 +414,8 @@ Partial Public Class VaccineLotCreationApproval
 
                 Case ActionType.Approval
                     msgBox.BuildMessageBox("UpdateFail", udtExAuditLogEntry, LogID.LOG00017, AuditMsg00015)
-                    udtAuditLogEntry.WriteEndLog(LogID.LOG00015, AuditMsg00015)
                 Case ActionType.Reject
                     msgBox.BuildMessageBox("UpdateFail", udtExAuditLogEntry, LogID.LOG00018, AuditMsg00019)
-                    udtAuditLogEntry.WriteEndLog(LogID.LOG00019, AuditMsg00019)
             End Select
 
         End If
@@ -429,7 +423,7 @@ Partial Public Class VaccineLotCreationApproval
 
     Private Sub BackToSearchCriteriaView(ByVal blnIsReset As Boolean)
         udcInfoBox.Visible = False
-
+        msgBox.Visible = False
         SF_Search(Nothing, False)
         'ChangeViewIndex(ViewIndex.SearchResult)
 
@@ -485,6 +479,7 @@ Partial Public Class VaccineLotCreationApproval
 
         'msgBox.Visible = True
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
         Dim blnResult As New Boolean
         Dim strAction As String = String.Empty
@@ -576,8 +571,7 @@ Partial Public Class VaccineLotCreationApproval
                     msgBox.BuildMessageBox("ValidationFail", udtAuditLogEntry, LogID.LOG00026, AuditMsg00023)
 
                 End If
-            Case Else 'cancel click
-                udcInfoBox.Visible = False
+            Case Else 'cancel click             
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00016, AuditMsg00016)
         End Select
 
@@ -594,6 +588,7 @@ Partial Public Class VaccineLotCreationApproval
         Dim dvLotDetailFilterWithNewRecordStatus As DataView = Nothing
         Dim blnResult As New Boolean
         Dim blnvalid As Boolean = True
+        ViewState("action") = ActionType.Reject
 
         udcInfoBox.Visible = False
         msgBox.Visible = False
@@ -607,7 +602,7 @@ Partial Public Class VaccineLotCreationApproval
                 If dvLotDetailFilterWithNewRecordStatus.Count < 1 Then
                     'show message for invalid
                     msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00005))
-                    blnValid = False
+                    blnvalid = False
                 End If
 
                 If blnvalid Then
@@ -619,6 +614,10 @@ Partial Public Class VaccineLotCreationApproval
                         udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
                         udcInfoBox.BuildMessageBox()
                         ChangeViewIndex(ViewIndex.MsgPage)
+                    Else
+                        Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
+                        WriteUpdateFailedAuditLog(lblDetailVaccineLotNo.Text.Trim)
+                        ChangeViewIndex(ViewIndex.ErrorPage)
                     End If
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00018, AuditMsg00018)
                 Else
@@ -626,8 +625,6 @@ Partial Public Class VaccineLotCreationApproval
                     msgBox.BuildMessageBox("ValidationFail", udtAuditLogEntry, LogID.LOG00026, AuditMsg00026)
                 End If
             Case Else
-                udcInfoBox.Visible = False
-                ViewState("action") = ActionType.Reject
                 WriteUpdateFailedAuditLog(lblDetailVaccineLotNo.Text.Trim)
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00020, AuditMsg00020)
         End Select
@@ -721,22 +718,27 @@ Partial Public Class VaccineLotCreationApproval
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
         Dim udtVaccineLotCreation As VaccineLotCreationModel = Session(SESS_VaccineLotListModal)
 
+        udcInfoBox.Visible = False
+        msgBox.Visible = False
+
         udtAuditLogEntry.WriteStartLog(LogID.LOG00013, AuditMsg00013)
+        ViewState("action") = ActionType.Approval
 
         Try
             blnResult = udtVaccineLotBLL.VaccineLotCreationAction(lblDetailVaccineLotNo.Text, VACCINELOT_ACTIONTYPE.ACTION_APPROVE, udtVaccineLotCreation.TSMP, String.Empty)
 
             If (blnResult) Then
-                msgBox.Visible = False
                 udtAuditLogEntry.WriteEndLog(LogID.LOG00014, AuditMsg00014)
                 udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001, "%s", lblDetailVaccineLotNo.Text.Trim)
                 udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
                 udcInfoBox.BuildMessageBox()
                 ChangeViewIndex(ViewIndex.MsgPage)
-
+            Else
+                Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
+                WriteUpdateFailedAuditLog(lblDetailVaccineLotNo.Text.Trim)
+                ChangeViewIndex(ViewIndex.ErrorPage)
             End If
         Catch ex As Exception
-            ViewState("action") = ActionType.Approval
             udtAuditLogEntry.WriteEndLog(LogID.LOG00014, AuditMsg00014)
             WriteUpdateFailedAuditLog(lblDetailTitleVaccineLotNo.Text.Trim)
             Throw

@@ -21,6 +21,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private _udtVaccinationRecordHistory As TransactionDetailVaccineModel
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
+        Private _blnDischarge As Boolean
         Private udtCOVID19BLL As New COVID19.COVID19BLL
 
 #Region "Constructor"
@@ -30,13 +31,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             InitializeComponent()
         End Sub
 
-        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, ByRef blnIsSample As Boolean)
+        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, _
+                       ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
+                       ByRef blnIsSample As Boolean, _
+                       ByVal blnDischarge As Boolean)
             ' Invoke default constructor
             Me.New()
 
             _udtEHSTransaction = udtEHSTransaction
             _udtVaccinationRecordHistory = udtVaccinationRecordHistory
             _blnIsSample = blnIsSample
+            _blnDischarge = blnDischarge
             LoadReport()
             ChkIsSample()
 
@@ -60,7 +65,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
                 FirstDoseInjectionDate.Text = FormatDate(_udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
                 setVaccinationCenterTextLabel(True, FirstDoseVaccinationCenter, FirstDoseVaccinationCenterChi)
- 
+
 
                 If (FirstDoseVaccinationCenterChi.Text = String.Empty) Then
                     'hide FirstDoseVaccinationCenter and FirstDoseVaccinationCenterChi label and show FirstDoseVaccinationCenterEngOnly label
@@ -73,10 +78,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 SecondDoseCover.Visible = True
                 '===== Normal Case =====
 
-
-                '===== date dateback second dose record ====
                 If (Not _udtVaccinationRecordHistory Is Nothing) Then
-
+                    '===== date dateback second dose record ====
                     'date dateback fill second dose record
                     If (_udtVaccinationRecordHistory.AvailableItemDesc = "2nd Dose") Then
                         SecondDoseCover.Visible = False
@@ -96,9 +99,25 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                         End If
 
                     End If
-
+                    '===== date dateback second dose record ====
+                Else
+                    'If _udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult IsNot Nothing AndAlso _
+                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult = "F" Then
+                    '    SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
+                    '    SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
+                    '                           Environment.NewLine & _
+                    '                           Environment.NewLine & _
+                    '                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
+                    'End If
+                    If _blnDischarge Then
+                        SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
+                        SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
+                                               Environment.NewLine & _
+                                               Environment.NewLine & _
+                                               HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
+                    End If
                 End If
-                '===== date dateback second dose record ====
 
             Else
 
@@ -151,9 +170,6 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
             End If
 
-
-
-
         End Sub
 
         Private Sub ShowCenterEngOnlyLabel(ByRef VaccinationCenter As Label, ByRef VaccinationCenterChi As Label, ByRef VaccinationCenterEngOnly As Label)
@@ -178,7 +194,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             If (IsEHSTransactionObj) Then
                 If (_udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                     _udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
-                    _udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR) Then
+                    _udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
+                    _udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB) Then
                     'booth and centre 
                     Dim dtVaccineCenter As DataTable = udtCOVID19BLL.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(_udtEHSTransaction.ServiceProviderID, _udtEHSTransaction.PracticeID)
                     VaccinationCenter.Text = dtVaccineCenter.Rows(0)("Centre_Name")
@@ -213,7 +230,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             Else
                 If (_udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
                     _udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
-                    _udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR) Then
+                    _udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
+                    _udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB) Then
                     'booth and centre 
                     If _udtVaccinationRecordHistory.TransactionID IsNot Nothing AndAlso _udtVaccinationRecordHistory.TransactionID <> String.Empty Then
                         'EHS Transaction

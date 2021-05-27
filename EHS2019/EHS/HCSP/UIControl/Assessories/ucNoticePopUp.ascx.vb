@@ -28,9 +28,12 @@ Partial Public Class ucNoticePopUp
     Public Enum enumButtonMode
         YesNo
         ConfirmCancel
+        ConfirmCancelWithReason
         OK
+        Cancel
         OKCancel
         ProceedNotProceed
+        Close
         Custom
     End Enum
 
@@ -148,6 +151,88 @@ Partial Public Class ucNoticePopUp
         End Set
     End Property
     ' CRE18-005 (OCSSS Popup) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property ShowEnquiryDesc() As Boolean
+        Get
+            Return Me.panEnquiry.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            Me.panEnquiry.Visible = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property EnquiryDescText() As String
+        Get
+            Return Me.divEnquiryDesc.InnerHtml
+        End Get
+        Set(ByVal value As String)
+            Me.divEnquiryDesc.InnerHtml = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property ShowOverrideReason() As Boolean
+        Get
+            Return Me.panOverrideReason.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            Me.panOverrideReason.Visible = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property OverrideReasonDescText() As String
+        Get
+            Return Me.divORReasonDesc.InnerHtml
+        End Get
+        Set(ByVal value As String)
+            Me.divORReasonDesc.InnerHtml = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property OverrideReasonText() As String
+        Get
+            Return Me.lblORReason.Text
+        End Get
+        Set(ByVal value As String)
+            Me.lblORReason.Text = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property OverrideReason() As String
+        Get
+            Return Me.txtORReason.Text
+        End Get
+        Set(ByVal value As String)
+            Me.txtORReason.Text = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public ReadOnly Property OverrideReasonMsgBoxErr() As CustomControls.MessageBox
+        Get
+            Return udcMsgBoxErr
+        End Get
+    End Property
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 
     Public ReadOnly Property ButtonOK() As ImageButton
         Get
@@ -291,11 +376,23 @@ Partial Public Class ucNoticePopUp
                 Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
                 Me.ibtnOK.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
                 Me.ibtnOK.ToolTip = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
+            Case enumButtonMode.ConfirmCancelWithReason
+                Me.ibtnCancel.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CancelBtn")
+                Me.ibtnCancel.AlternateText = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
+                Me.ibtnCancel.ToolTip = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
+                Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ConfirmBtn")
+                Me.ibtnOK.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
+                Me.ibtnOK.ToolTip = Me.GetGlobalResourceObject("AlternateText", "ConfirmBtn")
             Case enumButtonMode.OK
                 Me.ibtnCancel.Visible = False
                 Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "OKBtn")
                 Me.ibtnOK.AlternateText = Me.GetGlobalResourceObject("AlternateText", "OKBtn")
                 Me.ibtnOK.ToolTip = Me.GetGlobalResourceObject("AlternateText", "OKBtn")
+            Case enumButtonMode.Cancel
+                Me.ibtnCancel.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CancelBtn")
+                Me.ibtnCancel.AlternateText = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
+                Me.ibtnCancel.ToolTip = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
+                Me.ibtnOK.Visible = False
             Case enumButtonMode.OKCancel
                 Me.ibtnCancel.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CancelBtn")
                 Me.ibtnCancel.AlternateText = Me.GetGlobalResourceObject("AlternateText", "CancelBtn")
@@ -310,8 +407,11 @@ Partial Public Class ucNoticePopUp
                 Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ProceedBtn")
                 Me.ibtnOK.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ProceedBtn")
                 Me.ibtnOK.ToolTip = Me.GetGlobalResourceObject("AlternateText", "ProceedBtn")
-                ' CRE18-005 (OCSSS Popup) [Start][Chris YIM]
-                ' --------------------------------------------------------------------------------------
+            Case enumButtonMode.Close
+                Me.ibtnCancel.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "CloseBtn")
+                Me.ibtnCancel.AlternateText = Me.GetGlobalResourceObject("AlternateText", "CloseBtn")
+                Me.ibtnCancel.ToolTip = Me.GetGlobalResourceObject("AlternateText", "CloseBtn")
+                Me.ibtnOK.Visible = False
             Case enumButtonMode.Custom
                 Me.ibtnCancel.Visible = False
                 If Not udtNoticeMsg Is Nothing Then
@@ -323,7 +423,6 @@ Partial Public Class ucNoticePopUp
         End Select
 
         SetDisableButton(udtNoticeMsg)
-        ' CRE18-005 (OCSSS Popup) [End][Chris YIM]
 
     End Sub
 
@@ -337,14 +436,20 @@ Partial Public Class ucNoticePopUp
                 Case enumButtonMode.YesNo
                     Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "YesDisableBtn")
 
-                Case enumButtonMode.ConfirmCancel
+                Case enumButtonMode.ConfirmCancel, enumButtonMode.ConfirmCancelWithReason
                     Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ConfirmDisableBtn")
 
                 Case enumButtonMode.OK
                     Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "OKDisableBtn")
 
+                Case enumButtonMode.Cancel
+                    'N/A
+
                 Case enumButtonMode.OKCancel
                     Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "OKDisableBtn")
+
+                Case enumButtonMode.Close
+                    'N/A
 
                 Case enumButtonMode.ProceedNotProceed
                     Me.ibtnOK.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ProceedDisableBtn")

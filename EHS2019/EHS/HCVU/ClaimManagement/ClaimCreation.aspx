@@ -418,7 +418,44 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            </table>                                                   
+                                            </table>  
+                                            
+                                            <asp:Panel ID="panStep2aDischargeRecord" runat="server" Visible="false">
+                                                <table cellspacing="0" cellpadding="0" border="0" style="padding-left:22px">
+                                                    <tr>
+                                                        <td style="vertical-align: top;height:22px">
+                                                            <asp:Label ID="lblCDischargeRecordHeading" runat="server" Font-Underline="True" Text="<%$ Resources: Text, DischargeRecordForCOVID19 %>" CssClass="tableText"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <table style="border:1px solid;padding:0px;border-spacing:1px;border-collapse:collapse;border-color:#CCCCCC;width:930px">
+                                                                <tr style="background-color:#70ae47">
+                                                                    <td style="width:465px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                                        <asp:Label ID="lblCDischargeDateText" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, HospitalDischargeDate %>" />
+                                                                    </td>
+                                                                    <td style="vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                                        <asp:Label ID="lblCDischargeRemarkText" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Remarks %>" />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr style="background-color:white">
+                                                                    <td style="vertical-align:middle;border:1px solid;border-color:#61615b;height:20px">
+                                                                        <asp:Label ID="lblCDischargeDate" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px" />
+                                                                    </td>
+                                                                    <td style="vertical-align:middle;border:1px solid;border-color:#61615b;height:20px">
+                                                                        <asp:Label ID="lblCDischargeRemark" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px" />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-bottom:10px">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </asp:Panel>                                            
+                                                                                                                                
                                             <table style="width: 100%;padding-left:22px" cellpadding="1" cellspacing="0">
                                                 <tr>
                                                     <td style="vertical-align: bottom; height: 25px;">

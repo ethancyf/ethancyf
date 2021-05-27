@@ -113,13 +113,13 @@ Namespace UIControl.DocTypeHCSP
                         ' ---------------------------------------------------------------------------------------------------------
                     Case DocTypeModel.DocTypeCode.OW
 
-                        udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyRFNo8.ascx", strFolderPath))
+                        udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyOW.ascx", strFolderPath))
                         udcReadOnlyDocumentType.ID = DocumentControlID.OW
                         udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.OW)
 
                     Case DocTypeModel.DocTypeCode.TW
 
-                        udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyRFNo8.ascx", strFolderPath))
+                        udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyTW.ascx", strFolderPath))
                         udcReadOnlyDocumentType.ID = DocumentControlID.TW
                         udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.TW)
 

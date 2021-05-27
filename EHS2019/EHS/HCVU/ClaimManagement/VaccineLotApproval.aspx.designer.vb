@@ -518,24 +518,6 @@ Partial Public Class VaccineLotApproval
     Protected WithEvents ViewMsg As Global.System.Web.UI.WebControls.View
 
     '''<summary>
-    '''ibtnReturn control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ibtnReturn As Global.System.Web.UI.WebControls.ImageButton
-
-    '''<summary>
-    '''ViewError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ViewError As Global.System.Web.UI.WebControls.View
-
-    '''<summary>
     '''ibtnConfirmBack control.
     '''</summary>
     '''<remarks>
@@ -552,6 +534,24 @@ Partial Public Class VaccineLotApproval
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ibtnNoRecordBack As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''ViewError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ViewError As Global.System.Web.UI.WebControls.View
+
+    '''<summary>
+    '''ibtnReturn control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ibtnReturn As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
     '''ModalPopupConfirmApproval control.

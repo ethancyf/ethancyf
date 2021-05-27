@@ -404,6 +404,17 @@ Namespace Component.EHSTransaction
         End Property
         ' CRE20-0023 (Immu record) [End][Chris YIM]
 
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        Public ReadOnly Property DischargeResult() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.DischargeResult)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
         ' CRE20-015-06 (Special Support Scheme) [Start][Winnie]
         Public ReadOnly Property ExemptRegFee() As Boolean
             Get

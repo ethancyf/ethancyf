@@ -7,6 +7,12 @@ SET QUOTED_IDENTIFIER ON
 GO
  
 -- =============================================
+-- Modified by:		Raiman Chong
+-- Modified date:	04 May 2021
+-- CR. No.:			CRE20-023
+-- Description:		Extends the column for [proc_EHS_eHSD0004_01_PrepareData] to add new Document Type CCIC, ROP140, PASS
+-- =============================================
+-- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Jul 2020
@@ -182,7 +188,11 @@ SELECT
 	Result_Value9,    
 	Result_Value10,    
 	Result_Value11,    
-	Result_Value12   
+	Result_Value12,
+	Result_Value13,
+	Result_Value14,
+	Result_Value15,
+	Result_Value16
 FROM
 	RpteHSD0004_01_eHA_RVP_Tx_ByDocType WITH (NOLOCK) 
 ORDER BY    

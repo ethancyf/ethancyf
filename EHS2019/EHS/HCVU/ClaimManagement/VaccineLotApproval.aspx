@@ -369,17 +369,18 @@
                     
 
                     </asp:View>
-                    
+
                     <asp:View ID="ViewMsg" runat="server">
-                            &nbsp;<asp:ImageButton ID="ibtnReturn" runat="server" AlternateText="<%$ Resources:AlternateText, ReturnBtn %>"
-                                ImageUrl="<%$ Resources:ImageUrl, ReturnBtn %>" OnClick="ibtnReturn_Click" /></asp:View>
-                    <asp:View ID="ViewError" runat="server">
                             &nbsp;<asp:ImageButton ID="ibtnConfirmBack" runat="server" AlternateText="<%$ Resources:AlternateText, ReturnBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, ReturnBtn %>" OnClick="ibtnConfirmBack_Click" />
 
                         &nbsp;<asp:ImageButton ID="ibtnNoRecordBack" runat="server" AlternateText="<%$ Resources:AlternateText, BackBtn %>"
                                 ImageUrl="<%$ Resources:ImageUrl, BackBtn %>" OnClick="ibtnNoRecordBack_Click" />
-                    </asp:View>
+                    </asp:View>                    
+                    <asp:View ID="ViewError" runat="server">
+                            &nbsp;<asp:ImageButton ID="ibtnReturn" runat="server" AlternateText="<%$ Resources:AlternateText, ReturnBtn %>"
+                                ImageUrl="<%$ Resources:ImageUrl, ReturnBtn %>" OnClick="ibtnReturn_Click" /></asp:View>
+                    
                 </asp:MultiView>
             </asp:Panel>
             <cc2:ModalPopupExtender ID="ModalPopupConfirmApproval" runat="server" BackgroundCssClass="modalBackgroundTransparent"

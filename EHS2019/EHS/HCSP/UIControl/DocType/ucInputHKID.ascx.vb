@@ -953,6 +953,25 @@ Partial Public Class ucInputHKID
         Return strInputCCCode
     End Function
     ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [End][Winnie] Step 1
+
+    Public Function IsValidCCCodeInput() As Boolean
+        Return (Me.txtCCCode1.Text.Length = 4 OrElse Me.txtCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtCCCode2.Text.Length = 4 OrElse Me.txtCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtCCCode3.Text.Length = 4 OrElse Me.txtCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtCCCode4.Text.Length = 4 OrElse Me.txtCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtCCCode5.Text.Length = 4 OrElse Me.txtCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtCCCode6.Text.Length = 4 OrElse Me.txtCCCode6.Text.Length = 0)
+    End Function
+
+    Public Function IsValidCCCodeModificationInput() As Boolean
+        Return (Me.txtCCCode1Modification.Text.Length = 4 OrElse Me.txtCCCode1Modification.Text.Length = 0) AndAlso _
+               (Me.txtCCCode2Modification.Text.Length = 4 OrElse Me.txtCCCode2Modification.Text.Length = 0) AndAlso _
+               (Me.txtCCCode3Modification.Text.Length = 4 OrElse Me.txtCCCode3Modification.Text.Length = 0) AndAlso _
+               (Me.txtCCCode4Modification.Text.Length = 4 OrElse Me.txtCCCode4Modification.Text.Length = 0) AndAlso _
+               (Me.txtCCCode5Modification.Text.Length = 4 OrElse Me.txtCCCode5Modification.Text.Length = 0) AndAlso _
+               (Me.txtCCCode6Modification.Text.Length = 4 OrElse Me.txtCCCode6Modification.Text.Length = 0)
+    End Function
+
 #End Region
 
 End Class

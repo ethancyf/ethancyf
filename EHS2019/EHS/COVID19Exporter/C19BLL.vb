@@ -22,33 +22,38 @@ Public Class C19BLL
     Public Function getC19RecordsFromQueue(ByRef udtDB As Common.DataAccess.Database, ByVal strNewFileId As String) As DataTable
         Dim dtResult As New DataTable()
         Try
+            udtDB.BeginTransaction()
             Dim prams() As SqlParameter = {udtDB.MakeInParam("@File_ID", SqlDbType.VarChar, 27, strNewFileId)}
             udtDB.RunProc("proc_COVID19ExporterQueue_get", prams, dtResult)
 
+            udtDB.CommitTransaction()
             Return dtResult
         Catch ex As Exception
+            udtDB.RollBackTranscation()
             Throw ex
         End Try
     End Function
 
 
 
-    Public Function UpdateC19QueueStatus(ByRef udtDB As Common.DataAccess.Database, ByVal strFileId As String, ByVal strTransaction As String, ByVal strFromStatus As String, ByVal strTostatus As String) As Boolean
+    Public Function UpdateC19QueueStatus(ByRef udtDB As Common.DataAccess.Database, ByVal strFileId As String, ByVal strFromStatus As String, ByVal strTostatus As String) As Boolean
         Dim blnResult As Boolean = False
         Dim udcValidator As New Common.Validation.Validator
         Try
+            udtDB.BeginTransaction()
             Dim prams() As SqlParameter = { _
                       udtDB.MakeInParam("@File_ID", SqlDbType.VarChar, 27, IIf(String.IsNullOrEmpty(strFileId), DBNull.Value, strFileId.Trim())), _
-                      udtDB.MakeInParam("@Transaction_ID", SqlDbType.VarChar, 20, IIf(String.IsNullOrEmpty(strTransaction), DBNull.Value, strTransaction.Trim())), _
                       udtDB.MakeInParam("@FromStatus", SqlDbType.Char, 1, IIf(String.IsNullOrEmpty(strFromStatus), DBNull.Value, strFromStatus.Trim())), _
                       udtDB.MakeInParam("@ToStatus", SqlDbType.Char, 1, strTostatus)}
 
 
             udtDB.RunProc("proc_COVID19ExporterQueue_update", prams)
+            udtDB.CommitTransaction()
             blnResult = True
 
             Return blnResult
         Catch ex As Exception
+            udtDB.RollBackTranscation()
             Throw ex
         End Try
     End Function

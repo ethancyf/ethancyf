@@ -817,9 +817,10 @@ Namespace Encryption
         Public Shared Function DecryptWinRARWithPassword(ByVal strPassword As String, ByVal strFilePath As String, ByVal strFilename As String, ByVal strOutputPath As String) As Boolean
             Dim strArgument As String
             Dim strPath As String
-
+            Dim UnzipErrorLog As String = "UnzipErrorLog.txt"
             Dim strAppPath As String = String.Empty
             Dim udtcomfunct As New ComFunction.GeneralFunction
+
             udtcomfunct.getSystemParameter("WinRARAppPath", strAppPath, String.Empty)
 
             ' I-CRE15-001 Run exe directly instead of bat [Start][Winnie]
@@ -832,7 +833,7 @@ Namespace Encryption
             'sample: "c:\Program Files\winrar\Rar.exe" a -ep -y -p[password] -ibck -sfx -df OutFilename.txt InFilename.txt
             'Output: OutFilename.txt.exe
 
-            strArgument = "x " & strFilePath & "/" & strFilename & " -p" & strPassword & " " & strOutputPath + " -inul -or"
+            strArgument = "x " & strFilePath & "/" & strFilename & " -p" & strPassword & " " & strOutputPath & " ""-ilog" & AppDomain.CurrentDomain.BaseDirectory & "/" & UnzipErrorLog & """ -inul -or"
 
             Dim info As New System.Diagnostics.ProcessStartInfo(strPath)
 
@@ -865,7 +866,7 @@ Namespace Encryption
                     Return False
                 End If
             Catch ex As Exception
-                Throw ex
+                Throw
             Finally
                 p.Close()
                 p.Dispose()

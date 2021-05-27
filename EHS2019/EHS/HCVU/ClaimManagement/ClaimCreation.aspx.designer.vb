@@ -698,6 +698,60 @@ Partial Public Class ClaimCreation
     Protected WithEvents udceHealthAccountInfo As Global.HCVU.ucReadOnlyDocumnetType
 
     '''<summary>
+    '''panStep2aDischargeRecord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panStep2aDischargeRecord As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblCDischargeRecordHeading control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeRecordHeading As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeDateText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeDateText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeRemarkText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeRemarkText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeDate control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeDate As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblCDischargeRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblCDischargeRemark As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblTransactionHeading control.
     '''</summary>
     '''<remarks>

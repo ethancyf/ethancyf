@@ -601,7 +601,9 @@ Partial Public Class ClaimTransDetail
                     DisplayRemarks(True)
                     If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
                         udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.OW Then
+                        udtEHSTransaction.DocCode = DocTypeCode.OW OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.TW OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.CCIC Then
                         DisplayJoinEHRSS(True)
                     End If
 
@@ -654,7 +656,9 @@ Partial Public Class ClaimTransDetail
                     DisplayRemarks(True)
                     If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
                         udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.OW Then
+                        udtEHSTransaction.DocCode = DocTypeCode.OW OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.TW OrElse _
+                        udtEHSTransaction.DocCode = DocTypeCode.CCIC Then
                         DisplayJoinEHRSS(True)
                     End If
 
@@ -1806,8 +1810,6 @@ Partial Public Class ClaimTransDetail
         Return udtTranDetailVaccineList
     End Function
 
-
-
     Protected Sub gvCVaccinationRecord_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             Dim udtFormatter As New Formatter
@@ -1869,9 +1871,7 @@ Partial Public Class ClaimTransDetail
         GridViewSortingHandler(sender, e, SESS_ClaimCOVID19_VaccineRecord)
     End Sub
 
-
 #End Region
     ' CRE20-0022 (Immu record) [End][Martin]
-
 
 End Class

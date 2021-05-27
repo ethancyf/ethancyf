@@ -59,6 +59,7 @@ Namespace Component.Scheme
         Public Const COVID19DH As String = "COVID19DH"    ' CRE20-0023-04 (Immu record) [Winnie SUEN]
         Public Const COVID19OR As String = "COVID19OR"
         Public Const COVID19SR As String = "COVID19SR"
+        Public Const COVID19SB As String = "COVID19SB"
 
 #End Region
 

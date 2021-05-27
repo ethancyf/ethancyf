@@ -11,7 +11,12 @@ Imports Common.Component.COVID19.PrintOut.Common.Format.Formatter
 Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
 
     Public Class QrcodeFormatter
-        Public Function GenerateQRCodeString(ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, ByRef udtEHSAccount As EHSAccountModel, ByRef dtmPrintTime As Date) As String
+        Public Function GenerateQRCodeString(ByRef udtEHSTransaction As EHSTransactionModel, _
+                                             ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
+                                             ByRef udtEHSAccount As EHSAccountModel, _
+                                             ByRef dtmPrintTime As Date, _
+                                             ByVal blnDischarge As Boolean) As String
+
             Dim udtGeneralFunction As New ComFunction.GeneralFunction
             Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
@@ -61,6 +66,9 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                 strVaccineName_1st = "|" + dt.Rows(0)("Brand_Printout_Name")
                 strVaccineNameTC_1st = "|" + dt.Rows(0)("Brand_Printout_Name_Chi")
                 strDoseDate_1st = "|" + FormatDate(udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
+                If blnDischarge Then
+                    strBrandName_1st = "|001"
+                End If
                 '===== Normal Case =====
 
                 '===== date dateback dose record ====
@@ -70,8 +78,14 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                         strVaccineName_2nd = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutName(udtVaccinationRecordHistory.VaccineBrand)
                         strVaccineNameTC_2nd = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(udtVaccinationRecordHistory.VaccineBrand)
                         strDoseDate_2nd = "|" + FormatDate(udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
+                        If blnDischarge Then
+                            strBrandName_2nd = "|001"
+                        End If
                     End If
-
+                Else
+                    If blnDischarge Then
+                        strDoseDate_2nd = "|NA"
+                    End If
                 End If
                 '===== date dateback dose record ====
             Else
@@ -79,6 +93,9 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                 strVaccineName_2nd = "|" + dt.Rows(0)("Brand_Printout_Name")
                 strVaccineNameTC_2nd = "|" + dt.Rows(0)("Brand_Printout_Name_Chi")
                 strDoseDate_2nd = "|" + FormatDate(udtEHSTransaction.ServiceDate, EnumDateFormat.DDMMYYYY)
+                If blnDischarge Then
+                    strBrandName_2nd = "|001"
+                End If
                 '===== Normal Case =====
 
                 If (Not udtVaccinationRecordHistory Is Nothing) Then
@@ -86,8 +103,10 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                         strVaccineName_1st = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutName(udtVaccinationRecordHistory.VaccineBrand)
                         strVaccineNameTC_1st = "|" + udtCOVID19BLL.GetVaccineBrandPrintoutNameChi(udtVaccinationRecordHistory.VaccineBrand)
                         strDoseDate_1st = "|" + FormatDate(udtVaccinationRecordHistory.ServiceReceiveDtm, EnumDateFormat.DDMMYYYY)
+                        If blnDischarge Then
+                            strBrandName_1st = "|001"
+                        End If
                     End If
-
                 End If
             End If
 
@@ -102,11 +121,15 @@ Namespace Component.COVID19.PrintOut.Common.QrCodeFormatter
                 strDigitialSignature = udtQRcode.Signature
             End If
 
+            Try
+                Dim blnValid As Boolean = udtCOVID19BLL.VerifyDigitalSignature(strRawData, strDigitialSignature)
+            Catch ex As Exception
+
+            End Try
+
             Return String.Concat(strRawData, strDigitialSignature)
 
         End Function
-
- 
 
     End Class
 

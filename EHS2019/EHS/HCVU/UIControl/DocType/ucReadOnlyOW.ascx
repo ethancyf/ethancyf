@@ -45,7 +45,7 @@
             </tr>
             <tr>
                 <td valign="top">
-                    <asp:Label ID="lblVDocNoText" runat="server" Text="<%$ Resources:Text, BCRegNo %>"></asp:Label></td>
+                    <asp:Label ID="lblVDocNoText" runat="server" Text="<%$ Resources:Text, OTHERDocNo %>"></asp:Label></td>
                 <td valign="top">
                     <asp:Label ID="lblVDocNo" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>

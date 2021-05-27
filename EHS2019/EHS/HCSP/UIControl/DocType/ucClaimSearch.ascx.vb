@@ -204,6 +204,18 @@ Partial Public Class ucClaimSearch
                 Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.OW).DocIdentityDesc(strlanguage)
 
                 ' CRE20-0022 (Immu record) [Start][Martin]
+
+            Case DocTypeModel.DocTypeCode.TW
+                ' Get the Doc Identity Desc from table "DocType"
+                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.TW).DocIdentityDesc(strlanguage)
+                If Me._blnShowTips Then
+                    Me.lblSearchShortIdentityNoTips.Visible = True
+                    Me.lblSearchShortDOBTips.Visible = True
+
+                    Me.lblSearchShortIdentityNoTips.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
+                    Me.lblSearchShortDOBTips.Text = Me.GetGlobalResourceObject("Text", "DOBHintDI")
+                End If
+
             Case DocTypeModel.DocTypeCode.CCIC
                 ' Get the Doc Identity Desc from table "DocType"
                 Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.CCIC).DocIdentityDesc(strlanguage)
@@ -614,7 +626,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.OW
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 140
+                Me.txtSearchShortIdentityNo.Width = 150
                 Me.txtSearchShortIdentityNo.MaxLength = 20
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
@@ -635,6 +647,32 @@ Partial Public Class ucClaimSearch
                 Me.filteredSearchShortIdentityNo.ValidChars = "-()"
 
                 Me.txtSearchShortIdentityNo.Attributes("onChange") = "javascript:UpperIndentityNo(this);"
+
+                ' CRE20-0023 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.TW
+                Me.panSearchShortNo.Visible = True
+
+                Me.txtSearchShortIdentityNo.Width = 150
+                Me.txtSearchShortIdentityNo.MaxLength = 20
+
+                If Not IsNothing(udtEHSPersonalInfo) Then
+                    txtSearchShortIdentityNo.Enabled = False
+                    txtSearchShortDOB.Enabled = False
+                    btnShortIdentityNoCancel.Visible = True
+
+                    txtSearchShortIdentityNo.Text = udtFormatter.FormatDocIdentityNoForDisplay(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, False)
+                    txtSearchShortDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, CultureLanguage.English, Nothing, Nothing)
+
+                Else
+                    txtSearchShortIdentityNo.Enabled = True
+                    txtSearchShortDOB.Enabled = True
+                    btnShortIdentityNoCancel.Visible = False
+
+                End If
+
+                Me.filteredSearchShortIdentityNo.ValidChars = ""
+                Me.txtSearchShortIdentityNo.Attributes("onChange") = "javascript:UpperIndentityNo(this);"
+                ' CRE20-0023 (Immu record) [Start][Martin]
 
             Case DocTypeModel.DocTypeCode.ID235B
                 Me.panSearchShortNo.Visible = True
@@ -663,7 +701,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.VISA
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 140
+                Me.txtSearchShortIdentityNo.Width = 150
                 Me.txtSearchShortIdentityNo.MaxLength = 18
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
@@ -735,7 +773,7 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.PASS
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 140
+                Me.txtSearchShortIdentityNo.Width = 150
                 Me.txtSearchShortIdentityNo.MaxLength = 20
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
@@ -962,6 +1000,7 @@ Partial Public Class ucClaimSearch
                  DocTypeModel.DocTypeCode.ID235B, _
                  DocTypeModel.DocTypeCode.DI, _
                  DocTypeModel.DocTypeCode.OW, _
+                 DocTypeModel.DocTypeCode.TW, _
                  DocTypeModel.DocTypeCode.CCIC, _
                  DocTypeModel.DocTypeCode.ROP140
                 ' CRE20-0022 (Immu record) [End][Martin]

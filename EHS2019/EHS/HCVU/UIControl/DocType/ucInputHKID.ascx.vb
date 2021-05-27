@@ -708,7 +708,7 @@ Partial Public Class ucInputHKID
             End If
             ' INT20-0047 (Fix throw error for invalid CCCode) [End][Winnie]
 
-            lblCCCodeOrginal.Text = strCNameCode
+            Me.lblCCCodeOrginal.Text = strCNameCode
             Me.lblCNameOriginal.Text = strDBCName
 
             End If
@@ -1210,6 +1210,9 @@ Partial Public Class ucInputHKID
         End Set
     End Property
 
+#End Region
+
+#Region "Supported Function"
     ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [Start][Winnie] Step 1
     'Compare input and session CCCode head, return session CCCode if matched
     Public Function GetCCCode(ByVal strInputCCCode As String, ByVal strExistCCCode As String) As String
@@ -1233,9 +1236,24 @@ Partial Public Class ucInputHKID
     End Function
     ' CRE15-014 HA_MingLiu UTF32 - Fix CCCode Session Handling Issue [End][Winnie] Step 1
 
+    Public Function IsValidCCCodeInput() As Boolean
+        Return (Me.txtCCCode1.Text.Length = 4 OrElse Me.txtCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtCCCode2.Text.Length = 4 OrElse Me.txtCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtCCCode3.Text.Length = 4 OrElse Me.txtCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtCCCode4.Text.Length = 4 OrElse Me.txtCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtCCCode5.Text.Length = 4 OrElse Me.txtCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtCCCode6.Text.Length = 4 OrElse Me.txtCCCode6.Text.Length = 0)
+    End Function
+
+    Public Function IsValidCCCodeNewInput() As Boolean
+        Return (Me.txtNewCCCode1.Text.Length = 4 OrElse Me.txtNewCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode2.Text.Length = 4 OrElse Me.txtNewCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode3.Text.Length = 4 OrElse Me.txtNewCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode4.Text.Length = 4 OrElse Me.txtNewCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode5.Text.Length = 4 OrElse Me.txtNewCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode6.Text.Length = 4 OrElse Me.txtNewCCCode6.Text.Length = 0)
+    End Function
 #End Region
-
-
 
 End Class
 

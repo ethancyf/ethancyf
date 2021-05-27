@@ -1,4 +1,4 @@
-Imports GrapeCity.ActiveReports
+﻿Imports GrapeCity.ActiveReports
 Imports GrapeCity.ActiveReports.Document
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
@@ -23,6 +23,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private _udtPrintTime As Date
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
+        Private _blnDischarge As Boolean
+
 #Region "Constructor"
 
         Public Sub New()
@@ -30,7 +32,13 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             InitializeComponent()
         End Sub
 
-        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, ByRef udtEHSAccount As EHSAccountModel, ByRef udtPrintTime As Date, ByRef blnIsSample As Boolean)
+        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, _
+                       ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
+                       ByRef udtEHSAccount As EHSAccountModel, _
+                       ByRef udtPrintTime As Date, _
+                       ByRef blnIsSample As Boolean, _
+                       ByVal blnDischarge As Boolean)
+
             ' Invoke default constructor
             Me.New()
 
@@ -40,6 +48,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             _udtFormatter = New Formatter
             _udtPrintTime = udtPrintTime
             _blnIsSample = blnIsSample
+            _blnDischarge = blnDischarge
             LoadReport()
             ChkIsSample()
 
@@ -67,17 +76,22 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 txtNameChi.Visible = True
             End If
 
-            txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
-            txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
+            If patientInformation.DocCode = DocTypeModel.DocTypeCode.ROP140 Then
+                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
+                txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
+            Else
+                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
+                txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
+            End If
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
-            srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecordHistory, _blnIsSample)
+            srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecordHistory, _blnIsSample, _blnDischarge)
 
             'Transaction No.
             Me.txtTransactionNumber.Text = "Ref: " + _udtFormatter.formatSystemNumber(_udtEHSTransaction.TransactionID)
             
             Me.txtPrintDate.Text = "Printed on " + _udtPrintTime.ToString(_udtFormatter.DisplayVaccinationRecordClockFormat())
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecordHistory, _udtEHSAccount, _udtPrintTime)
+            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecordHistory, _udtEHSAccount, _udtPrintTime, _blnDischarge)
 
         End Sub
 

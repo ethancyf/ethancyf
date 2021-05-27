@@ -8,6 +8,13 @@ go
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	26 May 2021
+-- Description:		Update PersonalInfo.[Update_Dtm] when merge temp account
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT20-0022 (Fix IMMBValidation on IDEAS Combo)
 -- Modified by:		Koala CHENG
 -- Modified date:	2 Jul 2020
@@ -69,6 +76,8 @@ Declare @Other_Info char(10)
 Declare @Create_By_SmartID char(1)
 Declare @SmartID_Ver	varchar(5)
 
+Declare @Update_By	varchar(20)
+
 -- =============================================
 -- Validation 
 -- =============================================
@@ -105,7 +114,8 @@ BEGIN
 		@Permit_to_Remain_Until = Permit_to_Remain_Until,
 		@Other_Info = Other_Info,
 		@Create_By_SmartID = Create_By_SmartID,
-		@SmartID_Ver = SmartID_Ver
+		@SmartID_Ver = SmartID_Ver,
+		@Update_By = Update_By
 
 	FROM [dbo].[SpecialPersonalInformation]	
 	WHERE 
@@ -136,8 +146,10 @@ BEGIN
 		Permit_to_Remain_Until = @Permit_to_Remain_Until,
 		Other_Info = @Other_Info,
 		Create_By_SmartID = @Create_By_SmartID,
-		SmartID_Ver = @SmartID_Ver
+		SmartID_Ver = @SmartID_Ver,
 
+		Update_Dtm = GETDATE(),
+		Update_By = @Update_By
 	WHERE 
 		Voucher_Acc_ID = @Voucher_Acc_ID AND Doc_Code = @Doc_Code AND --(Create_By_SmartID <> 'Y' or Create_By_SmartID is null)
 		(
@@ -191,7 +203,8 @@ SELECT
 		--@Date_of_Issue = Date_of_Issue
 		
 		@Create_By_SmartID = Create_By_SmartID,
-		@SmartID_Ver = SmartID_Ver
+		@SmartID_Ver = SmartID_Ver,
+		@Update_By = Update_By
 		
 	FROM [dbo].[SpecialPersonalInformation]	
 	WHERE 
@@ -228,7 +241,10 @@ SELECT
 		--Create_By_SmartID = 'N',
 		Record_Status = 'A',
 		Create_By_SmartID = @Create_By_SmartID,
-		SmartID_Ver = @SmartID_Ver
+		SmartID_Ver = @SmartID_Ver,
+		
+		Update_Dtm = GETDATE(),
+		Update_By = @Update_By
 	WHERE 
 		Voucher_Acc_ID = @Voucher_Acc_ID AND Doc_Code = @Doc_Code
 

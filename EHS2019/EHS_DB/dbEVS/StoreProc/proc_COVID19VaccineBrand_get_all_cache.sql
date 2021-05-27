@@ -7,15 +7,15 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
--- Created by:		
--- Created date:	
--- CR No.:			
--- Description:		
+-- Modified by:		Chris YIM
+-- Modified date:	16 Apr 2021
+-- CR No.:			CRE20-0023-43
+-- Description:		Add column [Discharge_Window_Min]
 -- =============================================
 -- =============================================
 -- Modification History
 -- Created by:		Chris YIM
--- Created date:	26 Feb 2020
+-- Created date:	26 Feb 2021
 -- CR No.:			CRE20-0022
 -- Description:		Immu Record
 -- =============================================
@@ -62,7 +62,8 @@ BEGIN
 		VBD.[HK_Reg_No],
 		VBD.[Manufacturer],
 		VBD.[Vaccination_Window_Min],
-		VBD.[Vaccination_Window_Max]
+		VBD.[Vaccination_Window_Max],
+		VBD.[Discharge_Window_Min]
 	FROM 
 		[COVID19VaccineBrandDetail] VBD WITH(NOLOCK)
 	ORDER BY 

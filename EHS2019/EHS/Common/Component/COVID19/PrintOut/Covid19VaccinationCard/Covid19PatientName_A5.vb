@@ -44,12 +44,13 @@ Namespace PrintOut.Covid19VaccinationCard
             txtNameChi.Text = patientInformation.CName
 
 
-
-            txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
-            txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
-
-
-
+            If patientInformation.DocCode = DocTypeModel.DocTypeCode.ROP140 Then
+                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
+                txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
+            Else
+                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
+                txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
+            End If
         End Sub
     End Class
 End Namespace

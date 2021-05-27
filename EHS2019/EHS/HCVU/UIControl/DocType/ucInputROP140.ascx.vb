@@ -1111,6 +1111,24 @@ Public Class ucInputROP140
 
     End Function
 
+    Public Function IsValidCCCodeInput() As Boolean
+        Return (Me.txtCCCode1.Text.Length = 4 OrElse Me.txtCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtCCCode2.Text.Length = 4 OrElse Me.txtCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtCCCode3.Text.Length = 4 OrElse Me.txtCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtCCCode4.Text.Length = 4 OrElse Me.txtCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtCCCode5.Text.Length = 4 OrElse Me.txtCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtCCCode6.Text.Length = 4 OrElse Me.txtCCCode6.Text.Length = 0)
+    End Function
+
+    Public Function IsValidCCCodeNewInput() As Boolean
+        Return (Me.txtNewCCCode1.Text.Length = 4 OrElse Me.txtNewCCCode1.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode2.Text.Length = 4 OrElse Me.txtNewCCCode2.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode3.Text.Length = 4 OrElse Me.txtNewCCCode3.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode4.Text.Length = 4 OrElse Me.txtNewCCCode4.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode5.Text.Length = 4 OrElse Me.txtNewCCCode5.Text.Length = 0) AndAlso _
+               (Me.txtNewCCCode6.Text.Length = 4 OrElse Me.txtNewCCCode6.Text.Length = 0)
+    End Function
+
 #End Region
 
 

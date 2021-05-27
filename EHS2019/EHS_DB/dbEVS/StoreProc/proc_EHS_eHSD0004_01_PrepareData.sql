@@ -6,6 +6,12 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modified by:		Raiman Chong
+-- Modified date:	04 May 2021
+-- CR. No.:			CRE20-023
+-- Description:		Add New Document Type CCIC, ROP140
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -61,18 +67,26 @@ SET NOCOUNT ON;
 	
 	CREATE TABLE #ResultTable (
 		Result_Seq			smallint,
-		Result_Value1		varchar(100),
-		Result_Value2		varchar(100),
-		Result_Value3		varchar(100),
-		Result_Value4		varchar(100),
-		Result_Value5		varchar(100),
-		Result_Value6		varchar(100),
-		Result_Value7		varchar(100),
-		Result_Value8		varchar(100),
-		Result_Value9		varchar(100),
-		Result_Value10		varchar(100),
-		Result_Value11		varchar(100),
-		Result_Value12		varchar(100)
+		Result_Value1		varchar(100) default '',
+		Result_Value2		varchar(100) default '',
+		Result_Value3		varchar(100) default '',
+		Result_Value4		varchar(100) default '',
+		Result_Value5		varchar(100) default '',
+		Result_Value6		varchar(100) default '',
+		Result_Value7		varchar(100) default '',
+		Result_Value8		varchar(100) default '',
+		Result_Value9		varchar(100) default '',
+		Result_Value10		varchar(100) default '',
+		Result_Value11		varchar(100) default '',
+		Result_Value12		varchar(100) default '',
+		Result_Value13		varchar(100) default '',
+		Result_Value14		varchar(100) default '',
+		Result_Value15		varchar(100) default '',
+		Result_Value16		varchar(100) default '',
+		Result_Value17		varchar(100) default '',
+		Result_Value18		varchar(100) default '',
+		Result_Value19		varchar(100) default '',
+		Result_Value20		varchar(100) default ''
 	)
 -- =============================================
 -- Validation 
@@ -196,38 +210,38 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 -- ---------------------------------------------
 
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12) VALUES
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16) VALUES
 	(0, 'eHS(S)D0004-01: Report on eHealth (Subsidies) Accounts with RVP claim transactions by document type', 
-		'', '', '', '', '', '','', '', '', '', '')
+		'', '', '', '', '', '','', '', '', '', '', '', '', '','')
 				
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12) VALUES
-	(1, '', '', '', '', '', '', '', '', '', '', '', '')
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16) VALUES
+	(1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','')
 				
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12) VALUES
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16) VALUES
 	(2, 'Reporting period: as at ' + CONVERT(varchar, DATEADD(dd, -1, @Cutoff_Dtm), 111),
-		'', '', '', '', '', '', '', '', '', '', '')
+		'', '', '', '', '', '', '', '', '', '', '', '', '', '','')
 			
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12) VALUES
-	(3, '', '', '', '', '', '', '', '', '', '', '', '')
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16) VALUES
+	(3, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','')
 		
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12) VALUES
-	(10, '', 'HKIC/HKBC', 'Doc/I', 'REPMT', 'ID235B', 'VISA', 'ADOPC', 'EC', 'Total', '', 'HKIC', 'HKBC')
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16) VALUES
+	(10, '', 'HKIC/HKBC', 'Doc/I', 'REPMT', 'ID235B', 'VISA', 'ADOPC', 'EC','OW','CCIC','ROP140','PASS', 'Total', '', 'HKIC', 'HKBC')
 
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12 ) VALUES
-	(11, 'Alive', '', '', '', '', '', '', '', '', '', '', '')
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16 ) VALUES
+	(11, 'Alive', '', '', '', '', '', '', '', '', '', '', '', '', '', '','')
 	
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12 ) VALUES
-	(12, 'Deceased', '', '', '', '', '', '', '', '', '', '', '')
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16 ) VALUES
+	(12, 'Deceased', '', '', '', '', '', '', '', '', '', '', '', '', '', '','')
 	
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, 
-								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12 ) VALUES
-	(13, 'Total', '', '', '', '', '', '', '', '', '', '', '')
+								Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12,Result_Value13, Result_Value14, Result_Value15, Result_Value16 ) VALUES
+	(13, 'Total', '', '', '', '', '', '', '', '', '', '', '', '', '', '','')
 
 
 -- ---------------------------------------------
@@ -249,6 +263,15 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'ADOPC', 1
 	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'EC', 0
 	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'EC', 1
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'OW', 0
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'OW', 1
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'CCIC', 0
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'CCIC', 1
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'ROP140', 0
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'ROP140', 1
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'PASS', 0
+	INSERT INTO #DocTT( Doc_Code, Deceased) SELECT 'PASS', 1
+
 
 	INSERT INTO #ResultCount (Doc_Code, Deceased, TotalCount)
 	SELECT d.Doc_Code, d.Deceased, isnull(a.TotalCount,0) TotalCount
@@ -279,10 +302,14 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 	UPDATE #ResultTable SET Result_Value5 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'ID235B' 				  
 	UPDATE #ResultTable SET Result_Value6 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'VISA' 					
 	UPDATE #ResultTable SET Result_Value7 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'ADOPC' 					
-	UPDATE #ResultTable SET Result_Value8 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'EC' 					  
-	UPDATE #ResultTable SET Result_Value9 =	 TotalCount FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'Total'  										  
-	UPDATE #ResultTable SET Result_Value11 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'HKIC' 					 
-	UPDATE #ResultTable SET Result_Value12 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'HKBC' 					 
+	UPDATE #ResultTable SET Result_Value8 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'EC' 		
+	UPDATE #ResultTable SET Result_Value9 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'OW' 	
+	UPDATE #ResultTable SET Result_Value10 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'CCIC' 	
+	UPDATE #ResultTable SET Result_Value11 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'ROP140' 	
+	UPDATE #ResultTable SET Result_Value12 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'PASS' 	
+	UPDATE #ResultTable SET Result_Value13 = TotalCount FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'Total'  										  
+	UPDATE #ResultTable SET Result_Value15 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'HKIC' 					 
+	UPDATE #ResultTable SET Result_Value16 = TotalCount	FROM #ResultCount WHERE Result_Seq = 11 AND Deceased = 0 AND Doc_Code = 'HKBC' 					 
 	
 	--Deceased
 	UPDATE #ResultTable SET Result_Value2 =	 TotalCount FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'HKIC/HKBC'
@@ -291,10 +318,14 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 	UPDATE #ResultTable SET Result_Value5 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'ID235B' 				  
 	UPDATE #ResultTable SET Result_Value6 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'VISA' 					
 	UPDATE #ResultTable SET Result_Value7 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'ADOPC' 					
-	UPDATE #ResultTable SET Result_Value8 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'EC' 					  
-	UPDATE #ResultTable SET Result_Value9 =	 TotalCount FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'Total'  										  
-	UPDATE #ResultTable SET Result_Value11 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'HKIC' 					 
-	UPDATE #ResultTable SET Result_Value12 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'HKBC' 	
+	UPDATE #ResultTable SET Result_Value8 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'EC' 	
+	UPDATE #ResultTable SET Result_Value9 =	 TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'OW' 
+	UPDATE #ResultTable SET Result_Value10 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'CCIC' 
+	UPDATE #ResultTable SET Result_Value11 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'ROP140' 
+	UPDATE #ResultTable SET Result_Value12 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'PASS' 
+	UPDATE #ResultTable SET Result_Value13 = TotalCount FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'Total'  										  
+	UPDATE #ResultTable SET Result_Value15 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'HKIC' 					 
+	UPDATE #ResultTable SET Result_Value16 = TotalCount	FROM #ResultCount WHERE Result_Seq = 12 AND Deceased = 1 AND Doc_Code = 'HKBC' 	
 	
 	--Total
 	UPDATE #ResultTable SET Result_Value2 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'HKIC/HKBC'	GROUP BY Doc_Code) WHERE Result_Seq = 13
@@ -303,10 +334,14 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 	UPDATE #ResultTable SET Result_Value5 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'ID235B' 	GROUP BY Doc_Code) WHERE Result_Seq = 13			  
 	UPDATE #ResultTable SET Result_Value6 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'VISA' 		GROUP BY Doc_Code) WHERE Result_Seq = 13			
 	UPDATE #ResultTable SET Result_Value7 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'ADOPC' 	GROUP BY Doc_Code) WHERE Result_Seq = 13				
-	UPDATE #ResultTable SET Result_Value8 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'EC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13			  
-	UPDATE #ResultTable SET Result_Value9 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'Total'  	GROUP BY Doc_Code) WHERE Result_Seq = 13									  
-	UPDATE #ResultTable SET Result_Value11 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'HKIC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13			 
-	UPDATE #ResultTable SET Result_Value12 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'HKBC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13																																					 
+	UPDATE #ResultTable SET Result_Value8 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'EC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13	
+    UPDATE #ResultTable SET Result_Value9 =	 (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'OW' 		GROUP BY Doc_Code) WHERE Result_Seq = 13
+	UPDATE #ResultTable SET Result_Value10 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'CCIC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13	
+	UPDATE #ResultTable SET Result_Value11 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'ROP140' 	GROUP BY Doc_Code) WHERE Result_Seq = 13	
+	UPDATE #ResultTable SET Result_Value12 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'PASS' 		GROUP BY Doc_Code) WHERE Result_Seq = 13	
+	UPDATE #ResultTable SET Result_Value13 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'Total'  	GROUP BY Doc_Code) WHERE Result_Seq = 13									  
+	UPDATE #ResultTable SET Result_Value15 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'HKIC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13			 
+	UPDATE #ResultTable SET Result_Value16 = (SELECT SUM(TotalCount) FROM #ResultCount WHERE Doc_Code = 'HKBC' 		GROUP BY Doc_Code) WHERE Result_Seq = 13																																					 
 		
 		
 
@@ -329,7 +364,15 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 		Result_Value9,
 		Result_Value10,
 		Result_Value11,
-		Result_Value12
+		Result_Value12,
+		Result_Value13,
+		Result_Value14,
+		Result_Value15,
+		Result_Value16,
+		Result_Value17,
+		Result_Value18,
+		Result_Value19,
+		Result_Value20
 	) 
 	SELECT
 		Result_Seq,
@@ -344,7 +387,15 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
 		Result_Value9,
 		Result_Value10,
 		Result_Value11,
-		Result_Value12
+		Result_Value12,
+		Result_Value13,
+		Result_Value14,
+		Result_Value15,
+		Result_Value16,
+		Result_Value17,
+		Result_Value18,
+		Result_Value19,
+		Result_Value20
 	FROM
 		#ResultTable
 	ORDER BY

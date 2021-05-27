@@ -190,7 +190,7 @@
                                             <table cellpadding="0" cellspacing="0">
                                                 <tr>
                                         <td>
-                                            <asp:TextBox ID="txtSearchIdentityNumR2" runat="server" MaxLength="18" Width="200px"
+                                            <asp:TextBox ID="txtSearchIdentityNumR2" runat="server" MaxLength="20" Width="200px"
                                                 onblur="convertToUpper(this)"></asp:TextBox>
                                             <cc1:FilteredTextBoxExtender ID="FilteredTextBoxIdentityNum" runat="server" Enabled="True"
                                                 FilterType="Custom, Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtSearchIdentityNumR2"

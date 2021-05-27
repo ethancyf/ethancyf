@@ -399,6 +399,7 @@
     <Content Include="UIControl\DocTypeText\ucReadOnlyOW.ascx" />
     <Content Include="UIControl\DocTypeText\ucReadOnlyPASS.ascx" />
     <Content Include="UIControl\DocTypeText\ucReadOnlyROP140.ascx" />
+    <Content Include="UIControl\DocTypeText\ucReadOnlyTW.ascx" />
     <Content Include="UIControl\DocType\ucInputCCIC.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
     <Content Include="UIControl\DocType\ucInputPASS.ascx" />
@@ -423,7 +424,6 @@
     <Content Include="UIControl\EHSClaimText\ucReadOnlyPIDVSS.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputRVPCOVID19.ascx" />
-    <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputSSSCMC.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputHCVSChina.ascx" />
@@ -431,6 +431,7 @@
     <Content Include="UIControl\EHSClaim\ucInputENHVSSO.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSS.ascx" />
+    <Content Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSDA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputVSSPID.ascx" />
     <Content Include="UIControl\EHSClaim\ucReadOnlyCOVID19OR.ascx" />
@@ -2570,6 +2571,13 @@
       <DependentUpon>ucReadOnlyROP140.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyTW.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyTW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocTypeText\ucReadOnlyTW.ascx.vb">
+      <DependentUpon>ucReadOnlyTW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucInputCCIC.ascx.designer.vb">
       <DependentUpon>ucInputCCIC.ascx</DependentUpon>
     </Compile>
@@ -2745,13 +2753,6 @@
       <DependentUpon>ucInputRVPCOVID19.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.designer.vb">
-      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.vb">
-      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx.designer.vb">
       <DependentUpon>ucInputCOVID19RVP.ascx</DependentUpon>
     </Compile>
@@ -2806,6 +2807,13 @@
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSS.ascx.vb">
       <DependentUpon>ucInputVSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.designer.vb">
+      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\EHSClaim\ucInputVSSCOVID19.ascx.vb">
+      <DependentUpon>ucInputVSSCOVID19.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\EHSClaim\ucInputVSSDA.ascx.designer.vb">

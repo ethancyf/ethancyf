@@ -77,6 +77,15 @@ Partial Public Class ucNoticePopUp
     Protected WithEvents tdContentLeft As Global.System.Web.UI.HtmlControls.HtmlTableCell
 
     '''<summary>
+    '''udcMsgBoxErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents udcMsgBoxErr As Global.CustomControls.MessageBox
+
+    '''<summary>
     '''imgIcon control.
     '''</summary>
     '''<remarks>
@@ -120,6 +129,60 @@ Partial Public Class ucNoticePopUp
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents divDeclaration As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''panEnquiry control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panEnquiry As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''divEnquiryDesc control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divEnquiryDesc As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''panOverrideReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOverrideReason As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''divORReasonDesc control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divORReasonDesc As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''lblORReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblORReason As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtORReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtORReason As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''ibtnCancel control.

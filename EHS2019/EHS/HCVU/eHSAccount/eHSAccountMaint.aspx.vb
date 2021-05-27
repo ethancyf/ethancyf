@@ -3166,11 +3166,22 @@ Partial Public Class eHSAccountMaint
                 If udcInputHKIC.CCCodeIsEmpty Then
                     udcInputHKIC.SetCnameAmend(String.Empty)
                     Me.udcCCCode.Clean()
+                    Me.udcCCCode.GetChineseName(FunctionCode, False)
                 Else
-                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification, DocTypeModel.DocTypeCode.HKIC) Then
-                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
+                    If udcInputHKIC.IsValidCCCodeInput() Then
+                        'Check CCCode
+                        ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                        If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification, DocTypeModel.DocTypeCode.HKIC) Then
+                            Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
+                            blnProceed = False
+                        End If
+                    Else
+                        Me.udcMsgBox.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputHKIC.SetCCCodeError(True)
                         blnProceed = False
+
                     End If
+
                 End If
 
                 If blnProceed Then
@@ -3204,14 +3215,17 @@ Partial Public Class eHSAccountMaint
 
                 blnProceed = Me.ValidateRectifyDetail_Visa(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
 
+                ' CRE20-023 (Immu record) [Start][Martin]
             Case DocTypeModel.DocTypeCode.OW,
-                 DocTypeModel.DocTypeCode.TW,
-                 DocTypeModel.DocTypeCode.RFNo8
+                DocTypeModel.DocTypeCode.RFNo8
 
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
-                blnProceed = Me.ValidateRectifyDetail_OW_TW_RFNo8(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
+                blnProceed = Me.ValidateRectifyDetail_OW_RFNo8(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
 
-                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.TW
+                blnProceed = Me.ValidateRectifyDetail_TW(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
+                ' CRE20-0023 (Immu record) [End][Martin]
+
             Case DocTypeModel.DocTypeCode.CCIC
 
                 blnProceed = Me.ValidateRectifyDetail_CCIC(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
@@ -3222,10 +3236,20 @@ Partial Public Class eHSAccountMaint
                 If udcInputROP140.CCCodeIsEmpty Then
                     udcInputROP140.SetCnameAmend(String.Empty)
                     Me.udcCCCode.Clean()
+                    Me.udcCCCode.GetChineseName(FunctionCode, False)
                 Else
-                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification, DocTypeModel.DocTypeCode.ROP140) Then
-                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                    If udcInputROP140.IsValidCCCodeInput() Then
+                        'Check CCCode
+                        ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                        If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Modification, DocTypeModel.DocTypeCode.ROP140) Then
+                            Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Modification, udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                            blnProceed = False
+                        End If
+                    Else
+                        Me.udcMsgBox.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputROP140.SetCCCodeError(True)
                         blnProceed = False
+
                     End If
                 End If
 
@@ -3235,7 +3259,7 @@ Partial Public Class eHSAccountMaint
             Case DocTypeModel.DocTypeCode.PASS
 
                 blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification)
-                ' CRE20-0022 (Immu record) [End][Martin]
+
 
 
         End Select
@@ -4747,10 +4771,20 @@ Partial Public Class eHSAccountMaint
                 If udcInputHKIC.CCCodeIsEmpty Then
                     udcInputHKIC.SetCnameAmend(String.Empty)
                     Me.udcCCCode.Clean()
+                    Me.udcCCCode.GetChineseName(FunctionCode, False)
                 Else
-                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation, DocTypeModel.DocTypeCode.HKIC) Then
-                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
+                    If udcInputHKIC.IsValidCCCodeNewInput() Then
+                        'Check CCCode
+                        ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                        If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation, DocTypeModel.DocTypeCode.HKIC) Then
+                            Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
+                            blnProceed = False
+                        End If
+                    Else
+                        Me.udcMsgBox.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputHKIC.SetCCCodeError(True)
                         blnProceed = False
+
                     End If
                 End If
 
@@ -4786,14 +4820,17 @@ Partial Public Class eHSAccountMaint
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.VISA
                 blnProceed = Me.ValidateRectifyDetail_Visa(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
 
+                ' CRE20-0023 (Immu record) [Start][Martin]
             Case DocTypeModel.DocTypeCode.OW,
-                 DocTypeModel.DocTypeCode.TW,
-                 DocTypeModel.DocTypeCode.RFNo8
-
+                DocTypeModel.DocTypeCode.RFNo8
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
-                blnProceed = Me.ValidateRectifyDetail_OW_TW_RFNo8(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
+                blnProceed = Me.ValidateRectifyDetail_OW_RFNo8(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
 
-                ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.TW
+                udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.TW
+                blnProceed = Me.ValidateRectifyDetail_TW(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
+                ' CRE20-0023 (Immu record) [End][Martin]
+
             Case DocTypeModel.DocTypeCode.CCIC
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.CCIC
                 blnProceed = Me.ValidateRectifyDetail_CCIC(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
@@ -4805,11 +4842,22 @@ Partial Public Class eHSAccountMaint
                 If udcInputROP140.CCCodeIsEmpty Then
                     udcInputROP140.SetCnameAmend(String.Empty)
                     Me.udcCCCode.Clean()
+                    Me.udcCCCode.GetChineseName(FunctionCode, False)
                 Else
-                    If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation, DocTypeModel.DocTypeCode.ROP140) Then
-                        Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                    If udcInputROP140.IsValidCCCodeNewInput() Then
+                        'Check CCCode
+                        ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                        If Me.NeedPopupCCCodeDialog(ucInputDocTypeBase.BuildMode.Creation, DocTypeModel.DocTypeCode.ROP140) Then
+                            Me.ucInputDocumentType_SelectChineseName_HKIC(ucInputDocTypeBase.BuildMode.Creation, udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                            blnProceed = False
+                        End If
+                    Else
+                        Me.udcMsgBox.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputROP140.SetCCCodeError(True)
                         blnProceed = False
+
                     End If
+
                 End If
 
                 If blnProceed Then
@@ -4820,7 +4868,7 @@ Partial Public Class eHSAccountMaint
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = DocTypeModel.DocTypeCode.PASS
                 blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation)
 
-                ' CRE20-0022 (Immu record) [End][Martin]
+
         End Select
 
         'Check other account creation information
@@ -7382,8 +7430,8 @@ Partial Public Class eHSAccountMaint
 
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
     ' ---------------------------------------------------------------------------------------------------------
-    'OW, TW, or RFNo8
-    Private Function ValidateRectifyDetail_OW_TW_RFNo8(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
+    'OW or RFNo8
+    Private Function ValidateRectifyDetail_OW_RFNo8(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
         Dim isValid As Boolean = True
         Dim udcInputOW As ucInputOW
 
@@ -7467,6 +7515,93 @@ Partial Public Class eHSAccountMaint
         Return isValid
     End Function
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+
+    'TW
+    Private Function ValidateRectifyDetail_TW(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputTW As ucInputTW
+
+        If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
+            udcInputTW = Me.ucInputDocumentType_NewAcc.GetTWControl
+            Me.ucInputDocumentType_NewAcc.ActiveViewChanged = False
+        Else
+            udcInputTW = Me.ucInputDocumentType.GetTWControl
+        End If
+
+        udcInputTW.SetProperty(udcControlMode)
+        udcInputTW.SetErrorImage(udcControlMode, False)
+
+        _udtAuditLogEntry.AddDescripton("DocumentNo", udcInputTW.DocumentNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputTW.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputTW.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputTW.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputTW.Gender)
+        _udtAuditLogEntry.AddDescripton("ExactDOB", udcInputTW.IsExactDOB)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
+
+        'DocNo.
+        Me.udtSM = Me.udtValidator.chkIdentityNumber(txtDocCode.Text.Trim, udcInputTW.DocumentNo.Trim, String.Empty)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputTW.SetDocNoError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String = udcInputTW.DOB
+        Dim dtmDOB As Date
+
+        Select Case udcInputTW.DOB.Trim
+            Case String.Empty
+                udtSM = New SystemMessage("990000", "E", "00003")
+                udcInputTW.SetDOBError(True)
+
+            Case Else
+                udtSM = Me.udtValidator.chkDOB(txtDocCode.Text.Trim, strDOB, dtmDOB, strExactDOB)
+
+                If Not udtSM Is Nothing Then
+                    udcInputTW.SetDOBError(True)
+                End If
+        End Select
+
+        If Not IsNothing(udtSM) Then
+            Me.udcMsgBox.AddMessage(udtSM)
+            isValid = False
+        End If
+
+        'English Name
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputTW.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtValidator.chkGender(udcInputTW.Gender)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputTW.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        If isValid Then
+            Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(txtDocCode.Text.Trim)
+            If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
+                udtEHSAccountPersonalInfo.IdentityNum = udcInputTW.DocumentNo
+            End If
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputTW.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputTW.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputTW.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isValid
+    End Function
+
+
 
     'CCIC
     Private Function ValidateRectifyDetail_CCIC(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry, ByVal udcControlMode As ucInputDocTypeBase.BuildMode) As Boolean
@@ -7691,6 +7826,7 @@ Partial Public Class eHSAccountMaint
             udcInputROP140.CCCode6 = udtEHSAccountPersonalInfo.CCCode6
             udcInputROP140.SetCName()
             udtEHSAccountPersonalInfo.CName = udcInputROP140.CName
+
         End If
 
         Return isvalid

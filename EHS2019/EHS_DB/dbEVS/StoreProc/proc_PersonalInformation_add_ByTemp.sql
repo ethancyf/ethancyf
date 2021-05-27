@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	26 May 2021
+-- Description:		Update PersonalInfo.[Update_Dtm] when merge temp account
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
 -- Modified by:		Winnie SUEN
 -- Modified date:	5 Dec 2018
@@ -116,7 +123,7 @@ BEGIN
 		Record_Status,
 		Create_Dtm,
 		Create_By,
-		Update_Dtm,
+		GETDATE(), -- Update_Dtm,  -- CRE20-023
 		Update_By,
 		DataEntry_By,
 		Encrypt_Field1,

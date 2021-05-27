@@ -801,7 +801,8 @@ Namespace Component.EHSTransaction
                     Return True
 
                 Case DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.ADOPC, DocTypeModel.DocTypeCode.OW, _
-                    DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                    DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140, DocTypeModel.DocTypeCode.PASS, _
+                    DocTypeModel.DocTypeCode.TW ' CRE20-0022 (Immu record) [Martin]
                     Return False
 
                 Case Else

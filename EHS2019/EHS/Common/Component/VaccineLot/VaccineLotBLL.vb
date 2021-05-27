@@ -156,6 +156,14 @@ Namespace Component.VaccineLot
 
             Catch eSQL As SqlException
                 udtDB.RollBackTranscation()
+                If eSQL.Number = 50000 Then
+                    Dim strmsg As String
+                    strmsg = eSQL.Message
+                    If strmsg = MsgCode.MSG00011 Then
+                        ErrorHandler.Log("", SeverityCode.SEVE, "99999", HttpContext.Current.Request.PhysicalPath, HttpContext.Current.Request.UserHostAddress, eSQL.Message)
+                        Return False
+                    End If
+                End If
                 Throw
             Catch ex As Exception
                 udtDB.RollBackTranscation()
@@ -376,6 +384,14 @@ Namespace Component.VaccineLot
 
             Catch eSQL As SqlException
                 udtDB.RollBackTranscation()
+                If eSQL.Number = 50000 Then
+                    Dim strmsg As String
+                    strmsg = eSQL.Message
+                    If strmsg = MsgCode.MSG00011 Then
+                        ErrorHandler.Log("", SeverityCode.SEVE, "99999", HttpContext.Current.Request.PhysicalPath, HttpContext.Current.Request.UserHostAddress, eSQL.Message)
+                        Return False
+                    End If
+                End If
                 Throw
             Catch ex As Exception
                 udtDB.RollBackTranscation()

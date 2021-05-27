@@ -56,7 +56,7 @@
                                             <asp:Label ID="lblSearchIdentityNumR2Text" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, IdentityDocNo %>"></asp:Label>
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="txtSearchIdentityNumR2" runat="server" MaxLength="18" Width="200px"
+                                            <asp:TextBox ID="txtSearchIdentityNumR2" runat="server" MaxLength="20" Width="200px"
                                                 onblur="convertToUpper(this);"></asp:TextBox>
                                             <cc1:FilteredTextBoxExtender ID="FilteredTextBoxIdentityNum" runat="server" Enabled="True"
                                                 FilterType="Custom, Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtSearchIdentityNumR2"

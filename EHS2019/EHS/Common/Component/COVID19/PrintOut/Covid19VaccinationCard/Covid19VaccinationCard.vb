@@ -1,4 +1,4 @@
-﻿Imports GrapeCity.ActiveReports
+Imports GrapeCity.ActiveReports
 Imports GrapeCity.ActiveReports.Document
 Imports GrapeCity.ActiveReports.SectionReportModel
 Imports Common.Component
@@ -35,6 +35,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private _udtPrintTime As Date
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
+        Private _blnDischarge As Boolean
 
 #Region "Constructor"
         Private Sub New()
@@ -50,7 +51,10 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
         End Sub
 
-        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtEHSAccount As EHSAccountModel, ByVal udtVaccinationRecord As TransactionDetailVaccineModel)
+        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel,
+                       ByRef udtEHSAccount As EHSAccountModel,
+                       ByVal udtVaccinationRecord As TransactionDetailVaccineModel, _
+                       ByVal blnDischarge As Boolean)
             Me.New()
 
             ' Init variable
@@ -61,6 +65,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
             'Setting for blank sample of vaccination card true = printSample, false = print normal form
             _blnIsSample = False
+            _blnDischarge = blnDischarge
 
             LoadReport()
             ChkIsSample()
@@ -83,12 +88,12 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             srCovid19PatientName.Report = New Covid19PatientName(_udtEHSAccount, _blnIsSample)
 
             ' Vaccination Info                                                  'second _udtEHSTransaction is history Transaction 
-            srCovid19DoseTable.Report = New Covid19DoseTable(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample)
+            srCovid19DoseTable.Report = New Covid19DoseTable(_udtEHSTransaction, _udtVaccinationRecord, _blnIsSample, _blnDischarge)
 
             'Footer                                                                                     'second _udtEHSTransaction is history Transaction 
-            srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample)
+            srCovid19VaccinationCardFooter.Report = New Covid19VaccinationCardFooter(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnIsSample, _blnDischarge)
 
-            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime)
+            qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecord, _udtEHSAccount, _udtPrintTime, _blnDischarge)
 
         End Sub
 

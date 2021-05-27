@@ -765,6 +765,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19RVP) OrElse _
                udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19OR) OrElse _
                udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19SR) OrElse _
+               udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.COVID19SB) OrElse _
                (udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.VSS) AndAlso _
                 udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0) OrElse _
                (udtEHSTransaction.SchemeCode.Equals(SchemeClaimModel.RVP) AndAlso _
@@ -777,7 +778,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                 For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
                     'Find the latest COVID19 transaction in EHS
-                    If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = "1STDOSE" Then
+                    If udtC19Vaccine.AvailableItemCode.Trim.ToUpper = SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
                         If udtLatestC19Vaccine Is Nothing Then
                             udtLatestC19Vaccine = udtC19Vaccine
                         Else
@@ -792,6 +793,14 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 If udtLatestC19Vaccine IsNot Nothing AndAlso udtLatestC19Vaccine.TransactionID <> String.Empty Then
                     udtLatestC19Transaction = udtEHSTransactionBLL.LoadClaimTran(udtLatestC19Vaccine.TransactionID.Trim)
                     udtInputPicker.LatestC19Transaction = udtLatestC19Transaction
+                End If
+
+                'Check discharge list
+                Dim udtDischargeResult As COVID19.DischargeResultModel = (New COVID19.COVID19BLL).GetCovid19DischargePatientByDocCodeDocNo(udtEHSAccount)
+
+                If udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
+                    udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch Then
+                    udtInputPicker.DischargeResult = udtDischargeResult
                 End If
 
             End If
@@ -2443,24 +2452,38 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                         udtRuleResult.ClaimRuleResult = udtClaimRuleResult
 
-
                         For Each strKey As String In udtClaimRuleResult.ResultParam.Keys
-
-                            strReplaceTextEng = strKey
-                            strReplaceTextTC = strKey
-
                             If TypeOf udtClaimRuleResult.ResultParam(strKey) Is Date Then
+                                strReplaceTextEng = strKey
+                                strReplaceTextTC = strKey
+
                                 strMessageEng = Formatter.formatDisplayDate(udtClaimRuleResult.ResultParam(strKey), CultureLanguage.English)
                                 strMessageTC = Formatter.formatDisplayDate(udtClaimRuleResult.ResultParam(strKey), CultureLanguage.TradChinese)
+
+                                udtRuleResult.MessageVariableNameArrayList.Add(strReplaceTextEng)
+                                udtRuleResult.MessageVariableValueArrayList.Add(strMessageEng)
+
+                                udtRuleResult.MessageVariableNameChiArrayList.Add(strReplaceTextTC)
+                                udtRuleResult.MessageVariableValueChiArrayList.Add(strMessageTC)
+
+                            ElseIf TypeOf udtClaimRuleResult.ResultParam(strKey) Is List(Of SystemMessage) Then
+                                'Nothing to do
+
                             Else
+                                strReplaceTextEng = strKey
+                                strReplaceTextTC = strKey
+
                                 strMessageEng = udtClaimRuleResult.ResultParam(strKey)
                                 strMessageTC = udtClaimRuleResult.ResultParam(strKey)
-                            End If
-                            udtRuleResult.MessageVariableNameArrayList.Add(strReplaceTextEng)
-                            udtRuleResult.MessageVariableValueArrayList.Add(strMessageEng)
 
-                            udtRuleResult.MessageVariableNameChiArrayList.Add(strReplaceTextTC)
-                            udtRuleResult.MessageVariableValueChiArrayList.Add(strMessageTC)
+                                udtRuleResult.MessageVariableNameArrayList.Add(strReplaceTextEng)
+                                udtRuleResult.MessageVariableValueArrayList.Add(strMessageEng)
+
+                                udtRuleResult.MessageVariableNameChiArrayList.Add(strReplaceTextTC)
+                                udtRuleResult.MessageVariableValueChiArrayList.Add(strMessageTC)
+
+                            End If
+
                         Next
 
                         udtRuleResult.MessageVariableName = ReturnMessageVariableAsString(udtRuleResult.MessageVariableNameArrayList)

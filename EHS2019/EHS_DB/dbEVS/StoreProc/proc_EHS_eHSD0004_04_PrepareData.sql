@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+
+-- =============================================
+-- Modified by:		Raiman Chong
+-- Modified date:	04 May 2021
+-- CR. No.:			CRE20-023
+-- Description:		Edit Covid19 category based on the additional field
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -202,6 +210,11 @@ AND (VT.Invalidation IS NULL OR VT.Invalidation NOT In
  AND ((Effective_Date is null or Effective_Date>= @Cutoff_Dtm) AND (Expiry_Date is null or Expiry_Date < @Cutoff_Dtm))))
 ORDER BY VT.Transaction_Dtm
 
+update @Transaction set Category_Code = case when taf2.AdditionalFieldValueCode = 'RESIDENT' then 'RESIDENT' else 'HCW' end
+from @Transaction t left outer join TransactionAdditionalField TAF2 on t.Transaction_ID = taf2.Transaction_ID and  taf2.AdditionalFieldID = 'RecipientType'
+where t.subsidize_item_code = 'C19' 
+
+
 -- ---------------------------------------------          
 -- Patch the Reimbursement_Status 
 -- for transaction created in payment outside eHS
@@ -213,6 +226,8 @@ SET
  Reimbursement_Status = 'R'
 WHERE 
  Transaction_Status = 'R'
+
+
 
 -- ---------------------------------------------          
 -- Patch the Reimbursement_Status          

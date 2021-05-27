@@ -356,7 +356,8 @@ Partial Public Class ucInputCOVID19
             'Display or hide "Join eHealth"
             If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
                 Select Case MyBase.EHSAccount.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW
+                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
+                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
                         trJoinEHRSS.Style.Remove("display")
                     Case Else
                         trJoinEHRSS.Style.Add("display", "none")
@@ -752,7 +753,8 @@ Partial Public Class ucInputCOVID19
 
             If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
                 Select Case MyBase.EHSAccount.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW
+                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
+                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
                         strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
                     Case Else
                         strJoinEHRSS = String.Empty

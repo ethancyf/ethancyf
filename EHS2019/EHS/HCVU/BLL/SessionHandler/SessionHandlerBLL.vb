@@ -3,6 +3,7 @@ Imports Common.Component.EHSClaimVaccine
 Imports Common.Component.EHSTransaction
 Imports Common.Component.Practice
 Imports Common.Component.Scheme
+Imports Common.Component.COVID19
 
 
 Namespace BLL
@@ -24,6 +25,8 @@ Namespace BLL
             Public Const SESS_EHSClaimPrintOutFunctionCode As String = "SESS_EHSCLAIM_PRINTOUT_FUNCTIONCODE"
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
             Public Const SESS_CLAIMCOVID19_ValidReprint As String = "SESS_CLAIMCOVID19_VALIDREPRINT"
+            Public Const SESS_ClaimCOVID19_DischargeRecord As String = "SESS_CLAIMCOVID19_DISCHARGERECORD"
+
             ' CRE20-0022 (Immu record) [Start][Raiman]
             ' ---------------------------------------------------------------------------------------------------------
 
@@ -512,6 +515,27 @@ Namespace BLL
         End Sub
 
 #End Region
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+#Region "Claim COVID-19 - Discharge Record"
+
+        Public Sub ClaimCOVID19DischargeRecordSaveToSession(ByVal udtDischargeResult As DischargeResultModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord)) = udtDischargeResult
+        End Sub
+
+        Public Function ClaimCOVID19DischargeRecordGetFromSession(ByVal strFunctionCode As String) As DischargeResultModel
+            If HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord)) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord)), DischargeResultModel)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19DischargeRecordRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord))
+        End Sub
+#End Region
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 #End Region
 

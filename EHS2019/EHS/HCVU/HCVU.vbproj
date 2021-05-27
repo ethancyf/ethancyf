@@ -371,6 +371,7 @@
     <Content Include="UIControl\DocType\ucInputPASS.ascx" />
     <Content Include="UIControl\DocType\ucInputReentryPermit.ascx" />
     <Content Include="UIControl\DocType\ucInputROP140.ascx" />
+    <Content Include="UIControl\DocType\ucInputTW.ascx" />
     <Content Include="UIControl\DocType\ucInputVISA.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyADOPC.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyCCIC.ascx" />
@@ -386,6 +387,7 @@
     <Content Include="UIControl\DocType\ucReadOnlyPASS.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyREPMT.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyTW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyVISA.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19OR.ascx" />
     <Content Include="UIControl\EHSClaim\ucInputCOVID19RVP.ascx" />
@@ -1183,6 +1185,13 @@
       <DependentUpon>ucInputROP140.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucInputTW.ascx.designer.vb">
+      <DependentUpon>ucInputTW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputTW.ascx.vb">
+      <DependentUpon>ucInputTW.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucInputVISA.ascx.designer.vb">
       <DependentUpon>ucInputVISA.ascx</DependentUpon>
     </Compile>
@@ -1286,6 +1295,13 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyROP140.ascx.vb">
       <DependentUpon>ucReadOnlyROP140.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyTW.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyTW.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyTW.ascx.vb">
+      <DependentUpon>ucReadOnlyTW.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyVISA.ascx.designer.vb">

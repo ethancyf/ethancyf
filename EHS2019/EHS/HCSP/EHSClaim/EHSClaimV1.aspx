@@ -44,6 +44,22 @@
                 <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationConfirm" runat="server" NoticeMode="ExclamationConfirmation" ButtonMode="ConfirmCancel"
                     MessageText="" />
             </asp:Panel>
+            <asp:Panel Style="display: none" ID="panPopupExclamationErrorBox" runat="server" Width="500px">
+                <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationError" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon" ButtonMode="Close"
+                    MessageText="" />
+            </asp:Panel>
+            <asp:Panel Style="display: none" ID="panPopupExclamationImportantReminder" runat="server" Width="600px">
+                <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationImportantReminder" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon" ButtonMode="Close"
+                    MessageText="" />
+            </asp:Panel>
+            <asp:Panel Style="display: none" ID="panPopupExclamationDemographicReminder" runat="server" Width="600px">
+                <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationDemographicReminder" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon" ButtonMode="Close"
+                    MessageText="" />
+            </asp:Panel>
+            <asp:Panel Style="display: none" ID="panPopupExclamationImportantReminderWithReason" runat="server" Width="600px">
+                <uc1:ucNoticePopUp ID="ucNoticePopUpExclamationImportantReminderWithReason" runat="server" NoticeMode="Custom" IconMode="ExclamationIcon" ButtonMode="ConfirmCancelWithReason"
+                    MessageText="" />
+            </asp:Panel>
             <asp:Panel Style="display: none;" ID="panPopupPracticeSelection" runat="server" BorderStyle="Solid"
                 BackColor="#E0E0E0" BorderWidth="1px">
                 <div style="padding: 10px 10px 10px 10px; overflow: auto;">
@@ -464,6 +480,26 @@
                 TargetControlID="btnModalPopupExclamationConfirmationBox" PopupControlID="panPopupExclamationConfirmationBox"
                 PopupDragHandleControlID="" RepositionMode="None">
             </cc1:ModalPopupExtender>
+            <asp:Button Style="display: none" ID="btnModalPopupExclamationErrorBox" runat="server"></asp:Button>
+            <cc1:ModalPopupExtender ID="ModalPopupExclamationErrorBox" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupExclamationErrorBox" PopupControlID="panPopupExclamationErrorBox"
+                PopupDragHandleControlID="" RepositionMode="None">
+            </cc1:ModalPopupExtender>
+            <asp:Button Style="display: none" ID="btnModalPopupExclamationImportantReminder" runat="server"></asp:Button>
+            <cc1:ModalPopupExtender ID="ModalPopupExclamationImportantReminder" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupExclamationImportantReminder" PopupControlID="panPopupExclamationImportantReminder"
+                PopupDragHandleControlID="" RepositionMode="None">
+            </cc1:ModalPopupExtender>
+            <asp:Button Style="display: none" ID="btnModalPopupExclamationDemographicReminder" runat="server"></asp:Button>
+            <cc1:ModalPopupExtender ID="ModalPopupExclamationDemographicReminder" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupExclamationDemographicReminder" PopupControlID="panPopupExclamationDemographicReminder"
+                PopupDragHandleControlID="" RepositionMode="None">
+            </cc1:ModalPopupExtender>
+            <asp:Button Style="display: none" ID="btnModalPopupExclamationImportantReminderWithReason" runat="server"></asp:Button>
+            <cc1:ModalPopupExtender ID="ModalPopupExclamationImportantReminderWithReason" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupExclamationImportantReminderWithReason" PopupControlID="panPopupExclamationImportantReminderWithReason"
+                PopupDragHandleControlID="" RepositionMode="None">
+            </cc1:ModalPopupExtender>
             <asp:Button Style="display: none" ID="btnModalPopupExclamationConfirmationBox" runat="server"></asp:Button>
             <cc1:ModalPopupExtender ID="ModalPopupExtenderRVPHomeListSearch" runat="server" BackgroundCssClass="modalBackgroundTransparent"
                 TargetControlID="btnModalPopupRVPHomeListSearch" PopupControlID="panPopupRVPHomeListSearch"
@@ -520,10 +556,8 @@
                 TargetControlID="btnModalPopupConfirmSelectPractice" PopupControlID="panConfirmSelectPractice"
                 PopupDragHandleControlID="panConfirmSelectPracticeHeading" RepositionMode="None" BehaviorID="panConfirmSelectPractice" DropShadow="False">
             </cc1:ModalPopupExtender>
-          <asp:Button Style="display: none" ID="btnModalPopupConfirmSelectPractice" runat="server"></asp:Button>
+            <asp:Button Style="display: none" ID="btnModalPopupConfirmSelectPractice" runat="server"></asp:Button>
             <%-- End of Popup for Select Practice Confirmation in covid-19 program  --%>
-
-
 
 
             <table style="width: 965px; height: 78px" cellspacing="0" cellpadding="0">
@@ -718,10 +752,6 @@
                                                     <asp:Label ID="lblCNoRecord" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px"
                                                         Text="<%$ Resources:Text, NoCOVID19VaccinationRecordFound%>" />
                                                 </td>
-                                                <%--<td style="border:1px solid;border-color:#61615b">&nbsp;</td>--%>
-    <%--                                        <td style="border:1px solid;border-color:#61615b">&nbsp;</td>
-                                                <td style="border:1px solid;border-color:#61615b">&nbsp;</td>
-                                                <td style="border:1px solid;border-color:#61615b">&nbsp;</td>--%>
                                             </tr>
                                         </table>
                                     </asp:Panel>
@@ -775,6 +805,42 @@
                                             </asp:TemplateField>
                                         </Columns>
                                     </asp:GridView>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom:20px">
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
+                    <asp:Panel ID="panStep2aDischargeRecord" runat="server" Visible="false">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td class="eHSTableHeading">
+                                    <asp:Label ID="lblCDischargeRecordHeading" runat="server" Text="<%$ Resources: Text, DischargeRecordForCOVID19 %>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table style="border:1px solid;padding:0px;border-spacing:1px;border-collapse:collapse;border-color:#CCCCCC;width:930px">
+                                        <tr style="background-color:#70ae47">
+                                            <td style="width:465px;vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                <asp:Label ID="lblCDischargeDateText" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, HospitalDischargeDate %>" />
+                                            </td>
+                                            <td style="vertical-align:middle;text-align:center;border:1px solid;border-color:#61615b">
+                                                <asp:Label ID="lblCDischargeRemarkText" runat="server" style="color:white;font-size:medium" Text="<%$ Resources: Text, Remarks %>" />
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color:white">
+                                            <td style="vertical-align:middle;border:1px solid;border-color:#61615b;height:20px">
+                                                <asp:Label ID="lblCDischargeDate" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px" />
+                                            </td>
+                                            <td style="vertical-align:middle;border:1px solid;border-color:#61615b;height:20px">
+                                                <asp:Label ID="lblCDischargeRemark" runat="server" CssClass="tableText" style="font-size:medium;position:relative;left:3px" />
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
                             <tr>
@@ -925,7 +991,7 @@
                                     <asp:Label ID="lblStep2aRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
                                 </td>
                                 <td height="25" style="vertical-align:top;padding-top:3px" colspan="2">
-                                    <asp:textbox ID="txtStep2aRemark" runat="server" MaxLength="200" style="position:relative;left:-1px" Width="660px"/>
+                                    <asp:textbox ID="txtStep2aRemark" runat="server" MaxLength="100" style="position:relative;left:-1px" Width="660px"/>
                                     <asp:ImageButton ID="imgStep2aRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
                                 </td>
@@ -1457,7 +1523,7 @@
     </asp:UpdatePanel>
    
     <script type="text/javascript" language="javascript">
-        $(function(){            
+        $(function () {
             $(document).on('change', "[id$='ddlCCategoryCovid19']", function () {
                 disableChkStep2aDeclareClaim()
             });
@@ -1468,13 +1534,13 @@
 
             $(document).on('change', "[id$='ddlCVaccineLotNoCovid19']", function () {
                 disableChkStep2aDeclareClaim()
-            });                      
+            });
 
             $(document).on('change', "[id$='ddlCDoseCovid19']", function () {
                 disableChkStep2aDeclareClaim()
-                
+
             });
-        
+
         });
 
         const disableChkStep2aDeclareClaim = function () {

@@ -18,6 +18,28 @@ GO
 -- Modification History
 -- CR No.:			CRE20-0023 
 -- Modified by:		Martin Tang
+-- Modified date:	21 May 2021
+-- Description:		1. Fix bug (del case)
+--					2. Apply Doc_Type = 9 for Two-Way
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-43
+-- Modified by:		Winnie SUEN
+-- Modified date:	18 May 2021
+-- Description:		1. Handle scheme [COVID19SB]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-40 
+-- Modified by:		Martin Tang
+-- Modified date:	13 May 2021
+-- Description:		1. Fix double quote in Remark
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023 
+-- Modified by:		Martin Tang
 -- Modified date:	27 Apr 2021
 -- Description:		1. Performance turning 
 -- =============================================
@@ -117,6 +139,8 @@ AS
         DECLARE @In_Period_To DATETIME= @Period_To;
         DECLARE @VBar AS CHAR(1)= '|';
         DECLARE @VBarWithQuote AS CHAR(3)= '"|"';
+		DECLARE @DoubleQuote AS CHAR(1)= '"';
+        DECLARE @DoubleQuoteWithBackslash AS CHAR(2)= '\"';
         DECLARE @PendingStatus AS CHAR(1)= 'P';
         DECLARE @SkipedStatus AS CHAR(1)= 'S';
         --DECLARE @CompleteStatus AS CHAR(1)= 'C';
@@ -131,6 +155,7 @@ AS
         DECLARE @SchemeCodeCOVID19RVP AS VARCHAR(10)= 'COVID19RVP';
         DECLARE @SchemeCodeCOVID19OR AS VARCHAR(10)= 'COVID19OR';
         DECLARE @SchemeCodeCOVID19SR AS VARCHAR(10)= 'COVID19SR';
+		DECLARE @SchemeCodeCOVID19SB AS VARCHAR(10)= 'COVID19SB';
 
         DECLARE @SchemeCodeRVP AS VARCHAR(10)= 'RVP';
         DECLARE @SchemeCodeVSS AS VARCHAR(10)= 'VSS';
@@ -242,6 +267,8 @@ AS
                             THEN '6'
                             WHEN pinfo.Doc_Code = 'PASS'
                             THEN '7'
+							WHEN pinfo.Doc_Code = 'TW'
+                            THEN '9'
                             ELSE '8' --others
                         END
                    ELSE CASE
@@ -263,6 +290,8 @@ AS
                             THEN '6'
                             WHEN tpi.Doc_Code = 'PASS'
                             THEN '7'
+							WHEN tpi.Doc_Code = 'TW'
+                            THEN '9'
                             ELSE '8'
                         END
                END AS 'Doc_Type',
@@ -385,6 +414,8 @@ AS
                                               THEN ''
                                               WHEN @SchemeCodeCOVID19SR
                                               THEN ''
+                                              WHEN @SchemeCodeCOVID19SB
+                                              THEN ''
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'category', 
                REPLACE(LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
@@ -401,6 +432,8 @@ AS
                                               WHEN @SchemeCodeCOVID19DH
                                               THEN ''
                                               WHEN @SchemeCodeCOVID19SR
+                                              THEN ''
+                                              WHEN @SchemeCodeCOVID19SB
                                               THEN ''
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'subcategory', 
@@ -455,6 +488,8 @@ AS
                    THEN 'DH'
                    WHEN @SchemeCodeCOVID19SR
                    THEN 'Other'
+                   WHEN @SchemeCodeCOVID19SB
+                   THEN 'Other'
                    ELSE ''
                END AS 'Vaccination_provider_code',
                CASE vt.Scheme_Code
@@ -472,6 +507,8 @@ AS
                    THEN 'DH clinic'
                    WHEN @SchemeCodeCOVID19SR
                    THEN 'Other vaccination provider'
+                   WHEN @SchemeCodeCOVID19SB
+                   THEN 'Other vaccination provider'
                    ELSE ''
                END AS 'Vaccination_provider_description', 
                'Department of Health COVID-19 Vaccination Programme' AS 'Vaccination_provider_local_description', 
@@ -488,6 +525,8 @@ AS
                                               THEN vc.Centre_Name
                                               WHEN @SchemeCodeCOVID19SR
                                               THEN vc.Centre_Name
+                                              WHEN @SchemeCodeCOVID19SB
+                                              THEN vc.Centre_Name
                                               WHEN @SchemeCodeVSS
                                               THEN p.Practice_Name
                                               ELSE ''
@@ -498,9 +537,11 @@ AS
                                       THEN vcsm.Booth
                                       WHEN @SchemeCodeCOVID19SR
                                       THEN vcsm.Booth
+                                      WHEN @SchemeCodeCOVID19SB
+                                      THEN vcsm.Booth
                                       ELSE ''
                                   END, ''))) AS 'Booth', 
-               REPLACE(LTRIM(RTRIM(ISNULL(Remarks.AdditionalFieldValueDesc, ''))), @VBar, @VBarWithQuote) AS 'Vaccine_administration_remark', --b 
+               REPLACE(REPLACE(LTRIM(RTRIM(ISNULL(Remarks.AdditionalFieldValueDesc, ''))), @DoubleQuote, @DoubleQuoteWithBackslash), @VBar, @VBarWithQuote) AS 'Vaccine_administration_remark', --b 
                '' AS 'Contraindication', --b 
                '' AS 'Side_effect', --b 
                '' AS 'Route_of_administration_local_description', --b 
@@ -514,7 +555,7 @@ AS
                LTRIM(RTRIM(ISNULL(vt.Create_By_SmartID, 'N'))) AS 'Reserved_field_1', -- Create by Smart IC: Y/N
                LTRIM(RTRIM(ISNULL(CASE
                                       WHEN vt.Scheme_Code IN(@SchemeCodeCOVID19CVC, @SchemeCodeCOVID19DH, @SchemeCodeCOVID19RVP, @SchemeCodeCOVID19OR,
-                                      @SchemeCodeCOVID19SR)
+                                      @SchemeCodeCOVID19SR, @SchemeCodeCOVID19SB)
                                       THEN vcsm.Centre_ID
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_2', -- Centre Code
@@ -540,7 +581,7 @@ AS
                                   END, ''))) AS 'Reserved_field_6', -- Professional Registration no.
                LTRIM(RTRIM(ISNULL(CASE vt.Scheme_Code
                                       WHEN @SchemeCodeVSS
-                                      THEN CONVERT(VARCHAR(2), vt.Practice_Display_Seq)
+                                      THEN CONVERT(VARCHAR(10), vt.Practice_Display_Seq)
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_7', --Practice Display Seq
                LTRIM(RTRIM(ISNULL(CASE
@@ -722,7 +763,7 @@ AS
                                   ELSE @SkipedStatus
                               END
         FROM #Results r
-             INNER JOIN #ResultsLatestByTransaction ctecq
+             LEFT OUTER JOIN #ResultsLatestByTransaction ctecq
              ON r.Transaction_ID = ctecq.Transaction_ID
         WHERE r.transaction_Type = @Delete;
         -------------------------------------------------------------

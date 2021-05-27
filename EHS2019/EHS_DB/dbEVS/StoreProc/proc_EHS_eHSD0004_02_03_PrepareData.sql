@@ -6,6 +6,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+
+-- =============================================
+-- Modified by:		Raiman Chong
+-- Modified date:	04 May 2021
+-- CR. No.:			CRE20-023
+-- Description:		Add Covid-19 Scheme Report
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Koala CHENG
@@ -123,10 +130,11 @@ AS BEGIN
 		IsINTellectualDisability 	tinyINT,  
 		IsPV   						tinyINT,    
 		IsPV13   					tinyINT,
-		IsMMR  					tinyINT,  
+		IsMMR  						tinyINT,  
 		IsRQIV_RQIVHCW  			tinyINT,
 		IsRQIVPID  					tinyINT,
 		IsCurrentSeason 			tinyINT,
+		IsCovid19					tinyINT,
 		SP_ID						varchar(8)
 	)    
           
@@ -230,7 +238,7 @@ AS BEGIN
 		AND D.Scheme_Seq = @current_scheme_Seq  
 
 	
-	-- 23vPPV, PCV13 & MMR transaction under RVP   
+	-- 23vPPV, PCV13, MMR & C19 transaction under RVP   
 	INSERT INTO #RVPTransaction (      
 		Transaction_ID,      
 		Voucher_Acc_ID,      
@@ -280,8 +288,12 @@ AS BEGIN
 			AND ((Effective_Date is null or Effective_Date <= @Cutoff_Dtm) AND (Expiry_Date is null or @cutoff_dtm < Expiry_Date))))  
 		AND D.subsidize_code in 
 			(select subsidize_code from SubsidizeGroupClaimItemDetails WITH (NOLOCK) where   
-				scheme_code = VT.Scheme_Code AND (subsidize_item_code = 'PV' or subsidize_item_code = 'PV13' or subsidize_item_code = 'MMR'))  
+				scheme_code = VT.Scheme_Code AND (subsidize_item_code = 'PV' or subsidize_item_code = 'PV13' or subsidize_item_code = 'MMR' or subsidize_item_code = 'C19'))  
       
+	  update #RVPTransaction set Category_Code = case when taf2.AdditionalFieldValueCode = 'RESIDENT' then 'RESIDENT' else 'HCW' end
+	  from #RVPTransaction rvp left outer join TransactionAdditionalField TAF2 on rvp.Transaction_ID = taf2.Transaction_ID and  taf2.AdditionalFieldID = 'RecipientType'
+	  where rvp.subsidize_item_code = 'C19' 
+
 	-- Validated account with RVP       
 	INSERT INTO #RVPAccount (      
 		Transaction_ID,  
@@ -447,6 +459,7 @@ AS BEGIN
 			,IsRQIV_RQIVHCW 
 			,IsRQIVPID  
 	 		,IsCurrentSeason
+			,IsCovid19
 	 		,SP_ID)
 	SELECT DISTINCT 
 		T.Transaction_ID, 
@@ -481,6 +494,8 @@ AS BEGIN
 			WHEN t.Subsidize_Code like '%RDQIV%' THEN 1 ELSE 0 END RQIVPIDCount,
 		CASE 
 			WHEN T.Service_Receive_Dtm >= @IV_Current_Season_Start_Dtm THEN 1 ELSE 0 END CurrentSeason,
+		CASE 
+			WHEN t.Subsidize_Item_Code = 'C19' THEN 1 ELSE 0 END Covid19,
 		A.SP_ID
 	FROM #RVPTransaction T 
 		INNER JOIN #RVPAccount A 
@@ -546,8 +561,8 @@ AS BEGIN
 	SET @displayCodeRQIV_RQIVHCW = SUBSTRING(@displayCodeRQIV_RQIVHCW, 1, LEN(@displayCodeRQIV_RQIVHCW)-2)
 	SET @displayCodeRQIVPID = SUBSTRING(@displayCodeRQIVPID, 1, LEN(@displayCodeRQIVPID)-2)
 
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1,Result_Value2,Result_Value3,Result_Value4,Result_Value5,Result_Value6,Result_Value7,Result_Value8)  
-	VALUES	(7, '', '23vPPV*', 'PCV13*','MMR*', @displayCodeRQIV_RQIVHCW, @displayCodeRQIVPID, '', 'No. of SP involved' ) 
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1,Result_Value2,Result_Value3,Result_Value4,Result_Value5,Result_Value6,Result_Value7,Result_Value8,Result_Value9)  
+	VALUES	(7, '', '23vPPV', 'PCV13','MMR', @displayCodeRQIV_RQIVHCW, @displayCodeRQIVPID,'COVID-19', '', 'No. of SP involved' ) 
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
 	VALUES	(8,	'RCHD'),  
 			(9, 'RCHE'),  
@@ -568,7 +583,9 @@ AS BEGIN
 		Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),
 		Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE) 
+						AND RCH_Type = 'D' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE) ,
+		Result_Value7 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE) 
 	WHERE Result_Seq = 8  
 
 	--UPDATE RCHE  
@@ -583,7 +600,9 @@ AS BEGIN
 		Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE)
+						AND RCH_Type = 'E' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value7 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE)
 	WHERE Result_Seq = 9  
 
 	--UPDATE RCCC 
@@ -598,7 +617,9 @@ AS BEGIN
 		Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC),
 		Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC) 
+						AND RCH_Type = 'C' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC) ,
+		Result_Value7 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCCC) 
 	WHERE Result_Seq = 10  
 
 	--UPDATE IPID 
@@ -613,7 +634,9 @@ AS BEGIN
 		Result_Value5 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),
 		Result_Value6 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE) 
+						AND RCH_Type = 'I' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE) ,
+		Result_Value7 = (SELECT ISNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE)
 	WHERE Result_Seq = 11  
 
 	--UPDATE Horizontal Total   
@@ -624,24 +647,25 @@ AS BEGIN
 		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 8 AND 11),
 		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 8 AND 11), 
 		Result_Value6 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 8 AND 11),
-		Result_Value8 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1) --No. of SP involved   
+		Result_Value7 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value7)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 8 AND 11),
+		Result_Value9 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1) --No. of SP involved   
 	WHERE Result_Seq = 12 
     
 	-- ===============================================================================================================   
 	-- (ii) (a) By age group (RQIV 20XX/XX + RQIV-HCW 20XX/XX)
 	-- ===============================================================================================================   
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1) 
-	VALUES	(14, '(ii) (a) By age group (' + @displayCodeRQIV_RQIVHCW + ')'),
-			(15, '')  
+	VALUES	(20, '(ii) (a) By age group (' + @displayCodeRQIV_RQIVHCW + ')'),
+			(21, '')  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6)  
-	VALUES	(16, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
+	VALUES	(22, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(17, 'RCHD'),
-			(18, 'RCHE'),
-			(19, 'RCCC'),
-			(20, 'IPID'),
-			(21, 'Total'),  
-			(22, '')   
+	VALUES	(23, 'RCHD'),
+			(24, 'RCHE'),
+			(25, 'RCCC'),
+			(26, 'IPID'),
+			(27, 'Total'),  
+			(28, '')   
 
 	--UPDATE RCHD  
 	UPDATE #ResultTable 
@@ -654,7 +678,7 @@ AS BEGIN
 						AND RCH_Type = 'D' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 17  
+	WHERE Result_Seq = 23  
    
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
@@ -667,7 +691,7 @@ AS BEGIN
 						AND RCH_Type = 'E' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 18  
+	WHERE Result_Seq = 24  
   
 	--UPDATE RCCC  
 	UPDATE #ResultTable 
@@ -680,7 +704,7 @@ AS BEGIN
 						AND RCH_Type = 'C' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC)
-	WHERE Result_Seq = 19 
+	WHERE Result_Seq = 25 
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
@@ -693,47 +717,47 @@ AS BEGIN
 						AND RCH_Type = 'I' AND age = 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND age > 65 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 20 
+	WHERE Result_Seq = 26 
   
 	--UPDATE Vertical Total
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 17) 
-	WHERE Result_Seq = 17  
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 23) 
+	WHERE Result_Seq = 23  
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 18) 
-	WHERE Result_Seq = 18  
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 24) 
+	WHERE Result_Seq = 24  
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 19) 
-	WHERE Result_Seq = 19  
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 25) 
+	WHERE Result_Seq = 25  
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 20) 
-	WHERE Result_Seq = 20  
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 26) 
+	WHERE Result_Seq = 26  
 
 	--UPDATE Horizontal Total
 	UPDATE #ResultTable 
 	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 17 AND 20), 
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 17 AND 20),
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 17 AND 20),
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 17 AND 20),
-		Result_Value6 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 17 AND 20) 
-	WHERE Result_Seq = 21 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 23 AND 26), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 23 AND 26),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 23 AND 26),
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 23 AND 26),
+		Result_Value6 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 23 AND 26) 
+	WHERE Result_Seq = 27 
 
 	-- ===============================================================================================================   
 	-- (ii) (b) By age group (RQIV-PID 20XX/XX)
 	-- =============================================================================================================== 
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(29, '(ii) (b) By age group (' + @displayCodeRQIVPID + ')'),
-			(30, '')  
+	VALUES	(35, '(ii) (b) By age group (' + @displayCodeRQIVPID + ')'),
+			(36, '')  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6)  
-	VALUES	(31, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
+	VALUES	(37, '', '6 months to <9 years','9 years to <65 years','at 65 years','>65 years','Total')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(32, 'RCHD'),  
-			(33, 'RCHE'),  
-			(34, 'RCCC'),  
-			(35, 'IPID'),  
-			(36, 'Total'),  
-			(37, '')   
+	VALUES	(38, 'RCHD'),  
+			(39, 'RCHE'),  
+			(40, 'RCCC'),  
+			(41, 'IPID'),  
+			(42, 'Total'),  
+			(43, '')   
 
 	--UPDATE RCHD 
 	UPDATE #ResultTable 
@@ -746,7 +770,7 @@ AS BEGIN
 						AND RCH_Type = 'D' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD), 
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 32  
+	WHERE Result_Seq = 38  
   
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
@@ -759,7 +783,7 @@ AS BEGIN
 						AND RCH_Type = 'E' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 33  
+	WHERE Result_Seq = 39  
   
 	--UPDATE RCCC  
 	UPDATE #ResultTable 
@@ -772,7 +796,7 @@ AS BEGIN
 						AND RCH_Type = 'C' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC)
-	WHERE Result_Seq = 34 
+	WHERE Result_Seq = 40 
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
@@ -785,47 +809,47 @@ AS BEGIN
 						AND RCH_Type = 'I' AND age = 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value5 = (SELECT isNULL(sum(rec),0) FROM (SELECT isNULL(isNULL(COUNT (Encrypt_Field1),0),0) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND age > 65 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 35 
+	WHERE Result_Seq = 41 
   
 	--UPDATE Vertical Total
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable	WHERE Result_Seq = 32) 
-	WHERE Result_Seq = 32  
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable	WHERE Result_Seq = 38) 
+	WHERE Result_Seq = 38  
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 33) 
-	WHERE Result_Seq = 33  	
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 39) 
+	WHERE Result_Seq = 39  	
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 34) 
-	WHERE Result_Seq = 34  	
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 40) 
+	WHERE Result_Seq = 40  	
 	UPDATE #ResultTable 
-	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 35) 
-	WHERE Result_Seq = 35  
+	SET Result_Value6 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) + CONVERT(INT,Result_Value5) FROM #ResultTable WHERE Result_Seq = 41) 
+	WHERE Result_Seq = 41  
 
 	--UPDATE Horizontal Total
 	UPDATE #ResultTable 
 	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 32 AND 35), 
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 32 AND 35),
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 32 AND 35),
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 32 AND 35),
-		Result_Value6 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 32 AND 35) 
-	WHERE Result_Seq = 36 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 38 AND 41), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 38 AND 41),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 38 AND 41),
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 38 AND 41),
+		Result_Value6 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value6)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 38 AND 41) 
+	WHERE Result_Seq = 42 
 
 	-- ===============================================================================================================   
 	-- (iii) (a) By dose (RQIV 20XX/XX + RQIV-HCW 20XX/XX) 
 	-- ===============================================================================================================  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(45, '(iii) (a) By dose (' + @displayCodeRQIV_RQIVHCW + ')'),
-			(46, '')
+	VALUES	(50, '(iii) (a) By dose (' + @displayCodeRQIV_RQIVHCW + ')'),
+			(51, '')
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
-	VALUES  (47, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
+	VALUES  (52, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES  (48, 'RCHD'),
-			(49, 'RCHE'),  
-			(50, 'RCCC'),
-			(51, 'IPID'),
-			(52, 'Total'),
-			(53, '')   
+	VALUES  (53, 'RCHD'),
+			(54, 'RCHE'),  
+			(55, 'RCCC'),
+			(56, 'IPID'),
+			(57, 'Total'),
+			(58, '')   
 	--===============================================================================================================  
 	--UPDATE RCHD 
 	UPDATE #ResultTable 
@@ -836,7 +860,7 @@ AS BEGIN
 						AND RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 48  
+	WHERE Result_Seq = 53  
    
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
@@ -847,7 +871,7 @@ AS BEGIN
 						AND RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 49  
+	WHERE Result_Seq = 54  
   
 	--UPDATE RCCC  
 	UPDATE #ResultTable 
@@ -858,7 +882,7 @@ AS BEGIN
 						AND RCH_Type = 'C' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC)
-	WHERE Result_Seq = 50  
+	WHERE Result_Seq = 55  
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
@@ -869,122 +893,39 @@ AS BEGIN
 						AND RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 51  
+	WHERE Result_Seq = 56  
 
 	--UPDATE Vertical Total
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 48) 
-	WHERE Result_Seq = 48    
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 53) 
+	WHERE Result_Seq = 53    
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 49) 
-	WHERE Result_Seq = 49  
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 54) 
+	WHERE Result_Seq = 54  
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 50) 
-	WHERE Result_Seq = 50 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 55) 
+	WHERE Result_Seq = 55 
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 51) 
-	WHERE Result_Seq = 51 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 56) 
+	WHERE Result_Seq = 56 
 
 	--UPDATE Horizontal Total
 	UPDATE #ResultTable 
 	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 48 AND 51),
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 48 AND 51),
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 48 AND 51), 
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 48 AND 51) 
-	WHERE Result_Seq = 52 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 53 AND 56),
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 53 AND 56),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 53 AND 56), 
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 53 AND 56) 
+	WHERE Result_Seq = 57 
  
 	--===============================================================================================================   
 	--(iii) (b) By dose (RQIV-PID 2015/16)
 	--===============================================================================================================  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(55, '(iii) (b) By dose (' + @displayCodeRQIVPID + ')'),
-			(56, '')  
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
-	VALUES	(57, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(58, 'RCHD'),
-			(59, 'RCHE'),
-			(60, 'RCCC'),
-			(61, 'IPID'),
-			(62, 'Total'),
-			(63, '')   
-
-	--UPDATE RCHD  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1
-						AND RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 58  
-   
-	--UPDATE RCHE  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 59  
-  
-	--UPDATE RCCC 
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC)
-	WHERE Result_Seq = 60  
-  
-	--UPDATE IPID  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 61  
-
-	--UPDATE Vertical Total
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 58) 
-	WHERE Result_Seq = 58  
-	UPDATE #ResultTable 
-	SET	Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 59) 
-	WHERE Result_Seq = 59  
-	UPDATE #ResultTable 
-	SET	Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 60) 
-	WHERE Result_Seq = 60 
-	UPDATE #ResultTable 
-	SET	Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 61) 
-	WHERE Result_Seq = 61 
-
-	--UPDATE Horizontal Total 
-	UPDATE #ResultTable 
-	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 58 AND 61), 
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 58 AND 61),  
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 58 AND 61), 
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 58 AND 61) 
-	WHERE Result_Seq = 62
-
-	--===============================================================================================================   
-	--(iii) (c) By dose (MMR*)
-	--===============================================================================================================  
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(65, '(iii) (c) By dose (MMR*)'),
+	VALUES	(65, '(iii) (b) By dose (' + @displayCodeRQIVPID + ')'),
 			(66, '')  
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4)  
-	VALUES	(67, '', '1st Dose', '2nd Dose', 'Total')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+	VALUES	(67, '', '1st Dose','2nd Dose','Only Dose', 'Total')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
 	VALUES	(68, 'RCHD'),
 			(69, 'RCHE'),
@@ -997,50 +938,58 @@ AS BEGIN
 	UPDATE #ResultTable 
 	SET   
 		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1
-						AND RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
+						AND RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
 		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHD)
+						AND RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD)
 	WHERE Result_Seq = 68  
    
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
 	SET   
 		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
+						AND RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHE)  
+						AND RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE)
 	WHERE Result_Seq = 69  
   
 	--UPDATE RCCC 
 	UPDATE #ResultTable 
 	SET   
 		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCCC),  
+						AND RCH_Type = 'C' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC),  
 		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCCC)  
+						AND RCH_Type = 'C' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC)
 	WHERE Result_Seq = 70  
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
 	SET   
 		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
+						AND RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as IPID)
+						AND RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND DOSE = 'ONLYDOSE' AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID)
 	WHERE Result_Seq = 71  
 
 	--UPDATE Vertical Total
 	UPDATE #ResultTable 
-	SET Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 68) 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 68) 
 	WHERE Result_Seq = 68  
 	UPDATE #ResultTable 
-	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 69) 
+	SET	Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 69) 
 	WHERE Result_Seq = 69  
 	UPDATE #ResultTable 
-	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 70) 
+	SET	Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 70) 
 	WHERE Result_Seq = 70 
 	UPDATE #ResultTable 
-	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 71) 
+	SET	Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 71) 
 	WHERE Result_Seq = 71 
 
 	--UPDATE Horizontal Total 
@@ -1048,24 +997,26 @@ AS BEGIN
 	SET 
 		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 68 AND 71), 
 		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 68 AND 71),  
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 68 AND 71)
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 68 AND 71), 
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 68 AND 71) 
 	WHERE Result_Seq = 72
-     
+
+
 	-- ===============================================================================================================   
 	-- (iv) (a) By category (RQIV 20XX/XX + RQIV-HCW 20XX/XX)
 	-- ===============================================================================================================  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(74, '(iv) (a) By category (' + @displayCodeRQIV_RQIVHCW + ')'),
-			(75, '')  
+	VALUES	(80, '(iv) (a) By category (' + @displayCodeRQIV_RQIVHCW + ')'),
+			(81, '')  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
-	VALUES	(76, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
+	VALUES	(82, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(77, 'RCHD'),
-			(78, 'RCHE'),
-			(79, 'RCCC'),  	 
-			(80, 'IPID'),  
-			(81, 'Total'),  
-			(82, '')   
+	VALUES	(83, 'RCHD'),
+			(84, 'RCHE'),
+			(85, 'RCCC'),  	 
+			(86, 'IPID'),  
+			(87, 'Total'),  
+			(88, '')   
 
 	--UPDATE RCHD  
 	UPDATE #ResultTable 
@@ -1076,7 +1027,7 @@ AS BEGIN
 						AND RCH_Type = 'D' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND IsINTellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHD) 
-	WHERE Result_Seq = 77  
+	WHERE Result_Seq = 83  
   
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
@@ -1087,7 +1038,7 @@ AS BEGIN
 						AND RCH_Type = 'E' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND IsINTellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCHE) 
-	WHERE Result_Seq = 78  
+	WHERE Result_Seq = 84  
   
 	--UPDATE RCCC  
 	UPDATE #ResultTable 
@@ -1098,7 +1049,7 @@ AS BEGIN
 						AND RCH_Type = 'C' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND IsINTellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as RCCC) 
-	WHERE Result_Seq = 79  
+	WHERE Result_Seq = 85  
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
@@ -1109,46 +1060,46 @@ AS BEGIN
 						AND RCH_Type = 'I' AND IsResident = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND IsINTellectualDisability = 1 AND IsRQIV_RQIVHCW = 1 GROUP BY DOC_Code) as IPID) 
-	WHERE Result_Seq = 80  
+	WHERE Result_Seq = 86  
   
 	--UPDATE Vertical Total
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 77) 
-	WHERE Result_Seq = 77 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 83) 
+	WHERE Result_Seq = 83 
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 78) 
-	WHERE Result_Seq = 78  
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 84) 
+	WHERE Result_Seq = 84  
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 79) 
-	WHERE Result_Seq = 79  
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 85) 
+	WHERE Result_Seq = 85  
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 80) 
-	WHERE Result_Seq = 80  
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 86) 
+	WHERE Result_Seq = 86  
 
 	--UPDATE Horizontal Total
 	UPDATE #ResultTable 
 	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 77 AND 80), 
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 77 AND 80), 
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 77 AND 80), 
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 77 AND 80) 
-	WHERE Result_Seq = 81 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 83 AND 86), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 83 AND 86), 
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 83 AND 86), 
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 83 AND 86) 
+	WHERE Result_Seq = 87 
      
 	--===============================================================================================================   
 	--(iv) (b) By category (RQIV-PID 20XX/XX)
 	--=============================================================================================================== 
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1) 
-	VALUES	(83, '(iv) (b) By category (' + @displayCodeRQIVPID + ')'),
-			(84, '')  
+	VALUES	(95, '(iv) (b) By category (' + @displayCodeRQIVPID + ')'),
+			(96, '')  
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
-	VALUES	(85, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
+	VALUES	(97, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(86, 'RCHD'),
-			(87, 'RCHE'),  
-			(88, 'RCCC'),
-			(89, 'IPID'),
-			(90, 'Total'),
-			(91, '')   
+	VALUES	(98, 'RCHD'),
+			(99, 'RCHE'),  
+			(100, 'RCCC'),
+			(101, 'IPID'),
+			(102, 'Total'),
+			(103, '')   
 
 	--UPDATE RCHD  
 	UPDATE #ResultTable 
@@ -1159,7 +1110,7 @@ AS BEGIN
 						AND RCH_Type = 'D' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND IsINTellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHD) 
-	WHERE Result_Seq = 86  
+	WHERE Result_Seq = 98  
   
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
@@ -1170,7 +1121,7 @@ AS BEGIN
 						AND RCH_Type = 'E' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND IsINTellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCHE) 
-	WHERE Result_Seq = 87  
+	WHERE Result_Seq = 99  
   
 	--UPDATE RCCC  
 	UPDATE #ResultTable 
@@ -1181,7 +1132,7 @@ AS BEGIN
 						AND RCH_Type = 'C' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND IsINTellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as RCCC) 
-	WHERE Result_Seq = 88  
+	WHERE Result_Seq = 100  
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
@@ -1192,288 +1143,37 @@ AS BEGIN
 						AND RCH_Type = 'I' AND IsResident = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND IsINTellectualDisability = 1 AND IsRQIVPID = 1 GROUP BY DOC_Code) as IPID) 
-	WHERE Result_Seq = 89  
+	WHERE Result_Seq = 101  
   
 	--UPDATE Vertical Total
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 86) 
-	WHERE Result_Seq = 86  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 87) 
-	WHERE Result_Seq = 87  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 88) 
-	WHERE Result_Seq = 88  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 89) 
-	WHERE Result_Seq = 89  
-
-	--UPDATE Horizontal Total
-	UPDATE #ResultTable 
-	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 86 AND 89), 
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 86 AND 89), 
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 86 AND 89),
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 86 AND 89) 
-	WHERE Result_Seq = 90 
-
-	--===============================================================================================================   
-	--(iv) (c) By category (MMR*)
-	--=============================================================================================================== 
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1) 
-	VALUES	(92, '(iv) (c) By category (MMR*)'),
-			(93, '')  
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
-	VALUES	(94, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(95, 'RCHD'),
-			(96, 'RCHE'),  
-			(97, 'RCCC'),
-			(98, 'IPID'),
-			(99, 'Total'),
-			(100, '')   
-
-	--UPDATE RCHD  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD) 
-	WHERE Result_Seq = 95  
-  
-	--UPDATE RCHE  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE) 
-	WHERE Result_Seq = 96  
-  
-	--UPDATE RCCC  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCCC),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCCC),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCCC) 
-	WHERE Result_Seq = 97  
-  
-	--UPDATE IPID  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as IPID) 
-	WHERE Result_Seq = 98  
-  
-	--UPDATE Vertical Total
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 95) 
-	WHERE Result_Seq = 95  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 96) 
-	WHERE Result_Seq = 96  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 97) 
-	WHERE Result_Seq = 97  
 	UPDATE #ResultTable 
 	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 98) 
 	WHERE Result_Seq = 98  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 99) 
+	WHERE Result_Seq = 99  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 100) 
+	WHERE Result_Seq = 100  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 101) 
+	WHERE Result_Seq = 101  
 
 	--UPDATE Horizontal Total
 	UPDATE #ResultTable 
 	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 95 AND 98), 
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 95 AND 98), 
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 95 AND 98),
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 95 AND 98) 
-	WHERE Result_Seq = 99 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 98 AND 101), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 98 AND 101), 
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 98 AND 101),
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 98 AND 101) 
+	WHERE Result_Seq = 102 
 
 	-- ===============================================================================================================   
-	-- (v) By age group (23vPPV)  
-	-- ===============================================================================================================
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(101, '(v) By age group (23vPPV*)'),
-			(102, '')  
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)  
-	VALUES	(103, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(104, 'RCHD'),
-			(105, 'RCHE'),
-			(106, 'RCCC'),
-			(107, 'IPID'),
-			(108, 'Total'),
-			(109, '')   
-
-	--UPDATE RCHD  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 104  
-
-	--UPDATE RCHE  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 105  
-
-	--UPDATE RCCC  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCCC),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCCC),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCCC)
-	WHERE Result_Seq = 106  
-
-	--UPDATE IPID  
-	UPDATE #ResultTable 
-	SET   
-			Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-							AND RCH_Type = 'I' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID),  
-			Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-							AND RCH_Type = 'I' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID),  
-			Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-							AND RCH_Type = 'I' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 107  
-
-	--UPDATE Vertical Total
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 104) 
-	WHERE Result_Seq = 104  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 105) 
-	WHERE Result_Seq = 105 
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 106) 
-	WHERE Result_Seq = 106   
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 107) 
-	WHERE Result_Seq = 107  
-
-	--UPDATE Horizontal Total
-	UPDATE #ResultTable 
-	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 104 AND 107),
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 104 AND 107),
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 104 AND 107),
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 104 AND 107),
-		Result_Value7 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1 AND IsPV = 1) 
-	WHERE Result_Seq = 108 
-   
-	-- ===============================================================================================================   
-	-- (vi) By age group (PCV13)  
-	-- ===============================================================================================================     
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(111, '(vi) By age group (PCV13*)'),
-			(112, '')  
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)  
-	VALUES	(113, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
-	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-	VALUES	(114, 'RCHD'),
-			(115, 'RCHE'),
-			(116, 'RCCC'),
-			(117, 'IPID'),  
-			(118, 'Total'),
-			(119, '')   
-
-	--UPDATE RCHD 
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHD),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'D' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 114  
-  
-	--UPDATE RCHE  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHE),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'E' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 115 
-  
-	--UPDATE RCCC  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'C' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 116  
-  
-	--UPDATE IPID  
-	UPDATE #ResultTable 
-	SET   
-		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
-		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
-						AND RCH_Type = 'I' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 117  
-
-	--UPDATE Vertical Total
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 114) 
-	WHERE Result_Seq = 114  
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 115) 
-	WHERE Result_Seq = 115   
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 116) 
-	WHERE Result_Seq = 116 
-	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 117) 
-	WHERE Result_Seq = 117  
-
-	--UPDATE Horizontal Total
-	UPDATE #ResultTable 
-	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 114 AND 117),
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 114 AND 117),
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 114 AND 117), 
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 114 AND 117),
-		Result_Value7 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1 AND IsPV13 = 1) 
-	WHERE Result_Seq = 118
-
-	-- ===============================================================================================================   
-	-- (vii) By age group (MMR**)
+	-- (v)(a) By age group (MMR)
 	-- ===============================================================================================================   
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-		VALUES	(127, '(vii) By age group (MMR*)'),
-				(128, '')  
+		VALUES	(110, '(v) (a) By age group (MMR)'),
+				(111, '')  
 	--INSERT INTO #ResultTable (
 	--			Result_Seq, 
 	--			Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, 
@@ -1485,14 +1185,14 @@ AS BEGIN
 	--			Result_Value7, Result_Value8, Result_Value9, Result_Value10,Result_Value11)  
 	--	VALUES	(130, '', '1st Dose', '2nd Dose', '1st Dose', '2nd Dose', '1st Dose', '2nd Dose', '1st Dose', '2nd Dose', '1st Dose', '2nd Dose')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)  
-		VALUES	(130, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
+		VALUES	(112, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
-		VALUES	(131, 'RCHD'),  
-				(132, 'RCHE'),        
-				(133, 'RCCC'),    
-				(134, 'IPID'), 
-				(135, 'Total'),
-				(136, '')   
+		VALUES	(113, 'RCHD'),  
+				(114, 'RCHE'),        
+				(115, 'RCCC'),    
+				(116, 'IPID'), 
+				(117, 'Total'),
+				(118, '')   
 
 	----UPDATE RCHD  
 	--UPDATE #ResultTable 
@@ -1633,7 +1333,7 @@ AS BEGIN
 						AND RCH_Type = 'D' AND Age = 65 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'D' AND Age > 65 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD)
-	WHERE Result_Seq = 131  
+	WHERE Result_Seq = 113  
   
 	--UPDATE RCHE  
 	UPDATE #ResultTable 
@@ -1644,7 +1344,7 @@ AS BEGIN
 						AND RCH_Type = 'E' AND Age = 65 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'E' AND Age > 65 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE)
-	WHERE Result_Seq = 132
+	WHERE Result_Seq = 114
   
 	--UPDATE RCCC  
 	UPDATE #ResultTable 
@@ -1655,7 +1355,7 @@ AS BEGIN
 						AND RCH_Type = 'C' AND Age = 65 AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'C' AND Age > 65 AND IsMMR = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 133
+	WHERE Result_Seq = 115
   
 	--UPDATE IPID  
 	UPDATE #ResultTable 
@@ -1666,40 +1366,606 @@ AS BEGIN
 						AND RCH_Type = 'I' AND Age = 65 AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
 		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
 						AND RCH_Type = 'I' AND Age > 65 AND IsMMR = 1 GROUP BY DOC_Code) as IPID)
-	WHERE Result_Seq = 134
+	WHERE Result_Seq = 116
 
 	--UPDATE Vertical Total
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 131) 
-	WHERE Result_Seq = 131  
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 113) 
+	WHERE Result_Seq = 113  
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 132) 
-	WHERE Result_Seq = 132   
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 114) 
+	WHERE Result_Seq = 114   
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 133) 
-	WHERE Result_Seq = 133 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 115) 
+	WHERE Result_Seq = 115 
 	UPDATE #ResultTable 
-	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 134) 
-	WHERE Result_Seq = 134  
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 116) 
+	WHERE Result_Seq = 116  
 
 	--UPDATE Horizontal Total
 	UPDATE #ResultTable 
 	SET 
-		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 131 AND 134),
-		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 131 AND 134),
-		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 131 AND 134), 
-		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 131 AND 134),
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 113 AND 116),
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 113 AND 116),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 113 AND 116), 
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 113 AND 116),
 		Result_Value7 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1 AND IsMMR = 1) 
-	WHERE Result_Seq = 135
+	WHERE Result_Seq = 117
+
+	--===============================================================================================================   
+	--(v) (b) By dose (MMR)
+	--===============================================================================================================  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
+	VALUES	(125, '(v) (b) By dose (MMR)'),
+			(126, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4)  
+	VALUES	(127, '', '1st Dose', '2nd Dose', 'Total')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(128, 'RCHD'),
+			(129, 'RCHE'),
+			(130, 'RCCC'),
+			(131, 'IPID'),
+			(132, 'Total'),
+			(133, '')   
+
+	--UPDATE RCHD  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1
+						AND RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHD)
+	WHERE Result_Seq = 128  
+   
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCHE)  
+	WHERE Result_Seq = 129  
+  
+	--UPDATE RCCC 
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as RCCC)  
+	WHERE Result_Seq = 130  
+  
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsMMR = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 131  
+
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 128) 
+	WHERE Result_Seq = 128  
+	UPDATE #ResultTable 
+	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 129) 
+	WHERE Result_Seq = 129  
+	UPDATE #ResultTable 
+	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 130) 
+	WHERE Result_Seq = 130 
+	UPDATE #ResultTable 
+	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 131) 
+	WHERE Result_Seq = 131 
+
+	--UPDATE Horizontal Total 
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 128 AND 131), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 128 AND 131),  
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 128 AND 131)
+	WHERE Result_Seq = 132
+     
+	--===============================================================================================================   
+	--(v) (c) By category (MMR)
+	--=============================================================================================================== 
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1) 
+	VALUES	(140, '(v) (c) By category (MMR)'),
+			(141, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+	VALUES	(142, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(143, 'RCHD'),
+			(144, 'RCHE'),  
+			(145, 'RCCC'),
+			(146, 'IPID'),
+			(147, 'Total'),
+			(148, '')   
+
+	--UPDATE RCHD  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHD) 
+	WHERE Result_Seq = 143  
+  
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCHE) 
+	WHERE Result_Seq = 144  
+  
+	--UPDATE RCCC  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as RCCC) 
+	WHERE Result_Seq = 145  
+  
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsHealthCare = 1 AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsResident = 1 AND IsMMR = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsINTellectualDisability = 1 AND IsMMR = 1 GROUP BY DOC_Code) as IPID) 
+	WHERE Result_Seq = 146  
+  
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 143) 
+	WHERE Result_Seq = 143  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 144) 
+	WHERE Result_Seq = 144  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 145) 
+	WHERE Result_Seq = 145  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 146) 
+	WHERE Result_Seq = 146  
+
+	--UPDATE Horizontal Total
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 143 AND 146), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 143 AND 146), 
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 143 AND 146),
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 143 AND 146) 
+	WHERE Result_Seq = 147 
+
+	-- ===============================================================================================================   
+	-- (vi) By age group (23vPPV)  
+	-- ===============================================================================================================
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
+	VALUES	(155, '(vi) By age group (23vPPV)'),
+			(156, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)  
+	VALUES	(157, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(158, 'RCHD'),
+			(159, 'RCHE'),
+			(160, 'RCCC'),
+			(161, 'IPID'),
+			(162, 'Total'),
+			(163, '')   
+
+	--UPDATE RCHD  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHD)
+	WHERE Result_Seq = 158  
+
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCHE)
+	WHERE Result_Seq = 159  
+
+	--UPDATE RCCC  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as RCCC)
+	WHERE Result_Seq = 160  
+
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+			Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+							AND RCH_Type = 'I' AND Age < 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID),  
+			Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+							AND RCH_Type = 'I' AND Age = 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID),  
+			Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+							AND RCH_Type = 'I' AND Age > 65 AND IsPV = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 161  
+
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 158) 
+	WHERE Result_Seq = 158  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 159) 
+	WHERE Result_Seq = 159 
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 160) 
+	WHERE Result_Seq = 160   
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 161) 
+	WHERE Result_Seq = 161  
+
+	--UPDATE Horizontal Total
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 158 AND 161),
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 158 AND 161),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 158 AND 161),
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 158 AND 161),
+		Result_Value7 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1 AND IsPV = 1) 
+	WHERE Result_Seq = 162 
+   
+	-- ===============================================================================================================   
+	-- (vii) By age group (PCV13)  
+	-- ===============================================================================================================     
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
+	VALUES	(170, '(vii) By age group (PCV13)'),
+			(171, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)  
+	VALUES	(172, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(173, 'RCHD'),
+			(174, 'RCHE'),
+			(175, 'RCCC'),
+			(176, 'IPID'),  
+			(177, 'Total'),
+			(178, '')   
+
+	--UPDATE RCHD 
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHD)
+	WHERE Result_Seq = 173  
+  
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as RCHE)
+	WHERE Result_Seq = 174 
+  
+	--UPDATE RCCC  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 175  
+  
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND Age < 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND Age = 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND Age > 65 AND IsPV13 = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 176  
+
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 173) 
+	WHERE Result_Seq = 173  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 174) 
+	WHERE Result_Seq = 174   
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 175) 
+	WHERE Result_Seq = 175 
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 176) 
+	WHERE Result_Seq = 176  
+
+	--UPDATE Horizontal Total
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 173 AND 176),
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 173 AND 176),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 173 AND 176), 
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 173 AND 176),
+		Result_Value7 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1 AND IsPV13 = 1) 
+	WHERE Result_Seq = 177
+
+	-- ===============================================================================================================   
+	-- (viii) (a) By age group (COVID-19)  
+	-- ===============================================================================================================     
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
+	VALUES	(185, '(viii) (a) By age group (COVID-19)'),
+			(186, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7)  
+	VALUES	(187, '', '<65 years','at 65 years','>65 years', 'Total', '', 'No. of SP involved')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(188, 'RCHD'),
+			(189, 'RCHE'),
+			(190, 'RCCC'),
+			(191, 'IPID'),  
+			(192, 'Total'),
+			(193, '')   
+
+	--UPDATE RCHD 
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age < 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age = 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND Age > 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD)
+	WHERE Result_Seq = 188  
+  
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age < 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age = 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND Age > 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE)
+	WHERE Result_Seq = 189 
+  
+	--UPDATE RCCC  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age < 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age = 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND Age > 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 190  
+  
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND Age < 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND Age = 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1)rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND Age > 65 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 191  
+
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 188) 
+	WHERE Result_Seq = 188  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 189) 
+	WHERE Result_Seq = 189   
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 190) 
+	WHERE Result_Seq = 190 
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 191) 
+	WHERE Result_Seq = 191  
+
+	--UPDATE Horizontal Total
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 188 AND 191),
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 188 AND 191),
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 188 AND 191), 
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 188 AND 191),
+		Result_Value7 = (SELECT COUNT(DISTINCT SP_ID) FROM #SubsideCount WHERE IsCurrentSeason = 1 AND IsCovid19 = 1) 
+	WHERE Result_Seq = 192
+
+	--===============================================================================================================   
+	--(viii) (b) By dose (COVID-19)
+	--===============================================================================================================  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
+	VALUES	(200, '(viii) (b) By dose (COVID-19)'),
+			(201, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4)  
+	VALUES	(202, '', '1st Dose', '2nd Dose', 'Total')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(203, 'RCHD'),
+			(204, 'RCHE'),
+			(205, 'RCCC'),
+			(206, 'IPID'),
+			(207, 'Total'),
+			(208, '')   
+
+	--UPDATE RCHD  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1
+						AND RCH_Type = 'D' AND DOSE = '1STDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND DOSE = '2NDDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD)
+	WHERE Result_Seq = 203  
+   
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND DOSE = '1STDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND DOSE = '2NDDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE)  
+	WHERE Result_Seq = 204  
+  
+	--UPDATE RCCC 
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND DOSE = '1STDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND DOSE = '2NDDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as RCCC)  
+	WHERE Result_Seq = 205  
+  
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND DOSE = '1STDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND DOSE = '2NDDOSE' AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID)
+	WHERE Result_Seq = 206  
+
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 203) 
+	WHERE Result_Seq = 203  
+	UPDATE #ResultTable 
+	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 204) 
+	WHERE Result_Seq = 204  
+	UPDATE #ResultTable 
+	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 205) 
+	WHERE Result_Seq = 205 
+	UPDATE #ResultTable 
+	SET	Result_Value4 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) FROM #ResultTable WHERE Result_Seq = 206) 
+	WHERE Result_Seq = 206 
+
+	--UPDATE Horizontal Total 
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 203 AND 206), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 203 AND 206),  
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 203 AND 206)
+	WHERE Result_Seq = 207
+
+	--===============================================================================================================   
+	--(viii) (c) By category (COVID-19)
+	--=============================================================================================================== 
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1) 
+	VALUES	(215, '(viii) (c) By category (COVID-19)'),
+			(216, '')  
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)  
+	VALUES	(217, '', 'Health Care Worker', 'Resident', 'Persons with INTellectual Disability (or related)', 'Total')    
+	INSERT INTO #ResultTable (Result_Seq, Result_Value1)        
+	VALUES	(218, 'RCHD'),
+			(219, 'RCHE'),  
+			(220, 'RCCC'),
+			(221, 'IPID'),
+			(222, 'Total'),
+			(223, '')   
+
+	--UPDATE RCHD  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsHealthCare = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsResident = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'D' AND IsINTellectualDisability = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHD) 
+	WHERE Result_Seq = 218  
+  
+	--UPDATE RCHE  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsHealthCare = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsResident = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'E' AND IsINTellectualDisability = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCHE) 
+	WHERE Result_Seq = 219  
+  
+	--UPDATE RCCC  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsHealthCare = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsResident = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCCC),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'C' AND IsINTellectualDisability = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as RCCC) 
+	WHERE Result_Seq = 220  
+  
+	--UPDATE IPID  
+	UPDATE #ResultTable 
+	SET   
+		Result_Value2 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsHealthCare = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value3 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsResident = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID),  
+		Result_Value4 = (SELECT isNULL(sum(rec),0) FROM (SELECT COUNT (Encrypt_Field1) rec FROM #SubsideCount WHERE IsCurrentSeason = 1 
+						AND RCH_Type = 'I' AND IsINTellectualDisability = 1 AND IsCovid19 = 1 GROUP BY DOC_Code) as IPID) 
+	WHERE Result_Seq = 221  
+  
+	--UPDATE Vertical Total
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 218) 
+	WHERE Result_Seq = 218  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 219) 
+	WHERE Result_Seq = 219  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 220) 
+	WHERE Result_Seq = 220  
+	UPDATE #ResultTable 
+	SET Result_Value5 = (SELECT CONVERT(INT,Result_Value2) + CONVERT(INT,Result_Value3) + CONVERT(INT,Result_Value4) FROM #ResultTable WHERE Result_Seq = 221) 
+	WHERE Result_Seq = 221  
+
+	--UPDATE Horizontal Total
+	UPDATE #ResultTable 
+	SET 
+		Result_Value2 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value2)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 218 AND 221), 
+		Result_Value3 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value3)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 218 AND 221), 
+		Result_Value4 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value4)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 218 AND 221),
+		Result_Value5 = (SELECT ISNULL(SUM(CONVERT(INT,Result_Value5)),0) AS TotalCount FROM #ResultTable WHERE Result_Seq BETWEEN 218 AND 221) 
+	WHERE Result_Seq = 222 
 
 	--===============================================================================================================  
 
 	--===============================================================================================================  
 	--Remark
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(226, 'Remark:')   
+	VALUES	(224, 'Remark:')   
 	INSERT INTO #ResultTable (Result_Seq, Result_Value1)  
-	VALUES	(227, '* ' + @current_scheme_desc + ': with start date on ' + FORMAT(@IV_Current_Season_Start_Dtm, 'dd MMM yyyy')) 
+	VALUES	(225, 'Service date since ' + FORMAT(@IV_Current_Season_Start_Dtm, 'dd MMM yyyy')) 
   
 -- ============================================= 
 -- Sub-Report 03

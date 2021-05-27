@@ -20,6 +20,7 @@
         Private _udtInputVaccineModelCollection As InputPicker.InputVaccineModelCollection
         Private _udtVaccinationRecord As EHSTransaction.TransactionDetailVaccineModelCollection
         Private _udtC19Transaction As EHSTransaction.EHSTransactionModel
+        Private _udtDischargeResult As COVID19.DischargeResultModel
 
 #Region "Property"
 
@@ -122,6 +123,15 @@
             End Set
         End Property
 
+        Public Property DischargeResult() As COVID19.DischargeResultModel
+            Get
+                Return _udtDischargeResult
+            End Get
+            Set(ByVal Value As COVID19.DischargeResultModel)
+                _udtDischargeResult = Value
+            End Set
+        End Property
+
 #End Region
 
 #Region "Constructor"
@@ -138,10 +148,11 @@
 
             _intPracticeDisplaySeq = Nothing
 
-            _udtVaccinationRecord = Nothing
-            _udtC19Transaction = Nothing
             _udtInputVaccineModelCollection = Nothing
+            _udtVaccinationRecord = Nothing
 
+            _udtC19Transaction = Nothing
+            _udtDischargeResult = Nothing
         End Sub
 
 #End Region

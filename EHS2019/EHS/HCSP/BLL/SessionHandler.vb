@@ -169,6 +169,10 @@ Namespace BLL
             Public Const SESS_ClaimCOVID19_VaccineLotNo As String = "SESS_CLAIMCOVID19_VACCINELOTNO"
             Public Const SESS_ClaimCOVID19_Dose As String = "SESS_CLAIMCOVID19_DOSE"
             Public Const SESS_ClaimCOVID19_VaccineRecord As String = "SESS_CLAIMCOVID19_VACCINERECORD" ' CRE20-0022 (Immu record) [End][Martin]
+            Public Const SESS_ClaimCOVID19_DischargeRecord As String = "SESS_CLAIMCOVID19_DISCHARGERECORD"
+            Public Const SESS_ClaimCOVID19_DischargeReminder As String = "SESS_CLAIMCOVID19_DISCHARGEREMINDER"
+            Public Const SESS_ClaimCOVID19_DischargeDemographicReminder As String = "SESS_CLAIMCOVID19_DISCHARGEDEMOGRAPHICREMINDER"
+            Public Const SESS_ClaimCOVID19_DischargeOverrideReason As String = "SESS_CLAIMCOVID19_DISCHARGEOVERRIDEREASON"
             Public Const SESS_ClaimFunctCode As String = "SESS_CLAIM_FUNCTCODE" 'nichole
             Public Const SESS_ClaimCOVID19_SchemeSelected As String = "SESS_CLAIMCOVID19_SCHEMESELECTED"
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
@@ -1589,6 +1593,91 @@ Namespace BLL
 
 #End Region
         ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+#Region "Claim COVID-19 - Discharge Record"
+
+        Public Sub ClaimCOVID19DischargeRecordSaveToSession(ByVal udtDischargeResult As COVID19.DischargeResultModel, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord)) = udtDischargeResult
+        End Sub
+
+        Public Function ClaimCOVID19DischargeRecordGetFromSession(ByVal strFunctionCode As String) As COVID19.DischargeResultModel
+            If HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord)) Is Nothing Then
+                Return Nothing
+            Else
+                Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord)), COVID19.DischargeResultModel)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19DischargeRecordRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeRecord))
+        End Sub
+#End Region
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+#Region "Claim COVID-19 - Discharge Reminder"
+
+        Public Sub ClaimCOVID19DischargeReminderSaveToSession(ByVal blnShow As Boolean, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeReminder)) = blnShow
+        End Sub
+
+        Public Function ClaimCOVID19DischargeReminderGetFromSession(ByVal strFunctionCode As String) As Boolean
+            If HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeReminder)) Is Nothing Then
+                Return False
+            Else
+                Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeReminder)), Boolean)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19DischargeReminderRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeReminder))
+        End Sub
+#End Region
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+#Region "Claim COVID-19 - Discharge Reminder"
+
+        Public Sub ClaimCOVID19DischargeDemographicReminderSaveToSession(ByVal blnShow As Boolean, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeDemographicReminder)) = blnShow
+        End Sub
+
+        Public Function ClaimCOVID19DischargeDemographicReminderGetFromSession(ByVal strFunctionCode As String) As Boolean
+            If HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeDemographicReminder)) Is Nothing Then
+                Return False
+            Else
+                Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeDemographicReminder)), Boolean)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19DischargeDemographicReminderRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeDemographicReminder))
+        End Sub
+#End Region
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
+        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+#Region "Claim COVID-19 - Discharge Override Reason"
+
+        Public Sub ClaimCOVID19DischargeOverrideReasonSaveToSession(ByVal strReason As String, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeOverrideReason)) = strReason
+        End Sub
+
+        Public Function ClaimCOVID19DischargeOverrideReasonGetFromSession(ByVal strFunctionCode As String) As String
+            If HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeOverrideReason)) Is Nothing Then
+                Return String.Empty
+            Else
+                Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeOverrideReason)), String)
+            End If
+        End Function
+
+        Public Sub ClaimCOVID19DischargeOverrideReasonRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_ClaimCOVID19_DischargeOverrideReason))
+        End Sub
+#End Region
+        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 #End Region
 
 

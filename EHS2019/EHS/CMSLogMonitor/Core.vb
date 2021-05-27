@@ -78,6 +78,7 @@ Public Class ScheduleJob
         HAServicePatientImporter
         COVID19Exporter
         COVID19BatchConfirm
+        COVID19DischargeImporter
     End Enum
 
 #End Region
@@ -429,6 +430,13 @@ Public Class ScheduleJob
         dtmLastCheck.Insert(HealthCheckType.COVID19BatchConfirm, dtmNow)
         'CRE20-0023 (Immu record) [End][Winnie SUEN]
 
+
+        'CRE20-0XX (Immu record) [Start][Raiman Chong]
+        dtmLastCheck.Insert(HealthCheckType.COVID19DischargeImporter, dtmNow)
+        'CRE20-0XX (Immu record) [End][Raiman Chong]
+
+
+
         CheckTime.ReadCheckTime(dtmLastCheck)
 
         Try
@@ -482,6 +490,12 @@ Public Class ScheduleJob
             'CRE20-0023 (Immu record) [Start][Winnie SUEN]
             CheckCOVID19BatchConfirm_Fail(dtmLastCheck(HealthCheckType.COVID19BatchConfirm), dtmNow)
             'CRE20-0023 (Immu record) [End][Winnie SUEN]
+
+            'CRE20-0XX (Immu record) [Start][Raiman Chong]
+            CheckCOVID19DischargeImporter_ImportFail(dtmLastCheck(HealthCheckType.COVID19DischargeImporter), dtmNow)
+            'CRE20-0XX (Immu record) [End][Raiman Chong]
+
+
 
             CheckTime.WriteCheckTime(dtmLastCheck)
 
@@ -2411,7 +2425,104 @@ Public Class ScheduleJob
 
 #End Region
 
+#Region "COVID19DischargeImporter"
+    Private Sub CheckCOVID19DischargeImporter_ImportFail(ByRef dtmLastCheck As DateTime, ByVal dtmCurrent As DateTime)
+        ' +--------------------------------------------------------------------------------------------------+
+        ' | For every [5] minutes, monitor the ScheduleJobLog to see if any COVID19DischargeImporter         |
+        ' | fail case. If there is error case, raise pager alert;If there is warning case, raise email alert |
+        ' +--------------------------------------------------------------------------------------------------+
 
+        Log("Checking COVID19DischargeImporter_ImportFail")
+
+        ' Check whether need to run
+        If DateDiff(DateInterval.Minute, dtmLastCheck, dtmCurrent) < CInt(ConfigurationManager.AppSettings("COVID19DischargeImporter_CheckInterval")) Then
+            Log("Smaller than CheckInterval, no need to run")
+
+            Return
+        End If
+
+        ' Update now to be the new LastCheckTime
+        dtmLastCheck = dtmCurrent
+
+        ' Check logs
+        Dim intScheduleJobLogMinuteBefore As Integer = CInt(ConfigurationManager.AppSettings("COVID19DischargeImporter_ScheduleJobLogMinuteBefore"))
+        Dim strScheduleJobLogProgramID As String = ConfigurationManager.AppSettings("COVID19DischargeImporter_ProgramID")
+        Dim strScheduleJobPagerAlertLogID As String = ConfigurationManager.AppSettings("COVID19DischargeImporter_PagerAlertLogID")
+        Dim strScheduleJobEmailAlertLogID As String = ConfigurationManager.AppSettings("COVID19DischargeImporter_EmailAlertLogID")
+
+
+        Dim strPagerAlertLogID_PagerAlert As String = ConfigurationManager.AppSettings("COVID19DischargeImporter_PagerAlertLogID_PagerAlert")
+
+        Dim strEmailAlertLogID_EmailAlert As String = ConfigurationManager.AppSettings("COVID19DischargeImporter_EmailAlertLogID_EmailAlert")
+
+
+        Dim dtPagerAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobPagerAlertLogID, _
+                                                         dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                         dtmCurrent)
+
+        Dim dtEmailAlertLogID As DataTable = MonitorBLL.GetScheduleJobLog(strScheduleJobLogProgramID, strScheduleJobEmailAlertLogID, _
+                                                          dtmCurrent.Add(New TimeSpan(0, -1 * intScheduleJobLogMinuteBefore, 0)), _
+                                                          dtmCurrent)
+
+        Dim strMessage As String = String.Empty
+        Dim blnPagerAlert As Boolean = False
+        Dim blnEmailAlert As Boolean = False
+
+        If dtPagerAlertLogID.Rows.Count > 0 Then
+
+            If strPagerAlertLogID_PagerAlert = "Y" Then blnPagerAlert = True
+
+            ' Get the latest description
+            strMessage = dtPagerAlertLogID.Rows(0)("Description")
+
+        ElseIf dtEmailAlertLogID.Rows.Count > 0 Then
+
+            If strEmailAlertLogID_EmailAlert = "Y" Then blnEmailAlert = True
+
+            ' Get the latest description
+            strMessage = dtEmailAlertLogID.Rows(0)("Description")
+        End If
+
+
+
+        If blnPagerAlert Then
+            Log("CheckCOVID19DischargeImporter_ImportFail pager alert")
+
+            CheckCOVID19DischargeImporter_ImportFailAlert(AlertType.PagerAlert, strMessage)
+        End If
+
+        If blnEmailAlert Then
+            Log("CheckCOVID19DischargeImporter_ImportFail email alert")
+
+            CheckCOVID19DischargeImporter_ImportFailAlert(AlertType.EmailAlert, strMessage)
+        End If
+
+        Log("Completed checking CheckCOVID19DischargeImporter_ImportFail")
+
+    End Sub
+
+
+    'For CheckCOVID19DischargeImporter_ImportFail write event log
+    Private Sub CheckCOVID19DischargeImporter_ImportFailAlert(ByVal eAlertType As AlertType, ByVal strMessage As String)
+        Select Case eAlertType
+            Case AlertType.PagerAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19DischargeImporter_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19DischargeImporter_PagerEventID"), _
+                              EventLogEntryType.Error, strMessage)
+
+            Case AlertType.EmailAlert
+                WriteEventLog(ConfigurationManager.AppSettings("COVID19DischargeImporter_EventSource"), _
+                              ConfigurationManager.AppSettings("COVID19DischargeImporter_EmailEventID"), _
+                              EventLogEntryType.Warning, strMessage)
+
+            Case Else
+                Throw New NotImplementedException
+
+        End Select
+
+    End Sub
+
+#End Region
 
 
 End Class

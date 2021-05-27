@@ -404,6 +404,7 @@ Namespace Component.Scheme
                                 DocTypeModel.DocTypeCode.VISA, _
                                 DocTypeModel.DocTypeCode.DI, _
                                 DocTypeModel.DocTypeCode.OW, _
+                                DocTypeModel.DocTypeCode.TW, _
                                 DocTypeModel.DocTypeCode.CCIC, _
                                 DocTypeModel.DocTypeCode.RFNo8, _
                                 DocTypeModel.DocTypeCode.PASS

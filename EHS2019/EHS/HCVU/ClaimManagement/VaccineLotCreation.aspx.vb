@@ -365,6 +365,7 @@ Partial Public Class VaccineLotCreation
 
         'BackToSearchCriteriaView(True)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         ChangeViewIndex(ViewIndex.SearchCriteria)
     End Sub
 
@@ -424,6 +425,7 @@ Partial Public Class VaccineLotCreation
 
     Private Sub BackToSearchCriteriaView(ByVal blnIsReset As Boolean)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
 
         ChangeViewIndex(ViewIndex.SearchCriteria)
         If blnIsReset Then
@@ -523,7 +525,7 @@ Partial Public Class VaccineLotCreation
     End Sub
 
     Private Sub BuildVaccineLotRecordStatus(ByVal ddl As DropDownList)
-       
+
         ddl.DataSource = Status.GetDescriptionListFromDBEnumCode("VaccineLotCreationRecordStatus")
         ddl.DataValueField = "Status_Value"
         ddl.DataTextField = "Status_Description"
@@ -534,7 +536,7 @@ Partial Public Class VaccineLotCreation
     End Sub
 
     Private Sub BuildVaccineLotAssignStatus(ByVal ddl As DropDownList)
-        
+
         ddl.DataSource = Status.GetDescriptionListFromDBEnumCode("VaccineLotAssignStatus")
         ddl.DataValueField = "Status_Value"
         ddl.DataTextField = "Status_Description"
@@ -582,6 +584,8 @@ Partial Public Class VaccineLotCreation
         '  Dim udtVaccineLotList As VaccineLotModel = Nothing
         Dim blnResult As New Boolean
         Dim strAction As String = String.Empty
+        msgBox.Visible = False
+        udcInfoBox.Visible = False
 
         Select Case e
             Case ucNoticePopUp.enumButtonClick.OK
@@ -591,12 +595,13 @@ Partial Public Class VaccineLotCreation
                 EditRecordRemove()
             Case Else
                 udtAuditLogEntry.WriteLog(LogID.LOG00015, AuditMsg00015)
-                udcInfoBox.Visible = False
         End Select
     End Sub
 
     Private Sub ibtnDialogCancel_Click(ByVal e As ucNoticePopUp.enumButtonClick) Handles ucNoticePopUpConfirmCancel.ButtonClick
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        msgBox.Visible = False
+        udcInfoBox.Visible = False
 
         Select Case e
             Case ucNoticePopUp.enumButtonClick.OK
@@ -606,7 +611,6 @@ Partial Public Class VaccineLotCreation
                 EditRecordCancelRequest()
             Case Else
                 udtAuditLogEntry.WriteLog(LogID.LOG00010, AuditMsg00010)
-                udcInfoBox.Visible = False
         End Select
     End Sub
 
@@ -700,19 +704,17 @@ Partial Public Class VaccineLotCreation
 
     Protected Sub ibtnRecordCancel_Click(sender As Object, e As ImageClickEventArgs)
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+        msgBox.Visible = False
+        udcInfoBox.Visible = False
 
         If ViewState("state") = StateType.ADD Then
             Dim strVaccineBrandName As String = ddlVaccineBrandName.SelectedItem.ToString
             Dim strVaccineLotNo As String = txtVaccineLotNo.Text
             Dim strVaccineExpiryDate As String = txtVaccineExpiryDateText.Text
             udtAuditLogEntry.WriteLog(LogID.LOG00020, AuditMsg00020)
-            msgBox.Visible = False
-            udcInfoBox.Visible = False
             ChangeViewIndex(ViewIndex.SearchCriteria)
         Else
             udtAuditLogEntry.WriteLog(LogID.LOG00020, AuditMsg00029)
-            msgBox.Visible = False
-            udcInfoBox.Visible = False
             ChangeViewIndex(ViewIndex.EditRecordView)
         End If
 
@@ -737,6 +739,8 @@ Partial Public Class VaccineLotCreation
         Dim dtLotDetail As DataTable = Nothing
         Dim dvLotDetailFilterWithRecordStatus As DataView = Nothing
         Dim dvLotDetailFilterWithPending As DataView = Nothing
+        msgBox.Visible = False
+        udcInfoBox.Visible = False
 
         If ViewState("state") = StateType.ADD Then
             strVaccineBrandName = ddlVaccineBrandName.SelectedItem.ToString()
@@ -751,10 +755,6 @@ Partial Public Class VaccineLotCreation
         udtAuditLogEntry.AddDescripton("Vaccine Expiry Date", strVaccineExpiryDate)
         udtAuditLogEntry.AddDescripton("Vaccine Lot Assign Status", lblConLotAssignStatusItem.Text.Trim)
         udtAuditLogEntry.WriteStartLog(LogID.LOG00021, AuditMsg00021)
-
-
-        udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001, "%s", strVaccineLotNo)
-        udcInfoBox.BuildMessageBox()
 
         If ViewState("state") = StateType.ADD Then
             dtLotDetail = udtVaccineLotBLL.CheckVaccineLotDetailExist(strVaccineLotNo)
@@ -814,6 +814,8 @@ Partial Public Class VaccineLotCreation
                     Dim blnResult = udtVaccineLotBLL.SaveVaccineLotCreationRecord(udtVaccineLotCreationList)
                     If (blnResult) Then
                         udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
+                        udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001, "%s", strVaccineLotNo)
+                        udcInfoBox.BuildMessageBox()
                         udtAuditLogEntry.WriteEndLog(LogID.LOG00023, AuditMsg00023)
                         ChangeViewIndex(ViewIndex.MsgPage)
                     End If
@@ -823,22 +825,26 @@ Partial Public Class VaccineLotCreation
                 End Try
 
 
-            End If
-            If ViewState("state") = StateType.EDIT Then
+            ElseIf ViewState("state") = StateType.EDIT Then
                 'Dim blnResult = udtVaccineLotBLL.EditVaccineLotCreationRecord(udtVaccineLotCreationList)
                 Try
                     Dim blnResult = udtVaccineLotBLL.VaccineLotCreationAction(udtVaccineLotCreationList.VaccineLotNo, VACCINELOT_ACTIONTYPE.ACTION_UPDATE, udtVaccineLotCreationListPresent.TSMP, udtVaccineLotCreationList.VaccineLotAssignStatus)
                     If (blnResult) Then
                         udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
+                        udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001, "%s", strVaccineLotNo)
+                        udcInfoBox.BuildMessageBox()
                         udtAuditLogEntry.WriteEndLog(LogID.LOG00023, AuditMsg00030)
                         ChangeViewIndex(ViewIndex.MsgPage)
+                    Else
+                        ViewState("action") = ActionType.Edit
+                        Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
+                        WriteUpdateFailedAuditLog(udtVaccineLotCreationList.VaccineLotNo)
+                        ChangeViewIndex(ViewIndex.ErrorPage)
                     End If
                 Catch ex As Exception
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00024, AuditMsg00031)
                     Throw
                 End Try
-
-
             End If
         Else
             msgBox.Visible = True
@@ -931,6 +937,11 @@ Partial Public Class VaccineLotCreation
                 udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
                 udcInfoBox.BuildMessageBox()
                 ChangeViewIndex(ViewIndex.MsgPage)
+            Else
+                ViewState("action") = ActionType.Remove
+                Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
+                WriteUpdateFailedAuditLog(hfEVaccineLotNo.Text)
+                ChangeViewIndex(ViewIndex.ErrorPage)
             End If
         Catch ex As Exception
             'ViewState("action") = ActionType.Approval
@@ -965,6 +976,10 @@ Partial Public Class VaccineLotCreation
                     ChangeViewIndex(ViewIndex.MsgPage)
                 Else
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00012, AuditMsg00012)
+                    ViewState("action") = ActionType.Cancel
+                    Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
+                    WriteUpdateFailedAuditLog(hfEVaccineLotNo.Text)
+                    ChangeViewIndex(ViewIndex.ErrorPage)
                 End If
             Catch ex As Exception
 

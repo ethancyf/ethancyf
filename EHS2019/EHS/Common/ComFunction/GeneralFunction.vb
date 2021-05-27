@@ -1245,18 +1245,18 @@ Namespace ComFunction
             Dim blnRes As Boolean
 
             Try
-                If HttpContext.Current Is Nothing Then
+                'If HttpContext.Current Is Nothing Then
+                '    dt = New DataTable()
+                '    udtDB.RunProc("proc_SystemParameters_get_cache", dt)
+                'Else
+                If HttpRuntime.Cache("SystemParameters") Is Nothing Then
                     dt = New DataTable()
                     udtDB.RunProc("proc_SystemParameters_get_cache", dt)
+                    CacheHandler.InsertCache("SystemParameters", dt)
                 Else
-                    If HttpContext.Current.Cache("SystemParameters") Is Nothing Then
-                        dt = New DataTable()
-                        udtDB.RunProc("proc_SystemParameters_get_cache", dt)
-                        CacheHandler.InsertCache("SystemParameters", dt)
-                    Else
-                        dt = CType(HttpContext.Current.Cache("SystemParameters"), DataTable)
-                    End If
+                    dt = CType(HttpRuntime.Cache("SystemParameters"), DataTable)
                 End If
+                'End If
 
                 Dim strSelectSchemeCode As String = String.Empty
 
@@ -2111,6 +2111,7 @@ Namespace ComFunction
                      Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19OR, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19SR, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19SB, _
                      Common.Component.Scheme.SchemeClaimModel.CIVSS
 
                     strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC
@@ -2164,6 +2165,7 @@ Namespace ComFunction
                      Common.Component.Scheme.SchemeClaimModel.COVID19DH, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19OR, _
                      Common.Component.Scheme.SchemeClaimModel.COVID19SR, _
+                     Common.Component.Scheme.SchemeClaimModel.COVID19SB, _
                      Common.Component.Scheme.SchemeClaimModel.CIVSS
 
                     strSchemeCode = Common.Component.Scheme.SchemeClaimModel.COVID19CVC

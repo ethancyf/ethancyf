@@ -1109,13 +1109,7 @@ Partial Public Class EHSAccountCreationV1
                     udcInputHKIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
                     udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-                    If (udcInputHKIC.CCCode1.Length = 4 OrElse udcInputHKIC.CCCode1.Length = 0) AndAlso _
-                       (udcInputHKIC.CCCode2.Length = 4 OrElse udcInputHKIC.CCCode2.Length = 0) AndAlso _
-                       (udcInputHKIC.CCCode3.Length = 4 OrElse udcInputHKIC.CCCode3.Length = 0) AndAlso _
-                       (udcInputHKIC.CCCode4.Length = 4 OrElse udcInputHKIC.CCCode4.Length = 0) AndAlso _
-                       (udcInputHKIC.CCCode5.Length = 4 OrElse udcInputHKIC.CCCode5.Length = 0) AndAlso _
-                       (udcInputHKIC.CCCode6.Length = 4 OrElse udcInputHKIC.CCCode6.Length = 0) Then
-
+                    If udcInputHKIC.IsValidCCCodeInput() Then
                         'Check for select chinese name/CCCode 
                         'if cccode is changed (different between session value and input box), or incorrect CCCode
                         If Me.NeedPopupChineseNameDialog(DocTypeModel.DocTypeCode.HKIC) Then
@@ -1175,6 +1169,10 @@ Partial Public Class EHSAccountCreationV1
                 'Fields checking for One-Way Permit only
                 blnProceed = Me.Step1b1OWValidation(Me._udtEHSAccount)
 
+            Case DocTypeModel.DocTypeCode.TW
+                'Fields checking for Two-Way Permit only
+                blnProceed = Me.Step1b1TWValidation(Me._udtEHSAccount)
+
             Case DocTypeModel.DocTypeCode.RFNo8
                 'Fields checking for RFNo8 only
                 blnProceed = Me.Step1b1RFNo8Validation(Me._udtEHSAccount)
@@ -1194,13 +1192,7 @@ Partial Public Class EHSAccountCreationV1
                     udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
                     udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-                    If (udcInputROP140.CCCode1.Length = 4 OrElse udcInputROP140.CCCode1.Length = 0) AndAlso _
-                       (udcInputROP140.CCCode2.Length = 4 OrElse udcInputROP140.CCCode2.Length = 0) AndAlso _
-                       (udcInputROP140.CCCode3.Length = 4 OrElse udcInputROP140.CCCode3.Length = 0) AndAlso _
-                       (udcInputROP140.CCCode4.Length = 4 OrElse udcInputROP140.CCCode4.Length = 0) AndAlso _
-                       (udcInputROP140.CCCode5.Length = 4 OrElse udcInputROP140.CCCode5.Length = 0) AndAlso _
-                       (udcInputROP140.CCCode6.Length = 4 OrElse udcInputROP140.CCCode6.Length = 0) Then
-
+                    If udcInputROP140.IsValidCCCodeInput() Then
                         'Check for select chinese name/CCCode 
                         'if cccode is changed (different between session value and input box), or incorrect CCCode
                         If Me.NeedPopupChineseNameDialog(DocTypeModel.DocTypeCode.ROP140) Then
@@ -1380,6 +1372,10 @@ Partial Public Class EHSAccountCreationV1
             Case DocType.DocTypeModel.DocTypeCode.OW
                 'Input Tips 
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoOW")
+
+            Case DocType.DocTypeModel.DocTypeCode.TW
+                'Input Tips 
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTW")
                 ' CRE20-0022 (Immu record) [End][Martin]
         End Select
 
@@ -1449,6 +1445,9 @@ Partial Public Class EHSAccountCreationV1
                 ucInputDocType = Me.udcStep1b1InputDocumentType.GetOWControl()
 
                 ' CRE20-0022 (Immu record) [Start][Martin]
+            Case DocTypeModel.DocTypeCode.TW
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetTWControl()
+
             Case DocTypeModel.DocTypeCode.CCIC
                 ucInputDocType = Me.udcStep1b1InputDocumentType.GetCCICControl()
 
@@ -2068,6 +2067,48 @@ Partial Public Class EHSAccountCreationV1
 
         Return isValid
     End Function
+
+    ' CRE20-0023 (Immu record) [Start][Martin]
+    'For TW
+    Private Function Step1b1TWValidation(ByRef udtEHSAccount As EHSAccountModel) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputTW As ucInputTW = Me.udcStep1b1InputDocumentType.GetTWControl()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+
+        udcInputTW.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputTW.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputTW.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputTW.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputTW.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputTW.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputTW.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputTW.Gender
+            udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.TW
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.TW, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+    ' CRE20-0023 (Immu record) [End][Martin]
 
     'For RFNo8
     Private Function Step1b1RFNo8Validation(ByRef udtEHSAccount As EHSAccountModel) As Boolean

@@ -410,7 +410,7 @@ Partial Public Class ucInputRVPCOVID19
 
         'Get Vaccine Brand & Lot No.
         Dim dtVaccineLotNo As DataTable = Nothing
-        dtVaccineLotNo = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, ServiceDate)
+        dtVaccineLotNo = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo IsNot Nothing AndAlso dtVaccineLotNo.Rows.Count > 0 Then
             'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
@@ -1038,7 +1038,7 @@ Partial Public Class ucInputRVPCOVID19
         Dim dtVaccineLotNo As DataTable = Nothing
         Dim strVaccineLotID As String = String.Empty
 
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, ServiceDate)
+        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForRCH(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
             'CRE20-023 Fix the Lot Mapping table filter [Start][Nichole]
@@ -1958,8 +1958,8 @@ Partial Public Class ucInputRVPCOVID19
         'Set selected if "1st Dose" exists
         If strSelectedValue = String.Empty AndAlso Me.SessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
             For Each li As ListItem In ddlCDoseCovid19.Items
-                If li.Value = "1STDOSE" Then
-                    strSelectedValue = "1STDOSE"
+                If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+                    strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
                 End If
             Next
         End If

@@ -56,11 +56,17 @@ Partial Public Class EHSClaimForm_RV
         Dim udtEHSAccount As EHSAccountModel = _udtSessionHandler.EHSAccountGetFromSession(strFunctCode)
         Dim udtEHSTransaction As EHSTransactionModel = _udtSessionHandler.EHSTransactionGetFromSession(strFunctCode)
         Dim udtSmartIDContent As BLL.SmartIDContentModel = Me._udtSessionHandler.SmartIDContentGetFormSession(strFunctCode)
-
-
         Dim udtVaccinationRecord As TransactionDetailVaccineModel = _udtSessionHandler.ClaimCOVID19VaccinationCardGetFromSession(strFunctCode)
+        Dim udtDischargeResult As COVID19.DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(strFunctCode)
+        Dim blnDischarge As Boolean = False
         Dim udtSP As ServiceProviderModel = Nothing
         _udtSessionHandler.CurrentUserGetFromSession(udtSP, Nothing)
+
+        If udtDischargeResult IsNot Nothing AndAlso _
+            (udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
+            udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch) Then
+            blnDischarge = True
+        End If
 
         ' Create the report instance
         Select Case udtSchemeClaim.SchemeCode
@@ -105,7 +111,7 @@ Partial Public Class EHSClaimForm_RV
                             AndAlso Not IsNothing(udtEHSTransaction) _
                             AndAlso Not IsNothing(udtEHSAccount) _
                             AndAlso Not IsNothing(udtSchemeClaim) Then
-                        objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                        objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
 
                     End If
 
@@ -145,12 +151,12 @@ Partial Public Class EHSClaimForm_RV
 
                 'CRE20-022 (Immu record)  [Start][Raiman] 
             Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19RVP, _
-                SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR
+                SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB
                 If Not IsNothing(udtSP) _
                         AndAlso Not IsNothing(udtEHSTransaction) _
                         AndAlso Not IsNothing(udtEHSAccount) _
                         AndAlso Not IsNothing(udtSchemeClaim) Then
-                    objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                    objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
 
 
 
@@ -163,7 +169,7 @@ Partial Public Class EHSClaimForm_RV
                             AndAlso Not IsNothing(udtEHSTransaction) _
                             AndAlso Not IsNothing(udtEHSAccount) _
                             AndAlso Not IsNothing(udtSchemeClaim) Then
-                        objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord)
+                        objReport = New COVID19.PrintOut.Covid19VaccinationCard.Covid19VaccinationCard(udtEHSTransaction, udtEHSAccount, udtVaccinationRecord, blnDischarge)
 
                     End If
                 End If

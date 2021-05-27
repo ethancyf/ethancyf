@@ -3,6 +3,7 @@ Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
 Imports Common.Component.ClaimRules
+Imports Common.Component.COVID19
 Imports Common.Component.DocType
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSTransaction
@@ -2321,12 +2322,25 @@ Partial Public Class ClaimCreation
                 If udtWarningMessage.RuleResults.Count > 0 Then
                     udtEHSTransaction.WarningMessage = udtWarningMessage
                     For Each udtWarning As EHSClaim.EHSClaimBLL.EHSClaimBLL.RuleResult In udtWarningMessage.RuleResults
-                        If Not IsNothing(udtWarning.MessageVariableNameArrayList) AndAlso Not IsNothing(udtWarning.MessageVariableValueArrayList) AndAlso _
-                           udtWarning.MessageVariableNameArrayList.Count > 0 AndAlso udtWarning.MessageVariableValueArrayList.Count > 0 Then
 
-                            Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage, udtWarning.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtWarning.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
+                        If udtWarning.ClaimRuleResult IsNot Nothing AndAlso _
+                           udtWarning.ClaimRuleResult.ResultParam IsNot Nothing AndAlso _
+                           udtWarning.ClaimRuleResult.ResultParam.ContainsKey("SystemMessage") Then
+
+                            Dim udtSystemMessageList As List(Of SystemMessage) = udtWarning.ClaimRuleResult.ResultParam("SystemMessage")
+
+                            For Each udtSystemMessage As SystemMessage In udtSystemMessageList
+                                Me.udcWarningMessageBox.AddMessage(udtSystemMessage)
+                            Next
+
                         Else
-                            Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage)
+                            If Not IsNothing(udtWarning.MessageVariableNameArrayList) AndAlso Not IsNothing(udtWarning.MessageVariableValueArrayList) AndAlso _
+                               udtWarning.MessageVariableNameArrayList.Count > 0 AndAlso udtWarning.MessageVariableValueArrayList.Count > 0 Then
+
+                                Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage, udtWarning.MessageVariableNameArrayList.ToArray(Type.GetType("System.String")), udtWarning.MessageVariableValueArrayList.ToArray(Type.GetType("System.String")))
+                            Else
+                                Me.udcWarningMessageBox.AddMessage(udtWarning.ErrorMessage)
+                            End If
                         End If
 
                         blnNeedOverrideReason = True
@@ -3361,10 +3375,22 @@ Partial Public Class ClaimCreation
                                    udtSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19OR) _
                                    Then
 
+                                    udtInputPicker = New InputPickerModel
+
+                                    'Check discharge list
+                                    Dim udtDischargeResult As COVID19.DischargeResultModel = (New COVID19.COVID19BLL).GetCovid19DischargePatientByDocCodeDocNo(udtEHSAccount)
+
+                                    If udtDischargeResult IsNot Nothing AndAlso _
+                                        (udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
+                                        udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch) Then
+
+                                        udtSessionHandlerBLL.ClaimCOVID19DischargeRecordSaveToSession(udtDischargeResult, FunctionCode)
+                                        udtInputPicker.DischargeResult = udtDischargeResult
+                                    End If
+
                                     If Not udtClaimCategory Is Nothing AndAlso udtClaimCategory.SchemeCode = udtSchemeClaim.SchemeCode.Trim() Then
                                         'Category has been selected
                                         If blnNeedCreateVaccine Then
-                                            udtInputPicker = New InputPickerModel
                                             udtInputPicker.CategoryCode = udtClaimCategory.CategoryCode
                                             udtEHSClaimVaccine = Me.udtEHSClaimBLL.SearchEHSClaimVaccine(udtSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, udtInputPicker)
                                         End If
@@ -3376,7 +3402,6 @@ Partial Public Class ClaimCreation
                                             Me.udtSessionHandlerBLL.ClaimCategorySaveToSession(udtClaimCategory, FunctionCode)
 
                                             If blnNeedCreateVaccine Then
-                                                udtInputPicker = New InputPickerModel
                                                 udtInputPicker.CategoryCode = udtClaimCategory.CategoryCode
                                                 udtEHSClaimVaccine = Me.udtEHSClaimBLL.SearchEHSClaimVaccine(udtSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, udtInputPicker)
                                             End If
@@ -3529,6 +3554,9 @@ Partial Public Class ClaimCreation
 
                 Me.udcMessageBox.Clear()
                 Me.SetSaveButtonEnable(Me.ibtnEnterClaimDetailSave, True)
+
+                'Bind the discharge record table in enter claim page, if necessary.
+                BuildCOVID19DischargeRecordGrid(udtSessionHandlerBLL.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode))
 
                 'Bulid Vaccine Input Control
                 Me.udInputEHSClaim.AvaliableForClaim = True
@@ -4177,6 +4205,11 @@ Partial Public Class ClaimCreation
 
         If isValid Then
             udcInputRVP.Save(udtehstransaction, udtEHSClaimVaccine, strEnableClaimCategory)
+
+            If udtehstransaction.CategoryCode = CategoryCode.RVP_COVID19 Then
+                SaveDischargeResult(udtehstransaction)
+            End If
+
         End If
         'CRE16-026 (Add PCV13) [End][Chris YIM]
 
@@ -4326,6 +4359,11 @@ Partial Public Class ClaimCreation
 
         If isValid Then
             udcInputVSS.Save(udtEHSTransaction, udtEHSClaimVaccine)
+
+            If udtEHSTransaction.CategoryCode = CategoryCode.VSS_COVID19 Then
+                SaveDischargeResult(udtEHSTransaction)
+            End If
+
         End If
 
         Return isValid
@@ -4612,66 +4650,9 @@ Partial Public Class ClaimCreation
 
         If isValid Then
             udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
-        End If
 
-        Return isValid
-    End Function
-    ' CRE20-0022 (Immu record) [End][Chris YIM]
+            SaveDischargeResult(udtEHSTransaction)
 
-    ' CRE20-0022 (Immu record) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
-    Private Function COVID19CBDValidation(ByRef udtEHSTransaction As EHSTransactionModel) As Boolean
-        ' ---------------------------------------------
-        ' Init
-        '----------------------------------------------
-        Dim isValid As Boolean = False
-
-        Dim udcInputCOVID19 As ucInputCOVID19 = Me.udInputEHSClaim.GetCOVID19Control
-        Dim udtEHSClaimVaccine As EHSClaimVaccine.EHSClaimVaccineModel = Me.udtSessionHandlerBLL.EHSClaimVaccineGetFromSession(FunctionCode)
-
-        udcInputCOVID19.SetDoseErrorImage(False)
-
-        ' -----------------------------------------------
-        ' UI Input Validation
-        '------------------------------------------------
-        Dim isValidDetail, isValidVaccineSelection As Boolean
-
-        'Claim Detial Part & Vaccine Part
-        If Not udcInputCOVID19.Validate(True, Me.udcMessageBox) Then
-            isValidDetail = False
-        Else
-            isValidDetail = True
-        End If
-
-        'Select Vaccine Part
-        udtEHSClaimVaccine = udcInputCOVID19.SetEHSVaccineModelDoseSelectedFromUIInput(udtEHSClaimVaccine)
-        Me.udtSessionHandlerBLL.EHSClaimVaccineSaveToSession(udtEHSClaimVaccine, FunctionCode)
-
-        Dim udtSMList As Dictionary(Of SystemMessage, List(Of String())) = Nothing
-        isValidVaccineSelection = udtEHSClaimVaccine.chkVaccineSelection(udtEHSClaimVaccine, udtSMList)
-        If Not isValidVaccineSelection Then
-            udcInputCOVID19.SetDoseErrorImage(True)
-        End If
-
-        'Combine Result
-        isValid = isValidDetail And isValidVaccineSelection
-
-        If Not isValid Then
-            For Each kvp As KeyValuePair(Of SystemMessage, List(Of String())) In udtSMList
-                If IsNothing(kvp.Value) Then
-                    Me.udcMessageBox.AddMessage(kvp.Key)
-                Else
-                    Dim s As List(Of String())
-                    s = kvp.Value
-                    Me.udcMessageBox.AddMessage(kvp.Key, s(0), s(1))
-                End If
-
-            Next
-
-        End If
-
-        If isValid Then
-            udcInputCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
         End If
 
         Return isValid
@@ -4732,6 +4713,9 @@ Partial Public Class ClaimCreation
 
         If isValid Then
             udcInputCOVID19RVP.Save(udtEHSTransaction, udtEHSClaimVaccine)
+
+            SaveDischargeResult(udtEHSTransaction)
+
         End If
 
         Return isValid
@@ -4792,6 +4776,9 @@ Partial Public Class ClaimCreation
 
         If isValid Then
             udcInputCOVID19OR.Save(udtEHSTransaction, udtEHSClaimVaccine)
+
+            SaveDischargeResult(udtEHSTransaction)
+
         End If
 
         Return isValid
@@ -5050,6 +5037,28 @@ Partial Public Class ClaimCreation
     ' CRE20-015 (Special Support Scheme) [End][Chris YIM]
 
 #End Region
+
+    Private Sub BuildCOVID19DischargeRecordGrid(ByVal udtDischargeResult As DischargeResultModel)
+        panStep2aDischargeRecord.Visible = False
+
+        If udtDischargeResult IsNot Nothing AndAlso _
+            (udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
+            udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch) Then
+
+            panStep2aDischargeRecord.Visible = True
+
+            'Discharge date 
+            Me.lblCDischargeDate.Text = udtFormatter.formatDisplayDate(CDate(udtDischargeResult.DischargeDate), Session("Language"))
+
+            'Remarks
+            Dim strDaysApartText As String = HttpContext.GetGlobalResourceObject("AlternateText", "DaysApart")
+            Dim intDaysApart As Integer = DateDiff(DateInterval.Day, CDate(udtDischargeResult.DischargeDate), udtGeneralFunction.GetSystemDateTime.Date)
+
+            Me.lblCDischargeRemark.Text = strDaysApartText.Replace("%s", intDaysApart)
+
+        End If
+
+    End Sub
 
 #End Region
 
@@ -5426,6 +5435,41 @@ Partial Public Class ClaimCreation
         If blnClearSearchAccountList Then
             Session.Remove(SESS_SearchAccount)
         End If
+    End Sub
+
+    Private Sub SaveDischargeResult(ByRef udtEHSTransaction As EHSTransactionModel)
+        Dim udtTransactAdditionfield As TransactionAdditionalFieldModel = Nothing
+
+        If udtEHSTransaction.TransactionAdditionFields(0) IsNot Nothing Then
+            'Discharge Status
+            Dim udtDischargeResult As DischargeResultModel = Me.udtSessionHandlerBLL.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
+
+            Dim strDischarge As String = "N"
+            Dim strDischargeDate As String = String.Empty
+            Dim strFileID As String = String.Empty
+
+            If udtDischargeResult IsNot Nothing Then
+                strDischarge = udtDischargeResult.DemographicResultCode
+
+                If udtDischargeResult.DischargeDate IsNot Nothing Then
+                    strDischargeDate = CDate(udtDischargeResult.DischargeDate).ToString("yyyy-MM-dd")
+                End If
+
+                strFileID = udtDischargeResult.FileID
+
+            End If
+
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DischargeResult
+            udtTransactAdditionfield.AdditionalFieldValueCode = strDischarge
+            udtTransactAdditionfield.AdditionalFieldValueDesc = strDischargeDate
+            udtTransactAdditionfield.SchemeCode = udtEHSTransaction.TransactionAdditionFields(0).SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtEHSTransaction.TransactionAdditionFields(0).SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtEHSTransaction.TransactionAdditionFields(0).SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+
+        End If
+
     End Sub
 
 #End Region

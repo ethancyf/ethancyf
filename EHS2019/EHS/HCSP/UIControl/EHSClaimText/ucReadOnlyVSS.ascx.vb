@@ -269,11 +269,14 @@ Namespace UIControl.EHCClaimText
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
                     MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
+                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB OrElse _
                     (MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
                      MyBase.EHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
                    (MyBase.EHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
                     MyBase.EHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                    MyBase.EHSTransaction.DocCode = DocTypeCode.OW) Then
+                    MyBase.EHSTransaction.DocCode = DocTypeCode.OW OrElse _
+                    MyBase.EHSTransaction.DocCode = DocTypeCode.TW OrElse _
+                    MyBase.EHSTransaction.DocCode = DocTypeCode.CCIC) Then
 
                     trJoinEHRSS.Visible = True
                     trJoinEHRSSText.Visible = True

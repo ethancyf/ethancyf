@@ -24,9 +24,8 @@ Partial Public Class VaccineLotApproval
         SearchCriteria = 0
         SearchResult = 1
         Detail = 2
-        Confirm = 3
-        MsgPage = 4
-        ErrorPage = 5
+        MsgPage = 3
+        ErrorPage = 4
     End Enum
 
 #Region "Fields"
@@ -268,7 +267,7 @@ Partial Public Class VaccineLotApproval
 
                 Case SearchResultEnum.NoRecordFound
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00003, AuditMsg00003)
-                    ibtnNoRecordBack.visible = True
+                    ibtnNoRecordBack.Visible = True
                     ibtnConfirmBack.Visible = False
                 Case SearchResultEnum.OverResultList1stLimit_PopUp
                     udtAuditLogEntry.WriteEndLog(LogID.LOG00004, AuditMsg00004)
@@ -317,6 +316,7 @@ Partial Public Class VaccineLotApproval
 
     Private Sub BindVLSummaryView(ByVal strRequestID As String)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         If IsNothing(strRequestID) OrElse strRequestID.Trim = String.Empty Then Return
 
         Dim blnNotFind As Boolean = False
@@ -379,6 +379,7 @@ Partial Public Class VaccineLotApproval
 
         'BackToSearchCriteriaView(True)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         ChangeViewIndex(ViewIndex.SearchCriteria)
     End Sub
 
@@ -463,6 +464,7 @@ Partial Public Class VaccineLotApproval
 
     Private Sub BackToSearchCriteriaView(ByVal blnIsReset As Boolean)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
 
         ChangeViewIndex(ViewIndex.SearchCriteria)
         If blnIsReset Then
@@ -549,30 +551,41 @@ Partial Public Class VaccineLotApproval
         Dim blnValid As Boolean = True
 
         Dim dvLotDetailFilterWithLotAssign As DataView = Nothing
-        
+
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
+        ViewState("action") = ActionType.Approval
 
         Select Case e
             Case ucNoticePopUp.enumButtonClick.OK
+                Try
+                    udtAuditLogEntry.AddDescripton("Request Id", lblDetailRequestID.Text)
+                    udtAuditLogEntry.WriteLog(LogID.LOG00009, AuditMsg00009)
 
-                'check the lot detail is marked at unavailable
-                If (blnValid) Then
-                    dvLotDetailFilterWithLotAssign = New DataView(udtVaccineLotBLL.CheckVaccineLotDetailExist(lblDetailVaccineLotNo.Text.Trim))
-                    dvLotDetailFilterWithLotAssign.RowFilter = udtVaccineLotBLL.FilterLotDetailByLotAssignStatus(VaccineLotDetailLotAssignStatus.Unavailable)
-                    If dvLotDetailFilterWithLotAssign.Count > 0 Then
-                        'If udtVaccineLotBLL.CheckVaccineLotDetailExist(lblDetailVaccineLotNo.Text.Trim, String.Empty, String.Empty, VaccineLotDetailLotAssignStatus.Unavailable) Then
-                        msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00003), "%s", lblDetailVaccineLotNo.Text.Trim)
-                        blnValid = False
+                    'check the lot detail is marked at unavailable
+                    If (blnValid) Then
+                        dvLotDetailFilterWithLotAssign = New DataView(udtVaccineLotBLL.CheckVaccineLotDetailExist(lblDetailVaccineLotNo.Text.Trim))
+                        dvLotDetailFilterWithLotAssign.RowFilter = udtVaccineLotBLL.FilterLotDetailByLotAssignStatus(VaccineLotDetailLotAssignStatus.Unavailable)
+                        If dvLotDetailFilterWithLotAssign.Count > 0 Then
+                            'If udtVaccineLotBLL.CheckVaccineLotDetailExist(lblDetailVaccineLotNo.Text.Trim, String.Empty, String.Empty, VaccineLotDetailLotAssignStatus.Unavailable) Then
+                            msgBox.AddMessage(New Common.ComObject.SystemMessage(FunctionCode, SeverityCode.SEVE, MsgCode.MSG00003), "%s", lblDetailVaccineLotNo.Text.Trim)
+                            blnValid = False
+                        End If
                     End If
-                End If
 
-                udtAuditLogEntry.AddDescripton("Request Id", lblDetailRequestID.Text)
-                udtAuditLogEntry.WriteLog(LogID.LOG00009, AuditMsg00009)
+                    If (blnValid) Then
+                        ApproveLotRecord()
+                    Else
+                        WriteUpdateFailedAuditLog(lblDetailRequestID.Text.Trim)
+                    End If
 
-                If (blnValid) Then
-                    ApproveLotRecord()
-                End If
+                Catch ex As Exception
+                    udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
+                    udtAuditLogEntry.AddDescripton("Message", ex.Message)
+                    WriteUpdateFailedAuditLog(lblDetailRequestID.Text.Trim)
+                End Try
+
             Case Else
                 udtAuditLogEntry.WriteLog(LogID.LOG00010, AuditMsg00010)
         End Select
@@ -582,8 +595,10 @@ Partial Public Class VaccineLotApproval
 
         udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
         udcInfoBox.Visible = False
+        msgBox.Visible = False
         Dim blnResult As New Boolean
         Dim udtVaccineLotList As VaccineLotRequestModel = Session(SESS_VaccineLotListModal)
+        ViewState("action") = ActionType.Reject
 
         Select Case e
             Case ucNoticePopUp.enumButtonClick.OK
@@ -599,7 +614,9 @@ Partial Public Class VaccineLotApproval
                         udtAuditLogEntry.WriteLog(LogID.LOG00016, AuditMsg00016)
                         ChangeViewIndex(ViewIndex.MsgPage)
                     Else
+                        Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
                         WriteUpdateFailedAuditLog(lblDetailRequestID.Text.Trim)
+                        ChangeViewIndex(ViewIndex.ErrorPage)
                     End If
                 Catch ex As Exception
                     udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")
@@ -608,8 +625,6 @@ Partial Public Class VaccineLotApproval
 
                 End Try
             Case Else
-                ViewState("action") = ActionType.Reject
-                WriteUpdateFailedAuditLog(lblDetailRequestID.Text.Trim)
                 udtAuditLogEntry.WriteLog(LogID.LOG00015, AuditMsg00015)
         End Select
 
@@ -627,7 +642,6 @@ Partial Public Class VaccineLotApproval
             Case ViewIndex.SearchResult
                 Session.Remove(SESS_VaccineLotListModal)
             Case ViewIndex.Detail
-            Case ViewIndex.Confirm
             Case ViewIndex.MsgPage
                 ibtnConfirmBack.Visible = True
                 ibtnNoRecordBack.Visible = False
@@ -759,19 +773,19 @@ Partial Public Class VaccineLotApproval
                     lblSummaryEffTo.Text = Me.GetGlobalResourceObject("Text", "N/A")
                 Else
 
-                Dim udtSystemMessage As SystemMessage = udtValidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00381, _
-                 Date.Today().ToString("dd MMM yyyy"), lblSummaryEffTo.Text)
+                    Dim udtSystemMessage As SystemMessage = udtValidator.chkInputValidFromDateCutoffDate(FunctCode.FUNT990000, MsgCode.MSG00381, _
+                     Date.Today().ToString("dd MMM yyyy"), lblSummaryEffTo.Text)
 
-                'servicedayTo < today =  cutoff day
-                If (Not IsNothing(udtSystemMessage)) Then
-                    lblSummaryEffFrom.Text = Me.GetGlobalResourceObject("Text", "N/A")
-                    lblSummaryEffTo.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                    'servicedayTo < today =  cutoff day
+                    If (Not IsNothing(udtSystemMessage)) Then
+                        lblSummaryEffFrom.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                        lblSummaryEffTo.Text = Me.GetGlobalResourceObject("Text", "N/A")
+                    End If
                 End If
-            End If
 
-            
 
-                    'set >> new record
+
+                'set >> new record
                 If Not lblSummaryEffFrom.Text.Trim.Equals(lblSummaryNewEffFrom.Text.Trim) Then
                     lblSummaryNewEffFrom.Text = " >> " + lblSummaryNewEffFrom.Text.Trim
                 Else
@@ -798,7 +812,7 @@ Partial Public Class VaccineLotApproval
 
             End If
 
-         
+
 
         End If
 
@@ -807,22 +821,21 @@ Partial Public Class VaccineLotApproval
         Dim blnResult As New Boolean
         udtAuditLogEntry = New AuditLogEntry(FunctionCode, Me)
         Dim udtVaccineLotList As VaccineLotRequestModel = Session(SESS_VaccineLotListModal)
+        ViewState("action") = ActionType.Approval
         Try
             blnResult = udtVaccineLotBLL.VaccineLotEditApproveAction(lblDetailRequestID.Text, VACCINELOT_ACTIONTYPE.ACTION_APPROVE, udtVaccineLotList.TSMP)
 
             If (blnResult) Then
-
                 udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
                 udcInfoBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001)
                 udcInfoBox.BuildMessageBox()
                 udcInfoBox.Type = CustomControls.InfoMessageBoxType.Complete
                 ChangeViewIndex(ViewIndex.MsgPage)
                 udtAuditLogEntry.WriteLog(LogID.LOG00011, AuditMsg00011)
-
-
             Else
-                ViewState("action") = ActionType.Approval
+                Me.msgBox.AddMessage(New SystemMessage(FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00184))
                 WriteUpdateFailedAuditLog(lblDetailRequestID.Text.Trim)
+                ChangeViewIndex(ViewIndex.ErrorPage)
             End If
         Catch ex As Exception
             udtAuditLogEntry.AddDescripton("StackTrace", "Unknown Exception")

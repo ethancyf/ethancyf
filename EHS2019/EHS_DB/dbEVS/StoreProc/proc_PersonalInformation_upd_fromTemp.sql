@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	26 May 2021
+-- Description:		Update PersonalInfo.[Update_Dtm] when merge temp account
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT20-0022 (Fix IMMBValidation on IDEAS Combo)
 -- Modified by:		Koala CHENG
 -- Modified date:	2 Jul 2020
@@ -117,6 +124,7 @@ Declare @EC_Reference_No_Other_Format char(1)
 Declare @Create_By_SmartID char(1)
 Declare @SmartID_Ver	varchar(5)
 
+Declare @Update_By	varchar(20)
 -- =============================================
 -- Validation 
 -- =============================================
@@ -151,8 +159,8 @@ BEGIN
 		@Permit_to_Remain_Until = Permit_to_Remain_Until,
 		@Other_Info = Other_Info,
 		@Create_By_SmartID = Create_By_SmartID,
-		@SmartID_Ver = SmartID_Ver
-
+		@SmartID_Ver = SmartID_Ver,
+		@Update_By = Update_By
 	FROM [dbo].[TempPersonalInformation]	
 	WHERE 
 		Voucher_Acc_ID = @Temp_Voucher_Acc_ID
@@ -180,7 +188,10 @@ BEGIN
 		Permit_to_Remain_Until = @Permit_to_Remain_Until,
 		Other_Info = @Other_Info,
 		Create_By_SmartID = @Create_By_SmartID,
-		SmartID_Ver = @SmartID_Ver
+		SmartID_Ver = @SmartID_Ver,
+
+		Update_Dtm = GETDATE(),
+		Update_By = @Update_By
 	WHERE 
 		Voucher_Acc_ID = @Voucher_Acc_ID AND Doc_Code = @Doc_Code AND --Create_By_SmartID <> 'Y'
 		(
@@ -234,8 +245,8 @@ SELECT
 		@EC_Reference_No = EC_Reference_No,
 		@EC_Reference_No_Other_Format = EC_Reference_No_Other_Format,
 		@Create_By_SmartID = Create_By_SmartID,
-		@SmartID_Ver = SmartID_Ver
-		
+		@SmartID_Ver = SmartID_Ver,
+		@Update_By = Update_By
 	FROM [dbo].[TempPersonalInformation]	
 	WHERE 
 		Voucher_Acc_ID = @Temp_Voucher_Acc_ID
@@ -272,8 +283,10 @@ SELECT
 		EC_Reference_No = @EC_Reference_No,
 		EC_Reference_No_Other_Format = @EC_Reference_No_Other_Format,
 		Create_By_SmartID = @Create_By_SmartID,
-		SmartID_Ver = @SmartID_Ver
+		SmartID_Ver = @SmartID_Ver,
 		
+		Update_Dtm = GETDATE(),
+		Update_By = @Update_By
 	WHERE 
 		Voucher_Acc_ID = @Voucher_Acc_ID AND Doc_Code = @Doc_Code
 

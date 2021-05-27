@@ -74,6 +74,9 @@ Namespace Component.EHSTransaction
             Public Const OutreachCode As String = "OutreachCode"
             Public Const RecipientType As String = "RecipientType"
             Public Const OutreachType As String = "OutreachType"
+            Public Const DischargeResult As String = "DischargeResult"
+            Public Const DischargeDate As String = "DischargeDate"
+            Public Const DischargeFileID As String = "DischargeFileID"
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
             Public Shared Function ReasonForVisitL1() As String()

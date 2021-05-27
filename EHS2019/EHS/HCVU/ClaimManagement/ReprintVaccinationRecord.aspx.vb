@@ -12,6 +12,7 @@ Imports Common.SearchCriteria
 Imports HCVU.BLL
 Imports Common.Component.ClaimRules.ClaimRulesBLL
 Imports Common.Format
+Imports Common.Component.COVID19
 
 
 
@@ -314,7 +315,8 @@ Partial Public Class ReprintVaccinationRecord
                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19DH OrElse _
                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19RVP OrElse _
                                udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19OR OrElse _
-                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19SR Then
+                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19SR OrElse _
+                               udtCurEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.COVID19SB Then
 
                                 Dim dtLoginUserVaccineCentre As DataTable = udtCOVID19BLL.GetCOVID19VaccineCentreBySPID(strUserID)
 
@@ -444,6 +446,11 @@ Partial Public Class ReprintVaccinationRecord
                 End If
 
             End If
+
+            'Check Discharge List
+            udtSessionHandlerBLL.ClaimCOVID19DischargeRecordRemoveFromSession(FunctionCode)
+
+            CheckCOVID19DischargeRecord(udtEHSTransaction)
 
             'HardCoded for print Covid19 Vaccination '
             Dim strCurrentPrintOption As String = Common.Component.PrintFormOptionValue.PrintPurposeAndConsent
@@ -1289,5 +1296,25 @@ Partial Public Class ReprintVaccinationRecord
 
 
 #End Region
+
+    ' CRE20-0023 (Immu record) [Start][Chris YIM]
+#Region "Check Discharge List"
+    Private Sub CheckCOVID19DischargeRecord(ByVal udtEHSTransaction As EHSTransactionModel)
+        'Check discharge list
+        udtEHSTransaction.EHSAcct.SetSearchDocCode(udtEHSTransaction.DocCode)
+
+        Dim udtDischargeResult As DischargeResultModel = (New COVID19.COVID19BLL).GetCovid19DischargePatientByDocCodeDocNo(udtEHSTransaction.EHSAcct)
+
+        If udtDischargeResult IsNot Nothing AndAlso _
+            (udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.ExactMatch OrElse _
+            udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch) Then
+
+            udtSessionHandlerBLL.ClaimCOVID19DischargeRecordSaveToSession(udtDischargeResult, FunctionCode)
+        End If
+
+    End Sub
+
+#End Region
+    ' CRE20-0023 (Immu record) [End][Chris YIM]
 
 End Class

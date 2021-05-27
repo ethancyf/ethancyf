@@ -121,12 +121,15 @@ Partial Public Class ClaimTranEnquiry
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19RVP OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB OrElse _
                 ((udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
                  udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
                  udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
                (udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
                 udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                udtEHSTransaction.DocCode = DocTypeCode.OW) Then
+                udtEHSTransaction.DocCode = DocTypeCode.OW OrElse _
+                udtEHSTransaction.DocCode = DocTypeCode.TW OrElse _
+                udtEHSTransaction.DocCode = DocTypeCode.CCIC) Then
 
                 panJoinEHRSS.Visible = True
                 If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then

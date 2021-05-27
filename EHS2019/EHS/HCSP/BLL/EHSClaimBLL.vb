@@ -617,23 +617,47 @@ Namespace BLL
             ' Check with Block Case
             ' -------------------------------------
             If strMsgCode = "" Then
+                Dim udtClaimResultBlock As ClaimRulesBLL.ClaimRuleResult = Nothing
+                Dim udtClaimResultBlockPopup As ClaimRulesBLL.ClaimRuleResult = Nothing
+                Dim blnError As Boolean = False
+                Dim blnErrorPopup As Boolean = False
+
                 For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResult
                     If udtClaimResult.IsBlock Then
-
-                        If Not udtClaimResult.RelatedClaimRule Is Nothing Then
-                            strFunctCode = udtClaimResult.RelatedClaimRule.FunctionCode
-                            strSeverity = udtClaimResult.RelatedClaimRule.SeverityCode
-                            strMsgCode = udtClaimResult.RelatedClaimRule.MessageCode
-
-                            ' CRE20-0023 (Immu record) [Start][Chris YIM]
-                            ' ---------------------------------------------------------------------------------------------------------
-                            udtClaimRuleResultList.Add(udtClaimResult)
-                            ' CRE20-0023 (Immu record) [End][Chris YIM]
-
-                            Exit For
-                        End If
+                        Select Case udtClaimResult.HandleMethod
+                            Case ClaimRulesBLL.HandleMethodENum.Block
+                                blnError = True
+                                If udtClaimResultBlock Is Nothing Then
+                                    udtClaimResultBlock = udtClaimResult
+                                End If
+                            Case ClaimRulesBLL.HandleMethodENum.BlockPopup
+                                blnErrorPopup = True
+                                If udtClaimResultBlockPopup Is Nothing Then
+                                    udtClaimResultBlockPopup = udtClaimResult
+                                End If
+                        End Select
                     End If
                 Next
+
+                If blnErrorPopup Then
+                    If udtClaimResultBlockPopup IsNot Nothing Then
+                        Dim udtPopupSystemMessageList As List(Of SystemMessage) = TryCast(udtClaimResultBlockPopup.ResultParam("SystemMessage"), List(Of SystemMessage))
+                        strFunctCode = udtPopupSystemMessageList(0).FunctionCode
+                        strSeverity = udtPopupSystemMessageList(0).SeverityCode
+                        strMsgCode = udtPopupSystemMessageList(0).MessageCode
+
+                        udtClaimRuleResultList.Add(udtClaimResultBlockPopup)
+                    End If
+                Else
+                    If udtClaimResultBlock IsNot Nothing Then
+                        strFunctCode = udtClaimResultBlock.RelatedClaimRule.FunctionCode
+                        strSeverity = udtClaimResultBlock.RelatedClaimRule.SeverityCode
+                        strMsgCode = udtClaimResultBlock.RelatedClaimRule.MessageCode
+
+                        udtClaimRuleResultList.Add(udtClaimResultBlock)
+                    End If
+                End If
+
             End If
 
             ' -------------------------------------
@@ -654,7 +678,10 @@ Namespace BLL
             ' -------------------------------------
             If strMsgCode = "" Then
                 For Each udtClaimResult As ClaimRulesBLL.ClaimRuleResult In lstClaimResult
-                    If Not udtClaimResult.IsBlock AndAlso (udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Declaration OrElse udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Warning) Then
+                    If Not udtClaimResult.IsBlock AndAlso _
+                        (udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Declaration OrElse _
+                         udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.Warning OrElse _
+                         udtClaimResult.HandleMethod = ClaimRulesBLL.HandleMethodENum.WarningReason) Then
                         'udtClaimRuleResult = udtClaimResult
                         udtClaimRuleResultList = lstClaimResult
                         Exit For
@@ -1184,7 +1211,7 @@ Namespace BLL
                         Select Case strDocCode
                             Case DocTypeModel.DocTypeCode.ADOPC
                                 strMsgCode = "00222"
-                            Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                            Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                 strMsgCode = "00223"
                             Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                                 strMsgCode = "00110"
@@ -2143,7 +2170,7 @@ Namespace BLL
                             Select Case strDocCode
                                 Case DocTypeModel.DocTypeCode.ADOPC
                                     strMsgCode = "00222"
-                                Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                                Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00223"
                                 Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00110"

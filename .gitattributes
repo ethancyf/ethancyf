@@ -93,6 +93,20 @@ EHS2019/EHS/COVID19BatchConfirm/My[!!-~]Project/Settings.Designer.vb -text
 EHS2019/EHS/COVID19BatchConfirm/My[!!-~]Project/Settings.settings -text
 EHS2019/EHS/COVID19BatchConfirm/ProgramMgr.vb -text
 EHS2019/EHS/COVID19BatchConfirm/RecordConfirmationBLL.vb -text
+EHS2019/EHS/COVID19DischargeImporter/App.config -text
+EHS2019/EHS/COVID19DischargeImporter/COVID19DischargeBLL.vb -text
+EHS2019/EHS/COVID19DischargeImporter/COVID19DischargeImporter.vbproj -text
+EHS2019/EHS/COVID19DischargeImporter/COVID19DischargeLogger.vb -text
+EHS2019/EHS/COVID19DischargeImporter/COVID19DischargeUtil.vb -text
+EHS2019/EHS/COVID19DischargeImporter/Module1.vb -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/Application.Designer.vb -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/Application.myapp -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/AssemblyInfo.vb -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/Resources.Designer.vb -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/Resources.resx -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/Settings.Designer.vb -text
+EHS2019/EHS/COVID19DischargeImporter/My[!!-~]Project/Settings.settings -text
+EHS2019/EHS/COVID19DischargeImporter/ProgramMgr.vb -text
 EHS2019/EHS/COVID19Exporter/App.config -text
 EHS2019/EHS/COVID19Exporter/C19BLL.vb -text
 EHS2019/EHS/COVID19Exporter/C19Logger.vb -text
@@ -254,6 +268,7 @@ EHS2019/EHS/Common/ComFunction/AccountSecurity.vb -text
 EHS2019/EHS/Common/ComFunction/CommonJSFunction.vb -text
 EHS2019/EHS/Common/ComFunction/DataSetFunction.vb -text
 EHS2019/EHS/Common/ComFunction/GeneralFunction.vb -text
+EHS2019/EHS/Common/ComFunction/GeneralFunction.vb.bak -text
 EHS2019/EHS/Common/ComFunction/Generator/AbstractXmlGenerator.vb -text
 EHS2019/EHS/Common/ComFunction/Generator/XsltXmlGenerator.vb -text
 EHS2019/EHS/Common/ComFunction/GridviewFunction.vb -text
@@ -301,6 +316,7 @@ EHS2019/EHS/Common/Component/BaseModel.vb -text
 EHS2019/EHS/Common/Component/CCCode/CCCodeBLL.vb -text
 EHS2019/EHS/Common/Component/CMSHealthCheck/CMSHealthCheckBLL.vb -text
 EHS2019/EHS/Common/Component/COVID19/COVID19BLL.vb -text
+EHS2019/EHS/Common/Component/COVID19/DischargeResultModel.vb -text
 EHS2019/EHS/Common/Component/COVID19/OutreachListBLL.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Common/Format/Formatter.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Common/Format/QrCodeFormatter.vb -text
@@ -1371,6 +1387,9 @@ EHS2019/EHS/HCSP/Images/button/btn_back.png -text
 EHS2019/EHS/HCSP/Images/button/btn_back_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_back_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_cancel.png -text
+EHS2019/EHS/HCSP/Images/button/btn_cancel_D.png -text
+EHS2019/EHS/HCSP/Images/button/btn_cancel_D_cn.png -text
+EHS2019/EHS/HCSP/Images/button/btn_cancel_D_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_cancel_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_cancel_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_checkAvailability.png -text
@@ -1385,6 +1404,9 @@ EHS2019/EHS/HCSP/Images/button/btn_claim_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_claim_tw_D.png -text
 EHS2019/EHS/HCSP/Images/button/btn_close.png -text
 EHS2019/EHS/HCSP/Images/button/btn_closeENTW.png -text
+EHS2019/EHS/HCSP/Images/button/btn_close_D.png -text
+EHS2019/EHS/HCSP/Images/button/btn_close_D_cn.png -text
+EHS2019/EHS/HCSP/Images/button/btn_close_D_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_close_cn.png -text
 EHS2019/EHS/HCSP/Images/button/btn_close_tw.png -text
 EHS2019/EHS/HCSP/Images/button/btn_confirm.png -text
@@ -3301,6 +3323,9 @@ EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyROP140.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyReentryPermit.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyReentryPermit.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyReentryPermit.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyTW.ascx -text
+EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyTW.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyTW.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyVISA.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyVISA.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocTypeText/ucReadOnlyVISA.ascx.vb -text
@@ -4834,6 +4859,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucInputROP140.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputReentryPermit.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputReentryPermit.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputReentryPermit.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputTW.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputTW.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputTW.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputVISA.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputVISA.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputVISA.ascx.vb -text
@@ -4879,6 +4907,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyREPMT.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyROP140.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyROP140.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyROP140.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyTW.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyTW.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyTW.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyVISA.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyVISA.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyVISA.ascx.vb -text
@@ -8671,9 +8702,11 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_BankIn_update.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_GetVaccinationEnd_ByDtm.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_Get_ByHourBefore.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_CMS_AuditLog_Get_Summary.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19DischargePatient_bulkcopy.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19ExporterQueue_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19ExporterQueue_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19ExporterQueue_update.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19InfectedDischargeList_get_ByDocCodeDocNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19TransactionAdditionalField_check_byVaccineLotNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineBooth_getAll.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_COVID19VaccineBrandDetail_getAll.sql -text
@@ -9971,6 +10004,7 @@ EHS2019/EHS_DB/dbEVS/Trigger/ProfessionalSubmissionResult_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccVerification_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccountStaging_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_BankAccount_after_upd.sql -text
+EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19InfectedDischargeList_after_ins.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotDetailHistory_after_del.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotDetailHistory_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_COVID19VaccineLotMapping_after_upd.sql -text
@@ -10029,6 +10063,7 @@ EHS2019/EHS_DB/dbEVS/Trigger/tri_TransactionInvalidation_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_UserRole_after_upd.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_VoucherAccount_after_del.sql -text
 EHS2019/EHS_DB/dbEVS/Trigger/tri_VoucherAccount_after_upd.sql -text
+EHS2019/EHS_DB/dbEVS/Type/COVID19DischargePatientTableType.sql -text
 EHS2019/EHS_DB/dbEVS/Type/HAServicePatientTableType.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/Function/func_get_age_range_for_statistics.sql -text
 EHS2019/EHS_DB/dbEVS_Enquiry/Function/func_get_period.sql -text

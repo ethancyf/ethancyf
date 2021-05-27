@@ -384,7 +384,8 @@ Partial Public Class ucReadOnlyEHSClaim
                     ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
                 Case SchemeClaimModel.COVID19CVC, _
                     SchemeClaimModel.COVID19DH, _
-                    SchemeClaimModel.COVID19SR
+                    SchemeClaimModel.COVID19SR,
+                    SchemeClaimModel.COVID19SB
                     Me.BuildCOVID19()
                     ' CRE20-0023 (Immu record) [End][Winnie SUEN]
                 Case SchemeClaimModel.COVID19RVP

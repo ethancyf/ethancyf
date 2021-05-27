@@ -17,6 +17,21 @@ Namespace Component.COVID19
             Public Const CACHE_ALL_VaccineCentreSPMapping As String = "COVID19BLL_ALL_VaccineCentreSPMapping"
             Public Const CACHE_ALL_VaccineCentre As String = "COVID19BLL_ALL_VaccineCentre"
         End Class
+
+        Private Class SESS
+            Public Const SPID As String = "COVID19BLL_SESS_SPID"
+            Public Const PracticeDisplaySeq As String = "COVID19BLL_SESS_PracticeDisplaySeq"
+            Public Const ServiceDate As String = "COVID19BLL_SESS_ServiceDate"
+            Public Const VaccineLotList_Centre As String = "COVID19BLL_SESS_VaccineLotList_Centre"
+            Public Const VaccineLotList_Private As String = "COVID19BLL_SESS_VaccineLotList_Private"
+            Public Const VaccineLotList_RVP As String = "COVID19BLL_SESS_VaccineLotList_RVP"
+        End Class
+
+        Public Enum Source
+            GetFromDB
+            GetFromSession
+            NoSession
+        End Enum
 #End Region
 
 #Region "Private Member"
@@ -138,82 +153,197 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMapping(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer), ByVal dtmServiceDate As DateTime) As DataTable
+        Public Shared Sub ClearVaccineLotListSession()
+            HttpContext.Current.Session.Remove(SESS.SPID)
+            HttpContext.Current.Session.Remove(SESS.PracticeDisplaySeq)
+            HttpContext.Current.Session.Remove(SESS.ServiceDate)
+            HttpContext.Current.Session.Remove(SESS.VaccineLotList_Centre)
+            HttpContext.Current.Session.Remove(SESS.VaccineLotList_Private)
+            HttpContext.Current.Session.Remove(SESS.VaccineLotList_RVP)
+        End Sub
+
+        Public Function GetCOVID19VaccineLotMappingForCentre(ByVal strSPID As String, _
+                                                             ByVal intPracticeDisplaySeq As Nullable(Of Integer), _
+                                                             ByVal dtmServiceDate As DateTime, _
+                                                             Optional ByVal enumSource As Source = Source.GetFromDB) As DataTable
             Dim dt As New DataTable
             Dim db As New Database
+
+            Dim blnDiff As Boolean = False
+
+            If HttpContext.Current.Session(SESS.SPID) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.SPID), String) <> strSPID Then
+                blnDiff = True
+            End If
+
+            If HttpContext.Current.Session(SESS.PracticeDisplaySeq) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.PracticeDisplaySeq), Integer) <> intPracticeDisplaySeq Then
+                blnDiff = True
+            End If
+
+            If HttpContext.Current.Session(SESS.ServiceDate) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.ServiceDate), DateTime) <> dtmServiceDate Then
+                blnDiff = True
+            End If
+
+            HttpContext.Current.Session(SESS.SPID) = strSPID
+            HttpContext.Current.Session(SESS.PracticeDisplaySeq) = intPracticeDisplaySeq
+            HttpContext.Current.Session(SESS.ServiceDate) = dtmServiceDate
 
             Dim objPracticeDisplaySeq As Object = DBNull.Value
             If intPracticeDisplaySeq.HasValue Then
                 objPracticeDisplaySeq = intPracticeDisplaySeq.Value
             End If
 
-            Dim parms() As SqlParameter = { _
-                db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
-                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 2, dtmServiceDate)}
+            If HttpContext.Current.Session(SESS.VaccineLotList_Centre) Is Nothing OrElse blnDiff OrElse enumSource = Source.GetFromDB Then
+                Dim parms() As SqlParameter = { _
+                    db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
 
-            db.RunProc("proc_COVID19VaccineLotMapping_get_ForPrivate", parms, dt)
+                Try
+                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForCentre", parms, dt)
+
+                    HttpContext.Current.Session(SESS.VaccineLotList_Centre) = dt
+
+                Catch eSQL As SqlException
+                    Throw eSQL
+                Catch ex As Exception
+                    Throw
+                End Try
+
+            Else
+                dt = HttpContext.Current.Session(SESS.VaccineLotList_Centre)
+
+            End If
 
             Return dt
 
         End Function
 
-        'CRE20-023 immue record [Start][Nichole]
-        Public Function GetCOVID19VaccineLotMappingForCentre(ByVal strSPID As String, ByVal intPracticeDisplaySeq As Nullable(Of Integer), ByVal dtmServiceDate As DateTime) As DataTable
+        Public Function GetCOVID19VaccineLotMappingForPrivate(ByVal dtmServiceDate As DateTime, ByVal enumSource As Source) As DataTable
+            Return GetCOVID19VaccineLotMappingForPrivate(String.Empty, Nothing, dtmServiceDate, enumSource)
+        End Function
+
+        Public Function GetCOVID19VaccineLotMappingForPrivate(ByVal strSPID As String, _
+                                                              ByVal intPracticeDisplaySeq As Nullable(Of Integer), _
+                                                              ByVal dtmServiceDate As DateTime, _
+                                                              Optional ByVal enumSource As Source = Source.GetFromDB) As DataTable
+
             Dim dt As New DataTable
             Dim db As New Database
+
+            Dim blnDiff As Boolean = False
+
+            'If HttpContext.Current.Session(SESS.SPID) Is Nothing OrElse _
+            '    CType(HttpContext.Current.Session(SESS.SPID), String) <> strSPID Then
+            '    blnDiff = True
+            'End If
+
+            'If HttpContext.Current.Session(SESS.PracticeDisplaySeq) Is Nothing OrElse _
+            '    CType(HttpContext.Current.Session(SESS.PracticeDisplaySeq), Integer) <> intPracticeDisplaySeq Then
+            '    blnDiff = True
+            'End If
+
+            If HttpContext.Current.Session(SESS.ServiceDate) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.ServiceDate), DateTime) <> dtmServiceDate Then
+                blnDiff = True
+            End If
+
+            HttpContext.Current.Session(SESS.SPID) = strSPID
+            HttpContext.Current.Session(SESS.PracticeDisplaySeq) = intPracticeDisplaySeq
+            HttpContext.Current.Session(SESS.ServiceDate) = dtmServiceDate
 
             Dim objPracticeDisplaySeq As Object = DBNull.Value
             If intPracticeDisplaySeq.HasValue Then
                 objPracticeDisplaySeq = intPracticeDisplaySeq.Value
             End If
 
-            Dim parms() As SqlParameter = { _
-                db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
-                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
+            If HttpContext.Current.Session(SESS.VaccineLotList_Private) Is Nothing OrElse blnDiff OrElse enumSource = Source.GetFromDB Then
+                Dim parms() As SqlParameter = { _
+                    db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
 
-            db.RunProc("proc_COVID19VaccineLotMapping_get_ForCentre", parms, dt)
+                Try
+                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForPrivate", parms, dt)
+
+                    HttpContext.Current.Session(SESS.VaccineLotList_Private) = dt
+
+                Catch eSQL As SqlException
+                    Throw eSQL
+                Catch ex As Exception
+                    Throw
+                End Try
+
+            Else
+                dt = HttpContext.Current.Session(SESS.VaccineLotList_Private)
+
+            End If
 
             Return dt
 
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingForPrivate(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing, Optional ByVal dtmServiceDate As DateTime = Nothing) As DataTable
-            Dim dt As New DataTable
-            Dim db As New Database
-
-            Dim objPracticeDisplaySeq As Object = DBNull.Value
-            If intPracticeDisplaySeq.HasValue Then
-                objPracticeDisplaySeq = intPracticeDisplaySeq.Value
-            End If
-
-            Dim parms() As SqlParameter = { _
-                db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
-                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
-
-            db.RunProc("proc_COVID19VaccineLotMapping_get_ForPrivate", parms, dt)
-
-            Return dt
-
+        Public Function GetCOVID19VaccineLotMappingForRCH(ByVal dtmServiceDate As DateTime, ByVal enumSource As Source) As DataTable
+            Return GetCOVID19VaccineLotMappingForRCH(String.Empty, Nothing, dtmServiceDate, enumSource)
         End Function
 
-        Public Function GetCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing, Optional ByVal dtmServiceDate As DateTime = Nothing) As DataTable
+        Public Function GetCOVID19VaccineLotMappingForRCH(ByVal strSPID As String, _
+                                                          ByVal intPracticeDisplaySeq As Nullable(Of Integer), _
+                                                          ByVal dtmServiceDate As DateTime, _
+                                                          Optional ByVal enumSource As Source = Source.GetFromDB) As DataTable
+
             Dim dt As New DataTable
             Dim db As New Database
+
+            Dim blnDiff As Boolean = False
+
+            'If HttpContext.Current.Session(SESS.SPID) Is Nothing OrElse _
+            '    CType(HttpContext.Current.Session(SESS.SPID), String) <> strSPID Then
+            '    blnDiff = True
+            'End If
+
+            'If HttpContext.Current.Session(SESS.PracticeDisplaySeq) Is Nothing OrElse _
+            '    CType(HttpContext.Current.Session(SESS.PracticeDisplaySeq), Integer) <> intPracticeDisplaySeq Then
+            '    blnDiff = True
+            'End If
+
+            If HttpContext.Current.Session(SESS.ServiceDate) Is Nothing OrElse _
+                CType(HttpContext.Current.Session(SESS.ServiceDate), DateTime) <> dtmServiceDate Then
+                blnDiff = True
+            End If
+
+            HttpContext.Current.Session(SESS.SPID) = strSPID
+            HttpContext.Current.Session(SESS.PracticeDisplaySeq) = intPracticeDisplaySeq
+            HttpContext.Current.Session(SESS.ServiceDate) = dtmServiceDate
 
             Dim objPracticeDisplaySeq As Object = DBNull.Value
             If intPracticeDisplaySeq.HasValue Then
                 objPracticeDisplaySeq = intPracticeDisplaySeq.Value
             End If
 
-            Dim parms() As SqlParameter = { _
-                db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
-                db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
-                db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
+            If HttpContext.Current.Session(SESS.VaccineLotList_RVP) Is Nothing OrElse blnDiff OrElse enumSource = Source.GetFromDB Then
+                Dim parms() As SqlParameter = { _
+                    db.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, IIf(strSPID = String.Empty, DBNull.Value, strSPID)), _
+                    db.MakeInParam("@Practice_Display_Seq", SqlDbType.SmallInt, 2, objPracticeDisplaySeq), _
+                    db.MakeInParam("@Service_Dtm", SqlDbType.DateTime, 8, IIf(dtmServiceDate = DateTime.MinValue, DBNull.Value, dtmServiceDate))}
 
-            db.RunProc("proc_COVID19VaccineLotMapping_get_ForRCH", parms, dt)
+                Try
+                    db.RunProc("proc_COVID19VaccineLotMapping_get_ForRCH", parms, dt)
+
+                    HttpContext.Current.Session(SESS.VaccineLotList_RVP) = dt
+
+                Catch eSQL As SqlException
+                    Throw eSQL
+                Catch ex As Exception
+                    Throw
+                End Try
+
+            Else
+                dt = HttpContext.Current.Session(SESS.VaccineLotList_RVP)
+
+            End If
 
             Return dt
 
@@ -256,7 +386,6 @@ Namespace Component.COVID19
             Return dt
 
         End Function
-        'CRE20-023 Immu record [End][Nichole]
 
         Public Function GetALLCOVID19VaccineLotMappingForRCH(Optional ByVal strSPID As String = "", Optional ByVal intPracticeDisplaySeq As Nullable(Of Integer) = Nothing) As DataTable
             Dim dt As New DataTable
@@ -444,6 +573,74 @@ Namespace Component.COVID19
 
             Return dt
         End Function
+#End Region
+
+#Region "Get COVID19 Infected Discharge List"
+        Public Function GetCovid19DischargePatientByDocCodeDocNo(ByVal udtEHSAccount As Common.Component.EHSAccount.EHSAccountModel) As DischargeResultModel
+            Return GetCovid19DischargePatientByDocCodeDocNo(udtEHSAccount.SearchDocCode, _
+                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).IdentityNum, _
+                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).EName, _
+                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).Gender, _
+                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).DOB, _
+                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).ExactDOB _
+                                                            )
+
+        End Function
+
+        Public Function GetCovid19DischargePatientByDocCodeDocNo(ByVal udtPersonalInfo As Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel) As DischargeResultModel
+            Return GetCovid19DischargePatientByDocCodeDocNo(udtPersonalInfo.DocCode, _
+                                                            udtPersonalInfo.IdentityNum, _
+                                                            udtPersonalInfo.EName, _
+                                                            udtPersonalInfo.Gender, _
+                                                            udtPersonalInfo.DOB, _
+                                                            udtPersonalInfo.ExactDOB _
+                                                            )
+
+        End Function
+
+        Public Function GetCovid19DischargePatientByDocCodeDocNo(ByVal strDocCode As String, _
+                                                                 ByVal strIdentityNum As String, _
+                                                                 ByVal strEngName As String, _
+                                                                 ByVal strSex As String, _
+                                                                 ByVal dtmDOB As DateTime, _
+                                                                 ByVal strExactDOB As String _
+                                                                 ) As DischargeResultModel
+            Dim dt As New DataTable
+            Dim db As New Common.DataAccess.Database
+            Dim udtDischargeResult As DischargeResultModel = Nothing
+
+            Try
+                ' Create data object and params
+                Dim prams() As SqlParameter = {db.MakeInParam("@Doc_code", SqlDbType.Char, 20, strDocCode), _
+                                               db.MakeInParam("@Identity_No", SqlDbType.VarChar, 30, strIdentityNum), _
+                                               db.MakeInParam("@Eng_Name", SqlDbType.VarChar, 320, strEngName), _
+                                               db.MakeInParam("@Sex", SqlDbType.Char, 1, strSex), _
+                                               db.MakeInParam("@DOB", SqlDbType.DateTime, 8, dtmDOB), _
+                                               db.MakeInParam("@ExactDOB", SqlDbType.Char, 1, strExactDOB) _
+                                               }
+
+                ' Run the stored procedure
+                db.RunProc("proc_COVID19InfectedDischargeList_get_ByDocCodeDocNo", prams, dt)
+
+                If dt.Rows.Count > 0 Then
+                    Dim dr As DataRow = dt.Rows(0)
+
+                    udtDischargeResult = New DischargeResultModel(dr("Demographic_Match"), _
+                                                                  IIf(IsDBNull(dr("Discharge_Date")), Nothing, dr("Discharge_Date")), _
+                                                                  IIf(IsDBNull(dr("File_ID")), Nothing, dr("File_ID")))
+
+                End If
+
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtDischargeResult
+
+        End Function
+
 #End Region
 
 #Region "Supported Function"
@@ -682,6 +879,39 @@ Namespace Component.COVID19
 
             Return rowFilterCondition
         End Function
+
+        Public Function IsCOVID19DischargePatient(ByVal udtEHSAccount As Common.Component.EHSAccount.EHSAccountModel) As Boolean
+            Return IsCOVID19DischargePatient(udtEHSAccount.SearchDocCode, _
+                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).IdentityNum, _
+                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).EName, _
+                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).Gender, _
+                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).DOB, _
+                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).ExactDOB _
+                                             )
+
+        End Function
+
+        Public Function IsCOVID19DischargePatient(ByVal strDocCode As String, _
+                                                  ByVal strIdentityNum As String, _
+                                                  ByVal strEngName As String, _
+                                                  ByVal strSex As String, _
+                                                  ByVal strDOB As String, _
+                                                  ByVal strExactDOB As String _
+                                                  ) As Boolean
+            Dim blnRes As Boolean = False
+            Dim udtDischargeResult As DischargeResultModel = GetCovid19DischargePatientByDocCodeDocNo(strDocCode, strIdentityNum, strEngName, strSex, strDOB, strExactDOB)
+
+            If udtDischargeResult IsNot Nothing AndAlso _
+                (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
+                udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch) Then
+
+                blnRes = True
+            End If
+
+            Return blnRes
+
+        End Function
+
 #End Region
 
 #Region "QR Code"

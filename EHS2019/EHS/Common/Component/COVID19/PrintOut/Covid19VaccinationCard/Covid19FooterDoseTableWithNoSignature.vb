@@ -1,4 +1,4 @@
-Imports GrapeCity.ActiveReports
+﻿Imports GrapeCity.ActiveReports
 Imports GrapeCity.ActiveReports.Document
 Imports GrapeCity.ActiveReports.SectionReportModel
 Imports Common.Component
@@ -20,7 +20,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
         Private _udtVaccinationRecordHistory As TransactionDetailVaccineModel
         'Setting for blank sample of vaccination card
         Private _blnIsSample As Boolean
-
+        Private _blnDischarge As Boolean
 
 #Region "Constructor"
 
@@ -29,13 +29,18 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             InitializeComponent()
         End Sub
 
-        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, ByRef blnIsSample As Boolean)
+        Public Sub New(ByRef udtEHSTransaction As EHSTransactionModel, _
+                       ByRef udtVaccinationRecordHistory As TransactionDetailVaccineModel, _
+                       ByRef blnIsSample As Boolean, _
+                       ByVal blnDischarge As Boolean)
+
             ' Invoke default constructor
             Me.New()
 
             _udtEHSTransaction = udtEHSTransaction
             _udtVaccinationRecordHistory = udtVaccinationRecordHistory
             _blnIsSample = blnIsSample
+            _blnDischarge = blnDischarge
             LoadReport()
             ChkIsSample()
 
@@ -45,14 +50,9 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
         Private Sub LoadReport()
 
-
             Dim strCurrentDose As String = _udtEHSTransaction.TransactionDetails(0).AvailableItemDesc
 
-
-
             If (strCurrentDose = "1st Dose") Then
-
-
 
                 '===== Normal Case =====
                 Dim udtCOVID19BLL As New COVID19.COVID19BLL
@@ -68,11 +68,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 SecondDoseCover.Visible = True
                 '===== Normal Case =====
 
-
-
-                '===== date dateback dose record ====
                 If (Not _udtVaccinationRecordHistory Is Nothing) Then
-
+                    '===== date dateback dose record ====
                     'date dateback fill second dose record
                     If (_udtVaccinationRecordHistory.AvailableItemDesc = "2nd Dose") Then
                         SecondDoseCover.Visible = False
@@ -84,15 +81,27 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
 
                     End If
+                    '===== date dateback dose record ====
+                Else
+                    'If _udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult IsNot Nothing AndAlso _
+                    '   _udtEHSTransaction.TransactionAdditionFields.DischargeResult = "F" Then
+                    '    SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
+                    '    SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
+                    '                           Environment.NewLine & _
+                    '                           HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
+                    'End If
+
+                    If _blnDischarge Then
+                        SecondDoseCover.Alignment = GrapeCity.ActiveReports.Document.Section.TextAlignment.Center
+                        SecondDoseCover.Text = HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)) & _
+                                               Environment.NewLine & _
+                                               HttpContext.GetGlobalResourceObject("Text", "NotApplicable", New System.Globalization.CultureInfo(CultureLanguage.English))
+                    End If
 
                 End If
-                '===== date dateback dose record ====
-
-
 
             Else
-
-
 
                 '===== Normal Case =====
                 Dim udtCOVID19BLL As New COVID19.COVID19BLL
@@ -121,15 +130,7 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
 
                 End If
 
-
-
             End If
-
-
-
-
-
-
 
         End Sub
 

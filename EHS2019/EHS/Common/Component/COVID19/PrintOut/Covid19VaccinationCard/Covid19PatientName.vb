@@ -49,9 +49,13 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
             txtName.Text = patientInformation.EName
             txtNameChi.Text = patientInformation.CName
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
-            txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
-            txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
-
+            If patientInformation.DocCode = DocTypeModel.DocTypeCode.ROP140 Then
+                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocNameChi
+                txtDocType.Text = DocTypeObj.getAllDocType.Filter(DocTypeModel.DocTypeCode.HKIC).DocName
+            Else
+                txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
+                txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
+            End If
         End Sub
 
         Private Sub ChkIsSample()

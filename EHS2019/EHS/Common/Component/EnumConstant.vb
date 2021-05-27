@@ -79,10 +79,10 @@ Namespace Component
 
         End Function
 
-        Shared Sub GetDescriptionAllFromDBCode(ByVal strClassCode As String, ByVal strStatusValue As String, ByRef strEngDesc As String, ByRef strChiDesc As String, Optional ByRef strCNDesc As String = "")
+        Shared Function GetDescriptionAllFromDBCode(ByVal strClassCode As String, ByVal strStatusValue As String, ByRef strEngDesc As String, ByRef strChiDesc As String, Optional ByRef strCNDesc As String = "") As DataTable
             Dim strDesc As String = ""
-            Dim dt As DataTable
-            dt = GetStatusAllCache()
+            Dim dt As DataTable = GetStatusAllCache()
+            Dim dtRes As DataTable = dt.Clone
 
             Dim i As Integer = 0
 
@@ -94,10 +94,19 @@ Namespace Component
                     strEngDesc = dt.Rows(i)("Status_Description").ToString
                     strChiDesc = dt.Rows(i)("Status_Description_Chi").ToString
                     strCNDesc = dt.Rows(i)("Status_Description_CN").ToString
+
+                    Dim drRow As DataRow = dtRes.NewRow()
+                    For intCt As Integer = 0 To dt.Columns.Count - 1
+                        drRow.Item(intCt) = dt.Rows(i).Item(intCt)
+                    Next
+                    dtRes.Rows.Add(drRow)
                 End If
                 i = i + 1
             End While
-        End Sub
+
+            Return dtRes
+
+        End Function
 
         Shared Sub GetDescriptionFromDBCode(ByVal strClassCode As String, ByVal strStatusValue As String, ByRef strEngDesc As String, ByRef strChiDesc As String, Optional ByRef strCNDesc As String = "")
             Dim strDesc As String = ""
@@ -2566,6 +2575,7 @@ Namespace Component
         Public Const COVID19eHRIntegration As String = "COVID19eHRIntegration"  'CRE20-0022 (Immu record)[Martin Tang]
 
         Public Const COVID19BatchConfirm As String = "COVID19BatchConfirm"  'CRE20-0023 (Immu record)[Winnie SUEN]
+        Public Const COVID19DischargeImporter As String = "COVID19DischargeImporter"  ' CRE20-023 (Immu)[Raiman]
     End Class
 
     Public Class ScheduleJobFunctionCode
@@ -2590,6 +2600,8 @@ Namespace Component
         Public Const HAServicePatientImporter As String = "019922" ' CRE20-015 (HA Scheme)[Raiman]
         Public Const COVID19Exporter As String = "019923" 'CRE20-0022 (Immu record)[Martin Tang]
         Public Const COVID19eHRIntegration As String = "019924" 'CRE20-0022 (Immu record)[Martin Tang]
+        Public Const COVID19DischargeImporter As String = "019925"  ' CRE20-023 (Immu)[Raiman]
+
     End Class
 
     Public Class ScheduleJobLogStatus

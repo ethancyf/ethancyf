@@ -695,14 +695,22 @@ Partial Public Class EHSRectification
                         Me.udcCCCode.CleanSeesion(FuncCode)
                         'Me.udtSessionHandler.CCCodeRemoveFromSession(FuncCode)
                     Else
-                        'Check CCCode
-                        ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
-                        If Me.NeedPopupCCCodeDialog(DocTypeModel.DocTypeCode.HKIC) Then
-                            Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
+                        If udcInputHKIC.IsValidCCCodeModificationInput() Then
+                            'Check CCCode
+                            ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                            If Me.NeedPopupCCCodeDialog(DocTypeModel.DocTypeCode.HKIC) Then
+                                Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputHKIC, DocTypeModel.DocTypeCode.HKIC, Nothing, Nothing)
+                                blnProceed = False
+
+                                Exit Sub
+                            End If
+                        Else
+                            Me.udcMsgBoxErr.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                            udcInputHKIC.SetCCCodeError(True)
                             blnProceed = False
 
-                            Exit Sub
                         End If
+
                     End If
                 End If
 
@@ -766,14 +774,22 @@ Partial Public Class EHSRectification
                     Me.udcCCCode.CleanSeesion(FuncCode)
 
                 Else
-                    'Check CCCode
-                    ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
-                    If Me.NeedPopupCCCodeDialog(DocTypeModel.DocTypeCode.ROP140) Then
-                        Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                    If udcInputROP140.IsValidCCCodeModificationInput() Then
+                        'Check CCCode
+                        ' If CCCode is changed (session value <> input value) => pop up CCCode Panel
+                        If Me.NeedPopupCCCodeDialog(DocTypeModel.DocTypeCode.ROP140) Then
+                            Me.udcRectifyAccount_SelectChineseName_HKIC(udcInputROP140, DocTypeModel.DocTypeCode.ROP140, Nothing, Nothing)
+                            blnProceed = False
+
+                            Exit Sub
+                        End If
+                    Else
+                        Me.udcMsgBoxErr.AddMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00039)
+                        udcInputROP140.SetCCCodeError(True)
                         blnProceed = False
 
-                        Exit Sub
                     End If
+
                 End If
 
                 If blnProceed Then

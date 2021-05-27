@@ -4609,7 +4609,6 @@ Namespace Validation
                         DocTypeModel.DocTypeCode.ID235B,
                         DocTypeModel.DocTypeCode.OC,
                         DocTypeModel.DocTypeCode.OW,
-                        DocTypeModel.DocTypeCode.TW,
                         DocTypeModel.DocTypeCode.IR,
                         DocTypeModel.DocTypeCode.HKP,
                         DocTypeModel.DocTypeCode.RFNo8,
@@ -5127,6 +5126,7 @@ Namespace Validation
                     strMsgCode = "00306"
                 Case DocTypeModel.DocTypeCode.DI, _
                      DocTypeModel.DocTypeCode.OW, _
+                     DocTypeModel.DocTypeCode.TW, _
                      DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                     strMsgCode = "00307"
                 Case DocTypeModel.DocTypeCode.HKIC, _

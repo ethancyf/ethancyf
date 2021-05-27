@@ -113,6 +113,11 @@ Namespace Component.ClaimRules
             ''' </summary>
             Public Const BRAND_TYPE = "BRANDTYPE"
 
+            ''' <summary>
+            ''' Check Windows of COVID19 infected discharge recipient
+            ''' </summary>
+            Public Const DISCHARGE = "DISCHARGE"
+
         End Class
 
 

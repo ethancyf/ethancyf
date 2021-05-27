@@ -210,6 +210,7 @@
     <Compile Include="Component\ClaimTrans\ClaimTransBLL.vb" />
     <Compile Include="Component\CMSHealthCheck\CMSHealthCheckBLL.vb" />
     <Compile Include="Component\COVID19\COVID19BLL.vb" />
+    <Compile Include="Component\COVID19\DischargeResultModel.vb" />
     <Compile Include="Component\COVID19\QRCodeModel.vb" />
     <Compile Include="Component\COVID19\PrintOut\Common\Format\Formatter.vb" />
     <Compile Include="Component\COVID19\PrintOut\Common\Format\QrCodeFormatter.vb" />

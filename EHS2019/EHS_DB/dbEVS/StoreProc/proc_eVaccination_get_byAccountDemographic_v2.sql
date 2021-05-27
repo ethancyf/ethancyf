@@ -9,6 +9,13 @@ GO
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
+-- Modified date:	06 May 2021
+-- CR No.:			CRE20-023-43 (Immu record)
+-- Description:		Add mapping 'PASS' include 'OC'
+-- =============================================
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
 -- Modified date:	10 Mar 2021
 -- CR No.:			CRE20-022 (Immu record)
 -- Description:		Allow transaction made by amended account
@@ -331,6 +338,7 @@ CREATE TABLE #tempVaccine
 	BEGIN
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('HKP')  
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('VISA')  
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('OC')  
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('PASS')
 	END
 	ELSE IF @In_Doc_Code='OC'
