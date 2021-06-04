@@ -239,33 +239,6 @@ Partial Public Class ucInputCOVID19RVP
     Protected WithEvents imgCVaccineLotNoError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''panVaccineName control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents panVaccineName As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''lblCVaccineText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblCVaccineText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblCVaccine control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblCVaccine As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''lblCDoseText control.
     '''</summary>
     '''<remarks>

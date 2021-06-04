@@ -8,7 +8,7 @@
         <table border="0" cellpadding="0" cellspacing="0">
             <tr>
                 <td valign="top" style="width: 205px">
-                    <asp:Label ID="lblCategoryText" runat="server" CssClass="tableTitle" Height="25px"
+                    <asp:Label ID="lblCategoryText" runat="server" Height="25px"
                         Width="160px"></asp:Label></td>
                 <td valign="top" >
                     <table border="0" cellpadding="0" cellspacing="0">
@@ -98,7 +98,7 @@
                 <td class="tableCellStyle" style="vertical-align:top ; width: 205px; height: 22px;">
                     <asp:Label ID="lblPlaceOfVaccinationTitle" runat="server" CssClass="tableTitle"></asp:Label>
                 </td>
-                <td style="vertical-align:top;padding: 0px 0px 0px 0px;">
+                <td style="vertical-align:top;padding: 0px 0px 0px 3px;">
                     <asp:DropDownList ID="ddlPlaceOfVaccination" runat="server" Width="430px" AutoPostBack="true" style="position:relative;left:-6px"></asp:DropDownList>
                 </td>   
                 <td style="vertical-align:top; padding-left: 4px;">
@@ -108,7 +108,7 @@
             </tr>
             <tr id="trPlaceOfVaccinationOther" runat="server" style="display:none">
                 <td class="tableCellStyle" style="vertical-align:top ; width: 205px; height: 22px;" />
-                <td style="vertical-align:top;padding: 0px 0px 0px 0px;">
+                <td style="vertical-align:top;padding: 0px 0px 0px 3px;">
                     <asp:Label ID="lblPlaceOfVaccinationOtherTitle" runat="server" Width="110" CssClass="tableTitle" Text="<%$ Resources:Text, PlaceOfVaccinationOtherPleaseSpecify%>" style="position:relative;left:-6px"></asp:Label>
                     <asp:TextBox ID="txtPlaceOfVaccinationOther" runat="server" Width="312" AutoPostBack="false" MaxLength="255" style="position:relative;left:-6px"/>
                 </td>

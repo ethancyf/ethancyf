@@ -8,6 +8,15 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE21-004, CRE21-005
+-- Modified by:		Koala CHENG
+-- Modified date:	31 May 2021
+-- Description:		Exclude COVID-19 from VSS and RVP
+--					Randomize the ordering of transaction output of each SP
+--					Add remarks item (B)8
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -348,6 +357,10 @@ BEGIN
 		VT.Practice_Display_Seq
 	FROM 
 		VoucherTransaction VT
+			LEFT JOIN TransactionDetail TD
+				ON VT.Transaction_ID = TD.Transaction_ID 
+					AND TD.Scheme_Code IN ('VSS','RVP')
+					AND TD.Subsidize_Item_Code = 'C19'
 			LEFT JOIN @tblProfessional tblProf
 				ON LTRIM(RTRIM(VT.Service_Type)) = tblProf.Service_Category_Code
 			LEFT JOIN @tblRecordStatus tblRS
@@ -368,6 +381,7 @@ BEGIN
 		AND (@chrIsAllProfessional = 'Y' OR tblProf.Service_Category_Code IS NOT NULL)
 		AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)
 		AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)
+		AND TD.Transaction_ID IS NULL
 
 	--===========================================================
 	--3.2. RANDOM SELECTION OF SERVICE PROVIDER
@@ -843,7 +857,8 @@ BEGIN
 				LEFT JOIN ClaimCategory CC
 					ON VT.Category_Code = CC.Category_Code
 
-		ORDER BY RT.Col01, VT.Practice_Display_Seq,RT.Col02
+		ORDER BY NEWID()
+		--ORDER BY RT.Col01, VT.Practice_Display_Seq,RT.Col02
 
 		EXEC [proc_SymmetricKey_close]
 
@@ -867,6 +882,7 @@ BEGIN
 		DECLARE @CommonNoteStat05 varchar(1000)
 		DECLARE @CommonNoteStat06 varchar(1000)
 		DECLARE @CommonNoteStat07 varchar(1000)
+		DECLARE @CommonNoteStat08 varchar(1000)
 
 		-- ---------------------------------------------
 		-- Prepare Data: Remarks
@@ -889,6 +905,7 @@ BEGIN
 		SET @CommonNoteStat05 = '5. For practice with number of transactions between ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT + 1) + ' and ' + CONVERT(VARCHAR(10),UPPER_LIMIT) + ', ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 3) + '% of total transaction will be retrieved.'
 		SET @CommonNoteStat06 = '6. For practice more than ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT) + ' transactions, ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 4) + '% of total transaction will be retrieved.'
 		SET @CommonNoteStat07 = '7. Maximum of ' + CONVERT(VARCHAR(10),@TotalSPUpperLimit) + ' service providers will be handled.'
+		SET @CommonNoteStat08 = '8. All COVID-19 claims under VSS and RVP are excluded.'
 		---- ---------------------------------------------
 		---- Insert Data: Remarks
 		---- ---------------------------------------------
@@ -990,7 +1007,12 @@ BEGIN
 		SET @seq = @seq + 1
 
 		INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-		SELECT @Seq, NULL, '8. All are accumulative data unless specified as below:', ''
+		VALUES (@seq, NULL, @CommonNoteStat08, '')
+
+		SET @seq = @seq + 1
+
+		INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+		SELECT @Seq, NULL, '9. All are accumulative data unless specified as below:', ''
 
 		SET @seq = @seq + 1
 		INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)

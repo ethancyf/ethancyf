@@ -340,7 +340,8 @@ Partial Public Class ucInputEHSClaim
                     If Me._textOnlyVersion Then
                         'No Input Control
                     Else
-                        'Nothing to do
+                        Dim udcInputVSSCOVID19 As ucInputVSSCOVID19 = CType(udcInputEHSClaim, ucInputVSSCOVID19)
+                        AddHandler udcInputVSSCOVID19.SearchButtonClick, AddressOf udcInputVSSCOVID19_SearchOutreachButtonClick
                     End If
 
                 Else
@@ -626,6 +627,10 @@ Partial Public Class ucInputEHSClaim
 
     Private Sub udcInputCOVID19RVP_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent ClaimControlEventFired(SchemeClaimModel.COVID19RVP, sender, e)
+    End Sub
+
+    Private Sub udcInputVSSCOVID19_SearchOutreachButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent OutreachListSearchClicked(SchemeClaimModel.VSS, sender, e)
     End Sub
 
     Private Sub udcInputCOVID19OR_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)

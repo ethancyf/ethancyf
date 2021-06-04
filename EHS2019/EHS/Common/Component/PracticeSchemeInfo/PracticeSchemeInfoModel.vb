@@ -10,6 +10,11 @@ Namespace Component.PracticeSchemeInfo
 
 #Region "Constants"
 
+        Public Class ClinicTypeValue
+            Public Const Clinic As String = "C"
+            Public Const NonClinic As String = "N"
+        End Class
+
         Public Enum ClinicTypeEnum
             NA
             Clinic

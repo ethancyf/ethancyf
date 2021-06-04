@@ -8,6 +8,15 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE21-004, CRE21-005
+-- Modified by:		Koala CHENG
+-- Modified date:	31 May 2021
+-- Description:		Exclude COVID-19 from VSS and RVP
+--					Randomize the ordering of transaction output of each SP
+--					Add remarks item (B)2
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -607,6 +616,10 @@ BEGIN
 					END
 			FROM 
 				VoucherTransaction VT
+					LEFT JOIN TransactionDetail TD
+						ON VT.Transaction_ID = TD.Transaction_ID 
+							AND TD.Scheme_Code IN ('VSS','RVP')
+							AND TD.Subsidize_Item_Code = 'C19'
 					LEFT JOIN @tblProfessional tblProf
 						ON LTRIM(RTRIM(VT.Service_Type)) = tblProf.Service_Category_Code
 					LEFT JOIN @tblRecordStatus tblRS
@@ -630,6 +643,7 @@ BEGIN
 				AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)
 				AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)
 				AND tblSPList.SP_ID IS NOT NULL
+				AND TD.Transaction_ID IS NULL
 			) AS VTC
 		GROUP BY 
 			VTC.SP_ID,
@@ -651,6 +665,10 @@ BEGIN
 				COUNT(VT.Transaction_ID)
 			FROM 
 				VoucherTransaction VT
+					LEFT JOIN TransactionDetail TD
+						ON VT.Transaction_ID = TD.Transaction_ID 
+							AND TD.Scheme_Code IN ('VSS','RVP')
+							AND TD.Subsidize_Item_Code = 'C19'
 					LEFT JOIN @tblProfessional tblProf
 						ON LTRIM(RTRIM(VT.Service_Type)) = tblProf.Service_Category_Code
 					LEFT JOIN @tblRecordStatus tblRS
@@ -674,6 +692,7 @@ BEGIN
 				AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)
 				AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)
 				AND tblSPList.SP_ID IS NOT NULL
+				AND TD.Transaction_ID IS NULL
 			GROUP BY
 				VT.SP_ID,
 				VT.Practice_Display_Seq		
@@ -700,6 +719,10 @@ BEGIN
 			VT.Create_By_SmartID
 		FROM 
 			VoucherTransaction VT
+				LEFT JOIN TransactionDetail TD
+						ON VT.Transaction_ID = TD.Transaction_ID 
+							AND TD.Scheme_Code IN ('VSS','RVP')
+							AND TD.Subsidize_Item_Code = 'C19'
 				LEFT JOIN @tblProfessional tblProf
 					ON LTRIM(RTRIM(VT.Service_Type)) = tblProf.Service_Category_Code
 				LEFT JOIN @tblRecordStatus tblRS
@@ -723,6 +746,7 @@ BEGIN
 			AND (@chrIsAllRecordStatus = 'Y' OR tblRS.Record_Status IS NOT NULL)
 			AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)
 			AND tblSPList.SP_ID IS NOT NULL
+			AND TD.Transaction_ID IS NULL
 
 
 		-- =============================================================
@@ -975,6 +999,10 @@ BEGIN
 								@ConstantPreviousMonth
 							FROM 
 								VoucherTransaction VT
+									LEFT JOIN TransactionDetail TD
+										ON VT.Transaction_ID = TD.Transaction_ID 
+											AND TD.Scheme_Code IN ('VSS','RVP')
+											AND TD.Subsidize_Item_Code = 'C19'
 									LEFT JOIN @tblProfessional tblProf
 										ON LTRIM(RTRIM(VT.Service_Type)) = tblProf.Service_Category_Code
 									LEFT JOIN @tblRecordStatus tblRS
@@ -997,6 +1025,7 @@ BEGIN
 								AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)
 								AND VT.SP_ID = @RT02_SP_ID
 								AND VT.Practice_Display_Seq = @RT02_Practice_Display_Seq
+								AND TD.Transaction_ID IS NULL
 								AND NOT EXISTS
 									(SELECT Col02 FROM #02_PostPaymentCheck_ResultTable WHERE Col02 = VT.Transaction_ID)
 							ORDER BY Transaction_Dtm DESC
@@ -1014,6 +1043,10 @@ BEGIN
 									@ConstantPreviousMonth
 								FROM 
 									VoucherTransaction VT
+										LEFT JOIN TransactionDetail TD
+											ON VT.Transaction_ID = TD.Transaction_ID 
+												AND TD.Scheme_Code IN ('VSS','RVP')
+												AND TD.Subsidize_Item_Code = 'C19'
 										LEFT JOIN @tblProfessional tblProf
 											ON LTRIM(RTRIM(VT.Service_Type)) = tblProf.Service_Category_Code
 										LEFT JOIN @tblRecordStatus tblRS
@@ -1036,6 +1069,7 @@ BEGIN
 									AND (@chrIsAllSchemeCode = 'Y' OR tblSC.Scheme_Code IS NOT NULL)
 									AND VT.SP_ID = @RT02_SP_ID
 									AND VT.Practice_Display_Seq = @RT02_Practice_Display_Seq
+									AND TD.Transaction_ID IS NULL
 								ORDER BY
 									(CASE
 										WHEN Create_By_SmartID = 'Y' THEN 2
@@ -1586,7 +1620,8 @@ BEGIN
 
 					FROM 
 						(SELECT 
-							ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq) AS 'RefNo',
+							ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY NEWID()) AS 'RefNo',
+							--ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq) AS 'RefNo',
 							Col01 AS SP_ID,
 							Col02 AS Transaction_ID,
 							Col03 AS Practice_Display_Seq,
@@ -1626,7 +1661,8 @@ BEGIN
 							--LEFT JOIN DeathRecordEntry DRE
 							--	ON DRE.Encrypt_Field1 = DRMR.Encrypt_Field1
 				
-					ORDER BY CONVERT(INT,RT.Practice_Display_Seq), RT.RefNo
+					ORDER BY RT.RefNo
+					--ORDER BY CONVERT(INT,RT.Practice_Display_Seq), RT.RefNo
 
 					---- ---------------------------------------------
 					---- Return Result: Report
@@ -1672,6 +1708,7 @@ BEGIN
 			)
 
 			DECLARE @CommonNoteStat01 varchar(1000)
+			DECLARE @CommonNoteStat02 varchar(1000)
 
 			-- ---------------------------------------------
 			-- Prepare Data: Remarks
@@ -1688,6 +1725,7 @@ BEGIN
 			GROUP BY Scheme_Code
 
 			SET @CommonNoteStat01 = '1. All service providers are counted including delisted status and those in the exception list.'
+			SET @CommonNoteStat02 = '2. All COVID-19 claims under VSS and RVP are excluded.'
 
 			---- ---------------------------------------------
 			---- Insert Data: Remarks
@@ -1800,7 +1838,12 @@ BEGIN
 			SET @Seq = @Seq + 1
 
 			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-			SELECT @Seq, NULL, '2. All are accumulative data unless specified as below:', ''
+			VALUES (@seq, NULL, @CommonNoteStat02, '')
+
+			SET @Seq = @Seq + 1
+
+			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+			SELECT @Seq, NULL, '3. All are accumulative data unless specified as below:', ''
 
 			SET @Seq = @Seq + 1
 			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)

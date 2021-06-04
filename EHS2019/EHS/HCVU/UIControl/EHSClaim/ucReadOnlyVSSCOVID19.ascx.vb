@@ -15,6 +15,27 @@ Partial Public Class ucReadOnlyVSSCOVID19
         ''Category                       
         'lblCategoryForCovid19.Text = (New ClaimCategoryBLL).GetClaimCategoryCache.Filter(udtEHSTransaction.CategoryCode).GetCategoryName
 
+        ' Outreach Code
+        If udtEHSTransaction.TransactionAdditionFields.OutreachCode IsNot Nothing AndAlso udtEHSTransaction.TransactionAdditionFields.OutreachCode <> String.Empty Then
+            trOutreachCode.Visible = True
+            trOutreachName.Visible = True
+
+            Dim strOutreachCode As String = udtEHSTransaction.TransactionAdditionFields.OutreachCode
+            Dim dtOutreachList As DataTable = (New COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+            Me.lblOutreachCode.Text = strOutreachCode.Trim
+
+            If dtOutreachList.Rows.Count > 0 Then
+                Dim dr As DataRow = dtOutreachList.Rows(0)
+
+                Me.lblOutreachName.Text = dr("Outreach_Name_Eng").ToString().Trim()
+                Me.lblOutreachName.CssClass = "tableText"
+
+            End If
+        Else
+            trOutreachCode.Visible = False
+            trOutreachName.Visible = False
+        End If
+
         'Main Category
         Dim strMainCategoryEng As String = String.Empty
         Dim strMainCategoryChi As String = String.Empty

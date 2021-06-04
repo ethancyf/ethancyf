@@ -154,6 +154,7 @@ Partial Public Class ucInputEHSClaim
                 Dim udcInputVSS As ucInputVSS = CType(udcInputEHSClaim, ucInputVSS)
                 AddHandler udcInputVSS.CategorySelected, AddressOf udcInputEHSClaim_CategorySelected
                 AddHandler udcInputVSS.SearchButtonClick, AddressOf udcInputVSS_SearchButtonClick
+                AddHandler udcInputVSS.SearchOutreachClick, AddressOf udcInputVSSCOVID19_SearchButtonClick
                 AddHandler udcInputVSS.VaccineLegendClicked, AddressOf udcInputEHSClaim_VaccineLegendClick
 
             Case SchemeClaimModel.EnumControlType.ENHVSSO
@@ -467,6 +468,10 @@ Partial Public Class ucInputEHSClaim
 
     Private Sub udcInputCOVID19OR_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent OutreachListSearchClicked(SchemeClaimModel.COVID19OR, sender, e)
+    End Sub
+
+    Private Sub udcInputVSSCOVID19_SearchButtonClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent OutreachListSearchClicked(SchemeClaimModel.VSS, sender, e)
     End Sub
 
     Private Sub udcInputEHSClaim_VaccineLegendClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)

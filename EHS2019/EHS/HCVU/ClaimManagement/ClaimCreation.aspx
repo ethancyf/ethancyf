@@ -425,6 +425,7 @@
                                                     <tr>
                                                         <td style="vertical-align: top;height:22px">
                                                             <asp:Label ID="lblCDischargeRecordHeading" runat="server" Font-Underline="True" Text="<%$ Resources: Text, DischargeRecordForCOVID19 %>" CssClass="tableText"/>
+                                                            <asp:Label ID="lblCDischargeRecordStatus" runat="server" CssClass="tableText" style="color:red" Visible="false"/>
                                                         </td>
                                                     </tr>
                                                     <tr>

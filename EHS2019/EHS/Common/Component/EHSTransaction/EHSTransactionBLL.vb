@@ -750,6 +750,28 @@ Namespace Component.EHSTransaction
         End Function
         ' CRE11-013 - RVP Home List Maintenance [End][Twinsen]
 
+        'CRE20-023 Immue Record COVID19 [Start][Martin]
+        Public Function CheckTransactionAdditionalFieldByAny(ByVal strAdditionalFieldID As String, ByVal strAdditionalFieldValueCode As String, Optional ByVal udtDB As Database = Nothing) As Boolean
+
+            If udtDB Is Nothing Then udtDB = New Database()
+            Dim dt As New DataTable()
+
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@AdditionalFieldID", SqlDbType.VarChar, 20, IIf(strAdditionalFieldID.Trim.Equals(String.Empty), DBNull.Value, strAdditionalFieldID.Trim)), _
+                                               udtDB.MakeInParam("@AdditionalFieldValueCode", SqlDbType.VarChar, 50, IIf(strAdditionalFieldValueCode.Trim.Equals(String.Empty), DBNull.Value, strAdditionalFieldValueCode.Trim))}
+                udtDB.RunProc("proc_TransactionAdditionalField_check_byAny", prams, dt)
+
+                Return CBool(dt.Rows(0)(0))
+
+            Catch eSQL As SqlException
+                Throw eSQL
+            Catch ex As Exception
+                Throw
+            End Try
+
+        End Function
+        'CRE20-023 Immue Record COVID19 [End][Martin]
+
         '---------------------------------------------------------------------------------------------------------------
         ' For IVRS
         '---------------------------------------------------------------------------------------------------------------
@@ -4210,7 +4232,7 @@ Namespace Component.EHSTransaction
             Dim strHighRisk As String = String.Empty
             If Not drSource.IsNull("High_Risk") Then strHighRisk = drSource("High_Risk").ToString().Trim()
 
-            ' CRE20-0022 (Immu record) [Start][Chris YIM]
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             Dim strVaccineBrand As String = String.Empty
             If Not drSource.IsNull("Vaccine_Brand") Then strVaccineBrand = drSource("Vaccine_Brand").ToString().Trim()
@@ -4224,6 +4246,9 @@ Namespace Component.EHSTransaction
             Dim strVaccineTradeNameChi As String = String.Empty
             If Not drSource.IsNull("Brand_Trade_Name_Chi") Then strVaccineTradeNameChi = drSource("Brand_Trade_Name_Chi").ToString().Trim()
 
+            Dim strClinicType As String = String.Empty
+            If Not drSource.IsNull("Clinic_Type") Then strClinicType = drSource("Clinic_Type").ToString().Trim()
+
             Dim udtTransactionDetailVaccineModel As New TransactionDetailVaccineModel( _
                 drSource("Transaction_ID").ToString(), _
                 drSource("Scheme_Code").ToString(), _
@@ -4236,13 +4261,9 @@ Namespace Component.EHSTransaction
                 dblTotalAmount, _
                 strRemark, _
                 dtmTransactionDtm, _
-                strVaccineBrand, _
-                strVaccineLotNo, _
-                strVaccineTradeName, _
-                strVaccineTradeNameChi, _
                 strAvailableItemDesc, _
                 strAvailableItemDescChi)
-            ' CRE20-0022 (Immu record) [End][Chris YIM]
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
 
             udtTransactionDetailVaccineModel.AvailableItemDescCN = strAvailableItemDescCN
             udtTransactionDetailVaccineModel.ServiceReceiveDtm = dtmServiceReceiveDtm
@@ -4255,6 +4276,20 @@ Namespace Component.EHSTransaction
             udtTransactionDetailVaccineModel.ExactDOB = strExactDOB
             udtTransactionDetailVaccineModel.PersonalInformationDemographic = New EHSAccountModel.EHSPersonalInformationDemographicModel(dtmDOB, strExactDOB, strGender, strIdentityNum, strDocCode, strEngName)
             udtTransactionDetailVaccineModel.HighRisk = strHighRisk
+
+            udtTransactionDetailVaccineModel.VaccineBrand = strVaccineBrand.Trim
+            udtTransactionDetailVaccineModel.VaccineLotNo = strVaccineLotNo.Trim
+            udtTransactionDetailVaccineModel.VaccineTradeName = strVaccineTradeName.Trim
+            udtTransactionDetailVaccineModel.VaccineTradeNameChi = strVaccineTradeNameChi.Trim
+
+            Select Case strClinicType.Trim
+                Case "C"
+                    udtTransactionDetailVaccineModel.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeEnum.Clinic
+                Case "N"
+                    udtTransactionDetailVaccineModel.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeEnum.NonClinic
+                Case Else
+                    udtTransactionDetailVaccineModel.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeEnum.NA
+            End Select
 
             Return udtTransactionDetailVaccineModel
 

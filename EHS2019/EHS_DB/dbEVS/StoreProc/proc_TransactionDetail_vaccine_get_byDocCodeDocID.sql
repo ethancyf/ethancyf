@@ -6,7 +6,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	24 May 2021
+-- CR No.:			CRE20-023 (Immu record)
+-- Description:		Add column [Clinic_Type]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -274,6 +280,7 @@ BEGIN
 	Set @blnOtherDoc_Code = 1
 	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('HKP')
 	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('VISA')
+	INSERT INTO @OtherDoc_Code (Doc_Code) VALUES ('OC')
 END
 
 IF LTRIM(RTRIM(@Doc_Code)) = 'OC'
@@ -447,7 +454,7 @@ EXEC [proc_SymmetricKey_close]
 		
 	--SELECT * FROM @tmpVoucherTransaction
 				
-	insert into @result
+	INSERT INTO @result
 	(
 		[Service_Receive_Dtm],
 		[Scheme_Code],
@@ -580,7 +587,8 @@ EXEC [proc_SymmetricKey_open]
 				WHEN CBD.[Brand_Trade_Name_Chi] IS NULL THEN CBD.[Brand_Trade_Name]
 				WHEN CBD.[Brand_Trade_Name_Chi] = '' THEN CBD.[Brand_Trade_Name]
 				ELSE CBD.[Brand_Trade_Name_Chi]
-			END
+			END,
+		TAF.[AdditionalFieldValueCode] AS [Clinic_Type]
 	FROM 
 		@result R
 			INNER JOIN SubsidizeItem I
@@ -588,6 +596,9 @@ EXEC [proc_SymmetricKey_open]
 				AND I.Subsidize_Type = 'VACCINE'
 			LEFT OUTER JOIN COVID19VaccineBrandDetail CBD
 				ON R.[Vaccine_Brand] = CBD.[Brand_ID]
+			LEFT OUTER JOIN TransactionAdditionalField TAF WITH(NOLOCK)
+				ON R.[Transaction_ID] = TAF.[Transaction_ID]
+					AND TAF.[AdditionalFieldID] = 'ClinicType'
 			
 	ORDER BY R.[Service_Receive_Dtm]
 

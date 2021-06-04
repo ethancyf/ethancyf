@@ -122,16 +122,6 @@
             </table>
         </td>
     </tr>
-    <asp:Panel ID ="panVaccineName" runat="server" Visible ="false">
-        <tr>
-            <td style="width:205px;vertical-align:top">
-                <asp:Label ID="lblCVaccineText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Vaccines%>" />
-            </td>
-            <td style="vertical-align:central">
-                <asp:Label ID="lblCVaccine" runat="server" CssClass="tableText" style="position:relative;top:-3px;left:-5px" />
-            </td>
-        </tr>
-    </asp:Panel>
     <tr>
         <td style="width:205px;vertical-align:top">
             <asp:Label ID="lblCDoseText" runat="server" CssClass="tableTitle" Height="20px" Width="160px" Text ="<%$ Resources:Text, DoseSeq%>" />

@@ -1887,6 +1887,22 @@ Partial Public Class ClaimCreation
                 Dim udcInputVSS As ucInputVSS = Me.udInputEHSClaim.GetVSSControl()
                 strCategory = udcInputVSS.Category
 
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                If strCategory = CategoryCode.VSS_COVID19 OrElse strCategory = CategoryCode.VSS_COVID19_Outreach Then
+                    panHKICSymbol.Visible = False
+                    rblHKICSymbol.ClearSelection()
+
+                    If strCategory = CategoryCode.VSS_COVID19_Outreach Then
+                        udcInputVSS.DisplayOutreachInput(True)
+                    Else
+                        udcInputVSS.DisplayOutreachInput(False)
+                    End If
+                Else
+                    panHKICSymbol.Visible = True
+                End If
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
+
             Case SchemeClaimModel.EnumControlType.ENHVSSO
                 Dim udcInputENHVSSO As ucInputENHVSSO = Me.udInputEHSClaim.GetENHVSSOControl()
                 strCategory = udcInputENHVSSO.Category
@@ -1930,6 +1946,21 @@ Partial Public Class ClaimCreation
 
             Me.SetUpEnterClaimDetails(False)
 
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Select Case udtSchemeClaim.ControlType
+                Case SchemeClaimModel.EnumControlType.VSS
+                    Dim udcInputVSS As ucInputVSS = Me.udInputEHSClaim.GetVSSControl()
+                    strCategory = udcInputVSS.Category
+
+                    If strCategory = CategoryCode.VSS_COVID19_Outreach Then
+                        udcInputVSS.DisplayOutreachInput(True)
+                    Else
+                        udcInputVSS.DisplayOutreachInput(False)
+                    End If
+            End Select
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
         End If
 
         Me.udcMessageBox.BuildMessageBox(ErrorMessageBoxHeaderKey.ValidationFail)
@@ -1941,11 +1972,27 @@ Partial Public Class ClaimCreation
         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
         ' --------------------------------------------------------------------------------------
         Select Case strSchemeCode
-            Case SchemeClaimModel.VSS, SchemeClaimModel.RVP
+            Case SchemeClaimModel.VSS
+                Session(SESS_SearchRVPHomeList) = True
+                If CType(Me.udInputEHSClaim.GetVSSControl(), ucInputVSS).Category = CategoryCode.VSS_COVID19 OrElse _
+                    CType(Me.udInputEHSClaim.GetVSSControl(), ucInputVSS).Category = CategoryCode.VSS_COVID19_Outreach Then
+                    udtSessionHandlerBLL.ClaimCOVID19SaveToSession(True)
+                End If
+
+                Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
+                Me.udcRVPHomeListSearch.ClearFilter()
+
+                Me.ibtnPopupRVPHomeListSearchSelect.Enabled = False
+                Me.ibtnPopupRVPHomeListSearchSelect.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SelectDisableBtn")
+
+                Me.ModalPopupExtenderRVPHomeListSearch.Show()
+
+            Case SchemeClaimModel.RVP
                 Session(SESS_SearchRVPHomeList) = True
                 If CType(Me.udInputEHSClaim.GetRVPControl(), ucInputRVP).Category = CategoryCode.RVP_COVID19 Then
                     udtSessionHandlerBLL.ClaimCOVID19SaveToSession(True)
                 End If
+
                 Me.udcRVPHomeListSearch.BindRVPHomeList(Nothing)
                 Me.udcRVPHomeListSearch.ClearFilter()
 
@@ -1999,7 +2046,7 @@ Partial Public Class ClaimCreation
     Private Sub udInputEHSClaim_OutreachListSearchClicked(ByVal strSchemeCode As String, ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles udInputEHSClaim.OutreachListSearchClicked
 
         Select Case strSchemeCode
-            Case SchemeClaimModel.COVID19OR
+            Case SchemeClaimModel.COVID19OR, SchemeClaimModel.VSS
                 Session(SESS_SearchOutreachList) = True
 
                 Me.udcOutreachSearch.BindOutreachList(Nothing)
@@ -2910,6 +2957,9 @@ Partial Public Class ClaimCreation
         Select Case udtSelectedScheme.SchemeCode.Trim
             Case SchemeClaimModel.COVID19OR
                 CType(Me.udInputEHSClaim.GetCOVID19ORControl(), ucInputCOVID19OR).SetOutreachCode(strOutreachCode)
+
+            Case SchemeClaimModel.VSS
+                CType(Me.udInputEHSClaim.GetVSSControl(), ucInputVSS).SetOutreachCode(strOutreachCode)
 
             Case Else
                 Throw New Exception(String.Format("Invalid Scheme({0}.)", udtSelectedScheme.SchemeCode))
@@ -5046,6 +5096,13 @@ Partial Public Class ClaimCreation
             udtDischargeResult.DemographicResult = COVID19.DischargeResultModel.Result.PartialMatch) Then
 
             panStep2aDischargeRecord.Visible = True
+            lblCDischargeRecordStatus.Visible = False
+
+            'Demographic status
+            If udtDischargeResult.DemographicResult = DischargeResultModel.Result.PartialMatch Then
+                lblCDischargeRecordStatus.Visible = True
+                lblCDischargeRecordStatus.Text = "(" + GetGlobalResourceObject("Text", "DemographicsNotMatch") + ")"
+            End If
 
             'Discharge date 
             Me.lblCDischargeDate.Text = udtFormatter.formatDisplayDate(CDate(udtDischargeResult.DischargeDate), Session("Language"))

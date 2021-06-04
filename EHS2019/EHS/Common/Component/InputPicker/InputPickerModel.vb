@@ -12,6 +12,7 @@
         Private _strSchoolCode As String
         Private _strSPID As String
         Private _strBrand As String
+        Private _strClinicType As String
 
         'Integer
         Private _intPracticeDisplaySeq As Integer
@@ -84,6 +85,15 @@
             End Get
             Set(ByVal Value As String)
                 _intPracticeDisplaySeq = Value
+            End Set
+        End Property
+
+        Public Property ClinicType() As String
+            Get
+                Return _strClinicType
+            End Get
+            Set(ByVal Value As String)
+                _strClinicType = Value
             End Set
         End Property
 

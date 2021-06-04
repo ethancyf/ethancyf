@@ -223,6 +223,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                     VaccinationCenter.Text = dtOutreach.Rows(0)("Outreach_Name_Eng")
                     VaccinationCenterChi.Text = dtOutreach.Rows(0)("Outreach_Name_Chi")
 
+                ElseIf (_udtEHSTransaction.SchemeCode.Trim.ToUpper = SchemeClaimModel.VSS) Then
+
+                    Dim strOutreachCode As String = _udtEHSTransaction.TransactionAdditionFields.OutreachCode
+                    If strOutreachCode IsNot Nothing AndAlso strOutreachCode <> String.Empty Then
+                        Dim dtOutreach As DataTable = (New Component.COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+                        VaccinationCenter.Text = dtOutreach.Rows(0)("Outreach_Name_Eng")
+                        VaccinationCenterChi.Text = dtOutreach.Rows(0)("Outreach_Name_Chi")
+                    Else
+                        VaccinationCenter.Text = _udtEHSTransaction.PracticeName
+                        VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
+                    End If
                 Else
                     VaccinationCenter.Text = _udtEHSTransaction.PracticeName
                     VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
@@ -266,8 +277,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                                 VaccinationCenter.Text = udtRVP.HomenameEng
                                 VaccinationCenterChi.Text = udtRVP.HomenameChi
                             Else
-                                VaccinationCenter.Text = _udtEHSTransaction.PracticeName
-                                VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
+                                VaccinationCenter.Text = udtHistoryEHSTransaction.PracticeName
+                                VaccinationCenterChi.Text = udtHistoryEHSTransaction.PracticeNameChi
                             End If
                         End If
 
@@ -289,8 +300,8 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                             VaccinationCenter.Text = dtOutreach.Rows(0)("Outreach_Name_Eng")
                             VaccinationCenterChi.Text = dtOutreach.Rows(0)("Outreach_Name_Chi")
                         Else
-                            VaccinationCenter.Text = _udtEHSTransaction.PracticeName
-                            VaccinationCenterChi.Text = _udtEHSTransaction.PracticeNameChi
+                            VaccinationCenter.Text = udtHistoryEHSTransaction.PracticeName
+                            VaccinationCenterChi.Text = udtHistoryEHSTransaction.PracticeNameChi
                         End If
                     Else
                         'CMS/CMIS Vaccination Record
@@ -298,6 +309,26 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                         VaccinationCenterChi.Text = _udtVaccinationRecordHistory.PracticeNameChi
                     End If
 
+                ElseIf (_udtVaccinationRecordHistory.SchemeCode.Trim.ToUpper = SchemeClaimModel.VSS) Then
+                    If _udtVaccinationRecordHistory.TransactionID IsNot Nothing AndAlso _udtVaccinationRecordHistory.TransactionID <> String.Empty Then
+                        'EHS Transaction
+                        Dim udtEHSTransactionBLL As New EHSTransactionBLL
+                        Dim udtHistoryEHSTransaction As EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(_udtVaccinationRecordHistory.TransactionID)
+                        Dim strOutreachCode As String = udtHistoryEHSTransaction.TransactionAdditionFields.OutreachCode
+
+                        If strOutreachCode IsNot Nothing AndAlso strOutreachCode <> String.Empty Then
+                            Dim dtOutreach As DataTable = (New Component.COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+                            VaccinationCenter.Text = dtOutreach.Rows(0)("Outreach_Name_Eng")
+                            VaccinationCenterChi.Text = dtOutreach.Rows(0)("Outreach_Name_Chi")
+                        Else
+                            VaccinationCenter.Text = udtHistoryEHSTransaction.PracticeName
+                            VaccinationCenterChi.Text = udtHistoryEHSTransaction.PracticeNameChi
+                        End If
+                    Else
+                        'CMS/CMIS Vaccination Record
+                        VaccinationCenter.Text = _udtVaccinationRecordHistory.PracticeName
+                        VaccinationCenterChi.Text = _udtVaccinationRecordHistory.PracticeNameChi
+                    End If
                 Else
                     VaccinationCenter.Text = _udtVaccinationRecordHistory.PracticeName
                     VaccinationCenterChi.Text = _udtVaccinationRecordHistory.PracticeNameChi

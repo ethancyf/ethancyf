@@ -1956,6 +1956,12 @@ Partial Public Class EHSClaimV1
 
                 CType(Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control(), ucInputRVPCOVID19).SetOutreachCode(strOutreachCode)
 
+            Case SchemeClaimModel.VSS
+                If Not strOutreachCode Is Nothing AndAlso strOutreachCode.Trim() <> "" Then
+                    Me._udtSessionHandler.OutreachCodeSaveToSession(FunctCode, strOutreachCode.Trim())
+                End If
+
+                CType(Me.udcStep2aInputEHSClaim.GetVSSCOVID19Control(), ucInputVSSCOVID19).SetOutreachCode(strOutreachCode)
 
             Case Else
                 'Nothing to do
@@ -5396,6 +5402,18 @@ Partial Public Class EHSClaimV1
                                         udtInputPicker.LatestC19Transaction = udtLatestC19Transaction
                                     End If
 
+                                    'Clinic Type
+                                    If udtSchemeClaim.SchemeCode = SchemeClaimModel.VSS Then
+                                        Dim blnNonClinic As Boolean = Me._udtSessionHandler.NonClinicSettingGetFromSession(FunctionCode)
+
+                                        If blnNonClinic Then
+                                            udtInputPicker.ClinicType = PracticeSchemeInfoModel.ClinicTypeValue.NonClinic
+                                        Else
+                                            udtInputPicker.ClinicType = PracticeSchemeInfoModel.ClinicTypeValue.Clinic
+                                        End If
+
+                                    End If
+
                                     udtEHSClaimVaccine = Me._udtEHSClaimBLL.SearchEHSClaimVaccine(udtSchemeClaim, udtEHSAccount.SearchDocCode, udtEHSAccount, dtmServiceDate, True, GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode), udtInputPicker)
 
                                     Dim udtFilterSubsidizeList As New EHSClaimVaccineModel.EHSClaimSubsidizeModelCollection
@@ -5482,7 +5500,7 @@ Partial Public Class EHSClaimV1
                                          SchemeClaimModel.COVID19OR
 
                                         If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                                            Dim udtDischargeResult As DischargeResultmodel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
+                                            Dim udtDischargeResult As DischargeResultModel = _udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctionCode)
                                             Dim udtVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
                                             Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
                                             Dim blnHas1STDOSE As Boolean = False
@@ -8150,13 +8168,13 @@ Partial Public Class EHSClaimV1
 
         'Mark selected vaccine & dose in EHSClaimVaccineModel model
         If isValid OrElse checkByConfirmationBox Then
-            udtInputPicker.Brand = udcInputRVPCOVID19.VaccineBrand
-            udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
-
             Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
             Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
             Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
             Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+            udtInputPicker.Brand = udcInputRVPCOVID19.VaccineBrand
+            udtInputPicker.VaccinationRecord = udtC19VaccineList
 
             For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
                 'Find the latest COVID19 transaction in EHS
@@ -9115,6 +9133,7 @@ Partial Public Class EHSClaimV1
         Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSAccount.SearchDocCode)
         Dim udtSchemeClaim As SchemeClaimModel = Me._udtSessionHandler.SchemeSelectedGetFromSession(FunctCode)
         Dim udtDischargeResult As COVID19.DischargeResultModel = Me._udtSessionHandler.ClaimCOVID19DischargeRecordGetFromSession(FunctCode)
+        Dim blnNonClinic As Boolean = Me._udtSessionHandler.NonClinicSettingGetFromSession(FunctionCode)
 
         ' For Eligible & Claim Rule Warning Checking
         Dim udtEligibleResult As EligibleResult = Nothing
@@ -9147,6 +9166,14 @@ Partial Public Class EHSClaimV1
 
             'Claim Detial Part & Vaccine Part
             isValid = udcInputVSSCOVID19.Validate(True, Me.udcMsgBoxErr)
+
+            If isValid Then
+                If blnNonClinic Then
+                    udtInputPicker.ClinicType = PracticeSchemeInfoModel.ClinicTypeValue.NonClinic
+                Else
+                    udtInputPicker.ClinicType = PracticeSchemeInfoModel.ClinicTypeValue.Clinic
+                End If
+            End If
 
             If panStep2aRecipinetContactInfo.Visible Then
                 If Me.txtStep2aContactNo.Enabled Then
@@ -9197,13 +9224,13 @@ Partial Public Class EHSClaimV1
 
         'Mark selected vaccine & dose in EHSClaimVaccineModel model
         If isValid OrElse checkByConfirmationBox Then
-            udtInputPicker.Brand = udcInputVSSCOVID19.VaccineBrand
-            udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
-
             Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
             Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
             Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
             Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+            udtInputPicker.Brand = udcInputVSSCOVID19.VaccineBrand
+            udtInputPicker.VaccinationRecord = udtC19VaccineList
 
             For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
                 'Find the latest COVID19 transaction in EHS
@@ -9638,8 +9665,11 @@ Partial Public Class EHSClaimV1
 
         'Mark selected vaccine & dose in EHSClaimVaccineModel model
         If isValid OrElse checkByConfirmationBox Then
+            Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+            Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
             udtInputPicker.Brand = udcInputCOVID19.VaccineBrand
-            udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+            udtInputPicker.VaccinationRecord = udtC19VaccineList
             udcInputCOVID19.Selection()
         End If
 
@@ -10103,8 +10133,11 @@ Partial Public Class EHSClaimV1
 
         'Mark selected vaccine & dose in EHSClaimVaccineModel model
         If isValid OrElse checkByConfirmationBox Then
+            Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+            Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
             udtInputPicker.Brand = udcInputCOVID19RVP.VaccineBrand
-            udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
+            udtInputPicker.VaccinationRecord = udtC19VaccineList
             udcInputCOVID19RVP.Selection()
         End If
 
@@ -10534,13 +10567,13 @@ Partial Public Class EHSClaimV1
 
         'Mark selected vaccine & dose in EHSClaimVaccineModel model
         If isValid OrElse checkByConfirmationBox Then
-            udtInputPicker.Brand = udcInputCOVID19OR.VaccineBrand
-            udtInputPicker.VaccinationRecord = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
-
             Dim udtLatestC19Vaccine As TransactionDetailVaccineModel = Nothing
             Dim udtLatestC19Transaction As EHSTransactionModel = Nothing
             Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = GetVaccinationRecordFromSession(udtEHSAccount, udtSchemeClaim.SchemeCode)
             Dim udtC19VaccineList As TransactionDetailVaccineModelCollection = udtTranDetailVaccineList.FilterIncludeBySubsidizeItemCode(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19)
+
+            udtInputPicker.Brand = udcInputCOVID19OR.VaccineBrand
+            udtInputPicker.VaccinationRecord = udtC19VaccineList
 
             For Each udtC19Vaccine As TransactionDetailVaccineModel In udtC19VaccineList
                 'Find the latest COVID19 transaction in EHS

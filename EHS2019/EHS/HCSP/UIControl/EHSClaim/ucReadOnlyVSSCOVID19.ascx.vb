@@ -38,21 +38,49 @@ Partial Public Class ucReadOnlyVSSCOVID19
         lblVaccineForCovid19Text.Text = Me.GetGlobalResourceObject("Text", "Vaccines")
         lblDoseForCovid19Text.Text = Me.GetGlobalResourceObject("Text", "DoseSeq")
 
+        Me.lblOutreachCodeText.Text = Me.GetGlobalResourceObject("Text", "OutreachCode")
+        Me.lblOutreachNameText.Text = Me.GetGlobalResourceObject("Text", "OutreachName")
+
     End Sub
 
     Protected Overrides Sub Setup()
 
-        'Category
-        Dim drClaimCategory As DataRow = (New ClaimCategoryBLL).getCategoryDesc(MyBase.EHSTransaction.CategoryCode)
+        ''Category
+        'Dim drClaimCategory As DataRow = (New ClaimCategoryBLL).getCategoryDesc(MyBase.EHSTransaction.CategoryCode)
 
-        Select Case MyBase.SessionHandler.Language
-            Case CultureLanguage.TradChinese
-                lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name_Chi)
-            Case CultureLanguage.SimpChinese
-                lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name_CN)
-            Case Else
-                lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name)
-        End Select
+        'Select Case MyBase.SessionHandler.Language
+        '    Case CultureLanguage.TradChinese
+        '        lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name_Chi)
+        '    Case CultureLanguage.SimpChinese
+        '        lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name_CN)
+        '    Case Else
+        '        lblCategoryForCovid19.Text = drClaimCategory(ClaimCategoryModel._Category_Name)
+        'End Select
+
+        ' Outreach Code
+        If MyBase.EHSTransaction.TransactionAdditionFields.OutreachCode IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields.OutreachCode <> String.Empty Then
+            trOutreachCode.Visible = True
+            trOutreachName.Visible = True
+
+            Dim strOutreachCode As String = MyBase.EHSTransaction.TransactionAdditionFields.OutreachCode
+            Dim dtOutreachList As DataTable = (New COVID19.OutreachListBLL).GetOutreachListByCode(strOutreachCode)
+            Me.lblOutreachCode.Text = strOutreachCode.Trim
+
+            If dtOutreachList.Rows.Count > 0 Then
+                Dim dr As DataRow = dtOutreachList.Rows(0)
+
+                If MyBase.SessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
+                    Me.lblOutreachName.Text = dr("Outreach_Name_Chi").ToString().Trim()
+                    Me.lblOutreachName.CssClass = "tableTextChi"
+                Else
+                    Me.lblOutreachName.Text = dr("Outreach_Name_Eng").ToString().Trim()
+                    Me.lblOutreachName.CssClass = "tableText"
+                End If
+            End If
+        Else
+            trOutreachCode.Visible = False
+            trOutreachName.Visible = False
+        End If
 
         'Main Category
         Dim strMainCategoryEng As String = String.Empty

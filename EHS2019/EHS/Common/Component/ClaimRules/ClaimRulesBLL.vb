@@ -2474,8 +2474,23 @@ Namespace Component.ClaimRules
                     ' Check vaccine only
                     Dim udtInputPicker As New InputPickerModel()
 
+                    'SP ID
                     udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+
+                    'Service Date
+                    udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
+
+                    'Practice ID
                     udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
+
+                    'Clinic Type
+                    If udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.ClinicType IsNot Nothing AndAlso _
+                        udtEHSTransaction.TransactionAdditionFields.ClinicType <> String.Empty Then
+                        udtInputPicker.ClinicType = udtEHSTransaction.TransactionAdditionFields.ClinicType
+                    Else
+                        udtInputPicker.ClinicType = PracticeSchemeInfoModel.ClinicTypeValue.Clinic
+                    End If
 
                     ' Exclude the current transaction
                     Dim udtFilterEHSClaimTranDetail As TransactionDetailModelCollection = udtTranDetailVaccineList.RemoveByTransactionID(udtEHSTransaction.TransactionID)
@@ -5701,6 +5716,45 @@ Namespace Component.ClaimRules
                                 blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
                                                                                udtSubsidizeItemDetailRuleModel.CompareValue.Trim, _
                                                                                strSource)
+                            Else
+                                blnMatched = False
+                            End If
+
+                            'Clinic Type
+                        Case SubsidizeItemDetailRuleModel.TypeClass.CLINICTYPE
+                            If Not udtInputPicker Is Nothing Then
+                                If udtInputPicker.ClinicType = String.Empty Then
+                                    blnMatched = False
+                                Else
+                                    blnMatched = blnMatched AndAlso _
+                                        RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, CStr(udtSubsidizeItemDetailRuleModel.CompareValue).Trim, udtInputPicker.ClinicType.Trim)
+                                End If
+                            Else
+                                blnMatched = False
+                            End If
+
+                        Case SubsidizeItemDetailRuleModel.TypeClass.SAMECLINIC
+                            If udtInputPicker IsNot Nothing Then
+                                Dim strClinicTypeInput As String = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeValue.Clinic
+
+                                If udtInputPicker.ClinicType IsNot Nothing AndAlso udtInputPicker.ClinicType <> String.Empty Then
+                                    strClinicTypeInput = udtInputPicker.ClinicType.Trim
+                                End If
+
+                                If udtInputPicker.LatestC19Transaction IsNot Nothing AndAlso _
+                                    udtInputPicker.LatestC19Transaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                                    udtInputPicker.LatestC19Transaction.TransactionAdditionFields.ClinicType IsNot Nothing Then
+                                    'Match Clinic Type
+                                    blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                   udtInputPicker.LatestC19Transaction.TransactionAdditionFields.ClinicType.Trim, _
+                                                                                   strClinicTypeInput)
+
+                                Else
+                                    'Match Clinic Type
+                                    blnMatched = blnMatched AndAlso RuleComparator(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                   PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeValue.Clinic, _
+                                                                                   strClinicTypeInput)
+                                End If
                             Else
                                 blnMatched = False
                             End If

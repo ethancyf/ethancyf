@@ -149,6 +149,7 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Administration\OutreachListMaintenance.aspx" />
     <Content Include="ClaimManagement\ClaimCreation.aspx" />
     <Content Include="ClaimManagement\ConversionRateEnquiry.aspx" />
     <Content Include="ClaimManagement\ConversionRateManagement.aspx" />
@@ -174,6 +175,7 @@
     <Content Include="eHSAccount\eHSAccountEnquiryCallCentre.aspx" />
     <Content Include="IDEASComboReader\IDEASComboReader.aspx" />
     <Content Include="IDEASComboReader\IDEASComboReaderGuide.aspx" />
+    <Content Include="Images\banner\Administration\banner_OutreachListMaintenance.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ClaimCreation.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateEnquiry.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateManagement.png" />
@@ -230,6 +232,7 @@
     <Content Include="Images\button\btn_NewClaimTransaction_D.png" />
     <Content Include="Images\button\btn_NewInspectionRecord.png" />
     <Content Include="Images\button\btn_NewInspectionRecord_D.png" />
+    <Content Include="Images\button\btn_NewOutreachRecord.png" />
     <Content Include="Images\button\btn_PDF.png" />
     <Content Include="Images\button\btn_PDF_D.png" />
     <Content Include="Images\button\btn_ReactivateTransaction.png" />
@@ -435,6 +438,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\OutreachListMaintenance.aspx.designer.vb">
+      <DependentUpon>OutreachListMaintenance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Administration\OutreachListMaintenance.aspx.vb">
+      <DependentUpon>OutreachListMaintenance.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Administration\parametermaintenance.aspx.designer.vb">
       <DependentUpon>parametermaintenance.aspx</DependentUpon>
     </Compile>

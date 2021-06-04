@@ -815,6 +815,7 @@ Namespace Component
         Public Const FUNT010801 As String = "010801"
         Public Const FUNT010901 As String = "010901" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
         Public Const FUNT011001 As String = "011001" ' [CRE11-013] RVP Home List Maintenance
+        Public Const FUNT011002 As String = "011002"  'Outreach List Maintenance
         Public Const FUNT011101 As String = "011101" ' Inspection Record Management
         Public Const FUNT011102 As String = "011102" ' Inspection Record Approval
         Public Const FUNT019916 As String = "019916" ' [CRE12-012] Infrastructure on Sending Messages through eHealth System Inbox
@@ -2960,25 +2961,21 @@ Namespace Component
         Public Const ClassCode As String = "DataMigrationStatus"
     End Class
 
-    ' CRE11-013 - RVP Home List Maintenance Start
     Public Class RVPHomeListStatus
         Public Const Active As String = "Y"
         Public Const Inactive As String = "N"
 
         Public Const ClassCode As String = "RCHStatus"
     End Class
-    ' CRE11-013 End
 
-    'CRE20-022 Immue Record COVID19 [Start][Nichole]
-    ' Public Class VaccineLotStatus
-    'Public Const Active As String = "A"
-    ' Public Const Inactive As String = "I"
+    'CRE20-023 Immue Record COVID19 [Start][Martin]
+    Public Class OutreachListStatus
+        Public Const Active As String = "A"
+        Public Const Inactive As String = "S"
 
-    ' Public Const LotClassCode As String = "VaccineLotStatus"
-    'Public Const RecordClassCode As String = "VaccineLotRecordStatus"
-    'Public Const BoothClassCode As String = "VaccineCentreBooth"
-    ' End Class
-    'CRE20-022 Immue Record COVID19 [End][Nichole]
+        Public Const ClassCode As String = "OutreachStatus"
+    End Class
+    'CRE20-023 Immue Record COVID19 [End][Martin]
 
 
     'CRE20-022 Immue Record COVID19 [Start][Raiman]
@@ -3218,6 +3215,7 @@ Namespace Component
         Public Const VSS_NIA As String = "VSSNIA"
         Public Const VSS_VC As String = "VSSVC"
         Public Const VSS_COVID19 As String = "VSSCOVID19"
+        Public Const VSS_COVID19_Outreach As String = "VSSC19O"
         Public Const RVP_COVID19 As String = "RVPCOVID19"
         ' CRE20-0023 (Immu record) [End][Chris YIM]
     End Class

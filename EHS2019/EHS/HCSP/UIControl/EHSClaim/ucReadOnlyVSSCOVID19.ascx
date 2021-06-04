@@ -12,6 +12,22 @@
             <asp:Label ID="lblCategoryForCovid19" runat="server" CssClass="tableText"></asp:Label>
         </td>
     </tr>
+    <tr id="trOutreachCode" runat="server">
+        <td id="tdOutreachCode" runat="server" valign="top" class="tableCellStyle">
+            <asp:Label ID="lblOutreachCodeText" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+            <asp:Label ID="lblOutreachCode" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
+    <tr id="trOutreachName" runat="server">
+        <td id="tdOutreachName" runat="server" valign="top" class="tableCellStyle">
+            <asp:Label ID="lblOutreachNameText" runat="server" CssClass="tableTitle"></asp:Label>
+        </td>
+        <td class="tableCellStyle" style="vertical-align: top">
+            <asp:Label ID="lblOutreachName" runat="server" CssClass="tableText"></asp:Label>
+        </td>
+    </tr>
     <tr>
         <td id="tdCategoryForCovid19" runat="server" class="tableCellStyle" style="vertical-align: top">
              <asp:Label ID="lblMainCategoryForCovid19Text" runat="server" CssClass="tableTitle"></asp:Label>

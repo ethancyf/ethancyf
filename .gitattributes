@@ -318,6 +318,7 @@ EHS2019/EHS/Common/Component/CMSHealthCheck/CMSHealthCheckBLL.vb -text
 EHS2019/EHS/Common/Component/COVID19/COVID19BLL.vb -text
 EHS2019/EHS/Common/Component/COVID19/DischargeResultModel.vb -text
 EHS2019/EHS/Common/Component/COVID19/OutreachListBLL.vb -text
+EHS2019/EHS/Common/Component/COVID19/OutreachListModel.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Common/Format/Formatter.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Common/Format/QrCodeFormatter.vb -text
 EHS2019/EHS/Common/Component/COVID19/PrintOut/Common/PrintoutHelper.vb -text
@@ -3800,6 +3801,9 @@ EHS2019/EHS/HCSP_Mainland/Common/Images/others/Thumbs.db -text
 EHS2019/EHS/HCSP_Mainland/Download/HA_MINGLIU.exe -text
 EHS2019/EHS/HCSP_Mainland/EN/DataDownload/chkCCC.htm -text
 EHS2019/EHS/HCSP_Mainland/ZH/DataDownload/chkCCC.htm -text
+EHS2019/EHS/HCVU/Administration/OutreachListMaintenance.aspx -text
+EHS2019/EHS/HCVU/Administration/OutreachListMaintenance.aspx.designer.vb -text
+EHS2019/EHS/HCVU/Administration/OutreachListMaintenance.aspx.vb -text
 EHS2019/EHS/HCVU/Administration/RVPHomeListMaintenance.aspx -text
 EHS2019/EHS/HCVU/Administration/RVPHomeListMaintenance.aspx.designer.vb -text
 EHS2019/EHS/HCVU/Administration/RVPHomeListMaintenance.aspx.vb -text
@@ -4002,6 +4006,7 @@ EHS2019/EHS/HCVU/Images/AjaxControlToolkit/Tabs/tab-line.gif -text
 EHS2019/EHS/HCVU/Images/AjaxControlToolkit/Tabs/tab-right.gif -text
 EHS2019/EHS/HCVU/Images/AjaxControlToolkit/Tabs/tab.gif -text
 EHS2019/EHS/HCVU/Images/banner/Administration/banner_MessageDraftApproval.png -text
+EHS2019/EHS/HCVU/Images/banner/Administration/banner_OutreachListMaintenance.png -text
 EHS2019/EHS/HCVU/Images/banner/Administration/banner_RCHListMaintenance.png -text
 EHS2019/EHS/HCVU/Images/banner/Administration/banner_SentOutMessageApproval.png -text
 EHS2019/EHS/HCVU/Images/banner/Administration/banner_parameterManagement.png -text
@@ -4167,6 +4172,7 @@ EHS2019/EHS/HCVU/Images/button/btn_NewClaimTransaction.png -text
 EHS2019/EHS/HCVU/Images/button/btn_NewClaimTransaction_D.png -text
 EHS2019/EHS/HCVU/Images/button/btn_NewInspectionRecord.png -text
 EHS2019/EHS/HCVU/Images/button/btn_NewInspectionRecord_D.png -text
+EHS2019/EHS/HCVU/Images/button/btn_NewOutreachRecord.png -text
 EHS2019/EHS/HCVU/Images/button/btn_NewRCHRecord.png -text
 EHS2019/EHS/HCVU/Images/button/btn_NewRecord.png -text
 EHS2019/EHS/HCVU/Images/button/btn_OtherFormats.png -text
@@ -9192,9 +9198,13 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_NewEnrolment_get_ForDownload.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_NewsMessage_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_OCSSSCheckResult_add.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_OCSSSCheckResult_get_ByIVRSUniqueID.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_add.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_delete_byCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_getActive_byCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_get_byCode.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_get_byORInfo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_get_bySearch.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_update.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PCDStatusUpdateQueue_gen.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PCDStatusUpdateQueue_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PCDStatusUpdateQueue_upd.sql -text
@@ -9852,6 +9862,7 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_Token_upd_IsShare.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Token_upd_RecordStatus.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_Token_upd_ReplacementNo.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TransactionAdditionalField_add.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_TransactionAdditionalField_check_byAny.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TransactionAdditionalField_check_byRCHCode.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TransactionAdditionalField_del.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_TransactionAdditionalField_get_ByTranID.sql -text

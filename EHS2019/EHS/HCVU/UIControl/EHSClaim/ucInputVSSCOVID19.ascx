@@ -1,12 +1,39 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="ucInputVSSCOVID19.ascx.vb" Inherits="HCVU.ucInputVSSCOVID19" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc2" %>
 
+<asp:Panel ID="panOutreachCode" runat="server" Visible="false">
+    <table style="padding:0px;border-spacing:0px;border-collapse:collapse;position:relative;left:-1px">
+        <tr>
+            <td style="width: 205px;vertical-align:middle">
+                <asp:Label ID="lblOutreachCodeText" runat="server" Width="160px" Height="25px" />
+            </td>
+            <td style="padding-bottom: 3px">
+                <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" style="position:relative;left:-5px;top:-2px" />
+                <asp:Image ID="imgOutreachCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                    ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-2px" />
+                <asp:ImageButton ID="btnSearchOutreach" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"
+                    ImageAlign="AbsMiddle" style="position:relative;top:-2px" />
+                <asp:Label ID="lblOutreachCode" runat="server" CssClass="tableText" Style="display: none" />
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 205px;vertical-align:top">
+                <asp:Label ID="lblOutreachNameText" runat="server" Width="160px" Height="25px" />
+            </td>
+            <td style="padding-bottom: 3px">
+                <asp:Label ID="lblOutreachName" runat="server" CssClass="tableText" style="position:relative;left:-6px;top:-2px" />
+                <asp:Label ID="lblOutreachNameChi" runat="server" CssClass="tableTextChi" style="position:relative;left:-6px;top:-2px" />
+            </td>
+        </tr>
+    </table>
+</asp:Panel>
+
 <asp:Panel ID="panCOVID19Detail" runat="server">
     <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
         <asp:Panel ID ="panCategory" runat="server" Visible ="false">
         <tr>
             <td style="width:200px;vertical-align:top">
-                <asp:Label ID="lblCCategoryText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Category%>" />
+                <asp:Label ID="lblCCategoryText" runat="server" Height="25px" Width="160px" Text ="<%$ Resources:Text, Category%>" />
             </td>
             <td style="vertical-align:top">
                 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -24,7 +51,7 @@
         </asp:Panel>
         <tr>
             <td style="width:200px;vertical-align:top">
-                <asp:Label ID="lblCMainCategoryText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Category%>" />
+                <asp:Label ID="lblCMainCategoryText" runat="server" Height="25px" Width="160px" Text ="<%$ Resources:Text, Category%>" />
             </td>
             <td style="vertical-align:top">
                 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -42,7 +69,7 @@
         </tr>
         <tr>
             <td style="width:200px;vertical-align:top">
-                <asp:Label ID="lblCSubCategoryText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, SubCategory%>" />
+                <asp:Label ID="lblCSubCategoryText" runat="server" Height="25px" Width="160px" Text ="<%$ Resources:Text, SubCategory%>" />
             </td>
             <td style="vertical-align:top">
                 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -60,7 +87,7 @@
         </tr>
         <tr>
             <td style="width:200px;vertical-align:top">
-                <asp:Label ID="lblCVaccineBrandText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Vaccines%>" />
+                <asp:Label ID="lblCVaccineBrandText" runat="server" Height="25px" Width="160px" Text ="<%$ Resources:Text, Vaccines%>" />
             </td>
             <td style="vertical-align:top">
                 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -78,7 +105,7 @@
         </tr>
         <tr>
             <td style="width:200px;vertical-align:top">
-                <asp:Label ID="lblCVaccineLotNoText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, VaccineLotNumber%>" />
+                <asp:Label ID="lblCVaccineLotNoText" runat="server" Height="25px" Width="160px" Text ="<%$ Resources:Text, VaccineLotNumber%>" />
             </td>
             <td style="vertical-align:top">
                 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -97,7 +124,7 @@
 <%--        <asp:Panel ID ="panDose" runat="server" Visible ="false">
         <tr>
             <td style="width:200px;vertical-align:top">
-                <asp:Label ID="lblCDoseText" runat="server" CssClass="tableTitle" Height="20px" Width="160px" Text ="<%$ Resources:Text, DoseSeq%>" />
+                <asp:Label ID="lblCDoseText" runat="server" Height="20px" Width="160px" Text ="<%$ Resources:Text, DoseSeq%>" />
             </td>
             <td style="vertical-align:top">
                 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
@@ -116,7 +143,7 @@
         </asp:Panel>--%>
         <tr id="trCContactNo" runat="server">
             <td style="width:200px;height:25px;vertical-align:top">
-                <asp:Label ID="lblCContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" CssClass="tableTitle" Width="160px" />
+                <asp:Label ID="lblCContactNoText" runat="server" Text="<%$ Resources:Text, ContactNo2%>" Width="160px" />
             </td>
             <td style="height:25px;vertical-align:top">
                 <asp:textbox ID="txtCContactNo" runat="server" MaxLength="8" style="position:relative;left:-1px;top:-2px" Width="100px"/>
@@ -129,7 +156,7 @@
         </tr>
         <tr>
             <td style="width:200px;height:25px;vertical-align:top;padding-bottom:5px">
-                <asp:Label ID="lblCRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" CssClass="tableTitle" Width="160px" />
+                <asp:Label ID="lblCRemarkText" runat="server" Text="<%$ Resources:Text, Remarks%>" Width="160px" />
             </td>
             <td style="height:25px;vertical-align:top;padding-bottom:5px">
                 <asp:textbox ID="txtCRemark" runat="server" MaxLength="200" style="position:relative;left:-1px" Width="660px"/>

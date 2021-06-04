@@ -48,20 +48,13 @@ Namespace Component.EHSClaim.EHSClaimBLL
         Private Const cFunctionCode As String = "990000"
 
         Private _EHSClaimValidationBLL As New EHSClaimValidationBLL()
-        Private _SchemeClaimBLL As New SchemeClaimBLL()
-        ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [Start][Koala]
-        ' -----------------------------------------------------------------------------------------
-        ' Remove non reference object
-        'Private _udtOutsideClaimRuleCheckBLL As New OutsideClaimValidation.OutsideClaimRuleCheckBLL()
-        ' CRE12-008-01 Allowing different subsidy level for each scheme at different date period [End][Koala]
+        Private _udtSchemeClaimBLL As New SchemeClaimBLL()
         Private _udtClaimCategoryBLL As New ClaimCategoryBLL()
         Private _udtFormatter As New Format.Formatter()
         Private _udtGeneralFunction As New Common.ComFunction.GeneralFunction
         Private _udtValidator As New Validation.Validator
         Private _udtEHSClaimValidationRuleCollection As New EHSClaimValidationRuleModelCollection()
         Private _udtEHSClaimValidationRuleCollectionResult As New EHSClaimValidationRuleModelCollection()
-        'Private Shared _enumClaimAction As Integer
-
 
 #Region "Object Class"
 
@@ -580,7 +573,9 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             ' CRE19-031 (VSS MMR Upload) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
-            Dim arrRuleMessage As New ArrayList
+            Dim arrBlockRuleMessage As New ArrayList
+            Dim arrWarningRuleMessage As New ArrayList
+            Dim arrDeclarationRuleMessage As New ArrayList
 
             ' Get the system message against to rule result
             For Each udtRuleResult As RuleResult In udtRuleResultList.RuleResults
@@ -617,26 +612,32 @@ Namespace Component.EHSClaim.EHSClaimBLL
                     ' Remove duplicate rule result
                     Dim strRuleMessage As String = Replace(udtRuleResult.ErrorMessage.GetMessage, udtRuleResult.MessageVariableName, udtRuleResult.MessageVariableValue)
 
-                    If Not arrRuleMessage.Contains(strRuleMessage) Then
-                        arrRuleMessage.Add(strRuleMessage)
+                    If Not htDuplicateCheck.ContainsKey(strDuplicateCheckKey) Then
 
-                        If Not htDuplicateCheck.ContainsKey(strDuplicateCheckKey) Then
-
-                            If Not udtClaimValidationRule.WarnIndicator_Code Is Nothing Then
-                                udtRuleResult.WarnIndicatorCode = udtClaimValidationRule.WarnIndicator_Code.Trim()
-                            End If
-
-                            Select Case udtClaimValidationRule.HandlingMethod.Trim()
-                                Case HandleMethodClass.Block
-                                    udtValidationResults.BlockResults.RuleResults.Add(udtRuleResult)
-                                Case HandleMethodClass.Warning
-                                    udtValidationResults.WarningResults.RuleResults.Add(udtRuleResult)
-                                Case HandleMethodClass.Declaration
-                                    udtValidationResults.DeclarationResults.RuleResults.Add(udtRuleResult)
-                            End Select
-
-                            htDuplicateCheck.Add(strDuplicateCheckKey, "")
+                        If Not udtClaimValidationRule.WarnIndicator_Code Is Nothing Then
+                            udtRuleResult.WarnIndicatorCode = udtClaimValidationRule.WarnIndicator_Code.Trim()
                         End If
+
+                        Select Case udtClaimValidationRule.HandlingMethod.Trim()
+                            Case HandleMethodClass.Block
+                                If Not arrBlockRuleMessage.Contains(strRuleMessage) Then
+                                    udtValidationResults.BlockResults.RuleResults.Add(udtRuleResult)
+                                    arrBlockRuleMessage.Add(strRuleMessage)
+                                End If
+                            Case HandleMethodClass.Warning
+                                If Not arrWarningRuleMessage.Contains(strRuleMessage) Then
+                                    udtValidationResults.WarningResults.RuleResults.Add(udtRuleResult)
+                                    arrWarningRuleMessage.Add(strRuleMessage)
+                                End If
+                            Case HandleMethodClass.Declaration
+                                If Not arrDeclarationRuleMessage.Contains(strRuleMessage) Then
+                                    udtValidationResults.DeclarationResults.RuleResults.Add(udtRuleResult)
+                                    arrDeclarationRuleMessage.Add(strRuleMessage)
+                                End If
+                        End Select
+
+                        htDuplicateCheck.Add(strDuplicateCheckKey, "")
+
                     End If
 
 
@@ -692,10 +693,9 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Dim udtEHSAccount As EHSAccountModel = udtEHSTransaction.EHSAcct
             Dim udtEHSPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.getPersonalInformation(udtEHSTransaction.DocCode)
 
-            Dim udtSchemeClaimBLL As New SchemeClaimBLL()
             Dim udtSchemeClaimModel As SchemeClaimModel = Nothing
 
-            udtSchemeClaimModel = Me._SchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode, udtEHSTransaction.ServiceDate.AddDays(1).AddMinutes(-1))
+            udtSchemeClaimModel = Me._udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode, udtEHSTransaction.ServiceDate.AddDays(1).AddMinutes(-1))
 
             Dim udtSchemeInfoModelCollection As Common.Component.SchemeInformation.SchemeInformationModelCollection = udtServiceProvider.SchemeInfoList
 
@@ -708,11 +708,29 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             Dim udtEHSTransactionBLL As New EHSTransactionBLL()
 
+
+            '----------------------------------------------------------------
+            ' Prepare Input Picker
+            '----------------------------------------------------------------
             Dim udtInputPicker As New InputPickerModel
 
+            'SP ID
             udtInputPicker.SPID = udtEHSTransaction.ServiceProviderID
+
+            'Service Date
             udtInputPicker.ServiceDate = udtEHSTransaction.ServiceDate
+
+            'Practice ID
             udtInputPicker.PracticeDisplaySeq = udtEHSTransaction.PracticeID
+
+            'Clinic Type
+            If udtEHSTransaction.TransactionAdditionFields IsNot Nothing AndAlso _
+                udtEHSTransaction.TransactionAdditionFields.ClinicType IsNot Nothing AndAlso _
+                udtEHSTransaction.TransactionAdditionFields.ClinicType <> String.Empty Then
+                udtInputPicker.ClinicType = udtEHSTransaction.TransactionAdditionFields.ClinicType
+            Else
+                udtInputPicker.ClinicType = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeValue.Clinic
+            End If
 
             '----------------------------------------------------------------
             ' a1. If has inputted benefit, use it. If not, get benefit again
@@ -741,7 +759,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
             ' Convert "TransactionDetailVaccineModelCollection" to the "TransactionDetailModelCollection"
             Dim udtTransDetailBenefitList As TransactionDetailModelCollection = udtTransactionBenefitDetailList
 
-            If _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.EHAPP Then
+            If _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.EHAPP Then
                 udtTransDetailBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, udtEHSTransaction.SchemeCode)
             End If
 
@@ -827,8 +845,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
             End If
 
             ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-            If _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER OrElse _
-                _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+            If _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER OrElse _
+                _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
                 udtRuleResult = Me.CheckPracticeJoinedProf(udtPractice, udtEHSTransaction.ServiceType)
                 If Not udtRuleResult Is Nothing Then
                     udtRuleResultList.RuleResults.Add(udtRuleResult)
@@ -836,8 +854,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End If
             End If
 
-            If Not _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER AndAlso _
-               Not _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+            If Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER AndAlso _
+               Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
                 udtRuleResult = Me.CheckSchemeSubsidy(udtEHSTransaction)
                 If Not udtRuleResult Is Nothing Then
                     udtRuleResultList.RuleResults.Add(udtRuleResult)
@@ -1043,14 +1061,14 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 udtRuleResultList.RuleResults.Add(udtRuleResult)
             End If
 
-            Dim EnumControlType As SchemeClaimModel.EnumControlType = _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode)
+            Dim EnumControlType As SchemeClaimModel.EnumControlType = _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode)
             Dim udtInputVaccineCollection As New InputVaccineModelCollection
 
             '------------------------------------------------------------------------------
             ' 1. Retrieve and concat the current claiming vaccination from TransactionDetail
             '------------------------------------------------------------------------------
             'Get Active SchemeClaim with SubsidizeGroupClaim (By ServiceDate)
-            Dim udtServiceSchemeClaimModel As SchemeClaimModel = _SchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode, udtEHSTransaction.ServiceDate.AddDays(1).AddMinutes(-1))
+            Dim udtServiceSchemeClaimModel As SchemeClaimModel = _udtSchemeClaimBLL.getValidClaimPeriodSchemeClaimWithSubsidizeGroup(udtEHSTransaction.SchemeCode, udtEHSTransaction.ServiceDate.AddDays(1).AddMinutes(-1))
 
             For i As Integer = 0 To udtEHSTransaction.TransactionDetails.Count - 1
                 Dim udtTransactionDetail As TransactionDetailModel = udtEHSTransaction.TransactionDetails(i)
@@ -1288,7 +1306,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
                 End If
 
 
-                Dim strSchemeCodeEnrol As String = _SchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtTransactionDetailModel.SchemeCode.Trim())
+                Dim strSchemeCodeEnrol As String = _udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtTransactionDetailModel.SchemeCode.Trim())
 
                 Dim udtPracticeSchemeCollection As PracticeSchemeInfo.PracticeSchemeInfoModelCollection = udtPractice.PracticeSchemeInfoList.Filter(strSchemeCodeEnrol.Trim())
                 Dim udtPracticeScheme As PracticeSchemeInfo.PracticeSchemeInfoModel = udtPracticeSchemeCollection.GetByIndex(0)
@@ -1580,7 +1598,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
             Else
                 ' Check if the claiming scheme is delisted                 
                 For Each udtTransactionDetailModel As EHSTransaction.TransactionDetailModel In udtEHSTransactionDetails
-                    Dim strSchemeCodeEnrol As String = _SchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtTransactionDetailModel.SchemeCode.Trim())
+                    Dim strSchemeCodeEnrol As String = _udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(udtTransactionDetailModel.SchemeCode.Trim())
                     Dim udtPracticeSchemeCollection As PracticeSchemeInfo.PracticeSchemeInfoModelCollection = udtPractice.PracticeSchemeInfoList.Filter(strSchemeCodeEnrol.Trim())
                     Dim udtPracticeScheme As PracticeSchemeInfo.PracticeSchemeInfoModel = udtPracticeSchemeCollection.GetByIndex(0)
 
@@ -1700,7 +1718,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             Dim udtRuleResultList As New RuleResultList()
 
-            If _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER Then
+            If _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER Then
                 ' don't check voucher entitlement if eligible
                 If blnIsEligible Then
                     If CheckAvailableVoucher(strCategoryCode, udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList, intCurrentTransactionClaimedVoucher) = False Then
@@ -1756,7 +1774,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                 ' CRE13-001 - EHAPP [Start][Tommy L]
                 ' -------------------------------------------------------------------------------------
-            ElseIf _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+            ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
                 ' Same as EnumControlType.VOUCHER
                 If blnIsEligible Then
                     If CheckAvailableVoucher(strCategoryCode, udtEHSTransaction, udtEHSPersonalInfo, udtSchemeClaimModel, udtEHSAccount, udtEHSTransaction.TransactionDetails, udtBenefitTransactionDetailList, intCurrentTransactionClaimedVoucher) = False Then
@@ -1775,7 +1793,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
                 End If
 
-            ElseIf _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.EHAPP Then
+            ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.EHAPP Then
 
                 If blnIsEligible Then
                     If Not CheckAvailableSubsidizeItem_EHAPP(udtSchemeClaimModel, udtBenefitTransactionDetailList) Then
@@ -2021,7 +2039,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
         Private Function CheckPracticeEnrolScheme(ByVal udtPractice As Practice.PracticeModel, ByVal strSchemeCode As String)
             ' Check if that practice enrolled that shcme
-            Dim strSchemeCodeEnrol As String = _SchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(strSchemeCode.Trim())
+            Dim strSchemeCodeEnrol As String = _udtSchemeClaimBLL.ConvertSchemeEnrolFromSchemeClaimCode(strSchemeCode.Trim())
             Dim udtPracticeSchemeCollection As PracticeSchemeInfo.PracticeSchemeInfoModelCollection = udtPractice.PracticeSchemeInfoList.Filter(strSchemeCodeEnrol.Trim())
             If udtPracticeSchemeCollection Is Nothing OrElse udtPracticeSchemeCollection.Count = 0 Then
                 Return New RuleResult(RuleID.PracNotEnrolScheme)
@@ -2050,8 +2068,8 @@ Namespace Component.EHSClaim.EHSClaimBLL
         Private Function CheckSchemeSubsidy(ByVal udtEHSTransaction As EHSTransactionModel)
 
             ' Check if it is a valid subsidy item
-            If Not _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER AndAlso _
-                Not _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+            If Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER AndAlso _
+                Not _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
                 'Dim udtSchemeDetailBLL As New SchemeDetailBLL()
                 Dim udtSchemeClaimBLL As New SchemeClaimBLL()
                 If udtEHSTransaction.TransactionDetails Is Nothing OrElse udtEHSTransaction.TransactionDetails.Count <= 0 Then
@@ -3699,7 +3717,7 @@ Namespace Component.EHSClaim.EHSClaimBLL
 
             If udtEHSTransaction IsNot Nothing Then
                 ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
-                Select Case _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode)
+                Select Case _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode)
                     'CRE13-019-02 Extend HCVS to China [Start][Karl]
                     Case SchemeClaimModel.EnumControlType.VOUCHER, SchemeClaimModel.EnumControlType.VOUCHERCHINA
                         'CRE13-019-02 Extend HCVS to China [End][Karl]
@@ -3717,13 +3735,13 @@ Namespace Component.EHSClaim.EHSClaimBLL
                             If udtGeneralFunction.IsCoPaymentFeeEnabled(udtEHSTransaction.ServiceDate) Then
                                 'No CoPaymentFee 
 
-                                If _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER Then
+                                If _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHER Then
 
                                     If Not HasCoPaymentFee(udtEHSTransaction) Or Not HasPrincipalReasonForVisit(udtEHSTransaction) Then
                                         isIncomplete = True
                                     End If
 
-                                ElseIf _SchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
+                                ElseIf _udtSchemeClaimBLL.ConvertControlTypeFromSchemeClaimCode(udtEHSTransaction.SchemeCode) = SchemeClaimModel.EnumControlType.VOUCHERCHINA Then
                                     If Not HasCoPaymentFeeRMB(udtEHSTransaction) Then
                                         isIncomplete = True
                                     End If

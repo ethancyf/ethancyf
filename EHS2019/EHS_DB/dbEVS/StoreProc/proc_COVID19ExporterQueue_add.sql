@@ -18,6 +18,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-0023 
 -- Modified by:		Martin Tang
+-- Modified date:	26 May 2021
+-- Description:		1. Handle VSS Outreach Case
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023 
+-- Modified by:		Martin Tang
 -- Modified date:	21 May 2021
 -- Description:		1. Fix bug (del case)
 --					2. Apply Doc_Type = 9 for Two-Way
@@ -139,7 +146,7 @@ AS
         DECLARE @In_Period_To DATETIME= @Period_To;
         DECLARE @VBar AS CHAR(1)= '|';
         DECLARE @VBarWithQuote AS CHAR(3)= '"|"';
-		DECLARE @DoubleQuote AS CHAR(1)= '"';
+        DECLARE @DoubleQuote AS CHAR(1)= '"';
         DECLARE @DoubleQuoteWithBackslash AS CHAR(2)= '\"';
         DECLARE @PendingStatus AS CHAR(1)= 'P';
         DECLARE @SkipedStatus AS CHAR(1)= 'S';
@@ -155,7 +162,7 @@ AS
         DECLARE @SchemeCodeCOVID19RVP AS VARCHAR(10)= 'COVID19RVP';
         DECLARE @SchemeCodeCOVID19OR AS VARCHAR(10)= 'COVID19OR';
         DECLARE @SchemeCodeCOVID19SR AS VARCHAR(10)= 'COVID19SR';
-		DECLARE @SchemeCodeCOVID19SB AS VARCHAR(10)= 'COVID19SB';
+        DECLARE @SchemeCodeCOVID19SB AS VARCHAR(10)= 'COVID19SB';
 
         DECLARE @SchemeCodeRVP AS VARCHAR(10)= 'RVP';
         DECLARE @SchemeCodeVSS AS VARCHAR(10)= 'VSS';
@@ -267,7 +274,7 @@ AS
                             THEN '6'
                             WHEN pinfo.Doc_Code = 'PASS'
                             THEN '7'
-							WHEN pinfo.Doc_Code = 'TW'
+                            WHEN pinfo.Doc_Code = 'TW'
                             THEN '9'
                             ELSE '8' --others
                         END
@@ -290,7 +297,7 @@ AS
                             THEN '6'
                             WHEN tpi.Doc_Code = 'PASS'
                             THEN '7'
-							WHEN tpi.Doc_Code = 'TW'
+                            WHEN tpi.Doc_Code = 'TW'
                             THEN '9'
                             ELSE '8'
                         END
@@ -528,7 +535,7 @@ AS
                                               WHEN @SchemeCodeCOVID19SB
                                               THEN vc.Centre_Name
                                               WHEN @SchemeCodeVSS
-                                              THEN p.Practice_Name
+                                              THEN COALESCE(orl.Outreach_Name_Eng, p.Practice_Name)
                                               ELSE ''
                                           END, ''))), @VBar, @VBarWithQuote) AS 'Vaccine_administration_premises', 
                REPLACE(LTRIM(RTRIM(CONVERT(VARCHAR(MAX), DECRYPTBYKEY(sp.Encrypt_Field2)))), @VBar, @VBarWithQuote) AS 'Health_care_staff_name', --sp name
@@ -541,7 +548,8 @@ AS
                                       THEN vcsm.Booth
                                       ELSE ''
                                   END, ''))) AS 'Booth', 
-               REPLACE(REPLACE(LTRIM(RTRIM(ISNULL(Remarks.AdditionalFieldValueDesc, ''))), @DoubleQuote, @DoubleQuoteWithBackslash), @VBar, @VBarWithQuote) AS 'Vaccine_administration_remark', --b 
+               REPLACE(REPLACE(LTRIM(RTRIM(ISNULL(Remarks.AdditionalFieldValueDesc, ''))), @DoubleQuote, @DoubleQuoteWithBackslash), @VBar,
+               @VBarWithQuote) AS 'Vaccine_administration_remark', --b 
                '' AS 'Contraindication', --b 
                '' AS 'Side_effect', --b 
                '' AS 'Route_of_administration_local_description', --b 
@@ -590,7 +598,7 @@ AS
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_8', --RCH Code
                LTRIM(RTRIM(ISNULL(CASE
-                                      WHEN vt.Scheme_Code IN(@SchemeCodeCOVID19OR)
+                                      WHEN vt.Scheme_Code IN(@SchemeCodeVSS, @SchemeCodeCOVID19OR)
                                       THEN orl.Outreach_code
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_9', --Outreach Code

@@ -208,11 +208,6 @@ Partial Public Class ucInputCOVID19
 
         End If
 
-        'Assign Subsidize Display Code
-        If EHSClaimVaccine IsNot Nothing Then
-            lblCVaccine.Text = EHSClaimVaccine.SubsidizeList(0).SubsidizeDisplayCode
-        End If
-
         'Bind DropDownList Dose
         BindCOVID19Dose()
 
@@ -529,14 +524,16 @@ Partial Public Class ucInputCOVID19
         'Dose
         If ddlCDoseCovid19.SelectedValue <> String.Empty Then
             For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-                If udtEHSClaimSubsidize.SubsidizeCode.ToUpper.Trim = ddlCCategoryCovid19.SelectedValue.ToUpper.Trim Then
-                    udtEHSClaimSubsidize.Selected = True
+                If udtEHSClaimSubsidize.Available Then
+                    If udtEHSClaimSubsidize.SubsidizeCode.ToUpper.Trim = ddlCCategoryCovid19.SelectedValue.ToUpper.Trim Then
+                        udtEHSClaimSubsidize.Selected = True
 
-                    For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
-                        If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = ddlCDoseCovid19.SelectedValue.ToUpper.Trim Then
-                            udtEHSClaimSubsidizeDetail.Selected = True
-                        End If
-                    Next
+                        For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
+                            If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = ddlCDoseCovid19.SelectedValue.ToUpper.Trim Then
+                                udtEHSClaimSubsidizeDetail.Selected = True
+                            End If
+                        Next
+                    End If
                 End If
             Next
         End If

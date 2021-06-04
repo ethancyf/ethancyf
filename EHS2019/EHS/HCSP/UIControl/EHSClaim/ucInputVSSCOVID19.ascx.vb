@@ -19,19 +19,14 @@ Partial Public Class ucInputVSSCOVID19
     ' Public Const FunctCode As String = Common.Component.FunctCode.FUNT020201
     Public FunctCode As String = (New BLL.SessionHandler).ClaimFunctCodeGetFromSession() 'CRE20-0xx Immue record [Nichole]
 
-    Dim _udtSessionHandler As New SessionHandler
-    Dim _udtGeneralFunction As New GeneralFunction
+    Private _udtGeneralFunction As New GeneralFunction
+    Private _udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
+    Private _strOutreachType As String
 
 #Region "Constants"
-
-    Private Class ViewIndexCategory
-        Public Const NoCategory As Integer = 0
-        Public Const VSS_PW As Integer = 1
-        Public Const VSS_CHILD As Integer = 2
-        Public Const VSS_ELDER As Integer = 3
-        Public Const VSS_PID As Integer = 4
-        Public Const VSS_DA As Integer = 5
-        Public Const VSS_ADULT As Integer = 6
+    Private Class ClinicType
+        Public Const Clinic As String = "C"
+        Public Const NonClinic As String = "N"
     End Class
 
 #End Region
@@ -67,13 +62,27 @@ Partial Public Class ucInputVSSCOVID19
         End Get
     End Property
 
-    Public ReadOnly Property Booth() As String
+    Public ReadOnly Property OutreachCode() As String
         Get
-            If Me.ddlCBooth.SelectedItem Is Nothing Then
-                Return String.Empty
-            Else
-                Return Me.ddlCBooth.SelectedItem.Value
-            End If
+            Return Me.txtOutreachCode.Text
+        End Get
+    End Property
+
+    Public ReadOnly Property OutreachType() As String
+        Get
+            Return Me._strOutreachType
+        End Get
+    End Property
+
+    Public ReadOnly Property OutreachName() As String
+        Get
+            Return Me.lblOutreachName.Text
+        End Get
+    End Property
+
+    Public ReadOnly Property OutreachNameChi() As String
+        Get
+            Return Me.lblOutreachNameChi.Text
         End Get
     End Property
 
@@ -191,24 +200,73 @@ Partial Public Class ucInputVSSCOVID19
 #End Region
 
 #Region "Event handlers"
-    Public Event VaccineLegendClicked(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-    Public Event SubsidizeDisabledRemarkClicked(ByVal sender As System.Object, ByVal e As EventArgs)
-    Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Public Event SearchButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
 #End Region
 
 #Region "Must Override Function"
 
     Protected Overrides Sub RenderLanguage()
+        'Outreach Code
+        Me.lblOutreachCodeText.Text = Me.GetGlobalResourceObject("Text", "OutreachCode")
+        Me.lblOutreachNameText.Text = Me.GetGlobalResourceObject("Text", "OutreachName")
 
+        Select Case Me.SessionHandler.Language()
+
+        End Select
+
+        If Me.SessionHandler.Language() = Common.Component.CultureLanguage.TradChinese Then
+            Me.lblOutreachName.Visible = False
+            Me.lblOutreachNameChi.Visible = True
+            Me.lblOutreachNameChi.CssClass = "tableTextChi"
+        Else
+            Me.lblOutreachName.Visible = True
+            Me.lblOutreachName.CssClass = "tableText"
+            Me.lblOutreachNameChi.Visible = False
+        End If
     End Sub
 
     Protected Overrides Sub Setup()
 
-        'Bind DropDownList Booth
-        BindBooth()
-
         'Bind DropDownList System Category (Hidden)
         BindCOVID19Category(MyBase.ClaimCategorys)
+
+        'Outreach Code
+        If MyBase.NonClinic Then
+            panOutreachCode.Visible = True
+
+            ' Fill value by temp save
+            If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
+                'Vaccine
+                If MyBase.EHSTransaction.TransactionAdditionFields.OutreachCode IsNot Nothing Then
+                    Me.txtOutreachCode.Text = MyBase.EHSTransaction.TransactionAdditionFields.OutreachCode
+                End If
+            End If
+
+            ' Fill value by session
+            Dim strOutreachCodeFromSession As String = Me.SessionHandler.OutreachCodeGetFromSession(FunctCode)
+
+            If strOutreachCodeFromSession IsNot Nothing AndAlso strOutreachCodeFromSession.Trim() <> "" Then
+                Dim dtRVPhomeList As DataTable = Nothing
+                Dim udtOutreachListBLL As New COVID19.OutreachListBLL
+
+                ' Reload inputted Outreach Code if not empty, else reload from session
+                If Trim(Me.txtOutreachCode.Text).Length > 0 Then
+                    dtRVPhomeList = udtOutreachListBLL.GetOutreachListActiveByCode(Me.txtOutreachCode.Text)
+                    If dtRVPhomeList.Rows.Count > 0 Then
+                        Me.SetUpOutreachInfo(dtRVPhomeList.Rows(0))
+                    End If
+                Else
+                    dtRVPhomeList = udtOutreachListBLL.GetOutreachListActiveByCode(strOutreachCodeFromSession)
+                    If dtRVPhomeList.Rows.Count > 0 Then
+                        Me.SetUpOutreachInfo(dtRVPhomeList.Rows(0))
+                    End If
+                End If
+            End If
+
+        Else
+            panOutreachCode.Visible = False
+
+        End If
 
         'Bind DropDownList Main Category
         BindMainCategory()
@@ -230,16 +288,10 @@ Partial Public Class ucInputVSSCOVID19
         BindSubCategory()
 
         'Get Vaccine Brand & Lot No.
-        Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
-        Dim dtVaccineLotNo As DataTable = Nothing
-
-        dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
+        Dim dtVaccineLotNo As DataTable = _udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            'CRE20-023 Fix the lot mapping table filter [Start][Nichole]
             Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
-            'Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
-            'CRE20-023 Fix the lot mapping table filter [End][Nichole]
 
             'Bind DropDownList Vaccine Brand
             BindCOVID19VaccineBrand(drVaccineLotNo)
@@ -267,11 +319,6 @@ Partial Public Class ucInputVSSCOVID19
             Me.ddlCVaccineBrandCovid19.Enabled = False
             Me.ddlCVaccineLotNoCovid19.Enabled = False
 
-        End If
-
-        'Assign Subsidize Display Code
-        If EHSClaimVaccine IsNot Nothing Then
-            lblCVaccine.Text = EHSClaimVaccine.SubsidizeList(0).SubsidizeDisplayCode
         End If
 
         'Bind DropDownList Dose
@@ -332,12 +379,12 @@ Partial Public Class ucInputVSSCOVID19
 
 #Region "Set Up Error Image"
 
-    Public Sub SetBoothError(ByVal visible As Boolean)
-        Me.imgCBoothError.Visible = visible
-    End Sub
-
     Public Sub SetCategoryForCOVID19Error(ByVal visible As Boolean)
         Me.imgCCategoryError.Visible = visible
+    End Sub
+
+    Public Sub SetOutreachCodeError(ByVal visible As Boolean)
+        Me.imgOutreachCodeError.Visible = visible
     End Sub
 
     Public Sub SetMainCategoryForCOVID19Error(ByVal visible As Boolean)
@@ -388,13 +435,6 @@ Partial Public Class ucInputVSSCOVID19
 
     'End Sub
 
-    Public Sub ClearBooth()
-        Me.ddlCBooth.SelectedIndex = -1
-        Me.ddlCBooth.SelectedValue = Nothing
-        Me.ddlCBooth.ClearSelection()
-
-    End Sub
-
     Public Sub ClearCategory()
         Me.ddlCCategoryCovid19.SelectedIndex = -1
         Me.ddlCCategoryCovid19.SelectedValue = Nothing
@@ -425,40 +465,74 @@ Partial Public Class ucInputVSSCOVID19
 
     End Sub
 
+    Public Sub SetOutreachCode(ByVal strOutreachCode As String)
+        Me.txtOutreachCode.Text = strOutreachCode.Trim().ToUpper()
+        Me.lookUpOutreachCode()
+
+    End Sub
+
 #End Region
 
 #Region "Events"
+    Private Sub txtOutreachCodeText_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtOutreachCode.TextChanged
+        If Me.txtOutreachCode.Text.Trim() = String.Empty Then
+            Me.lblOutreachCode.Text = String.Empty
+            Me.lblOutreachName.Text = String.Empty
+            Me.lblOutreachNameChi.Text = String.Empty
 
-    Protected Sub udcClaimVaccineInputCOVID19_SubsidizeDisabledRemarkClicked(ByVal sender As Object, ByVal e As EventArgs)
-        RaiseEvent SubsidizeDisabledRemarkClicked(sender, e)
+            Dim udtSessionHandler As New BLL.SessionHandler()
+
+            udtSessionHandler.OutreachCodeRemoveFromSession(FunctCode)
+        Else
+            Me.lookUpOutreachCode()
+            'RaiseEvent OutreachCodeTextChanged(sender, e)
+
+        End If
     End Sub
 
-    Protected Sub udcClaimVaccineInputCOVID19_VaccineLegendClicked(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
-        RaiseEvent VaccineLegendClicked(sender, e)
+    Public Function lookUpOutreachCode() As Boolean
+        Dim blnRes As Boolean = False
+        Dim udtOutreachListBLL As New COVID19.OutreachListBLL
+        Dim dtResult As DataTable = udtOutreachListBLL.GetOutreachListActiveByCode(Me.txtOutreachCode.Text.Trim())
+
+        'Dim drResult() As DataRow = dtResult.Select("Type IN ('E','D')")
+        Dim drResult() As DataRow = dtResult.Select()
+
+        If drResult.Length > 0 Then
+            Dim dtOutreach As DataTable = drResult.CopyToDataTable
+            Me.SetUpOutreachInfo(dtOutreach.Rows(0))
+            Me.SessionHandler.OutreachCodeSaveToSession(FunctCode, dtOutreach.Rows(0)("Outreach_Code").ToString().Trim().ToUpper())
+            blnRes = True
+        Else
+            Me.lblOutreachCode.Text = String.Empty
+            Me.lblOutreachName.Text = String.Empty
+            Me.lblOutreachNameChi.Text = String.Empty
+            Me.SessionHandler.OutreachCodeRemoveFromSession(FunctCode)
+            blnRes = False
+        End If
+
+        Return blnRes
+
+    End Function
+
+    Private Sub SetUpOutreachInfo(ByVal drOutreach As DataRow)
+        Me.txtOutreachCode.Text = drOutreach("Outreach_Code").ToString().Trim().ToUpper()
+        Me.lblOutreachCode.Text = Me.txtOutreachCode.Text
+        Me._strOutreachType = drOutreach("Type").ToString.Trim
+
+        Me.lblOutreachName.Text = drOutreach("Outreach_Name_Eng").ToString().Trim()
+        If drOutreach.IsNull("Outreach_Name_Chi") Then
+            Me.lblOutreachNameChi.Text = Me.lblOutreachName.Text
+            Me.lblOutreachNameChi.CssClass = "tableText"
+        Else
+            Me.lblOutreachNameChi.Text = drOutreach("Outreach_Name_Chi").ToString().Trim()
+            Me.lblOutreachNameChi.CssClass = "tableTextChi"
+        End If
     End Sub
 
-    Private Sub ddlCBooth_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlCBooth.SelectedIndexChanged
-        Me.ddlCBooth.SelectedValue = AntiXssEncoder.HtmlEncode(Me.Request.Form(Me.ddlCBooth.UniqueID), True)
-        SessionHandler.ClaimCOVID19BoothSaveToSession(Me.ddlCBooth.SelectedValue, FunctCode)
-
+    Private Sub btnSearchOutreach_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnSearchOutreach.Click
+        RaiseEvent SearchButtonClick(sender, e)
     End Sub
-
-    'Private Sub ddlCCategoryCovid19_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlCCategoryCovid19.SelectedIndexChanged
-    '    Me.ddlCCategoryCovid19.SelectedValue = AntiXssEncoder.HtmlEncode(Me.Request.Form(Me.ddlCCategoryCovid19.UniqueID), True)
-    '    SessionHandler.ClaimCOVID19CategorySaveToSession(Me.ddlCCategoryCovid19.SelectedValue, FunctCode)
-
-    'End Sub
-
-    'Private Sub ddlcvaccinebrandcovid19_selectedindexchanged(sender As Object, e As EventArgs) Handles ddlCVaccineBrandCovid19.SelectedIndexChanged
-    '    Me.ddlcvaccinebrandcovid19.selectedvalue = antixssencoder.htmlencode(Me.request.form(Me.ddlcvaccinebrandcovid19.uniqueid), True)
-    '    sessionhandler.claimcovid19vaccinebrandsavetosession(Me.ddlcvaccinebrandcovid19.selectedvalue, functcode)
-    'End Sub
-
-    'Private Sub ddlCVaccineLotNoCovid19_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlCVaccineLotNoCovid19.SelectedIndexChanged
-    '    Me.ddlCVaccineLotNoCovid19.SelectedValue = AntiXssEncoder.HtmlEncode(Me.Request.Form(Me.ddlCVaccineLotNoCovid19.UniqueID), True)
-    '    SessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(Me.ddlCVaccineLotNoCovid19.SelectedValue, FunctCode)
-
-    'End Sub
 
 #End Region
 
@@ -501,6 +575,42 @@ Partial Public Class ucInputVSSCOVID19
             End If
         End If
 
+        'Check Outreach Code
+        If MyBase.NonClinic Then
+            If OutreachCode.Equals(String.Empty) Then
+                blnResult = False
+                Me.SessionHandler.OutreachCodeRemoveFromSession(FunctCode)
+                SetOutreachCodeError(True)
+                objMsg = New ComObject.SystemMessage("990000", "E", "00463")
+                objMsgBox.AddMessage(objMsg, _
+                                     New String() {"%en", "%tc", "%sc"}, _
+                                     New String() {HttpContext.GetGlobalResourceObject("Text", "OutreachCode", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "OutreachCode", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "OutreachCode", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                   })
+            Else
+                ' Check Outreach Code Valid
+                Dim udtOutreachListBLL As New COVID19.OutreachListBLL
+                Dim dtResult As DataTable = udtOutreachListBLL.GetOutreachListActiveByCode(OutreachCode.Trim())
+
+                'Dim drResult() As DataRow = dtResult.Select("Type IN ('E','D')")
+                Dim drResult() As DataRow = dtResult.Select()
+
+                If drResult.Length = 0 Then
+                    blnResult = False
+                    Me.SessionHandler.OutreachCodeRemoveFromSession(FunctCode)
+                    SetOutreachCodeError(True)
+                    objMsg = New ComObject.SystemMessage("990000", "E", "00466")
+                    objMsgBox.AddMessage(objMsg, _
+                                         New String() {"%en", "%tc", "%sc"}, _
+                                         New String() {HttpContext.GetGlobalResourceObject("Text", "OutreachCode", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "OutreachCode", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                       HttpContext.GetGlobalResourceObject("Text", "OutreachCode", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                       })
+                End If
+            End If
+        End If
+
         'Check Main Category
         If ddlCMainCategoryCovid19.Enabled Then
             If String.IsNullOrEmpty(Me.MainCategoryForCOVID19) Then
@@ -520,25 +630,26 @@ Partial Public Class ucInputVSSCOVID19
             End If
         End If
 
-
         'Check Sub Category
         If ddlCSubCategoryCovid19.Enabled Then
-            Dim drSubCategory() As DataRow = Status.GetDescriptionListFromDBEnumCode("VSSC19SubCategory").Select(String.Format("Column_Name='{0}'", Me.MainCategoryForCOVID19))
+            If Not String.IsNullOrEmpty(Me.MainCategoryForCOVID19) Then
+                Dim drSubCategory() As DataRow = Status.GetDescriptionListFromDBEnumCode("VSSC19SubCategory").Select(String.Format("Column_Name='{0}'", Me.MainCategoryForCOVID19))
 
-            If String.IsNullOrEmpty(Me.SubCategoryForCOVID19) AndAlso drSubCategory.Length > 0 Then
+                If String.IsNullOrEmpty(Me.SubCategoryForCOVID19) AndAlso drSubCategory.Length > 0 Then
 
-                blnResult = False
+                    blnResult = False
 
-                Me.SetSubCategoryForCOVID19Error(True)
+                    Me.SetSubCategoryForCOVID19Error(True)
 
-                objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00462)
-                If objMsgBox IsNot Nothing Then
-                    objMsgBox.AddMessage(objMsg, _
-                                         New String() {"%en", "%tc", "%sc"}, _
-                                         New String() {HttpContext.GetGlobalResourceObject("Text", "SubCategory", New System.Globalization.CultureInfo(CultureLanguage.English)), _
-                                                       HttpContext.GetGlobalResourceObject("Text", "SubCategory", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
-                                                       HttpContext.GetGlobalResourceObject("Text", "SubCategory", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
-                                                       })
+                    objMsg = New ComObject.SystemMessage(Common.Component.FunctCode.FUNT990000, SeverityCode.SEVE, MsgCode.MSG00462)
+                    If objMsgBox IsNot Nothing Then
+                        objMsgBox.AddMessage(objMsg, _
+                                             New String() {"%en", "%tc", "%sc"}, _
+                                             New String() {HttpContext.GetGlobalResourceObject("Text", "SubCategory", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                           HttpContext.GetGlobalResourceObject("Text", "SubCategory", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                           HttpContext.GetGlobalResourceObject("Text", "SubCategory", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                           })
+                    End If
                 End If
             End If
         End If
@@ -645,7 +756,7 @@ Partial Public Class ucInputVSSCOVID19
 
 #Region "Select Vaccine & Dose"
     Public Sub Selection()
-        Dim udtEHSClaimVaccine As EHSClaimVaccineModel = _udtSessionHandler.EHSClaimVaccineGetFromSession()
+        Dim udtEHSClaimVaccine As EHSClaimVaccineModel = MyBase.SessionHandler.EHSClaimVaccineGetFromSession()
 
         'Dose
         If ddlCDoseCovid19.SelectedValue <> String.Empty Then
@@ -662,15 +773,16 @@ Partial Public Class ucInputVSSCOVID19
             End If
 
             For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-
-                For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
-                    If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = strAvailableItemCode.ToUpper.Trim Then
-                        udtEHSClaimSubsidize.Selected = True
-                        udtEHSClaimSubsidizeDetail.Selected = True
-                        blnSelected = True
-                        Exit For
-                    End If
-                Next
+                If udtEHSClaimSubsidize.Available Then
+                    For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
+                        If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = strAvailableItemCode.ToUpper.Trim Then
+                            udtEHSClaimSubsidize.Selected = True
+                            udtEHSClaimSubsidizeDetail.Selected = True
+                            blnSelected = True
+                            Exit For
+                        End If
+                    Next
+                End If
 
                 If blnSelected Then
                     Exit For
@@ -694,10 +806,8 @@ Partial Public Class ucInputVSSCOVID19
         dtVaccineLotNo = udtCOVID19BLL.GetCOVID19VaccineLotMappingForPrivate(ServiceDate, COVID19.COVID19BLL.Source.GetFromSession)
 
         If dtVaccineLotNo.Rows.Count > 0 Then
-            'CRE20-023 Fix the lot mapping table filter [Start][Nichole]
             Dim drVaccineLotNo() As DataRow = dtVaccineLotNo.Select
-            'Dim drVaccineLotNo() As DataRow = udtCOVID19BLL.FilterActiveVaccineLotNoByServiceDate(dtVaccineLotNo, ServiceDate)
-            'CRE20-023 Fix the lot mapping table filter [End][Nichole]
+
             If drVaccineLotNo.Length > 0 Then
                 For intCt As Integer = 0 To drVaccineLotNo.Length - 1
                     If drVaccineLotNo(intCt)("Vaccine_Lot_No").ToString.Trim.ToUpper = txtCVaccineLotNo.Text.Trim.ToUpper Then
@@ -738,18 +848,26 @@ Partial Public Class ucInputVSSCOVID19
         Dim udtSubsidizeLatest As EHSClaimVaccineModel.EHSClaimSubsidizeModel = udtEHSClaimVaccine.GetLatestSelectedSubsidize
 
         If Not udtSubsidizeLatest Is Nothing Then
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.ClinicType
+            udtTransactAdditionfield.AdditionalFieldValueCode = IIf(MyBase.NonClinic, ClinicType.NonClinic, ClinicType.Clinic)
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            ''Booth
-            'If panBooth.Visible Then
-            '    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-            '    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.Booth
-            '    udtTransactAdditionfield.AdditionalFieldValueCode = ddlCBooth.SelectedValue.Trim
-            '    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-            '    udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
-            '    udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
-            '    udtTransactAdditionfield.SubsidizeCode = udtClaimCategory.SubsidizeCode
-            '    udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-            'End If
+            'Outreach Code
+            If MyBase.NonClinic Then
+                udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.OutreachCode
+                udtTransactAdditionfield.AdditionalFieldValueCode = OutreachCode
+                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+                udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+                udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode.Trim()
+                udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+            End If
 
             'Main Category
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -761,7 +879,7 @@ Partial Public Class ucInputVSSCOVID19
             udtTransactAdditionfield.SubsidizeCode = udtClaimCategory.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            _udtSessionHandler.ClaimCOVID19MainCategorySaveToSession(ddlCMainCategoryCovid19.SelectedValue.Trim, FunctCode)
+            MyBase.SessionHandler.ClaimCOVID19MainCategorySaveToSession(ddlCMainCategoryCovid19.SelectedValue.Trim, FunctCode)
 
             'Sub Category
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -783,7 +901,7 @@ Partial Public Class ucInputVSSCOVID19
             udtTransactAdditionfield.SubsidizeCode = udtClaimCategory.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            _udtSessionHandler.ClaimCOVID19VaccineBrandSaveToSession(ddlCVaccineBrandCovid19.SelectedValue.Trim, FunctCode)
+            MyBase.SessionHandler.ClaimCOVID19VaccineBrandSaveToSession(ddlCVaccineBrandCovid19.SelectedValue.Trim, FunctCode)
 
             'Vaccine Lot ID.
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -806,7 +924,7 @@ Partial Public Class ucInputVSSCOVID19
             udtTransactAdditionfield.SubsidizeCode = udtClaimCategory.SubsidizeCode
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
-            _udtSessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(txtCVaccineLotNo.Text.Trim, FunctCode)
+            MyBase.SessionHandler.ClaimCOVID19VaccineLotNoSaveToSession(txtCVaccineLotNo.Text.Trim, FunctCode)
         End If
 
     End Sub
@@ -814,56 +932,6 @@ Partial Public Class ucInputVSSCOVID19
 #End Region
 
 #Region "Other functions"
-
-    Private Sub BindBooth()
-        If panBooth.Visible Then
-            Dim strSelectedValue As String = Nothing
-
-            If Not SessionHandler.ClaimCOVID19BoothGetFromSession(FunctCode) Is Nothing Then
-                strSelectedValue = SessionHandler.ClaimCOVID19BoothGetFromSession(FunctCode)
-            Else
-                strSelectedValue = AntiXssEncoder.HtmlEncode(Me.ddlCBooth.SelectedValue, True)
-            End If
-
-            'Bind Booth into dropdownlist
-            Me.ddlCBooth.Items.Clear()
-            Me.ddlCBooth.SelectedIndex = -1
-            Me.ddlCBooth.SelectedValue = Nothing
-            Me.ddlCBooth.ClearSelection()
-
-            If strSelectedValue Is Nothing OrElse strSelectedValue = String.Empty Then
-                SessionHandler.ClaimCOVID19BoothRemoveFromSession(FunctCode)
-            End If
-
-            'Build Booth dropdownlist
-            Dim lstItem As ListItem
-
-            For i As Integer = 1 To 10
-                lstItem = New ListItem
-                lstItem.Text = i
-                lstItem.Value = i
-
-                Me.ddlCBooth.Items.Add(lstItem)
-            Next
-
-            'If no. of items is more than 1, then add "Please Select" at the top of dropdownlist
-            If ddlCBooth.Items.Count > 1 Then
-                ddlCBooth.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
-            End If
-
-            ddlCBooth.SelectedIndex = 0
-
-            'Restore the selected value if has value
-            If strSelectedValue IsNot Nothing Then
-                For Each li As ListItem In ddlCBooth.Items
-                    If strSelectedValue = li.Value Then
-                        ddlCBooth.SelectedValue = li.Value
-                    End If
-                Next
-            End If
-        End If
-
-    End Sub
 
     Private Sub BindCOVID19Category(ByVal udtClaimCategorys As ClaimCategoryModelCollection)
         If udtClaimCategorys IsNot Nothing AndAlso udtClaimCategorys.Count > 0 Then
@@ -873,9 +941,29 @@ Partial Public Class ucInputVSSCOVID19
             Dim udtClaimCategory As ClaimCategoryModel = SessionHandler.ClaimCategoryGetFromSession(FunctCode)
             Dim dtClaimCategory As DataTable
 
-            'strSelectedValue = Me.Request.Form(Me.txtCCategory.UniqueID)
-            'Hard code to use "Others" Category
-            strSelectedValue = "VSSCOVID19"
+            'Retrieve the category code from selected dose of subsidizes
+            Dim udtClaimCategoryBLL As New ClaimCategoryBLL
+            Dim udtOriginalClaimCategoryList As ClaimCategoryModelCollection = Nothing
+            Dim udtFilterClaimCategoryList As New ClaimCategoryModelCollection
+
+            If EHSClaimVaccine IsNot Nothing Then
+                For Each udtSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In EHSClaimVaccine.SubsidizeList
+                    If udtSubsidize.Available Then
+                        udtOriginalClaimCategoryList = udtClaimCategoryBLL.getAllCategoryCache().Filter(udtSubsidize.SchemeCode, udtSubsidize.SchemeSeq, udtSubsidize.SubsidizeCode)
+
+                        For Each udtCategory As ClaimCategoryModel In udtOriginalClaimCategoryList
+                            If udtCategory.SubsidizeCode.Trim = udtSubsidize.SubsidizeCode.Trim Then
+                                udtFilterClaimCategoryList.Add(New ClaimCategoryModel(udtCategory))
+                            End If
+                        Next
+                    End If
+                Next
+
+                'Hard code to use the first category - subsidize code
+                If udtFilterClaimCategoryList.Count > 0 Then
+                    strSelectedValue = udtFilterClaimCategoryList(0).CategoryCode
+                End If
+            End If
 
             If strSelectedValue Is Nothing OrElse strSelectedValue = String.Empty Then
                 '    If Not SessionHandler.ClaimCOVID19VaccineBrandGetFromSession(FunctCode) Is Nothing Then
@@ -887,14 +975,17 @@ Partial Public Class ucInputVSSCOVID19
 
             If Not udtClaimCategory Is Nothing Then
                 strSelectedValue = udtClaimCategory.CategoryCode
+
             ElseIf Not SessionHandler.ClaimCOVID19CategoryGetFromSession(FunctCode) Is Nothing Then
-                Dim udtClaimCategoryList As ClaimCategoryModelCollection = (New ClaimCategoryBLL).getAllCategoryCache().Filter(udtClaimCategorys(0).SchemeCode, udtClaimCategorys(0).SchemeSeq, SessionHandler.ClaimCOVID19CategoryGetFromSession(FunctCode))
-                If udtClaimCategoryList.Count > 0 Then
-                    strCategoryCode = udtClaimCategoryList(0).CategoryCode
+                strSelectedValue = SessionHandler.ClaimCOVID19CategoryGetFromSession(FunctCode)
+
+                udtClaimCategory = (New ClaimCategoryBLL).getAllCategoryCache().FilterByCategoryCode(udtClaimCategorys(0).SchemeCode, SessionHandler.ClaimCOVID19CategoryGetFromSession(FunctCode))
+                If udtClaimCategory IsNot Nothing Then
+                    strCategoryCode = udtClaimCategory.CategoryCode
                 Else
                     strCategoryCode = String.Empty
                 End If
-                strSelectedValue = SessionHandler.ClaimCOVID19CategoryGetFromSession(FunctCode)
+
             Else
                 strSelectedValue = Me.Request.Form(Me.txtCCategory.UniqueID)
                 'strSelectedValue = AntiXssEncoder.HtmlEncode(Me.ddlCCategoryCovid19.SelectedValue, True)
@@ -916,7 +1007,7 @@ Partial Public Class ucInputVSSCOVID19
 
             Me.ddlCCategoryCovid19.DataSource = dtClaimCategory
 
-            Me.ddlCCategoryCovid19.DataValueField = ClaimCategoryModel._Subsidize_Code
+            Me.ddlCCategoryCovid19.DataValueField = ClaimCategoryModel._Category_Code
 
             If SessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
                 Me.ddlCCategoryCovid19.DataTextField = ClaimCategoryModel._Category_Name_Chi
@@ -944,6 +1035,10 @@ Partial Public Class ucInputVSSCOVID19
                     If strSelectedValue = li.Value Then
                         ddlCCategoryCovid19.SelectedValue = li.Value
                     End If
+
+                    'If (Left(strSelectedValue.Trim, Len(strSelectedValue.Trim) - 1)) = li.Value Then
+                    '    ddlCCategoryCovid19.SelectedValue = li.Value
+                    'End If
                 Next
             End If
         End If
@@ -1117,7 +1212,9 @@ Partial Public Class ucInputVSSCOVID19
         If MyBase.TranDetailLatestVaccineRecord IsNot Nothing AndAlso _
             MyBase.EHSTransactionLatestVaccineRecord IsNot Nothing AndAlso _
             MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields IsNot Nothing AndAlso _
-            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.SubCategory IsNot Nothing Then
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.SubCategory IsNot Nothing AndAlso _
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory IsNot Nothing AndAlso _
+            MyBase.EHSTransactionLatestVaccineRecord.TransactionAdditionFields.MainCategory <> String.Empty Then
             'Carry Forward
             dtSubCategory = Status.GetDescriptionAllListFromDBEnumCode("VSSC19SubCategory")
         Else
@@ -1473,7 +1570,7 @@ Partial Public Class ucInputVSSCOVID19
         End If
 
         'Set selected if "1st Dose" exists
-        If strSelectedValue = String.Empty AndAlso _udtSessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
+        If strSelectedValue = String.Empty AndAlso MyBase.SessionHandler.ClaimCOVID19DoseGetFromSession(FunctCode) Is Nothing Then
             For Each li As ListItem In ddlCDoseCovid19.Items
                 If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
                     strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
@@ -1527,6 +1624,7 @@ Partial Public Class ucInputVSSCOVID19
 
             If ddlCDoseCovid19.Items.Count > 0 Then
                 ddlCDoseCovid19.SelectedIndex = 0
+                ddlCDoseCovid19.Enabled = True
             Else
                 ddlCDoseCovid19.Enabled = False
                 ddlCDoseCovid19.Dispose()
@@ -1539,6 +1637,7 @@ Partial Public Class ucInputVSSCOVID19
             For Each li As ListItem In ddlCDoseCovid19.Items
                 If strSelectedValue = li.Value Then
                     ddlCDoseCovid19.SelectedValue = li.Value
+                    ddlCDoseCovid19.Enabled = True
                 End If
             Next
         End If

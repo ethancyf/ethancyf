@@ -28,6 +28,7 @@ Partial Public Class ucInputVSS
     Private Class CategoryControlID
         Public Const PID As String = "ucInputVSSPID"
         Public Const DA As String = "ucInputVSSDA"
+        Public Const VSSCOVID19 As String = "ucInputVSSCOVID19"
     End Class
 
     Private Class ViewIndexCategory
@@ -154,6 +155,7 @@ Partial Public Class ucInputVSS
     Public Event SubsidizeDisabledRemarkClicked(ByVal sender As System.Object, ByVal e As EventArgs)
     Public Event CategorySelected(ByVal sender As System.Object, ByVal e As System.EventArgs)
     Public Event SearchButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Public Event SearchOutreachClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
 #End Region
 
 #Region "Must Override Function"
@@ -288,7 +290,7 @@ Partial Public Class ucInputVSS
                             Me.ucInputVSSCOVID19.SetupContent(True)
                     End Select
 
-                    If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) Then
+                    If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) AndAlso mvCategory.ActiveViewIndex <> ViewIndexCategory.VSS_COVID19 Then
                         Dim strPlaceVaccinationValue As String = Me.EHSTransaction.TransactionAdditionFields.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.PlaceVaccination).AdditionalFieldValueCode
                         Me.ddlPlaceOfVaccination.SelectedValue = strPlaceVaccinationValue
 
@@ -332,14 +334,20 @@ Partial Public Class ucInputVSS
                     'Category List
                     showCategoryDetail(Me.Category)
 
-                    'For PID Event Handler
-                    If Me.Category = CategoryCode.VSS_PID Then
-                        RemoveHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
-                        AddHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
-                    End If
+                    'For add Event Handler for sub input control
+                    Select Case Me.Category
+                        Case CategoryCode.VSS_PID
+                            RemoveHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
+                            AddHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
+
+                        Case CategoryCode.VSS_COVID19_Outreach
+                            RemoveHandler ucInputVSSCOVID19.SearchButtonClick, AddressOf udcInputVSSCOVID19_SearchOutreachClick
+                            AddHandler ucInputVSSCOVID19.SearchButtonClick, AddressOf udcInputVSSCOVID19_SearchOutreachClick
+
+                    End Select
 
                     'Place of Vaccination
-                    If Me.NonClinic Then
+                    If Me.NonClinic AndAlso mvCategory.ActiveViewIndex <> ViewIndexCategory.VSS_COVID19 Then
                         Me.panVSSPlaceOfVaccination.Visible = True
                     End If
 
@@ -366,14 +374,20 @@ Partial Public Class ucInputVSS
                     Me.panVSSPlaceOfVaccination.Visible = False
                     Me.udcClaimVaccineInputVSS.Visible = True
 
-                    If Me.NonClinic Then
+                    If Me.NonClinic AndAlso mvCategory.ActiveViewIndex <> ViewIndexCategory.VSS_COVID19 Then
                         Me.panVSSPlaceOfVaccination.Visible = True
                     End If
 
-                    If strSelectedCategoryCode = CategoryCode.VSS_PID Then
-                        RemoveHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
-                        AddHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
-                    End If
+                    Select Case strSelectedCategoryCode
+                        Case CategoryCode.VSS_PID
+                            RemoveHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
+                            AddHandler ucInputVSSPID.SearchPIDClick, AddressOf udcInputVSSPID_SearchPIDClick
+
+                        Case CategoryCode.VSS_COVID19_Outreach
+                            RemoveHandler ucInputVSSCOVID19.SearchButtonClick, AddressOf udcInputVSSCOVID19_SearchOutreachClick
+                            AddHandler ucInputVSSCOVID19.SearchButtonClick, AddressOf udcInputVSSCOVID19_SearchOutreachClick
+
+                    End Select
 
                     AddHandler Me.udcClaimVaccineInputVSS.VaccineLegendClicked, AddressOf udcClaimVaccineInputVSS_VaccineLegendClicked
                     AddHandler Me.udcClaimVaccineInputVSS.SubsidizeDisabledRemarkClicked, AddressOf udcClaimVaccineInputVSS_SubsidizeDisabledRemarkClicked
@@ -461,6 +475,16 @@ Partial Public Class ucInputVSS
         End If
     End Sub
 
+    Public Sub SetOutreachCode(ByVal strOutreachCode As String)
+        Dim ucInputVSSCOVID19 As ucInputVSSCOVID19 = CType(Me.FindControl(CategoryControlID.VSSCOVID19), ucInputVSSCOVID19)
+
+        ucInputVSSCOVID19.SetOutreachCode(strOutreachCode)
+    End Sub
+
+    Public Sub DisplayOutreachInput(ByVal blnDisplay As Boolean)
+        ucInputVSSCOVID19.DisplayOutreachInput(blnDisplay)
+    End Sub
+
     Public Sub FillClaimDetail()
 
         'Select Case mvCategory.ActiveViewIndex
@@ -523,6 +547,8 @@ Partial Public Class ucInputVSS
 
         Me.ucInputVSSPID.SetDocumentaryProofOptions(String.Empty)
 
+        Me.InitialCOVID19ClaimDetail()
+
         Me.ddlPlaceOfVaccination.SelectedIndex = -1
         Me.ddlPlaceOfVaccination.SelectedValue = Nothing
         Me.ddlPlaceOfVaccination.ClearSelection()
@@ -567,6 +593,10 @@ Partial Public Class ucInputVSS
 
     Private Sub udcInputVSSPID_SearchPIDClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
         RaiseEvent SearchButtonClick(sender, e)
+    End Sub
+
+    Private Sub udcInputVSSCOVID19_SearchOutreachClick(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        RaiseEvent SearchOutreachClick(sender, e)
     End Sub
 
     Private Sub rbCategory_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles rbCategorySelection.SelectedIndexChanged
@@ -651,6 +681,14 @@ Partial Public Class ucInputVSS
                 ' CRE20-0023 (Immu record) [Start][Chris YIM]
                 ' ---------------------------------------------------------------------------------------------------------
             Case CategoryCode.VSS_COVID19
+                Me.ucInputVSSCOVID19.NonClinic = False
+                Me.ucInputVSSCOVID19.CategoryCode = Category.Trim
+                Me.ucInputVSSCOVID19.DisplayOutreachInput(False)
+                mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_COVID19
+            Case CategoryCode.VSS_COVID19_Outreach
+                Me.ucInputVSSCOVID19.NonClinic = MyBase.NonClinic
+                Me.ucInputVSSCOVID19.CategoryCode = Category.Trim
+                Me.ucInputVSSCOVID19.DisplayOutreachInput(MyBase.NonClinic)
                 mvCategory.ActiveViewIndex = ViewIndexCategory.VSS_COVID19
                 ' CRE20-0023 (Immu record) [End][Chris YIM]
             Case Else
@@ -826,7 +864,7 @@ Partial Public Class ucInputVSS
         End If
 
         'Check Place of Vaccination
-        If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) Then
+        If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) AndAlso mvCategory.ActiveViewIndex <> ViewIndexCategory.VSS_COVID19 Then
             objMsg = ValidatePlaceOfVaccination(blnShowErrorImage)
             If objMsg IsNot Nothing Then
                 blnResult = False
@@ -972,6 +1010,7 @@ Partial Public Class ucInputVSS
                 'Documentary Proof, with/without PID Code
                 Me.ucInputVSSPID.Save(udtEHSTransaction, udtEHSClaimVaccine)
             Case ViewIndexCategory.VSS_COVID19
+                'Outreach Code
                 Me.ucInputVSSCOVID19.Save(udtEHSTransaction, udtEHSClaimVaccine)
         End Select
 
@@ -991,7 +1030,7 @@ Partial Public Class ucInputVSS
             udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
 
             'Place Of Vaccination
-            If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) AndAlso Me.PlaceOfVaccination <> String.Empty Then
+            If _udtSessionHandler.NonClinicSettingGetFromSession(FunctCode) AndAlso Me.PlaceOfVaccination <> String.Empty AndAlso mvCategory.ActiveViewIndex <> ViewIndexCategory.VSS_COVID19 Then
                 udtTransactAdditionfield = New TransactionAdditionalFieldModel()
                 udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.PlaceVaccination
                 udtTransactAdditionfield.AdditionalFieldValueCode = Me.PlaceOfVaccination

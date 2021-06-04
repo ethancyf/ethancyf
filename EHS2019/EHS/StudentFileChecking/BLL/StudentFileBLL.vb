@@ -727,10 +727,6 @@ Namespace BLL
                                     0, _
                                     String.Empty, _
                                     dr("Service_Receive_Dtm"), _
-                                    String.Empty, _
-                                    String.Empty, _
-                                    String.Empty, _
-                                    String.Empty, _
                                     dr("Available_Item_Desc").ToString(), _
                                     dr("Available_Item_Desc_Chi").ToString())
 

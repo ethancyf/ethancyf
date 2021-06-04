@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Modification History
+-- CR No.:			CRE21-005
+-- Modified by:		Koala CHENG
+-- Modified date:	1 Jun 2021
+-- Description:		Exclude COVID-19 from VSS and RVP
+--					Add remarks item (B)2
+-- =============================================
 -- ==============================================
 -- Modification History
 -- Modified by:		Winnie SUEN	
@@ -169,6 +177,7 @@ AS BEGIN
 				OR (@period_type = 'S' AND VT.Service_Receive_Dtm >= @period_from AND VT.Service_Receive_Dtm < DATEADD(dd, 1, @period_to)))
 			AND (VT.Scheme_Code = @Scheme_Code)
 			AND (ISNULL(VT.Invalidation, '') <> 'I')
+			AND NOT (VT.Scheme_Code IN ('VSS','RVP') and TD.Subsidize_Item_Code = 'C19')
 
 	GROUP BY
 		VT.SP_ID,
@@ -331,6 +340,9 @@ AS BEGIN
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 	SELECT '1. Enrolment of optometrists to HCVS since Dec 2011', ''
+
+	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '2. All COVID-19 claims under VSS and RVP are excluded.', ''
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 	SELECT '', ''

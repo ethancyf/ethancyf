@@ -292,11 +292,6 @@ Partial Public Class ucInputCOVID19RVP
 
         End If
 
-        'Assign Subsidize Display Code
-        If EHSClaimVaccine IsNot Nothing Then
-            lblCVaccine.Text = EHSClaimVaccine.SubsidizeList(0).SubsidizeDisplayCode
-        End If
-
         'Bind DropDownList Dose
         BindCOVID19Dose()
 
@@ -725,14 +720,16 @@ Partial Public Class ucInputCOVID19RVP
         'Dose
         If ddlCDoseCovid19.SelectedValue <> String.Empty Then
             For Each udtEHSClaimSubsidize As EHSClaimVaccineModel.EHSClaimSubsidizeModel In udtEHSClaimVaccine.SubsidizeList
-                If udtEHSClaimSubsidize.SubsidizeCode.ToUpper.Trim = ddlCCategoryCovid19.SelectedValue.ToUpper.Trim Then
-                    udtEHSClaimSubsidize.Selected = True
+                If udtEHSClaimSubsidize.Available Then
+                    If udtEHSClaimSubsidize.SubsidizeCode.ToUpper.Trim = ddlCCategoryCovid19.SelectedValue.ToUpper.Trim Then
+                        udtEHSClaimSubsidize.Selected = True
 
-                    For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
-                        If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = ddlCDoseCovid19.SelectedValue.ToUpper.Trim Then
-                            udtEHSClaimSubsidizeDetail.Selected = True
-                        End If
-                    Next
+                        For Each udtEHSClaimSubsidizeDetail As EHSClaimVaccineModel.EHSClaimSubidizeDetailModel In udtEHSClaimSubsidize.SubsidizeDetailList
+                            If udtEHSClaimSubsidizeDetail.AvailableItemCode.ToUpper.Trim = ddlCDoseCovid19.SelectedValue.ToUpper.Trim Then
+                                udtEHSClaimSubsidizeDetail.Selected = True
+                            End If
+                        Next
+                    End If
                 End If
             Next
         End If
@@ -1293,6 +1290,7 @@ Partial Public Class ucInputCOVID19RVP
 
             If ddlCDoseCovid19.Items.Count > 0 Then
                 ddlCDoseCovid19.SelectedIndex = 0
+                ddlCDoseCovid19.Enabled = True
             Else
                 ddlCDoseCovid19.Enabled = False
                 ddlCDoseCovid19.Dispose()
@@ -1305,6 +1303,7 @@ Partial Public Class ucInputCOVID19RVP
             For Each li As ListItem In ddlCDoseCovid19.Items
                 If strSelectedValue = li.Value Then
                     ddlCDoseCovid19.SelectedValue = li.Value
+                    ddlCDoseCovid19.Enabled = True
                 End If
             Next
         End If

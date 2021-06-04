@@ -14,6 +14,87 @@ Option Explicit On
 Partial Public Class ucInputVSSCOVID19
 
     '''<summary>
+    '''panOutreachCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panOutreachCode As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblOutreachCodeText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachCodeText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtOutreachCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtOutreachCode As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgOutreachCodeError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgOutreachCodeError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''btnSearchOutreach control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnSearchOutreach As Global.System.Web.UI.WebControls.ImageButton
+
+    '''<summary>
+    '''lblOutreachCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachCode As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOutreachNameText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachNameText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOutreachName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOutreachNameChi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOutreachNameChi As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''panCOVID19Detail control.
     '''</summary>
     '''<remarks>

@@ -12,43 +12,68 @@ Imports HCVU.BLL
 Partial Public Class ucInputVSSCOVID19
     Inherits ucInputEHSClaimBase
 
-    ''Events 
-    'Public Event SearchPIDClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+    Private _udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
+    Private _strOutreachType As String
+    Private _strCategoryCode As String
 
-    Dim _udtSessionHandler As New SessionHandlerBLL
+#Region "Event handlers"
+    ''Events 
+    Public Event SearchButtonClick(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+#End Region
 
 #Region "Constants"
-    'Public Class PID_DOCUMENTARYPROOF
-    '    Public Const PID_INSTITUTION_CERT As String = "PID_I_CERT"
-    'End Class
 
-    'Public Class RCH_TYPE
-    '    Public Const ALL As String = ""
-    '    Public Const PID As String = "I"
-    'End Class
 #End Region
 
 #Region "Properties"
-    'Public ReadOnly Property DocumentaryProof() As String
-    '    Get
-    '        Return Me.Request.Form(Me.ddlDocumentaryProof.UniqueID)
-    '    End Get
-    'End Property
+    Public ReadOnly Property OutreachCode() As String
+        Get
+            Return Me.txtOutreachCode.Text.Trim
+        End Get
+    End Property
 
-    'Public ReadOnly Property PIDInstitutionCode() As String
-    '    Get
-    '        Return Me.Request.Form(Me.txtPIDInstitutionCode.UniqueID)
-    '    End Get
-    'End Property
+    Public ReadOnly Property OutreachType() As String
+        Get
+            Return Me._strOutreachType
+        End Get
+    End Property
+
+    Public ReadOnly Property OutreachName() As String
+        Get
+            Return Me.lblOutreachName.Text
+        End Get
+    End Property
+
+    Public Property CategoryCode() As String
+        Get
+            Return _strCategoryCode
+        End Get
+        Set(value As String)
+            _strCategoryCode = value
+        End Set
+    End Property
+
 #End Region
 
 #Region "Must Override Function"
 
     Protected Overrides Sub RenderLanguage()
+        Me.lblOutreachCodeText.Text = Me.GetGlobalResourceObject("Text", "OutreachCode")
+        Me.lblOutreachNameText.Text = Me.GetGlobalResourceObject("Text", "OutreachName")
+
+        Me.lblOutreachName.Visible = True
+        Me.lblOutreachNameChi.Visible = False
 
     End Sub
 
     Protected Overrides Sub Setup()
+
+        'Set outreach code input
+        If Me.CategoryCode IsNot Nothing AndAlso Me.CategoryCode.Trim = Common.Component.CategoryCode.VSS_COVID19_Outreach Then
+            panOutreachCode.Visible = True
+        Else
+            panOutreachCode.Visible = False
+        End If
 
         'Bind DropDownList Main Category
         BindMainCategory()
@@ -162,6 +187,16 @@ Partial Public Class ucInputVSSCOVID19
         If MyBase.EHSTransaction IsNot Nothing AndAlso MyBase.EHSTransaction.TransactionAdditionFields IsNot Nothing Then
             Dim udtTAFList As TransactionAdditionalFieldModelCollection = MyBase.EHSTransaction.TransactionAdditionFields
 
+            'Outreach Code
+            If udtTAFList.OutreachCode IsNot Nothing Then
+                Me.SetOutreachCode(udtTAFList.OutreachCode.Trim)
+            End If
+
+            'Contact No.
+            If udtTAFList.ContactNo IsNot Nothing Then
+                txtCContactNo.Text = udtTAFList.ContactNo.Trim
+            End If
+
             'Remark
             If udtTAFList.Remarks IsNot Nothing Then
                 txtCRemark.Text = udtTAFList.Remarks.Trim
@@ -185,6 +220,7 @@ Partial Public Class ucInputVSSCOVID19
 #Region "Set Up Error Image"
 
     Public Sub SetDetailError(ByVal blnVisible As Boolean)
+        Me.imgOutreachCodeError.Visible = blnVisible
         Me.imgCMainCategoryError.Visible = blnVisible
         Me.imgCSubCategoryError.Visible = blnVisible
         Me.imgCVaccineBrandError.Visible = blnVisible
@@ -192,11 +228,20 @@ Partial Public Class ucInputVSSCOVID19
         Me.imgCContactNoError.Visible = blnVisible
     End Sub
 
+    Public Sub SetOutreachCodeError(ByVal visible As Boolean)
+        Me.imgOutreachCodeError.Visible = visible
+    End Sub
+
 #End Region
 
 #Region "Set Value"
 
     Public Sub InitialClaimDetail()
+        Me.txtOutreachCode.Text = String.Empty
+        Me.lblOutreachCode.Text = String.Empty
+        Me.lblOutreachName.Text = String.Empty
+        Me.lblOutreachNameChi.Text = String.Empty
+
         Me.ddlCMainCategory.Items.Clear()
         Me.ddlCMainCategory.SelectedIndex = -1
         Me.ddlCMainCategory.SelectedValue = Nothing
@@ -225,9 +270,73 @@ Partial Public Class ucInputVSSCOVID19
 
     End Sub
 
+    Public Sub SetOutreachCode(ByVal strOutreachCode As String)
+        Me.txtOutreachCode.Text = strOutreachCode.Trim().ToUpper()
+        Me.lookUpOutreachCode()
+    End Sub
+
+    Public Sub DisplayOutreachInput(ByVal blnDisplay As Boolean)
+        Me.panOutreachCode.Visible = blnDisplay
+    End Sub
+
 #End Region
 
 #Region "Events"
+    Private Sub btnSearchOutreach_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnSearchOutreach.Click
+        RaiseEvent SearchButtonClick(sender, e)
+    End Sub
+
+    Private Sub txtOutreachCode_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtOutreachCode.TextChanged
+        If Me.txtOutreachCode.Text.Trim() = String.Empty Then
+            Me.lblOutreachCode.Text = String.Empty
+            Me.lblOutreachName.Text = String.Empty
+            Me.lblOutreachNameChi.Text = String.Empty
+
+        Else
+            Me.lookUpOutreachCode()
+        End If
+    End Sub
+
+    Public Function lookUpOutreachCode() As Boolean
+        Dim blnRes As Boolean = False
+        Dim udtOutreachListBLL As New COVID19.OutreachListBLL
+        Dim dtResult As DataTable = udtOutreachListBLL.GetOutreachListActiveByCode(Me.txtOutreachCode.Text.Trim())
+
+        'Dim drResult() As DataRow = dtResult.Select("Type IN ('E','D')")
+        Dim drResult() As DataRow = dtResult.Select()
+
+        If drResult.Length > 0 Then
+            Dim dtOutreach As DataTable = drResult.CopyToDataTable
+            Me.SetUpOutreachInfo(dtOutreach.Rows(0))
+
+            blnRes = True
+        Else
+            Me.lblOutreachCode.Text = String.Empty
+            Me.lblOutreachName.Text = String.Empty
+            Me.lblOutreachNameChi.Text = String.Empty
+
+            blnRes = False
+        End If
+
+        Return blnRes
+
+    End Function
+
+    Private Sub SetUpOutreachInfo(ByVal drOutreach As DataRow)
+        Me.txtOutreachCode.Text = drOutreach("Outreach_Code").ToString().Trim().ToUpper()
+        Me.lblOutreachCode.Text = Me.txtOutreachCode.Text
+        Me._strOutreachType = drOutreach("Type").ToString.Trim
+
+        Me.lblOutreachName.Text = drOutreach("Outreach_Name_Eng").ToString().Trim()
+        If drOutreach.IsNull("Outreach_Name_Chi") Then
+            Me.lblOutreachNameChi.Text = Me.lblOutreachName.Text
+            Me.lblOutreachNameChi.CssClass = "tableText"
+        Else
+            Me.lblOutreachNameChi.Text = drOutreach("Outreach_Name_Chi").ToString().Trim()
+            Me.lblOutreachNameChi.CssClass = "tableTextChi"
+        End If
+
+    End Sub
 
 #End Region
 
@@ -529,6 +638,32 @@ Partial Public Class ucInputVSSCOVID19
         Dim objMsg As ComObject.SystemMessage = Nothing
         Dim blnResult As Boolean = True
 
+        'Check Outreach Code
+        If panOutreachCode.Visible Then
+            If OutreachCode.Equals(String.Empty) Then
+                blnResult = False
+
+                SetOutreachCodeError(True)
+                objMsg = New ComObject.SystemMessage("990000", "E", "00463")
+                objMsgBox.AddMessage(objMsg, "%en", GetGlobalResourceObject("Text", "OutreachCode"))
+            Else
+                ' Check Outreach Code Valid
+                Dim udtOutreachListBLL As New COVID19.OutreachListBLL
+                Dim dtResult As DataTable = udtOutreachListBLL.GetOutreachListActiveByCode(OutreachCode.Trim())
+
+                'Dim drResult() As DataRow = dtResult.Select("Type IN ('E','D')")
+                Dim drResult() As DataRow = dtResult.Select()
+
+                If drResult.Length = 0 Then
+                    blnResult = False
+
+                    SetOutreachCodeError(True)
+                    objMsg = New ComObject.SystemMessage("990000", "E", "00466")
+                    objMsgBox.AddMessage(objMsg, "%en", GetGlobalResourceObject("Text", "OutreachCode"))
+                End If
+            End If
+        End If
+
         'COVID19 Vaccination
         If panCOVID19Detail.Visible Then
             'Check Main Category
@@ -653,6 +788,18 @@ Partial Public Class ucInputVSSCOVID19
         Dim udtSubsidizeLatest As EHSClaimVaccineModel.EHSClaimSubsidizeModel = udtEHSClaimVaccine.GetLatestSelectedSubsidize
 
         If Not udtSubsidizeLatest Is Nothing Then
+
+            If panOutreachCode.Visible Then
+                'Outreach Code
+                udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.OutreachCode
+                udtTransactAdditionfield.AdditionalFieldValueCode = OutreachCode
+                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                udtTransactAdditionfield.SchemeCode = udtSubsidizeLatest.SchemeCode
+                udtTransactAdditionfield.SchemeSeq = udtSubsidizeLatest.SchemeSeq
+                udtTransactAdditionfield.SubsidizeCode = udtSubsidizeLatest.SubsidizeCode
+                udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+            End If
 
             'Main Category
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()

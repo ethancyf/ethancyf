@@ -2,27 +2,7 @@
 <%@ Register Assembly="HCSP" Namespace="HCSP" TagPrefix="cc1" %>
 
 <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
-    <asp:Panel ID ="panBooth" runat="server" Visible ="false">
-    <tr>
-        <td style="width:205px;vertical-align:top">
-            <asp:Label ID="lblCBoothText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text="<%$ Resources:Text, Booth%>" />
-        </td>
-        <td style="vertical-align:top">
-            <table style="border:0px;padding:0px;border-spacing:0px;border-collapse:collapse">
-                <tr>
-                    <td style="vertical-align:top">
-                        <asp:dropdownlist ID="ddlCBooth" runat="server" AutoPostBack="true" Style="width:300px;position:relative;top:-3px;left:-5px" />
-                    </td>
-                    <td style="vertical-align:top">
-                        <asp:Image ID="imgCBoothError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                            ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" />
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    </asp:Panel>
-    <asp:Panel ID ="panCategory" runat="server" Visible="false">
+    <asp:Panel ID ="panCategory" runat="server" visible="false">
     <tr>
         <td style="width:205px;vertical-align:top">
             <asp:Label ID="lblCCategoryText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Category%>" />
@@ -39,6 +19,31 @@
                             ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-3px" /></td>
                 </tr>
             </table>
+        </td>
+    </tr>
+    </asp:Panel>
+    <asp:Panel ID="panOutreachCode" runat="server" Visible="false">
+    <tr>
+        <td style="width: 185px;vertical-align:middle">
+            <asp:Label ID="lblOutreachCodeText" runat="server" CssClass="tableTitle" Width="160px"
+                Height="25px"></asp:Label>
+        </td>
+        <td style="padding-bottom: 3px">
+            <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" style="position:relative;left:-4px;top:-2px" />
+            <asp:Image ID="imgOutreachCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False"  style="position:relative;top:-2px" />
+            <asp:ImageButton ID="btnSearchOutreach" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"
+                ImageAlign="AbsMiddle" style="position:relative;top:-2px" />
+            <asp:Label ID="lblOutreachCode" runat="server" CssClass="tableText" Style="display: none" />
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 185px;vertical-align:top">
+            <asp:Label ID="lblOutreachNameText" runat="server" CssClass="tableTitle" Width="160px" Height="25px" />
+        </td>
+        <td style="padding-bottom: 3px">
+            <asp:Label ID="lblOutreachName" runat="server" CssClass="tableText" style="position:relative;left:-3px;top:-2px" />
+            <asp:Label ID="lblOutreachNameChi" runat="server" CssClass="tableTextChi" style="position:relative;left:-3px;top:-2px" />
         </td>
     </tr>
     </asp:Panel>
@@ -117,16 +122,6 @@
             </table>
         </td>
     </tr>
-    <asp:Panel ID ="panVaccineName" runat="server" Visible ="false">
-        <tr>
-            <td style="width:205px;vertical-align:top">
-                <asp:Label ID="lblCVaccineText" runat="server" CssClass="tableTitle" Height="25px" Width="160px" Text ="<%$ Resources:Text, Vaccines%>" />
-            </td>
-            <td style="vertical-align:central">
-                <asp:Label ID="lblCVaccine" runat="server" CssClass="tableText" style="position:relative;top:-3px;left:-5px" />
-            </td>
-        </tr>
-    </asp:Panel>
     <tr>
         <td style="width:205px;vertical-align:top">
             <asp:Label ID="lblCDoseText" runat="server" CssClass="tableTitle" Height="20px" Width="160px" Text ="<%$ Resources:Text, DoseSeq%>" />
