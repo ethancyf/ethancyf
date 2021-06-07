@@ -355,13 +355,22 @@ Partial Public Class ucInputCOVID19
 
             'Display or hide "Join eHealth"
             If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
-                Select Case MyBase.EHSAccount.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
-                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
+                Dim intAge As Integer
+
+                If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
+                    Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
+                End If
+
+                trJoinEHRSS.Style.Add("display", "none")
+
+                Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = MyBase.EHSAccount.EHSPersonalInformationList.Filter(MyBase.EHSAccount.SearchDocCode)
+
+                If Not CompareEligibleRuleByAge(Me.ServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
+                    If COVID19.COVID19BLL.DisplayJoinEHRSS(MyBase.EHSAccount) Then
                         trJoinEHRSS.Style.Remove("display")
-                    Case Else
-                        trJoinEHRSS.Style.Add("display", "none")
-                End Select
+                    End If
+                End If
+
             End If
 
             ' Fill value by temp save
@@ -751,14 +760,12 @@ Partial Public Class ucInputCOVID19
 
             Dim strJoinEHRSS As String = String.Empty
 
-            If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
-                Select Case MyBase.EHSAccount.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
-                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
-                        strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
-                    Case Else
-                        strJoinEHRSS = String.Empty
-                End Select
+            If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
+                If COVID19.COVID19BLL.DisplayJoinEHRSS(udtEHSTransaction.EHSAcct) Then
+                    strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
+                Else
+                    strJoinEHRSS = String.Empty
+                End If
             End If
 
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()
@@ -1136,8 +1143,8 @@ Partial Public Class ucInputCOVID19
     '    'Set selected if "1st Dose" exists
     '    If strSelectedValue = String.Empty Then
     '        For Each li As ListItem In ddlCDoseCovid19.Items
-    '            If li.Value = "1STDOSE" Then
-    '                strSelectedValue = "1STDOSE"
+    '            If li.Value = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE Then
+    '                strSelectedValue = SchemeDetails.SubsidizeItemDetailsModel.DoseCode.FirstDOSE
     '            End If
     '        Next
     '    End If
