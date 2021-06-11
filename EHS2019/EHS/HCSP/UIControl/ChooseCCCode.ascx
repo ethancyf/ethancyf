@@ -9,22 +9,22 @@
                     <tbody>
                         <tr >
                             <td>
-                                <asp:DropDownList ID="ddlCCCode1" runat="server" Width="50px" Font-Names="HA_MingLiu">
+                                <asp:DropDownList ID="ddlCCCode1" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
                                 </asp:DropDownList>
             
-                                <asp:DropDownList ID="ddlCCCode2" runat="server" Width="50px" Font-Names="HA_MingLiu">
+                                <asp:DropDownList ID="ddlCCCode2" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
                                 </asp:DropDownList>
                
-                                <asp:DropDownList ID="ddlCCCode3" runat="server" Width="50px" Font-Names="HA_MingLiu">
+                                <asp:DropDownList ID="ddlCCCode3" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
                                 </asp:DropDownList>
                            
-                                <asp:DropDownList ID="ddlCCCode4" runat="server" Width="50px" Font-Names="HA_MingLiu">
+                                <asp:DropDownList ID="ddlCCCode4" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
                                 </asp:DropDownList>
                             
-                                <asp:DropDownList ID="ddlCCCode5" runat="server" Width="50px" Font-Names="HA_MingLiu">
+                                <asp:DropDownList ID="ddlCCCode5" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
                                 </asp:DropDownList>
                           
-                                <asp:DropDownList ID="ddlCCCode6" runat="server" Width="50px" Font-Names="HA_MingLiu">
+                                <asp:DropDownList ID="ddlCCCode6" runat="server" Width="50px" Font-Names="HA_MingLiu" Font-Size="18px">
                                 </asp:DropDownList>
                             </td>
                        </tr>

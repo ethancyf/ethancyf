@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- Modified by:		Koala CHENG
+-- Modified date:	07 Jun 2021
+-- CR No.:			CRE20-023-44 (Adolescent)
+-- Description:		Extend [Provider] column to NVARCHAR(100)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -289,7 +297,7 @@ CREATE TABLE #tempVaccine
 	Dose_Seq_Code			VARCHAR(20)		NOT NULL,  
 	Dose_Seq_Desc			VARCHAR(100)	NOT NULL,  
 	Dose_Seq_Desc_Chinese	NVARCHAR(100)	NOT NULL,  
-	[Provider]				NVARCHAR(20)	NOT NULL,  
+	[Provider]				NVARCHAR(100)	NOT NULL,  
 	[Location]				NVARCHAR(100)	NOT NULL,  
 	Location_Chinese		NVARCHAR(100)	NOT NULL,
 	Vaccine_Brand			VARCHAR(50),

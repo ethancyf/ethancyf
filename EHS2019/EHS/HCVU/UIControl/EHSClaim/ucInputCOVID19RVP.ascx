@@ -169,6 +169,8 @@
                 <asp:textbox ID="txtCRemark" runat="server" MaxLength="200" style="position:relative;left:-1px" Width="660px"/>
                 <asp:ImageButton ID="imgCRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                <cc2:FilteredTextBoxExtender ID="fteCRemark" runat="server" TargetControlID="txtCRemark"
+                       FilterMode="InvalidChars"  InvalidChars="|\"></cc2:FilteredTextBoxExtender>
             </td>
         </tr>
         <tr id="trJoinEHRSS" runat="server">

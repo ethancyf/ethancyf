@@ -32,7 +32,7 @@
                                 <td style="width: 130px">
                                     <asp:Label ID="lblOutreachCode" runat="server" Text="<%$ Resources:Text, OutreachCode %>"></asp:Label></td>
                                 <td style="width: 350px">
-                                    <asp:TextBox ID="txtOutreachCode" runat="server" MaxLength="6" onBlur="Upper(event,this)"></asp:TextBox>
+                                    <asp:TextBox ID="txtOutreachCode" runat="server" MaxLength="10" onBlur="Upper(event,this)"></asp:TextBox>
                                     <asp:Image ID="imgOutreachCodeAlert" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorImg %>"
                                         ImageUrl="~/Images/others/icon_caution.gif" Style="position: absolute" Visible="false" />
                                 </td>

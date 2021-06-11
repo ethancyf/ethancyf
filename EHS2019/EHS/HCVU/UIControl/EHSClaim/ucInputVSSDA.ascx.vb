@@ -316,13 +316,14 @@ Partial Public Class ucInputVSSDA
         ' Dim objMsg As ComObject.SystemMessage = Nothing
         Dim objMsg As New List(Of ComObject.SystemMessage)
 
-        Dim lbnResult As Boolean = True
+        Dim blnResult As Boolean = True
         'CRE20-009 declare system message object & warning image setting [End][Nichole]
 
         If Me.ddlDocumentaryProof.Visible = True Then
             If String.IsNullOrEmpty(Me.MulitDocumentaryProof) = True Then
                 Me.imgDocumentaryProofError.Visible = blnShowErrorImage
                 objMsg.Add(New ComObject.SystemMessage("990000", "E", "00360")) ' Please select "Document Proof"
+                blnResult = False
             End If
         End If
 
@@ -330,7 +331,7 @@ Partial Public Class ucInputVSSDA
             If Me.chkDocumentaryProof.Checked = False Then
                 Me.imgDocumentaryProofError.Visible = blnShowErrorImage
                 objMsg.Add(New ComObject.SystemMessage("990000", "E", "00360")) ' Please select "Document Proof"
-                lbnResult = False
+                blnResult = False
             End If
         End If
 
@@ -339,7 +340,7 @@ Partial Public Class ucInputVSSDA
             If Not Me.chkDocProofCSSA.Checked Then
                 Me.imgVSSDAConfirmCSSAError.Visible = blnShowErrorImage
                 objMsg.Add(New ComObject.SystemMessage("990000", "E", "00453")) ' Please select agreeement of "The true copy of the mentioned type of documentary proof".
-                lbnResult = False
+                blnResult = False
             End If
         End If
 
@@ -347,11 +348,11 @@ Partial Public Class ucInputVSSDA
             If Not Me.chkDocProofAnnex.Checked Then
                 Me.imgVSSDAConfirmAnnexError.Visible = blnShowErrorImage
                 objMsg.Add(New ComObject.SystemMessage("990000", "E", "00454")) ' Please select agreeement of "Signed a self-declaration".
-                lbnResult = False
+                blnResult = False
             End If
         End If
 
-        If lbnResult = False Then
+        If blnResult = False Then
             Return objMsg
         End If
         'CRE20-009 add validation on checking the checkbox CSSA & Annex have checked or not [End][Nichole]

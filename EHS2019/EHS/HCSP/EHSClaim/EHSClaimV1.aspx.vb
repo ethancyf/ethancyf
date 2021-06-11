@@ -5784,20 +5784,6 @@ Partial Public Class EHSClaimV1
 
             End If
 
-            '' CRE20-0023 (Immu record) [Start][Chris YIM]
-            '' ---------------------------------------------------------------------------------------------------------
-            '' Temporary handling to block document (Passport, One-way Permit) to claim COVID19 under VSS scheme
-            'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS AndAlso Me.ClaimMode = ClaimMode.COVID19 Then
-            '    If udtEHSAccount.SearchDocCode IsNot Nothing AndAlso _
-            '        (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW OrElse udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.PASS) Then
-            '        If udtLatestC19Vaccine Is Nothing Then
-            '            notAvailableForClaim = True
-            '            isEligibleForClaim = False
-            '        End If
-            '    End If
-            'End If
-            '' CRE20-0023 (Immu record) [End][Chris YIM]
-
             If blnInClaimPeriod Then
 
                 If notAvailableForClaim Then
@@ -9880,6 +9866,8 @@ Partial Public Class EHSClaimV1
                             Me.ucNoticePopUpExclamationImportantReminderWithReason.MessageText = strHTMLList
 
                             Me.ucNoticePopUpExclamationImportantReminderWithReason.ShowOverrideReason = True
+
+                            Me.ucNoticePopUpExclamationImportantReminderWithReason.EnableOverrideReasonTextFilter = True
 
                             Me.ucNoticePopUpExclamationImportantReminderWithReason.OverrideReasonDescText = GetGlobalResourceObject("Text", "PopupReasonsDesc")
 
@@ -14597,10 +14585,15 @@ Partial Public Class EHSClaimV1
                                                                    _udtAuditLogEntry, _
                                                                    strSchemeCode)
 
+        ' Save the external status to session
+        Dim udtSessionHandler As New SessionHandler
+        Dim udtHAVaccineRefStatus = New EHSTransactionModel.ExtRefStatusClass(udtVaccineResultBag.HAVaccineResult, udtEHSAccount.SearchDocCode)
+        Dim udtDHVaccineRefStatus = New EHSTransactionModel.ExtRefStatusClass(udtVaccineResultBag.DHVaccineResult, udtEHSAccount.SearchDocCode)
 
-        'udtVaccineResultBag.
-        'udtSession.CMSVaccineResultGetFromSession(strFunctionCode)
+        udtSessionHandler.ExtRefStatusSaveToSession(udtHAVaccineRefStatus)
+        udtSessionHandler.DHExtRefStatusSaveToSession(udtDHVaccineRefStatus)
 
+        ' Check the result to determine the popup is hide or show
         For Each udtTranDetailVaccine As TransactionDetailVaccineModel In udtTranDetailVaccineList
             If udtTranDetailVaccine.RecordType = TransactionDetailVaccineModel.RecordTypeClass.DemographicNotMatch Then
                 isValid = True

@@ -994,6 +994,8 @@
                                     <asp:textbox ID="txtStep2aRemark" runat="server" MaxLength="100" style="position:relative;left:-1px" Width="660px"/>
                                     <asp:ImageButton ID="imgStep2aRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                                         ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+                                    <cc1:FilteredTextBoxExtender ID="fteStep2aRemark" runat="server" TargetControlID="txtStep2aRemark"
+                                      FilterMode="InvalidChars"  InvalidChars="|\"></cc1:FilteredTextBoxExtender>
                                 </td>
                             </tr>
                         </table>

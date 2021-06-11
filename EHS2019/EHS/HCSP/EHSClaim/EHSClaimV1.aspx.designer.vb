@@ -1913,6 +1913,15 @@ Partial Public Class EHSClaimV1
     Protected WithEvents imgStep2aRemarkError As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''fteStep2aRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteStep2aRemark As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''panStep2aPrintClaimConsentForm control.
     '''</summary>
     '''<remarks>

@@ -455,6 +455,15 @@ Partial Public Class ucInputCOVID19OR
     Protected WithEvents imgCRemarkError As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''fteCRemark control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteCRemark As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''trJoinEHRSS control.
     '''</summary>
     '''<remarks>

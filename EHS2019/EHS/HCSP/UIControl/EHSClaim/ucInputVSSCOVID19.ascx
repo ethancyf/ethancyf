@@ -29,7 +29,7 @@
                 Height="25px"></asp:Label>
         </td>
         <td style="padding-bottom: 3px">
-            <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" style="position:relative;left:-4px;top:-2px" />
+            <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="10" AutoPostBack="true" style="position:relative;left:-4px;top:-2px" />
             <asp:Image ID="imgOutreachCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                 ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False"  style="position:relative;top:-2px" />
             <asp:ImageButton ID="btnSearchOutreach" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"

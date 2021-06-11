@@ -233,6 +233,17 @@ Partial Public Class ucNoticePopUp
     End Property
     ' CRE20-0023 (Immu record) [End][Chris YIM]
 
+    ' CRE20-0023 (Immu record) [Start][Raiman Chong]
+    ' ---------------------------------------------------------------------------------------------------------
+    Public Property EnableOverrideReasonTextFilter() As Boolean
+        Get
+            Return Me.fteORReasonBlockVerticalBarAndBackslash.Enabled
+        End Get
+        Set(ByVal value As Boolean)
+            Me.fteORReasonBlockVerticalBarAndBackslash.Enabled = value
+        End Set
+    End Property
+    ' CRE20-0023 (Immu record) [End][Raiman Chong]
 
     Public ReadOnly Property ButtonOK() As ImageButton
         Get

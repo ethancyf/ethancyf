@@ -185,6 +185,15 @@ Partial Public Class ucNoticePopUp
     Protected WithEvents txtORReason As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''fteORReasonBlockVerticalBarAndBackslash control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents fteORReasonBlockVerticalBarAndBackslash As Global.AjaxControlToolkit.FilteredTextBoxExtender
+
+    '''<summary>
     '''ibtnCancel control.
     '''</summary>
     '''<remarks>

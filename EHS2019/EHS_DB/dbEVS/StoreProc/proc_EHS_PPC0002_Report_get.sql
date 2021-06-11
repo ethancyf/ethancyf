@@ -5,7 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE21-004-02
+-- Modified by:		Koala CHENG
+-- Modified date:	9 Jun 2021
+-- Description:		Randomize the ordering of transaction output of each SP if scheme list contain Voucher scheme(s)
+--					Update remarks item (B)2
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE21-004, CRE21-005
@@ -146,6 +153,8 @@ BEGIN
 	DECLARE @IN_dtmTransactionDateEnd DATETIME
 	DECLARE @IN_dtmServiceDateStart DATETIME
 	DECLARE @IN_dtmServiceDateEnd DATETIME
+
+	DECLARE @HasVoucherScheme BIT
 
 	--DECLARE @chrHasSPPracticeList CHAR(1)
 	DECLARE @chrIsAllProfessional CHAR(1)
@@ -377,6 +386,7 @@ BEGIN
 		ELSE 
 			SET @IN_varSchemeCode = @Scheme
 	END
+	
 
 	IF @Transaction_Status IS NOT NULL
 	BEGIN
@@ -552,11 +562,24 @@ BEGIN
 
 			INSERT @tblSchemeCode
 					SELECT * FROM func_split_string(@IN_varSchemeCode, @delimiter)
+			
+			SELECT @HasVoucherScheme = COUNT(DISTINCT SI.Subsidize_Type)
+			FROM @tblSchemeCode SC 
+			INNER JOIN SubsidizeGroupClaim SGC WITH (NOLOCK)
+			ON SC.Scheme_Code = SGC.Scheme_Code
+			INNER JOIN Subsidize S WITH (NOLOCK)
+			ON SGC.Subsidize_Code = S.Subsidize_Code
+			INNER JOIN SubsidizeItem SI WITH (NOLOCK)
+			ON S.Subsidize_Item_Code = SI.Subsidize_Item_Code
+				AND SI.Subsidize_Type = 'VOUCHER'
 
 			SET @chrIsAllSchemeCode = 'N'
 		END
 		ELSE 
+		BEGIN
+			SET @HasVoucherScheme = 1
 			SET @chrIsAllSchemeCode = 'Y'
+		END
 
 		-- ===========================================================
 		-- 3. PRE-CALCULATION
@@ -1620,8 +1643,16 @@ BEGIN
 
 					FROM 
 						(SELECT 
-							ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY NEWID()) AS 'RefNo',
-							--ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq) AS 'RefNo',
+							CASE WHEN @HasVoucherScheme=0 THEN
+								ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY NEWID()) 
+							ELSE
+								ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq)
+							END AS 'RefNo',
+							CASE WHEN @HasVoucherScheme=0 THEN
+								ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY NEWID()) 
+							ELSE
+								CONVERT(VARCHAR(100), RIGHT('000'+ISNULL(CONVERT(VARCHAR(100),DisplaySeq),''),3)) +  CONVERT(VARCHAR(100),ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq))
+							END AS 'Seq',
 							Col01 AS SP_ID,
 							Col02 AS Transaction_ID,
 							Col03 AS Practice_Display_Seq,
@@ -1661,7 +1692,8 @@ BEGIN
 							--LEFT JOIN DeathRecordEntry DRE
 							--	ON DRE.Encrypt_Field1 = DRMR.Encrypt_Field1
 				
-					ORDER BY RT.RefNo
+					ORDER BY RT.Seq
+					--ORDER BY RT.RefNo
 					--ORDER BY CONVERT(INT,RT.Practice_Display_Seq), RT.RefNo
 
 					---- ---------------------------------------------
@@ -1709,6 +1741,7 @@ BEGIN
 
 			DECLARE @CommonNoteStat01 varchar(1000)
 			DECLARE @CommonNoteStat02 varchar(1000)
+			DECLARE @CommonNoteStat03 varchar(1000)
 
 			-- ---------------------------------------------
 			-- Prepare Data: Remarks
@@ -1726,6 +1759,7 @@ BEGIN
 
 			SET @CommonNoteStat01 = '1. All service providers are counted including delisted status and those in the exception list.'
 			SET @CommonNoteStat02 = '2. All COVID-19 claims under VSS and RVP are excluded.'
+			SET @CommonNoteStat03 = '3. Sorting order of claims will be in randomized way if no voucher schemes (HCVS, HCVSCHN, HCVSDHC) is selected in the criteria.'
 
 			---- ---------------------------------------------
 			---- Insert Data: Remarks
@@ -1783,19 +1817,19 @@ BEGIN
 
 			SET @Seq = @Seq + 1
 
-			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-			VALUES (@seq, NULL, '4. Subsidy', '')
+			--INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+			--VALUES (@seq, NULL, '4. Subsidy', '')
 	
-			SET @Seq = @Seq + 1
+			--SET @Seq = @Seq + 1
 
-			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-			SELECT DISTINCT @Seq, NULL, Display_Code_For_Claim, Legend_Desc_For_Claim
-			FROM SubsidizeGroupClaim a
-				INNER JOIN Subsidize b ON a.Subsidize_Code = b.Subsidize_Code
-				INNER JOIN Subsidizeitem c ON b.subsidize_item_Code = c.Subsidize_Item_Code AND c.Subsidize_Type = 'VACCINE'
-			ORDER BY Display_Code_For_Claim
+			--INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+			--SELECT DISTINCT @Seq, NULL, Display_Code_For_Claim, Legend_Desc_For_Claim
+			--FROM SubsidizeGroupClaim a
+			--	INNER JOIN Subsidize b ON a.Subsidize_Code = b.Subsidize_Code
+			--	INNER JOIN Subsidizeitem c ON b.subsidize_item_Code = c.Subsidize_Item_Code AND c.Subsidize_Type = 'VACCINE'
+			--ORDER BY Display_Code_For_Claim
 
-			SET @Seq = @Seq + 1
+			--SET @Seq = @Seq + 1
 
 			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
 			VALUES (@seq, NULL, '', '')
@@ -1803,7 +1837,7 @@ BEGIN
 			SET @Seq = @Seq + 1
 
 			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-			VALUES (@seq, NULL,'5. Date of Death Flag', '')
+			VALUES (@seq, NULL,'4. Date of Death Flag', '')
 
 			SET @Seq = @Seq + 1
 
@@ -1843,20 +1877,25 @@ BEGIN
 			SET @Seq = @Seq + 1
 
 			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-			SELECT @Seq, NULL, '3. All are accumulative data unless specified as below:', ''
+			VALUES (@seq, NULL, @CommonNoteStat03, '')
 
 			SET @Seq = @Seq + 1
-			INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-				SELECT @Seq, NULL, RTRIM(a.Display_Code_For_Claim) + ' : ' + REPLACE(CONVERT(VARCHAR(12),CONVERT(DATETIME,Claim_Period_From ),106),' ',' '), ''
-				FROM SubsidizeGroupClaim a    
-				inner join SubsidizeGroupClaimItemDetails b   
-				ON a.scheme_code = b.scheme_code and a.scheme_seq = b.scheme_seq and a.subsidize_code = b.subsidize_code    
-				and b.Subsidize_Item_Code NOT IN ('PV', 'EHAPP_R', 'PV13')
-				WHERE b.record_status = 'A'    
-				GROUP BY a.Display_Code_For_Claim,a.scheme_seq, Claim_Period_From    
-				ORDER BY a.Display_Code_For_Claim,a.scheme_seq   
 
-			SET @seq = @seq + 1
+			--INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+			--SELECT @Seq, NULL, '3. All are accumulative data unless specified as below:', ''
+
+			--SET @Seq = @Seq + 1
+			--INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+			--	SELECT @Seq, NULL, RTRIM(a.Display_Code_For_Claim) + ' : ' + REPLACE(CONVERT(VARCHAR(12),CONVERT(DATETIME,Claim_Period_From ),106),' ',' '), ''
+			--	FROM SubsidizeGroupClaim a    
+			--	inner join SubsidizeGroupClaimItemDetails b   
+			--	ON a.scheme_code = b.scheme_code and a.scheme_seq = b.scheme_seq and a.subsidize_code = b.subsidize_code    
+			--	and b.Subsidize_Item_Code NOT IN ('PV', 'EHAPP_R', 'PV13')
+			--	WHERE b.record_status = 'A'    
+			--	GROUP BY a.Display_Code_For_Claim,a.scheme_seq, Claim_Period_From    
+			--	ORDER BY a.Display_Code_For_Claim,a.scheme_seq   
+
+			--SET @seq = @seq + 1
 
 			-- ---------------------------------------------
 			-- Return Result: Remarks

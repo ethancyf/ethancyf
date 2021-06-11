@@ -1,7 +1,7 @@
 <%@ Control Language="vb" AutoEventWireup="false" Codebehind="ucNoticePopUp.ascx.vb"
     Inherits="HCSP.ucNoticePopUp" %>
 <%@ Register Assembly="CustomControls" Namespace="CustomControls" TagPrefix="cc2" %>
-
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <script type="text/javascript">
    
 </script>
@@ -90,6 +90,9 @@
                                 <td colspan="2" style="width: 85%; text-align:left">                                   
                                     <asp:Label ID="lblORReason" runat="server" />
                                     <asp:Textbox ID="txtORReason" runat="server" style="width:400px" MaxLength="100" />
+
+                             <cc1:FilteredTextBoxExtender ID="fteORReasonBlockVerticalBarAndBackslash" runat="server" TargetControlID="txtORReason"
+                                      FilterMode="InvalidChars"  InvalidChars="|\" Enabled="False"></cc1:FilteredTextBoxExtender>
                                 </td>
                             </tr>
                             </asp:Panel>

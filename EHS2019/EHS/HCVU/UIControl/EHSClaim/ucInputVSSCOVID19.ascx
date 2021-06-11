@@ -8,7 +8,7 @@
                 <asp:Label ID="lblOutreachCodeText" runat="server" Width="160px" Height="25px" />
             </td>
             <td style="padding-bottom: 3px">
-                <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="6" AutoPostBack="true" style="position:relative;left:-5px;top:-2px" />
+                <asp:TextBox ID="txtOutreachCode" runat="server" Width="100" MaxLength="10" AutoPostBack="true" style="position:relative;left:-5px;top:-2px" />
                 <asp:Image ID="imgOutreachCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="AbsMiddle" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" style="position:relative;top:-2px" />
                 <asp:ImageButton ID="btnSearchOutreach" runat="server" ImageUrl="~/Images/button/icon_button/btn_search.png"
@@ -162,6 +162,8 @@
                 <asp:textbox ID="txtCRemark" runat="server" MaxLength="200" style="position:relative;left:-1px" Width="660px"/>
                 <asp:ImageButton ID="imgCRemarkError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>"
                     ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" ImageAlign="Top" visible="false" />
+            <cc2:FilteredTextBoxExtender ID="fteCRemark" runat="server" TargetControlID="txtCRemark"
+                   FilterMode="InvalidChars"  InvalidChars="|\"></cc2:FilteredTextBoxExtender>
             </td>
         </tr>
         <tr id="trJoinEHRSS" runat="server">

@@ -14,12 +14,20 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- Modified by:		Chris YIM
+-- Modified date:	10 Jun 2021
+-- CR No.			CRE20-023 (Immu record) 
+-- Description:		Get C19 transaction list instead of latest transaction
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Martin Tang
 -- Modified date:	28 Jan 2021
--- CR No.			CRE20-0XX (Immu record) 
--- Description:		
+-- CR No.			CRE20-023 (Immu record) 
+-- Description:		Get latest C19 transaction by Doc No.
 -- =============================================
 
 CREATE PROCEDURE [dbo].[proc_LatestCOVID19Transaction_get_byDocId] @doc_code            CHAR(20), 
@@ -127,7 +135,7 @@ AS
              ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
              INNER JOIN tempPersonalInformation AS tpi WITH(NOLOCK)
-             ON vt.Temp_Voucher_Acc_ID = tpi.Voucher_Acc_ID
+             ON vt.Temp_Voucher_Acc_ID = tpi.Voucher_Acc_ID AND vt.Voucher_Acc_ID = ''
                 AND vt.Doc_Code = tpi.Doc_Code
                 AND (tpi.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_identity_no1)
                      OR tpi.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @l_identity_no2))
@@ -139,8 +147,7 @@ AS
              AND ISNULL(vt.Invalidation, '') <> 'I';
 
         --return the latest record
-        SELECT TOP 1 Transaction_ID, 
-                     Doc_Code
+        SELECT Transaction_ID, Doc_Code
         FROM #Results
         ORDER BY Service_Receive_Dtm DESC, 
                  Transaction_Dtm DESC;
@@ -156,3 +163,4 @@ GO
 
 GRANT EXECUTE ON [dbo].[proc_LatestCOVID19Transaction_get_byDocId] TO HCVU;
 GO
+
