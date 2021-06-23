@@ -180,28 +180,27 @@ Partial Public Class MasterPage
 
         ' CRE13-019-02 Extend HCVS to China [Start][Lawrence]
         ' Hide Inbox in China Platform
+        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
+        Dim udtUserAC As UserACModel = UserACBLL.GetUserAC()
+
         If DirectCast(Me.Page, BasePage).SubPlatform = EnumHCSPSubPlatform.CN Then
             btnInbox.Visible = False
             lnkbtnTradChinese.Visible = False
             lnkbtnEnglish.Visible = False
+            'Else
+            '    If udtUserAC.UserType = SPAcctType.ServiceProvider Then
+            '        If strFromOutsider IsNot Nothing Then
+            '            panMenu.Visible = False
+            '            ibtnMenu.Visible = False
+            '        Else
+            '            btnInbox.Visible = True
+            '            ibtnLogout.Visible = True
+            '        End If
+            '    End If
+
         End If
         ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
-        'CRE20-006 Hidden the menu [Start][Nichole]
-        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
-        Dim udtUserAC As UserACModel = UserACBLL.GetUserAC()
-
-        If udtUserAC.UserType = SPAcctType.ServiceProvider Then
-            If strFromOutsider IsNot Nothing Then
-                panMenu.Visible = False
-                ibtnMenu.Visible = False
-            Else
-                btnInbox.Visible = True
-                ibtnLogout.Visible = True
-            End If
-        End If
-
-        'CRE20-006  Hidden the menu [End][Nichole]
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -282,6 +281,8 @@ Partial Public Class MasterPage
                 Me.btnInbox.Visible = False
                 Me.ibtnLogout.Visible = False
                 Me.ibtnHome.Visible = False
+                panMenu.Visible = False
+                ibtnMenu.Visible = False
             End If
             'CRE20-006 Hidden the inbox button [End][Nichole]
 
