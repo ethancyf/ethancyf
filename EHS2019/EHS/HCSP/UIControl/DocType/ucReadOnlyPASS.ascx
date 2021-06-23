@@ -48,6 +48,13 @@
                     <asp:Label ID="lblReadonlyTravelDocNo" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
             <tr>
+                <td valign="top" runat="server" id="cellReadonlyPassportIssueRegionText" class="tableCellStyle">
+                    <asp:Label ID="lblReadonlyPassportIssueRegionText" runat="server" CssClass="tableTitle"
+                        Width="200px"></asp:Label></td>
+                <td valign="top" class="tableCellStyle">
+                    <asp:Label ID="lblReadonlyPassportIssueRegion" runat="server" CssClass="tableText"></asp:Label></td>
+            </tr>
+            <tr>
                 <td valign="top" runat="server" id="cellReadonlyNameText" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyNameText" runat="server" CssClass="tableTitle"
                         Width="150px"></asp:Label></td>
@@ -108,6 +115,13 @@
                     Width="160px"></asp:Label></td>
             <td style="padding-bottom: 10px; width: 300px;" valign="top" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalTravelDocNo" runat="server" CssClass="tableText"
+                    Width="300px"></asp:Label></td>
+
+            <td valign="top" style="padding-bottom: 10px" runat="server" id="cellReadonlyHorizontalPassportIssueRegion" class="tableCellStyleLite">
+                <asp:Label ID="lblReadonlyHorizontalPassportIssueRegionText" runat="server" CssClass="tableTitle"
+                    Width="160px"></asp:Label></td>
+            <td style="padding-bottom: 10px; width: 300px;" valign="top" class="tableCellStyleLite">
+                <asp:Label ID="lblReadonlyHorizontalPassportIssueRegion" runat="server" CssClass="tableText"
                     Width="300px"></asp:Label></td>
           <%--  <td valign="top" style="padding-bottom: 10px" runat="server" id="cellReadonlyHorizontalIssueDateText" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalIssueDateText" runat="server" CssClass="tableTitle"

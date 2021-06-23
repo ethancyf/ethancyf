@@ -1119,7 +1119,7 @@ Namespace Component.EHSAccount
             ByVal dtmPermitToRemainUntil As Nullable(Of Date), ByVal strAdoptionPrefixNum As String, ByVal strOtherInfo As String, _
             ByVal blnECSerialNoNotProvided As Boolean, ByVal blnECReferenceNoOtherFormat As Boolean,
             ByVal strDeceased As String, ByVal dtmDOD As Nullable(Of Date), ByVal strExactDOD As String, _
-            ByVal strSmartIDVer As String)
+            ByVal strSmartIDVer As String, ByVal strPassportIssueRegion As String)
 
             If Me._udtEHSPersonalInformationList Is Nothing Then Me._udtEHSPersonalInformationList = New EHSPersonalInformationModelCollection()
 
@@ -1132,7 +1132,7 @@ Namespace Component.EHSAccount
                 strCName, strCCCode1, strCCCode2, strCCCode3, strCCCode4, strCCCode5, strCCCode6, byteTSMP, strECSerialNo, _
                 strECReferenceNo, intECAge, dtmECDateOfRegistration, strDocCode, strForeignPassportNo, dtmPermitToRemainUntil, _
                 strAdoptionPrefixNum, strOtherInfo, blnECSerialNoNotProvided, blnECReferenceNoOtherFormat,
-                strDeceased, dtmDOD, strExactDOD, strSmartIDVer)
+                strDeceased, dtmDOD, strExactDOD, strSmartIDVer, strPassportIssueRegion)
             ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
             Me._udtEHSPersonalInformationList.Add(udtEHSPersonalInformationModel)
@@ -1155,7 +1155,7 @@ Namespace Component.EHSAccount
             ByVal dtmPermitToRemainUntil As Nullable(Of Date), ByVal strAdoptionPrefixNum As String, ByVal strOtherInfo As String, _
             ByVal strCreateBySmartID As String, ByVal blnECSerialNoNotProvided As Boolean, ByVal blnECReferenceNoOtherFormat As Boolean, _
             ByVal strDeceased As String, ByVal dtmDOD As Nullable(Of Date), ByVal strExactDOD As String, _
-            ByVal strSmartIDVer As String)
+            ByVal strSmartIDVer As String, ByVal strPassportIssueRegion As String)
 
             If Me._udtEHSPersonalInformationList Is Nothing Then Me._udtEHSPersonalInformationList = New EHSPersonalInformationModelCollection()
 
@@ -1168,7 +1168,7 @@ Namespace Component.EHSAccount
                 strCName, strCCCode1, strCCCode2, strCCCode3, strCCCode4, strCCCode5, strCCCode6, byteTSMP, strECSerialNo, _
                 strECReferenceNo, intECAge, dtmECDateOfRegistration, strDocCode, strForeignPassportNo, dtmPermitToRemainUntil, _
                 strAdoptionPrefixNum, strOtherInfo, strCreateBySmartID, blnECSerialNoNotProvided, blnECReferenceNoOtherFormat, _
-                strDeceased, dtmDOD, strExactDOD, strSmartIDVer)
+                strDeceased, dtmDOD, strExactDOD, strSmartIDVer, strPassportIssueRegion)
             ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
             Me._udtEHSPersonalInformationList.Add(udtEHSPersonalInformationModel)
@@ -1238,6 +1238,7 @@ Namespace Component.EHSAccount
             udtCloneEHSAccount.EHSPersonalInformationList(0).Foreign_Passport_No = Me.EHSPersonalInformationList(0).Foreign_Passport_No
             udtCloneEHSAccount.EHSPersonalInformationList(0).PermitToRemainUntil = Me.EHSPersonalInformationList(0).PermitToRemainUntil
             udtCloneEHSAccount.EHSPersonalInformationList(0).AdoptionPrefixNum = Me.EHSPersonalInformationList(0).AdoptionPrefixNum
+            udtCloneEHSAccount.EHSPersonalInformationList(0).PassportIssueRegion = Me.EHSPersonalInformationList(0).PassportIssueRegion
 
             udtCloneEHSAccount.EHSPersonalInformationList(0).OtherInfo = Me.EHSPersonalInformationList(0).OtherInfo
             udtCloneEHSAccount.EHSPersonalInformationList(0).CreateBySmartID = Me.EHSPersonalInformationList(0).CreateBySmartID
@@ -1323,6 +1324,7 @@ Namespace Component.EHSAccount
             udtCloneEHSAccount.EHSPersonalInformationList(0).Foreign_Passport_No = Me.EHSPersonalInformationList.Filter(strDocCode).Foreign_Passport_No
             udtCloneEHSAccount.EHSPersonalInformationList(0).PermitToRemainUntil = Me.EHSPersonalInformationList.Filter(strDocCode).PermitToRemainUntil
             udtCloneEHSAccount.EHSPersonalInformationList(0).AdoptionPrefixNum = Me.EHSPersonalInformationList.Filter(strDocCode).AdoptionPrefixNum
+            udtCloneEHSAccount.EHSPersonalInformationList(0).PassportIssueRegion = Me.EHSPersonalInformationList.Filter(strDocCode).PassportIssueRegion
 
             udtCloneEHSAccount.EHSPersonalInformationList(0).OtherInfo = Me.EHSPersonalInformationList.Filter(strDocCode).OtherInfo
 
@@ -1410,6 +1412,7 @@ Namespace Component.EHSAccount
             udtCloneEHSAccount.EHSPersonalInformationList(0).Foreign_Passport_No = Me.EHSPersonalInformationList.Filter(strDocCode).Foreign_Passport_No
             udtCloneEHSAccount.EHSPersonalInformationList(0).PermitToRemainUntil = Me.EHSPersonalInformationList.Filter(strDocCode).PermitToRemainUntil
             udtCloneEHSAccount.EHSPersonalInformationList(0).AdoptionPrefixNum = Me.EHSPersonalInformationList.Filter(strDocCode).AdoptionPrefixNum
+            udtCloneEHSAccount.EHSPersonalInformationList(0).PassportIssueRegion = Me.EHSPersonalInformationList.Filter(strDocCode).PassportIssueRegion
 
             udtCloneEHSAccount.EHSPersonalInformationList(0).OtherInfo = Me.EHSPersonalInformationList.Filter(strDocCode).OtherInfo
 

@@ -2,6 +2,7 @@
 Imports Common.Component.EHSAccount
 Imports Common.Component.DocType
 Imports Common.Component.DocType.DocTypeModel
+Imports Common.Component.PassportIssueRegion
 
 Public Class ucReadOnlyPASS
     Inherits ucReadOnlyDocTypeBase
@@ -15,6 +16,8 @@ Public Class ucReadOnlyPASS
         Dim udtDocTypeModelList As DocType.DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
         Dim strGender As String
         Dim strDocumentTypeFullName As String = udtDocTypeModelList.Filter(DocTypeCode.PASS).DocName(udtSessionHandler.Language)
+        Dim strPassportIssueRegionCode As String = MyBase.EHSAccountPersonalInfo.PassportIssueRegion
+
 
         'Static Fields
         If MyBase.EHSAccountPersonalInfo.Gender = "M" Then
@@ -58,6 +61,13 @@ Public Class ucReadOnlyPASS
             Me.lblReadonlyDocumentType.Text = strDocumentTypeFullName
             'Me.lblReadonlyIssueDate.Text = formatter.formatDOI(DocTypeCode.PASS, MyBase.EHSAccountPersonalInfo.DateofIssue)
 
+            If IsNothing(strPassportIssueRegionCode) Or strPassportIssueRegionCode.Equals(String.Empty) Then
+                Me.lblReadonlyPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                Me.lblReadonlyPassportIssueRegion.Text = (New PassportIssueRegionBLL).GetPassportIssueRegion.Filter(strPassportIssueRegionCode).NationalDisplay(udtSessionHandler.Language())
+            End If
+
+
         Else
 
             Me.panReadonlyVerticalPASS.Visible = False
@@ -69,6 +79,12 @@ Public Class ucReadOnlyPASS
             Me.lblReadonlyHorizontalDocumentType.Text = strDocumentTypeFullName
             Me.lblReadonlyHorizontalGender.Text = Me.GetGlobalResourceObject("Text", strGender)
             'Me.lblReadonlyHorizontalIssueDate.Text = formatter.formatDOI(DocTypeCode.PASS, MyBase.EHSAccountPersonalInfo.DateofIssue)
+
+            If IsNothing(strPassportIssueRegionCode) Or strPassportIssueRegionCode.Equals(String.Empty) Then
+                Me.lblReadonlyHorizontalPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                Me.lblReadonlyHorizontalPassportIssueRegion.Text = (New PassportIssueRegionBLL).GetPassportIssueRegion.Filter(strPassportIssueRegionCode).NationalDisplay(udtSessionHandler.Language())
+            End If
         End If
 
     End Sub
@@ -84,6 +100,8 @@ Public Class ucReadOnlyPASS
             Me.lblReadonlyNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
             Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
+            Me.lblReadonlyPassportIssueRegionText.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion")
+
             'Me.lblReadonlyIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
             Me.lblReadonlyTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
 
@@ -91,6 +109,8 @@ Public Class ucReadOnlyPASS
             Me.lblReadonlyHorizontalDocumentTypeText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
             Me.lblReadonlyHorizontalNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
             Me.lblReadonlyHorizontalDOBGenderText.Text = Me.GetGlobalResourceObject("Text", "DOBLongGender")
+            Me.lblReadonlyHorizontalPassportIssueRegionText.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion")
+
             'Me.lblReadonlyHorizontalIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
             Me.lblReadonlyHorizontalTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
 
@@ -107,6 +127,7 @@ Public Class ucReadOnlyPASS
             Me.lblReadonlyGender.Width = width
             Me.lblReadonlyTravelDocNoText.Width = width
             'Me.lblReadonlyIssueDateText.Width = width
+            Me.lblReadonlyHorizontalPassportIssueRegionText.Width = width
 
             Me.cellReadonlyCreationDateTimeText.Width = width
             Me.cellReadonlyDOBText.Width = width
@@ -115,6 +136,7 @@ Public Class ucReadOnlyPASS
             'Me.cellReadonlyIssueDateText.Width = width
             Me.cellReadonlyNameText.Width = width
             Me.cellReadonlyRefenceText.Width = width
+            Me.cellReadonlyPassportIssueRegionText.Width = width
             Me.cellReadonlyTravelDocNoText.Width = width
 
         Else
@@ -123,12 +145,15 @@ Public Class ucReadOnlyPASS
             Me.lblReadonlyHorizontalTravelDocNoText.Width = width
             Me.lblReadonlyHorizontalDOBGenderText.Width = width
             'Me.lblReadonlyHorizontalIssueDateText.Width = width
+            Me.lblReadonlyHorizontalPassportIssueRegionText.Width = width
 
             Me.cellReadonlyHorizontalDOBGenderText.Width = width
             Me.cellReadonlyHorizontalDocumentTypeText.Width = width
             'Me.cellReadonlyHorizontalIssueDateText.Width = width
             Me.cellReadonlyHorizontalNameText.Width = width
+            Me.cellReadonlyHorizontalPassportIssueRegion.Width = width
             Me.cellReadonlyHorizontalTravelDocNoText.Width = width
+
 
         End If
     End Sub

@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -140,7 +148,8 @@ BEGIN
 		other_info varchar(10),
 		Deceased	char(1),
 		DOD			datetime,
-		Exact_DOD	char(1)
+		Exact_DOD	char(1),
+		PASS_Issue_Region  varchar(5)
 	)
 
 	CREATE INDEX IX_VAT on #temp_account (voucher_acc_id)
@@ -195,7 +204,8 @@ BEGIN
 		other_info,
 		Deceased,
 		DOD,
-		Exact_DOD
+		Exact_DOD,
+		PASS_Issue_Region
 	)
 	select	tva.voucher_acc_id,
 			tva.scheme_code,
@@ -228,7 +238,8 @@ BEGIN
 			tp.other_info,
 			tp.Deceased,
 			tp.DOD,
-			tp.Exact_DOD
+			tp.Exact_DOD,
+			tp.PASS_Issue_Region
 	from tempvoucheraccount tva 	
 			LEFT JOIN SchemeClaim SC
 				ON tva.Scheme_Code = SC.Scheme_Code,
@@ -379,7 +390,8 @@ EXEC [proc_SymmetricKey_open]
 		t.other_info,
 		t.Deceased,
 		t.DOD,
-		t.Exact_DOD
+		t.Exact_DOD,
+		t.PASS_Issue_Region
 	from #temp_account t, doctype dt
 	where t.doc_code = dt.doc_code COLLATE DATABASE_DEFAULT
 	--where  (account_status = @Status or @Status = '')

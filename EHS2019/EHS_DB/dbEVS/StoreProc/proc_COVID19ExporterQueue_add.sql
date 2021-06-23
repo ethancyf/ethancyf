@@ -18,6 +18,14 @@ GO
 -- Modification History
 -- CR No.:			CRE20-0023 
 -- Modified by:		Martin Tang
+-- Modified date:	1 Jun 2021
+-- Description:		1. Revise Reserved field 10 for [Issuing Country/Region]
+--					2. add PASS_Issue_Region in COVID19ExporterQueue
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023 
+-- Modified by:		Martin Tang
 -- Modified date:	26 May 2021
 -- Description:		1. Handle VSS Outreach Case
 -- =============================================
@@ -602,7 +610,19 @@ AS
                                       THEN orl.Outreach_code
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_9', --Outreach Code
-               '' AS 'Reserved_field_10', 
+               LTRIM(RTRIM(ISNULL(CASE
+                                      WHEN vt.Voucher_Acc_ID <> ''
+                                      THEN CASE pinfo.Doc_Code
+                                               WHEN 'PASS'
+                                               THEN pinfo.PASS_Issue_Region
+                                               ELSE ''
+                                           END
+                                      ELSE CASE tpi.Doc_Code
+                                               WHEN 'PASS'
+                                               THEN tpi.PASS_Issue_Region
+                                               ELSE ''
+                                           END
+                                  END, ''))) AS 'Reserved_field_10', --Issuing Country/Region
                '' AS 'Reserved_field_11', 
                '' AS 'Reserved_field_12', 
                '' AS 'Reserved_field_13', 
@@ -705,7 +725,8 @@ AS
                ceq.Encrypt_Field6, 
                ceq.Encrypt_Field7, 
                ceq.Encrypt_Field8, 
-               ceq.Encrypt_Field9
+               ceq.Encrypt_Field9, 
+               ceq.PASS_Issue_Region
         INTO #ResultsLatestByTransaction
         FROM
             (
@@ -723,6 +744,7 @@ AS
                        c.Encrypt_Field7, 
                        c.Encrypt_Field8, 
                        c.Encrypt_Field9, 
+                       c.PASS_Issue_Region, 
                        ROW_NUMBER() OVER(PARTITION BY c.Transaction_ID
                        ORDER BY c.Update_Dtm DESC) AS rn
                 FROM COVID19ExporterQueue AS c WITH(NOLOCK)--which is using a filtered index "IX_COVID19ExporterQueue"
@@ -752,6 +774,7 @@ AS
                                        AND r.ccc4 = ctecq.Encrypt_Field7
                                        AND r.ccc5 = ctecq.Encrypt_Field8
                                        AND r.ccc6 = ctecq.Encrypt_Field9
+                                       AND r.Reserved_field_10 = ISNULL(ctecq.PASS_Issue_Region, '')
                                   THEN @SkipedStatus
                                   ELSE @PendingStatus
                               END
@@ -829,7 +852,8 @@ AS
                 Transaction_Type, 
                 Update_Dtm, 
                 From_Dtm, 
-                To_Dtm
+                To_Dtm, 
+                PASS_Issue_Region
                )
         SELECT CONVERT(VARCHAR(6), @CurrentTime, 12) + REPLACE(CONVERT(VARCHAR(8), @CurrentTime, 108), ':', ''), 
                Transaction_ID, 
@@ -871,7 +895,8 @@ AS
                Transaction_Type, 
                GETDATE(), 
                @In_Period_From, 
-               @In_Period_To
+               @In_Period_To, 
+               IIF(Reserved_field_10 = '', NULL, Reserved_field_10)
         FROM #Results;
 
         EXEC [proc_SymmetricKey_close];

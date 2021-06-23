@@ -86,6 +86,33 @@ Partial Public Class ucInputPASS
     Protected WithEvents imgTDNo As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPassportIssueRegion As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlPassportIssueRegion As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgPassportIssueRegion As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblEName control.
     '''</summary>
     '''<remarks>

@@ -334,21 +334,37 @@ Partial Public Class ucReadOnlyDocumnetType
 
                 End Select
             Case EnumDisplayFormat.EnquiryFormat
-                Dim udcReadOnlyCommon As ucReadOnlyCommon = LoadControl(UserControlPath.Common)
+                ' CRE20-0023 (Immu record) [Start][Raiman]
+                Select Case _strDocumentType
+                    Case DocTypeCode.PASS
+                        Dim udcReadOnlyPASS As ucReadOnlyPASS = LoadControl(UserControlPath.PASS)
+                        udcReadOnlyPASS.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyPASS)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyPASS)
+                        End If
 
-                udcReadOnlyCommon.ShowHKICSymbol = _blnEnableToShowHKICSymbol
+                    Case Else
+                        Dim udcReadOnlyCommon As ucReadOnlyCommon = LoadControl(UserControlPath.Common)
 
-                ' CRE19-026 (HCVS hotline service) [Start][Winnie]
-                udcReadOnlyCommon.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, ShowDateOfDeath, _blnShowDateOfDeathBtn, _blnShowCreationMethod, blnAlternateRow)
-                ' CRE19-026 (HCVS hotline service) [End][Winnie]
+                        udcReadOnlyCommon.ShowHKICSymbol = _blnEnableToShowHKICSymbol
 
-                If _blnIsInvalidAccount Then
-                    If blnAddToOriginalAccPlaceHolder Then
-                        SetOriginal(udcReadOnlyCommon)
-                    End If
-                Else
-                    SetNormal(udcReadOnlyCommon)
-                End If
+                        ' CRE19-026 (HCVS hotline service) [Start][Winnie]
+                        udcReadOnlyCommon.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, ShowDateOfDeath, _blnShowDateOfDeathBtn, _blnShowCreationMethod, blnAlternateRow)
+                        ' CRE19-026 (HCVS hotline service) [End][Winnie]
+
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyCommon)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyCommon)
+                        End If
+                End Select
+                ' CRE20-0023 (Immu record) [End][Raiman]
         End Select
     End Sub
 

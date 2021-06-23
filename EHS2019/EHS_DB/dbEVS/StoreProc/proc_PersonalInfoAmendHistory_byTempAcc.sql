@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023 (Immu record)
 -- Modified by:		Winnie SUEN
 -- Modified date:	11 Mar 2021
@@ -94,7 +101,8 @@ insert into personalinfoamendhistory
 	Permit_To_Remain_Until,
 	Encrypt_Field10,
 	Encrypt_Field11,
-	SmartID_Ver
+	SmartID_Ver,
+	PASS_Issue_Region
 )
 Select	(SELECT DATEADD(ms, 10 * COUNT(1), @System_dtm) 
 			FROM PersonalInfoAmendHistory WITH (NOLOCK) 
@@ -129,7 +137,8 @@ Select	(SELECT DATEADD(ms, 10 * COUNT(1), @System_dtm)
 		tp.Permit_To_Remain_Until,
 		tp.Encrypt_Field10,
 		tp.Encrypt_Field11,
-		tp.SmartID_Ver
+		tp.SmartID_Ver,
+		tp.PASS_Issue_Region
 		
 from TempVoucherAccount t WITH (NOLOCK), TempPersonalInformation tp WITH (NOLOCK)
 where t.voucher_acc_id = tp.voucher_acc_id

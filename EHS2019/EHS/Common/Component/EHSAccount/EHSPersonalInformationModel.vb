@@ -178,6 +178,12 @@ Namespace Component.EHSAccount
             ' ----------------------------------------------------------------------------------------
             Private _strSmartID_Ver As String
             ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Private _strPassportIssueRegion As String
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 #End Region
 
 #Region "Property"
@@ -614,6 +620,19 @@ Namespace Component.EHSAccount
                 End Set
             End Property
             ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+            ' CRE20-0023 (Immu record) [Start][Chris YIM]
+            ' ---------------------------------------------------------------------------------------------------------
+            Public Property PassportIssueRegion() As String
+                Get
+                    Return Me._strPassportIssueRegion
+                End Get
+                Set(ByVal value As String)
+                    Me._strPassportIssueRegion = value
+                End Set
+            End Property
+            ' CRE20-0023 (Immu record) [End][Chris YIM]
+
 #End Region
 
 #Region "Addition Memeber"
@@ -797,6 +816,12 @@ Namespace Component.EHSAccount
                 ' ----------------------------------------------------------------------------------------
                 Me._strSmartID_Ver = udtEHSPersonalInformationModel._strSmartID_Ver
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me._strPassportIssueRegion = udtEHSPersonalInformationModel.PassportIssueRegion
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
+
             End Sub
 
             ''' <summary>
@@ -846,7 +871,7 @@ Namespace Component.EHSAccount
                 ByVal dtmPermitToRemainUntil As Nullable(Of Date), ByVal strAdoptionPrefixNum As String, ByVal strOtherInfo As String, _
                 ByVal blnECSerialNoNotProvided As Boolean, ByVal blnECReferenceNoOtherFormat As Boolean, _
                 ByVal strDeceased As String, ByVal dtmDOD As Nullable(Of Date), ByVal strExactDOD As String, _
-                ByVal strSmartIDVer As String)
+                ByVal strSmartIDVer As String, ByVal strPassportIssueRegion As String)
 
                 Me._strVoucher_Acc_ID = strVoucherAccID
                 Me._dtmDOB = dtmDOB
@@ -908,6 +933,12 @@ Namespace Component.EHSAccount
                 ' ----------------------------------------------------------------------------------------
                 Me._strSmartID_Ver = strSmartIDVer
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me._strPassportIssueRegion = strPassportIssueRegion
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
+
             End Sub
 
             ''' <summary>
@@ -959,7 +990,7 @@ Namespace Component.EHSAccount
                 ByVal dtmPermitToRemainUntil As Nullable(Of Date), ByVal strAdoptionPrefixNum As String, ByVal strOtherInfo As String, _
                 ByVal strCreateBySmartID As String, ByVal blnECSerialNoNotProvided As Boolean, ByVal blnECReferenceNoOtherFormat As Boolean, _
                 ByVal strDeceased As String, ByVal dtmDOD As Nullable(Of Date), ByVal strExactDOD As String, _
-                ByVal strSmartIDVer As String)
+                ByVal strSmartIDVer As String, ByVal strPassportIssueRegion As String)
 
                 Me._strVoucher_Acc_ID = strVoucherAccID
                 Me._dtmDOB = dtmDOB
@@ -1023,6 +1054,11 @@ Namespace Component.EHSAccount
                 ' ----------------------------------------------------------------------------------------
                 Me._strSmartID_Ver = strSmartIDVer
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Me._strPassportIssueRegion = strPassportIssueRegion
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
             End Sub
 
 #End Region

@@ -485,6 +485,10 @@ Partial Public Class ucInputVSS
         ucInputVSSCOVID19.DisplayOutreachInput(blnDisplay)
     End Sub
 
+    Public Sub SetJoinEHRSS(ByVal udtEHSAccount As EHSAccount.EHSAccountModel)
+        ucInputVSSCOVID19.SetJoinEHRSS(udtEHSAccount)
+    End Sub
+
     Public Sub FillClaimDetail()
 
         'Select Case mvCategory.ActiveViewIndex

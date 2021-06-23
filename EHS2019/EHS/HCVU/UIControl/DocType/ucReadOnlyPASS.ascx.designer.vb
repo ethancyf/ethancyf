@@ -131,6 +131,24 @@ Partial Public Class ucReadOnlyPASS
     Protected WithEvents lblHTravelDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblHPassportIssueRegionText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHPassportIssueRegionText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblHPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblHPassportIssueRegion As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''ViewVertical control.
     '''</summary>
     '''<remarks>
@@ -183,6 +201,24 @@ Partial Public Class ucReadOnlyPASS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVTravelDocNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVPassportIssueRegionText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVPassportIssueRegionText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVPassportIssueRegion As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''lblVNameText control.

@@ -78,8 +78,8 @@ Partial Public Class ClaimTranEnquiry
 
         End If
 
-        ' CRE20-022 (Immu record)  [Start][Raiman]
-        ' Display setting for COVID-19
+        ' --- Display setting for COVID-19 ---
+
         If IsClaimCOVID19(udtEHSTransaction) Then
             'trTransactionStatus.Style.Add("display", "none")
             'trPractice.Style.Add("display", "none")
@@ -124,34 +124,37 @@ Partial Public Class ClaimTranEnquiry
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB OrElse _
                 ((udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
                  udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
-                 udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
-               (udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
-                udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                udtEHSTransaction.DocCode = DocTypeCode.OW OrElse _
-                udtEHSTransaction.DocCode = DocTypeCode.TW OrElse _
-                udtEHSTransaction.DocCode = DocTypeCode.CCIC) Then
+                 udtEHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) Then
 
-                panJoinEHRSS.Visible = True
-                If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
-                    lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
-                                               GetGlobalResourceObject("Text", "Yes"), _
-                                               GetGlobalResourceObject("Text", "No"))
+                If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSTransaction.EHSAcct, udtEHSTransaction.DocCode) Then
+                    panJoinEHRSS.Visible = True
+
+                    'Join EHRSS
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                        lblJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                                   GetGlobalResourceObject("Text", "Yes"), _
+                                                   GetGlobalResourceObject("Text", "No"))
+
+                    Else
+                        lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    End If
 
                 Else
-                    lblJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    panJoinEHRSS.Visible = False
+
                 End If
+
             Else
                 panJoinEHRSS.Visible = False
-            End If
 
+            End If
 
         Else
             lblClaimInfo.Text = Me.GetGlobalResourceObject("Text", "ClaimInfo")
             panRecipinetContactInfo.Visible = False
             lblServiceDateText.Text = Me.GetGlobalResourceObject("Text", "ServiceDate")
         End If
-        ' CRE20-022 (Immu record)  [End][Raiman]
-        
+
         ' --- Claim Information ---
 
         ' Transaction No.

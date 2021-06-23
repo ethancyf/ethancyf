@@ -5965,96 +5965,95 @@ Partial Public Class EHSClaimV1
                                 Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
                             End If
 
-                            If Not CompareEligibleRuleByAge(dtmServiceDate, udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode), _
-                                                            intAge, "<", "Y", "DAY3") Then
+                            Dim udtPersonalInfo As EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
 
-                                Select Case udtEHSAccount.SearchDocCode
-                                    Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.TW
-                                        panStep2aDeclareJoineHRSS.Visible = True
-                                        chkStep2aDeclareJoineHRSS.Enabled = True
-                                        trStep2aDeclareJoineHRSS.Style.Remove("display")
+                            If Not CompareEligibleRuleByAge(dtmServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
 
-                                        'Scheme & recipient option
-                                        If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
-                                           udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
-                                            trStep2aDeclareJoineHRSS.Style.Add("display", "none")
+                                If COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
 
-                                            'COVID19RVP
-                                            Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
+                                    panStep2aDeclareJoineHRSS.Visible = True
+                                    chkStep2aDeclareJoineHRSS.Enabled = True
+                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
 
-                                            If udcInputCOVID19RVP IsNot Nothing Then
-                                                If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
-                                                    udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                                                    udcInputCOVID19RVP.RecipientType <> String.Empty Then
+                                    'Scheme & recipient option
+                                    If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
+                                       udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.RVP Then
+                                        trStep2aDeclareJoineHRSS.Style.Add("display", "none")
 
-                                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
-                                                End If
-                                            End If
+                                        'COVID19RVP
+                                        Dim udcInputCOVID19RVP As ucInputCOVID19RVP = Me.udcStep2aInputEHSClaim.GetCOVID19RVPControl()
 
-                                            'RVPCOVID19
-                                            Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
+                                        If udcInputCOVID19RVP IsNot Nothing Then
+                                            If udcInputCOVID19RVP.RecipientType IsNot Nothing AndAlso _
+                                                udcInputCOVID19RVP.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                                udcInputCOVID19RVP.RecipientType <> String.Empty Then
 
-                                            If udcInputRVPCOVID19 IsNot Nothing Then
-                                                If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
-                                                    If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
-                                                        udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
-                                                        udcInputRVPCOVID19.RecipientType <> String.Empty Then
-
-                                                        trStep2aDeclareJoineHRSS.Style.Remove("display")
-                                                    End If
-
-                                                Else
-                                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
-
-                                                End If
-
+                                                trStep2aDeclareJoineHRSS.Style.Remove("display")
                                             End If
                                         End If
 
-                                        'Carry Forward: Join eHealth
-                                        If udtTranDetailLatestVaccine IsNot Nothing Then
-                                            chkStep2aDeclareJoineHRSS.Enabled = False
-                                            If udtEHSTransactionLatestVaccine IsNot Nothing Then
+                                        'RVPCOVID19
+                                        Dim udcInputRVPCOVID19 As ucInputRVPCOVID19 = Me.udcStep2aInputEHSClaim.GetRVPCOVID19Control()
 
-                                                If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
-                                                   udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS IsNot Nothing Then
+                                        If udcInputRVPCOVID19 IsNot Nothing Then
+                                            If udcInputRVPCOVID19.TypeOfOutreach = TYPE_OF_OUTREACH.RCH Then
+                                                If udcInputRVPCOVID19.RecipientType IsNot Nothing AndAlso _
+                                                    udcInputRVPCOVID19.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
+                                                    udcInputRVPCOVID19.RecipientType <> String.Empty Then
 
-                                                    Select Case udtEHSTransactionLatestVaccine.SchemeCode.Trim.ToUpper
-                                                        Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19RVP, _
-                                                             SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB, _
-                                                             SchemeClaimModel.VSS, SchemeClaimModel.RVP
+                                                    trStep2aDeclareJoineHRSS.Style.Remove("display")
+                                                End If
 
-                                                            If udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS = YesNo.Yes Then
-                                                                panStep2aDeclareJoineHRSS.Visible = False
-                                                                'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
-                                                                '    chkStep2aDeclareJoineHRSS.Checked = True
-                                                                'End If
-                                                            Else
-                                                                chkStep2aDeclareJoineHRSS.Enabled = True
-                                                                'chkStep2aDeclareJoineHRSS.Checked = False
+                                            Else
+                                                trStep2aDeclareJoineHRSS.Style.Remove("display")
 
-                                                            End If
+                                            End If
 
-                                                        Case Else
+                                        End If
+                                    End If
+
+                                    'Carry Forward: Join eHealth
+                                    If udtTranDetailLatestVaccine IsNot Nothing Then
+                                        chkStep2aDeclareJoineHRSS.Enabled = False
+                                        If udtEHSTransactionLatestVaccine IsNot Nothing Then
+
+                                            If udtEHSTransactionLatestVaccine.TransactionAdditionFields IsNot Nothing AndAlso _
+                                               udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS IsNot Nothing Then
+
+                                                Select Case udtEHSTransactionLatestVaccine.SchemeCode.Trim.ToUpper
+                                                    Case SchemeClaimModel.COVID19CVC, SchemeClaimModel.COVID19DH, SchemeClaimModel.COVID19RVP, _
+                                                         SchemeClaimModel.COVID19OR, SchemeClaimModel.COVID19SR, SchemeClaimModel.COVID19SB, _
+                                                         SchemeClaimModel.VSS, SchemeClaimModel.RVP
+
+                                                        If udtEHSTransactionLatestVaccine.TransactionAdditionFields.JoinEHRSS = YesNo.Yes Then
+                                                            panStep2aDeclareJoineHRSS.Visible = False
+                                                            'If _udtSessionHandler.ClaimCOVID19CarryForwordGetFromSession(FunctCode) = False Then
+                                                            '    chkStep2aDeclareJoineHRSS.Checked = True
+                                                            'End If
+                                                        Else
                                                             chkStep2aDeclareJoineHRSS.Enabled = True
                                                             'chkStep2aDeclareJoineHRSS.Checked = False
-                                                    End Select
 
-                                                Else
-                                                    chkStep2aDeclareJoineHRSS.Enabled = True
-                                                    'chkStep2aDeclareJoineHRSS.Checked = False
+                                                        End If
 
-                                                End If
+                                                    Case Else
+                                                        chkStep2aDeclareJoineHRSS.Enabled = True
+                                                        'chkStep2aDeclareJoineHRSS.Checked = False
+                                                End Select
+
                                             Else
                                                 chkStep2aDeclareJoineHRSS.Enabled = True
                                                 'chkStep2aDeclareJoineHRSS.Checked = False
 
                                             End If
-                                        End If
+                                        Else
+                                            chkStep2aDeclareJoineHRSS.Enabled = True
+                                            'chkStep2aDeclareJoineHRSS.Checked = False
 
-                                    Case Else
-                                        'Nothing to do
-                                End Select
+                                        End If
+                                    End If
+
+                                End If
 
                             End If
 
@@ -12354,24 +12353,29 @@ Partial Public Class EHSClaimV1
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
-               (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.HKIC OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.EC OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.TW OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.CCIC) Then
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) Then
 
-                panStep2bJoinEHRSS.Visible = True
-                If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
-                    lblStep2bJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
-                                               GetGlobalResourceObject("Text", "Yes"), _
-                                               GetGlobalResourceObject("Text", "No"))
+                If COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
+                    panStep2bJoinEHRSS.Visible = True
+
+                    'Join EHRSS
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                        lblStep2bJoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                                   GetGlobalResourceObject("Text", "Yes"), _
+                                                   GetGlobalResourceObject("Text", "No"))
+
+                    Else
+                        lblStep2bJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    End If
 
                 Else
-                    lblStep2bJoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    panStep2bJoinEHRSS.Visible = False
+
                 End If
+
             Else
                 panStep2bJoinEHRSS.Visible = False
+
             End If
 
             'Override the print option, disable the declare checkbox and enable the confirm button
@@ -13029,26 +13033,30 @@ Partial Public Class EHSClaimV1
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB OrElse _
                 udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS OrElse _
-                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) AndAlso _
-               (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.HKIC OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.EC OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.TW OrElse _
-                udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.CCIC) Then
+                udtEHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.RVP) Then
 
-                panStep3JoinEHRSS.Visible = True
-                If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
-                    lblStep3JoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
-                                               GetGlobalResourceObject("Text", "Yes"), _
-                                               GetGlobalResourceObject("Text", "No"))
+                If COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
+                    panStep3JoinEHRSS.Visible = True
+
+                    'Join EHRSS
+                    If udtEHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And udtEHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                        lblStep3JoinEHRSS.Text = IIf(udtEHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                                   GetGlobalResourceObject("Text", "Yes"), _
+                                                   GetGlobalResourceObject("Text", "No"))
+
+                    Else
+                        lblStep3JoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    End If
 
                 Else
-                    lblStep3JoinEHRSS.Text = GetGlobalResourceObject("Text", "NA")
+                    panStep3JoinEHRSS.Visible = False
+
                 End If
+
             Else
                 panStep3JoinEHRSS.Visible = False
-            End If
 
+            End If
 
         Else
             panStep3RecipinetContactInfo.Visible = False

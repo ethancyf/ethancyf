@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="vb" AutoEventWireup="false" CodeBehind="ucInputPASS.ascx.vb" Inherits="HCSP.ucInputPASS" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
 <asp:Panel ID="panInputPASS" runat="server">
     <table cellpadding="0" cellspacing="0">
         <tr runat="server" id="trReferenceNo_M">
@@ -19,6 +20,23 @@
                     ImageAlign="Top" Visible="false" />
             </td>
         </tr>
+
+        <tr>
+            <td valign="top" class="tableCellStyle">
+                <asp:Label ID="lblPassportIssueRegion" runat="server" CssClass="tableTitle"
+                    Width="200px"></asp:Label>
+            </td>
+            <td >
+                <asp:DropDownList ID="ddlPassportIssueRegion" runat="server" Width="300px">
+                 </asp:DropDownList>
+                <asp:Image ID="imgPassportIssueRegion" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
+              ImageAlign="Top"  Visible="false"/>
+
+            </td>
+
+        </tr>
+
+
         <tr>
             <td valign="top" class="tableCellStyle">
                 <asp:Label ID="lblEName" runat="server" CssClass="tableTitle" Width="150px"></asp:Label></td>
@@ -81,6 +99,7 @@
         </tr>
     </table>
 </asp:Panel>
+
 <cc1:FilteredTextBoxExtender ID="filtereditTDNo" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Numbers"
     TargetControlID="txtTDNo"></cc1:FilteredTextBoxExtender>
 <cc1:FilteredTextBoxExtender ID="filtereditEnameSurname" runat="server" FilterType="UppercaseLetters, LowercaseLetters, Custom"

@@ -475,6 +475,9 @@ EHS2019/EHS/Common/Component/MedicalOrganizationT/MedicalOrganizationModelCollec
 EHS2019/EHS/Common/Component/NewsMessage/NewsMessageBLL.vb -text
 EHS2019/EHS/Common/Component/NewsMessage/NewsMessageModel.vb -text
 EHS2019/EHS/Common/Component/NewsMessage/NewsMessageModelCollection.vb -text
+EHS2019/EHS/Common/Component/PassportIssueRegion/PassportIssueRegionBLL.vb -text
+EHS2019/EHS/Common/Component/PassportIssueRegion/PassportIssueRegionModel.vb -text
+EHS2019/EHS/Common/Component/PassportIssueRegion/PassportIssueRegionModelCollection.vb -text
 EHS2019/EHS/Common/Component/Practice/PracticeBLL.vb -text
 EHS2019/EHS/Common/Component/Practice/PracticeModel.vb -text
 EHS2019/EHS/Common/Component/Practice/PracticeModelCollection.vb -text
@@ -665,6 +668,7 @@ EHS2019/EHS/CommonBin/IdeasRM.dll -text
 EHS2019/EHS/CommonBin/Microsoft.Office.Interop.Excel.dll -text
 EHS2019/EHS/CommonBin/Microsoft.Office.Interop.Word.dll -text
 EHS2019/EHS/CommonBin/Microsoft.Web.Services3.dll -text
+EHS2019/EHS/CommonBin/Newtonsoft.Json.dll -text
 EHS2019/EHS/CommonBin/SSOCentralIdPLib.dll -text
 EHS2019/EHS/CommonBin/SSODataType.dll -text
 EHS2019/EHS/CommonBin/SSOLib.dll -text
@@ -9208,6 +9212,8 @@ EHS2019/EHS_DB/dbEVS/StoreProc/proc_OutreachList_update.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PCDStatusUpdateQueue_gen.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PCDStatusUpdateQueue_get.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PCDStatusUpdateQueue_upd.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_PassportIssueRegion_get_active_cache.sql -text
+EHS2019/EHS_DB/dbEVS/StoreProc/proc_PassportIssueRegion_get_all_cache.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PatientPortalConnection_Stat_Read.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PatientPortalConnection_Stat_Write.sql -text
 EHS2019/EHS_DB/dbEVS/StoreProc/proc_PatientPortalDoctorListData_get_All.sql -text

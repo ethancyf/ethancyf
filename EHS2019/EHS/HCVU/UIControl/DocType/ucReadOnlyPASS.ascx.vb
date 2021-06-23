@@ -4,6 +4,7 @@ Imports Common.Component.DocType.DocTypeModel
 Imports Common.Component.EHSAccount
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Format
+Imports Common.Component.PassportIssueRegion
 
 Public Class ucReadOnlyPASS
     Inherits System.Web.UI.UserControl
@@ -63,6 +64,13 @@ Public Class ucReadOnlyPASS
                 Alternate()
             End If
 
+            Dim strPassportIssueRegionCode As String = udtEHSPersonalInformation.PassportIssueRegion
+            If IsNothing(strPassportIssueRegionCode) Or strPassportIssueRegionCode.Equals(String.Empty) Then
+                Me.lblVPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                Me.lblVPassportIssueRegion.Text = (New PassportIssueRegionBLL).GetPassportIssueRegion.Filter(strPassportIssueRegionCode).NationalDisplay(Session("Language").ToString())
+            End If
+
         Else
             MultiViewPASS.ActiveViewIndex = ViewIndex.Horizontal
 
@@ -87,6 +95,13 @@ Public Class ucReadOnlyPASS
 
             ' Travel Document No.
             lblHTravelDocNo.Text = udtFormatter.FormatDocIdentityNoForDisplay(DocTypeCode.PASS, udtEHSPersonalInformation.IdentityNum, blnMaskTravelDocNo)
+
+            Dim strPassportIssueRegionCode As String = udtEHSPersonalInformation.PassportIssueRegion
+            If IsNothing(strPassportIssueRegionCode) Or strPassportIssueRegionCode.Equals(String.Empty) Then
+                Me.lblHPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                Me.lblHPassportIssueRegion.Text = (New PassportIssueRegionBLL).GetPassportIssueRegion.Filter(strPassportIssueRegionCode).NationalDisplay(Session("Language").ToString())
+            End If
 
             ' Date of Issue
             'lblHDateOfIssue.Text = udtFormatter.formatDOI(DocTypeCode.PASS, udtEHSPersonalInformation.DateofIssue)

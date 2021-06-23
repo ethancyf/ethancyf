@@ -104,6 +104,42 @@ Partial Public Class ucInputPASS
     Protected WithEvents imgTDNo As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblPassportIssueRegionOriginalText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPassportIssueRegionOriginalText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblPassportIssueRegionOriginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPassportIssueRegionOriginal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlPassportIssueRegion As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgPassportIssueRegion As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblNameOrignialText control.
     '''</summary>
     '''<remarks>
@@ -309,6 +345,33 @@ Partial Public Class ucInputPASS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgNewTravelDocNoErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblNewPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewPassportIssueRegion As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ddlNewPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlNewPassportIssueRegion As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgNewPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgNewPassportIssueRegion As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblNewNameText control.

@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -90,12 +98,13 @@ BEGIN
 	dt.doc_code,
 	dt.doc_display_code,
 	P.other_info,
-	P.EC_Reference_No_Other_Format
+	P.EC_Reference_No_Other_Format,
 	--isNull(Cancel_By,'') as Cancel_By,
 	--isNull(Cancel_Dtm,'') as Cancel_Dtm,
 	--isNull(Action_type,'') as Action_type,
 	--isNull(Temp_Voucher_Acc_ID, '') as Temp_Voucher_Acc_ID
-	,p.SmartID_Ver
+	p.SmartID_Ver,
+	p.PASS_Issue_Region
 	from PersonalInfoAmendHistory P, DocType DT
 	where P.Voucher_Acc_ID = @Voucher_Acc_ID and
 			P.Record_Status in ('V','A') and

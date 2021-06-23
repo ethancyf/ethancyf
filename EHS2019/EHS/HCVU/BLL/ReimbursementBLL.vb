@@ -1816,7 +1816,8 @@ Public Class ReimbursementBLL
             udtOldEHSPersonalInformation.Deceased, _
             udtOldEHSPersonalInformation.DOD, _
             udtOldEHSPersonalInformation.ExactDOD, _
-            udtOldEHSPersonalInformation.SmartIDVer _
+            udtOldEHSPersonalInformation.SmartIDVer, _
+            udtOldEHSPersonalInformation.PassportIssueRegion
         )
         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
@@ -1878,6 +1879,7 @@ Public Class ReimbursementBLL
             False, _
             String.Empty,
             Nothing,
+            String.Empty, _
             String.Empty, _
             String.Empty
         )

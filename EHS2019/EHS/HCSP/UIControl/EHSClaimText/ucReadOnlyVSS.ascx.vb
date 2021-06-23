@@ -265,29 +265,24 @@ Namespace UIControl.EHCClaimText
                 End If
 
                 'Join EHRSS
-                If (MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19CVC OrElse _
-                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19DH OrElse _
-                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19OR OrElse _
-                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SR OrElse _
-                    MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.COVID19SB OrElse _
-                    (MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
-                     MyBase.EHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0)) AndAlso _
-                   (MyBase.EHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
-                    MyBase.EHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                    MyBase.EHSTransaction.DocCode = DocTypeCode.OW OrElse _
-                    MyBase.EHSTransaction.DocCode = DocTypeCode.TW OrElse _
-                    MyBase.EHSTransaction.DocCode = DocTypeCode.CCIC) Then
+                If MyBase.EHSTransaction.SchemeCode.Trim.ToUpper() = SchemeClaimModel.VSS AndAlso _
+                     MyBase.EHSTransaction.TransactionDetails.FilterBySubsidizeItemDetail(SubsidizeGroupClaimModel.SubsidizeItemCodeClass.C19).Count > 0 Then
 
-                    trJoinEHRSS.Visible = True
-                    trJoinEHRSSText.Visible = True
+                    If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(MyBase.EHSTransaction.EHSAcct, MyBase.EHSTransaction.DocCode) Then
+                        trJoinEHRSS.Visible = True
+                        trJoinEHRSSText.Visible = True
 
-                    If MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
-                        lblJoinEHRSSForCovid19.Text = IIf(MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
-                                                            GetGlobalResourceObject("Text", "Yes"), _
-                                                            GetGlobalResourceObject("Text", "No"))
+                        If MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS IsNot Nothing And MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS <> String.Empty Then
+                            lblJoinEHRSSForCovid19.Text = IIf(MyBase.EHSTransaction.TransactionAdditionFields.JoinEHRSS = YesNo.Yes, _
+                                                                GetGlobalResourceObject("Text", "Yes"), _
+                                                                GetGlobalResourceObject("Text", "No"))
 
+                        Else
+                            lblJoinEHRSSForCovid19.Text = GetGlobalResourceObject("Text", "NA")
+                        End If
                     Else
-                        lblJoinEHRSSForCovid19.Text = GetGlobalResourceObject("Text", "NA")
+                        trJoinEHRSS.Visible = False
+                        trJoinEHRSSText.Visible = False
                     End If
                 Else
                     trJoinEHRSS.Visible = False

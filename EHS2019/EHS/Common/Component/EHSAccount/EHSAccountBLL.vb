@@ -1463,8 +1463,6 @@ Namespace Component.EHSAccount
                 Dim strDataEntry As String = String.Empty
                 If Not .DataEntryBy Is Nothing Then strDataEntry = .DataEntryBy.Trim()
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 Dim objCreateBySmartID As Object = DBNull.Value
                 Dim objSmartIDVer As Object = DBNull.Value
 
@@ -1479,7 +1477,6 @@ Namespace Component.EHSAccount
                         objCreateBySmartID = "N"
                     End If
                 End If
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                 Dim objReferenceNoOtherFormat As Object = DBNull.Value
                 If .ECReferenceNoOtherFormat Then objReferenceNoOtherFormat = "Y"
@@ -1501,8 +1498,6 @@ Namespace Component.EHSAccount
                 Dim strCName As String = String.Empty
                 If Not .CName Is Nothing Then strCName = .CName
 
-                ' CRE14-016 (To introduce 'Deceased' status into eHS) [Start][Winnie]
-                ' -----------------------------------------------------------------------------------------
                 Dim objDeceased As Object = DBNull.Value
                 If .Deceased Then
                     objDeceased = YesNo.Yes
@@ -1514,9 +1509,9 @@ Namespace Component.EHSAccount
                 Dim objExactDOD As Object = DBNull.Value
                 If Not (.ExactDOD Is Nothing OrElse .ExactDOD.Trim() = "") Then objExactDOD = .ExactDOD.Trim()
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                ' Add [SmartID_Ver]
+                Dim objPassportIssueRegion As Object = DBNull.Value
+                If Not (.PassportIssueRegion Is Nothing OrElse .PassportIssueRegion.Trim() = String.Empty) Then objPassportIssueRegion = .PassportIssueRegion.Trim()
+
                 Dim parms() As SqlParameter = { _
                     udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, strVoucherAccID), _
                     udtDB.MakeInParam("@DOB", SqlDbType.DateTime, 8, .DOB), _
@@ -1550,8 +1545,9 @@ Namespace Component.EHSAccount
                     udtDB.MakeInParam("@Deceased", SqlDbType.Char, 1, objDeceased), _
                     udtDB.MakeInParam("@DOD", SqlDbType.DateTime, 8, objDOD), _
                     udtDB.MakeInParam("@Exact_DOD", SqlDbType.Char, 1, objExactDOD), _
-                    udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer)}
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                    udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer), _
+                    udtDB.MakeInParam("@PASS_Issue_Region", SqlDbType.VarChar, 5, objPassportIssueRegion) _
+                    }
 
                 udtDB.RunProc("proc_TempPersonalInformaion_add", parms)
 
@@ -1846,9 +1842,6 @@ Namespace Component.EHSAccount
                 Dim strAdoptionPrefixNum As String = String.Empty
                 If Not .AdoptionPrefixNum Is Nothing Then strAdoptionPrefixNum = .AdoptionPrefixNum.Trim()
 
-
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 Dim objSmartIDVer As Object = DBNull.Value
                 Dim objCreateBySmartID As Object = DBNull.Value
                 If .DocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
@@ -1862,7 +1855,6 @@ Namespace Component.EHSAccount
                         objCreateBySmartID = "N"
                     End If
                 End If
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                 Dim objReferenceNoOtherFormat As Object = DBNull.Value
                 If .ECReferenceNoOtherFormat Then objReferenceNoOtherFormat = "Y"
@@ -1884,9 +1876,9 @@ Namespace Component.EHSAccount
                 Dim strCName As String = String.Empty
                 If Not .CName Is Nothing Then strCName = .CName
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                ' Add [SmartID_Ver]
+                Dim objPassportIssueRegion As Object = DBNull.Value
+                If Not (.PassportIssueRegion Is Nothing OrElse .PassportIssueRegion.Trim() = String.Empty) Then objPassportIssueRegion = .PassportIssueRegion.Trim()
+
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, .VoucherAccID), _
                         udtDB.MakeInParam("@DOB", SqlDbType.DateTime, 8, .DOB), _
@@ -1917,8 +1909,9 @@ Namespace Component.EHSAccount
                         udtDB.MakeInParam("@Other_Info", SqlDbType.VarChar, 10, objOtherInfo), _
                         udtDB.MakeInParam("@Create_By_SmartIC", SqlDbType.VarChar, 10, objCreateBySmartID), _
                         udtDB.MakeInParam("@EC_Reference_No_Other_Format", SqlDbType.VarChar, 1, objReferenceNoOtherFormat), _
-                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer)}
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer), _
+                        udtDB.MakeInParam("@PASS_Issue_Region", SqlDbType.VarChar, 5, objPassportIssueRegion) _
+                    }
 
                 udtDB.RunProc("proc_TempPersonalInformation_upd_PersonalInfo", parms)
 
@@ -2048,8 +2041,6 @@ Namespace Component.EHSAccount
                 Dim strCName As String = String.Empty
                 If Not .CName Is Nothing Then strCName = .CName
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 Dim objSmartIDVer As Object = DBNull.Value
                 Dim objCreateBySmartID As Object = DBNull.Value
                 If .DocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
@@ -2064,7 +2055,9 @@ Namespace Component.EHSAccount
                     End If
                 End If
 
-                ' Add [Create_By_SmartID], [SmartID_Ver]
+                Dim objPassportIssueRegion As Object = DBNull.Value
+                If Not (.PassportIssueRegion Is Nothing OrElse .PassportIssueRegion.Trim() = String.Empty) Then objPassportIssueRegion = .PassportIssueRegion.Trim()
+
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, .VoucherAccID), _
                         udtDB.MakeInParam("@Eng_Name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, Me._udtFormatter.formatEnglishName(.ENameSurName, .ENameFirstName)), _
@@ -2081,9 +2074,9 @@ Namespace Component.EHSAccount
                         udtDB.MakeInParam("@Doc_Code", SqlDbType.Char, 20, .DocCode), _
                         udtDB.MakeInParam("@TSMP", SqlDbType.Timestamp, 16, .TSMP), _
                         udtDB.MakeInParam("@Create_By_SmartID", SqlDbType.Char, 1, objCreateBySmartID), _
-                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer) _
+                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer), _
+                        udtDB.MakeInParam("@PASS_Issue_Region", SqlDbType.VarChar, 5, objPassportIssueRegion) _
                         }
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                 udtDB.RunProc("proc_PersonalInformation_upd", parms)
 
@@ -2132,8 +2125,6 @@ Namespace Component.EHSAccount
                 Dim strAdoptionPrefixNum As String = String.Empty
                 If Not .AdoptionPrefixNum Is Nothing Then strAdoptionPrefixNum = .AdoptionPrefixNum.Trim().ToUpper()
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 Dim objSmartIDVer As Object = DBNull.Value
                 Dim objCreateBySmartID As Object = DBNull.Value
                 If .DocCode = DocType.DocTypeModel.DocTypeCode.HKIC Then
@@ -2147,7 +2138,6 @@ Namespace Component.EHSAccount
                         objCreateBySmartID = "N"
                     End If
                 End If
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                 Dim strCCCode1 As String = String.Empty
                 Dim strCCCode2 As String = String.Empty
@@ -2166,9 +2156,9 @@ Namespace Component.EHSAccount
                 Dim strCName As String = String.Empty
                 If Not .CName Is Nothing Then strCName = .CName
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                ' Add [SmartID_Ver]
+                Dim objPassportIssueRegion As Object = DBNull.Value
+                If Not (.PassportIssueRegion Is Nothing OrElse .PassportIssueRegion.Trim() = String.Empty) Then objPassportIssueRegion = .PassportIssueRegion.Trim()
+
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, udtEHSAccountModel.ValidatedAccID), _
                         udtDB.MakeInParam("@IdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
@@ -2200,9 +2190,9 @@ Namespace Component.EHSAccount
                         udtDB.MakeInParam("@Other_Info", SqlDbType.VarChar, 10, objOtherInfo), _
                         udtDB.MakeInParam("@temp_Voucher_acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, objTempAccID), _
                         udtDB.MakeInParam("@EC_Reference_No_Other_Format", SqlDbType.Char, 1, objReferenceNoOtherFormat), _
-                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer) _
-                    }
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer), _
+                        udtDB.MakeInParam("@PASS_Issue_Region", SqlDbType.VarChar, 5, objPassportIssueRegion) _
+                        }
 
                 udtDB.RunProc("proc_PersonalInfoAmendHistory_add", parms)
 
@@ -2245,8 +2235,6 @@ Namespace Component.EHSAccount
                 Dim strAdoptionPrefixNum As String = String.Empty
                 If Not .AdoptionPrefixNum Is Nothing Then strAdoptionPrefixNum = .AdoptionPrefixNum.Trim().ToUpper()
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
                 Dim objSmartIDVer As Object = DBNull.Value
                 Dim objCreateBySmartID As Object = DBNull.Value
 
@@ -2256,7 +2244,6 @@ Namespace Component.EHSAccount
                         objSmartIDVer = .SmartIDVer.Trim()
                     End If
                 End If
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
                 Dim strCCCode1 As String = String.Empty
                 Dim strCCCode2 As String = String.Empty
@@ -2275,9 +2262,9 @@ Namespace Component.EHSAccount
                 Dim strCName As String = String.Empty
                 If Not .CName Is Nothing Then strCName = .CName
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                ' Add [SmartID_Ver]
+                Dim objPassportIssueRegion As Object = DBNull.Value
+                If Not (.PassportIssueRegion Is Nothing OrElse .PassportIssueRegion.Trim() = String.Empty) Then objPassportIssueRegion = .PassportIssueRegion.Trim()
+
                 Dim parms() As SqlParameter = { _
                         udtDB.MakeInParam("@Voucher_Acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, udtEHSPersonalInformation.VoucherAccID), _
                         udtDB.MakeInParam("@IdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, Me._udtFormatter.formatDocumentIdentityNumber(.DocCode, .IdentityNum)), _
@@ -2309,9 +2296,9 @@ Namespace Component.EHSAccount
                         udtDB.MakeInParam("@Other_Info", SqlDbType.VarChar, 10, objOtherInfo), _
                         udtDB.MakeInParam("@temp_Voucher_acc_ID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, objTempAccID), _
                         udtDB.MakeInParam("@EC_Reference_No_Other_Format", SqlDbType.Char, 1, objReferenceNoOtherFormat), _
-                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer) _
-                    }
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                        udtDB.MakeInParam("@SmartID_Ver", SqlDbType.VarChar, 5, objSmartIDVer), _
+                        udtDB.MakeInParam("@PASS_Issue_Region", SqlDbType.VarChar, 5, objPassportIssueRegion) _
+                        }
 
                 udtDB.RunProc("proc_PersonalInfoAmendHistory_add", parms)
 
@@ -3290,6 +3277,14 @@ Namespace Component.EHSAccount
                         End If
                         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
+                        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        Dim strPassportIssueRegion As String = String.Empty
+                        If Not dr.IsNull("PASS_Issue_Region") Then
+                            strPassportIssueRegion = dr("PASS_Issue_Region").ToString().Trim()
+                        End If
+                        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
                         ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
                         ' ----------------------------------------------------------------------------------------
                         ' Add [SmartID_Ver]
@@ -3331,7 +3326,8 @@ Namespace Component.EHSAccount
                         strDeceased, _
                         dtmDOD,
                         dr("Exact_DOD").ToString(), _
-                        strSmartIDVer)
+                        strSmartIDVer, _
+                        strPassportIssueRegion)
                         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
                     Next
                 End If
@@ -3516,6 +3512,14 @@ Namespace Component.EHSAccount
                         End If
                         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
+                        ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        Dim strPassportIssueRegion As String = String.Empty
+                        If Not drPersonalInfo.IsNull("PASS_Issue_Region") Then
+                            strPassportIssueRegion = drPersonalInfo("PASS_Issue_Region").ToString().Trim()
+                        End If
+                        ' CRE20-0023 (Immu record) [End][Chris YIM]
+
                         ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
                         ' ----------------------------------------------------------------------------------------
                         ' Add [SmartID_Ver]
@@ -3557,7 +3561,8 @@ Namespace Component.EHSAccount
                             strPersonalInfoDeceased, _
                             dtmDOD,
                             drPersonalInfo("Exact_DOD").ToString(), _
-                            strSmartIDVer)
+                            strSmartIDVer, _
+                            strPassportIssueRegion)
                         ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
                     End If
                 Next
@@ -3785,6 +3790,14 @@ Namespace Component.EHSAccount
                 End If
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
+                ' CRE20-0023 (Immu record) [Start][Chris YIM]
+                ' ---------------------------------------------------------------------------------------------------------
+                Dim strPassportIssueRegion As String = String.Empty
+                If Not dr.IsNull("PASS_Issue_Region") Then
+                    strPassportIssueRegion = dr("PASS_Issue_Region").ToString().Trim()
+                End If
+                ' CRE20-0023 (Immu record) [End][Chris YIM]
+
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
                 ' ----------------------------------------------------------------------------------------
                 ' Add [SmartID_Ver]
@@ -3828,7 +3841,8 @@ Namespace Component.EHSAccount
                 strDeceased, _
                 dtmDOD,
                 dr("Exact_DOD").ToString(), _
-                strSmartIDVer)
+                strSmartIDVer, _
+                strPassportIssueRegion)
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
             End If
@@ -4080,7 +4094,8 @@ Namespace Component.EHSAccount
                     strDeceased, _
                     dtmDOD,
                     dr("Exact_DOD").ToString(), _
-                    strSmartIDVer)
+                    strSmartIDVer, _
+                    String.Empty)
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
             End If
@@ -4384,7 +4399,8 @@ Namespace Component.EHSAccount
                 String.Empty, _
                 Nothing, _
                 String.Empty, _
-                strSmartIDVer)
+                strSmartIDVer, _
+                String.Empty)
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
             End If
 

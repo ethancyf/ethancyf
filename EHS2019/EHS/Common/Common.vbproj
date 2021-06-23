@@ -297,6 +297,9 @@
     <Compile Include="Component\eHealthAccountDeathRecord\DeathRecordEntryModelCollection.vb" />
     <Compile Include="Component\EHSAccount\EHSAccountBLL.vb" />
     <Compile Include="Component\HAServicePatient\HAServicePatientBLL.vb" />
+    <Compile Include="Component\PassportIssueRegion\PassportIssueRegionBLL.vb" />
+    <Compile Include="Component\PassportIssueRegion\PassportIssueRegionModel.vb" />
+    <Compile Include="Component\PassportIssueRegion\PassportIssueRegionModelCollection.vb" />
     <Compile Include="Component\Profession\ProfessionDHCModel.vb" />
     <Compile Include="Component\Profession\ProfessionDHCModelCollection.vb" />
     <Compile Include="Component\StudentFile\StudentAcctFieldModel.vb" />

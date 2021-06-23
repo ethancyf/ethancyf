@@ -577,53 +577,37 @@ Namespace Component.COVID19
 
 #Region "Get COVID19 Infected Discharge List"
         Public Function GetCovid19DischargePatientByDocCodeDocNo(ByVal udtEHSAccount As Common.Component.EHSAccount.EHSAccountModel) As DischargeResultModel
-            Return GetCovid19DischargePatientByDocCodeDocNo(udtEHSAccount.SearchDocCode, _
-                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).IdentityNum, _
-                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).EName, _
-                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).Gender, _
-                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).DOB, _
-                                                            udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).ExactDOB _
-                                                            )
+            Return GetCovid19DischargePatientByDocCodeDocNo(udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode))
 
         End Function
 
         Public Function GetCovid19DischargePatientByDocCodeDocNo(ByVal udtPersonalInfo As Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel) As DischargeResultModel
-            Return GetCovid19DischargePatientByDocCodeDocNo(udtPersonalInfo.DocCode, _
-                                                            udtPersonalInfo.IdentityNum, _
-                                                            udtPersonalInfo.EName, _
-                                                            udtPersonalInfo.Gender, _
-                                                            udtPersonalInfo.DOB, _
-                                                            udtPersonalInfo.ExactDOB _
-                                                            )
-
-        End Function
-
-        Public Function GetCovid19DischargePatientByDocCodeDocNo(ByVal strDocCode As String, _
-                                                                 ByVal strIdentityNum As String, _
-                                                                 ByVal strEngName As String, _
-                                                                 ByVal strSex As String, _
-                                                                 ByVal dtmDOB As DateTime, _
-                                                                 ByVal strExactDOB As String _
-                                                                 ) As DischargeResultModel
             Dim dt As New DataTable
+            Dim dt2 As New DataTable
             Dim db As New Common.DataAccess.Database
             Dim udtDischargeResult As DischargeResultModel = Nothing
 
             Try
                 ' Create data object and params
-                Dim prams() As SqlParameter = {db.MakeInParam("@Doc_code", SqlDbType.Char, 20, strDocCode), _
-                                               db.MakeInParam("@Identity_No", SqlDbType.VarChar, 30, strIdentityNum), _
-                                               db.MakeInParam("@Eng_Name", SqlDbType.VarChar, 320, strEngName), _
-                                               db.MakeInParam("@Sex", SqlDbType.Char, 1, strSex), _
-                                               db.MakeInParam("@DOB", SqlDbType.DateTime, 8, dtmDOB), _
-                                               db.MakeInParam("@ExactDOB", SqlDbType.Char, 1, strExactDOB) _
+                Dim prams() As SqlParameter = {db.MakeInParam("@Doc_code", SqlDbType.Char, 20, udtPersonalInfo.DocCode), _
+                                               db.MakeInParam("@Identity_No", SqlDbType.VarChar, 30, udtPersonalInfo.IdentityNum), _
+                                               db.MakeInParam("@Eng_Name", SqlDbType.VarChar, 320, udtPersonalInfo.EName), _
+                                               db.MakeInParam("@Sex", SqlDbType.Char, 1, udtPersonalInfo.Gender), _
+                                               db.MakeInParam("@DOB", SqlDbType.DateTime, 8, udtPersonalInfo.DOB), _
+                                               db.MakeInParam("@ExactDOB", SqlDbType.Char, 1, udtPersonalInfo.ExactDOB) _
                                                }
 
                 ' Run the stored procedure
                 db.RunProc("proc_COVID19InfectedDischargeList_get_ByDocCodeDocNo", prams, dt)
 
                 If dt.Rows.Count > 0 Then
-                    Dim dr As DataRow = dt.Rows(0)
+                    Dim dr As DataRow = Nothing
+
+                    Dim dv As DataView = New DataView(dt)
+
+                    dv.Sort = "Discharge_Date DESC"
+
+                    dr = dv.ToTable.Rows(0)
 
                     udtDischargeResult = New DischargeResultModel(dr("Demographic_Match"), _
                                                                   IIf(IsDBNull(dr("Discharge_Date")), Nothing, dr("Discharge_Date")), _
@@ -881,25 +865,8 @@ Namespace Component.COVID19
         End Function
 
         Public Function IsCOVID19DischargePatient(ByVal udtEHSAccount As Common.Component.EHSAccount.EHSAccountModel) As Boolean
-            Return IsCOVID19DischargePatient(udtEHSAccount.SearchDocCode, _
-                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).IdentityNum, _
-                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).EName, _
-                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).Gender, _
-                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).DOB, _
-                                             udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode).ExactDOB _
-                                             )
-
-        End Function
-
-        Public Function IsCOVID19DischargePatient(ByVal strDocCode As String, _
-                                                  ByVal strIdentityNum As String, _
-                                                  ByVal strEngName As String, _
-                                                  ByVal strSex As String, _
-                                                  ByVal strDOB As String, _
-                                                  ByVal strExactDOB As String _
-                                                  ) As Boolean
             Dim blnRes As Boolean = False
-            Dim udtDischargeResult As DischargeResultModel = GetCovid19DischargePatientByDocCodeDocNo(strDocCode, strIdentityNum, strEngName, strSex, strDOB, strExactDOB)
+            Dim udtDischargeResult As DischargeResultModel = GetCovid19DischargePatientByDocCodeDocNo(udtEHSAccount)
 
             If udtDischargeResult IsNot Nothing AndAlso _
                 (udtDischargeResult.DemographicResult = DischargeResultModel.Result.ExactMatch OrElse _
@@ -912,6 +879,59 @@ Namespace Component.COVID19
 
         End Function
 
+        Public Shared Function DisplayJoinEHRSS(ByVal udtEHSAccount As EHSAccount.EHSAccountModel) As Boolean
+
+            Dim blnDisplay As Boolean = False
+            Dim strSearchDocCode As String = udtEHSAccount.SearchDocCode
+
+            If strSearchDocCode IsNot Nothing Then
+                Select Case strSearchDocCode.Trim
+                    Case DocType.DocTypeModel.DocTypeCode.HKIC, _
+                         DocType.DocTypeModel.DocTypeCode.EC, _
+                         DocType.DocTypeModel.DocTypeCode.OW, _
+                         DocType.DocTypeModel.DocTypeCode.CCIC, _
+                         DocType.DocTypeModel.DocTypeCode.TW
+
+                        blnDisplay = True
+
+                    Case DocType.DocTypeModel.DocTypeCode.PASS
+
+                        Dim udtPersonalInfo As EHSAccount.EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(strSearchDocCode)
+
+                        If Not String.IsNullOrEmpty(udtPersonalInfo.PassportIssueRegion) AndAlso _
+                            udtPersonalInfo.PassportIssueRegion <> PassportIssueRegion.PassportIssueRegionModel.National.HK Then
+                            blnDisplay = True
+                        End If
+
+                End Select
+            End If
+
+            Return blnDisplay
+
+        End Function
+
+        Public Shared Function DisplayJoinEHRSSForReadOnly(ByVal udtEHSAccount As EHSAccount.EHSAccountModel, ByVal strDocType As String) As Boolean
+
+            Dim blnDisplay As Boolean = False
+            Dim strSearchDocCode As String = strDocType
+
+            If strSearchDocCode IsNot Nothing Then
+                Select Case strSearchDocCode.Trim
+                    Case DocType.DocTypeModel.DocTypeCode.HKIC, _
+                         DocType.DocTypeModel.DocTypeCode.EC, _
+                         DocType.DocTypeModel.DocTypeCode.OW, _
+                         DocType.DocTypeModel.DocTypeCode.CCIC, _
+                         DocType.DocTypeModel.DocTypeCode.TW, _
+                         DocType.DocTypeModel.DocTypeCode.PASS
+
+                        blnDisplay = True
+
+                End Select
+            End If
+
+            Return blnDisplay
+
+        End Function
 #End Region
 
 #Region "QR Code"

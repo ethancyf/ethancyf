@@ -17,7 +17,7 @@ Imports Common.Component.Practice
 Imports Common.Component.SortedGridviewHeader
 Imports Common.Component.EHSTransaction
 Imports Common.Component.RedirectParameter                                      ' CRE11-024-02
-
+Imports Common.Component.PassportIssueRegion
 Partial Public Class RecordConfirmation
     'Inherits BasePage
     Inherits BasePageWithGridView
@@ -120,6 +120,7 @@ Partial Public Class RecordConfirmation
     Private udtValidator As Validator = New Validator
 
     Private udtEHSTransactionModel As EHSTransactionModel
+    Private udtPassportIssueRegionModelCollection As PassportIssueRegionModelCollection = (New PassportIssueRegionBLL).GetPassportIssueRegion
 
 
 #Region "Constant values"
@@ -1871,6 +1872,7 @@ Partial Public Class RecordConfirmation
             Dim lblECRefNo As Label
             Dim hfDocType As HiddenField
             Dim lblForeignPassportNo As Label
+            Dim lblPassportIssueRegion As Label
             Dim lblPermitToRemain As Label
 
             Dim udtFormatter As New Formatter
@@ -1888,6 +1890,8 @@ Partial Public Class RecordConfirmation
             lblECRefNo = CType(e.Row.FindControl("lblECRefNo"), Label)
             hfDocType = CType(e.Row.FindControl("hfDocType"), HiddenField)
             lblForeignPassportNo = CType(e.Row.FindControl("lblForeignPassportNo"), Label)
+            lblPassportIssueRegion = CType(e.Row.FindControl("lblPassportIssueRegion"), Label)
+
             lblPermitToRemain = CType(e.Row.FindControl("lblPermitToRemain"), Label)
 
             Dim lblPracticeName As Label = CType(e.Row.FindControl("lblPractice"), Label)
@@ -1905,6 +1909,7 @@ Partial Public Class RecordConfirmation
             Dim strECSerialNo As String
             Dim strECRefNo As String
             Dim strPassportNo As String
+            Dim strPassportIssueRegion As String = String.Empty
             Dim dtmPermit As Nullable(Of Date)
             Dim strAdoptionPrefixNum As String
             Dim strOtherInfo As String
@@ -1945,6 +1950,15 @@ Partial Public Class RecordConfirmation
             Else
                 strPassportNo = dr.Item("foreign_passport_no").ToString
             End If
+
+            If IsDBNull(dr.Item("PASS_Issue_Region")) Then
+                strPassportIssueRegion = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                Dim strPassporIssueRegionModelId As String = dr.Item("PASS_Issue_Region").ToString
+                strPassportIssueRegion = udtPassportIssueRegionModelCollection.Filter(strPassporIssueRegionModelId).NationalDisplay(LCase(Session("language")))
+            End If
+
+
 
             If IsDBNull(dr.Item("permit_to_remain_until")) Then
                 dtmPermit = Nothing
@@ -2051,6 +2065,17 @@ Partial Public Class RecordConfirmation
                 lblForeignPassportNo.Text = Me.GetGlobalResourceObject("Text", "PassportNo") + ": " + strPassportNo
             End If
 
+
+            If Not dr.IsNull("Doc_Code") Then
+                If CStr(dr.Item("Doc_Code")).Trim.Equals(DocType.DocTypeModel.DocTypeCode.PASS) Then
+                    lblPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion") + " : " + strPassportIssueRegion
+                Else
+                    lblPassportIssueRegion.Text = String.Empty
+                End If
+            End If
+
+
+
             If IsNothing(dtmPermit) Then
                 lblPermitToRemain.Text = String.Empty
             Else
@@ -2062,7 +2087,7 @@ Partial Public Class RecordConfirmation
             End If
 
             'show -- in "Other information" if nothing is shown
-            If lblPermitToRemain.Text = String.Empty And lblECSerialNo.Text = String.Empty And lblECRefNo.Text = String.Empty And lblForeignPassportNo.Text = String.Empty Then
+            If lblPermitToRemain.Text = String.Empty And lblECSerialNo.Text = String.Empty And lblECRefNo.Text = String.Empty And lblForeignPassportNo.Text = String.Empty And lblPassportIssueRegion.Text = String.Empty Then
                 lblECRefNo.Text = Me.GetGlobalResourceObject("Text", "N/A")
             End If
             '------------------------------------------------------------------------------------------
@@ -2086,6 +2111,7 @@ Partial Public Class RecordConfirmation
         Dim blnECfound As Boolean = False
         Dim blnVISAfound As Boolean = False
         Dim blnPermitRemainfound As Boolean = False
+        Dim blnPASSfound As Boolean = False
 
         dtTempVRAcctRecord = CType(Session("RecordSelected"), DataTable)
         For Each dr As DataRow In dtTempVRAcctRecord.Rows
@@ -2104,10 +2130,16 @@ Partial Public Class RecordConfirmation
                 blnPermitRemainfound = True
                 Exit For
             End If
+
+            'Permit To Remain checking
+            If dr.Item("doc_display_code").ToString.Trim = Common.Component.DocType.DocTypeModel.DocTypeCode.PASS Then
+                blnPASSfound = True
+                Exit For
+            End If
         Next
 
         If dtTempVRAcctRecord.Rows.Count > 0 Then
-            If blnECfound Or blnVISAfound Or blnPermitRemainfound Then
+            If blnECfound Or blnVISAfound Or blnPermitRemainfound Or blnPASSfound Then
                 Me.gvSelectedRecord_vr.Columns.Item(6).Visible = True
                 Me.gvSelectedRecord_vr.Width = 1290
             Else

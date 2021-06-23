@@ -194,6 +194,33 @@ Partial Public Class ucReadOnlyPASS
     Protected WithEvents lblReadonlyTravelDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''cellReadonlyPassportIssueRegionText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cellReadonlyPassportIssueRegionText As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblReadonlyPassportIssueRegionText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyPassportIssueRegionText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReadonlyPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyPassportIssueRegion As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''cellReadonlyNameText control.
     '''</summary>
     '''<remarks>
@@ -408,4 +435,31 @@ Partial Public Class ucReadOnlyPASS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReadonlyHorizontalTravelDocNo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''cellReadonlyHorizontalPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cellReadonlyHorizontalPassportIssueRegion As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblReadonlyHorizontalPassportIssueRegionText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyHorizontalPassportIssueRegionText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReadonlyHorizontalPassportIssueRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyHorizontalPassportIssueRegion As Global.System.Web.UI.WebControls.Label
 End Class

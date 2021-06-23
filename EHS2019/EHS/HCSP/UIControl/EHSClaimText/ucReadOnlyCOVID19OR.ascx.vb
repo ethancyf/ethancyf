@@ -147,12 +147,7 @@ Namespace UIControl.EHCClaimText
 
 
             'Join EHRSS
-            If (MyBase.EHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
-                MyBase.EHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                MyBase.EHSTransaction.DocCode = DocTypeCode.OW OrElse _
-                MyBase.EHSTransaction.DocCode = DocTypeCode.TW OrElse _
-                MyBase.EHSTransaction.DocCode = DocTypeCode.CCIC) Then
-
+            If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(MyBase.EHSTransaction.EHSAcct, MyBase.EHSTransaction.DocCode) Then
                 trJoinEHRSS.Visible = True
                 trJoinEHRSSText.Visible = True
 

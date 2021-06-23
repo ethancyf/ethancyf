@@ -16,6 +16,7 @@ Imports Common.Format
 Imports HCVU.BLL
 Imports Common.Component.EHSAccount.EHSAccountModel
 Imports Common.Component.VoucherInfo
+Imports Common.Component.PassportIssueRegion
 
 Partial Public Class eHSAccountEnquiry
     ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]
@@ -33,6 +34,8 @@ Partial Public Class eHSAccountEnquiry
     Dim udteHSAccountMaintBLL As eHSAccountMaintBLL = New eHSAccountMaintBLL
     Dim udtEHSAccountBLL As EHSAccountBLL = New EHSAccountBLL
     Dim udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
+    Dim udtPassportIssueRegionBLL As PassportIssueRegionBLL = New PassportIssueRegionBLL
+
 
     Dim udtEHSAccount As EHSAccountModel
     Dim udtEHSAccount_Amendment As EHSAccountModel
@@ -2694,19 +2697,22 @@ Partial Public Class eHSAccountEnquiry
                 Me.gvAmendHistory.Columns(6).Visible = False 'EC_Serial_No
                 Me.gvAmendHistory.Columns(7).Visible = False 'EC_Reference_No
                 Me.gvAmendHistory.Columns(8).Visible = False 'Foreign_Passport_No
-                Me.gvAmendHistory.Columns(9).Visible = False 'Permit_To_Remain_Until
-                Me.gvAmendHistory.Columns(10).Visible = False 'HKIC - Create By SmartID
+                Me.gvAmendHistory.Columns(9).Visible = False 'PASS_Issue_Region      
+                Me.gvAmendHistory.Columns(10).Visible = False 'Permit_To_Remain_Until
+                Me.gvAmendHistory.Columns(11).Visible = False 'HKIC - Create By SmartID
 
                 Select Case txtDocCode.Text.Trim
                     Case DocType.DocTypeModel.DocTypeCode.EC
                         Me.gvAmendHistory.Columns(6).Visible = True 'EC_Serial_No
                         Me.gvAmendHistory.Columns(7).Visible = True 'EC_Reference_No
                     Case DocType.DocTypeModel.DocTypeCode.ID235B
-                        Me.gvAmendHistory.Columns(9).Visible = True 'Permit_To_Remain_Until
+                        Me.gvAmendHistory.Columns(10).Visible = True 'Permit_To_Remain_Until
                     Case DocType.DocTypeModel.DocTypeCode.VISA
                         Me.gvAmendHistory.Columns(8).Visible = True 'Foreign_Passport_No
                     Case DocType.DocTypeModel.DocTypeCode.HKIC
-                        Me.gvAmendHistory.Columns(10).Visible = True 'HKIC - Create By SmartID
+                        Me.gvAmendHistory.Columns(11).Visible = True 'HKIC - Create By SmartID
+                    Case DocType.DocTypeModel.DocTypeCode.PASS
+                        Me.gvAmendHistory.Columns(9).Visible = True 'PASS_Issue_Region
                 End Select
 
 
@@ -3379,6 +3385,8 @@ Partial Public Class eHSAccountEnquiry
             Dim lblForeignPassportNo As Label
             Dim lblPermitToRemainUntil As Label
             Dim lblCreationMethod As Label
+            Dim lblPASS_Issue_Region As Label
+
 
             lblAmendDtm = CType(e.Row.FindControl("lblAmendDtm"), Label)
             lblName = CType(e.Row.FindControl("lblName"), Label)
@@ -3396,6 +3404,8 @@ Partial Public Class eHSAccountEnquiry
             lblPermitToRemainUntil = CType(e.Row.FindControl("lblPermitToRemainUntil"), Label)
 
             lblCreationMethod = CType(e.Row.FindControl("lblCreationMethod"), Label)
+
+            lblPASS_Issue_Region = CType(e.Row.FindControl("lblPASS_Issue_Region"), Label)
 
             Dim dtmAmendDtm As DateTime = CType(dr.Item("Amend_Dtm"), DateTime)
             Dim strEngName As String = CStr(dr.Item("Eng_Name"))
@@ -3456,6 +3466,13 @@ Partial Public Class eHSAccountEnquiry
                 strForeignPassportNo = CStr(dr.Item("Foreign_Passport_No")).Trim
             End If
 
+            Dim strPASSIssueRegion
+            If IsDBNull(dr.Item("PASS_Issue_Region")) Then
+                strPASSIssueRegion = String.Empty
+            Else
+                strPASSIssueRegion = CStr(dr.Item("PASS_Issue_Region")).Trim
+            End If
+
             If IsDBNull(dr.Item("Permit_To_Remain_Until")) Then
                 dtmPermitToRemainUntil = Nothing
             Else
@@ -3498,6 +3515,13 @@ Partial Public Class eHSAccountEnquiry
             lblECRef.Text = udtformatter.formatReferenceNo(strRef, False)
 
             lblForeignPassportNo.Text = strForeignPassportNo
+
+
+            If (IsNothing(strPASSIssueRegion.Trim) Or strPASSIssueRegion.Trim.Equals(String.Empty)) Then
+                lblPASS_Issue_Region.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                lblPASS_Issue_Region.Text = udtPassportIssueRegionBLL.GetPassportIssueRegion.Filter(strPASSIssueRegion.Trim).NationalDesc
+            End If
 
             If Not IsNothing(dtmPermitToRemainUntil) Then
                 lblPermitToRemainUntil.Text = udtformatter.formatID235BPermittedToRemainUntil(dtmPermitToRemainUntil)

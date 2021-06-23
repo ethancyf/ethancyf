@@ -640,6 +640,7 @@
                                                                                     <asp:Label ID="lblECRefNo" runat="server"></asp:Label>
                                                                                     <asp:Label ID="lblForeignPassportNo" runat="server"></asp:Label>
                                                                                     <asp:Label ID="lblPermitToRemain" runat="server"></asp:Label>
+                                                                                    <asp:Label ID="lblPassportIssueRegion" runat="server"></asp:Label>
                                                                                 </ItemTemplate>
                                                                                 <ItemStyle Width="240px" />
                                                                             </asp:TemplateField>
@@ -755,6 +756,7 @@
                                                                     <asp:Label ID="lblECRefNo" runat="server"></asp:Label>
                                                                     <asp:Label ID="lblForeignPassportNo" runat="server"></asp:Label>
                                                                     <asp:Label ID="lblPermitToRemain" runat="server"></asp:Label>
+                                                                    <asp:Label ID="lblPassportIssueRegion" runat="server"></asp:Label>
                                                                 </ItemTemplate>
                                                                 <ItemStyle Width="240px" />
                                                             </asp:TemplateField>

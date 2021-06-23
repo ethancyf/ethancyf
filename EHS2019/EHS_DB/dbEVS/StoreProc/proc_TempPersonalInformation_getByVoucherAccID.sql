@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================  
+-- Modification History  
+-- CR No.:			CRE20-023 (COVID19)  
+-- Modified by:		Winnie SUEN  
+-- Modified date:	28 May 2021  
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================  
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -121,7 +129,8 @@ EXEC [proc_SymmetricKey_open]
 		EC_Reference_No_Other_Format,
 		Deceased, 
 		DOD, 
-		Exact_DOD
+		Exact_DOD,
+		PASS_Issue_Region
 		
 	FROM [dbo].[TempPersonalInformation]
 	WHERE 

@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -90,7 +98,9 @@ CREATE PROCEDURE [dbo].[proc_PersonalInfoAmendHistory_add]
 	@Foreign_Passport_No char(20),
 	@other_info varchar(10),
 	@temp_Voucher_acc_ID char(15),
-	@SmartID_Ver	varchar(5)
+	@SmartID_Ver	varchar(5),
+	@PASS_Issue_Region	varchar(5)
+
 	
 AS
 BEGIN
@@ -143,7 +153,8 @@ BEGIN
 	other_info,
 	Temp_voucher_Acc_ID,
 	EC_Reference_No_Other_Format,
-	SmartID_Ver
+	SmartID_Ver,
+	PASS_Issue_Region
 	)
 	values
 	(
@@ -178,7 +189,8 @@ BEGIN
 	@other_info,
 	@temp_Voucher_acc_ID,
 	@EC_Reference_No_Other_Format,
-	@SmartID_Ver
+	@SmartID_Ver,
+	@PASS_Issue_Region
 	)
 
 	 EXEC [proc_SymmetricKey_close]

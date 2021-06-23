@@ -1319,6 +1319,12 @@
                                 </ItemTemplate>
                                 <ItemStyle Width="100px" VerticalAlign="Top" />
                             </asp:TemplateField>
+                            <asp:TemplateField SortExpression="PASS_Issue_Region" HeaderText="<%$ Resources:Text, PassportIssueRegion %>">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblPASS_Issue_Region" runat="server" Text='<%# Eval("PASS_Issue_Region")%>'></asp:Label>
+                                </ItemTemplate>
+                                <ItemStyle Width="100px" VerticalAlign="Top" />
+                            </asp:TemplateField>
                             <asp:TemplateField SortExpression="Permit_To_Remain_Until" HeaderText="<%$ Resources:Text, PermitToRemain %>">
                                 <ItemTemplate>
                                     <asp:Label ID="lblPermitToRemainUntil" runat="server" Text='<%# Eval("Permit_To_Remain_Until") %>'></asp:Label>

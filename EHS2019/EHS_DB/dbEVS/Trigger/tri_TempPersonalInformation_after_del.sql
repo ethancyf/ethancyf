@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	27 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE18-019 (To read new Smart HKIC in eHS(S))
 -- Modified by:		Winnie SUEN
 -- Modified date:	5 Dec 2018
@@ -84,7 +91,8 @@ BEGIN
 		Deceased,
 		DOD,
 		Exact_DOD,
-		SmartID_Ver
+		SmartID_Ver,
+	  	[PASS_Issue_Region]				
 		)
 	SELECT getdate(),
 		Voucher_Acc_ID,
@@ -123,7 +131,8 @@ BEGIN
 		Deceased,
 		DOD,
 		Exact_DOD,
-		SmartID_Ver
+		SmartID_Ver,
+	  	[PASS_Issue_Region]			
 	FROM deleted
 
 

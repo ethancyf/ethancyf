@@ -51,6 +51,14 @@
             </tr>
             <tr>
                 <td valign="top">
+                    <asp:Label ID="lblReadonlyPassportIssueRegionText" runat="server" CssClass="tableTitle"></asp:Label></td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <asp:Label ID="lblReadonlyPassportIssueRegion" runat="server" CssClass="tableText"></asp:Label></td>
+            </tr>          
+            <tr>
+                <td valign="top">
                     <asp:Label ID="lblReadonlyNameText" runat="server" CssClass="tableTitle"></asp:Label></td>
             </tr>
             <tr>
@@ -73,7 +81,7 @@
                 <td valign="top">
                     <asp:Label ID="lblReadonlyDOB" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
-           <%-- <tr>
+            <%-- <tr>
                 <td valign="top">
                     <asp:Label ID="lblReadonlyIssueDateText" runat="server" CssClass="tableTitle"></asp:Label></td>
             </tr>

@@ -34,6 +34,23 @@
                                 ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
                         <td valign="top"></td>
                     </tr>
+
+                   <tr class="tableCellStyle" valign="top">
+                    
+                    <td valign="top">
+                         <asp:Label ID="lblPassportIssueRegionOriginalText" runat="server" Text="<%$ Resources:Text, PassportIssueRegion %>"></asp:Label></td>
+                    <td>
+                        <asp:Label ID="lblPassportIssueRegionOriginal" runat="server" CssClass="tableText"></asp:Label></td>
+
+                    <td>
+                        <asp:DropDownList ID="ddlPassportIssueRegion" runat="server"  Width="300px">
+                         </asp:DropDownList>
+                            &nbsp;<asp:Image ID="imgPassportIssueRegion" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
+                          ImageAlign="Top"  Visible="false"/>
+
+                    </td>
+                </tr>
+
                     <tr>
                         <td valign="top">
                             <asp:Label ID="lblNameOrignialText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
@@ -104,6 +121,20 @@
                 <asp:Image ID="imgNewTravelDocNoErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
         </tr>
+       <tr class="tableCellStyle" style="vertical-align:top;height:25px">
+                    <td>
+                        <asp:Label ID="lblNewPassportIssueRegion" runat="server" CssClass="tableTitle"
+                            Width="200px"></asp:Label>
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ddlNewPassportIssueRegion" runat="server"  >
+                         </asp:DropDownList>
+ 
+
+                    </td>
+                     <td>&nbsp;<asp:Image ID="imgNewPassportIssueRegion" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
+                      ImageAlign="Top"  Visible="false"/></td>
+       </tr>
         <tr>
             <td valign="top" style="width: 220px; height: 25px">
                 <asp:Label ID="lblNewNameText" runat="server" Height="25px"></asp:Label></td>

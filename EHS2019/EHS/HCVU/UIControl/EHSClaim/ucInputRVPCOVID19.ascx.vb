@@ -112,15 +112,13 @@ Partial Public Class ucInputRVPCOVID19
         End If
 
         'Display or hide "Join eHealth"
-        If MyBase.EHSAccount IsNot Nothing Then
-            If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
-                Select Case MyBase.EHSAccount.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
-                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
-                        trJoinEHRSS.Style.Remove("display")
-                    Case Else
-                        trJoinEHRSS.Style.Add("display", "none")
-                End Select
+        Dim blnDisplayJoinEHRSS As Boolean = False
+        If MyBase.EHSAccount IsNot Nothing AndAlso MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
+            trJoinEHRSS.Style.Add("display", "none")
+
+            If Me.DisplayJoinEHRSS(MyBase.EHSAccount) Then
+                trJoinEHRSS.Style.Remove("display")
+                blnDisplayJoinEHRSS = True
             End If
         End If
 
@@ -146,7 +144,11 @@ Partial Public Class ucInputRVPCOVID19
                 trJoinEHRSS.Style.Add("display", "none")
             Case RECIPIENT_TYPE.RCH_STAFF, RECIPIENT_TYPE.CCSU_STAFF
                 trCContactNo.Style.Remove("display")
-                trJoinEHRSS.Style.Remove("display")
+                If MyBase.EHSAccount IsNot Nothing AndAlso MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
+                    If blnDisplayJoinEHRSS Then
+                        trJoinEHRSS.Style.Remove("display")
+                    End If
+                End If
             Case Else
                 trCContactNo.Style.Add("display", "none")
                 trJoinEHRSS.Style.Add("display", "none")
@@ -187,6 +189,26 @@ Partial Public Class ucInputRVPCOVID19
         Me.txtCRemark.Text = String.Empty
 
     End Sub
+
+    Private Function DisplayJoinEHRSS(ByVal udtEHSAccount As EHSAccountModel) As Boolean
+        Dim blnRes As Boolean = False
+        Dim intAge As Integer
+
+        If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
+            Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
+        End If
+
+        Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
+
+        If Not CompareEligibleRuleByAge(Me.ServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
+            If COVID19.COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
+                blnRes = True
+            End If
+        End If
+
+        Return blnRes
+
+    End Function
 
 #End Region
 
@@ -669,13 +691,11 @@ Partial Public Class ucInputRVPCOVID19
 
             If rblCRecipientType.SelectedValue <> RECIPIENT_TYPE.RESIDENT AndAlso rblCRecipientType.SelectedValue <> String.Empty Then
                 If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
-                    Select Case udtEHSTransaction.EHSAcct.SearchDocCode
-                        Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
-                            DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
-                            strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
-                        Case Else
-                            strJoinEHRSS = String.Empty
-                    End Select
+                    If Me.DisplayJoinEHRSS(udtEHSTransaction.EHSAcct) Then
+                        strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
+                    Else
+                        strJoinEHRSS = String.Empty
+                    End If
                 End If
             End If
 

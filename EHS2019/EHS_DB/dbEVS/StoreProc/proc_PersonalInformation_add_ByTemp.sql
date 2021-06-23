@@ -10,6 +10,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023 (COVID19)
 -- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
 -- Modified date:	26 May 2021
 -- Description:		Update PersonalInfo.[Update_Dtm] when merge temp account
 -- =============================================
@@ -110,7 +117,8 @@ BEGIN
 		Deceased, 
 		DOD, 
 		Exact_DOD,
-		SmartID_Ver
+		SmartID_Ver,
+		PASS_Issue_Region
 	)
 	SELECT 
 		@Voucher_Acc_ID,
@@ -151,8 +159,8 @@ BEGIN
 		Deceased, 
 		DOD, 
 		Exact_DOD,
-		SmartID_Ver
-
+		SmartID_Ver,
+		PASS_Issue_Region
 	FROM [dbo].[TempPersonalInformation]
 	WHERE 
 		Voucher_Acc_ID = @Temp_Voucher_Acc_ID

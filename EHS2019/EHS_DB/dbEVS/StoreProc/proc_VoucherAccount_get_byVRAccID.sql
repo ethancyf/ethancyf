@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -143,7 +151,8 @@ DECLARE @tmpPersonalInformation Table
 	Deceased			char(1),
 	DOD					datetime, 
 	Exact_DOD			char(1),
-	SmartID_Ver			varchar(5)
+	SmartID_Ver			varchar(5),
+	PASS_Issue_Region	varchar(5)
 )
 
 -- =============================================
@@ -199,7 +208,8 @@ EXEC [proc_SymmetricKey_open]
 		Deceased,
 		DOD, 
 		Exact_DOD,
-		SmartID_Ver
+		SmartID_Ver,
+		PASS_Issue_Region
 	) 
 	
 	SELECT
@@ -242,7 +252,8 @@ EXEC [proc_SymmetricKey_open]
 			[Deceased],
 			[DOD], 
 			[Exact_DOD],
-			[SmartID_Ver]
+			[SmartID_Ver],
+			[PASS_Issue_Region]
 		FROM 
 			[PersonalInformation] AS P
 		WHERE
@@ -321,7 +332,8 @@ EXEC [proc_SymmetricKey_open]
 		Deceased,
 		DOD,
 		Exact_DOD,
-		SmartID_Ver
+		SmartID_Ver,
+		PASS_Issue_Region
 	FROM
 	@tmpPersonalInformation
 

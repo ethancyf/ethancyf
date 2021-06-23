@@ -564,8 +564,13 @@ Partial Public Class ClaimTransDetail
                         (udtEHSTransaction.TransactionAdditionFields.OutreachType IsNot Nothing AndAlso _
                         udtEHSTransaction.TransactionAdditionFields.OutreachType = TYPE_OF_OUTREACH.OTHER) Then
 
-                        DisplayJoinEHRSS(True)
-                        FillJoinEHRSS(udtEHSTransaction)
+                        If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                            DisplayJoinEHRSS(True)
+                            FillJoinEHRSS(udtEHSTransaction)
+                        Else
+                            DisplayJoinEHRSS(False)
+                        End If
+
                     Else
                         DisplayJoinEHRSS(False)
                     End If
@@ -597,19 +602,21 @@ Partial Public Class ClaimTransDetail
                         udcReadOnlyEHSClaim.BuildVSSCOVID19(True)
                     End If
 
+                    'Contact No.
                     DisplayContactNo(True)
-                    DisplayRemarks(True)
-                    If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.OW OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.TW OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.CCIC Then
-                        DisplayJoinEHRSS(True)
-                    End If
-
                     FillContactNo(udtEHSTransaction)
+
+                    'Remark
+                    DisplayRemarks(True)
                     FillRemarks(udtEHSTransaction)
-                    FillJoinEHRSS(udtEHSTransaction)
+
+                    'Join EHRSS
+                    If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                    End If
 
                 Else
                     udcReadOnlyEHSClaim.BuildVSS()
@@ -646,25 +653,24 @@ Partial Public Class ClaimTransDetail
                 udcReadOnlyEHSClaim.BuildCOVID19()
 
                 If IsClaimCOVID19(udtEHSTransaction) Then
-                    ' CRE20-0022 (Immu record) [Start][Martin]
                     If _strClaimTransDetailFunctionCode = FunctCode.FUNT010421 Then
                         DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
                     End If
-                    ' CRE20-0022 (Immu record) [End][Martin]
 
+                    'Contact No.
                     DisplayContactNo(False)
-                    DisplayRemarks(True)
-                    If udtEHSTransaction.DocCode = DocTypeCode.HKIC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.EC OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.OW OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.TW OrElse _
-                        udtEHSTransaction.DocCode = DocTypeCode.CCIC Then
-                        DisplayJoinEHRSS(True)
-                    End If
 
-                    'FillContactNo(udtEHSTransaction)
+                    'Remark
+                    DisplayRemarks(True)
                     FillRemarks(udtEHSTransaction)
-                    FillJoinEHRSS(udtEHSTransaction)
+
+                    'Join EHRSS
+                    If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                    End If
 
                 Else
                     DisplayContactNo(False)
@@ -694,8 +700,6 @@ Partial Public Class ClaimTransDetail
                         DisplayContactNo(False)
                     End If
 
-                    DisplayJoinEHRSS(False)
-
                     'Remark
                     DisplayRemarks(True)
                     FillRemarks(udtEHSTransaction)
@@ -705,8 +709,12 @@ Partial Public Class ClaimTransDetail
                         udtEHSTransaction.TransactionAdditionFields.RecipientType <> RECIPIENT_TYPE.RESIDENT AndAlso _
                         udtEHSTransaction.TransactionAdditionFields.RecipientType <> String.Empty Then
 
-                        DisplayJoinEHRSS(True)
-                        FillJoinEHRSS(udtEHSTransaction)
+                        If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                            DisplayJoinEHRSS(True)
+                            FillJoinEHRSS(udtEHSTransaction)
+                        Else
+                            DisplayJoinEHRSS(False)
+                        End If
                     Else
                         DisplayJoinEHRSS(False)
                     End If
@@ -727,13 +735,21 @@ Partial Public Class ClaimTransDetail
                         DisplayCOVID19VaccinationRecord(udtEHSTransaction, udtEHSAccount)
                     End If
 
+                    'Contact No.
                     DisplayContactNo(True)
-                    DisplayRemarks(True)
-                    DisplayJoinEHRSS(True)
-
                     FillContactNo(udtEHSTransaction)
+
+                    'Remark
+                    DisplayRemarks(True)
                     FillRemarks(udtEHSTransaction)
-                    FillJoinEHRSS(udtEHSTransaction)
+
+                    'Join EHRSS
+                    If COVID19.COVID19BLL.DisplayJoinEHRSSForReadOnly(udtEHSAccount, udtEHSTransaction.DocCode) Then
+                        DisplayJoinEHRSS(True)
+                        FillJoinEHRSS(udtEHSTransaction)
+                    Else
+                        DisplayJoinEHRSS(False)
+                    End If
 
                 Else
                     DisplayContactNo(False)

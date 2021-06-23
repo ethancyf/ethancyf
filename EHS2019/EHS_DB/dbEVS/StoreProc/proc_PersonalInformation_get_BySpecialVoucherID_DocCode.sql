@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -93,8 +101,8 @@ EXEC [proc_SymmetricKey_open]
 		PInfo.Deceased, 
 		PInfo.DOD, 
 		PInfo.Exact_DOD,
-		PInfo.SmartID_Ver
-		
+		PInfo.SmartID_Ver,
+		PInfo.PASS_Issue_Region
 	FROM [dbo].[PersonalInformation] PInfo
 		INNER JOIN [dbo].[SpecialPersonalInformation] SPInfo ON
 		PInfo.Encrypt_Field1 = SPInfo.Encrypt_Field1 

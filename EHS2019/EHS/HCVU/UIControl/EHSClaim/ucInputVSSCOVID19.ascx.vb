@@ -13,6 +13,7 @@ Partial Public Class ucInputVSSCOVID19
     Inherits ucInputEHSClaimBase
 
     Private _udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
+    Private _udtGeneralFunction As New ComFunction.GeneralFunction
     Private _strOutreachType As String
     Private _strCategoryCode As String
 
@@ -174,13 +175,11 @@ Partial Public Class ucInputVSSCOVID19
 
         'Display or hide "Join eHealth"
         If MyBase.EHSAccount IsNot Nothing AndAlso MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
-            Select Case MyBase.EHSAccount.SearchDocCode
-                Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
-                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
-                    trJoinEHRSS.Style.Remove("display")
-                Case Else
-                    trJoinEHRSS.Style.Add("display", "none")
-            End Select
+            trJoinEHRSS.Style.Add("display", "none")
+
+            If Me.DisplayJoinEHRSS(MyBase.EHSAccount) Then
+                trJoinEHRSS.Style.Remove("display")
+            End If
         End If
 
         ' Fill value by temp save
@@ -278,6 +277,36 @@ Partial Public Class ucInputVSSCOVID19
     Public Sub DisplayOutreachInput(ByVal blnDisplay As Boolean)
         Me.panOutreachCode.Visible = blnDisplay
     End Sub
+
+    Public Sub SetJoinEHRSS(ByVal udtEHSAccount As EHSAccountModel)
+        If udtEHSAccount IsNot Nothing AndAlso udtEHSAccount.SearchDocCode IsNot Nothing Then
+            trJoinEHRSS.Style.Add("display", "none")
+
+            If Me.DisplayJoinEHRSS(udtEHSAccount) Then
+                trJoinEHRSS.Style.Remove("display")
+            End If
+        End If
+    End Sub
+
+    Private Function DisplayJoinEHRSS(ByVal udtEHSAccount As EHSAccountModel) As Boolean
+        Dim blnRes As Boolean = False
+        Dim intAge As Integer
+
+        If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
+            Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
+        End If
+
+        Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
+
+        If Not CompareEligibleRuleByAge(Me.ServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
+            If COVID19.COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
+                blnRes = True
+            End If
+        End If
+
+        Return blnRes
+
+    End Function
 
 #End Region
 
@@ -753,8 +782,6 @@ Partial Public Class ucInputVSSCOVID19
 #Region "Save"
 
     Public Sub Save(ByRef udtEHSTransaction As EHSTransactionModel, ByVal udtEHSClaimVaccine As EHSClaimVaccineModel)
-        Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
-
         Dim udtTransactAdditionfield As TransactionAdditionalFieldModel = Nothing
         udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
 
@@ -885,13 +912,11 @@ Partial Public Class ucInputVSSCOVID19
             Dim strJoinEHRSS As String = String.Empty
 
             If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
-                Select Case udtEHSTransaction.EHSAcct.SearchDocCode
-                    Case DocType.DocTypeModel.DocTypeCode.HKIC, DocType.DocTypeModel.DocTypeCode.EC, DocType.DocTypeModel.DocTypeCode.OW, _
-                        DocType.DocTypeModel.DocTypeCode.CCIC, DocType.DocTypeModel.DocTypeCode.TW
-                        strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
-                    Case Else
-                        strJoinEHRSS = String.Empty
-                End Select
+                If Me.DisplayJoinEHRSS(udtEHSTransaction.EHSAcct) Then
+                    strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
+                Else
+                    strJoinEHRSS = String.Empty
+                End If
             End If
 
             udtTransactAdditionfield = New TransactionAdditionalFieldModel()

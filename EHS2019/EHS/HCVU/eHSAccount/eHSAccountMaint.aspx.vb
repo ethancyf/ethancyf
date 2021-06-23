@@ -15,6 +15,8 @@ Imports Common.Component.SortedGridviewHeader
 Imports Common.DataAccess
 Imports Common.Format
 Imports Common.Validation
+Imports Common.Component.PassportIssueRegion
+
 
 Partial Public Class eHSAccountMaint
     ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]
@@ -36,6 +38,7 @@ Partial Public Class eHSAccountMaint
     Private udtEHSAccount_Amendment As EHSAccountModel
     Private udtSessionHandlerBLL As New BLL.SessionHandlerBLL
     Private udtSchemeClaimBLL As SchemeClaimBLL = New SchemeClaimBLL
+    Dim udtPassportIssueRegionBLL As PassportIssueRegionBLL = New PassportIssueRegionBLL
 
 #Region "Audit Log Description"
     Public Class AuditLogDesc
@@ -3050,19 +3053,22 @@ Partial Public Class eHSAccountMaint
                 Me.gvAmendHistory.Columns(6).Visible = False 'EC_Serial_No
                 Me.gvAmendHistory.Columns(7).Visible = False 'EC_Reference_No
                 Me.gvAmendHistory.Columns(8).Visible = False 'Foreign_Passport_No
-                Me.gvAmendHistory.Columns(9).Visible = False 'Permit_To_Remain_Until
-                Me.gvAmendHistory.Columns(10).Visible = False 'HKIC - Create By SmartID
+                Me.gvAmendHistory.Columns(9).Visible = False 'PASS_Issue_Region
+                Me.gvAmendHistory.Columns(10).Visible = False 'Permit_To_Remain_Until
+                Me.gvAmendHistory.Columns(11).Visible = False 'HKIC - Create By SmartID
 
                 Select Case txtDocCode.Text.Trim
                     Case DocType.DocTypeModel.DocTypeCode.EC
                         Me.gvAmendHistory.Columns(6).Visible = True 'EC_Serial_No
                         Me.gvAmendHistory.Columns(7).Visible = True 'EC_Reference_No
                     Case DocType.DocTypeModel.DocTypeCode.ID235B
-                        Me.gvAmendHistory.Columns(9).Visible = True 'Permit_To_Remain_Until
+                        Me.gvAmendHistory.Columns(10).Visible = True 'Permit_To_Remain_Until
                     Case DocType.DocTypeModel.DocTypeCode.VISA
                         Me.gvAmendHistory.Columns(8).Visible = True 'Foreign_Passport_No
                     Case DocType.DocTypeModel.DocTypeCode.HKIC
-                        Me.gvAmendHistory.Columns(10).Visible = True 'HKIC - Create By SmartID
+                        Me.gvAmendHistory.Columns(11).Visible = True 'HKIC - Create By SmartID
+                    Case DocType.DocTypeModel.DocTypeCode.PASS
+                        Me.gvAmendHistory.Columns(9).Visible = True 'PASS_Issue_Region
                 End Select
 
 
@@ -4206,6 +4212,8 @@ Partial Public Class eHSAccountMaint
             Dim lblECSN As Label
             Dim lblECRef As Label
             Dim lblForeignPassportNo As Label
+            Dim lblPASS_Issue_Region As Label
+
             Dim lblPermitToRemainUntil As Label
             Dim lblCreationMethod As Label
 
@@ -4223,6 +4231,9 @@ Partial Public Class eHSAccountMaint
 
             lblForeignPassportNo = CType(e.Row.FindControl("lblForeignPassportNo"), Label)
             lblPermitToRemainUntil = CType(e.Row.FindControl("lblPermitToRemainUntil"), Label)
+
+            lblPASS_Issue_Region = CType(e.Row.FindControl("lblPASS_Issue_Region"), Label)
+
 
             lblCreationMethod = CType(e.Row.FindControl("lblCreationMethod"), Label)
 
@@ -4290,6 +4301,14 @@ Partial Public Class eHSAccountMaint
                 strForeignPassportNo = CStr(dr.Item("Foreign_Passport_No")).Trim
             End If
 
+            Dim strPASSIssueRegion
+            If IsDBNull(dr.Item("PASS_Issue_Region")) Then
+                strPASSIssueRegion = String.Empty
+            Else
+                strPASSIssueRegion = CStr(dr.Item("PASS_Issue_Region")).Trim
+            End If
+
+
             If IsDBNull(dr.Item("Permit_To_Remain_Until")) Then
                 dtmPermitToRemainUntil = Nothing
             Else
@@ -4337,6 +4356,14 @@ Partial Public Class eHSAccountMaint
             End If
 
             lblForeignPassportNo.Text = strForeignPassportNo
+
+            If (IsNothing(strPASSIssueRegion.Trim) Or strPASSIssueRegion.Trim.Equals(String.Empty)) Then
+                lblPASS_Issue_Region.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                lblPASS_Issue_Region.Text = udtPassportIssueRegionBLL.GetPassportIssueRegion.Filter(strPASSIssueRegion.Trim).NationalDesc
+            End If
+
+
 
             If Not IsNothing(dtmPermitToRemainUntil) Then
                 lblPermitToRemainUntil.Text = udtformatter.formatID235BPermittedToRemainUntil(dtmPermitToRemainUntil)
@@ -4457,6 +4484,7 @@ Partial Public Class eHSAccountMaint
                                     Me.udtAuditLogEntry.AddDescripton("ForeignPassportNo", IIf(IsNothing(.Foreign_Passport_No), String.Empty, .Foreign_Passport_No))
                                     Me.udtAuditLogEntry.AddDescripton("OtherInfo", IIf(IsNothing(.OtherInfo), String.Empty, .OtherInfo))
                                     Me.udtAuditLogEntry.AddDescripton("PermitToRemainUntil", IIf(IsNothing(.PermitToRemainUntil), String.Empty, .PermitToRemainUntil))
+                                    Me.udtAuditLogEntry.AddDescripton("PassportIssueRegion", IIf(IsNothing(.PassportIssueRegion), String.Empty, .PassportIssueRegion))
                                     Me.udtAuditLogEntry.AddDescripton("RecordStatus", IIf(IsNothing(.RecordStatus), String.Empty, .RecordStatus))
                                 End With
                             End With
@@ -7854,6 +7882,7 @@ Partial Public Class eHSAccountMaint
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputPASS.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputPASS.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputPASS.Gender)
+        _udtAuditLogEntry.AddDescripton("PassportIssueRegion", udcInputPASS.PassportIssueRegion)
         '_udtAuditLogEntry.AddDescripton("ExactDOB", udcInputCCIC.ExactDOB)
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00017, AuditLogDesc.ValidateAccountDetailInfo)
 
@@ -7897,6 +7926,18 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
+
+
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        'Add Passport checking
+        If udcInputPASS.PassportIssueRegion.Equals(String.Empty) Then
+            Me.udtSM = New Common.ComObject.SystemMessage("990000", "E", "00462")
+            isvalid = False
+            udcInputPASS.SetPassportIssueRegionError(True)
+            Me.udcMsgBox.AddMessage(Me.udtSM, "%en", Me.GetGlobalResourceObject("Text", "PassportIssueRegion"))
+        End If
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
         If isvalid Then
             If udcControlMode = ucInputDocTypeBase.BuildMode.Creation Then
                 udtEHSAccountPersonalInfo.IdentityNum = udcInputPASS.TravelDocNo
@@ -7907,6 +7948,11 @@ Partial Public Class eHSAccountMaint
             udtEHSAccountPersonalInfo.Gender = udcInputPASS.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
+
+            ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+            udtEHSAccountPersonalInfo.PassportIssueRegion = udcInputPASS.PassportIssueRegion
+            ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
         End If
 
         Return isvalid

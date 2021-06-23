@@ -176,9 +176,6 @@ Namespace BLL
 
             If Not dr.IsNull("Voucher_Acc_ID") Then
 
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
-                ' ----------------------------------------------------------------------------------------
-                ' Add dummy [SmartID_Ver]
                 udtTempPersonalInformation = New EHSPersonalInformationModel( _
                                         dr("Voucher_Acc_ID"), _
                                         dr("DOB"), _
@@ -217,8 +214,8 @@ Namespace BLL
                                         String.Empty, _
                                         Nothing, _
                                         String.Empty, _
+                                        String.Empty, _
                                         String.Empty)
-                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
             End If
 
             Dim udtStudent As StudentModel = New StudentModel(dr("Student_File_ID"), _

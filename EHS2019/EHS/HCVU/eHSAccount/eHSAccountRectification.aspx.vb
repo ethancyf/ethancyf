@@ -1209,6 +1209,7 @@ Partial Public Class eHSAccountRectification
                 Me.udtAuditLogEntry.AddDescripton("ForeignPassportNo", IIf(IsNothing(.Foreign_Passport_No), String.Empty, .Foreign_Passport_No))
                 Me.udtAuditLogEntry.AddDescripton("OtherInfo", IIf(IsNothing(.OtherInfo), String.Empty, .OtherInfo))
                 Me.udtAuditLogEntry.AddDescripton("PermitToRemainUntil", IIf(IsNothing(.PermitToRemainUntil), String.Empty, .PermitToRemainUntil))
+                Me.udtAuditLogEntry.AddDescripton("PassportIssueRegion", IIf(IsNothing(.PassportIssueRegion), String.Empty, .PassportIssueRegion))
                 Me.udtAuditLogEntry.AddDescripton("RecordStatus", IIf(IsNothing(.RecordStatus), String.Empty, .RecordStatus))
             End With
         End With
@@ -3762,6 +3763,8 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.AddDescripton("EngSurname", udcInputPASS.ENameSurName)
         _udtAuditLogEntry.AddDescripton("EngOthername", udcInputPASS.ENameFirstName)
         _udtAuditLogEntry.AddDescripton("Gender", udcInputPASS.Gender)
+        _udtAuditLogEntry.AddDescripton("PassportIssueRegion", udcInputPASS.PassportIssueRegion)
+
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
@@ -3796,12 +3799,26 @@ Partial Public Class eHSAccountRectification
             udtEHSAccountPersonalInfo.DOB = dtmDOB
         End If
 
+
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        'Add Passport checking
+        If udcInputPASS.PassportIssueRegion.Equals(String.Empty) Then
+            Me.udtSM = New Common.ComObject.SystemMessage("990000", "E", "00462")
+            isvalid = False
+            udcInputPASS.SetPassportIssueRegionError(True)
+            Me.udcMsgBox.AddMessage(Me.udtSM, "%en", Me.GetGlobalResourceObject("Text", "PassportIssueRegion"))
+        End If
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
         If isvalid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputPASS.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputPASS.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputPASS.Gender
             udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
             udtEHSAccountPersonalInfo.DOB = dtmDOB
+            ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+            udtEHSAccountPersonalInfo.PassportIssueRegion = udcInputPASS.PassportIssueRegion
+            ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
         End If
 
         Return isvalid

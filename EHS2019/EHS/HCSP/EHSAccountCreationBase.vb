@@ -598,6 +598,7 @@ Public MustInherit Class EHSAccountCreationBase
         udtAuditLogEntry.AddDescripton("ENameSurName", udtEHSPersonalInfo.ENameSurName)
         udtAuditLogEntry.AddDescripton("ENameFirstName", udtEHSPersonalInfo.ENameFirstName)
         udtAuditLogEntry.AddDescripton("Gender", udtEHSPersonalInfo.Gender)
+        udtAuditLogEntry.AddDescripton("PassportIssueRegion", udtEHSPersonalInfo.PassportIssueRegion)
         Return udtAuditLogEntry
     End Function
     ' CRE20-0022 (Immu record) [End][Martin]

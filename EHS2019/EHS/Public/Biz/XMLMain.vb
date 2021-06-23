@@ -460,7 +460,8 @@ Public Class XMLMain
                     strDeceased, _
                     dtmDOD,
                     dr("Exact_DOD").ToString(), _
-                    strSmartIDVer)
+                    strSmartIDVer, _
+                    String.Empty)
                     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
                 Next
             End If

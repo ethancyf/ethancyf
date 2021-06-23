@@ -3,6 +3,7 @@ Imports Common.Component.EHSAccount
 Imports Common.Component.DocType
 Imports Common.Component.DocType.DocTypeModel
 Imports Common.Component.StaticData
+Imports Common.Component.PassportIssueRegion
 
 
 Namespace UIControl.DocTypeText
@@ -18,6 +19,8 @@ Namespace UIControl.DocTypeText
             Dim udtDocTypeModelList As DocType.DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
             Dim strGender As String
             Dim strDocumentTypeFullName As String
+            Dim strPassportIssueRegionCode As String = MyBase.EHSAccountPersonalInfo.PassportIssueRegion
+
             'Select docuemnt Type 
             If udtSessionHandler.Language = Common.Component.CultureLanguage.TradChinese Then
                 strDocumentTypeFullName = udtDocTypeModelList.Filter(DocTypeCode.PASS).DocNameChi
@@ -64,6 +67,12 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyDocumentType.Text = strDocumentTypeFullName
             'Me.lblReadonlyIssueDate.Text = formatter.formatDOI(DocTypeCode.PASS, MyBase.EHSAccountPersonalInfo.DateofIssue)
 
+            If IsNothing(strPassportIssueRegionCode) Or strPassportIssueRegionCode.Equals(String.Empty) Then
+                Me.lblReadonlyPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            Else
+                Me.lblReadonlyPassportIssueRegion.Text = (New PassportIssueRegionBLL).GetPassportIssueRegion.Filter(strPassportIssueRegionCode).NationalDisplay(udtSessionHandler.Language())
+            End If
+
 
         End Sub
 
@@ -80,6 +89,7 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
             'Me.lblReadonlyIssueDateText.Text = Me.GetGlobalResourceObject("Text", "ECDate")
             Me.lblReadonlyTravelDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language())
+            Me.lblReadonlyPassportIssueRegionText.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion")
         End Sub
 
         Public Overrides Sub SetupTableTitle(ByVal width As Integer)
@@ -90,6 +100,7 @@ Namespace UIControl.DocTypeText
             Me.lblReadonlyDOBText.Width = width
             Me.lblReadonlyGender.Width = width
             Me.lblReadonlyTravelDocNoText.Width = width
+            Me.lblReadonlyPassportIssueRegionText.Width = width
             'Me.lblReadonlyIssueDateText.Width = width
         End Sub
 

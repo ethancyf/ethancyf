@@ -355,22 +355,11 @@ Partial Public Class ucInputCOVID19
 
             'Display or hide "Join eHealth"
             If MyBase.EHSAccount.SearchDocCode IsNot Nothing Then
-                Dim intAge As Integer
-
-                If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
-                    Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
-                End If
-
                 trJoinEHRSS.Style.Add("display", "none")
 
-                Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = MyBase.EHSAccount.EHSPersonalInformationList.Filter(MyBase.EHSAccount.SearchDocCode)
-
-                If Not CompareEligibleRuleByAge(Me.ServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
-                    If COVID19.COVID19BLL.DisplayJoinEHRSS(MyBase.EHSAccount) Then
-                        trJoinEHRSS.Style.Remove("display")
-                    End If
+                If Me.DisplayJoinEHRSS(MyBase.EHSAccount) Then
+                    trJoinEHRSS.Style.Remove("display")
                 End If
-
             End If
 
             ' Fill value by temp save
@@ -469,6 +458,26 @@ Partial Public Class ucInputCOVID19
         Me.txtCRemark.Text = String.Empty
 
     End Sub
+
+    Private Function DisplayJoinEHRSS(ByVal udtEHSAccount As EHSAccountModel) As Boolean
+        Dim blnRes As Boolean = False
+        Dim intAge As Integer
+
+        If Not Integer.TryParse(_udtGeneralFunction.GetSystemParameterParmValue1("AgeLimitForJoinEHRSS"), intAge) Then
+            Throw New Exception(String.Format("Invalid value({0}) is not a integer in DB table SystemParameter(AgeLimitForJoinEHRSS).", intAge))
+        End If
+
+        Dim udtPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
+
+        If Not CompareEligibleRuleByAge(Me.ServiceDate, udtPersonalInfo, intAge, "<", "Y", "DAY3") Then
+            If COVID19.COVID19BLL.DisplayJoinEHRSS(udtEHSAccount) Then
+                blnRes = True
+            End If
+        End If
+
+        Return blnRes
+
+    End Function
 #End Region
 
 #Region "Events"
@@ -761,7 +770,7 @@ Partial Public Class ucInputCOVID19
             Dim strJoinEHRSS As String = String.Empty
 
             If udtEHSTransaction.EHSAcct.SearchDocCode IsNot Nothing Then
-                If COVID19.COVID19BLL.DisplayJoinEHRSS(udtEHSTransaction.EHSAcct) Then
+                If Me.DisplayJoinEHRSS(udtEHSTransaction.EHSAcct) Then
                     strJoinEHRSS = IIf(chkCJoinEHRSS.Checked, YesNo.Yes, YesNo.No)
                 Else
                     strJoinEHRSS = String.Empty

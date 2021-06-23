@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -103,7 +111,8 @@ CREATE PROCEDURE [dbo].[proc_TempPersonalInformation_upd_PersonalInfo]
 	@Other_Info varchar(10),
 	@Create_By_SmartIC char(1),
 	@EC_Reference_No_Other_Format	char(1),
-	@SmartID_Ver	varchar(5)
+	@SmartID_Ver	varchar(5),
+	@PASS_Issue_Region varchar(5)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -159,7 +168,8 @@ EXEC [proc_SymmetricKey_open]
 		[Create_By_SmartID] = @Create_By_SmartIC,
 		[Other_Info] = @Other_Info,
 		[EC_Reference_No_Other_Format] = @EC_Reference_No_Other_Format,
-		[SmartID_Ver] = @SmartID_Ver
+		[SmartID_Ver] = @SmartID_Ver,
+		[PASS_Issue_Region] = @PASS_Issue_Region
 	WHERE
 		[Voucher_Acc_ID] = @Voucher_Acc_ID -- AND [Doc_Code] = @doc_code	
 

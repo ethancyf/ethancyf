@@ -591,7 +591,8 @@
                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, VRName %>"
                                                 HeaderStyle-VerticalAlign="Top">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label></br>
+                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label>
+                                                    <br></br>
                                                     <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
                                                 </ItemTemplate>
                                                 <ItemStyle Width="270px" VerticalAlign="Top" />
@@ -797,7 +798,8 @@
                                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, VRName %>"
                                                 HeaderStyle-VerticalAlign="Top">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label></br>
+                                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label>
+                                                    <br></br>
                                                     <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
                                                 </ItemTemplate>
                                                 <ItemStyle Width="270px" VerticalAlign="Top" />
@@ -943,7 +945,8 @@
                             </asp:TemplateField>
                             <asp:TemplateField SortExpression="Eng_Name" HeaderText="<%$ Resources:Text, Name %>">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label></br>
+                                    <asp:Label ID="lblName" runat="server" Text='<%# Eval("Eng_Name") %>'></asp:Label>
+                                    <br></br>
                                     <asp:Label ID="lblCName" runat="server" Text='<%# Eval("Chi_Name") %>' Font-Names="HA_MingLiu"></asp:Label>
                                 </ItemTemplate>
                                 <ItemStyle Width="230px" VerticalAlign="Top" />
@@ -984,6 +987,14 @@
                                 </ItemTemplate>
                                 <ItemStyle Width="100px" VerticalAlign="Top" />
                             </asp:TemplateField>
+                            <asp:TemplateField SortExpression="PASS_Issue_Region" HeaderText="<%$ Resources:Text, PassportIssueRegion %>">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblPASS_Issue_Region" runat="server" Text='<%# Eval("PASS_Issue_Region")%>'></asp:Label>
+                                </ItemTemplate>
+                                <ItemStyle Width="100px" VerticalAlign="Top" />
+                            </asp:TemplateField>
+
+
                             <asp:TemplateField SortExpression="Permit_To_Remain_Until" HeaderText="<%$ Resources:Text, PermitToRemain %>">
                                 <ItemTemplate>
                                     <asp:Label ID="lblPermitToRemainUntil" runat="server" Text='<%# Eval("Permit_To_Remain_Until") %>'></asp:Label>

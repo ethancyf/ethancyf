@@ -2172,7 +2172,7 @@ Namespace BLL
                                     strMsgCode = "00222"
                                 Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00223"
-                                Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                                Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00110"
                                 Case DocTypeModel.DocTypeCode.HKBC
                                     strMsgCode = "00224"

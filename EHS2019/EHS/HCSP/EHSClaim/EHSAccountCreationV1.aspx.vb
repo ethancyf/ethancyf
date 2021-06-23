@@ -2311,12 +2311,33 @@ Partial Public Class EHSAccountCreationV1
             Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
         End If
 
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        'Add Passport checking
+        If udcInputPASS.PassportIssueRegion.Equals(String.Empty) Then
+            Me._systemMessage = New Common.ComObject.SystemMessage("990000", "E", "00462")
+            isValid = False
+            udcInputPASS.SetPassportIssueRegionError(True)
+
+            udcMsgBoxErr.AddMessage(Me._systemMessage, _
+                                     New String() {"%en", "%tc", "%sc"}, _
+                                     New String() {HttpContext.GetGlobalResourceObject("Text", "PassportIssueRegion", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "PassportIssueRegion", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+                                                   HttpContext.GetGlobalResourceObject("Text", "PassportIssueRegion", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+                                                   })
+        End If
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
+
         If isValid Then
             udtEHSAccountPersonalInfo.ENameSurName = udcInputPASS.ENameSurName
             udtEHSAccountPersonalInfo.ENameFirstName = udcInputPASS.ENameFirstName
             udtEHSAccountPersonalInfo.Gender = udcInputPASS.Gender
             udtEHSAccountPersonalInfo.DocCode = DocType.DocTypeModel.DocTypeCode.PASS
             udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+            udtEHSAccountPersonalInfo.PassportIssueRegion = udcInputPASS.PassportIssueRegion
+            ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
 
             Me._systemMessage = Me.EHSAccountBasicValidation(DocType.DocTypeModel.DocTypeCode.PASS, udtEHSAccount)
             If Not Me._systemMessage Is Nothing Then

@@ -10,6 +10,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023 (COVID19)
 -- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
 -- Modified date:	26 May 2021
 -- Description:		Update PersonalInfo.[Update_Dtm] when merge temp account
 -- =============================================
@@ -125,6 +132,8 @@ Declare @Create_By_SmartID char(1)
 Declare @SmartID_Ver	varchar(5)
 
 Declare @Update_By	varchar(20)
+
+DECLARE @PASS_Issue_Region varchar(5)
 -- =============================================
 -- Validation 
 -- =============================================
@@ -160,6 +169,7 @@ BEGIN
 		@Other_Info = Other_Info,
 		@Create_By_SmartID = Create_By_SmartID,
 		@SmartID_Ver = SmartID_Ver,
+		@PASS_Issue_Region = PASS_Issue_Region,
 		@Update_By = Update_By
 	FROM [dbo].[TempPersonalInformation]	
 	WHERE 
@@ -189,7 +199,7 @@ BEGIN
 		Other_Info = @Other_Info,
 		Create_By_SmartID = @Create_By_SmartID,
 		SmartID_Ver = @SmartID_Ver,
-
+		PASS_Issue_Region = @PASS_Issue_Region,
 		Update_Dtm = GETDATE(),
 		Update_By = @Update_By
 	WHERE 
@@ -246,6 +256,7 @@ SELECT
 		@EC_Reference_No_Other_Format = EC_Reference_No_Other_Format,
 		@Create_By_SmartID = Create_By_SmartID,
 		@SmartID_Ver = SmartID_Ver,
+		@PASS_Issue_Region = PASS_Issue_Region,
 		@Update_By = Update_By
 	FROM [dbo].[TempPersonalInformation]	
 	WHERE 
@@ -284,7 +295,7 @@ SELECT
 		EC_Reference_No_Other_Format = @EC_Reference_No_Other_Format,
 		Create_By_SmartID = @Create_By_SmartID,
 		SmartID_Ver = @SmartID_Ver,
-		
+		PASS_Issue_Region = @PASS_Issue_Region,		
 		Update_Dtm = GETDATE(),
 		Update_By = @Update_By
 	WHERE 

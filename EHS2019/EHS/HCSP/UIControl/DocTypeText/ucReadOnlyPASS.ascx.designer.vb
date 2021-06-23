@@ -159,6 +159,24 @@ Namespace UIControl.DocTypeText
         Protected WithEvents lblReadonlyTravelDocNo As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''lblReadonlyPassportIssueRegionText control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblReadonlyPassportIssueRegionText As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblReadonlyPassportIssueRegion control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblReadonlyPassportIssueRegion As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''lblReadonlyNameText control.
         '''</summary>
         '''<remarks>

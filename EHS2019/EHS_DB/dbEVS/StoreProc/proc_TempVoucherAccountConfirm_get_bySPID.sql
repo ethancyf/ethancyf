@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -214,7 +222,9 @@ create table #tempVoucherAcc
 
 	Deceased	char(1),
 	DOD			datetime,
-	Exact_DOD	char(1)
+	Exact_DOD	char(1),
+
+	PASS_Issue_Region	varchar(5)
 )
 
 CREATE INDEX IX_VAT on #tempVoucherAcc (IdentityNum, Doc_Code)
@@ -279,7 +289,8 @@ insert into #tempVoucherAcc
 	Validated_Acc_ID,
 	Deceased,
 	DOD,
-	Exact_DOD
+	Exact_DOD,
+	PASS_Issue_Region
 )
 select	c.Transaction_Dtm,
 		convert(varchar, DecryptByKey(p.Encrypt_Field1)),
@@ -317,7 +328,9 @@ select	c.Transaction_Dtm,
 		t.Validated_Acc_ID,
 		p.Deceased,
 		p.DOD,
-		p.Exact_DOD
+		p.Exact_DOD,
+		p.PASS_Issue_Region
+
 	from TempVoucherAccount t, TempPersonalInformation p, Practice pr, VoucherAccountCreationLog c, SchemeClaim sc--, doctype dt
 	where t.Voucher_Acc_ID = p.Voucher_Acc_ID
 	and t.Voucher_Acc_ID not in (select voucher_acc_id from #tempTran)
@@ -412,7 +425,9 @@ where Send_To_ImmD is null
 			t.Send_To_ImmD,
 			t.Deceased,
 			t.DOD,
-			t.Exact_DOD
+			t.Exact_DOD,
+			t.PASS_Issue_Region
+
 	from #tempVoucherAcc t, doctype dt
 	where t.doc_code = dt.doc_code COLLATE DATABASE_DEFAULT
 	order by Transaction_Dtm asc

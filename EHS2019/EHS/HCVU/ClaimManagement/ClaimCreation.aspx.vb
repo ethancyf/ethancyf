@@ -1890,8 +1890,12 @@ Partial Public Class ClaimCreation
                 ' CRE20-0023 (Immu record) [Start][Chris YIM]
                 ' ---------------------------------------------------------------------------------------------------------
                 If strCategory = CategoryCode.VSS_COVID19 OrElse strCategory = CategoryCode.VSS_COVID19_Outreach Then
+                    Dim udtEHSAccount As EHSAccount.EHSAccountModel = udtEHSAccountMaintBLL.EHSAccountGetFromSession(FunctionCode)
+
                     panHKICSymbol.Visible = False
                     rblHKICSymbol.ClearSelection()
+
+                    udcInputVSS.SetJoinEHRSS(udtEHSAccount)
 
                     If strCategory = CategoryCode.VSS_COVID19_Outreach Then
                         udcInputVSS.DisplayOutreachInput(True)

@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-023 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	28 May 2021
+-- Description:		Add [PASS_Issue_Region]
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			INT20-0022 (Fix IMMBValidation on IDEAS Combo)
 -- Modified by:		Koala CHENG
 -- Modified date:	2 Jul 2020
@@ -114,6 +121,8 @@ Declare @EC_Reference_No_Other_Format char(1)
 Declare @Create_By_SmartID char(1)
 Declare @SmartID_Ver	varchar(5)
 
+DECLARE @PASS_Issue_Region varchar(5)
+
 -- =============================================
 -- Validation 
 -- =============================================
@@ -157,7 +166,8 @@ BEGIN
 		@Permit_to_Remain_Until = Permit_to_Remain_Until,
 		@Other_Info = Other_Info,
 		@Create_By_SmartID = Create_By_SmartID,
-		@SmartID_Ver = SmartID_Ver
+		@SmartID_Ver = SmartID_Ver,
+		@PASS_Issue_Region = PASS_Issue_Region
 
 	FROM [dbo].[TempPersonalInformation]	
 	WHERE 
@@ -190,7 +200,9 @@ BEGIN
 		Update_Dtm = GetDate(),
 		Update_by = @User_ID,
 		Create_By_SmartID = @Create_By_SmartID,
-		SmartID_Ver = @SmartID_Ver
+		SmartID_Ver = @SmartID_Ver,
+		PASS_Issue_Region = @PASS_Issue_Region
+
 	WHERE 
 		Voucher_Acc_ID = @Voucher_Acc_ID AND Doc_Code = @Doc_Code AND --Create_By_SmartID <> 'Y'
 		(
@@ -246,7 +258,8 @@ SELECT
 		@EC_Reference_No = EC_Reference_No,
 		@EC_Reference_No_Other_Format = EC_Reference_No_Other_Format,
 		@Create_By_SmartID = Create_By_SmartID,
-		@SmartID_Ver = SmartID_Ver
+		@SmartID_Ver = SmartID_Ver,
+		@PASS_Issue_Region = PASS_Issue_Region
 		
 	FROM [dbo].[TempPersonalInformation]	
 	WHERE 
@@ -290,7 +303,8 @@ SELECT
 		EC_Reference_No = @EC_Reference_No,
 		EC_Reference_No_Other_Format = @EC_Reference_No_Other_Format,
 		Create_By_SmartID = @Create_By_SmartID,
-		SmartID_Ver = @SmartID_Ver
+		SmartID_Ver = @SmartID_Ver,
+		PASS_Issue_Region = @PASS_Issue_Region
 		
 	WHERE 
 		Voucher_Acc_ID = @Voucher_Acc_ID AND Doc_Code = @Doc_Code

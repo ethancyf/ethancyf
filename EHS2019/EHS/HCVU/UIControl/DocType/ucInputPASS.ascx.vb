@@ -3,6 +3,8 @@ Imports Common.Component.StaticData
 Imports Common.Component
 Imports Common.Component.DocType
 Imports Common.Component.DocType.DocTypeModel
+Imports Common.Component.PassportIssueRegion
+Imports Common.Component.PassportIssueRegion.PassportIssueRegionModel
 Imports Common.Format
 
 Public Class ucInputPASS
@@ -14,7 +16,10 @@ Public Class ucInputPASS
     Private _strGender As String
     Private _strDOB As String
 
+    Private _strPassportIssueRegion As String
+
     Private udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
+    Private udtPassportIssueRegionBLL As New PassportIssueRegionBLL
 
     Protected Overrides Sub RenderLanguage(ByVal strErrorImageURL As String, ByVal strErrorImageALT As String)
 
@@ -25,6 +30,11 @@ Public Class ucInputPASS
         Me.lblDOBOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
 
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Me.lblPassportIssueRegionOriginalText.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion")
+        GeneratePASSIssuingRegionDDl(Me.ddlPassportIssueRegion)
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
         If MyBase.Mode = BuildMode.Modification Then
             Me.lblAmendingRecordText.Text = Me.GetGlobalResourceObject("Text", "AmendingRecord")
         Else
@@ -34,7 +44,6 @@ Public Class ucInputPASS
                 lblAmendingRecordText.Text = Me.GetGlobalResourceObject("Text", "AmendingRecord")
             End If
         End If
-
 
         'Gender Radio button list
         Me.rbGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
@@ -71,6 +80,13 @@ Public Class ucInputPASS
         Me.lblNewGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblNewDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
         Me.lblNewEnameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
+
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Me.lblNewPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion")
+        GeneratePASSIssuingRegionDDl(Me.ddlNewPassportIssueRegion)
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
+
 
         'Gender Radio button list
         Me.rboNewGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
@@ -116,6 +132,9 @@ Public Class ucInputPASS
                 Me._strENameFirstName = MyBase.EHSPersonalInfoAmend.ENameFirstName
                 Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
                 Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
+
+                Me._strPassportIssueRegion = MyBase.EHSPersonalInfoAmend.PassportIssueRegion
+
                 Me.txtNewTravelDocNo.Enabled = False
                 SetValue(BuildMode.Creation)
             End If
@@ -131,6 +150,9 @@ Public Class ucInputPASS
             Me._strENameSurName = MyBase.EHSPersonalInfoAmend.ENameSurName
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
+
+
+            Me._strPassportIssueRegion = MyBase.EHSPersonalInfoAmend.PassportIssueRegion
 
             'Fill values
             Me.SetValue(Mode)
@@ -152,6 +174,8 @@ Public Class ucInputPASS
             Me._strGender = MyBase.EHSPersonalInfoAmend.Gender
             Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfoAmend.DOB, MyBase.EHSPersonalInfoAmend.ExactDOB, Session("Language"), MyBase.EHSPersonalInfoAmend.ECAge, MyBase.EHSPersonalInfoAmend.ECDateOfRegistration)
 
+            Me._strPassportIssueRegion = MyBase.EHSPersonalInfoAmend.PassportIssueRegion
+
             Me.SetValue(modeType)
 
             'Mode related Settings
@@ -167,6 +191,9 @@ Public Class ucInputPASS
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.rbGender.Enabled = True
+                ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+                Me.ddlPassportIssueRegion.Enabled = True
+                ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
             Else
                 '--------------------------------------------------------
                 'Modify Read Only Mode
@@ -176,6 +203,9 @@ Public Class ucInputPASS
                 Me.txtENameFirstname.Enabled = False
                 Me.rbGender.Enabled = False
                 Me.txtDOB.Enabled = False
+                ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+                Me.ddlPassportIssueRegion.Enabled = False
+                ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
             End If
 
             If MyBase.ActiveViewChanged Then
@@ -194,12 +224,14 @@ Public Class ucInputPASS
             SetENameFirstName()
             SetENameSurName()
             SetDOB()
+            SetPassportIssueRegion()
         Else
             SetTDNumber()
             SetENameFirstName()
             SetENameSurName()
             SetGender()
             SetDOB()
+            SetPassportIssueRegion()
         End If
 
     End Sub
@@ -294,6 +326,55 @@ Public Class ucInputPASS
 
     End Sub
 
+    ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+    Public Sub SetPassportIssueRegion()
+
+        If Mode = BuildMode.Creation Then
+            If Not Me._strPassportIssueRegion Is Nothing AndAlso Not Me._strPassportIssueRegion.Equals(String.Empty) Then
+                For intCt As Integer = 0 To Me.ddlNewPassportIssueRegion.Items.Count - 1
+                    If Me.ddlNewPassportIssueRegion.Items(intCt).Value.ToUpper.Trim = Me._strPassportIssueRegion.ToUpper.Trim Then
+                        Me.ddlNewPassportIssueRegion.SelectedValue = Me._strPassportIssueRegion
+                        Exit For
+                    End If
+                Next
+            End If
+
+        ElseIf Mode = BuildMode.Modification_OneSide Then
+            If Not Me._strPassportIssueRegion Is Nothing AndAlso Not Me._strPassportIssueRegion.Equals(String.Empty) Then
+                For intCt As Integer = 0 To Me.ddlNewPassportIssueRegion.Items.Count - 1
+                    If Me.ddlNewPassportIssueRegion.Items(intCt).Value.ToUpper.Trim = Me._strPassportIssueRegion.ToUpper.Trim Then
+                        Me.ddlNewPassportIssueRegion.SelectedValue = Me._strPassportIssueRegion
+                        Exit For
+                    End If
+                Next
+            End If
+        Else
+            'Amend
+            'Set Default value to "Please select"
+            Me.ddlPassportIssueRegion.SelectedIndex = 0
+
+            If Not Me._strPassportIssueRegion Is Nothing AndAlso Not Me._strPassportIssueRegion.Equals(String.Empty) Then
+                For intCt As Integer = 0 To Me.ddlPassportIssueRegion.Items.Count - 1
+                    If Me.ddlPassportIssueRegion.Items(intCt).Value.ToUpper.Trim = Me._strPassportIssueRegion.ToUpper.Trim Then
+                        Me.ddlPassportIssueRegion.SelectedValue = Me._strPassportIssueRegion
+                        Exit For
+                    End If
+                Next
+            End If
+
+            'Orignal
+            If MyBase.EHSPersonalInfoOriginal.PassportIssueRegion IsNot Nothing AndAlso MyBase.EHSPersonalInfoOriginal.PassportIssueRegion <> String.Empty Then
+                'Get it from full list
+                Me.lblPassportIssueRegionOriginal.Text = (New PassportIssueRegionBLL).GetPassportIssueRegion.Filter(MyBase.EHSPersonalInfoOriginal.PassportIssueRegion).NationalDisplay(CultureLanguage.English)
+            Else
+                Me.lblPassportIssueRegionOriginal.Text = Me.GetGlobalResourceObject("Text", "NotProvided")
+            End If
+
+        End If
+    End Sub
+
+    ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
 
 #End Region
 
@@ -307,6 +388,7 @@ Public Class ucInputPASS
         Me.SetENameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
+        Me.SetPassportIssueRegionError(visible)
     End Sub
 
     Public Sub SetTDError(ByVal blnVisible As Boolean)
@@ -343,6 +425,15 @@ Public Class ucInputPASS
 
     End Sub
 
+    ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+    Public Sub SetPassportIssueRegionError(ByVal blnVisible As Boolean)
+        If Me.Mode = BuildMode.Creation Or Me.Mode = BuildMode.Modification_OneSide Then
+            Me.imgNewPassportIssueRegion.Visible = blnVisible
+        Else
+            Me.imgPassportIssueRegion.Visible = blnVisible
+        End If
+    End Sub
+    ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
 
 #End Region
 
@@ -355,16 +446,20 @@ Public Class ucInputPASS
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
+            Me._strPassportIssueRegion = Me.ddlNewPassportIssueRegion.SelectedValue.Trim
+
         ElseIf mode = BuildMode.Modification_OneSide Then
             Me._strENameFirstName = Me.txtNewGivenName.Text.Trim
             Me._strENameSurName = Me.txtNewSurname.Text.Trim
             Me._strGender = Me.rboNewGender.SelectedValue.Trim
             Me._strDOB = Me.txtNewDOB.Text.Trim
+            Me._strPassportIssueRegion = Me.ddlNewPassportIssueRegion.SelectedValue.Trim
         Else
             Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
             Me._strENameSurName = Me.txtENameSurname.Text.Trim
             Me._strGender = Me.rbGender.SelectedValue.Trim
             Me._strDOB = Me.txtDOB.Text.Trim
+            Me._strPassportIssueRegion = Me.ddlPassportIssueRegion.SelectedValue.Trim
         End If
 
     End Sub
@@ -414,6 +509,43 @@ Public Class ucInputPASS
         End Set
     End Property
 
+    ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+    Public Property PassportIssueRegion() As String
+        Get
+            Return Me._strPassportIssueRegion
+        End Get
+        Set(ByVal value As String)
+            Me._strPassportIssueRegion = value
+        End Set
+    End Property
+
+    ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
 #End Region
 
+    Public Sub GeneratePASSIssuingRegionDDl(ByRef IssuingRegionDropDownList As DropDownList)
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        'Bind Issuing Country DDL
+        Dim udtPassportIssueRegionModelCollection As PassportIssueRegionModelCollection = udtPassportIssueRegionBLL.GetPassportIssueRegionByActiveStatus()
+
+        'Temporary store the selected value
+        Dim strIssuingRegionDropDownListSelected As String = IssuingRegionDropDownList.SelectedValue.Trim
+
+        IssuingRegionDropDownList.Items.Clear()
+        IssuingRegionDropDownList.DataSource = udtPassportIssueRegionModelCollection
+        IssuingRegionDropDownList.DataValueField = "NationalCode"
+        IssuingRegionDropDownList.DataTextField = "NationalDisplay"
+        IssuingRegionDropDownList.DataBind()
+        IssuingRegionDropDownList.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+
+        'Restore selected value
+        For intCt As Integer = 0 To IssuingRegionDropDownList.Items.Count - 1
+            If IssuingRegionDropDownList.Items(intCt).Value.ToUpper.Trim = strIssuingRegionDropDownListSelected.ToUpper.Trim Then
+                IssuingRegionDropDownList.SelectedValue = strIssuingRegionDropDownListSelected
+                Exit For
+            End If
+        Next
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
+    End Sub
 End Class

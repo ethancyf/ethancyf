@@ -3,6 +3,8 @@ Imports Common.Format
 Imports Common.Component.DocType.DocTypeModel
 Imports Common.Component
 Imports Common.Component.DocType
+Imports Common.Component.PassportIssueRegion
+Imports Common.Component.PassportIssueRegion.PassportIssueRegionModel
 
 
 Public Class ucInputPASS
@@ -14,11 +16,18 @@ Public Class ucInputPASS
     Private _strENameSurName As String
     Private _strGender As String
     Private _strDOB As String
+    Private _strPassportIssueRegion As String
+
+
     'Private _strDOI As String
     Private _strReferenceNo As String = String.Empty
     Private _strTransNo As String = String.Empty
 
+
+
+
     Private udtDocTypeBLL As DocTypeBLL = New DocTypeBLL
+    Private udtPassportIssueRegionBLL As New PassportIssueRegionBLL
 
     Protected Overrides Sub RenderLanguage(ByVal strErrorImageURL As String, ByVal strErrorImageALT As String)
 
@@ -26,11 +35,32 @@ Public Class ucInputPASS
         Dim udtDocTypeModel As DocTypeModel = udtDocTypeBLL.getAllDocType.Filter(DocTypeCode.PASS)
 
         Me.lblTDNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler.Language)
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Me.lblPassportIssueRegion.Text = Me.GetGlobalResourceObject("Text", "PassportIssueRegion")
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
         Me.lblEName.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblENameComma.Text = Me.GetGlobalResourceObject("Text", "Comma")
         Me.lblGender.Text = Me.GetGlobalResourceObject("Text", "Gender")
         Me.lblDOB.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
         'Me.lblDOI.Text = Me.GetGlobalResourceObject("Text", "DOILong")
+
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Dim strSelectedLanguage As String
+        strSelectedLanguage = MyBase.SessionHandler.Language
+
+        'Bind Issuing Country DDL
+        Dim udtPassportIssueRegionModelCollection As PassportIssueRegionModelCollection = udtPassportIssueRegionBLL.GetPassportIssueRegionByActiveStatus()
+        Dim strddlPassportIssueRegionSelected As String = Me.ddlPassportIssueRegion.SelectedValue.Trim
+        Me.ddlPassportIssueRegion.Items.Clear()
+        ddlPassportIssueRegion.DataSource = udtPassportIssueRegionModelCollection
+        ddlPassportIssueRegion.DataValueField = "NationalCode"
+        ddlPassportIssueRegion.DataTextField = "NationalDisplay"
+        ddlPassportIssueRegion.DataBind()
+        Me.ddlPassportIssueRegion.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), String.Empty))
+        Me.ddlPassportIssueRegion.SelectedValue = strddlPassportIssueRegionSelected
+
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
 
         'Gender Radio button list
         Me.rbGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
@@ -52,6 +82,9 @@ Public Class ucInputPASS
         Me.imgDOBDate.ImageUrl = strErrorImageURL
         Me.imgDOBDate.AlternateText = strErrorImageALT
 
+        Me.imgPassportIssueRegion.ImageUrl = strErrorImageURL
+        Me.imgPassportIssueRegion.AlternateText = strErrorImageALT
+
         'Me.imgDOIDate.ImageUrl = strErrorImageURL
         'Me.imgDOIDate.AlternateText = strErrorImageALT
 
@@ -67,14 +100,19 @@ Public Class ucInputPASS
         Me._strGender = MyBase.EHSPersonalInfo.Gender
         Me._strDOB = MyBase.Formatter.formatDOB(MyBase.EHSPersonalInfo.DOB, MyBase.EHSPersonalInfo.ExactDOB, MyBase.SessionHandler.Language(), MyBase.EHSPersonalInfo.ECAge, MyBase.EHSPersonalInfo.ECDateOfRegistration)
 
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Me._strPassportIssueRegion = MyBase.EHSPersonalInfo.PassportIssueRegion
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
         'If MyBase.EHSPersonalInfo.DateofIssue.HasValue Then
         '    Me._strDOI = MyBase.Formatter.formatInputDate(CDate(MyBase.EHSPersonalInfo.DateofIssue))
         'Else
         '    Me._strDOI = String.Empty
         'End If
 
-        Me.SetValue(modeType)
 
+
+        Me.SetValue(modeType)
 
         'Mode related Settings
         If modeType = ucInputDocTypeBase.BuildMode.Creation Then
@@ -84,6 +122,10 @@ Public Class ucInputPASS
             Me.txtTDNo.Enabled = False
 
             Me.txtDOB.Enabled = False
+
+            ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+            Me.ddlPassportIssueRegion.Enabled = True
+            ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
 
             If MyBase.FixEnglishNameGender Then
                 txtENameSurname.Enabled = False
@@ -114,6 +156,11 @@ Public Class ucInputPASS
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.rbGender.Enabled = True
+
+                ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+                Me.ddlPassportIssueRegion.Enabled = True
+                ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
                 'Me.txtDOI.Enabled = True
             Else
                 'Modification Read-Only Mode
@@ -125,6 +172,11 @@ Public Class ucInputPASS
                 Me.txtENameFirstname.Enabled = False
                 Me.rbGender.Enabled = False
                 Me.txtDOB.Enabled = False
+
+                ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+                Me.ddlPassportIssueRegion.Enabled = False
+                ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
                 'Me.txtDOI.Enabled = False
             End If
 
@@ -135,6 +187,7 @@ Public Class ucInputPASS
             Me.SetENameError(False)
             Me.SetGenderError(False)
             Me.SetDOBError(False)
+            Me.SetPassportIssueRegionError(False)
             'Me.SetDOIError(False)
         End If
 
@@ -150,6 +203,9 @@ Public Class ucInputPASS
         SetupENameSurName()
         SetupGender()
         SetupDOB()
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        SetupPassportIssueRegion()
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
         'SetupDOI()
         SetReferenceNo()
         SetTransactionNo()
@@ -173,6 +229,20 @@ Public Class ucInputPASS
             Me.rbGender.SelectedValue = Me._strGender
         End If
     End Sub
+
+    ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+    Public Sub SetupPassportIssueRegion()
+        If Not Me._strPassportIssueRegion Is Nothing AndAlso Not Me._strPassportIssueRegion.Equals(String.Empty) Then
+            For intCt As Integer = 0 To Me.ddlPassportIssueRegion.Items.Count - 1
+                If Me.ddlPassportIssueRegion.Items(intCt).Value.ToUpper.Trim = Me._strPassportIssueRegion.ToUpper.Trim Then
+                    Me.ddlPassportIssueRegion.SelectedValue = Me._strPassportIssueRegion
+                    Exit For
+                End If
+            Next
+        End If
+    End Sub
+
+    ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
 
     Public Sub SetupDOB()
         Me.txtDOB.Text = Me._strDOB
@@ -213,6 +283,9 @@ Public Class ucInputPASS
         Me.SetENameError(visible)
         Me.SetGenderError(visible)
         Me.SetDOBError(visible)
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Me.SetPassportIssueRegionError(visible)
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
         'Me.SetDOIError(visible)
     End Sub
 
@@ -232,11 +305,20 @@ Public Class ucInputPASS
         Me.imgDOBDate.Visible = visible
     End Sub
 
+    ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+    Public Sub SetPassportIssueRegionError(ByVal visible As Boolean)
+        Me.imgPassportIssueRegion.Visible = visible
+    End Sub
+
+    ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
+
     'Public Sub SetDOIError(ByVal visible As Boolean)
     '    Me.imgDOIDate.Visible = visible
     'End Sub
 
 #End Region
+
 
 #Region "Property"
 
@@ -245,6 +327,11 @@ Public Class ucInputPASS
         Me._strENameFirstName = Me.txtENameFirstname.Text.Trim
         Me._strENameSurName = Me.txtENameSurname.Text.Trim
         Me._strGender = Me.rbGender.SelectedValue.Trim
+
+        ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+        Me._strPassportIssueRegion = ddlPassportIssueRegion.SelectedValue.ToString.Trim
+        ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
         'Me._strDOI = Me.txtDOI.Text.Trim
         Me._strDOB = Me.txtDOB.Text.Trim
     End Sub
@@ -294,6 +381,18 @@ Public Class ucInputPASS
         End Set
     End Property
 
+    ' CRE20-023 Add Issue country/region to passport document [Start][Raiman]
+    Public Property PassportIssueRegion() As String
+        Get
+            Return Me._strPassportIssueRegion
+        End Get
+        Set(ByVal value As String)
+            Me._strPassportIssueRegion = value
+        End Set
+    End Property
+
+    ' CRE20-023 Add Issue country/region to passport document [End][Raiman]
+
     'Public Property IsExactDOB() As String
     '    Get
     '        Return Me._strIsExactDOB
@@ -331,7 +430,5 @@ Public Class ucInputPASS
     End Property
 
 #End Region
-
-
 
 End Class
