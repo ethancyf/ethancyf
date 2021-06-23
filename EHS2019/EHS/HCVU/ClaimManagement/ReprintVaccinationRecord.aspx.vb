@@ -206,16 +206,16 @@ Partial Public Class ReprintVaccinationRecord
         End Try
     End Sub
 
-    Protected Sub SearchCOVID19Transaction(ByVal streHSDocNo As String, ByVal streDocType As String)
+    Protected Sub SearchCOVID19Transaction(ByVal streHSDocNo As String, ByVal strSearchDocType As String)
         Dim udtSearchCriteria = New SearchCriteria
         Dim dt As New DataTable
         Dim udtCOVID19BLL As New Common.Component.COVID19.COVID19BLL
         Dim udtBLLSearchResult As BaseBLL.BLLSearchResult = Nothing
-        Dim strTransNum As String
-        Dim strDocCode As String = String.Empty
+        Dim strTransNum As String = String.Empty
+        Dim strDocType As String = String.Empty
         Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
 
-        udtAuditLogEntry.AddDescripton("Doc Code", streDocType)
+        udtAuditLogEntry.AddDescripton("Doc Code", strSearchDocType)
         udtAuditLogEntry.AddDescripton("Doc No", streHSDocNo)
         AuditLogUserType(udtAuditLogEntry)
 
@@ -237,10 +237,10 @@ Partial Public Class ReprintVaccinationRecord
                 imgeHSDocNoErr.Visible = True
 
             Else
-                udtSearchCriteria.DocumentType = streDocType
+                udtSearchCriteria.DocumentType = strSearchDocType
                 Dim aryDocumentNo As String()
 
-                Select Case streDocType
+                Select Case strSearchDocType
                     Case DocTypeModel.DocTypeCode.HKIC, DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.DI, _
                         DocTypeModel.DocTypeCode.REPMT, DocTypeModel.DocTypeCode.ID235B, DocTypeModel.DocTypeCode.VISA, _
                         DocTypeModel.DocTypeCode.ADOPC, DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.CCIC, _
@@ -267,19 +267,58 @@ Partial Public Class ReprintVaccinationRecord
                 udtAuditLogEntry.AddDescripton("No. of Records", dt.Rows.Count)
 
                 If dt.Rows.Count > 0 Then
+                    Dim udtEHSTransactionLatest As EHSTransactionModel = Nothing
+                    Dim udtEHSAccountLatest As EHSAccountModel = Nothing
+                    Dim udtPersonalInfoLatest As EHSAccountModel.EHSPersonalInformationModel = Nothing
+
+                    Dim udtEHSTransactionCurrent As EHSTransactionModel = Nothing
+                    Dim udtPersonalInfoCurrent As EHSAccountModel.EHSPersonalInformationModel = Nothing
+
                     Dim blnValidToPrint As Boolean = True
 
-                    strTransNum = dt.Rows(0).Item("Transaction_ID")
+                    strDocType = dt.Rows(0).Item("Doc_Code").ToString.Trim
+                    strTransNum = dt.Rows(0).Item("Transaction_ID").ToString.Trim
 
-                    'Get Transaction
-                    Dim udtEHSTransaction As EHSTransactionModel = udtEHSTransactionBLL.LoadClaimTran(strTransNum, True, True)
+                    udtEHSTransactionLatest = udtEHSTransactionBLL.LoadClaimTran(strTransNum, True, True)
+                    udtEHSAccountLatest = udtEHSTransactionLatest.EHSAcct
 
-                    'Get EHSAccount
-                    Dim udtEHSAccount As EHSAccountModel = udtEHSTransaction.EHSAcct
+                    For i As Integer = 1 To dt.Rows.Count - 1
+                        If dt.Rows(i).Item("Doc_Code").ToString.Trim = strDocType Then
+                            strTransNum = dt.Rows(i).Item("Transaction_ID")
+
+                            'Get Transaction
+                            udtEHSTransactionCurrent = udtEHSTransactionBLL.LoadClaimTran(strTransNum, True, True)
+
+                            'Get EHSAccount
+                            If udtEHSAccountLatest IsNot Nothing Then
+                                udtPersonalInfoLatest = udtEHSAccountLatest.EHSPersonalInformationList.Filter(strDocType)
+
+                                udtPersonalInfoCurrent = udtEHSTransactionCurrent.EHSAcct.EHSPersonalInformationList.Filter(strDocType)
+
+                                If udtPersonalInfoCurrent.UpdateDtm >= udtPersonalInfoLatest.UpdateDtm Then
+                                    If udtPersonalInfoCurrent.UpdateDtm = udtPersonalInfoLatest.UpdateDtm AndAlso udtEHSAccountLatest.AccountSource = EHSAccountModel.SysAccountSource.ValidateAccount Then
+                                        'Nothing to do
+                                    Else
+                                        udtEHSAccountLatest = udtEHSTransactionCurrent.EHSAcct
+                                    End If
+
+                                End If
+
+                            Else
+                                udtEHSAccountLatest = udtEHSTransactionCurrent.EHSAcct
+
+                            End If
+
+                        End If
+
+                    Next
+
+                    'Merge: Latest transaction + Latest account
+                    udtEHSTransactionLatest.EHSAcct = udtEHSAccountLatest
 
                     'Get vaccination record
                     udcClaimTransDetail.FunctionCode = Me.FunctionCode
-                    Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = udcClaimTransDetail.GetVaccinationRecordFromSession(udtEHSAccount, udtEHSTransaction.SchemeCode)
+                    Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = udcClaimTransDetail.GetVaccinationRecordFromSession(udtEHSAccountLatest, udtEHSTransactionLatest.SchemeCode)
 
                     If Session(SESS_UserType) = "HCSPUser" Then
                         'Search HCSPUser account, set false at default
@@ -304,8 +343,8 @@ Partial Public Class ReprintVaccinationRecord
                             'CMS / CIMS record, not check 
                             If udtVaccineRecord.TransactionID Is Nothing OrElse udtVaccineRecord.TransactionID = String.Empty Then Continue For
 
-                            If udtVaccineRecord.TransactionID.Trim.ToUpper = udtEHSTransaction.TransactionID.Trim.ToUpper Then
-                                udtCurEHSTransaction = udtEHSTransaction
+                            If udtVaccineRecord.TransactionID.Trim.ToUpper = udtEHSTransactionLatest.TransactionID.Trim.ToUpper Then
+                                udtCurEHSTransaction = udtEHSTransactionLatest
                             Else
                                 udtCurEHSTransaction = udtEHSTransactionBLL.LoadClaimTran(udtVaccineRecord.TransactionID, True, True)
                             End If
@@ -366,10 +405,9 @@ Partial Public Class ReprintVaccinationRecord
                     AuditLogUserType(udtAuditLogEntry)
                     If blnValidToPrint Then
                         'Build EHS transaction Detail
-                        BuildClaimTransDetail(udtEHSTransaction)
+                        BuildClaimTransDetail(udtEHSTransactionLatest)
 
-                        strDocCode = dt.Rows(0).Item("Doc_Code")
-                        If streDocType <> Trim(strDocCode) Then
+                        If strSearchDocType <> Trim(strDocType) Then
                             ' Message: Doc code not match
                             udcInfoMessageBox.AddMessage(FunctionCode, SeverityCode.SEVI, MsgCode.MSG00001)
                         End If

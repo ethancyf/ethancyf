@@ -14,6 +14,14 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-50 
+-- Modified by:		Martin Tang
+-- Modified date:	4 Jun 2021
+-- Description:		1. Send the records with the latest personal information
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-0023 
@@ -175,6 +183,9 @@ AS
         DECLARE @SchemeCodeRVP AS VARCHAR(10)= 'RVP';
         DECLARE @SchemeCodeVSS AS VARCHAR(10)= 'VSS';
 
+        DECLARE @ValidAccountType AS TINYINT= 1;
+        DECLARE @TempAccountType AS TINYINT= 2;
+
         EXEC [proc_SymmetricKey_open];
 
         --check COVID19ExporterForceSendList
@@ -195,61 +206,126 @@ AS
                     AND vt.Transaction_Dtm < @In_Period_To)
                    OR (vt.Update_Dtm >= @In_Period_From
                        AND vt.Update_Dtm < @In_Period_To));
-        --get updated PersonalInformation within the period
-        SELECT pinfo.Voucher_Acc_ID, 
-               pinfo.Doc_Code
-        INTO #ResultsWithVccIdOnly
-        FROM PersonalInformation AS pinfo WITH(NOLOCK)
-        WHERE(pinfo.Update_Dtm >= @In_Period_From
-              AND pinfo.Update_Dtm < @In_Period_To);
-        --get updated tempPersonalInformation within the period
-        SELECT pinfo.Voucher_Acc_ID, 
-               pinfo.Doc_Code
-        INTO #ResultsWithTempVccIdOnly
-        FROM tempPersonalInformation AS pinfo WITH(NOLOCK)
-        WHERE(pinfo.Update_Dtm >= @In_Period_From
-              AND pinfo.Update_Dtm < @In_Period_To);
-        --[Start]get active C19 Transaction_ID to query--
-        SELECT vt.Transaction_ID
-        INTO #ResultsWithActiveTx
-        FROM VoucherTransaction AS vt WITH(NOLOCK)
-             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
-             ON vt.Transaction_ID = td.Transaction_id
-                AND td.Subsidize_Item_Code = 'C19'
-             INNER JOIN #ResultsWithTx AS r
-             ON r.Transaction_ID = td.Transaction_id
-        WHERE vt.Create_Dtm < @In_Period_To;
+        
+		-- get Doc No. which personal info has been updated
+        SELECT temp.Doc_Code, 
+               temp.Encrypt_Field1
+        INTO #ResultsUpdatedAccount
+        FROM
+            (
+                SELECT tpinfo.Doc_Code, 
+                       tpinfo.Encrypt_Field1
+                FROM TempPersonalInformation AS tpinfo WITH(NOLOCK)
+                WHERE(tpinfo.Update_Dtm >= @In_Period_From
+                      AND tpinfo.Update_Dtm < @In_Period_To)
+                UNION
+                SELECT pinfo.Doc_Code, 
+                       pinfo.Encrypt_Field1
+                FROM PersonalInformation AS pinfo WITH(NOLOCK)
+                WHERE(pinfo.Update_Dtm >= @In_Period_From
+                      AND pinfo.Update_Dtm < @In_Period_To)
+             ) AS temp;
 
-        INSERT INTO #ResultsWithActiveTx
+        INSERT INTO #ResultsWithTx
         SELECT vt.Transaction_ID
-        FROM VoucherTransaction AS vt WITH(NOLOCK)
-             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
-             ON vt.Transaction_ID = td.Transaction_id
+        FROM VoucherTransaction AS vt
+             INNER JOIN TransactionDetail AS td
+             ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
-             INNER JOIN #ResultsWithVccIdOnly AS rv
-             ON vt.Voucher_Acc_ID = rv.Voucher_Acc_ID
-                AND vt.Doc_Code = rv.Doc_Code
-        WHERE vt.Create_Dtm < @In_Period_To;
-
-        INSERT INTO #ResultsWithActiveTx
+             INNER JOIN TempPersonalInformation AS tpinfo
+             ON vt.Temp_Voucher_Acc_ID = tpinfo.Voucher_Acc_ID
+                AND vt.Voucher_Acc_ID = ''
+             INNER JOIN #ResultsUpdatedAccount AS rua
+             ON tpinfo.Doc_Code = rua.Doc_Code
+                AND tpinfo.Encrypt_Field1 = rua.Encrypt_Field1
+        UNION
         SELECT vt.Transaction_ID
-        FROM VoucherTransaction AS vt WITH(NOLOCK)
-             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
-             ON vt.Transaction_ID = td.Transaction_id
+        FROM VoucherTransaction AS vt
+             INNER JOIN TransactionDetail AS td
+             ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
-             INNER JOIN #ResultsWithTempVccIdOnly AS rtv
-             ON vt.Temp_Voucher_Acc_ID = rtv.Voucher_Acc_ID
-                AND vt.Doc_Code = rtv.Doc_Code
-        WHERE vt.Create_Dtm < @In_Period_To;
+             INNER JOIN PersonalInformation AS pinfo
+             ON vt.Voucher_Acc_ID = pinfo.Voucher_Acc_ID
+                AND vt.Doc_Code = vt.Doc_Code
+             INNER JOIN #ResultsUpdatedAccount AS rua
+             ON pinfo.Doc_Code = rua.Doc_Code
+                AND pinfo.Encrypt_Field1 = rua.Encrypt_Field1;
 
+        --[Start]get active C19  Transaction_ID to query--
+        --Find the doc_code and doc_id for all Transactions
         SELECT DISTINCT 
-               vt.Transaction_ID
-        INTO #ResultsWithActiveDistinctTx
-        FROM #ResultsWithActiveTx AS vt;
+               vt.Transaction_ID,
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Voucher_Acc_ID
+                   ELSE tpin.Voucher_Acc_ID
+               END AS 'Voucher_Acc_ID',
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN 1
+                   ELSE 2
+               END AS 'AccountType',
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Doc_Code
+                   ELSE tpin.Doc_Code
+               END AS 'Doc_Code',
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Encrypt_Field1
+                   ELSE tpin.Encrypt_Field1
+               END AS 'Encrypt_Field1',
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Update_Dtm
+                   ELSE tpin.Update_Dtm
+               END AS 'Update_Dtm', 
+               vt.Record_Status, 
+               vt.Invalidation
+        INTO #ResultsWithActiveTx
+        FROM #ResultsWithTx AS r
+             INNER JOIN VoucherTransaction AS vt WITH(NOLOCK)
+             ON r.Transaction_ID = vt.Transaction_id
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
+             ON vt.Transaction_ID = td.Transaction_id
+                AND td.Subsidize_Item_Code = 'C19'
+             LEFT JOIN PersonalInformation AS pin WITH(NOLOCK)
+             ON pin.Voucher_Acc_ID = vt.Voucher_Acc_ID
+                AND pin.Doc_Code = vt.Doc_Code
+             LEFT JOIN TempPersonalInformation AS tpin WITH(NOLOCK)
+             ON tpin.Voucher_Acc_ID = vt.Temp_Voucher_Acc_ID
+                AND vt.Voucher_Acc_ID = ''
+        WHERE vt.Create_Dtm < @In_Period_To;
+
+        --Find the latest vouncher acc id (Same Doc No. in VA & TA, latest personal info update_dtm)
+        WITH ctePI
+             AS (SELECT Voucher_Acc_ID, 
+                        Doc_Code, 
+                        Encrypt_Field1, 
+                        Update_Dtm, 
+                        accountType, 
+                        ROW_NUMBER() OVER(PARTITION BY Doc_Code, 
+                                                       Encrypt_Field1
+                        ORDER BY Update_Dtm DESC, 
+                                 accountType) AS rn
+                 FROM #ResultsWithActiveTx AS RWAT
+                 WHERE RWAT.Record_Status NOT IN('I', 'D')
+                 AND ISNULL(RWAT.Invalidation, '') <> 'I')
+             SELECT RWAT.Transaction_ID, 
+                    ISNULL(ctpI.Voucher_Acc_ID, RWAT.Voucher_Acc_ID) AS Voucher_Acc_ID, 
+                    ISNULL(ctpI.accountType, RWAT.accountType) AS accountType, 
+                    ISNULL(ctpI.Doc_Code, RWAT.Doc_Code) AS Doc_Code
+             INTO #ResultsTxWithLatestAccID
+             FROM #ResultsWithActiveTx AS RWAT
+                  LEFT OUTER JOIN ctePI AS ctpI
+                  ON RWAT.Doc_Code = ctpI.Doc_Code
+                     AND RWAT.Encrypt_Field1 = ctpI.Encrypt_Field1
+                     AND ctpI.rn = 1;
+
         --[End] get active C19 Transaction_ID to query--
         --get the details
         SELECT CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN CASE pinfo.Doc_Code
                             WHEN 'HKIC'
                             THEN pinfo.Encrypt_Field1
@@ -262,7 +338,7 @@ AS
                         END
                END AS 'HKICDocID',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN CASE
                             WHEN pinfo.Doc_Code = 'HKIC'
                             THEN '0'
@@ -311,7 +387,7 @@ AS
                         END
                END AS 'Doc_Type',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN CASE pinfo.Doc_Code
                             WHEN 'HKIC'
                             THEN NULL
@@ -330,12 +406,12 @@ AS
                         END
                END AS 'otherDocID',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN LTRIM(RTRIM(pinfo.Sex))
                    ELSE LTRIM(RTRIM(tpi.Sex))
                END AS 'Sex',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN CASE
                             WHEN RTRIM(pinfo.Exact_DOB) IN('D', 'T')
                             THEN CONVERT(VARCHAR(10), pinfo.DOB, 23)
@@ -352,7 +428,7 @@ AS
                         END
                END AS 'DOB',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN CASE
                             WHEN pinfo.Exact_DOB IN('D', 'T')
                             THEN 'Y'
@@ -365,47 +441,47 @@ AS
                         END
                END AS 'Exact_DOB',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN [dbo].[func_split_EngName](CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo.Encrypt_Field2)), 'S')
                    ELSE [dbo].[func_split_EngName](CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.Encrypt_Field2)), 'S')
                END AS 'Surname',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN [dbo].[func_split_EngName](CONVERT(VARCHAR(MAX), DECRYPTBYKEY(pinfo.Encrypt_Field2)), 'G')
                    ELSE [dbo].[func_split_EngName](CONVERT(VARCHAR(MAX), DECRYPTBYKEY(tpi.Encrypt_Field2)), 'G')
                END AS 'given_name',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field2
                    ELSE tpi.Encrypt_Field2
                END AS 'full_name',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field4
                    ELSE tpi.Encrypt_Field4
                END AS 'ccc1',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field5
                    ELSE tpi.Encrypt_Field5
                END AS 'ccc2',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field6
                    ELSE tpi.Encrypt_Field6
                END AS 'ccc3',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field7
                    ELSE tpi.Encrypt_Field7
                END AS 'ccc4',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field8
                    ELSE tpi.Encrypt_Field8
                END AS 'ccc5',
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN pinfo.Encrypt_Field9
                    ELSE tpi.Encrypt_Field9
                END AS 'ccc6', 
@@ -576,7 +652,7 @@ AS
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_2', -- Centre Code
                CASE
-                   WHEN vt.Voucher_Acc_ID <> ''
+                   WHEN rwt.AccountType = @ValidAccountType
                    THEN REPLACE(LTRIM(RTRIM(ISNULL(pinfo.EC_Serial_No, ''))), @VBar, @VBarWithQuote)
                    ELSE REPLACE(LTRIM(RTRIM(ISNULL(tpi.EC_Serial_No, ''))), @VBar, @VBarWithQuote)
                END AS 'Reserved_field_3', -- EC Serial No.
@@ -611,7 +687,7 @@ AS
                                       ELSE ''
                                   END, ''))) AS 'Reserved_field_9', --Outreach Code
                LTRIM(RTRIM(ISNULL(CASE
-                                      WHEN vt.Voucher_Acc_ID <> ''
+                                      WHEN rwt.AccountType = @ValidAccountType
                                       THEN CASE pinfo.Doc_Code
                                                WHEN 'PASS'
                                                THEN pinfo.PASS_Issue_Region
@@ -636,18 +712,19 @@ AS
                @PendingStatus AS 'Record_Status', 
                vt.Transaction_ID
         INTO #Results
-        FROM #ResultsWithActiveDistinctTx AS rwt
+        FROM #ResultsTxWithLatestAccID AS rwt
              INNER JOIN VoucherTransaction AS vt WITH(NOLOCK)
              ON rwt.Transaction_ID = vt.Transaction_ID
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
              LEFT OUTER JOIN PersonalInformation AS pinfo WITH(NOLOCK)
-             ON vt.Voucher_Acc_ID = pinfo.Voucher_Acc_ID
-                AND vt.Doc_Code = pinfo.Doc_Code
+             ON rwt.Voucher_Acc_ID = pinfo.Voucher_Acc_ID
+                AND rwt.Doc_Code = pinfo.Doc_Code
+                AND rwt.accountType = @ValidAccountType
              LEFT OUTER JOIN tempPersonalInformation AS tpi WITH(NOLOCK)
-             ON vt.Temp_Voucher_Acc_ID = tpi.Voucher_Acc_ID
-                AND vt.Doc_Code = tpi.Doc_Code
+             ON rwt.Voucher_Acc_ID = tpi.Voucher_Acc_ID
+                AND rwt.accountType = @TempAccountType
              LEFT OUTER JOIN TransactionAdditionalField AS ContactNo WITH(NOLOCK)
              ON vt.Transaction_ID = ContactNo.Transaction_ID
                 AND ContactNo.AdditionalFieldID = 'ContactNo'
@@ -904,15 +981,7 @@ AS
             BEGIN
                 DROP TABLE #ResultsWithTx;
             END;
-        IF OBJECT_ID('tempdb..#ResultsWithActiveDistinctTx') IS NOT NULL
-            BEGIN
-                DROP TABLE #ResultsWithActiveDistinctTx;
-            END;
 
-        IF OBJECT_ID('tempdb..#ResultsWithActiveDistinctTx') IS NOT NULL
-            BEGIN
-                DROP TABLE #ResultsWithActiveDistinctTx;
-            END;
         IF OBJECT_ID('tempdb..#ResultsWithActiveTx') IS NOT NULL
             BEGIN
                 DROP TABLE #ResultsWithActiveTx;
@@ -927,15 +996,16 @@ AS
                 DROP TABLE #ResultsLatestByTransaction;
             END;
 
-        IF OBJECT_ID('tempdb..#ResultsWithVccIdOnly') IS NOT NULL
+        IF OBJECT_ID('tempdb..#ResultsTxWithLatestAccID') IS NOT NULL
             BEGIN
-                DROP TABLE #ResultsWithVccIdOnly;
+                DROP TABLE #ResultsTxWithLatestAccID;
             END;
 
-        IF OBJECT_ID('tempdb..#ResultsWithTempVccIdOnly') IS NOT NULL
+        IF OBJECT_ID('tempdb..#ResultsUpdatedAccount') IS NOT NULL
             BEGIN
-                DROP TABLE #ResultsWithTempVccIdOnly;
+                DROP TABLE #ResultsUpdatedAccount;
             END;
+
     END;
 
 GO
