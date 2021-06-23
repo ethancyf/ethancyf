@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Raiman Chong
+-- Modified date:	11 Jun 2021
+-- CR No.:			INT21-0006 
+-- Description:		Change eHSD0018-05 reporting period to 4 days
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- Modified date:	20 Apr 2020
 -- CR No.:			INT20-0008
@@ -160,10 +167,12 @@ AS BEGIN
 
 	 DECLARE @Start_Dtm datetime  
 	 DECLARE @EnquiryCMS_Start_Dtm datetime
+	 DECLARE @VaccineTranConnStatus_Start_Dtm datetime
 	 DECLARE @End_Dtm datetime  
 	   
 	 SELECT @End_Dtm = CONVERT(varchar, GETDATE(), 106) -- "106" gives "dd MMM yyyy"  
 	 SELECT @Start_Dtm = DATEADD(dd, -(@No_Of_Days), @End_Dtm)  
+	 SELECT @VaccineTranConnStatus_Start_Dtm = DATEADD(dd, -(@No_Of_Days_Raw_Data), @End_Dtm)  
 	 SELECT @EnquiryCMS_Start_Dtm = DATEADD(dd, -(@No_Of_Days_Raw_Data), @End_Dtm)  
 	
 	
@@ -641,7 +650,7 @@ AS BEGIN
 
 	------------------ eHS(S)D0018-05 : Report on vaccination transaction connection status --------------------------
  INSERT INTO @ResultTable (Display_Seq, Result_Value1, Result_Value2, Result_Value3)   
- VALUES (1, 'Reporting period: 2 weeks ending ' + CONVERT(varchar, Dateadd(Day, -1 ,GETDATE()), 111), '', '')  
+ VALUES (1, 'Reporting period: ' + LTRIM(STR(@No_Of_Days_Raw_Data)) + ' days ending ' + CONVERT(varchar, Dateadd(Day, -1 ,GETDATE()), 111), '', '')  
    
  INSERT INTO @ResultTable (Display_Seq, Result_Value1, Result_Value2, Result_Value3)     
  VALUES (2, '', '', '')  
@@ -661,7 +670,7 @@ AS BEGIN
 	FROM
 		eHSD0018_CMSVaccinationConnectionStatus_Stat	
 	WHERE
-	     Report_Dtm BETWEEN @Start_Dtm AND @End_Dtm	
+	     Report_Dtm BETWEEN @VaccineTranConnStatus_Start_Dtm AND @End_Dtm	
 	ORDER BY
 		 Report_Dtm ASC
 		 
