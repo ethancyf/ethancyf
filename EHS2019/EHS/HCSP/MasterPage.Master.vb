@@ -189,14 +189,18 @@ Partial Public Class MasterPage
 
         'CRE20-006 Hidden the menu [Start][Nichole]
         Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
+        Dim udtUserAC As UserACModel = UserACBLL.GetUserAC()
 
-        If strFromOutsider IsNot Nothing Then
-            panMenu.Visible = False
-            ibtnMenu.Visible = False
-        Else
-            btnInbox.Visible = True
-            ibtnLogout.Visible = True
+        If udtUserAC.UserType = SPAcctType.ServiceProvider Then
+            If strFromOutsider IsNot Nothing Then
+                panMenu.Visible = False
+                ibtnMenu.Visible = False
+            Else
+                btnInbox.Visible = True
+                ibtnLogout.Visible = True
+            End If
         End If
+
         'CRE20-006  Hidden the menu [End][Nichole]
     End Sub
 
