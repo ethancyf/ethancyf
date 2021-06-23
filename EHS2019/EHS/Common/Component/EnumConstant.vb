@@ -843,6 +843,7 @@ Namespace Component
         Public Const FUNT020901 As String = "020901"
         Public Const FUNT021001 As String = "021001"
         Public Const FUNT021101 As String = "021101"
+        Public Const FUNT021201 As String = "021201"  'CRE20-006 DHC Claim Access Nichole
         ''' <summary>
         ''' HCSP Common Log, e.g. System error, current browser handling
         ''' </summary>
@@ -964,6 +965,10 @@ Namespace Component
         Public Const FUNT070202 As String = "070202" ' eHR-to-eHS: getExternalWebS() - PatientPortal
         Public Const FUNT070301 As String = "070301" ' eHS-to-eHR: verifySystem()
         Public Const FUNT070302 As String = "070302" ' eHS-to-eHR: getEhrWebS()
+
+        'CRE20-006 DHC integration [Start][Nichole]
+        Public Const FUNT070401 As String = "070401" ' DHC-to-eHS: getExternalWebS() - DHC integration
+        'CRE20-006 DHC integration [End][Nichole]
 
         Public Const FUNT080101 As String = "080101" ' Form Generation Service
         Public Const FUNT090101 As String = "090101" ' Interface Control Webpage - EVaccine Check
@@ -2030,6 +2035,8 @@ Namespace Component
         Public Const LOG00497 As String = "00497"
         Public Const LOG00498 As String = "00498"
         Public Const LOG00499 As String = "00499"
+        'Public Const LOG00500 As String = "00500"
+        'Public Const LOG00501 As String = "00501"
 
         ' 1000 to 1299 reserved to common functions to cross-platform
         Public Const LOG01000 As String = "01000"
@@ -3225,6 +3232,7 @@ Namespace Component
         ServiceProvider
         eHSAccount
         AdvancedSearch
+        SpecialAdvancedSearch 'CRE20-XXX Claim transaction improvement [Nichole]
     End Enum
 
     'CRE14-016 (To introduce "Deceased" status into eHS) [Start][Chris YIM]

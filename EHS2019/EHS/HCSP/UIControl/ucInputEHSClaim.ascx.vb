@@ -5,6 +5,9 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.ClaimCategory
 Imports Common.Component
 Imports HCSP.BLL
+Imports Common.Component.DHCClaim.DHCClaimBLL 'nichole
+Imports Common.Component.DistrictBoard 'nichole
+
 
 Partial Public Class ucInputEHSClaim
     Inherits System.Web.UI.UserControl
@@ -30,6 +33,18 @@ Partial Public Class ucInputEHSClaim
     Private _btnIsModifyMode As Boolean = False
     Private _udtSessionHandler As New SessionHandler
     Private _blnNonClinic As Boolean
+    'CRE16-002 (Revamp VSS) [End][Chris YIM]
+
+    'CRE20-006 DHC Claim service [Start][Nichole]
+    '-----------------------------------------------------------------------------------------
+    Private udtDistrictBoardBLL As DistrictBoardBLL = New DistrictBoardBLL
+    Private _strDHCService As String
+    Private _strDHCClaimAmt As String
+    'CRE20-006 DHC Claim service [End][Nichole]
+
+    ' CRE11-024-02 HCVS Pilot Extension Part 2 [Start]
+    ' -----------------------------------------------------------------------------------------
+
     Private _mode As EHSClaimMode
     Private _enumClaimMode As ClaimMode
 #End Region
@@ -241,6 +256,30 @@ Partial Public Class ucInputEHSClaim
                     udcInputEHSClaim = Me.ucInputHCVS
                     udcInputEHSClaim.ID = EHSClaimControlID.HCVS
                     udcInputEHSClaim.Visible = True
+                    'CRE20-006 DHC Claim Service [Start][Nichole]
+                    Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+                    Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+                    Dim udtDistrcitBLL As Common.Component.District.DistrictBLL = New Common.Component.District.DistrictBLL
+
+                    If strFromOutsider IsNot Nothing Then
+                        CType(udcInputEHSClaim, ucInputHCVS).DHCServiceEnable = False
+                        'CType(udcInputEHSClaim, ucInputHCVS).DHC_DDLDistrictCodeEnable = False
+                        'CType(udcInputEHSClaim, ucInputHCVS).DHCServiceSetting = YesNo.Yes
+                        CType(udcInputEHSClaim, ucInputHCVS).DHCClaimAmount = udtDHCClient.Claim_Amount
+                        'DHCClaimAmt
+
+                        CType(udcInputEHSClaim, ucInputHCVS).DHCCheckboxEnable = True
+                        If _udtSessionHandler.Language = CultureLanguage.TradChinese Or _udtSessionHandler.Language = CultureLanguage.SimpChinese Then
+                            ' CType(udcInputEHSClaim, ucInputHCVS).DHCDistrictCode = udtDistrcitBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).District_ChiName
+                            CType(udcInputEHSClaim, ucInputHCVS).DHCDistrictCode = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).DistrictBoardChi
+                        Else
+                            CType(udcInputEHSClaim, ucInputHCVS).DHCDistrictCode = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtDHCClient.DHCDistrictCode).DistrictBoard
+                        End If
+                        ' Else
+                        ' CType(udcInputEHSClaim, ucInputHCVS).DHC_DDLDistrictCodeEnable = True
+                    End If
+                    'CRE20-006 DHC Claim service [End][Nichole]
+
 
                 End If
 
@@ -1125,6 +1164,27 @@ Partial Public Class ucInputEHSClaim
     End Property
     ' CRE20-0022 (Immu record) [End][Chris YIM]
 
+    'CRE20-006 DHC Claim service [Start][Nichole]
+    '-----------------------------------------------------------------------------------------
+    Public Property DHCService() As String
+        Get
+            Return _strDHCService
+        End Get
+        Set(ByVal value As String)
+            ucInputHCVS.DHCCheckboxEnable = True
+            _strDHCService = value
+        End Set
+    End Property
+
+    Public Property DHCClaimAmt() As String
+        Get
+            Return _strDHCClaimAmt
+        End Get
+        Set(ByVal value As String)
+            _strDHCClaimAmt = value
+        End Set
+    End Property
+    'CRE20-006 DHC Claim Service [End][Nichole]
 #End Region
 
 

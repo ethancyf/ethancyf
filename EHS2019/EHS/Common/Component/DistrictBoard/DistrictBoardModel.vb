@@ -13,6 +13,7 @@
         Private _strEForm_Input_Avail As String
         Private _strBO_Input_Avail As String
         Private _strSD_Input_Avail As String
+        Private _strDHC_District_Code As String 'CRE20-006 DHC integration [Nichole]
 
         Public Property DistrictBoard() As String
             Get
@@ -96,14 +97,23 @@
             End Set
         End Property
         'CRE13-019-02 Extend HCVS to China [End][Winnie]
-
+        'CRE20-006 DHC integration [Start][Nichole]
+        Public Property DHC_District_Code() As String
+            Get
+                Return _strDHC_District_Code
+            End Get
+            Set(ByVal Value As String)
+                _strDHC_District_Code = Value
+            End Set
+        End Property
+        'CRE20-006 DHC integration [End][Nichole]
 #End Region
 
 #Region "Constructors"
 
         Public Sub New(ByVal strDistrictBoard As String, ByVal strDistrictBoardChi As String, ByVal strDistrictBoardShortname As String, _
                        ByVal strAreaName As String, ByVal strAreaNameChi As String, ByVal strAreaCode As String, _
-                       ByVal strEForm_Input_Avail As String, ByVal strBO_Input_Avail As String, ByVal strSD_Input_Avail As String)
+                       ByVal strEForm_Input_Avail As String, ByVal strBO_Input_Avail As String, ByVal strSD_Input_Avail As String, Optional ByVal strDHC_District_Code As String = "")
             _strDistrictBoard = strDistrictBoard
             _strDistrictBoardChi = strDistrictBoardChi
             _strDistrictBoardShortname = strDistrictBoardShortname
@@ -113,6 +123,7 @@
             _strEForm_Input_Avail = strEForm_Input_Avail
             _strBO_Input_Avail = strBO_Input_Avail
             _strSD_Input_Avail = strSD_Input_Avail
+            _strDHC_District_Code = strDHC_District_Code
         End Sub
 
 #End Region

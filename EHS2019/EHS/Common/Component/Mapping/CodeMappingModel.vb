@@ -21,6 +21,7 @@ Namespace Component.Mapping
 
         Public Enum EnumCodeType
             Service_Category_Code
+            DHC_DistrictCode 'CRE20-006 DHc integration [Nichole]
         End Enum
 #End Region
 

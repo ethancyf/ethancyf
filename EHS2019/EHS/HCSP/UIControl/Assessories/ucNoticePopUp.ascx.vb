@@ -2,10 +2,16 @@ Imports AjaxControlToolkit
 Imports Common.ComObject
 Imports System.ComponentModel
 Imports System.Web.Security.AntiXss
+'CRE20-006 call the sessionhandler [Start][Nichole]
+Imports HCSP.BLL
+'CRE20-006 call the sessionhandler [End][Nichole]
 
 Partial Public Class ucNoticePopUp
     Inherits System.Web.UI.UserControl
 
+    'CRE20-006 declare the sessionhandler [Start][Nichole]
+    Private udcSessionHandler As New SessionHandler
+    'CRE20-006 declare the sessionhandler [End][Nichole]
 #Region "Constants"
     Private Const VS_BUTTON_MODE As String = "ButtonMode"
     Private Const VS_ICON_MODE As String = "IconMode"
@@ -523,7 +529,23 @@ Partial Public Class ucNoticePopUp
         WriteAuditLog_ClickOK()
         ' CRE13-003 - Token Replacement [End][Tommy L]
 
-        RaiseEvent ButtonClick(enumButtonClick.OK)
+        'CRE20-006 DHC integration - user cancel to create the new claim account, the browswer will close [Start][Nichole]
+
+        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+
+        If strFromOutsider Is Nothing Then
+            RaiseEvent ButtonClick(enumButtonClick.OK)
+        Else
+            If ibtnOK.AlternateText = Me.GetGlobalResourceObject("AlternateText", "ProceedBtn") Then
+                RaiseEvent ButtonClick(enumButtonClick.OK)
+            Else
+                'Clear session 
+                Session.RemoveAll()
+                ScriptManager.RegisterStartupScript(Me, Page.GetType, "VoucherCloseBrowswerScript", "javascript:window.close();", True)
+            End If
+        End If
+        'CRE20-006 DHC integration - user cancel to create the new claim account, the browswer will close [End][Nichole]
+
     End Sub
 
     Private Sub ibtnCancel_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ibtnCancel.Click

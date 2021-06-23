@@ -2902,6 +2902,15 @@ Partial Public Class EHSClaimV1
     '''</remarks>
     Protected WithEvents btnStep3NextClaim As Global.System.Web.UI.WebControls.ImageButton
 
+  '''<summary>
+    '''btnStep3ClaimClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnStep3ClaimClose As Global.System.Web.UI.WebControls.ImageButton
+
     '''<summary>
     '''btnStep3ClaimForSamePatient control.
     '''</summary>

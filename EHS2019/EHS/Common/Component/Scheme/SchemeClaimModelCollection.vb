@@ -246,6 +246,21 @@ Namespace Component.Scheme
         End Function
         ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
+        'CRE20-023 Filter by scheme code [Start][Nichole]
+        Public Function FilterWithSchemeListForCovid19() As SchemeClaimModelCollection
+            Dim udtSchemeClaimList As New SchemeClaimModelCollection
+
+            For Each udtSchemeClaim As SchemeClaimModel In Me
+                If udtSchemeClaim.SchemeCode = SchemeClaimModel.RVP Or udtSchemeClaim.SchemeCode = SchemeClaimModel.VSS Then
+                    udtSchemeClaimList.Add(New SchemeClaimModel(udtSchemeClaim))
+                End If
+
+            Next
+
+            Return udtSchemeClaimList
+
+        End Function
+        'CRE20-023 Filter by scheme code [End][Nichole]
 
         'CRE20-xxx COVID-19 shows practice with VSS or RVP scheme [Start][Nichole]
         Public Function FilterCOVIDList() As Boolean

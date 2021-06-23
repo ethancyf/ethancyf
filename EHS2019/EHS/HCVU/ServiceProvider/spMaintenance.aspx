@@ -452,6 +452,13 @@
                                         </asp:UpdatePanel>
                                     </td>
                                 </tr>
+                                 <!---CRE20-006 DHC Integrartion [Nichole]--->
+                                <tr id="trEnrolledDHC" runat="server" >
+                                    <td style="width: 200px" valign="top">
+                                        <asp:Label ID="lblEnrolledDHCSPText" runat="server" Text="<%$ Resources:Text, EnrolledDHC %>"></asp:Label></td>
+                                    <td>
+                                        <asp:Label ID="lblEnrolledDHCSP" runat="server" CssClass="tableText"></asp:Label></td>
+                                </tr>
                                 <tr>
                                     <td style="width: 200px" valign="top">
                                         <asp:Label ID="lblTokenSNText" runat="server" Text="<%$ Resources:Text, TokenSN %>"></asp:Label></td>
@@ -1004,6 +1011,13 @@
                                                                     <asp:Label ID="lblPracticeRegCodeText" runat="server" Text="<%$ Resources:Text, RegCode %>"></asp:Label></td>
                                                                 <td>
                                                                     <asp:Label ID="lblPracticeRegCode" runat="server" CssClass="tableText" Text='<%# Eval("Professional.RegistrationCode") %>'></asp:Label></td>
+                                                            </tr>
+                                                             <!---CRE20-006 DHC Integrartion [Nichole]--->
+                                                            <tr >
+                                                                <td style="background-color: #f7f7de;" valign="top">
+                                                                    <asp:Label ID="lblEnrolledDHCPracText" runat="server" Text="<%$ Resources:Text, EnrolledDHC %>"></asp:Label></td>
+                                                                <td>
+                                                                    <asp:Label ID="lblEnrolledDHCPrac" runat="server" CssClass="tableText" Text=''></asp:Label></td>
                                                             </tr>
                                                             <tr>
                                                                 <td style="background-color: #f7f7de;" valign="top">

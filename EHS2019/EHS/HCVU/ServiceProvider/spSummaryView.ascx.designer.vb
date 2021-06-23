@@ -437,6 +437,33 @@ Partial Public Class spSummaryView
     Protected WithEvents lblPCDProfessional As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''trEnrolledDHC control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trEnrolledDHC As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblEnrolledDHCSPText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEnrolledDHCSPText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblEnrolledDHCSP control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEnrolledDHCSP As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''lblTokenSNText control.
     '''</summary>
     '''<remarks>

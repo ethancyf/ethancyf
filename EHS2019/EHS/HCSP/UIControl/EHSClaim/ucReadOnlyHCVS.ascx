@@ -9,6 +9,7 @@
             </td>
             <td valign="top" class="tableCellStyle">
                     <asp:Label ID="lblDHCRelatedService" runat="server" CssClass="tableText"></asp:Label>
+                    <asp:Label ID="lblDHCRelatedServiceName" runat="server" CssClass="tableText"></asp:Label><!-- CRE20-006 DHC Intergation -->
             </td>   
         </tr>
     </table>

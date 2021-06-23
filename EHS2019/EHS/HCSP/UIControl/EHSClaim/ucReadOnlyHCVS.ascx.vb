@@ -2,9 +2,15 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Component.ReasonForVisit
 Imports Common.Format
+Imports Common.Component
+Imports Common.Component.DistrictBoard 'CRE20-006 DHC Integration [Nichole]
+Imports HCSP.BLL 'CRE20-006 DHC Integration [Nichole]
 
 Partial Public Class ucReadOnlyHCVS
     Inherits ucReadOnlyEHSClaimBase
+
+    Private udtDistrictBoardBLL As DistrictBoardBLL = New DistrictBoardBLL 'CRE20-006 DHC integration[Nichole]
+    Private udtSessionHandler As New SessionHandler 'CRE20-006 DHC integration[Nichole]
 
 #Region "Must Override Function"
 
@@ -268,6 +274,13 @@ Partial Public Class ucReadOnlyHCVS
                         lblDHCRelatedService.Text = Me.GetGlobalResourceObject("Text", "Yes")
                         panDHCRelatedService.Visible = True
 
+                        'CRE20-006 DHC integration - show the service district [Start][Nichole]
+                        If udtSessionHandler.Language = CultureLanguage.TradChinese Or udtSessionHandler.Language = CultureLanguage.SimpChinese Then
+                            lblDHCRelatedServiceName.Text = " (" + udtDistrictBoardBLL.GetDistrictNameByDistrictCode(MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoardChi + ")"
+                        Else
+                            lblDHCRelatedServiceName.Text = " (" + udtDistrictBoardBLL.GetDistrictNameByDistrictCode(MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoard + ")"
+                        End If
+                        'CRE20-006 DHC integration - show the service district [End][Nichole]
                     Case Common.Component.YesNo.No
                         lblDHCRelatedService.Text = Me.GetGlobalResourceObject("Text", "No")
                         panDHCRelatedService.Visible = True

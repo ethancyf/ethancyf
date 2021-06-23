@@ -63,6 +63,8 @@ Partial Public Class spMaintenance
 
     Private Const strMONotAvailable As String = "0"
 
+
+
 #End Region
 
 #Region "Session Constants"
@@ -88,6 +90,7 @@ Partial Public Class spMaintenance
     Private Const VS_RSARepairTokenSessionIDSub As String = "VS_RSARepairTokenSessionIDSub"
     ' CRE13-029 - RSA Server Upgrade [End][Lawrence]
 
+    Private Const SESS_SPMaintenancePracticeEnrolledDHCList As String = "SPMaintenancePracticeEnrolledDHCList" 'CRE20-006 DHC Integration [Nichole]
 #End Region
 
 #Region "Enums"
@@ -3717,6 +3720,8 @@ Partial Public Class spMaintenance
     End Sub
 
     Private Sub BindSPDetails(ByVal udtSP As ServiceProviderModel)
+        Dim dt As DataTable 'CRE20-006 DHC integration [Nichole]
+
         ' --------------- Personal Particulars ---------------
 
         ' Enrolment Reference No.
@@ -3802,6 +3807,12 @@ Partial Public Class spMaintenance
         'PCD Status
         UpdatePCDStatusLabel(udtSP)
         ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [End]   (Marco) ---
+
+        'CRE20-006 DHC Integration [Start][Nichole]
+        DisplayEnrolledDHCStatus(udtSP.SPID)
+        dt = udtServiceProviderBLL.GetPracticeEnrolledDHC(udtSP.SPID)
+        Session(SESS_SPMaintenancePracticeEnrolledDHCList) = dt
+        'CRE20-006 DHC Integration [End][Nichole]
 
         Dim udtTokenModel As TokenModel = udtSPProfileBLL.GetTokenModelBySPID(udtSP.SPID, False)
         'CRE14-002 - PPI-ePR Migration [Start][Chris YIM]
@@ -4461,6 +4472,8 @@ Partial Public Class spMaintenance
 
     Protected Sub gvPracticeBank_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvPracticeBank.RowDataBound
         If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim dt As DataTable = Nothing 'CRE20-006 DHC Integration [Nichole]
+            Dim dvPractice As DataView = Nothing 'CRE20-006 DHC Integration [Nichole]
 
             Dim udtPractice As PracticeModel = DirectCast(e.Row.DataItem, PracticeModel)
 
@@ -4477,6 +4490,25 @@ Partial Public Class spMaintenance
             Next
 
             If lblPracticeMO.Text = strMONotAvailable Then lblPracticeMO.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+            'CRE20-006 DHC integartion [Start][Nichole]
+            ' Enrolled DHC 
+            Dim lblEnrolledDHCPrac As Label = e.Row.FindControl("lblEnrolledDHCPrac")
+            Dim lblEnrolledDHCPracText As Label = e.Row.FindControl("lblEnrolledDHCPracText")
+
+
+            dt = Session(SESS_SPMaintenancePracticeEnrolledDHCList)
+            dvPractice = New DataView(dt)
+            dvPractice.RowFilter = "[Professional_Seq] ='" + udtPractice.ProfessionalSeq.ToString() + "'"
+            If dvPractice.Count > 0 Then
+                lblEnrolledDHCPrac.Text = dvPractice(0)("DistrictName").ToString()
+            Else
+                If lblEnrolledDHCPrac.Text = String.Empty Then lblEnrolledDHCPrac.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            End If
+
+            'If lblEnrolledDHCPrac.Text = String.Empty Then lblEnrolledDHCPrac.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            
+            'CRE20-006 DHC integartion [End][Nichole]
 
             ' Phone No. of Practice
             Dim lblPracticePhone As Label = e.Row.FindControl("lblPracticePhone")
@@ -5495,6 +5527,20 @@ Partial Public Class spMaintenance
     End Sub
 
     ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [End]   (Marco) ---
+
+    'CRE20-006 DHC integration [Start][Nichole]
+    Public Sub DisplayEnrolledDHCStatus(ByVal strSPID As String)
+        
+        'show SP Enrolled DHC status
+        lblEnrolledDHCSP.Text = udtServiceProviderBLL.GetSPEnrolledDHC(strSPID)
+
+        If lblEnrolledDHCSP.Text Is String.Empty Then
+            ' trEnrolledDHC.Visible = False
+            lblEnrolledDHCSP.Text = Me.GetGlobalResourceObject("Text", "N/A")
+        End If
+
+    End Sub
+    'CRE20-006 DHC integration [End][Nichole]
 
     ' CRE12-001 eHS and PCD integration [Start][Koala]
     ' -----------------------------------------------------------------------------------------

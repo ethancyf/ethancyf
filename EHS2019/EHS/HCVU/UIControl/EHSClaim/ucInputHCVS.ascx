@@ -2,13 +2,16 @@
     Inherits="HCVU.ucInputHCVS" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Assembly="HCVU" Namespace="HCVU" TagPrefix="cc2" %>
-<table cellpadding="0" cellspacing="0" style="width: 753px">
+<table cellpadding="0" cellspacing="0" style="width: 753px" >
     <tr id="trDHCRelatedService" runat="server">
         <td valign="top" class="tableCellStyle">
             <asp:Label ID="lblDHCRelatedServiceTitle" runat="server" Text="<%$ Resources:Text, DHCRelatedService%>" />
         </td>
         <td valign="top" class="tableCellStyle" style="padding-left: 3px">
-            <asp:CheckBox ID="chkDHCRelatedService" runat="server" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
+            <asp:CheckBox ID="chkDHCRelatedService" runat="server" CssClass="tableText" Style="position:relative;left:-2px" AutoPostBack="true"></asp:CheckBox>
+            <asp:DropDownList ID="ddlDistrictCode" runat="server"  Enabled="false" AutoPostBack="true" />
+             <asp:Image ID="imgDistrictCodeError" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" Visible="False" />
         </td>   
     </tr>
     <tr style="height: 22px">

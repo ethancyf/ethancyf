@@ -95,6 +95,13 @@ Public MustInherit Class BasePage
                 enumClaimMode = Common.Component.ClaimMode.COVID19
             End If
 
+            'CRE20-006 DHC Integration [Start][Nichole]
+            Dim strFromOutsider As String = (New SessionHandler).ArtifactGetFromSession(FunctCode.FUNT021201)
+            If strFromOutsider IsNot Nothing Then
+                enumClaimMode = Common.Component.ClaimMode.DHC
+            End If
+            'CRE20-006 DHC Integration [End][Nichole]
+
             Return enumClaimMode
 
         End Get

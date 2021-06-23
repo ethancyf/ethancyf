@@ -59,6 +59,15 @@ Partial Public Class CallEHS
     Protected WithEvents ddlLoadSample As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
+    '''lblLoadSampleInstruction control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblLoadSampleInstruction As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''txtPatientPortalEndpointURL control.
     '''</summary>
     '''<remarks>
@@ -68,13 +77,49 @@ Partial Public Class CallEHS
     Protected WithEvents txtPatientPortalEndpointURL As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''lblLoadSampleInstruction control.
+    '''ddlPPLoadSample control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblLoadSampleInstruction As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents ddlPPLoadSample As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblPPLoadSampleInstruction control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblPPLoadSampleInstruction As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtDHCEndpointURL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDHCEndpointURL As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ddlDHCLoadSample control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlDHCLoadSample As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblDHCLoadSampleInstruction control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDHCLoadSampleInstruction As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''txtRequest control.
@@ -120,4 +165,22 @@ Partial Public Class CallEHS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDownload As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''lblMessage control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblMessage As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''btnReadFileToByte control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnReadFileToByte As Global.System.Web.UI.WebControls.Button
 End Class

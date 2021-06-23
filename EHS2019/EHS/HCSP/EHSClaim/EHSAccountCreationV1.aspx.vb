@@ -35,6 +35,7 @@ Partial Public Class EHSAccountCreationV1
     Private _udtSP As ServiceProviderModel = Nothing
     Private _blnIsRequireHandlePageRefresh As Boolean = False
     Private _udtAuditLogEntry As AuditLogEntry
+    Private udcSessionHandler As New SessionHandler
 
     Private Class PrintOptionValue
         Public Const Chi As String = "Chi"
@@ -234,6 +235,17 @@ Partial Public Class EHSAccountCreationV1
             Me.BackToClaim(False)
         End If
 
+		'CRE20-006 DHC integration [Start][Nichole]
+       'If Me._udtSessionHandler.ArtifactGetFromSession(FunctCode) IsNot Nothing Then
+        If _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201) IsNot Nothing Then
+            btnStep1cNextCreation.Visible = False
+             'remove the cancel button
+            btnstep1a1Back.Visible = False
+            btnStep1b1Cancel.Visible = False
+            btnStep1a2Cancel.Visible = False
+        End if 
+        'CRE20-006 DHC integration [End][Nichole]
+        
         'CRE20-xxx COVID-19 [Start][Nichole] 
         If Not IsPostBack Then
             If Me.ClaimMode = ClaimMode.COVID19 Then
@@ -2980,6 +2992,13 @@ Partial Public Class EHSAccountCreationV1
             Me._blnIsRequireHandlePageRefresh = True
             Return
         End If
+
+
+        'CRE20-006 DHC integration [Start][Nichole]
+        If Me._udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201) IsNot Nothing Then
+            btnStep1cNextCreation.Visible = False
+        End If
+        'CRE20-006 DHC integration [End][Nichole]
 
         Me._systemMessage = New Common.ComObject.SystemMessage(FunctCode, "I", "00001")
         Me.udcInfoMsgBox.Type = CustomControls.InfoMessageBoxType.Complete

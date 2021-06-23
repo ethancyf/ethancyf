@@ -18,6 +18,7 @@ Imports Common.Component.VoucherScheme
 Imports Common.Format
 Imports Common.Component.Scheme
 Imports HCSP.BLL.SessionHandler
+Imports HCSP.BLL
 
 'Imports Common.Component.UserAC
 'Imports Common.Component.DataEntryUser
@@ -53,6 +54,11 @@ Public Class PracticeRadioButtonGroup
     'CRE20-XXX COVID-19 [Start][Nichole]
     Private _blnCOVIDService As Boolean
     'CRE20-xxx  COVID-19 [End][Nichole]
+
+    'CRE20-XXX DHC integration [Start][Nichole]
+    'hide.show
+    Private _blnDHCService As Boolean
+    'CRE20-xxx DHC integration [End][Nichole]
 
     ' CRE20-0XX (HA Scheme) [Start][Winnie]
     Private _blnSchemeSelection As Boolean = False
@@ -549,7 +555,6 @@ Public Class PracticeRadioButtonGroup
                 If Me.ClaimMode = ClaimMode.COVID19 Then
                     label2.Visible = False
                 End If
-                'CRE20-xxx COVID-19 Immu record [End][Nichole]
 
                 'label.Height = 25
                 'label.Attributes("value") = String.Format("{0}-{1}-{2}", practice.SPID, practice.DisplaySeq, practice.BankAcct.DisplaySeq)
@@ -613,7 +618,7 @@ Public Class PracticeRadioButtonGroup
                     tableInnerPracticeCell = New TableCell
                     tableInnerPracticeCell.Controls.Add(label)
                     'CRE20-0xx COVID-19 hidden the scheme info [Start][Nichole]
-                    If Me.ClaimMode = ClaimMode.All Then
+                    If Me.ClaimMode = ClaimMode.All Or Me.ClaimMode = ClaimMode.DHC Then
                         tableInnerPracticeCell.Controls.Add(schemeLabel)
                     End If
                     'CRE20-0xx COVID-19 hidden the scheme info [End][Nichole]

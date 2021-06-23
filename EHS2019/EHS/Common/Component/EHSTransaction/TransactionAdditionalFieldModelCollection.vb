@@ -452,6 +452,16 @@ Namespace Component.EHSTransaction
         End Property
         ' CRE20-015-06 (Special Support Scheme) [End][Winnie]
 
+        'CRE20-006 DHC integration [Start][Nichole]
+        Public ReadOnly Property DHC_DistrictCode() As String
+            Get
+                Dim udtAdditionalField As TransactionAdditionalFieldModel = Me.FilterByAdditionFieldID(TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode)
+                If udtAdditionalField Is Nothing Then Return Nothing
+                Return udtAdditionalField.AdditionalFieldValueCode
+            End Get
+        End Property
+        'CRE20-006 DHC integration [End][Nichole]
+
         Public ReadOnly Property HasReasonForVisit() As Boolean
             Get
                 Dim udtAdditionalField As TransactionAdditionalFieldModel

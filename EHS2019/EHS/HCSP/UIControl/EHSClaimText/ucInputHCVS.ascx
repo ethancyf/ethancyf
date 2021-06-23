@@ -19,13 +19,19 @@
                     <tr>
                         <td>
                             <asp:Label ID="lblDHCRelatedService" runat="server" CssClass="tableText"></asp:Label>
+                            <asp:Label ID="lblDHCRelatedServiceName" runat="server" CssClass="tableText"></asp:Label><!-- CRE20-006 DHC Intergation -->
                         </td>
                     </tr>
                 </table>                           
-                <table id="tblDHCRelatedServiceWrite" runat="server" cellpadding="0" cellspacing="0" style="display: block">
+                <table id="tblDHCRelatedServiceWrite" runat="server" cellpadding="0" cellspacing="0" style="display: block" border="0">
                     <tr>
                         <td>
-                            <asp:CheckBox ID="chkDHCRelatedService" runat="server" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
+                            <asp:CheckBox ID="chkDHCRelatedService" runat="server" AutoPostBack="True" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
+                               <asp:Label ID="lblDHCDistrictCode" runat="server" CssClass="tableText"></asp:Label>
+                               <asp:Label ID="lblDHCDistrict" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, District%>" /><asp:Label ID="ErrDistrictCode" runat="server" CssClass="validateFailText" Text="*"
+                            Visible="False" />
+                            <asp:RadioButtonList ID="rbDHCDistrictCode" runat="server" AutoPostBack="true" RepeatDirection="Vertical" enabled="false" ></asp:RadioButtonList>
+                            
                         </td>
                     </tr>
                 </table>

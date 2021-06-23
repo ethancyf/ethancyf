@@ -104,6 +104,24 @@ Partial Public Class EHSAccountCreationV1
     Protected WithEvents btnPopupConfirmCancelConfirm As Global.System.Web.UI.WebControls.ImageButton
 
     '''<summary>
+    '''panPopupConfirmCancelClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents panPopupConfirmCancelClose As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ucNoticePopUpConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ucNoticePopUpConfirm As Global.HCSP.ucNoticePopUp
+
+    '''<summary>
     '''panPopupConfirmModify control.
     '''</summary>
     '''<remarks>
@@ -372,6 +390,26 @@ Partial Public Class EHSAccountCreationV1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnModalPopupConfirmSelectPractice As Global.System.Web.UI.WebControls.Button
+
+
+
+    '''<summary>
+    '''ModalPopupConfirmCancelClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ModalPopupConfirmCancelClose As Global.AjaxControlToolkit.ModalPopupExtender
+
+    '''<summary>
+    '''btnModalPopupConfirmCancelClose control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnModalPopupConfirmCancelClose As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''btnModalPopupConfirmOnly control.

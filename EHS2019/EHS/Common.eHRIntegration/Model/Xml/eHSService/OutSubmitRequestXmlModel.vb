@@ -30,6 +30,28 @@ Namespace Model.Xml.eHSService
         R9999_UnexpectedFailure = 9999
     End Enum
 
+    'CRE20-006 DHC [Start][Nichole]
+    Public Enum eHSDHCNSPResultCode
+        NA
+        R1000_Success = 1000
+        R1001_ProfessionalNotFound = 1001
+        R1002_ProfessionalDelisted = 1002
+        R9000_InvalidXmlElement = 9000
+        R9001_InvalidParameter = 9001
+        R9999_UnexpectedFailure = 9999
+    End Enum
+
+    Public Enum eHSDHCClaimAccessResultCode
+        NA
+        R1000_Success = 1000
+        R1001_ProfessionalNotFound = 1001
+        R1002_ProfessionalDelisted = 1002
+        R1003_ProfessionalDisabled = 1003
+        R9000_InvalidXmlElement = 9000
+        R9001_InvalidParameter = 9001
+        R9999_UnexpectedFailure = 9999
+    End Enum
+    'CRE20-16 DHC [End][Nichole]
 #End Region
 
     <XmlRoot("root")>
@@ -293,6 +315,116 @@ Namespace Model.Xml.eHSService
     End Class
     ' CRE18-XXX (Provide data to eHR Portal) [End][Chris YIM]
 
+    ' CRE20-16 Declare the output of DHC NSP & Claim Access XML model [Start][Nichole] 
+    <XmlRoot("seteHSSDHCNSPResult")>
+    Public Class OutSeteHSSDHCNSPXmlModel
+        Public ResultDescription As String
+        Public ResultCode As String
+        Public Timestamp As String
+        <XmlElement("ProfList")>
+        Public ProfList As ProfListClass
+
+        Private Sub New()
+
+        End Sub
+
+        Public Sub New(enumeHSResultCode As eHSDHCNSPResultCode, strTimestamp As String)
+            SupportFunction.ConvertResultCode(enumeHSResultCode, ResultCode, ResultDescription)
+            Timestamp = strTimestamp
+            ProfList = New ProfListClass
+
+        End Sub
+
+
+#Region "Sub Class ProfListClass"
+        Public Class ProfListClass
+            Private _ProfCount As Integer
+            <XmlElement("Prof")>
+            Public Prof() As ProfClass
+
+
+            Public Property ProfCount As Integer
+                Get
+                    Return _ProfCount
+                End Get
+                Set(value As Integer)
+                    _ProfCount = value
+                End Set
+            End Property
+        End Class
+#End Region
+
+#Region "Sub Class ProfClass"
+        Public Class ProfClass
+            Private _ProfDistrictCode As String = String.Empty
+            Private _ProfCode As String = String.Empty
+            Private _ProfRegNo As String = String.Empty
+            Private _EnrolledInEHS As String = String.Empty
+            Public Sub New()
+
+            End Sub
+            Public Property ProfDistrictCode As String
+                Get
+                    Return _ProfDistrictCode
+                End Get
+                Set(value As String)
+                    _ProfDistrictCode = value
+                End Set
+            End Property
+            Public Property ProfCode As String
+                Get
+                    Return _ProfCode
+                End Get
+                Set(value As String)
+                    _ProfCode = value
+                End Set
+            End Property
+            Public Property ProfRegNo As String
+                Get
+                    Return _ProfRegNo
+                End Get
+                Set(value As String)
+                    _ProfRegNo = value
+                End Set
+            End Property
+            Public Property EnrolledInEHS As String
+                Get
+                    Return _EnrolledInEHS
+                End Get
+                Set(value As String)
+                    _EnrolledInEHS = value
+                End Set
+            End Property
+        End Class
+#End Region
+    End Class
+
+    <XmlRoot("geteHSSDHCClaimAccessResult")>
+    Public Class OutgeteHSSDHCClaimAccessXmlModel
+        Public ResultDescription As String
+        Public ResultCode As String
+        Public EHSLoginURL As String
+        Public Timestamp As String
+
+        Private Sub New()
+
+        End Sub
+
+        Public Sub New(enumeHSResultCode As eHSDHCClaimAccessResultCode, strTimestamp As String)
+            SupportFunction.ConvertResultCode(enumeHSResultCode, ResultCode, ResultDescription)
+            Timestamp = strTimestamp
+
+
+        End Sub
+
+        Public Sub New(enumeHSResultCode As eHSDHCClaimAccessResultCode, strTimestamp As String, strEHSLoginURL As String)
+            SupportFunction.ConvertResultCode(enumeHSResultCode, ResultCode, ResultDescription)
+            Timestamp = strTimestamp
+            EHSLoginURL = strEHSLoginURL
+
+        End Sub
+    End Class
+    ' CRE20-16  Declare the output of DHC NSP & Claim Access XML model  [End][Nichole]
     ' CRE18-XXX (Provide data to eHR Portal) [Start][Chris YIM]
     ' --------------------------------------------------------------------------------------
     <XmlRoot("geteHSSVoucherBalanceResult")>
@@ -654,7 +786,82 @@ Namespace Model.Xml.eHSService
             End Select
 
         End Sub
+        'CRE20-16 DHC NSp [Start][Nichole]
+        Public Shared Sub ConvertResultCode(enumeHSResultCode As eHSDHCNSPResultCode, ByRef strResultCode As String, ByRef strResultDescription As String)
+            Select Case enumeHSResultCode
+                Case eHSDHCNSPResultCode.NA
 
+                Case eHSDHCNSPResultCode.R1000_Success
+                    strResultCode = "1000"
+                    strResultDescription = "Success"
+
+                Case eHSDHCNSPResultCode.R1001_ProfessionalNotFound
+                    strResultCode = "1001"
+                    strResultDescription = "Professional not found"
+
+                Case eHSDHCNSPResultCode.R1002_ProfessionalDelisted
+                    strResultCode = "1002"
+                    strResultDescription = "Professional has been suspended/delisted"
+
+                Case eHSDHCNSPResultCode.R9000_InvalidXmlElement
+                    strResultCode = "9000"
+                    strResultDescription = "Invalid XML Element"
+
+                Case eHSDHCNSPResultCode.R9001_InvalidParameter
+                    strResultCode = "9001"
+                    strResultDescription = "Invalid Parameter"
+
+                Case eHSDHCNSPResultCode.R9999_UnexpectedFailure
+                    strResultCode = "9999"
+                    strResultDescription = "Unexpected Failure"
+
+                Case Else
+                    Throw New Exception(String.Format("OutSubmitRequestXmlModel.SupportFunction.ConvertResultCode: Unexepcted value in eHSResultCode (enumeHSResultCode={0})", enumeHSResultCode.ToString))
+
+            End Select
+
+        End Sub
+        'CRE20-006 DHC NSp [Start][Nichole]
+        'CRE20-006 DHC Claim Access [Start][Nichole]
+        Public Shared Sub ConvertResultCode(enumeHSResultCode As eHSDHCClaimAccessResultCode, ByRef strResultCode As String, ByRef strResultDescription As String)
+            Select Case enumeHSResultCode
+                Case eHSDHCClaimAccessResultCode.NA
+
+                Case eHSDHCClaimAccessResultCode.R1000_Success
+                    strResultCode = "1000"
+                    strResultDescription = "Success"
+
+                Case eHSDHCClaimAccessResultCode.R1001_ProfessionalNotFound
+                    strResultCode = "1001"
+                    strResultDescription = "Professional not found"
+
+                Case eHSDHCClaimAccessResultCode.R1002_ProfessionalDelisted
+                    strResultCode = "1002"
+                    strResultDescription = "Professional has been suspended/delisted"
+
+                Case eHSDHCClaimAccessResultCode.R1003_ProfessionalDisabled
+                    strResultCode = "1003"
+                    strResultDescription = "Professional is not a enabled NSP"
+
+                Case eHSDHCClaimAccessResultCode.R9000_InvalidXmlElement
+                    strResultCode = "9000"
+                    strResultDescription = "Invalid XML Element"
+
+                Case eHSDHCClaimAccessResultCode.R9001_InvalidParameter
+                    strResultCode = "9001"
+                    strResultDescription = "Invalid Parameter"
+
+                Case eHSDHCClaimAccessResultCode.R9999_UnexpectedFailure
+                    strResultCode = "9999"
+                    strResultDescription = "Unexpected Failure"
+
+                Case Else
+                    Throw New Exception(String.Format("OutSubmitRequestXmlModel.SupportFunction.ConvertResultCode: Unexepcted value in eHSResultCode (enumeHSResultCode={0})", enumeHSResultCode.ToString))
+
+            End Select
+
+        End Sub
+        'CRE20-006 DHC Claim Access [Start][Nichole]
     End Class
 
 End Namespace

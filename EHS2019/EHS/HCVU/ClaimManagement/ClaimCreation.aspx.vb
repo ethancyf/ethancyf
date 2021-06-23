@@ -3709,6 +3709,7 @@ Partial Public Class ClaimCreation
                         udcInputHCVS.SetReasonForVisitError(False)
                         udcInputHCVS.SetVoucherredeemError(False)
                         udcInputHCVS.SetCoPaymentFeeError(False)
+                        udcInputHCVS.SetDHCDistrictCodeError(False) 'CRE20-006 DHC integration [Nichole]
                     End If
 
                 Case SchemeClaimModel.EnumControlType.VOUCHERCHINA
@@ -3992,7 +3993,7 @@ Partial Public Class ClaimCreation
 
         udcInputHCVS.SetReasonForVisitError(False)
         udcInputHCVS.SetVoucherredeemError(False)
-
+        udcInputHCVS.SetDHCDistrictCodeError(False) 'CRe20-006 DHC itnegration [Nichole]
         ' -----------------------------------------------
         ' UI Input Validation
         '------------------------------------------------
@@ -5273,6 +5274,9 @@ Partial Public Class ClaimCreation
             'clear session
             ClearSessionForNewClaim(True)
 
+            'Clear 
+            Dim udcInputHCVS As ucInputHCVS = Me.udInputEHSClaim.GetHCVSControl 'CRe20-006 DHC intergation [Nichole]
+         
         End If
 
     End Sub

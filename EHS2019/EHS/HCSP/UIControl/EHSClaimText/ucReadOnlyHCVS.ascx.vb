@@ -2,10 +2,16 @@ Imports Common.Component.EHSTransaction
 Imports Common.Component.Scheme
 Imports Common.Component.ReasonForVisit
 Imports Common.Format
+Imports Common.Component 'CRE20-006 DHC Integration [Nichole]
+Imports HCSP.BLL 'CRE20-006 DHC Integration [Nichole]
+Imports Common.Component.DistrictBoard 'CRE20-006 DHC Integration [Nichole]
 
 Namespace UIControl.EHCClaimText
     Partial Public Class ucReadOnlyHCVS
         Inherits ucReadOnlyEHSClaimBase
+
+        Private udtDistrictBoardBLL As DistrictBoardBLL = New DistrictBoardBLL 'CRE20-006 DHC Integration [Nichole]
+        Private udtSessionHandler As New SessionHandler 'CRE20-006 DHC Integration [Nichole]
 
 #Region "Must Override Function"
 
@@ -237,9 +243,18 @@ Namespace UIControl.EHCClaimText
                         Case Common.Component.YesNo.Yes
                             lblDHCRelatedService.Text = Me.GetGlobalResourceObject("Text", "Yes")
                             panDHCRelatedService.Visible = True
+                            lblDHCRelatedServiceName.Visible = True
 
+                            'CRE20-006 DHC integration - show the service district [Start][Nichole]
+                            If udtSessionHandler.Language = CultureLanguage.TradChinese Or udtSessionHandler.Language = CultureLanguage.SimpChinese Then
+                                lblDHCRelatedServiceName.Text = " (" + udtDistrictBoardBLL.GetDistrictNameByDistrictCode(EHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoardChi + ")"
+                            Else
+                                lblDHCRelatedServiceName.Text = " (" + udtDistrictBoardBLL.GetDistrictNameByDistrictCode(EHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoard + ")"
+                            End If
+                            'CRE20-006 DHC integration - show the service district [End][Nichole]
                         Case Common.Component.YesNo.No
                             lblDHCRelatedService.Text = Me.GetGlobalResourceObject("Text", "No")
+                            lblDHCRelatedServiceName.Visible = False
                             panDHCRelatedService.Visible = True
 
                     End Select
@@ -268,7 +283,7 @@ Namespace UIControl.EHCClaimText
         End Sub
 
         ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
-        
+
         Public Overrides Sub SetupTableTitle(ByVal width As Integer)
 
         End Sub

@@ -2950,6 +2950,18 @@ Namespace Text
                     End If
                 Next
 
+                'CRE20-006 DHC integration [Start][Nichole]
+                If udcInputHCVS.DHCCheckboxEnable Then
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
+                    udtTransactAdditionfield.AdditionalFieldValueCode = udcInputHCVS.DistrictCodeRadioBtn
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = udtSchemeClaimModel.SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = udtSchemeClaimModel.SubsidizeGroupClaimList(0).SubsidizeCode
+                    udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                End If
+                'CRE20-006 DHC integration [End][Nichole]
             End If
             ' CRE11-024-02 HCVS Pilot Extension Part 2 [End]
 

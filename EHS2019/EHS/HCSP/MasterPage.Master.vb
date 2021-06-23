@@ -89,6 +89,13 @@ Partial Public Class MasterPage
                 enumClaimMode = Common.Component.ClaimMode.COVID19
             End If
 
+            'CRE20-006 DHC Integration [Start][Nichole]
+            Dim strFromOutsider As String = (New SessionHandler).ArtifactGetFromSession(FunctCode.FUNT021201)
+            If strFromOutsider IsNot Nothing Then
+                enumClaimMode = Common.Component.ClaimMode.DHC
+            End If
+            'CRE20-006 DHC Integration [End][Nichole]
+
             Return enumClaimMode
 
         End Get
@@ -180,6 +187,17 @@ Partial Public Class MasterPage
         End If
         ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+        'CRE20-006 Hidden the menu [Start][Nichole]
+        Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(FunctCode.FUNT021201)
+
+        If strFromOutsider IsNot Nothing Then
+            panMenu.Visible = False
+            ibtnMenu.Visible = False
+        Else
+            btnInbox.Visible = True
+            ibtnLogout.Visible = True
+        End If
+        'CRE20-006  Hidden the menu [End][Nichole]
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -253,6 +271,16 @@ Partial Public Class MasterPage
         If udtUserAC.UserType = SPAcctType.ServiceProvider Then
             Me.ibtnChangeSP.Visible = False
             Me.btnInbox.Visible = True
+
+            'CRE20-006 Hidden the inbox button [Start][Nichole]
+            Dim strFromOutsider As String = udcSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+            If strFromOutsider IsNot Nothing Then
+                Me.btnInbox.Visible = False
+                Me.ibtnLogout.Visible = False
+                Me.ibtnHome.Visible = False
+            End If
+            'CRE20-006 Hidden the inbox button [End][Nichole]
+
             udtSP = CType(udtUserAC, ServiceProviderModel)
 
             If Session("language") = CultureLanguage.TradChinese OrElse Session("language") = CultureLanguage.SimpChinese Then

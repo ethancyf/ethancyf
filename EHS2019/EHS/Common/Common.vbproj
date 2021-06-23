@@ -273,6 +273,7 @@
     <Compile Include="Component\COVID19\OutreachListBLL.vb" />
     <Compile Include="Component\DataEntryUser\DataEntryUserBLL.vb" />
     <Compile Include="Component\DataEntryUser\DataEntryUserModel.vb" />
+    <Compile Include="Component\DHCClaim\DHCClaimBLL.vb" />
     <Compile Include="Component\DHTransaction\DHClientModel.vb" />
     <Compile Include="Component\DHTransaction\DHClientModelCollection.vb" />
     <Compile Include="Component\DHTransaction\DHVaccineL3IdenModel.vb" />
@@ -642,12 +643,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61243</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost/Common</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

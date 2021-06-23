@@ -41,6 +41,24 @@ Partial Public Class ucInputHCVS
     Protected WithEvents chkDHCRelatedService As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
+    '''ddlDistrictCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlDistrictCode As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''imgDistrictCodeError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDistrictCodeError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''lblAvailableVoucherText control.
     '''</summary>
     '''<remarks>
@@ -176,13 +194,13 @@ Partial Public Class ucInputHCVS
     Protected WithEvents lblCoPaymentFee As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''Label3 control.
+    '''Label4 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents Label3 As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents Label4 As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''txtCoPaymentFee control.
@@ -194,15 +212,6 @@ Partial Public Class ucInputHCVS
     Protected WithEvents txtCoPaymentFee As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
-    '''FilteredCoPaymentFee control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents FilteredCoPaymentFee As Global.AjaxControlToolkit.FilteredTextBoxExtender
-
-    '''<summary>
     '''imgCoPaymentFeeError control.
     '''</summary>
     '''<remarks>
@@ -210,6 +219,15 @@ Partial Public Class ucInputHCVS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgCoPaymentFeeError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''FilteredCoPaymentFee control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FilteredCoPaymentFee As Global.AjaxControlToolkit.FilteredTextBoxExtender
 
     '''<summary>
     '''lblTotalReasonVisitText control.

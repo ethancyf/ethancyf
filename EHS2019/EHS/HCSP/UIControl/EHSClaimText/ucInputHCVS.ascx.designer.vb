@@ -60,6 +60,15 @@ Namespace UIControl.EHCClaimText
         Protected WithEvents lblDHCRelatedService As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''lblDHCRelatedServiceName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDHCRelatedServiceName As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''tblDHCRelatedServiceWrite control.
         '''</summary>
         '''<remarks>
@@ -76,6 +85,42 @@ Namespace UIControl.EHCClaimText
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents chkDHCRelatedService As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''lblDHCDistrictCode control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDHCDistrictCode As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''lblDHCDistrict control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDHCDistrict As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''ErrDistrictCode control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents ErrDistrictCode As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
+        '''rbDHCDistrictCode control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents rbDHCDistrictCode As Global.System.Web.UI.WebControls.RadioButtonList
 
         '''<summary>
         '''lblAvailableVoucherText control.

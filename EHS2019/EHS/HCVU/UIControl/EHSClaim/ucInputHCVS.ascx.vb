@@ -24,6 +24,9 @@ Partial Public Class ucInputHCVS
 
     Private Const COUNT_REASON_FOR_VISIT_SECONDARY As Integer = 3
 
+    Private udtSessionHandlerBLL As New BLL.SessionHandlerBLL 'CRE20-006 DHC integration [Nichole]
+    Private udtDistrictBoardBLL As New DistrictBoard.DistrictBoardBLL 'CRE20-006 DHC integration [Nichole]
+
 #Region "Must Override Function"
     Protected Overrides Sub Setup()
         Setup(False)
@@ -302,7 +305,12 @@ Partial Public Class ucInputHCVS
         ' CRE19-006 (DHC) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         Me.chkDHCRelatedService.Checked = False
-        ' CRE19-006 (DHC) [End][Winnie]
+        ' CRE19-006 (DHC) [End][Winnie] 
+        'CRE20-006 DHC integration [Start][Nichole]
+        Me.ddlDistrictCode.Items.Clear()
+        Me.ddlDistrictCode.SelectedValue = Nothing
+        Me.ddlDistrictCode.Enabled = False
+        'CRE20-006 DHC integration [End][Nichole]
     End Sub
 
     Private Sub SetupCoPaymentFee()
@@ -499,10 +507,15 @@ Partial Public Class ucInputHCVS
     ' ----------------------------------------------------------------------------------------
     Private Sub SetupDHCRelatedService()
         Dim udtProfessionBLL As New Profession.ProfessionBLL
-        Dim blnShowDHCServiceInput As Boolean = udtProfessionBLL.EnableDHCServiceInput(MyBase.ServiceDate, MyBase.SchemeClaim.SchemeCode, String.Empty)
+        'CRE20-006 DHC Integration [Start][Nichole]
+        'Dim blnShowDHCServiceInput As Boolean = udtProfessionBLL.EnableDHCServiceInput(MyBase.ServiceDate, MyBase.SchemeClaim.SchemeCode, String.Empty)
+        Dim blnShowDHCServiceInput As Boolean = udtProfessionBLL.EnableDHCServiceInput(MyBase.ServiceDate, MyBase.SchemeClaim.SchemeCode, MyBase.CurrentPractice.ProvideDHCService)
+        'CRE20-006 DHC Integration [End][Nichole]
 
         If blnShowDHCServiceInput Then
             trDHCRelatedService.Visible = True
+
+            BindDHCDistrictCode() 'CRE20-006 DHC integration [Nichole]
         Else
             trDHCRelatedService.Visible = False
         End If
@@ -556,6 +569,15 @@ Partial Public Class ucInputHCVS
             If objMsgBox IsNot Nothing Then objMsgBox.AddMessage(objMsg)
             blnResult = False
         End If
+
+
+        'CRE20-006 DHC Integration [Start][Nichole]
+        objMsg = ValidateDHCDistrictChecking(blnShowErrorImage)
+        If objMsg IsNot Nothing Then
+            If objMsgBox IsNot Nothing Then objMsgBox.AddMessage(objMsg)
+            blnResult = False
+        End If
+        'CRE20-006 DHC Integration [End][Nichole]
 
         Return blnResult
     End Function
@@ -773,6 +795,26 @@ Partial Public Class ucInputHCVS
         Return Nothing
     End Function
 
+    'CRE20-006 DHc Integration [Start][Nichole]
+    Public Function ValidateDHCDistrictChecking(ByVal blnShowErrorImage As Boolean) As ComObject.SystemMessage
+        Dim udtGenFunc As New Common.ComFunction.GeneralFunction
+        Dim iLowerLimit As Integer = 0
+        Dim iUpperLimit As Integer = 0
+
+        Me.imgDistrictCodeError.Visible = False
+
+        If chkDHCRelatedService.Checked Then
+            If ddlDistrictCode.SelectedValue Is String.Empty Then
+                Me.imgDistrictCodeError.Visible = blnShowErrorImage
+                Return New ComObject.SystemMessage("990000", "E", "00484")
+
+            End If
+        End If
+        
+        Return Nothing
+    End Function
+    'CRE20-006 DHc Integration [End][Nichole]
+
     Public Sub Save(ByRef udtEHSTransaction As EHSTransactionModel)
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [Start][Twinsen]
         'Dim udtSchemeClaim As SchemeClaimModel = (New SchemeClaimBLL).getAllDistinctSchemeClaim_WithSubsidizeGroup().Filter(SchemeClaimModel.HCVS)
@@ -865,10 +907,82 @@ Partial Public Class ucInputHCVS
             End If
         Next
 
+
+        'CRE20-006 DHC Integration [Start][Nichole]
+        If chkDHCRelatedService.Checked Then
+            udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+            udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
+            udtTransactAdditionfield.AdditionalFieldValueCode = ddlDistrictCode.SelectedValue
+            udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+            udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+            udtTransactAdditionfield.SchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList(0).SchemeSeq
+            udtTransactAdditionfield.SubsidizeCode = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeCode
+            udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+        End If
+        'CRE20-006 DHC Integration [End][Nichole]
+
         udtEHSTransaction.TransactionAdditionFields.SortReasonForVisit()
     End Sub
 
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Koala]
+
+    'CRE20-006 DHC integration [Start][Nichole]
+    Private Sub chkDHCRelatedService_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkDHCRelatedService.CheckedChanged
+        If chkDHCRelatedService.Checked Then
+            Me.ddlDistrictCode.Enabled = True
+        Else
+            Me.ddlDistrictCode.Enabled = False
+            Me.ddlDistrictCode.SelectedValue = Nothing
+        End If
+
+    End Sub
+
+    Private Sub BindDHCDistrictCode()
+        Dim dt As DataTable = New DataTable
+
+
+        Dim udtDataEntry As Common.Component.DataEntryUser.DataEntryUserModel = Nothing
+        Dim udtEHSTransaction As EHSTransactionModel
+        udtEHSTransaction = Me.udtSessionHandlerBLL.EHSTransactionWithoutTransactionDetailGetFromSession(FunctionCode)
+
+ 
+        If ddlDistrictCode.SelectedValue Is String.Empty Then
+            ddlDistrictCode.Items.Clear()
+
+            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(udtEHSTransaction.ServiceProviderID)
+
+            ddlDistrictCode.DataSource = dt
+            ddlDistrictCode.DataValueField = "DHC_DistrictCode"
+            ddlDistrictCode.DataTextField = "DistrictBoard"
+            ddlDistrictCode.DataBind()
+
+            ddlDistrictCode.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), ""))
+
+            If dt.Rows.Count = 0 Then
+                ddlDistrictCode.Visible = False
+            ElseIf dt.Rows.Count < 2 And chkDHCRelatedService.Checked Then
+                ddlDistrictCode.SelectedValue = dt.Rows(0)("DHC_DistrictCode")
+            Else
+                ddlDistrictCode.SelectedValue = Nothing
+            End If
+    
+            If Not MyBase.EHSTransaction Is Nothing Then
+                If Not MyBase.EHSTransaction.TransactionAdditionFields Is Nothing Then
+                    If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode IsNot Nothing Then
+                        ddlDistrictCode.Enabled = True
+                        For Each li As ListItem In ddlDistrictCode.Items
+                            If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode = li.Value Then
+                                ddlDistrictCode.SelectedValue = li.Value
+                            End If
+                        Next
+                        'ddlDistrictCode.SelectedValue = MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode
+                    End If
+                End If
+            End If
+        End If
+
+    End Sub
+    'CRE20-006 DHC integration [End][Nichole]
 
 #Region "Reason for visit setup"
 
@@ -1067,6 +1181,11 @@ Partial Public Class ucInputHCVS
     End Sub
     ' CRE11-024-02 HCVS Pilot Extension Part 2 [End][Tony]
 
+    'CRE20-006 DHC integration [Start][Nihcole]
+    Public Sub SetDHCDistrictCodeError(ByVal blnVisible As Boolean)
+        Me.imgDistrictCodeError.Visible = blnVisible
+    End Sub
+    'CRE20-006 DHC integration [End][Nihcole]
 #End Region
 
 #Region "Properties"

@@ -42,6 +42,9 @@ Namespace Component.EHSTransaction
             ' PPP
             Public Const SchoolCode As String = "SchoolCode"
 
+            ' DHC's District Code
+            Public Const DHCDistrictCode As String = "DHCDistrictCode" 'CRE20-006 DHC Integration [Nichole]
+
             ' CRE20-015 (Special Support Scheme) [Start][Chris YIM]
             ' ---------------------------------------------------------------------------------------------------------
             ' SSSCMC

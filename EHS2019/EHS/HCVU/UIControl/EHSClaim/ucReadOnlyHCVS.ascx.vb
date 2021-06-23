@@ -20,7 +20,7 @@ Partial Public Class ucReadOnlyHCVS
     Private Reason_for_Visit_L2_S3 As String = Common.Component.EHSTransaction.TransactionAdditionalFieldModel.AdditionalFieldType.ReasonForVisitL2(3)
     Private CoPaymentFee As String = Common.Component.EHSTransaction.TransactionAdditionalFieldModel.AdditionalFieldType.CoPaymentFee
     'CRE11-024-02 HCVS Pilot Extension Part 2 [End]
-
+    Private udtDistrictBoardBLL As Common.Component.DistrictBoard.DistrictBoardBLL = New Common.Component.DistrictBoard.DistrictBoardBLL 'nichole
 #Region "Field"
 
     Private udtGeneralFunction As New GeneralFunction
@@ -293,7 +293,8 @@ Partial Public Class ucReadOnlyHCVS
                     Case Common.Component.YesNo.Yes
                         lblDHCRelatedService.Text = Me.GetGlobalResourceObject("Text", "Yes")
                         trDHCRelatedService.Visible = True
-
+                        'CRE20-006 DHC Integration [Nichole]
+                        lblDHCDistrictCode.Text = " (" + udtDistrictBoardBLL.GetDistrictNameByDistrictCode(udtEHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoard + ")"
                     Case Common.Component.YesNo.No
                         lblDHCRelatedService.Text = Me.GetGlobalResourceObject("Text", "No")
                         trDHCRelatedService.Visible = True

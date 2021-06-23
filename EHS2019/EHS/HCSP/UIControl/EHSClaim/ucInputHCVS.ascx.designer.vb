@@ -59,6 +59,15 @@ Partial Public Class ucInputHCVS
     Protected WithEvents lblDHCRelatedService As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblDHCDistrictName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDHCDistrictName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''tblDHCRelatedServiceWrite control.
     '''</summary>
     '''<remarks>
@@ -75,6 +84,33 @@ Partial Public Class ucInputHCVS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkDHCRelatedService As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''ddlDHCDistrictCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlDHCDistrictCode As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''lblDHCDistrictCode control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDHCDistrictCode As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''imgDHCDistrictCodeErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDHCDistrictCodeErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''trAvailableVoucher control.

@@ -8,6 +8,14 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			CRE20-006
+-- Modified by:		Nichole IP
+-- Modified date:	10 Mar 2021
+-- Description:		1. Excel Sheet (03): Add "Enrolled DHC (Any practices)"
+--				    2. Excel Sheet (05): Add "Enrolled DHC" 
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			CRE20-018-02
 -- Modified by:		Koala CHENG
 -- Modified date:	10 Mar 2021
@@ -419,6 +427,49 @@ AS BEGIN
 	FROM StatusData WITH (NOLOCK)
 	WHERE Enum_Class = 'PracticeStatus'
 
+------------------------------------------------
+-- #TempTableResultbySP (DHCDistrict By SP)
+------------------------------------------------
+	SELECT DISTINCT PL.SP_ID,LTRIM(RTRIM(DB.district_board)) as District_Board
+	INTO #TempTable_WS03_NSP
+	FROM DHCSPMapping DSP WITH (NOLOCK)
+				 INNER JOIN Professional PL WITH (NOLOCK) ON DSP.Registration_Code = PL.Registration_Code
+											   AND DSP.Service_Category_Code = PL.Service_Category_Code
+											   AND PL.Record_Status = 'A'
+				 INNER JOIN DistrictBoard DB WITH (NOLOCK) ON DB.DHC_District_Code  = DSP.District_Code 
+
+	SELECT SP_ID,
+		STUFF((
+		SELECT ', ' + CAST([district_board] AS VARCHAR(MAX))
+		FROM #TempTable_WS03_NSP WHERE (SP_ID = TMP.SP_ID) 
+		FOR XML PATH('')), 1, 1, '') as DistrictName
+	INTO #TempTable_WS03_NSP_S1
+	FROM #TempTable_WS03_NSP TMP
+	GROUP BY  SP_ID
+
+------------------------------------------------
+-- #TempTableResultbyPrac (DHCDistrict By Practice)
+------------------------------------------------
+	SELECT DISTINCT DSP.Registration_Code,DSP.Service_Category_Code,PL.SP_ID,P.Professional_Seq,LTRIM(RTRIM(DB.district_board))  as District_Board
+	INTO #TempTable_WS05_NSP
+	FROM DHCSPMapping DSP WITH (NOLOCK) 
+				 INNER JOIN Professional PL WITH (NOLOCK) ON DSP.Registration_Code = PL.Registration_Code
+											   AND DSP.Service_Category_Code = PL.Service_Category_Code
+											   AND PL.Record_Status = 'A'
+				 INNER JOIN DistrictBoard DB WITH (NOLOCK) ON DB.DHC_District_Code  = DSP.District_Code 
+				 INNER JOIN Practice P WITH (NOLOCK) 
+				 ON P.SP_ID = PL.SP_ID COLLATE DATABASE_DEFAULT AND P.Professional_Seq = PL.Professional_Seq
+
+	SELECT  Registration_Code, Service_Category_Code,SP_ID,Professional_Seq,
+		STUFF((
+		SELECT ', ' + CAST([district_board] AS VARCHAR(MAX))
+		FROM #TempTable_WS05_NSP WHERE (Registration_Code = TMP.Registration_Code) and (Service_Category_Code=TMP.Service_Category_Code)
+		AND SP_ID=TMP.SP_ID
+		FOR XML PATH('')), 1, 1, '') as DistrictName
+	INTO #TempTable_WS05_NSP_S1
+	FROM #TempTable_WS05_NSP TMP
+	GROUP BY Registration_Code, Service_Category_Code,SP_ID,Professional_Seq
+
 -- ---------------------------------------------
 -- Prepare Column List for Dynamic SQL String
 -- ---------------------------------------------
@@ -767,19 +818,20 @@ AS BEGIN
 		Col22	VARCHAR(30),	-- Token Serial No. (New)
 		Col23	VARCHAR(30),	-- Token Issued By (New)
 		Col24	VARCHAR(30),	-- Is Share Token (New)
-		Col25	VARCHAR(100)	-- Provide DHC-related Services (Any practices)
+		Col25	VARCHAR(100),	-- Provide DHC-related Services (Any practices)
+		Col26	VARCHAR(100)    -- Enrolled DHC (Any practices)
 	)
 
 	-- Create Column Header
 	SET @seq = 0
 
-	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25)
+	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26)
 	VALUES (
 		@seq, NULL,
 		'SPID', 'SP Name (In English)', 'SP Name (In Chinese)', 'Profile Effective Date', 'Data Input By',
 		'Correspondence Address', 'District', 'District Board', 'Area', 'Email Address','Pending Email Address',
 		'Daytime Contact Phone No.', 'Fax No.', 'SP Status', 'PCD Status', 'PCD Professional', 'Last check date of PCD Status','Profession', 'Token Serial No.',
-		'Token Issued By', 'Is Share Token', 'Token Serial No. (New)', 'Token Issued By (New)', 'Is Share Token (New)', 'Provide DHC-related Services (Any practices)'	
+		'Token Issued By', 'Is Share Token', 'Token Serial No. (New)', 'Token Issued By (New)', 'Is Share Token (New)', 'Provide DHC-related Services (Any practices)'	,'Enrolled DHC (Any practices)'
 	)
 
 	-- Create Report Result
@@ -788,7 +840,7 @@ AS BEGIN
 	DECLARE @ProjectEHR AS NVARCHAR(MAX)
 	SELECT @ProjectEHR = Description FROM SystemResource WITH (NOLOCK) WHERE ObjectType = 'Text' AND ObjectName in ('TokenEHR')
 
-	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25)
+	INSERT INTO #WS03_Part1 (Seq, Seq2, Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10, Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20, Col21, Col22, Col23, Col24, Col25, Col26)
 	SELECT
 		@seq,
 		SP.Data_Input_Effective_Dtm,
@@ -860,7 +912,8 @@ AS BEGIN
 			ELSE NULL
 		END,
 		-- 'CRE13-008 - SP Amendment Report [End][Chris YIM]
-		[DHC_Service] = IIF(DHC.SP_ID IS NOT NULL, 'Yes','No')
+		[DHC_Service] = IIF(DHC.SP_ID IS NOT NULL, 'Yes','No'),
+		ISNULL(LTRIM(TSP.DistrictName) ,'N/A') as DHC_DistrictName --Show the Enolled
 	FROM
 		#SP_Filtered SPF
 			INNER JOIN ServiceProvider SP WITH (NOLOCK)
@@ -895,7 +948,7 @@ AS BEGIN
 							AND d.Registration_Code = p.Registration_Code
 							AND p.Record_Status = 'A')  DHC
 				ON SPF.SP_ID = DHC.SP_ID
-
+			LEFT JOIN #TempTable_WS03_NSP_S1  TSP on TSP.SP_ID=SPF.SP_ID 
 -- ---------------------------------------------
 -- For Excel Sheet (03): 01-Service Provider (Part 2)
 -- ---------------------------------------------
@@ -1113,7 +1166,8 @@ AS BEGIN
 		Col28	NVARCHAR(100),	-- Bank Name
 		Col29	NVARCHAR(100),	-- Branch Name
 		Col30	NVARCHAR(300),	-- Bank Account Name
-		Col31	VARCHAR(100)	-- Provide DHC-related Services
+		Col31	VARCHAR(100),	-- Provide DHC-related Services
+		Col32	VARCHAR(100)    -- Enrolled DHC
 	)
 
 	-- Create Column Header
@@ -1124,7 +1178,7 @@ AS BEGIN
 		Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10,
 		Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20,
 		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28, Col29, Col30,
-		Col31
+		Col31, Col32
 	)
 	VALUES (
 		@seq, NULL,
@@ -1133,7 +1187,7 @@ AS BEGIN
 		'Practice Name (In Chinese)', 'Practice Address (In English)', 'Practice Address (In Chinese)', 
 		'District', 'District Board', 'Area', 'Practice Status', 'Profession', 'Professional Registration No.',
 		'Phone No. of Practice', 'Mobile Clinic', 'Remarks (In English)', 'Remarks (In Chinese)',
-		'Bank Name', 'Branch Name', 'Bank Account Name', 'Provide DHC-related Services'
+		'Bank Name', 'Branch Name', 'Bank Account Name', 'Provide DHC-related Services','Enrolled DHC'
 	)
 
 	-- Create Report Result
@@ -1144,9 +1198,9 @@ AS BEGIN
 		Col01, Col02, Col03, Col04, Col05, Col06, Col07, Col08, Col09, Col10,
 		Col11, Col12, Col13, Col14, Col15, Col16, Col17, Col18, Col19, Col20,
 		Col21, Col22, Col23, Col24, Col25, Col26, Col27, Col28, Col29, Col30,
-		Col31
+		Col31, Col32
 	)
-	SELECT
+	SELECT DISTINCT 
 		@seq,
 		SP.Data_Input_Effective_Dtm,
 		SP.SP_ID,
@@ -1195,7 +1249,8 @@ AS BEGIN
 		BA.Bank_Name,
 		BA.Branch_Name,
 		BA.Bank_Acc_Holder,
-		DHC_Service = IIF(DHC.Display_Seq IS NOT NULL, 'Yes','No')
+		DHC_Service = IIF(DHC.Display_Seq IS NOT NULL, 'Yes','No'),
+		ISNULL(LTRIM(TSP.DistrictName),'N/A') as DHC_DistrictName
 	FROM
 		#SP_Filtered SPF
 			INNER JOIN ServiceProvider SP WITH (NOLOCK)
@@ -1229,6 +1284,9 @@ AS BEGIN
 							AND p.Professional_Seq = pt.Professional_Seq)  DHC
 				ON P.SP_ID = DHC.SP_ID
 					AND P.Display_Seq = DHC.Display_Seq
+			LEFT JOIN #TempTable_WS05_NSP_S1 TSP 
+				ON TSP.SP_ID=SPF.SP_ID AND P.Professional_Seq = TSP.Professional_Seq
+
 -- ---------------------------------------------
 -- For Excel Sheet (05): 03-Practice & BankAcc (Part 2)
 -- ---------------------------------------------
@@ -1514,7 +1572,7 @@ AS BEGIN
 		SELECT
 			P1.Col01, P1.Col02, P1.Col03, P1.Col04, P1.Col05, P1.Col06, P1.Col07, P1.Col08, P1.Col09, P1.Col10,
 			P1.Col11, P1.Col12, P1.Col13, P1.Col14, P1.Col15, P1.Col16, P1.Col17, P1.Col18, P1.Col19, P1.Col20,
-			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col25, ' + @pivot_table_column_name_alias + ',' +  @pivot_table_practice_scheme_column_name_alias + '
+			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col25, P1.Col26, ' + @pivot_table_column_name_alias + ',' +  @pivot_table_practice_scheme_column_name_alias + '
 		FROM #WS03_Part1 P1
 			INNER JOIN #PivotTable_WS03 PT
 				ON P1.Col01 = PT.SP_ID COLLATE DATABASE_DEFAULT
@@ -1528,7 +1586,8 @@ AS BEGIN
 	DROP TABLE #WS03_Part1
 	DROP TABLE #PivotTable_WS03
 	DROP TABLE #PivotTable_WS03_P3
-
+	DROP TABLE #TempTable_WS03_NSP
+	DROP TABLE #TempTable_WS03_NSP_S1
 
 -- ---------------------------------------------
 -- To Excel Sheet (04): 02-MO
@@ -1550,7 +1609,7 @@ AS BEGIN
 		SELECT
 			P1.Col01, P1.Col02, P1.Col03, P1.Col04, P1.Col05, P1.Col06, P1.Col07, P1.Col08, P1.Col09, P1.Col10,
 			P1.Col11, P1.Col12, P1.Col13, P1.Col14, P1.Col15, P1.Col16, P1.Col17, P1.Col18, P1.Col19, P1.Col20,
-			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col28, P1.Col29, P1.Col30, P1.Col31, ' + @pivot_table_column_name_alias +','
+			P1.Col21, P1.Col22, P1.Col23, P1.Col24, P1.Col28, P1.Col29, P1.Col30, P1.Col31, P1.Col32, ' + @pivot_table_column_name_alias +','
 			+ 'ISNULL(NC.Scheme_Code,''N/A''),'
 			+ @pivot_table_subsidize_column_name_alias + ', P1.Col25, P1.Col26, P1.Col27
 		FROM #WS05_Part1 P1
@@ -1573,7 +1632,8 @@ AS BEGIN
 	DROP TABLE #PivotTable_WS05_P3
 	DROP TABLE #PivotTable_WS05_NonClinicScheme
 	DROP TABLE #PivotTable_WS05_NonClinicSchemeSummary
-
+	DROP TABLE #TempTable_WS05_NSP
+	DROP TABLE #TempTable_WS05_NSP_S1 
 -- ---------------------------------------------
 -- To Excel Sheet (06): 04-Dummy SP Account
 -- ---------------------------------------------

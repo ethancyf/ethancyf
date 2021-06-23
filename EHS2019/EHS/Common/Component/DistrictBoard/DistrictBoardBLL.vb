@@ -1,5 +1,6 @@
 ﻿Imports Common.ComObject
 Imports Common.DataAccess
+Imports System.Data.SqlClient
 
 Namespace Component.DistrictBoard
 
@@ -27,7 +28,8 @@ Namespace Component.DistrictBoard
                             CStr(IIf(IsDBNull(dr("area_code")), String.Empty, dr("area_code"))).Trim, _
                             CStr(IIf(IsDBNull(dr("EForm_Input_Avail")), String.Empty, dr("EForm_Input_Avail"))).Trim, _
                             CStr(IIf(IsDBNull(dr("BO_Input_Avail")), String.Empty, dr("BO_Input_Avail"))).Trim, _
-                            CStr(IIf(IsDBNull(dr("SD_Input_Avail")), String.Empty, dr("SD_Input_Avail"))).Trim)
+                            CStr(IIf(IsDBNull(dr("SD_Input_Avail")), String.Empty, dr("SD_Input_Avail"))).Trim, _
+                            CStr(IIf(IsDBNull(dr("DHC_District_Code")), String.Empty, dr("DHC_District_Code"))).Trim) 'CRE20-006 DHC Integration [Nichole]
 
                         udtDistrictBoardModelCollection.Add(udtDistrictBoard)
 
@@ -150,6 +152,50 @@ Namespace Component.DistrictBoard
             End If
         End Function
         'CRE13-019-02 Extend HCVS to China [End][Winnie]
+
+        'CRE20-006 DHC Integration [Start][Nichole]
+        Public Function GetDistrictNameByDistrictCode(ByVal strDistrictCode As String) As DistrictBoardModel
+            Dim udtDistrictModelCollection As DistrictBoardModelCollection = New DistrictBoardModelCollection()
+            Dim udtDistrictModel As DistrictBoardModel
+
+            If Not IsNothing(strDistrictCode) Then
+                If strDistrictCode.Equals(String.Empty) Then
+                    udtDistrictModel = New DistrictBoardModel(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty)
+
+                Else
+                    udtDistrictModelCollection = GetDistrictBoardList()
+                    udtDistrictModel = udtDistrictModelCollection.DistrictBoardName(strDistrictCode.Trim)
+
+                End If
+            Else
+                udtDistrictModel = New DistrictBoardModel(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty)
+            End If
+
+
+            Return udtDistrictModel
+
+        End Function
+
+        'Public Function GetDHCDistrictName() As DistrictBoardModelCollection
+        '    Dim udtDistrictModelCollection As DistrictBoardModelCollection = New DistrictBoardModelCollection()
+        '    'Dim udtDistrictModel As DistrictBoardModel
+
+        '    udtDistrictModelCollection = GetDistrictBoardList().FilterbyDHC
+
+        '    Return udtDistrictModelCollection
+
+        'End Function
+        Public Function GetDistrictBoardBySPID(ByVal strSPID As String)
+            Dim udtDB As New Database()
+            Dim dtResult As New DataTable()
+
+
+            Dim parms() As SqlParameter = {udtDB.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, strSPID.Trim)}
+
+            udtDB.RunProc("proc_DistrictBoard_get_bySPID", parms, dtResult)
+            Return dtResult
+        End Function
+        'CRE20-006 DHC Integration [End][Nichole]
     End Class
 
 End Namespace

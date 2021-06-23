@@ -8,6 +8,17 @@ GO
 
 -- =============================================
 -- Modification History
+-- Modified by:		Nichole IP
+-- CR No.:			CRE20-006
+-- Modified date:	24 May 2021
+-- Description:		
+--     1) Add sub report for use of vouchers for District Health Centre related services (All) 
+--     2) Add sub report for use of vouchers for District Health Centre related services (Sham Shui Po)
+--     3) District Health Centre (Core + Satellite) separate into DIT, POD & SPT
+--     4) Change the remark wording
+-- =============================================
+-- =============================================
+-- Modification History
 -- Modified by:		Winnie SUEN
 -- CR No.:			CRE19-021
 -- Modified date:	24 Feb 2020
@@ -63,20 +74,20 @@ AS BEGIN
 	DECLARE @ReportDtm datetime
 	SET @ReportDtm = DATEADD(day, -1, @cutOffDtm) -- The date report data as at
 	
-
+	declare @debug as char(1) = 'N'
 -- =============================================
 -- Declaration
 -- =============================================
-
 	CREATE TABLE #VoucherTransaction (
 		TxCnt					int,
 		Scheme_Code				char(10),
 		Identity_Num			varbinary(100),
-		service_type			char(5),
+		service_type			char(10),
 		Claim_Amount			int,
 		Reason_for_visit_L1		smallint default 0,
 		Record_Status			char(1),
-		Invalidation			char(1)
+		Invalidation			char(1),
+		DistrictCode			varchar(50)
 	)
 
 	CREATE TABLE #VoucherTransactionSPBasis (
@@ -84,20 +95,50 @@ AS BEGIN
 		Scheme_Code				char(10),
 		SP_ID					char(8),
 		Practice_Display_Seq	smallint,
-		service_type			char(5),
+		service_type			char(10),
 		Record_Status			char(1),
-		Invalidation			char(1)
+		Invalidation			char(1),
+		DistrictCode			varchar(50)
 	)
 
 	-- Seperate a transaction into Several reason
 	CREATE TABLE #VT_ReasonForVisit (
 		TxCnt					INT,
-		Service_Type			CHAR(5),
-		Reason_Code				INT
+		Service_Type			CHAR(10),
+		Reason_Code				INT,
+		DistrictCode			varchar(50)
 	)
+
+	-- Temporary District
+    DECLARE @tempDistrict AS TABLE(District_Code CHAR(3));
 
 
 	--Result Table
+	--Total
+	DECLARE @ResultTable00 AS TABLE (
+		Result_Seq int identity(1,1),	-- Sorting Sequence
+		Result_Value1 nvarchar(1000) DEFAULT '',	
+		Result_Value2 varchar(100) DEFAULT '',	
+		Result_Value3 varchar(100) DEFAULT '',	
+		Result_Value4 varchar(100) DEFAULT '',
+		Result_Value5 varchar(100) DEFAULT '',	
+		Result_Value6 varchar(100) DEFAULT '',	
+		Result_Value7 varchar(100) DEFAULT '',	
+		Result_Value8 varchar(100) DEFAULT '',	
+		Result_Value9 varchar(100) DEFAULT '',	
+		Result_Value10 varchar(100) DEFAULT '',
+		Result_Value11 varchar(100) DEFAULT '',
+		Result_Value12 varchar(100) DEFAULT '',
+		Result_Value13 varchar(100) DEFAULT '',
+		Result_Value14 varchar(100) DEFAULT '',
+		Result_Value15 varchar(100) DEFAULT '',
+		Result_Value16 varchar(100) DEFAULT '',
+		Result_Value17 varchar(100) DEFAULT '',
+		Result_Value18 varchar(100) DEFAULT '',
+		Result_Value19 varchar(100) DEFAULT ''
+	)
+
+	-- Kwai Tsing
 	DECLARE @ResultTable01 AS TABLE (
 		Result_Seq int identity(1,1),	-- Sorting Sequence
 		Result_Value1 nvarchar(1000) DEFAULT '',	
@@ -116,76 +157,118 @@ AS BEGIN
 		Result_Value14 varchar(100) DEFAULT '',
 		Result_Value15 varchar(100) DEFAULT '',
 		Result_Value16 varchar(100) DEFAULT '',
-		Result_Value17 varchar(100) DEFAULT ''
+		Result_Value17 varchar(100) DEFAULT '',
+		Result_Value18 varchar(100) DEFAULT '',
+		Result_Value19 varchar(100) DEFAULT ''
+	)
+
+	-- Sham Shui Po
+	DECLARE @ResultTable02 AS TABLE (
+		Result_Seq int identity(1,1),	-- Sorting Sequence
+		Result_Value1 nvarchar(1000) DEFAULT '',	
+		Result_Value2 varchar(100) DEFAULT '',	
+		Result_Value3 varchar(100) DEFAULT '',	
+		Result_Value4 varchar(100) DEFAULT '',
+		Result_Value5 varchar(100) DEFAULT '',	
+		Result_Value6 varchar(100) DEFAULT '',	
+		Result_Value7 varchar(100) DEFAULT '',	
+		Result_Value8 varchar(100) DEFAULT '',	
+		Result_Value9 varchar(100) DEFAULT '',	
+		Result_Value10 varchar(100) DEFAULT '',
+		Result_Value11 varchar(100) DEFAULT '',
+		Result_Value12 varchar(100) DEFAULT '',
+		Result_Value13 varchar(100) DEFAULT '',
+		Result_Value14 varchar(100) DEFAULT '',
+		Result_Value15 varchar(100) DEFAULT '',
+		Result_Value16 varchar(100) DEFAULT '',
+		Result_Value17 varchar(100) DEFAULT '',
+		Result_Value18 varchar(100) DEFAULT '',
+		Result_Value19 varchar(100) DEFAULT ''
+	)
+
+	DECLARE @ResultTable03 AS TABLE (
+		Result_Seq int identity(1,1),	-- Sorting Sequence
+		Result_Value1 nvarchar(1000) DEFAULT '',	
+		Result_Value2 varchar(100) DEFAULT '',	
+		Result_Value3 varchar(100) DEFAULT '',	
+		Result_Value4 nvarchar(200) DEFAULT '',
+		Result_Value5 nvarchar(200) DEFAULT ''
 	)
 
 	-- For Part (a)(i)
 	DECLARE @ReasonForVisitSummary AS TABLE (
-		Service_Type	CHAR(5),
+		Service_Type	CHAR(10),
 		Reason_Code		INT,
-		Tx_Count		INT
+		Tx_Count		INT,
+		DistrictCode			varchar(50)
 	)
 
 	-- For Part (a)(ii) - (d) 
 	DECLARE @TransactionSummary AS TABLE (
-		Service_Type	CHAR(5),
+		Service_Type	CHAR(10),
 		Tx_Count		INT,
 		Claim_Amt		BIGINT,
-		NoOfElder		INT
+		NoOfElder		INT,
+		DistrictCode			varchar(50)
 	)
 
 	
 	-- For Part (e) Number of Service Providers eligible to make voucher claim for DHC-related services 
 	-- Eligible profession
 	DECLARE @DHCRelatedServiceEligibleSummary AS TABLE (
-		Service_Type	CHAR(5),
-		SP_Count		INT
+		Service_Type	CHAR(10),
+		SP_Count		INT,
+		DistrictCode			varchar(50)
 	)
 
 	-- Ineligible profession
 	DECLARE @HCVSDHCPracticeIneligibleSummary AS TABLE (
-		Service_Type	CHAR(5),
-		RegCode_Count	INT
+		Service_Type	CHAR(10),
+		RegCode_Count	INT,
+		DistrictCode			varchar(50)
 	)
 
 	-- For Part (f) Number of Service Provders who had made voucher claim for DHC-related services
 	-- Eligible profession
 	DECLARE @TransactionSummarySPBasis AS TABLE (
-		Service_Type	CHAR(5),
-		SP_Count		INT
+		Service_Type	CHAR(10),
+		SP_Count		INT,
+		DistrictCode			varchar(50)
 	)
 
 	-- Ineligible profession
 	DECLARE @TransactionSummaryRegCodeBasis AS TABLE (
-		Service_Type	CHAR(5),
-		RegCode_Count	INT
+		Service_Type	CHAR(10),
+		RegCode_Count	INT,
+		DistrictCode			varchar(50)
 	)
 
 	--
-	DECLARE @TempReasonForVisitResult AS TABLE (
-		Reason_Code		INT,
-		Reason_Desc		VARCHAR(50),
-		DHC				INT, 
-		DIT				INT,
-		SPT				INT,
-		POD				INT,
-		RMP				INT,
-		RCM				INT,
-		RDT				INT,
-		ROT				INT,
-		RPT				INT,
-		RMT				INT,
-		RRD				INT,
-		ENU				INT,
-		RNU				INT,
-		RCP				INT,
-		ROP				INT,
-		Total			INT
-	)
+	--DECLARE @TempReasonForVisitResult AS TABLE (
+	--	Reason_Code		INT,
+	--	Reason_Desc		VARCHAR(50),
+	--	DHC				INT, 
+	--	DIT				INT,
+	--	SPT				INT,
+	--	POD				INT,
+	--	RMP				INT,
+	--	RCM				INT,
+	--	RDT				INT,
+	--	ROT				INT,
+	--	RPT				INT,
+	--	RMT				INT,
+	--	RRD				INT,
+	--	ENU				INT,
+	--	RNU				INT,
+	--	RCP				INT,
+	--	ROP				INT,
+	--	Total			INT,
+	--	DistrictCode			varchar(50)
+	--)
 
 
 	DECLARE @Profession AS TABLE (
-		Service_Type			char(5)
+		Service_Type			char(10)
 	)
 
 	DECLARE @Reason AS TABLE
@@ -202,8 +285,12 @@ AS BEGIN
 	-- Profession
 	INSERT INTO @Profession
 	SELECT Service_Category_Code FROM profession
-	UNION
-	SELECT 'DHC'
+	UNION ALL
+	SELECT 'DHC-DIT'
+	UNION ALL
+	SELECT 'DHC-POD'
+	UNION ALL
+	SELECT 'DHC-SPT'
 
 
 	-- Reason for Visit
@@ -212,10 +299,16 @@ AS BEGIN
 	UNION
 	SELECT 5, 'Defer Input'
 	
-	-- Only KT district is available now
-	DECLARE @District AS VARCHAR(100) = 'Kwai Tsing'
+	-- Only Kwai Tsing and sham shui po district is available now
+	DECLARE @District_Name1 AS VARCHAR(100) = 'Kwai Tsing'
+	DECLARE @District_Name2 AS VARCHAR(100) = 'Sham Shui Po'
 
+	DECLARE @District_Code1 AS VARCHAR(100) = 'KC'
+	DECLARE @District_Code2 AS VARCHAR(100) = 'SSP'
 	
+	INSERT INTO @tempDistrict values (@District_Code1)
+	INSERT INTO @tempDistrict values (@District_Code2)
+
 	-- The designated MO are working at the DHC
 	DECLARE @DHC_Core_MOList VARCHAR(100) 
 
@@ -240,7 +333,8 @@ AS BEGIN
 		Claim_Amount,
 		Reason_for_visit_L1,
 		Record_Status,
-		Invalidation
+		Invalidation,
+		DistrictCode 
 	)
 		SELECT
 		COUNT(Transaction_ID), 
@@ -250,7 +344,8 @@ AS BEGIN
 		SUM(Claim_Amount),  
 		Reason_for_Visit_L1,
 		Record_Status, 
-		Invalidation
+		Invalidation,
+		DistrictCode
 	FROM (
 		SELECT
 			VT.Transaction_ID,
@@ -259,40 +354,58 @@ AS BEGIN
 			ISNULL(VT.Voucher_Acc_ID, '') AS [Voucher_Acc_ID] ,
 			ISNULL(VT.Temp_Voucher_Acc_ID, '') AS [Temp_Voucher_Acc_ID],
 			CASE WHEN VP.Voucher_Acc_ID IS NULL THEN TP.Encrypt_Field1 ELSE VP.Encrypt_Field1 END AS [Identity_Num],
-			CASE WHEN D.MO_Display_Seq IS NOT NULL THEN 'DHC' ELSE VT.Service_Type END AS [Service_Type], --DHC (Core + Satellite) = HCVSDHC Scheme + Working at DHC Centre (Under the deaignated MO)
+			CASE WHEN D.MO_Display_Seq IS NOT NULL THEN 'DHC-' + VT.Service_Type ELSE VT.Service_Type END AS [Service_Type], --DHC (Core + Satellite) = HCVSDHC Scheme + Working at DHC Centre (Under the deaignated MO)
 			VT.Claim_Amount,
 			CONVERT(smallint, ISNULL(TAF1.AdditionalFieldValueCode, 5)) AS Reason_for_Visit_L1,
 			VT.Record_Status,
-			VT.Invalidation
+			VT.Invalidation, --TAF.AdditionalFieldValueCode as DistrictCode
+			--CASE WHEN ISNULL(TAF.AdditionalFieldValueCode,'') ='' then DB.district_board_shortname_SD   else TAF.AdditionalFieldValueCode end as DistrictCode
+			DistrictCode= CASE WHEN  ISNULL(TAF.AdditionalFieldValueCode,'') <> '' THEN 
+			   TAF.AdditionalFieldValueCode 
+			ELSE 
+				CASE WHEN db.district_board IS NULL THEN
+					(SELECT TOP 1 DBD.DHC_District_Code FROM DHCCoreMapping DM INNER JOIN DistrictBoard DBD ON DBD.district_board_SD = DM.District_Board and DM.SP_ID = VT.SP_ID ORDER BY DM.MO_Display_seq)
+				ELSE
+					DB.DHC_District_Code 
+				END
+			END
 		FROM
-			 VoucherTransaction  VT
-			INNER JOIN TransactionDetail TD
+			 VoucherTransaction  VT  WITH (NOLOCK)
+			INNER JOIN TransactionDetail TD  WITH (NOLOCK)
 				ON VT.Transaction_ID = TD.Transaction_ID
-			LEFT JOIN TransactionAdditionalField TAF1
+			-- new add  --
+			LEFT JOIN TransactionAdditionalField TAF WITH (NOLOCK)
+				ON VT.Transaction_ID = TAF.Transaction_ID
+					AND TAF.AdditionalFieldID = 'DHCDistrictCode'
+			-- new add  --
+			LEFT JOIN TransactionAdditionalField TAF1  WITH (NOLOCK)
 				ON VT.Transaction_ID = TAF1.Transaction_ID
 					AND TAF1.AdditionalFieldID = 'Reason_for_Visit_L1'
-			LEFT JOIN PersonalInformation VP
-				ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID
-			LEFT JOIN TempPersonalInformation TP
-				ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID
-			LEFT JOIN Practice P
+			LEFT JOIN PersonalInformation VP  WITH (NOLOCK)
+				ON VT.Voucher_Acc_ID = VP.Voucher_Acc_ID AND VT.Doc_Code =VP.Doc_Code 
+			LEFT JOIN TempPersonalInformation TP  WITH (NOLOCK)
+				ON VT.Temp_Voucher_Acc_ID = TP.Voucher_Acc_ID AND VT.Doc_Code =TP.Doc_Code 
+			LEFT JOIN Practice P  WITH (NOLOCK)
 				ON VT.Practice_Display_Seq = P.Display_Seq AND VT.SP_ID = P.SP_ID
 					AND VT.Scheme_Code = 'HCVSDHC'
-			LEFT JOIN DHCCoreMapping D
+			LEFT JOIN DHCCoreMapping D  WITH (NOLOCK)
 				ON P.SP_ID = D.SP_ID AND P.MO_Display_Seq = D.MO_Display_Seq
 					AND D.Record_Status = 'A'
-				
+			-- new add --
+			LEFT JOIN DistrictBoard DB  WITH (NOLOCK) on DB.district_board_SD = D.District_Board 
+			-- new add --
 		WHERE
 				(VT.Scheme_Code = 'HCVSDHC' OR (VT.Scheme_Code = 'HCVS' AND ISNULL(VT.DHC_Service,'') = 'Y'))
 				AND VT.Transaction_Dtm < @CutOffDtm
 	) a
 	GROUP BY 
 		Scheme_Code, 
-		identity_num, 
+		identity_num,
 		Service_Type,
 		Reason_for_Visit_L1,
 		Record_Status, 
-		Invalidation
+		Invalidation,
+		DistrictCode
 
 --------------------------------------------------------------
 	DELETE #VoucherTransaction WHERE Record_Status IN (
@@ -322,7 +435,12 @@ AS BEGIN
 				AND ((Effective_Date IS NULL OR Effective_Date <= @CutOffDtm) AND (Expiry_Date IS NULL OR @CutOffDtm < Expiry_Date)))
 			)
 
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '#VoucherTransaction'
+		SELECT * FROM #VoucherTransaction
 
+	END;
 -- ---------------------------------------------
 -- Retrieve Voucher transactions - SP Basis
 -- ---------------------------------------------
@@ -333,7 +451,8 @@ AS BEGIN
 		Practice_Display_Seq,
 		Service_Type,
 		Record_Status,
-		Invalidation
+		Invalidation,
+		DistrictCode
 	)
 		SELECT
 		COUNT(Transaction_ID), 
@@ -342,7 +461,8 @@ AS BEGIN
 		Practice_Display_Seq,
 		Service_Type, 
 		Record_Status, 
-		Invalidation
+		Invalidation,
+		DistrictCode
 	FROM (
 		SELECT
 			VT.Transaction_ID,
@@ -350,18 +470,35 @@ AS BEGIN
 			VT.Scheme_Code,
 			VT.SP_ID,
 			VT.Practice_Display_Seq,
-			CASE WHEN D.MO_Display_Seq IS NOT NULL THEN 'DHC' ELSE VT.Service_Type END AS [Service_Type], --DHC (Core + Satellite) = HCVSDHC Scheme + Working at DHC Centre (Under the deaignated MO)
+			CASE WHEN D.MO_Display_Seq IS NOT NULL THEN 'DHC-' + VT.Service_Type ELSE VT.Service_Type END AS [Service_Type], --DHC (Core + Satellite) = HCVSDHC Scheme + Working at DHC Centre (Under the deaignated MO)
 			VT.Record_Status,
-			VT.Invalidation
+			VT.Invalidation, --TAF.AdditionalFieldValueCode as DistrictCode
+			DistrictCode= CASE WHEN  ISNULL(TAF.AdditionalFieldValueCode,'') <> '' THEN 
+			   TAF.AdditionalFieldValueCode 
+			ELSE 
+				CASE WHEN db.district_board IS NULL THEN
+					(SELECT TOP 1 DBD.DHC_District_Code FROM DHCCoreMapping DM INNER JOIN DistrictBoard DBD ON DBD.district_board_SD = DM.District_Board and DM.SP_ID = VT.SP_ID  ORDER BY DM.MO_Display_seq)
+				ELSE
+					db.DHC_District_Code
+				END
+			END
 		FROM
-			 VoucherTransaction  VT
-			LEFT JOIN Practice P
+			 VoucherTransaction  VT  WITH (NOLOCK)
+			 	-- new add  --
+			LEFT JOIN TransactionAdditionalField TAF  WITH (NOLOCK)
+				ON VT.Transaction_ID = TAF.Transaction_ID
+					AND TAF.AdditionalFieldID = 'DHCDistrictCode'
+			-- new add  --
+			LEFT JOIN Practice P  WITH (NOLOCK)
 				ON VT.Practice_Display_Seq = P.Display_Seq
 					AND VT.SP_ID = P.SP_ID
 					AND VT.Scheme_Code = 'HCVSDHC'
-			LEFT JOIN DHCCoreMapping D
+			LEFT JOIN DHCCoreMapping D  WITH (NOLOCK)
 				ON P.SP_ID = D.SP_ID AND P.MO_Display_Seq = D.MO_Display_Seq
 					AND D.Record_Status = 'A'
+			-- new add --
+			LEFT JOIN DistrictBoard DB  WITH (NOLOCK) on DB.district_board_SD = D.District_Board 
+			-- new add --
 		WHERE
 				(VT.Scheme_Code = 'HCVSDHC' OR ((VT.Scheme_Code = 'HCVS' AND ISNULL(VT.DHC_Service,'') = 'Y')))
 				AND VT.Transaction_Dtm < @CutOffDtm
@@ -372,7 +509,7 @@ AS BEGIN
 		Practice_Display_Seq,
 		Service_Type,
 		Record_Status, 
-		Invalidation
+		Invalidation, DistrictCode
 
 --------------------------------------------------------------
 	DELETE #VoucherTransactionSPBasis WHERE Record_Status IN (
@@ -401,214 +538,475 @@ AS BEGIN
 				AND Status_Name = 'Invalidation'
 				AND ((Effective_Date IS NULL OR Effective_Date <= @CutOffDtm) AND (Expiry_Date IS NULL OR @CutOffDtm < Expiry_Date)))
 			)
+
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '##VoucherTransactionSPBasis'
+		SELECT * FROM #VoucherTransactionSPBasis
+
+	END;
 -- =============================================
 -- Process data for statistics
 -- =============================================
 --------------------------------------------------------------
--- Reason for Visit (Level 1) | District Health Centre (Core + Satellite) | DIT | POD | SPT | ENU | RCM | RCP | RDT | RMP | RMT | RNU | ROP | ROT | RPT | RRD | Total --
+-- Reason for Visit (Level 1) | District Health Centre (Core + Satellite) DHC-DIT | DHC-POD | DHC-SPT | DIT | POD | SPT | ENU | RCM | RCP | RDT | RMP | RMT | RNU | ROP | ROT | RPT | RRD | Total --
 ------------------------------------------------------------
 
 -- Prepare data 
 
-	INSERT INTO #VT_ReasonForVisit (TxCnt, service_type, Reason_Code)
+	INSERT INTO #VT_ReasonForVisit (TxCnt, service_type, Reason_Code,DistrictCode)
 	-- Primary
 	SELECT 
-		SUM(TxCnt) AS cnt, service_type, Reason_for_visit_L1
+		SUM(TxCnt) AS cnt, service_type, Reason_for_visit_L1, DistrictCode 
 	FROM 
 		#VoucherTransaction 
 	GROUP BY 
-		service_type, Reason_for_visit_L1
+		service_type, Reason_for_visit_L1, DistrictCode 
 
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '#VT_ReasonForVisit'
+		SELECT * FROM #VT_ReasonForVisit
+
+	END;
 --------------------------------------------------------------------------------
 -- Transaction Summary
 
-	INSERT INTO @TransactionSummary (Service_Type, Tx_Count, Claim_Amt, NoOfElder)
+	INSERT INTO @TransactionSummary (Service_Type, Tx_Count, Claim_Amt, NoOfElder,DistrictCode)
 	SELECT
 		P.Service_Type,
 		ISNULL(TxCnt, 0),
 		ISNULL(Claim_Amount, 0),
-		ISNULL(NoOfElder, 0)
+		ISNULL(NoOfElder, 0),
+		TD.District_Code  
 	FROM
-		@Profession P
+		@Profession P CROSS JOIN @tempDistrict TD
 		LEFT JOIN
 			(SELECT 
-				service_type, SUM(TxCnt) AS [TxCnt], SUM(CONVERT(BIGINT, Claim_Amount)) AS [Claim_Amount], COUNT(DISTINCT Identity_num) AS [NoOfElder]
+				service_type, SUM(TxCnt) AS [TxCnt], SUM(CONVERT(BIGINT, Claim_Amount)) AS [Claim_Amount], COUNT(DISTINCT Identity_num) AS [NoOfElder],DistrictCode 
 			FROM 
 				#VoucherTransaction
 			GROUP BY 
-				service_type) T 
+				service_type,DistrictCode ) T 
 			ON T.service_type = P.Service_Type
-
+			AND TD.District_Code = T.DistrictCode 
 
 	-- Total
-	INSERT INTO @TransactionSummary (Service_Type, Tx_Count, Claim_Amt, NoOfElder)
-	SELECT 'Total', SUM(Tx_Count), SUM(Claim_Amt), SUM(NoOfElder)
+	INSERT INTO @TransactionSummary (Service_Type, Tx_Count, Claim_Amt, NoOfElder,DistrictCode)
+	SELECT 'Total', SUM(Tx_Count), SUM(Claim_Amt), SUM(NoOfElder),DistrictCode
 	FROM @TransactionSummary
+	Group by DistrictCode --new add
 
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '#@TransactionSummary'
+		SELECT * FROM @TransactionSummary
+
+	END;
 --------------------------------------------------------------------------------
 -- Transaction Summary - SP Basis (for HCVS only)
-	INSERT INTO @TransactionSummarySPBasis (Service_Type, SP_Count)
+	INSERT INTO @TransactionSummarySPBasis (Service_Type, SP_Count,DistrictCode )
 	SELECT
 		P.Service_Type,
-		ISNULL(SPCnt, 0)
+		ISNULL(SPCnt, 0),
+		TD.District_Code 
 	FROM
-		@Profession P
+		@Profession P CROSS JOIN @tempDistrict TD
 		LEFT JOIN
 			(SELECT 
-				service_type, COUNT(DISTINCT SP_ID) AS [SPCnt]
+				service_type, COUNT(DISTINCT SP_ID) AS [SPCnt],DistrictCode
 			FROM 
 				#VoucherTransactionSPBasis
 			WHERE 
-				Scheme_Code = 'HCVS'
+				Scheme_Code = 'HCVS'  
 			GROUP BY 
-				service_type) T 
+				service_type,DistrictCode ) T 
 			ON T.service_type = P.Service_Type
-
+			AND TD.District_Code = T.DistrictCode 
+	 
 
 	-- Total
-	INSERT INTO @TransactionSummarySPBasis (Service_Type, SP_Count)
-	SELECT 'Total', SUM(SP_Count)
+	INSERT INTO @TransactionSummarySPBasis (Service_Type, SP_Count,DistrictCode)
+	SELECT 'Total', SUM(SP_Count),DistrictCode
 	FROM @TransactionSummarySPBasis
+	group by DistrictCode -- new add
 
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '@TransactionSummarySPBasis'
+		SELECT * FROM @TransactionSummarySPBasis
+
+	END;
 --------------------------------------------------------------------------------
 -- Transaction Summary - RegCode Basis (for HCVSDHC only)
-	INSERT INTO @TransactionSummaryRegCodeBasis (Service_Type, RegCode_Count)
+	INSERT INTO @TransactionSummaryRegCodeBasis (Service_Type, RegCode_Count,DistrictCode)
 	SELECT
 		P.Service_Type,
-		ISNULL(RegCodeCnt, 0)
+		ISNULL(RegCodeCnt, 0),TD.District_Code 
 	FROM
-		@Profession P
+		@Profession P  CROSS JOIN @tempDistrict TD
 		LEFT JOIN
 		(
-			SELECT service_type, COUNT(DISTINCT PROF.Registration_Code) AS [RegCodeCnt]
+			SELECT service_type, COUNT(DISTINCT PROF.Registration_Code) AS [RegCodeCnt],DistrictCode
 			FROM 
 				#VoucherTransactionSPBasis  VT
 			INNER JOIN
-				Practice PT ON PT.SP_ID = VT.SP_ID AND PT.Display_Seq = VT.Practice_Display_Seq
+				Practice PT  WITH (NOLOCK) ON PT.SP_ID = VT.SP_ID AND PT.Display_Seq = VT.Practice_Display_Seq
 			INNER JOIN
-				Professional PROF ON PROF.SP_ID = PT.SP_ID AND PROF.Professional_Seq = PT.Professional_Seq
+				Professional PROF  WITH (NOLOCK) ON PROF.SP_ID = PT.SP_ID AND PROF.Professional_Seq = PT.Professional_Seq
 			WHERE 
-				Scheme_Code = 'HCVSDHC'
-			GROUP BY service_type	
-		) AS T 
+				Scheme_Code = 'HCVSDHC'  
+			GROUP BY service_type,DistrictCode
+		) AS T
 		ON T.service_type = P.Service_Type
-
+		AND TD.District_Code = T.DistrictCode 
+	 
 	-- Total
-	INSERT INTO @TransactionSummaryRegCodeBasis (Service_Type, RegCode_Count)
-	SELECT 'Total', SUM(RegCode_Count)
+	INSERT INTO @TransactionSummaryRegCodeBasis (Service_Type, RegCode_Count,DistrictCode)
+	SELECT 'Total', SUM(RegCode_Count),DistrictCode
 	FROM @TransactionSummaryRegCodeBasis
+	GROUP by DistrictCode --new add
 
+
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '@@TransactionSummaryRegCodeBasis'
+		SELECT * FROM @TransactionSummaryRegCodeBasis
+
+	END;
 --------------------------------------------------------------------------------
 -- DHC related service eligible Summary 
-	INSERT INTO @DHCRelatedServiceEligibleSummary (Service_Type, SP_Count)
+	INSERT INTO @DHCRelatedServiceEligibleSummary (Service_Type, SP_Count,DistrictCode)
 	SELECT
 		P.Service_Type,
-		ISNULL(SPCnt, 0)
+		ISNULL(SPCnt, 0), TD.District_Code 
 	FROM
-		@Profession P
+		@Profession P  CROSS JOIN @tempDistrict TD
 		LEFT JOIN
 			(SELECT 
-				P.Service_Category_Code, COUNT(DISTINCT P.SP_ID) AS [SPCnt]
+				P.Service_Category_Code, COUNT(DISTINCT P.SP_ID) AS [SPCnt],District_Code 
 			FROM 
-				DHCSPMapping M
-				INNER JOIN Professional P
+				DHCSPMapping M  WITH (NOLOCK)
+				INNER JOIN Professional P  WITH (NOLOCK)
 				ON M.Service_Category_Code = P.Service_Category_Code
 					AND M.Registration_Code = P.Registration_Code
 					AND P.Record_Status = 'A'
 			WHERE NOT EXISTS (SELECT SP_ID FROM SPExceptionList WITH (NOLOCK)
 							WHERE P.SP_ID = SPExceptionList.SP_ID)
+							 
 			GROUP BY 
-				P.Service_Category_Code) T 
+				P.Service_Category_Code,M.District_Code ) T 
 			ON T.Service_Category_Code = P.Service_Type
-
+			--AND TD.District_Code = CASE WHEN T.District_Code ='KC' THEN 'KTS' ELSE T.District_Code END
+			AND TD.District_Code =   T.District_Code  
 
 	-- Total
-	INSERT INTO @DHCRelatedServiceEligibleSummary (Service_Type, SP_Count)
-	SELECT 'Total',SUM(SP_Count)
+	INSERT INTO @DHCRelatedServiceEligibleSummary (Service_Type, SP_Count,DistrictCode)
+	SELECT 'Total',SUM(SP_Count),DistrictCode
 	FROM 
 		@DHCRelatedServiceEligibleSummary
+		GROUP BY DistrictCode -- new add
 
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '@DHCRelatedServiceEligibleSummary'
+		SELECT * FROM @DHCRelatedServiceEligibleSummary
 
+	END;
 ------------------------------------------------------------------------------------------
 
 -- HCVSDHC practice ineligible Summary
-	INSERT INTO @HCVSDHCPracticeIneligibleSummary (Service_Type, RegCode_Count)
+	INSERT INTO @HCVSDHCPracticeIneligibleSummary (Service_Type, RegCode_Count,DistrictCode)
 	SELECT 
 		P.Service_Type,
-		COUNT(T.Registration_Code)
+		COUNT(T.Registration_Code),TD.District_Code 
 	FROM
-		@Profession P
+		@Profession P  CROSS JOIN @tempDistrict TD
 		LEFT JOIN 
 			(SELECT DISTINCT
-				CASE WHEN D.MO_Display_Seq IS NOT NULL THEN 'DHC' ELSE P.Service_Category_Code END AS [Service_Type] --DHC (Core + Satellite) = HCVSDHC Scheme + Working at DHC Centre (Under the deaignated MO)
-				, P.Registration_Code
+				CASE WHEN D.MO_Display_Seq IS NOT NULL THEN 'DHC-' +  P.Service_Category_Code ELSE P.Service_Category_Code END AS [Service_Type] --DHC (Core + Satellite) = HCVSDHC Scheme + Working at DHC Centre (Under the deaignated MO)
+				, P.Registration_Code,
+				CASE WHEN DB.district_board_shortname_SD IS NOT NULL THEN
+					DB.DHC_District_Code 
+				ELSE
+				(SELECT TOP 1 DBD.DHC_District_Code  FROM DHCCoreMapping DM INNER JOIN DistrictBoard DBD ON DBD.district_board_SD = DM.District_Board and DM.SP_ID = PT.SP_ID )
+				END AS District_Board
 			FROM 
-				Practice PT
-				INNER JOIN Professional P
+				Practice PT  WITH (NOLOCK)
+				INNER JOIN Professional P  WITH (NOLOCK)
 				ON PT.SP_ID = P.SP_ID
 					AND PT.Professional_Seq = P.Professional_Seq
 					AND P.Record_Status = 'A'
-				INNER JOIN PracticeSchemeInfo PSI
+				INNER JOIN PracticeSchemeInfo PSI  WITH (NOLOCK)
 				ON PT.SP_ID = PSI.SP_ID
 					AND PT.Display_Seq = PSI.Practice_Display_Seq
 					AND PSI.Scheme_Code = 'HCVSDHC'
 					AND PSI.Record_Status <> 'D'
-				LEFT JOIN DHCCoreMapping D
-					ON PT.SP_ID = D.SP_ID AND PT.MO_Display_Seq = D.MO_Display_Seq
+				LEFT JOIN DHCCoreMapping D  WITH (NOLOCK)
+					ON PT.SP_ID = D.SP_ID AND PT.MO_Display_Seq = D.MO_Display_Seq /****/
 						AND D.Record_Status = 'A'
-
+				-- new add --
+				LEFT JOIN DistrictBoard DB  WITH (NOLOCK) on DB.district_board_SD = D.District_Board 
+				-- new add --
 			WHERE NOT EXISTS (SELECT SP_ID FROM SPExceptionList WITH (NOLOCK)
 							WHERE P.SP_ID = SPExceptionList.SP_ID)
+ 
 			) T 
-		ON T.Service_Type = P.Service_Type
-	GROUP BY P.Service_Type
-
+		ON T.Service_Type = P.Service_Type AND T.District_Board =TD.District_Code 
+	GROUP BY P.Service_Type,TD.District_Code 
+	 
 
 	-- Total
-	INSERT INTO @HCVSDHCPracticeIneligibleSummary (Service_Type, RegCode_Count)
-	SELECT 'Total',SUM(RegCode_Count)
+	INSERT INTO @HCVSDHCPracticeIneligibleSummary (Service_Type, RegCode_Count,DistrictCode)
+	SELECT 'Total',SUM(RegCode_Count),DistrictCode
 	FROM 
 		@HCVSDHCPracticeIneligibleSummary
+	group by DistrictCode -- new add
 
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '@HCVSDHCPracticeIneligibleSummary'
+		SELECT * FROM @HCVSDHCPracticeIneligibleSummary
 
+	END;
 -----------------------------------------------------------------------------------------
 -- Get Data
 
-	INSERT INTO @ReasonForVisitSummary (Service_Type, Reason_Code, Tx_Count)
-	SELECT P.Service_Type, R.Reason_Code, ISNULL(VT.TxCnt,0)
-	FROM @Profession P
+	INSERT INTO @ReasonForVisitSummary (Service_Type, Reason_Code, Tx_Count,DistrictCode)
+	SELECT P.Service_Type, R.Reason_Code, ISNULL(VT.TxCnt,0),TD.District_Code  
+	FROM @Profession P  CROSS JOIN @tempDistrict TD
 	CROSS JOIN @Reason R
 	LEFT JOIN #VT_ReasonForVisit VT 
 		ON VT.Reason_Code = R.reason_code AND VT.Service_Type = P.Service_Type
-
+		 and VT.DistrictCode =TD.District_Code  --add
+	 
 
 	-- Total
-	INSERT INTO @ReasonForVisitSummary (Service_Type, Reason_Code, Tx_Count)
-	SELECT 'Total', Reason_Code, SUM(Tx_Count)
+	INSERT INTO @ReasonForVisitSummary (Service_Type, Reason_Code, Tx_Count,DistrictCode)
+	SELECT 'Total', Reason_Code, SUM(Tx_Count),DistrictCode
 	FROM @ReasonForVisitSummary
-	GROUP BY Reason_Code
+	GROUP BY Reason_Code,DistrictCode
+	
+	IF @debug='Y' 
+	BEGIN 
+		SELECT '@ReasonForVisitSummary'
+		SELECT * FROM @ReasonForVisitSummary
+
+	END;
+
+------------------------------------------------------------
+-- Result 00
+------------------------------------------------------------
+	INSERT INTO @ResultTable00 (Result_Value1) VALUES ('District: ' + @District_Name1 + ',' + @District_Name2  )
+	INSERT INTO @ResultTable00 (Result_Value1) VALUES ('Reporting period: as at ' + CONVERT(varchar(10), @reportDtm, 111))
+	
+	INSERT INTO @ResultTable00 (Result_Value1) VALUES ('')
+	INSERT INTO @ResultTable00 (Result_Value1) VALUES ('')
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	VALUES ('', 
+			'Under District Health Centre corporate account', '', '', '', '', '', 
+			'Under individual Enrolled Health Care Provider account', '', '', '', '', '', '', '', '', '', '', 
+			'Grand Total'
+			)
+			
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2)
+	VALUES ('','District Health Centre (Core + Satellite)')
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	VALUES ('','DIT','POD','SPT','DIT','POD','SPT','ENU','RCM','RCP','RDT','RMP','RMT','RNU','ROP','ROT','RPT','RRD','')
+
+------------------------------------------------------------
+
+	INSERT INTO @ResultTable00 (Result_Value1) VALUES 
+	('(a)(i) Cumulative number of voucher claim transactions by principal reason for visit (Level 1):')
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT	[Reason_Desc], 
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-DIT] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-POD] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-SPT] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DIT] AS VARCHAR(100)) END,			
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([POD] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([SPT] AS VARCHAR(100)) END,						
+			[ENU],[RCM],[RCP],[RDT],[RMP],CASE WHEN Reason_Code = 4 THEN 'N/A' ELSE CAST(RMT AS VARCHAR(100)) END, 
+			[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(SELECT		S.Reason_Code, 
+				R.Reason_Desc,
+				S.Service_Type,						
+				SUM(ISNULL(S.Tx_Count, 0)) AS [Count]
+		FROM
+			@ReasonForVisitSummary S
+			LEFT JOIN @Reason R ON S.Reason_Code = R.Reason_Code
+		GROUP BY S.Reason_Code, 
+				R.Reason_Desc,
+				S.Service_Type
+	) SR
+	pivot
+	(	MAX([Count])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+	ORDER BY Reason_Code
 
 
+------------------------------------------------------------
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT	'(a)(ii) Cumulative number of voucher claim transactions in total'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT	Service_Type, SUM(Tx_Count) AS Tx_Count
+		FROM @TransactionSummary
+		GROUP BY Service_Type 
+	) T
+	pivot
+	(	MAX(Tx_Count)
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT	'(b) Cumulative amount of vouchers claimed ($)'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT	Service_Type, SUM(Claim_Amt) AS Claim_Amt
+		FROM @TransactionSummary
+		GROUP BY Service_Type  
+	) T
+	pivot
+	(	MAX(Claim_Amt)
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT	'(c) Cumulative number of elders who have made use of vouchers for each service'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT	Service_Type, SUM(NoOfElder) AS NoOfElder
+		FROM (SELECT	Service_Type, DistrictCode, SUM(NoOfElder) AS NoOfElder
+		FROM  @TransactionSummary
+		GROUP BY Service_Type , DistrictCode) TS
+		GROUP BY Service_Type
+	) T
+	pivot
+	(	MAX(NoOfElder)
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+	DECLARE @Overall_NoOfElder INT
+	SELECT 	@Overall_NoOfElder = SUM(NoofElder) FROM 
+	(SELECT  COUNT(DISTINCT Identity_num) as NoofElder FROM #VoucherTransaction WHERE DistrictCode =@District_Code1 
+	UNION ALL
+	SELECT  COUNT(DISTINCT Identity_num) as NoofElder FROM #VoucherTransaction WHERE DistrictCode =@District_Code2) TVT
+
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT 
+		'(d) Cumulative number of elders who have ever made use of vouchers for District Health Centre related services (DHC-related services)',
+		'', '', '', '',
+		'', '', '', '', '', '', '', '', '', '', '', '', '', 
+		@Overall_NoOfElder
+
+------------------------------------------------------------
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT	'(e) Number of Service Providers eligible to make voucher claim for DHC-related services '
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT
+			Service_Type, sum([Count]) as [Count]
+		FROM
+			(	SELECT Service_Type,DistrictCode, SUM(SP_Count) AS [Count]
+				FROM @DHCRelatedServiceEligibleSummary 
+				GROUP BY Service_Type ,DistrictCode
+				UNION ALL
+				SELECT Service_Type,DistrictCode, SUM(RegCode_Count) AS [Count]
+				FROM @HCVSDHCPracticeIneligibleSummary
+				GROUP BY Service_Type ,DistrictCode
+			) TE
+			GROUP BY Service_Type
+	) T
+	pivot
+	(	SUM([COUNT])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17,Result_Value18,Result_Value19)
+	SELECT	'(f) Number of Service Provders who had made voucher claim for DHC-related services'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(		
+		SELECT 
+			Service_Type, SUM([Count]) AS [Count]
+		FROM
+			(	SELECT	Service_Type,DistrictCode, SUM(SP_Count) AS [Count]
+				FROM  @TransactionSummarySPBasis
+				GROUP BY Service_Type ,DistrictCode
+				UNION ALL
+				SELECT	Service_Type,DistrictCode, SUM(RegCode_Count) AS [Count]
+				FROM  @TransactionSummaryRegCodeBasis
+				GROUP BY Service_Type ,DistrictCode
+			) TS
+			GROUP BY Service_Type 
+	) T
+	pivot
+	(	SUM([Count])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2)
+	SELECT '', ''
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2)
+	SELECT '', ''
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2)
+	SELECT 'Abbreviation', ''
+
+	INSERT INTO @ResultTable00 (Result_Value1, Result_Value2)
+	SELECT Service_Category_Code, Service_Category_Desc 
+	FROM Profession
+	ORDER BY Service_Category_Code
 ------------------------------------------------------------
 -- Result 01
 ------------------------------------------------------------
-	INSERT INTO @ResultTable01 (Result_Value1) VALUES ('District: ' + @District)
+	INSERT INTO @ResultTable01 (Result_Value1) VALUES ('District: ' + @District_Name1 )
 	INSERT INTO @ResultTable01 (Result_Value1) VALUES ('Reporting period: as at ' + CONVERT(varchar(10), @reportDtm, 111))
 	
 	INSERT INTO @ResultTable01 (Result_Value1) VALUES ('')
 	INSERT INTO @ResultTable01 (Result_Value1) VALUES ('')
 
 	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
-								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	VALUES ('', 
-			'Under District Health Centre corporate account', '', '', '', 
+			'Under District Health Centre corporate account', '', '', '', '', '',
 			'Under individual Enrolled Health Care Provider account', '', '', '', '', '', '', '', '', '', '', 
 			'Grand Total'
 			)
 			
+	INSERT INTO @ResultTable01 (Result_Value1,Result_Value2)
+	VALUES ('','District Health Centre (Core + Satellite)' )
+
+			
 	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
-								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
-	VALUES ('','District Health Centre (Core + Satellite)','DIT','POD','SPT','ENU','RCM','RCP','RDT','RMP','RMT','RNU','ROP','ROT','RPT','RRD','Total')
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	VALUES ('','DIT','POD','SPT','DIT','POD','SPT','ENU','RCM','RCP','RDT','RMP','RMT','RNU','ROP','ROT','RPT','RRD','')
 
 ------------------------------------------------------------
 
@@ -616,9 +1014,11 @@ AS BEGIN
 	('(a)(i) Cumulative number of voucher claim transactions by principal reason for visit (Level 1):')
 
 	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
-								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT	[Reason_Desc], 
-			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-DIT] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-POD] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-SPT] AS VARCHAR(100)) END,
 			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DIT] AS VARCHAR(100)) END,			
 			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([POD] AS VARCHAR(100)) END,
 			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([SPT] AS VARCHAR(100)) END,						
@@ -632,75 +1032,79 @@ AS BEGIN
 		FROM
 			@ReasonForVisitSummary S
 			LEFT JOIN @Reason R ON S.Reason_Code = R.Reason_Code
+		WHERE DistrictCode = @District_Code1 
 	) SR
 	pivot
 	(	MAX([Count])
-		for Service_Type in ([DHC],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
 	) PT
 	ORDER BY Reason_Code
 
 
 ------------------------------------------------------------
-	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT	'(a)(ii) Cumulative number of voucher claim transactions in total'
-			,[DHC],[DIT],[POD],[SPT]
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
 			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
 			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
 	FROM
 	(	SELECT	Service_Type, Tx_Count
 		FROM @TransactionSummary
+		WHERE DistrictCode = @District_Code1 
 	) T
 	pivot
 	(	MAX(Tx_Count)
-		for Service_Type in ([DHC],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
 	) PT
 
 ------------------------------------------------------------
-	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT	'(b) Cumulative amount of vouchers claimed ($)'
-			,[DHC],[DIT],[POD],[SPT]
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
 			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
 			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
 	FROM
 	(	SELECT	Service_Type, Claim_Amt
 		FROM @TransactionSummary
+		WHERE DistrictCode = @District_Code1 
 	) T
 	pivot
 	(	MAX(Claim_Amt)
-		for Service_Type in ([DHC],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
 	) PT
 
 ------------------------------------------------------------
-	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT	'(c) Cumulative number of elders who have made use of vouchers for each service'
-			,[DHC],[DIT],[POD],[SPT]
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
 			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
 			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
 	FROM
 	(	SELECT	Service_Type, NoOfElder
 		FROM  @TransactionSummary
+		WHERE DistrictCode = @District_Code1 
 	) T
 	pivot
 	(	MAX(NoOfElder)
-		for Service_Type in ([DHC],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
 	) PT
 
 ------------------------------------------------------------
-	DECLARE @Overall_NoOfElder INT
-	SELECT 	@Overall_NoOfElder = COUNT(DISTINCT Identity_num) FROM #VoucherTransaction
+	
+	SELECT 	@Overall_NoOfElder = COUNT(DISTINCT Identity_num) FROM #VoucherTransaction WHERE DistrictCode = @District_Code1 
 
-	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT 
 		'(d) Cumulative number of elders who have ever made use of vouchers for District Health Centre related services (DHC-related services)',
 		'', '', '', '',
-		'', '', '', '', '', '', '', '', '', '', '', 
+		'', '', '', '', '', '', '', '', '', '', '', '', '',
 		@Overall_NoOfElder
 
 ------------------------------------------------------------
 
-	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT	'(e) Number of Service Providers eligible to make voucher claim for DHC-related services '
-			,[DHC],[DIT],[POD],[SPT]
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
 			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
 			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
 	FROM
@@ -709,21 +1113,23 @@ AS BEGIN
 		FROM
 			(	SELECT Service_Type, SP_Count AS [Count]
 				FROM @DHCRelatedServiceEligibleSummary
-				UNION
+				WHERE DistrictCode = @District_Code1 
+				UNION ALL
 				SELECT Service_Type, RegCode_Count AS [Count]
 				FROM @HCVSDHCPracticeIneligibleSummary
+				WHERE DistrictCode = @District_Code1 
 			) TE
 	) T
 	pivot
 	(	SUM([COUNT])
-		for Service_Type in ([DHC],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
 	) PT
 
 ------------------------------------------------------------
 
-	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17)
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
 	SELECT	'(f) Number of Service Provders who had made voucher claim for DHC-related services'
-			,[DHC],[DIT],[POD],[SPT]
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
 			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
 			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
 	FROM
@@ -733,18 +1139,218 @@ AS BEGIN
 		FROM
 			(	SELECT	Service_Type, SP_Count AS [Count]
 				FROM  @TransactionSummarySPBasis
-				UNION
+				WHERE DistrictCode = @District_Code1 
+				UNION ALL
 				SELECT	Service_Type, RegCode_Count AS [Count]
 				FROM  @TransactionSummaryRegCodeBasis
+				WHERE DistrictCode = @District_Code1 
 			) TS
 	) T
 	pivot
 	(	SUM([Count])
-		for Service_Type in ([DHC],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
 	) PT
 
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2)
+	SELECT '', ''
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2)
+	SELECT '', ''
+
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2)
+	SELECT 'Abbreviation', ''
+
+	INSERT INTO @ResultTable01 (Result_Value1, Result_Value2)
+	SELECT Service_Category_Code, Service_Category_Desc 
+	FROM Profession
+	ORDER BY Service_Category_Code
+------------------------------------------------------------
+-- Result 02
+------------------------------------------------------------
+	INSERT INTO @ResultTable02 (Result_Value1) VALUES ('District: ' + @District_Name2 )
+	INSERT INTO @ResultTable02 (Result_Value1) VALUES ('Reporting period: as at ' + CONVERT(varchar(10), @reportDtm, 111))
+	
+	INSERT INTO @ResultTable02 (Result_Value1) VALUES ('')
+	INSERT INTO @ResultTable02 (Result_Value1) VALUES ('')
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	VALUES ('', 
+			'Under District Health Centre corporate account', '', '', '',  '', '',
+			'Under individual Enrolled Health Care Provider account', '', '', '', '', '', '', '', '', '', '', 
+			'Grand Total'
+			)
+ 
+			
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2 )
+	VALUES ('','District Health Centre (Core + Satellite)')
 
 
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	VALUES ('','DIT','POD','SPT','DIT','POD','SPT','ENU','RCM','RCP','RDT','RMP','RMT','RNU','ROP','ROT','RPT','RRD','')
+
+------------------------------------------------------------
+
+	INSERT INTO @ResultTable02 (Result_Value1) VALUES 
+	('(a)(i) Cumulative number of voucher claim transactions by principal reason for visit (Level 1):')
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, 
+								Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT	[Reason_Desc], 
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-DIT] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-POD] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DHC-SPT] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([DIT] AS VARCHAR(100)) END,			
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([POD] AS VARCHAR(100)) END,
+			CASE WHEN Reason_Code = 5 THEN 'N/A' ELSE CAST([SPT] AS VARCHAR(100)) END,						
+			[ENU],[RCM],[RCP],[RDT],[RMP],CASE WHEN Reason_Code = 4 THEN 'N/A' ELSE CAST(RMT AS VARCHAR(100)) END, 
+			[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(SELECT		S.Reason_Code, 
+				R.Reason_Desc,
+				S.Service_Type,						
+				ISNULL(S.Tx_Count, 0) AS [Count]
+		FROM
+			@ReasonForVisitSummary S
+			LEFT JOIN @Reason R ON S.Reason_Code = R.Reason_Code
+		WHERE DistrictCode = @District_Code2 
+	) SR
+	pivot
+	(	MAX([Count])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+	ORDER BY Reason_Code
+
+
+------------------------------------------------------------
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT	'(a)(ii) Cumulative number of voucher claim transactions in total'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT	Service_Type, Tx_Count
+		FROM @TransactionSummary
+		WHERE DistrictCode = @District_Code2 
+	) T
+	pivot
+	(	MAX(Tx_Count)
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT	'(b) Cumulative amount of vouchers claimed ($)'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT	Service_Type, Claim_Amt
+		FROM @TransactionSummary
+		WHERE DistrictCode = @District_Code2 
+	) T
+	pivot
+	(	MAX(Claim_Amt)
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT	'(c) Cumulative number of elders who have made use of vouchers for each service'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT	Service_Type, NoOfElder
+		FROM  @TransactionSummary
+		WHERE DistrictCode = @District_Code2 
+	) T
+	pivot
+	(	MAX(NoOfElder)
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+ 	SELECT 	@Overall_NoOfElder = COUNT(DISTINCT Identity_num) FROM #VoucherTransaction WHERE DistrictCode = @District_Code2 
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT 
+		'(d) Cumulative number of elders who have ever made use of vouchers for District Health Centre related services (DHC-related services)',
+		'', '', '', '',
+		'', '', '', '', '', '', '', '', '', '', '', '', '', 
+		@Overall_NoOfElder
+
+------------------------------------------------------------
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT	'(e) Number of Service Providers eligible to make voucher claim for DHC-related services '
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(	SELECT
+			Service_Type, [Count]
+		FROM
+			(	SELECT Service_Type, SP_Count AS [Count]  
+				FROM @DHCRelatedServiceEligibleSummary
+				WHERE DistrictCode = @District_Code2 
+				UNION ALL
+				SELECT Service_Type, RegCode_Count AS [Count]  
+				FROM @HCVSDHCPracticeIneligibleSummary
+				WHERE DistrictCode = @District_Code2
+			) TE
+			 
+	) T
+	pivot
+	(	SUM([COUNT])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+------------------------------------------------------------
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5, Result_Value6, Result_Value7, Result_Value8, Result_Value9, Result_Value10, Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, Result_Value16, Result_Value17, Result_Value18, Result_Value19)
+	SELECT	'(f) Number of Service Provders who had made voucher claim for DHC-related services'
+			,[DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT]
+			,[ENU],[RCM],[RCP],[RDT],[RMP],[RMT]
+			,[RNU],[ROP],[ROT],[RPT],[RRD],[Total]
+	FROM
+	(		
+		SELECT 
+			Service_Type, [Count]
+		FROM
+			(	SELECT	Service_Type, SP_Count AS [Count]
+				FROM  @TransactionSummarySPBasis
+				WHERE DistrictCode = @District_Code2 
+				UNION ALL
+				SELECT	Service_Type, RegCode_Count AS [Count]
+				FROM  @TransactionSummaryRegCodeBasis
+				WHERE DistrictCode = @District_Code2 
+			) TS
+	) T
+	pivot
+	(	SUM([Count])
+		for Service_Type in ([DHC-DIT],[DHC-POD],[DHC-SPT],[DIT],[POD],[SPT],[ENU],[RCM],[RCP],[RDT],[RMP],[RMT],[RNU],[ROP],[ROT],[RPT],[RRD],[Total])
+	) PT
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2)
+	SELECT '', ''
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2)
+	SELECT '', ''
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2)
+	SELECT 'Abbreviation', ''
+
+	INSERT INTO @ResultTable02 (Result_Value1, Result_Value2)
+	SELECT Service_Category_Code, Service_Category_Desc 
+	FROM Profession
+	ORDER BY Service_Category_Code
+	-------------------------------------------------------
+	 
+	INSERT INTO @ResultTable03 (Result_Value1, Result_Value2, Result_Value3, Result_Value4, Result_Value5)
+	SELECT DCM.District_Board ,DCM.SP_ID,DCM.MO_Display_Seq ,MO.MO_Eng_Name ,MO.MO_Chi_Name    
+	FROM DHCCoreMapping DCM INNER JOIN MedicalOrganization MO
+	on DCM.SP_ID = MO.SP_ID and MO.Display_Seq  = DCM.MO_Display_Seq AND DCM.Record_Status = 'A'
+	ORDER By DCM.District_Board, DCM.SP_ID,DCM.MO_Display_Seq
 -- =============================================  
 -- Return results  
 -- =============================================  
@@ -753,20 +1359,54 @@ AS BEGIN
 	SET @strGenDtm = LEFT(@strGenDtm, LEN(@strGenDtm)-3)    
 	SELECT 'Report Generation Time: ' + @strGenDtm  
 
-
 -- --------------------------------------------------    
--- To Excel sheet: eHSM0011-01: Report of use of vouchers for District Health Centre related services
+-- To Excel sheet: eHSM0011-01: Report of use of vouchers for District Health Centre related services (Kwai Tsing + Sham Shui Po)
 -- --------------------------------------------------    
 	SELECT	
 		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  
 		Result_Value6,  Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10,
 		Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, 
-		Result_Value16, Result_Value17
+		Result_Value16, Result_Value17, Result_Value18, Result_Value19
+	FROM	
+		@ResultTable00
+	ORDER BY	
+		Result_Seq
+
+-- --------------------------------------------------    
+-- To Excel sheet: eHSM0011-01: Report of use of vouchers for District Health Centre related services (Kwai Tsing)
+-- --------------------------------------------------    
+	SELECT	
+		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  
+		Result_Value6,  Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10,
+		Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, 
+		Result_Value16, Result_Value17, Result_Value18, Result_Value19
 	FROM	
 		@ResultTable01
 	ORDER BY	
 		Result_Seq
 
+-- --------------------------------------------------    
+-- To Excel sheet: eHSM0011-02: Report of use of vouchers for District Health Centre related services (Sham Shui Po)
+-- --------------------------------------------------    
+	SELECT	
+		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5,  
+		Result_Value6,  Result_Value7,  Result_Value8,  Result_Value9,  Result_Value10,
+		Result_Value11, Result_Value12, Result_Value13, Result_Value14, Result_Value15, 
+		Result_Value16, Result_Value17, Result_Value18, Result_Value19
+	FROM	
+		@ResultTable02
+	ORDER BY	
+		Result_Seq
+
+-- --------------------------------------------------    
+-- To Excel sheet: eHSM0011-03: Report of DHC Centre List
+-- --------------------------------------------------    
+	SELECT	
+		Result_Value1,  Result_Value2,  Result_Value3,  Result_Value4,  Result_Value5 
+	FROM	
+		@ResultTable03
+	ORDER BY	
+		Result_Seq
 
 -- --------------------------------------------------  
 -- To Excel sheet:   eHSM0011-Remarks: Remarks  
@@ -833,7 +1473,7 @@ AS BEGIN
 	SELECT '      i. All HCVSDHC claim transactions created under service providers', ''
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
-	SELECT FORMATMESSAGE('      ii. For practice of claim transaction under the medical organization No ''%s'' are counted as "District Health Centre (Core + Satellite)"', @DHC_Core_MOList), ''
+	SELECT  '      ii. For practice of claim transaction under the specified medical organization are counted as "District Health Centre (Core + Satellite)"', ''
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 	SELECT '   e. Under individual Enrolled Health Care Provider account:', ''
@@ -868,7 +1508,11 @@ AS BEGIN
 	SELECT '            Practices for those non-eligible healthcare service providers who are employed by DHC as staff', ''
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
-	SELECT FORMATMESSAGE('            Practices are marked with medical organization no. ''%s'' (designated for the DHC Centre)', @DHC_Core_MOList), ''
+	SELECT '            Practices are marked with specified medical organization (designated for the DHC Centre)', ''
+
+	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '            Number of Service Providers are counted by Professional Registration No. under practice', ''
+
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 	SELECT '', ''
@@ -880,7 +1524,10 @@ AS BEGIN
 	SELECT '            Practices for those non-eligible healthcare providers not employed by DHC as staff and provide services under their own clinic', ''
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
-	SELECT FORMATMESSAGE('            Practices are marked with medical organization no. other than %s', @DHC_Core_MOList), ''
+	SELECT '            Practices are marked with medical organization no. other than that specified for the DHC Centre', ''
+
+	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '            Number of Service Providers are counted by Professional Registration No. under practice', ''
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 	SELECT '', ''
@@ -890,6 +1537,19 @@ AS BEGIN
 
 	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
 	SELECT '      * Eligible healthcare service providers enrolled HCVS and joined DHC scheme', ''
+
+	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '      * Number of Service Providers are counted by Service Provider ID', ''
+
+		INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '', ''
+
+	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '3. Calculation on Sub Report for all districts (eHS(S)M0011-01)', ''
+
+	INSERT INTO @tblRemark (Result_Value1, Result_Value2)
+	SELECT '      Summation from all DHC district values', ''
+
 
 	SELECT Result_Value1, Result_Value2
 	FROM @tblRemark

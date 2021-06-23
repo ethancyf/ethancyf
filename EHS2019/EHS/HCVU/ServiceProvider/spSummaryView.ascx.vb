@@ -31,6 +31,7 @@ Partial Public Class spSummaryView
     Private udtSPAccountUpateBLL As New SPAccountUpdateBLL
     Private udtSPVerificationBLL As New ServiceProviderVerificationBLL
 
+
 #End Region
 
 #Region "Constants"
@@ -49,6 +50,7 @@ Partial Public Class spSummaryView
     Private Const SESS_SPSummaryViewCurrentServiceProvider_Enrolment As String = "SPSummaryViewCurrentServiceProvider_Enrolment"
     Private Const SESS_SPSummaryViewPracticeSchemeInfoList As String = "SESS_SPSummaryViewPracticeSchemeInfoList"
 
+    Private Const SESS_SPSummaryViewPracticeEnrolledDHCList As String = "SPSummaryViewPracticeEnrolledDHCList" 'CRE20-006 DHC Integration [Nichole]
 #End Region
 
     ' Called from other pages
@@ -170,6 +172,8 @@ Partial Public Class spSummaryView
     End Sub
 
     Public Sub buildSpProfileObject(ByVal udtSP As ServiceProviderModel, ByVal strTableLocation As String, Optional ByVal blnShowDuplicateMark As Boolean = False)
+        Dim dt As DataTable 'CRE20-006 DHC integration [Nichole]
+
         ' Hidden fields for later usage
         hfERN.Value = udtSP.EnrolRefNo
         hfTableLocation.Value = strTableLocation.Trim
@@ -364,6 +368,12 @@ Partial Public Class spSummaryView
         End If
         DisplayPCDStatus(strPCDStatusOutputText, udtSP.PCDProfessional, False)
         ' --- CRE17-016 (Checking of PCD status during VSS enrolment) [End]   (Marco) ---
+
+        'CRE20-006 DHC Integration [Start][Nichole]
+        DisplayEnrolledDHCStatus(udtSP.SPID)
+        dt = udtServiceProviderBLL.GetPracticeEnrolledDHC(udtSP.SPID)
+        Session(SESS_SPSummaryViewPracticeEnrolledDHCList) = dt
+        'CRE20-006 DHC Integration [End][Nichole]
 
         ' Scheme Information
         If udtSP.SchemeInfoList.Values.Count = 0 Then
@@ -754,7 +764,19 @@ Partial Public Class spSummaryView
         ' CRE16-022 (Add optional field "Remarks") [End][Winnie]
     End Sub
 
-    '
+    'CRE20-006 DHC integration [Start][Nichole]
+    Public Sub DisplayEnrolledDHCStatus(ByVal strSPID As String)
+
+        'show SP Enrolled DHC status
+        lblEnrolledDHCSP.Text = udtServiceProviderBLL.GetSPEnrolledDHC(strSPID)
+
+        If lblEnrolledDHCSP.Text Is String.Empty Then
+            'trEnrolledDHC.Visible = False
+            lblEnrolledDHCSP.Text = Me.GetGlobalResourceObject("Text", "N/A")
+        End If
+
+    End Sub
+    'CRE20-006 DHC integration [End][Nichole]
 
     Protected Sub gvEnrolledScheme_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvEnrolledScheme.RowDataBound
         If e.Row.RowType = DataControlRowType.DataRow Then
@@ -849,6 +871,8 @@ Partial Public Class spSummaryView
 
     Protected Sub gvPracticeBank_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles gvPracticeBank.RowDataBound
         If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim dt As DataTable = Nothing 'CRE20-006 DHC Integration [Nichole]
+            Dim dvPractice As DataView = Nothing 'CRE20-006 DHC Integration [Nichole]
 
             Dim udtPractice As PracticeModel = DirectCast(e.Row.DataItem, PracticeModel)
 
@@ -866,6 +890,25 @@ Partial Public Class spSummaryView
             End If
 
             If lblPracticeMO.Text = strMONotAvailable Then lblPracticeMO.Text = Me.GetGlobalResourceObject("Text", "N/A")
+
+
+            'CRE20-006 DHC Integration-Enrolled DHC [Start][Nichole]
+            Dim lblEnrolledDHCPrac As Label = e.Row.FindControl("lblEnrolledDHCPrac")
+            Dim lblEnrolledDHCPracText As Label = e.Row.FindControl("lblEnrolledDHCPracText")
+
+            'lblEnrolledDHCPrac.Text = udtServiceProviderBLL.GetSPEnrolledDHC(udtPractice.SPID)
+            'If lblEnrolledDHCPrac.Text = String.Empty Then lblEnrolledDHCPrac.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            dt = Session(SESS_SPSummaryViewPracticeEnrolledDHCList)
+            dvPractice = New DataView(dt)
+            dvPractice.RowFilter = "[Professional_Seq] ='" + udtPractice.ProfessionalSeq.ToString() + "'"
+            If dvPractice.Count > 0 Then
+                lblEnrolledDHCPrac.Text = dvPractice(0)("DistrictName").ToString()
+            Else
+                If lblEnrolledDHCPrac.Text = String.Empty Then lblEnrolledDHCPrac.Text = Me.GetGlobalResourceObject("Text", "N/A")
+            End If
+
+
+            'CRE20-006 DHC Integration-Enrolled DHC [End][Nichole]
 
             ' Phone No. of Practice
             Dim lblPracticePhone As Label = e.Row.FindControl("lblPracticePhone")

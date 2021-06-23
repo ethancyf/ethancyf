@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <geteHSSDHCClaimAccess>
+      <ServiceProvider>
+        <ProfCode>RMP</ProfCode> 
+        <ProfRegNo></ProfRegNo>
+      </ServiceProvider>
+      <Patient>
+        <HKID></HKID>
+        <DocType></DocType>
+        <HKICSymbol>A</HKICSymbol>
+        <DOBFormat>DD/MM/YYYY</DOBFormat>
+        <DOB>01/02/1945</DOB>
+      </Patient>
+      <VoucherClaim>
+        <ClaimAmount>150</ClaimAmount>
+      </VoucherClaim>
+      <Timestamp>{Timestamp}</Timestamp>
+    </geteHSSDHCClaimAccess>]]>
+  </data>
+</root>

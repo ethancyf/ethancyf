@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <geteHSSVoucherBalance>
+      <HKID>BP028838A</HKID>    
+      <DocType>EC</DocType>
+      <DOBFormat>DD/MM/YYYY</DOBFormat>
+      <DOB>28/05/1922</DOB>
+      <Timestamp>{Timestamp}</Timestamp>
+     </geteHSSVoucherBalance>]]>
+  </data>
+</root>

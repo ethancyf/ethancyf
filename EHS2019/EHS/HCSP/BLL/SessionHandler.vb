@@ -133,11 +133,11 @@ Namespace BLL
             Public Const SESS_PopupBlockerShow As String = "SESS_POPUPBLOCKERSHOW"
             ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
 
-            'CRE20-xxx DHC Claim Service [Start][Nichole]
+            'CRE20-006 DHC integration [Start][Nichole]
             'declare the session for store the artifact parameter value
             Public Const SESS_DHCArtifact As String = "SESS_DHCARTIFACT"
             Public Const SESS_DHCClientInfo As String = "SESS_DHCClientINFO"
-            'CRE20-xxx DHC Claim Service [End][Nichole]
+            'CRE20-006 DHC integration [End][Nichole]
             '------------------------------------------------------------------------------------------
             ' OCSSS - HKIC Symbol
             '------------------------------------------------------------------------------------------
@@ -173,7 +173,7 @@ Namespace BLL
             Public Const SESS_ClaimCOVID19_DischargeReminder As String = "SESS_CLAIMCOVID19_DISCHARGEREMINDER"
             Public Const SESS_ClaimCOVID19_DischargeDemographicReminder As String = "SESS_CLAIMCOVID19_DISCHARGEDEMOGRAPHICREMINDER"
             Public Const SESS_ClaimCOVID19_DischargeOverrideReason As String = "SESS_CLAIMCOVID19_DISCHARGEOVERRIDEREASON"
-            Public Const SESS_ClaimFunctCode As String = "SESS_CLAIM_FUNCTCODE" 'nichole
+            Public Const SESS_ClaimFunctCode As String = "SESS_CLAIM_FUNCTCODE" 'CRE20-006 DHC Integration [End][Nichole]
             Public Const SESS_ClaimCOVID19_SchemeSelected As String = "SESS_CLAIMCOVID19_SCHEMESELECTED"
             Public Const SESS_CLAIMCOVID19_VaccinationCard As String = "SESS_CLAIMCOVID19_VACCINATIONCARD"
             Public Const SESS_CLAIMCOVID19_CarryForward As String = "SESS_CLAIMCOVID19_CARRYFORWARD"
@@ -1174,6 +1174,29 @@ Namespace BLL
 
 #End Region
 
+#Region "DHC service"
+        'CRE20-006 DHC Claim service [Start][Nichole]
+
+        Public Sub ArtifactSaveToSession(ByVal strFunctionCode As String, ByVal strArtifact As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact)) = strArtifact
+        End Sub
+        Public Sub ArtifactRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
+        End Sub
+
+        Public Function ArtifactGetFromSession(ByVal strFunctionCode As String) As String
+            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCArtifact))
+        End Function
+
+        Public Sub DHCInfoSaveToSession(ByVal strFunctionCode As String, ByVal udtDHCInfo As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo)) = udtDHCInfo
+        End Sub
+
+        Public Function DHCInfoGetFromSession(ByVal strFunctionCode As String) As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
+            Return HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_DHCClientInfo))
+        End Function
+        'CRE20-006 DHC Claim Service [End][Nichole]
+#End Region
 #Region "Vaccination Record Enquiry"
 
         Public Sub FromVaccinationRecordEnquirySaveToSession(ByVal value As Boolean)

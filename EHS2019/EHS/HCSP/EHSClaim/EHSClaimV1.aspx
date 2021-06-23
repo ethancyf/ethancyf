@@ -1461,7 +1461,13 @@
                                     <asp:ImageButton ID="btnStep3NextClaim" runat="server" AlternateText="<%$ Resources:AlternateText, NextClaimBtn%>"
                                         ImageUrl="<%$ Resources:ImageUrl, NextClaimBtn%>"></asp:ImageButton>
                                     <asp:ImageButton ID="btnStep3ClaimForSamePatient" runat="server" AlternateText="<%$ Resources:AlternateText, ClaimForSamePatientBtn%>"
-                                        ImageUrl="<%$ Resources:ImageUrl, ClaimForSamePatientBtn%>"></asp:ImageButton></td>
+                                        ImageUrl="<%$ Resources:ImageUrl, ClaimForSamePatientBtn%>"></asp:ImageButton>
+                                     <!--AlternateText=""-->
+                                     <asp:ImageButton ID="btnStep3ClaimClose" runat="server" AlternateText="<%$ Resources:AlternateText, ClaimForCloseBtn%>"
+                                        ImageUrl="<%$ Resources:ImageUrl, ClaimForCloseBtn%>"></asp:ImageButton>
+                                          
+
+                                </td>
                             </tr>
                         </tbody>
                     </table>

@@ -19,13 +19,18 @@
                     <tr>
                         <td>
                             <asp:Label ID="lblDHCRelatedService" runat="server" CssClass="tableText"></asp:Label>
+                            <asp:Label ID="lblDHCDistrictName" runat="server" CssClass="tableText"></asp:Label>
                         </td>
                     </tr>
                 </table>                           
                 <table id="tblDHCRelatedServiceWrite" runat="server" cellpadding="0" cellspacing="0" style="display: block">
                     <tr>
                         <td>
-                            <asp:CheckBox ID="chkDHCRelatedService" runat="server" CssClass="tableText" Style="position:relative;left:-2px"></asp:CheckBox>
+                            <asp:CheckBox ID="chkDHCRelatedService" runat="server" CssClass="tableText" Style="position:relative;left:-2px"  AutoPostBack="true"   ></asp:CheckBox>
+                            <asp:DropDownList ID="ddlDHCDistrictCode" runat="server"  Enabled="false" AutoPostBack="true" visible="false" />
+                            <asp:Label ID="lblDHCDistrictCode" runat="server" CssClass="tableText"></asp:Label>
+                             <asp:Image ID="imgDHCDistrictCodeErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
                         </td>
                     </tr>
                 </table>

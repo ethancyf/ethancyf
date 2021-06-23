@@ -1,4 +1,4 @@
-ï»¿Imports AjaxControlToolkit
+Imports AjaxControlToolkit
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
@@ -31,6 +31,11 @@ Imports HCSP.UIControl.EHCClaimText
 Imports System.Linq
 Imports System.Net
 Imports System.Web.Services
+
+'CRE20-006 Include the DHCClaim modal [Start][Nichole]
+Imports Common.Component.DHCClaim
+Imports Common.Component.DHCClaim.DHCClaimBLL
+'CRE20-006 Include the DHCClaim modal [End][Nichole]
 
 <System.Web.Script.Services.ScriptService()> _
 Partial Public Class EHSClaimV1
@@ -296,6 +301,23 @@ Partial Public Class EHSClaimV1
         Me.ModalPopupExclamationImportantReminder.PopupDragHandleControlID = Me.ucNoticePopUpExclamationImportantReminder.Header.ClientID
         Me.ModalPopupExclamationImportantReminderWithReason.PopupDragHandleControlID = Me.ucNoticePopUpExclamationImportantReminderWithReason.Header.ClientID
 
+        ' CRE20-006 Hidden the home, inbox and logout button [Start][Nichole]
+        Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+        If strFromOutsider IsNot Nothing Then
+
+            'Hide "Home" "Inbox" "Logout" button 
+            Me.Master.FindControl("ibtnHome").Visible = False
+            Me.Master.FindControl("btnInbox").Visible = False
+            Me.Master.FindControl("ibtnLogout").Visible = False
+            'btnStep3ClaimClose.Visible = True
+            btnStep3ClaimClose.Visible = False
+            btnStep3NextClaim.Visible = False
+            'remove the cancel button
+            btnStep2aCancel.Visible = False
+        Else
+            btnStep3ClaimClose.Visible = False
+        End If
+        ' CRE20-006 Hidden the home, inbox and logout button [End][Nichole]
     End Sub
 
     Private Sub EHSClaim_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
@@ -377,16 +399,62 @@ Partial Public Class EHSClaimV1
                 Me.panClaimValidatedTimelineStep1.CssClass = strHightLight
                 Me.EHSClaimTokenNumAssign()
 
-                If _udtSessionHandler.SmartIDContentGetFormSession(FunctCode) Is Nothing Then
-                    If _udtSessionHandler.ForceToReadSmartICGetFormSession Is Nothing Then
-                        _udtSessionHandler.ForceToReadSmartICSaveToSession(True)
+
+                'CRE20-006 Fill the scheme, doc type, hkic no and dob from DHS [Start][Nichole]
+                Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
+                If udtDHCClient Is Nothing Then
+                    'normal situation
+                    If _udtSessionHandler.SmartIDContentGetFormSession(FunctCode) Is Nothing Then
+                        If _udtSessionHandler.ForceToReadSmartICGetFormSession Is Nothing Then
+                            _udtSessionHandler.ForceToReadSmartICSaveToSession(True)
+                        End If
+                    End If
+
+                    Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = String.Empty
+                    Me.Step1Reset(False)
+                    Me.SetupStep1(True, True)
+                Else
+                    'Get the DHC info from model and fill into the claim form
+                    Me.ddlStep1Scheme.SelectedValue = SchemeClaimModel.HCVS
+
+                    Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocType.DocTypeModel.DocTypeCode.HKIC
+                    Me.udcStep1DocumentTypeRadioButtonGroup.Enabled = False
+                    'initial the claim form
+                    Me.Step1Reset(False)
+                    Me.SetupStep1(True, True)
+
+
+                    'fill the HKID, DOB & HKIC Symbol into the claim form
+                    Me.udcClaimSearch.SetDHCInfo(udtDHCClient.HKID, udtDHCClient.DOB, udtDHCClient.HKIC_Symbol)
+                    _udtSessionHandler.HKICSymbolSaveToSession(FunctCode, IIf(udtDHCClient.HKIC_Symbol Is String.Empty, udcClaimSearch.HKICSymbolSelectedValue, udtDHCClient.HKIC_Symbol))
+
+                    'check the HKIC symbol 
+                    If udtDHCClient.HKIC_Symbol Is String.Empty Or udcClaimSearch.HKICSymbolSelectedValue Is String.Empty Then
+                        Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00485"))
+                        Me.udcMsgBoxErr.BuildMessageBox(Me._strValidationFail, New AuditLogEntry(FunctCode, Me), Common.Component.LogID.LOG00022, "Validation Fail")
+                    End If
+
+                    Dim full_filled As Boolean = False
+
+                    'check HKID + DOB + HKIC symbol has fill-in the value
+                    If udtDHCClient.HKID IsNot String.Empty And udtDHCClient.DOB IsNot String.Empty And udtDHCClient.HKIC_Symbol IsNot String.Empty Then
+                        full_filled = True
+                    End If
+
+                    If Not Common.OCSSS.OCSSSServiceBLL.EnableHKICSymbolInput(SchemeClaimModel.HCVS) AndAlso full_filled Then
+                        'do search as completely fillin the form
+                        udcClaimSearch_SearchButtonClick(Nothing, Nothing)
+                    Else
+                        If Not IsNothing(udtDHCClient.HKIC_Symbol) Then
+                            udcClaimSearch_SearchButtonClick(Nothing, Nothing)
+                        Else
+                            'nothing
+                        End If
                     End If
                 End If
 
-                're-gen all with controls
-                Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = String.Empty
-                Me.Step1Reset(False)
-                Me.SetupStep1(True, True)
+                'CRE20-006 Fill the scheme, doc type, hkic no and dob from DHS [End][Nichole]
 
             Case ActiveViewIndex.Step2a
                 Me.panClaimValidatedTimelineStep2.CssClass = strHightLight
@@ -538,6 +606,12 @@ Partial Public Class EHSClaimV1
 
     '==================================================================== Code for SmartID ============================================================================
     Private Function ReadSmartID(ByVal udtSmartIDContent As BLL.SmartIDContentModel) As Boolean
+        'CRE20-006 DHC integration [Start][Nichole]
+        If _udtSessionHandler.HKICSymbolGetFormSession(Common.Component.FunctCode.FUNT020201) Is Nothing Then
+            _udtSessionHandler.HKICSymbolSaveToSession(Common.Component.FunctCode.FUNT020201, Me.udcClaimSearch.HKICSymbolSelectedValue)
+        End If
+        'CRE20-006 DHC integration [End][Nichole]
+
         If IsNothing(udtSmartIDContent) OrElse udtSmartIDContent.IsReadSmartID = False OrElse udtSmartIDContent.IsEndOfReadSmartID Then Return False
 
         Dim isReadingSmartID As Boolean = False
@@ -657,10 +731,26 @@ Partial Public Class EHSClaimV1
 
                 Dim udtAuditlogEntry_Search As AuditLogEntry = New AuditLogEntry(FunctCode, Me)
                 Dim strHKICNo As String = String.Empty
+                Dim strDOB As String = String.Empty
 
                 If Not udtSmartIDContent.EHSAccount Is Nothing Then
                     strHKICNo = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
+                    'strDOB = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).DOB
+                    strDOB = _udtFormatter.formatDOB(udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).DOB, udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing)
                 End If
+
+                'CRE20-006 DHC Claim access - check the HKID no with DHC [Start][Nichole]
+                Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+                Dim blnValidReadFromDHC As Boolean = True
+
+                If udtDHCClient IsNot Nothing Then
+                    If udtDHCClient.HKID.Trim <> strHKICNo Or udtDHCClient.DOB.Trim <> strDOB Then
+                        udtSmartIDContent.EHSAccount = Nothing
+                        blnValidReadFromDHC = False
+                    End If
+                End If
+
+                'CRE20-006 DHC Claim access - check the HKID no with DHC [End][Nichole]
 
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
                 ' ----------------------------------------------------------------------------------------
@@ -689,17 +779,25 @@ Partial Public Class EHSClaimV1
                     SearchSmartID(udtSmartIDContent, isValid, udtAuditlogEntry_Search)
                     ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
                 Else
-                    '---------------------------------------------------------------------------------------------------------------
-                    ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
-                    '---------------------------------------------------------------------------------------------------------------
-                    _udtSessionHandler.ForceToReadSmartICSaveToSession(False)
-
-                    Me.Clear()
-                    Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
-                    Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                    Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
-                    isValid = False
-
+                    'CRE20-006 DHC Phrase 2 [Start][Nichole]
+                    If Not blnValidReadFromDHC Then
+                        udtAuditlogEntry_Search.AddDescripton("HKIC No.", strHKICNo)
+                        Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                        Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                        Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00444"))
+                        isValid = False
+                    Else
+                        'CRE20-006 DHC Phrase 2 [End][Nichole]
+                        '---------------------------------------------------------------------------------------------------------------
+                        ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
+                        '---------------------------------------------------------------------------------------------------------------
+                        _udtSessionHandler.ForceToReadSmartICSaveToSession(False)
+                        Me.Clear()
+                        Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                        Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                        Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
+                        isValid = False
+                    End If
                 End If
 
                 If udcMsgBoxErr.GetCodeTable.Rows.Count > 0 Then
@@ -2266,6 +2364,12 @@ Partial Public Class EHSClaimV1
         End If
 
         Dim udtAuditLogEntry As New AuditLogEntry(FunctCode, Me)
+        'CRe20-006 DHC Integration [Start][Nichole]
+        Dim udtDHCClient As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+        If udtDHCClient IsNot Nothing Then
+            _udtSessionHandler.HKICSymbolSaveToSession(FunctCode, IIf(udtDHCClient.HKIC_Symbol Is Nothing, udcClaimSearch.HKICSymbolSelectedValue, udtDHCClient.HKIC_Symbol))
+        End If
+        'CRe20-006 DHC Integration [End][Nichole]
 
         ' -- Prepare the selected value --
         ' (1) Scheme
@@ -3122,6 +3226,7 @@ Partial Public Class EHSClaimV1
 
     Private Sub SetupStep1(ByVal blnCreatePopupPractice As Boolean, ByVal blnSetScheme As Boolean)
         Dim blnFromVaccinationRecordEnquiry As Boolean = CheckFromVaccinationRecordEnquiry()
+        Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
 
         ' Handle concurrent browser
         If Not EHSClaimTokenNumValidation() Then Return
@@ -5784,6 +5889,20 @@ Partial Public Class EHSClaimV1
 
             End If
 
+            '' CRE20-0023 (Immu record) [Start][Chris YIM]
+            '' ---------------------------------------------------------------------------------------------------------
+            '' Temporary handling to block document (Passport, One-way Permit) to claim COVID19 under VSS scheme
+            'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS AndAlso Me.ClaimMode = ClaimMode.COVID19 Then
+            '    If udtEHSAccount.SearchDocCode IsNot Nothing AndAlso _
+            '        (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW OrElse udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.PASS) Then
+            '        If udtLatestC19Vaccine Is Nothing Then
+            '            notAvailableForClaim = True
+            '            isEligibleForClaim = False
+            '        End If
+            '    End If
+            'End If
+            '' CRE20-0023 (Immu record) [End][Chris YIM]
+
             If blnInClaimPeriod Then
 
                 If notAvailableForClaim Then
@@ -5893,6 +6012,19 @@ Partial Public Class EHSClaimV1
             Me.udcStep2aInputEHSClaim.ServiceDate = dtmServiceDate
             Me.udcStep2aInputEHSClaim.NonClinic = Me._udtSessionHandler.NonClinicSettingGetFromSession(FunctCode)
             Me.udcStep2aInputEHSClaim.ClaimMode = Me.ClaimMode
+
+            '-----------------------------------------------------------------------------------------
+            'CRE20-006 DHC Claim Form disabled the dropdownlist and checked the checkbox of DHC service and fill-in the Claim amount [Start][Nichole]
+            Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
+            If udtDHCClient IsNot Nothing Then
+                'DHC Claim disabled the dropdownlist and checked the  checkbox of DHC service and fill-in the Claim amount
+                ddlStep2aScheme.Enabled = False
+                'udcPopupPracticeRadioButtonGroup.DHCService = True
+                'setup popup messagebox text
+                ucNoticePopUpConfirm.MessageText = Me.GetGlobalResourceObject("Text", "CancelCloseClaimAlert")
+            End If
+            'CRE20-006 DHC Claim - set the practice list of popup modal [End][Nichole]
             Me.udcStep2aInputEHSClaim.Built()
 
             Select Case udtSchemeClaim.ControlType
@@ -12732,6 +12864,29 @@ Partial Public Class EHSClaimV1
         Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
     End Sub
 
+	'CRE20-006 DHC Claim close button (popup) [Start][Nichole]
+    Protected Sub btnStep3ClaimClose_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnStep3ClaimClose.Click
+        ' To Handle Concurrent Browser
+        If Not Me.EHSClaimTokenNumValidation() Then
+            Return
+        End If
+
+        If Me._blnIsRequireHandlePageRefresh Then
+            Return
+        End If
+
+        _udtSessionHandler.ClearVREClaim()
+        Me.Clear()
+        Me._udtSessionHandler.HKICSymbolRemoveFromSession(FunctCode)
+        Me._udtSessionHandler.OCSSSRefStatusRemoveFromSession(FunctCode)
+        Me._udtSessionHandler.ArtifactRemoveFromSession(Common.Component.FunctCode.FUNT021201)
+
+        Session.RemoveAll()
+
+        ScriptManager.RegisterStartupScript(Me, Page.GetType, "VoucherCloseBrowswerScript", "javascript:window.close();", True)
+    End Sub
+    'CRE20-006 DHC Claim Close button (popup)[End][Nichole]
+    
     Protected Sub btnStep3Reprint_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnStep3Reprint.Click
         ' To Handle Concurrent Browser
         If Not Me.EHSClaimTokenNumValidation() Then
@@ -14941,7 +15096,7 @@ Partial Public Class EHSClaimV1
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = "d MMMM, yyyy"
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case TradChinese, SimpChinese
-                chineseTodayDateFormat = CStr(Today.Year) + "å¹´" + CStr(Today.Month) + "æœˆ" + CStr(Today.Day) & "æ—¥"
+                chineseTodayDateFormat = CStr(Today.Year) + "¦~" + CStr(Today.Month) + "¤ë" + CStr(Today.Day) & "¤é"
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = chineseTodayDateFormat
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case Else
@@ -15065,6 +15220,12 @@ Partial Public Class EHSClaimV1
 
     'CRE20-0xx For testing the smart IC card (demo version) [Start][Nichole]
     Private Function ReadDemoSmartID(ByVal udtSmartIDContent As BLL.SmartIDContentModel) As Boolean
+        'CRE20-006 DHC integration [Start][Nichole]
+        If _udtSessionHandler.HKICSymbolGetFormSession(Common.Component.FunctCode.FUNT020201) Is Nothing Then
+            _udtSessionHandler.HKICSymbolSaveToSession(Common.Component.FunctCode.FUNT020201, Me.udcClaimSearch.HKICSymbolSelectedValue)
+        End If
+        'CRE20-006 DHC integration [End][Nichole]
+
         If IsNothing(udtSmartIDContent) OrElse udtSmartIDContent.IsReadSmartID = False OrElse udtSmartIDContent.IsEndOfReadSmartID Then Return False
 
         Dim isReadingSmartID As Boolean = False
@@ -15130,10 +15291,27 @@ Partial Public Class EHSClaimV1
 
             Dim udtAuditlogEntry_Search As AuditLogEntry = New AuditLogEntry(FunctCode, Me)
             Dim strHKICNo As String = String.Empty
+            Dim strDOB As String = String.Empty
 
             If Not udtSmartIDContent.EHSAccount Is Nothing Then
                 strHKICNo = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
+                'strDOB = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).DOB
+                strDOB = _udtFormatter.formatDOB(udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).DOB, udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing)
+
             End If
+
+            'CRE20-006 DHC Integration [Start][Nichole]
+            Dim udtDHCClient As DHCPersonalInformationModel = _udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+            Dim blnValidReadFromDHC As Boolean = True
+
+            If udtDHCClient IsNot Nothing Then
+
+                If udtDHCClient.HKID.Trim <> strHKICNo Or udtDHCClient.DOB.Trim <> strDOB Then
+                    udtSmartIDContent.EHSAccount = Nothing
+                    blnValidReadFromDHC = False
+                End If
+            End If
+            'CRE20-006 DHC Integration [Start][Nichole]
 
             EHSClaimBasePage.AuditLogSearchNvaliatedACwithCFD(udtAuditlogEntry_Search, udtSchemeClaim.SchemeCode, strHKICNo, strError, strIdeasVersion, "Claim")
 
@@ -15159,14 +15337,24 @@ Partial Public Class EHSClaimV1
                 SearchSmartID(udtSmartIDContent, isValid, udtAuditlogEntry_Search)
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
             Else
-                '---------------------------------------------------------------------------------------------------------------
-                ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
-                '---------------------------------------------------------------------------------------------------------------
-                Me.Clear()
-                Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
-                Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
-                Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
-                isValid = False
+                'CRE20-006 DHC Phrase 2 [Start][Nichole]
+                If Not blnValidReadFromDHC Then
+                    udtAuditlogEntry_Search.AddDescripton("HKIC No.", strHKICNo)
+                    Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                    Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                    Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00444"))
+                    isValid = False
+                Else
+                    'CRE20-006 DHC Phrase 2 [End][Nichole]
+                    '---------------------------------------------------------------------------------------------------------------
+                    ' udtSmartIDContent.EHSAccount is nothing, crad face data may not be able to return 
+                    '---------------------------------------------------------------------------------------------------------------
+                    Me.Clear()
+                    Me.udcStep1DocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                    Me.mvEHSClaim.ActiveViewIndex = ActiveViewIndex.Step1
+                    Me.udcMsgBoxErr.AddMessage(New SystemMessage("990000", "E", "00253"))
+                    isValid = False
+                End If
             End If
 
             If udcMsgBoxErr.GetCodeTable.Rows.Count > 0 Then

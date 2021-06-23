@@ -25,6 +25,35 @@ Public Class CallEHS
 
             lblLoadSampleInstruction.Text = String.Format("From {0}", Server.MapPath("./Sample/CallEHS"))
 
+            'CRE20-006 Set a dropdownlist for Patient portal and DHC Sample [Start][Nichole]
+            Dim lstPPFile As New List(Of ListItem)
+
+            For Each filePath As String In Directory.GetFiles(Server.MapPath("./Sample/CallPP"))
+                lstPPFile.Add(New ListItem(Path.GetFileName(filePath), filePath))
+            Next
+
+            ddlPPLoadSample.DataSource = lstPPFile
+            ddlPPLoadSample.DataBind()
+
+            ddlPPLoadSample.Items.Insert(0, New ListItem("--- Please select ---", String.Empty))
+
+            lblPPLoadSampleInstruction.Text = String.Format("From {0}", Server.MapPath("./Sample/CallPP"))
+
+
+            Dim lstDHCFile As New List(Of ListItem)
+
+            For Each filePath As String In Directory.GetFiles(Server.MapPath("./Sample/CallDHC"))
+                lstDHCFile.Add(New ListItem(Path.GetFileName(filePath), filePath))
+            Next
+
+            ddlDHCLoadSample.DataSource = lstDHCFile
+            ddlDHCLoadSample.DataBind()
+
+            ddlDHCLoadSample.Items.Insert(0, New ListItem("--- Please select ---", String.Empty))
+
+            lblDHCLoadSampleInstruction.Text = String.Format("From {0}", Server.MapPath("./Sample/CallDHC"))
+            'CRE20-16 Set a dropdownlist for Patient Portal and DHC Sample   [End][Nichole]
+
             InitControlOnce()
 
         End If
@@ -34,7 +63,7 @@ Public Class CallEHS
     Private Sub InitControlOnce()
         txtEndpointURL.Text = ConfigurationManager.AppSettings("DefaultEHSUrl")
         txtPatientPortalEndpointURL.Text = ConfigurationManager.AppSettings("DefaultEHSPatientPortalUrl")
-
+        txtDHCEndpointURL.Text = ConfigurationManager.AppSettings("DefaultDHCUrl")
     End Sub
 
     Protected Sub ddlLoadSample_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -45,15 +74,40 @@ Public Class CallEHS
         btnDownload.Visible = False
 
         ' Replace some special text
-        Select Case Left(ddlLoadSample.SelectedItem.Text, 1)
-            Case "1", "2", "3", "4", "5", "6"
+        Select Case Left(ddlLoadSample.SelectedItem.Text, 2)
+            Case "01", "02", "03", "04", "05", "06"
                 txtRequest.Text = txtRequest.Text.Replace("{Timestamp}", String.Format("{0}{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), DateTime.Now.ToString("zzzz").Replace(":", String.Empty)))
 
-            Case "7"
+                'Case "07"
+                '    txtRequest.Text = txtRequest.Text.Replace("{Timestamp}", String.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")))
+                '    btnDownload.Visible = True
+
+                'Case "08", "09"
+                '    txtRequest.Text = txtRequest.Text.Replace("{Timestamp}", String.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")))
+
+
+            Case Else
+                txtRequest.Text = "Wrong Sample!"
+                Return
+
+        End Select
+
+    End Sub
+    'CRE20-16 Set a dropdownlist for Patient Portal Sample Testing [Start][Nichole]
+    Protected Sub ddlPPLoadSample_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim sr As New StreamReader(Path.Combine(Server.MapPath("./Sample/CallPP"), ddlPPLoadSample.SelectedItem.Text))
+        txtRequest.Text = sr.ReadToEnd
+        sr.Close()
+
+        btnDownload.Visible = False
+
+        ' Replace some special text
+        Select Case Left(ddlPPLoadSample.SelectedItem.Text, 2)
+            Case "07"
                 txtRequest.Text = txtRequest.Text.Replace("{Timestamp}", String.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")))
                 btnDownload.Visible = True
 
-            Case "8"
+            Case "08"
                 txtRequest.Text = txtRequest.Text.Replace("{Timestamp}", String.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")))
 
             Case Else
@@ -62,12 +116,32 @@ Public Class CallEHS
 
         End Select
 
-        '' Reset drop-down list
-        'ddlLoadSample.SelectedIndex = 0
+    End Sub
+    'CRE20-16 Set a dropdownlist for Patient Portal Sample Testing [Start][Nichole]
+    'CRE20-16 Set a dropdownlist for DHC Sample Testing [Start][Nichole]
+    Protected Sub ddlDHCLoadSample_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim sr As New StreamReader(Path.Combine(Server.MapPath("./Sample/CallDHC"), ddlDHCLoadSample.SelectedItem.Text))
+        txtRequest.Text = sr.ReadToEnd
+        sr.Close()
+
+        btnDownload.Visible = False
+
+        ' Replace some special text
+        Select Case Left(ddlDHCLoadSample.SelectedItem.Text, 2)
+
+            Case "09", "10"
+                txtRequest.Text = txtRequest.Text.Replace("{Timestamp}", String.Format("{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")))
+
+
+            Case Else
+                txtRequest.Text = "Wrong Sample!"
+                Return
+
+        End Select
+
 
     End Sub
-
-    '
+    'CRE20-16 Set a dropdownlist for DHC Sample Testing [End][Nichole]
 
     Protected Sub btnSubmitRequest_Click(sender As Object, e As EventArgs)
         System.Net.ServicePointManager.ServerCertificateValidationCallback = AddressOf ValidateRemoteCertificate
@@ -77,16 +151,44 @@ Public Class CallEHS
 
             'wcf.Url = txtEndpointURL.Text.Trim
 
-            ' Set Endpoint URL
-            Select Case Left(ddlLoadSample.SelectedItem.Text, 1)
-                Case "1", "2", "3", "4", "5", "6"
-                    wcf.Url = txtEndpointURL.Text
-                Case "7", "8"
-                    wcf.Url = txtPatientPortalEndpointURL.Text
-                Case Else
-                    txtResult.Text = "Wrong Sample!"
-                    Return
-            End Select
+            'CRE20-16 Set Endpoint URL for specified Sample Testing [Start][Nichole]
+            If (Left(ddlLoadSample.SelectedItem.Text, 2) <> "--") Then
+                Select Case Left(ddlLoadSample.SelectedItem.Text, 2)
+                    Case "01", "02", "03", "04", "05", "06"
+                        wcf.Url = txtEndpointURL.Text
+                    Case Else
+                        txtResult.Text = "Wrong Sample!"
+                        Return
+                End Select
+                'ddlLoadSample.SelectedValue = ""
+                ' txtRequest.Text = ""
+            Else
+                If (Left(ddlPPLoadSample.SelectedItem.Text, 2) <> "--") Then
+                    Select Case Left(ddlPPLoadSample.SelectedItem.Text, 2)
+
+                        Case "07", "08"
+                            wcf.Url = txtPatientPortalEndpointURL.Text
+                        Case Else
+                            txtResult.Text = "Wrong Sample!"
+                            Return
+                    End Select
+                    'ddlPPLoadSample.SelectedValue = ""
+                    ' txtRequest.Text = ""
+                Else
+
+                    Select Case Left(ddlDHCLoadSample.SelectedItem.Text, 2)
+
+                        Case "09", "10"
+                            wcf.Url = txtDHCEndpointURL.Text
+                        Case Else
+                            txtResult.Text = "Wrong Sample!"
+                            Return
+                    End Select
+                    'ddlDHCLoadSample.SelectedValue = ""
+                    'txtRequest.Text = ""
+                End If
+            End If
+            'CRE20-006 Set Endpoint URL for specified Sample Testing [End][Nichole]
 
             txtResult.Text = wcf.getExternalWebS(txtRequest.Text)
 
@@ -238,11 +340,41 @@ Public Class CallEHS
 
                 End If
 
+                Me.lblMessage.Text = "Download Successfully"
+
             Catch ex As Exception
-                Throw
+                'Throw
+                Me.lblMessage.Text = ex.ToString
             End Try
 
         End If
         ''-----------------------------------
     End Sub
+
+    Protected Sub btnReadFileToByte_Click(sender As Object, e As EventArgs)
+        Try
+            If txtRequest.Text <> String.Empty Then
+                Dim blnSuccess As Boolean = False
+
+                Dim byteXML() As Byte = System.IO.File.ReadAllBytes(txtRequest.Text.Trim)
+
+                Dim strHex As StringBuilder = New StringBuilder(byteXML.Length * 2)
+
+                For Each byteHex As Byte In byteXML
+                    strHex.AppendFormat("{0:x2}", byteHex)
+                Next
+
+                txtResult.Text = strHex.ToString.ToUpper
+
+                Dim udtDB As New Common.DataAccess.Database()
+                blnSuccess = (New Common.Component.FileGeneration.FileGenerationBLL).UpdateFileContent(udtDB, "ABCD12345678", byteXML)
+            End If
+
+        Catch ex As Exception
+            'Throw
+            Me.lblMessage.Text = ex.ToString
+        End Try
+
+    End Sub
+
 End Class

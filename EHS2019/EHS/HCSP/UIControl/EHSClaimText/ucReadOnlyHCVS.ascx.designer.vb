@@ -42,6 +42,15 @@ Namespace UIControl.EHCClaimText
         Protected WithEvents lblDHCRelatedService As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
+        '''lblDHCRelatedServiceName control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblDHCRelatedServiceName As Global.System.Web.UI.WebControls.Label
+
+        '''<summary>
         '''panClaimDetailNormal control.
         '''</summary>
         '''<remarks>

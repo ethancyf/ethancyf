@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<data>
+	<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+	<seteHSSDHCNSP>
+		<Timestamp>{Timestamp}</Timestamp>
+		<UploadDistrictCode>KT</UploadDistrictCode>
+		<ProfList>
+			<ProfCount>2</ProfCount>
+			<Prof>
+				<ProfDistrictCode>KT</ProfDistrictCode>
+				<ProfCode>RMP</ProfCode>
+				<ProfRegNo>M04020</ProfRegNo>
+			</Prof>
+			<Prof>
+				<ProfDistrictCode>KT</ProfDistrictCode>
+				<ProfCode>RMP</ProfCode>
+				<ProfRegNo>CC004276</ProfRegNo>
+			</Prof>
+		</ProfList>
+	</seteHSSDHCNSP> ]]>
+</data>
+</root>

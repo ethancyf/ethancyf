@@ -83,6 +83,7 @@
     <Compile Include="App_Code\ExternalCallinWebS.vb" />
     <Compile Include="App_Code\SystemVerificationWebS.vb" />
     <Compile Include="AuditLog\AuditLogBase.vb" />
+    <Compile Include="BLL\eHSDHCServiceBLL.vb" />
     <Compile Include="DAL\eHRServiceDAL.vb" />
     <Compile Include="DAL\eHSServiceDAL.vb" />
     <Compile Include="BLL\eHRServiceBLL.vb" />

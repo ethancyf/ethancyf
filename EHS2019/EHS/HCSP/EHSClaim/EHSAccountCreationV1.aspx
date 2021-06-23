@@ -79,6 +79,14 @@
                 </table>
             </asp:Panel>
             <!--Confirm Message Pop Up Box Section End----------------------------------------------------------------------->
+            <!--CRE20-006 DHC integration for cancel account creation [Start][Nichole]-->
+            <!--Cancel & confirm message box Seciotn start ----------------------------->
+             <asp:Panel Style="display: none" ID="panPopupConfirmCancelClose" runat="server" Width="500px">
+                <uc5:ucNoticePopUp ID="ucNoticePopUpConfirm" runat="server" NoticeMode="Confirmation" ButtonMode="YesNo"
+                    MessageText="<%$ Resources:Text, CancelCloseClaimAlert %>" />
+            </asp:Panel>
+            <!--Cancel & confirm message box Section End -->
+            <!--CRE20-006 DHC integration for cancel account creation [Start][Nichole]-->
             <!--confirm Modify----------------------------------------------------------------------->
             <asp:Panel Style="display: none" ID="panPopupConfirmModify" runat="server">
                 <asp:Panel ID="panPopupConfirmModifyHeading" runat="server" Style="cursor: move">
@@ -268,6 +276,13 @@
           <asp:Button Style="display: none" ID="btnModalPopupConfirmSelectPractice" runat="server"></asp:Button>
             <%-- End of Popup for Select Practice Confirmation in covid-19 program  --%>
 
+            <!--CRE20-006 DHC integration for cancel account creation [Start][Nichole]-->
+            <cc1:ModalPopupExtender ID="ModalPopupConfirmCancelClose" runat="server" BackgroundCssClass="modalBackgroundTransparent"
+                TargetControlID="btnModalPopupConfirmCancelClose" PopupControlID="panPopupConfirmCancelClose"
+                PopupDragHandleControlID="" RepositionMode="None">
+            </cc1:ModalPopupExtender>
+            <asp:Button Style="display: none" ID="btnModalPopupConfirmCancelClose" runat="server"></asp:Button>
+            <!--CRE20-006 DHC integration for cancel account creation [End][Nichole]-->
             <asp:Button ID="btnModalPopupConfirmOnly" runat="server" Style="display: none" /><!-- ModalPopupExtender Create End -----------------------------------------------------------------------><table
                 cellpadding="0" cellspacing="0" style="width: 100%">
                 <tbody>

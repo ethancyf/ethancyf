@@ -6,7 +6,9 @@ Imports Common.Format
 Imports Common.Component
 Imports Common.ComObject
 Imports Common.Component.ServiceProvider
-
+'CRE20-006 DHC integeration [Start][Nichole]
+Imports HCSP.BLL
+'CRE20-006 DHC integeration [End][Nichole]
 
 Partial Public Class Inbox
     Inherits BasePageWithGridView
@@ -19,6 +21,9 @@ Partial Public Class Inbox
     Dim udtcomfunct As New Common.ComFunction.GeneralFunction
     Const FUNCTION_CODE As String = "020005"
     Const StatusData_Class As String = "InboxMessageStatus"
+    'CRE20-006 DHC integeration [Start][Nichole]
+    Private _udtSessionHandler As New SessionHandler
+    'CRE20-006 DHC integeration [End][Nichole]
 
 #Region "Constants"
 
@@ -72,6 +77,17 @@ Partial Public Class Inbox
             intPageSize = udtcomfunct.GetPageSizeHCSP()
 
             Me.GridView1.PageSize = intPageSize
+
+            'CRE20-006 DHC integeration [Start][Nichole]
+            Dim strFromOutsider As String = _udtSessionHandler.ArtifactGetFromSession(Common.Component.FunctCode.FUNT021201)
+            If strFromOutsider IsNot Nothing Then
+ 
+                'Hide "Home" "Inbox" "Logout" button 
+                Me.Master.FindControl("ibtnHome").Visible = False
+                Me.Master.FindControl("ibtnLogout").Visible = False
+
+            End If
+            'CRE20-006 DHC integeration [End][Nichole]
         End If
 
     End Sub

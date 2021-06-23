@@ -32,6 +32,7 @@ Partial Public Class ucClaimSearch
     Private _blnIDEASComboClientInstalled As Boolean = False
     Private _blnIDEASComboForceToUse As Boolean = False
     Private _blnForceReadSmartID As Boolean = False
+    Private _udtSessionHandler As New SessionHandler
 
 #End Region
 
@@ -986,6 +987,41 @@ Partial Public Class ucClaimSearch
 #End Region
 
 #Region "Property"
+    'CRE20-006 To fill in the value into the HKIC, DOB and symbol [Start][Nichole]
+    Public Sub SetDHCInfo(ByVal strHKICNO As String, ByVal strHKICDOB As String, ByVal strHKICSymbol As String)
+        Me.txtSearchHKICNo.Text = strHKICNO
+        Me.txtSearchHKICDOB.Text = strHKICDOB
+
+        Me.rblHKICSymbol.Text = strHKICSymbol
+        Me.rblHKICSymbol.SelectedValue = strHKICSymbol
+         
+
+
+        Me.txtSearchHKICNo.Enabled = False
+        If Me.txtSearchHKICDOB.Text.Trim IsNot String.Empty Then
+            Me.txtSearchHKICDOB.Enabled = False
+        Else
+            Me.txtSearchHKICDOB.Enabled = True
+        End If
+
+        Me._strDocumentIdentityNo = Me.txtSearchHKICNo.Text
+        Me._strDOB = Me.txtSearchHKICDOB.Text
+        Me._strHKICSymbol = strHKICSymbol
+
+        '_udtSessionHandler.HKICSymbolSaveToSession(Common.Component.FunctCode.FUNT020201, strHKICSymbol)
+        'rblHKICSymbol_SelectedIndexChanged(Nothing, Nothing)
+
+        If Me._strHKICSymbol IsNot Nothing Then
+            ibtnSearchHKIC.Enabled = True
+            ibtnSearchHKIC.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "SearchBtn")
+            btnShortIdentityNoNewSmartIDCombo.Enabled = True
+            btnShortIdentityNoNewSmartIDCombo.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "ReadCardAndSearchBtn")
+            EnableHKICSearchOption(True, SearchHKICOption.ManualInput)
+            EnableHKICSearchOption(True, SearchHKICOption.ReadNewSmartICCombo)
+        End If
+
+    End Sub
+    'CRE20-006 To fill in the value into the HKIC, DOB and symbol [End][Nichole]
 
     Public Sub SetProperty(ByVal documentType As String)
         Select Case documentType
@@ -1208,6 +1244,13 @@ Partial Public Class ucClaimSearch
         End Set
     End Property
     ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+    'CRE20-006 DHC integration [Start][Nichole]
+    Public ReadOnly Property HKICSymbolSelectedValue() As String
+        Get
+            Return Me.rblHKICSymbol.SelectedValue
+        End Get
+    End Property
+    'CRE20-006 DHC integration [End][Nichole]
 #End Region
 
 #Region "Events"

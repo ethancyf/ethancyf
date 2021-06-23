@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data>
+    <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+    <geteHSSVoucherBalance>
+      <HKID>D2002001</HKID>    
+      <DocType>HKIC</DocType>
+      <DOBFormat>DD/MM/YYYY</DOBFormat>
+      <DOB>01/01/1952</DOB>
+      <Timestamp>{Timestamp}</Timestamp>
+     </geteHSSVoucherBalance>]]>
+  </data>
+</root>

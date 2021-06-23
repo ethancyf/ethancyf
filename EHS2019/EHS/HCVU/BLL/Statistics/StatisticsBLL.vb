@@ -445,6 +445,7 @@ Public Class StatisticsBLL
         dt.Columns.Add(New DataColumn("district_board", System.Type.GetType("System.String")))
         dt.Columns.Add(New DataColumn("district_board_chi", System.Type.GetType("System.String")))
         dt.Columns.Add(New DataColumn("district_board_shortname_SD", System.Type.GetType("System.String")))
+        dt.Columns.Add(New DataColumn("dhc_district_code", System.Type.GetType("System.String"))) 'CRE20-006 DHC integartion [Nichole]
 
         udtDistrictBoardModelCollection = udtDistrictBoardBLL.GetDistrictBoardInput(Area.PlatformCode.BO)
         If Not udtDistrictBoardModelCollection Is Nothing Then
@@ -458,6 +459,7 @@ Public Class StatisticsBLL
                 dr("district_board") = udtDistrctBoard.DistrictBoard
                 dr("district_board_chi") = udtDistrctBoard.DistrictBoardChi
                 dr("district_board_shortname_SD") = udtDistrctBoard.DistrictBoardShortname
+                dr("dhc_district_Code") = udtDistrctBoard.DHC_District_Code 'CRE20-006 DHC integration [Nichole]
                 dt.Rows.Add(dr)
             Next
         End If

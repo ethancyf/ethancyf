@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="eHSService.svc" />
+    <Content Include="eHSDHCService.svc" />
     <Content Include="eHSServicePatientPortal.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -107,6 +108,9 @@
   <ItemGroup>
     <Compile Include="eHSService.svc.vb">
       <DependentUpon>eHSService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="eHSDHCService.svc.vb">
+      <DependentUpon>eHSDHCService.svc</DependentUpon>
     </Compile>
     <Compile Include="eHSServicePatientPortal.svc.vb">
       <DependentUpon>eHSServicePatientPortal.svc</DependentUpon>

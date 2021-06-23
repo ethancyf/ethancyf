@@ -9,6 +9,7 @@
                         <asp:Label ID="lblDHCRelatedServiceText" runat="server" Text="<%$ Resources:Text, DHCRelatedService %>"></asp:Label></td>
                     <td style="vertical-align:top; padding-left: 3px">
                         <asp:Label ID="lblDHCRelatedService" runat="server" CssClass="tableText"></asp:Label>
+                        <asp:Label ID="lblDHCDistrictCode" runat="server" CssClass="tableText"></asp:Label>
                     </td>
                 </tr>
             </table>

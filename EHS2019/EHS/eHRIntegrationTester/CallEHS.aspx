@@ -30,6 +30,7 @@
                     <td style="width: 100px">Load Sample:</td>
                     <td style="width: 300px">
                         <asp:DropDownList ID="ddlLoadSample" runat="server" Width="290" OnSelectedIndexChanged="ddlLoadSample_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                        <br /><asp:Label ID="lblLoadSampleInstruction" runat="server" Font-Size="8pt"></asp:Label>
                     </td>
                 </tr>
                 <tr>
@@ -37,14 +38,27 @@
                     <td>
                         <asp:TextBox ID="txtPatientPortalEndpointURL" runat="server" Width="450px"></asp:TextBox>
                     </td>
-                    <td></td>
-                    <td></td>
+                    <td style="width: 50px"></td>
+                    <td>Load Sample:</td>
+                    <td><asp:DropDownList ID="ddlPPLoadSample" runat="server" Width="290" OnSelectedIndexChanged="ddlPPLoadSample_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                        <br /><asp:Label ID="lblPPLoadSampleInstruction" runat="server" Font-Size="8pt" /></td>
                     <td style="vertical-align:top">
-                        <asp:Label ID="lblLoadSampleInstruction" runat="server" Font-Size="8pt"></asp:Label>
+                        
                     </td>
                 </tr>
-                <tr style="height: 10px"></tr>
-            </table>
+                <tr>
+                    <td style="width: 200px">DHC Endpoint URL:</td>
+                    <td style="width: 500px">
+                        <asp:TextBox ID="txtDHCEndpointURL" runat="server" Width="450px"></asp:TextBox>
+                    </td>
+                    <td style="width: 50px"></td>
+                    <td style="width: 100px">Load Sample:</td>
+                    <td style="width: 300px"> <asp:DropDownList ID="ddlDHCLoadSample" runat="server" Width="290" OnSelectedIndexChanged="ddlDHCLoadSample_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                        <br /><asp:Label ID="lblDHCLoadSampleInstruction" runat="server" Font-Size="8pt"></asp:Label>
+
+                    </td>
+                </tr>
+                </table>
             <asp:TextBox ID="txtRequest" runat="server" EnableViewState="false" Height="250px" TextMode="MultiLine" Width="100%"></asp:TextBox>
             <table cellpadding="0" cellspacing="0">
                 <tr>
@@ -64,7 +78,9 @@
             <br />
             <br />
             <%--<asp:TextBox ID="txtByte" runat="server" EnableViewState="false" Height="300px" TextMode="MultiLine" Width="100%"></asp:TextBox>--%>
-            <asp:Button ID="btnDownload" runat="server" Text="DownloadZip" OnClick="btnDownload_Click" Visible="false" />
+            <asp:Button ID="btnDownload" runat="server" Text="DownloadZip" OnClick="btnDownload_Click" Visible="false" /><br/>
+            <asp:Label ID="lblMessage" runat="server"/>
+            <asp:Button ID="btnReadFileToByte" runat="server" Text="Read File to Byte" OnClick="btnReadFileToByte_Click" Visible="false" /><br/>
         </div>
     </form>
 </body>

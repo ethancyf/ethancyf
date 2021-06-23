@@ -16,6 +16,8 @@ Namespace Component.ServiceProvider
     Public Class ServiceProviderBLL
 
         Public Const SESS_SP As String = "ServiceProvider"
+        Private Const SESS_SPMaintenancePracticeEnrolledDHCList As String = "SPMaintenancePracticeEnrolledDHCList" 'CRE20-006 DHC Integration [Nichole]
+        Private Const SESS_SPSummaryViewPracticeEnrolledDHCList As String = "SPSummaryViewPracticeEnrolledDHCList" 'CRE20-006 DHC Integration [Nichole]
 
         Public Function GetSP() As ServiceProviderModel
             Dim udtSP As ServiceProviderModel
@@ -43,6 +45,8 @@ Namespace Component.ServiceProvider
 
         Public Sub ClearSession()
             HttpContext.Current.Session(SESS_SP) = Nothing
+            HttpContext.Current.Session(SESS_SPMaintenancePracticeEnrolledDHCList) = Nothing 'CRE20-006 DHC Integration [Nichole]
+            HttpContext.Current.Session(SESS_SPSummaryViewPracticeEnrolledDHCList) = Nothing 'CRE20-006 DHC Integration [Nichole]
         End Sub
 
 
@@ -157,6 +161,210 @@ Namespace Component.ServiceProvider
 
             Return udtSP
         End Function
+        'CRE20- 006 DHC stored procedure [Start][Nichole]
+        Public Function GetServiceProviderSPIDbyProfRegNo(ByVal strProf As String, ByVal strReg As String, ByVal searchType As Integer) As DataTable
+            Dim dt As New DataTable
+            Dim udtDB As Database = New Database()
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@ProfCode", SqlDbType.VarChar, 20, IIf(strProf.Trim.Equals(String.Empty), DBNull.Value, strProf.Trim)), _
+                                                 udtDB.MakeInParam("@RegNo", SqlDbType.VarChar, 20, IIf(strReg.Trim.Equals(String.Empty), DBNull.Value, strReg.Trim))}
+
+                Select Case searchType
+
+                    Case 0 'Check SPID
+                        udtDB.RunProc("proc_ServiceProvider_get_byProfRegNo", prams, dt)
+                    Case 1 'Check Professional registration no. is suspended/delisted in eHS(S) DELISTED
+                        udtDB.RunProc("proc_ServiceProvider_delisted_byProfRegNo", prams, dt)
+                    Case 2 'Check NSP 1003
+                        udtDB.RunProc("proc_ServiceProvider_NSP_byProfRegNo ", prams, dt)
+                    Case 3 'Check Professional existed on the ehs 1001
+                        udtDB.RunProc("proc_ServiceProvider_ProfNotFound_byProfRegNo", prams, dt)
+                    Case 4 'Check Professional existed on the ehs 1000
+                        udtDB.RunProc("proc_ServiceProvider_Valid_byProfRegNo", prams, dt)
+                End Select
+
+
+                If dt.Rows.Count = 0 Then
+                    dt = Nothing
+                End If
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+        End Function
+
+        Public Function GetDHCProfessionbyProfCode(ByVal strDistrictCode As String) As DataTable
+            Dim dt As New DataTable
+            Dim udtDB As Database = New Database()
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@ProfCode", SqlDbType.Char, 3, IIf(strDistrictCode.Trim.Equals(String.Empty), DBNull.Value, strDistrictCode.Trim))}
+                udtDB.RunProc("proc_DHCProfession_byProfCode", prams, dt)
+
+                If dt.Rows.Count = 0 Then
+                    dt = Nothing
+                End If
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return dt
+        End Function
+
+        Public Function AddNSPToClaimAccess(ByVal valid As Boolean, ByVal _strUploadDistrictCode As String, _strProfDistrictCode As String, ByVal _strProfCode As String, ByVal _strProgRegNo As String) As String
+            Dim dt As New DataTable
+            Dim dtAdd As New DataTable
+            Dim udtDB As Database = New Database()
+            Try
+
+                If valid Then
+                    Dim clr_prams() As SqlParameter = {udtDB.MakeInParam("@UploadDistrictCode", SqlDbType.VarChar, 3, IIf(_strUploadDistrictCode.Trim.Equals(String.Empty), DBNull.Value, _strUploadDistrictCode.Trim))}
+                    udtDB.RunProc("proc_DHCSPMapping_delete", clr_prams)
+                End If
+
+
+
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@ProfCode", SqlDbType.VarChar, 20, IIf(_strProfCode.Trim.Equals(String.Empty), DBNull.Value, _strProfCode.Trim)), _
+                                               udtDB.MakeInParam("@ProgRegNo", SqlDbType.VarChar, 20, IIf(_strProgRegNo.Trim.Equals(String.Empty), DBNull.Value, _strProgRegNo.Trim)), _
+                                               udtDB.MakeInParam("@ProfDistrictCode", SqlDbType.VarChar, 5, IIf(_strProfDistrictCode.Trim.Equals(String.Empty), DBNull.Value, _strProfDistrictCode.Trim))}
+                udtDB.RunProc("proc_DHCSPMapping_add", prams)
+
+
+
+
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return "Success"
+        End Function
+
+        Public Function AddDHCClaimAccess(ByVal udtHashActivationCode As HashModel, ByVal _strSPID As String, ByVal _strProfCode As String, _strProfRegNo As String, ByVal _strHKID As String, ByVal _strDocType As String, ByVal _strHKICSymbol As String, ByVal _strDOBFormat As String, ByVal _strDOB As String, ByVal _strClaimAmount As String, ByVal _strDistrictCode As String, ByVal _strEHSLoginURL As String, ByVal _strActivationCode As String) As String
+            Dim dt As New DataTable
+            Dim dtAdd As New DataTable
+            Dim udtDB As Database = New Database()
+            Try
+
+                ' _strEHSLoginURL = _strEHSLoginURL + _strActivationCode
+
+
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@Artifact", SqlDbType.VarChar, 100, udtHashActivationCode.HashedValue), _
+                                               udtDB.MakeInParam("@SPID", SqlDbType.Char, 8, IIf(_strSPID.Trim.Equals(String.Empty), DBNull.Value, _strSPID.Trim)), _
+                                               udtDB.MakeInParam("@ProfCode", SqlDbType.Char, 5, IIf(_strProfCode.Trim.Equals(String.Empty), DBNull.Value, _strProfCode.Trim)), _
+                                               udtDB.MakeInParam("@RegNo", SqlDbType.VarChar, 15, IIf(_strProfRegNo.Trim.Equals(String.Empty), DBNull.Value, _strProfRegNo.Trim)), _
+                                               udtDB.MakeInParam("@HKID", SqlDbType.VarChar, 50, IIf(_strHKID.Trim.Equals(String.Empty), DBNull.Value, _strHKID.Trim)), _
+                                               udtDB.MakeInParam("@DocType", SqlDbType.Char, 20, IIf(_strDocType.Trim.Equals(String.Empty), DBNull.Value, _strDocType.Trim)), _
+                                               udtDB.MakeInParam("@HKICSymbol", SqlDbType.Char, 1, IIf(_strHKICSymbol.Trim.Equals(String.Empty), DBNull.Value, _strHKICSymbol.Trim)), _
+                                               udtDB.MakeInParam("@DOBFormat", SqlDbType.VarChar, 50, IIf(_strDOBFormat.Trim.Equals(String.Empty), DBNull.Value, _strDOBFormat.Trim)), _
+                                               udtDB.MakeInParam("@DOB", SqlDbType.VarChar, 50, IIf(_strDOB.Trim.Equals(String.Empty), DBNull.Value, _strDOB.Trim)), _
+                                               udtDB.MakeInParam("@ClaimAmount", SqlDbType.Float, 20, IIf(_strClaimAmount.Trim.Equals(String.Empty), DBNull.Value, _strClaimAmount.Trim)), _
+                                               udtDB.MakeInParam("@DistrictCode", SqlDbType.VarChar, 50, IIf(_strDistrictCode.Trim.Equals(String.Empty), DBNull.Value, _strDistrictCode.Trim)), _
+                                               udtDB.MakeInParam("@EHSLoginURL", SqlDbType.VarChar, 500, IIf(_strEHSLoginURL.Trim.Equals(String.Empty), DBNull.Value, _strEHSLoginURL.Trim)), _
+                                               udtDB.MakeInParam("@ActivationCode", SqlDbType.VarChar, 100, IIf(_strActivationCode.Trim.Equals(String.Empty), DBNull.Value, _strActivationCode.Trim))}
+                udtDB.RunProc("proc_DHCClaimAccess_add", prams)
+
+
+
+
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return _strEHSLoginURL
+        End Function
+
+        'Public Function GetServiceProviderDelistedbyProfRegNo(ByVal strProf As String, ByVal strReg As String) As DataTable
+        '    Dim dt As New DataTable
+        '    Dim udtDB As Database = New Database()
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@ProfCode", ServiceProviderModel.EnrolRefNoDataType, ServiceProviderModel.EnrolRefNoDataSize, IIf(strProf.Trim.Equals(String.Empty), DBNull.Value, strProf.Trim)), _
+        '                                       udtDB.MakeInParam("@RegNo", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, IIf(strReg.Trim.Equals(String.Empty), DBNull.Value, strReg.Trim))}
+        '        udtDB.RunProc("proc_ServiceProvider_delisted_byProfRegNo", prams, dt)
+
+
+        '        If dt.Rows.Count = 0 Then
+        '            dt = Nothing
+        '        End If
+        '    Catch ex As Exception
+        '        Throw
+        '    End Try
+
+        '    Return dt
+        'End Function
+
+        'Public Function GetServiceProviderNSPbyProfRegno(ByVal strProf As String, ByVal strReg As String) As DataTable
+
+        '    Dim dt As New DataTable
+        '    Dim udtDB As Database = New Database()
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@ProfCode", ServiceProviderModel.EnrolRefNoDataType, ServiceProviderModel.EnrolRefNoDataSize, IIf(strProf.Trim.Equals(String.Empty), DBNull.Value, strProf.Trim)), _
+        '                                       udtDB.MakeInParam("@RegNo", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, IIf(strReg.Trim.Equals(String.Empty), DBNull.Value, strReg.Trim))}
+        '        udtDB.RunProc("proc_ServiceProviderNSP_get_byProfRegNo ", prams, dt)
+
+
+        '        If dt.Rows.Count = 0 Then
+        '            dt = Nothing
+        '        End If
+        '    Catch ex As Exception
+        '        Throw
+        '    End Try
+
+        '    Return dt
+        'End Function
+        Public Function GetServiceProviderArtifact(ByVal strKey As String, ByVal strArtifactTimeout As String) As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel
+            Dim dt As New DataTable
+            Dim udtDB As Database = New Database()
+            Dim udtSP As DHCClaim.DHCClaimBLL.DHCPersonalInformationModel = Nothing
+
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@Artifact", SqlDbType.NVarChar, 100, IIf(strKey.Trim.Equals(String.Empty), DBNull.Value, strKey.Trim)), _
+                                               udtDB.MakeInParam("@Timeout", SqlDbType.NVarChar, 2, strArtifactTimeout)}
+                'udtDB.MakeInParam("@Timeout", SqlDbType.Int, 8, strArtifactTimeout)}
+                udtDB.RunProc("proc_ServiceProvider_get_byArtifact", prams, dt)
+
+
+                If Not IsNothing(dt) Then
+                    If dt.Rows.Count > 0 Then
+                        For Each row As DataRow In dt.Rows
+                            'new 17/11/2020
+                            If (CType(row.Item("Expired"), String).Trim = YesNo.No) Then
+                                udtSP = New DHCClaim.DHCClaimBLL.DHCPersonalInformationModel(CType(row.Item("sp_id"), String).Trim, _
+                                               CType(row.Item("ProfCode"), String).Trim, CType(row.Item("ProfRegNo"), String).Trim, _
+                                               CType(row.Item("SP_HKID"), String).Trim, CType(row.Item("DocType"), String).Trim, _
+                                               CStr(IIf((row.Item("HKICSymbol") Is DBNull.Value), Nothing, row.Item("HKICSymbol"))), _
+                                               CStr(IIf((row.Item("DOBFormat") Is DBNull.Value), Nothing, row.Item("DOBFormat"))), CStr(IIf((row.Item("DOB") Is DBNull.Value), String.Empty, row.Item("DOB"))), CStr(IIf((row.Item("DHCDistrictCode") Is DBNull.Value), String.Empty, row.Item("DHCDistrictCode"))), CType(row.Item("ClaimAmount"), Double))
+                            End If
+
+                        Next
+                    End If
+
+                End If
+            Catch ex As Exception
+                Throw
+            End Try
+
+            Return udtSP
+        End Function
+
+        'Public Function GetServiceProviderProfRegbyArtifact(ByVal strKey As String) As DataTable
+        '    Dim dt As New DataTable
+        '    Dim udtDB As Database = New Database()
+        '    Try
+        '        Dim prams() As SqlParameter = {udtDB.MakeInParam("@Artifact", ServiceProviderModel.EnrolRefNoDataType, 100, IIf(strKey.Trim.Equals(String.Empty), DBNull.Value, strKey.Trim))}
+        '        udtDB.RunProc("proc_ServiceProvider_get_byArtifact", prams, dt)
+
+
+        '        If dt.Rows.Count = 0 Then
+        '            dt = Nothing
+        '        End If
+        '    Catch ex As Exception
+        '        Throw
+        '    End Try
+
+        '    Return dt
+        'End Function
+        'CRE20-xxx Retrieve the DHC information from table and out into the DHCClaim model [End][Nichole]
+
 
         Public Function GetServiceProviderSchemeInfoEnrolmentByERN(ByVal strERN As String, ByRef udtDB As Database) As DataTable
             Dim dt As New DataTable
@@ -2479,6 +2687,42 @@ Namespace Component.ServiceProvider
             End Try
         End Function
         ' CRE12-001 eHS and PCD integration [End][Koala]
+
+        'CRE20-006 DHC integration [Start][Nichole]
+        Public Function GetSPEnrolledDHC(ByVal strSPID As String) As String
+            Dim udtDB As New Database
+            Dim dt As DataTable = New DataTable
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, IIf(strSPID.Trim.Equals(String.Empty), DBNull.Value, strSPID.Trim))}
+
+                udtDB.RunProc("proc_DHCSPMapping_getEnrolledDHC_bySPID", prams, dt)
+
+                If dt.Rows.Count = 1 Then
+                    Return dt.Rows(0).Item("DistrictName")
+                Else
+                    Return ""
+                End If
+            Catch ex As Exception
+                Throw
+            End Try
+        End Function
+
+        Public Function GetPracticeEnrolledDHC(ByVal strSPID As String) As DataTable
+            Dim udtDB As New Database
+            Dim dt As DataTable = New DataTable
+            Try
+                Dim prams() As SqlParameter = {udtDB.MakeInParam("@sp_id", ServiceProviderModel.SPIDDataType, ServiceProviderModel.SPIDDataSize, IIf(strSPID.Trim.Equals(String.Empty), DBNull.Value, strSPID.Trim))}
+
+                udtDB.RunProc("proc_DHCSPMapping_getEnrolledDHC_byPractice", prams, dt)
+
+                Return dt
+            Catch ex As Exception
+                Throw
+            End Try
+        End Function
+        'CRE20-006 DHC integration [End][Nichole]
+
+         
     End Class
 End Namespace
 
