@@ -176,6 +176,7 @@
     <Content Include="IDEASComboReader\IDEASComboReader.aspx" />
     <Content Include="IDEASComboReader\IDEASComboReaderGuide.aspx" />
     <Content Include="Images\banner\Administration\banner_OutreachListMaintenance.png" />
+    <Content Include="Images\banner\Administration\banner_SentOutMessageApproval.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ClaimCreation.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateEnquiry.png" />
     <Content Include="Images\banner\ClaimManagement\banner_ConversionRateManagement.png" />
@@ -260,56 +261,30 @@
     <Content Include="Images\button\progress_button\btn_DownloadNameList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadOnsiteVaccinationList_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_DownloadVaccinationFinalReport_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_DownloadVaccinationSecondReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingNameList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingOnsiteVaccinationList_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationClaimCreationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_1st_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFinalReport_2nd_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationFirstReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationReport.png" />
     <Content Include="Images\button\progress_button\btn_ProcessingVaccinationSecondReport.png" />
     <Content Include="Images\button\progress_button\btn_ProgressClaim.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressClaim_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressClaim_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProgressInputting.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressInputting_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressInputting_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProgressRectify.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressRectify_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressRectify_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProgressReview.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressReview_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressReview_tw.png" />
     <Content Include="Images\button\progress_button\btn_ProgressSubmitted.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressSubmitted_cn.png" />
-    <Content Include="Images\button\progress_button\btn_ProgressSubmitted_tw.png" />
     <Content Include="Images\button\small_button\btn_change.png" />
     <Content Include="Images\button\small_button\btn_ImportS.png" />
     <Content Include="Images\button\small_button\btn_RemoveX.png" />
@@ -363,12 +338,14 @@
     <Content Include="UIControl\DocTypeHCSP\ucReadOnlyVISA.ascx" />
     <Content Include="UIControl\DocType\ucInputAdoption.ascx" />
     <Content Include="UIControl\DocType\ucInputCCIC.ascx" />
+    <Content Include="UIControl\DocType\ucInputCommon.ascx" />
     <Content Include="UIControl\DocType\ucInputDI.ascx" />
     <Content Include="UIControl\DocType\ucInputDocumentType.ascx" />
     <Content Include="UIControl\DocType\ucInputEC.ascx" />
     <Content Include="UIControl\DocType\ucInputHKBC.ascx" />
     <Content Include="UIControl\DocType\ucInputHKID.ascx" />
     <Content Include="UIControl\DocType\ucInputID235B.ascx" />
+    <Content Include="UIControl\DocType\ucInputISSHK.ascx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
     <Content Include="UIControl\DocType\ucInputPASS.ascx" />
@@ -379,12 +356,14 @@
     <Content Include="UIControl\DocType\ucReadOnlyADOPC.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyCCIC.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyCommon.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyCommonNew.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyDI.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyDocumnetType.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyEC.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyHKBC.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyHKIC.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyID235B.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyISSHK.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOTHER.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyOW.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyPASS.ascx" />
@@ -1115,6 +1094,13 @@
       <DependentUpon>ucInputCCIC.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucInputCommon.ascx.designer.vb">
+      <DependentUpon>ucInputCommon.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputCommon.ascx.vb">
+      <DependentUpon>ucInputCommon.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucInputDI.ascx.designer.vb">
       <DependentUpon>ucInputDI.ascx</DependentUpon>
     </Compile>
@@ -1158,6 +1144,13 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucInputID235B.ascx.vb">
       <DependentUpon>ucInputID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputISSHK.ascx.designer.vb">
+      <DependentUpon>ucInputISSHK.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputISSHK.ascx.vb">
+      <DependentUpon>ucInputISSHK.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucInputOTHER.ascx.designer.vb">
@@ -1230,6 +1223,13 @@
       <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCommonNew.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCommonNew.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCommonNew.ascx.vb">
+      <DependentUpon>ucReadOnlyCommonNew.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyDI.ascx.designer.vb">
       <DependentUpon>ucReadOnlyDI.ascx</DependentUpon>
     </Compile>
@@ -1270,6 +1270,13 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyID235B.ascx.vb">
       <DependentUpon>ucReadOnlyID235B.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyISSHK.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyISSHK.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyISSHK.ascx.vb">
+      <DependentUpon>ucReadOnlyISSHK.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyOTHER.ascx.designer.vb">

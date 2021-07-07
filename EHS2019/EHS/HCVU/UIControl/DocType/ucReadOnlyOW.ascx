@@ -48,13 +48,7 @@
                     <asp:Label ID="lblVDocNoText" runat="server" Text="<%$ Resources:Text, OTHERDocNo %>"></asp:Label></td>
                 <td valign="top">
                     <asp:Label ID="lblVDocNo" runat="server" CssClass="tableText"></asp:Label></td>
-            </tr>
-            <tr>
-                <td valign="top">
-                    <asp:Label ID="lblVDOBText" runat="server" Text="<%$ Resources:Text, DOB %>"></asp:Label></td>
-                <td valign="top">
-                    <asp:Label ID="lblVDOB" runat="server" CssClass="tableText"></asp:Label></td>
-            </tr>
+            </tr>           
             <tr>
                 <td valign="top">
                     <asp:Label ID="lblVNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
@@ -68,6 +62,12 @@
                 </td>
                 <td valign="top">
                     <asp:Label ID="lblVGender" runat="server" CssClass="tableText"></asp:Label></td>
+            </tr>
+             <tr>
+                <td valign="top">
+                    <asp:Label ID="lblVDOBText" runat="server" Text="<%$ Resources:Text, DOB %>"></asp:Label></td>
+                <td valign="top">
+                    <asp:Label ID="lblVDOB" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
         </table>
     </asp:View>

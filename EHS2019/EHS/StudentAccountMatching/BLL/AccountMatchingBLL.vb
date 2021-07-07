@@ -827,7 +827,7 @@ Public Class AccountMatchingBLL
                 DocTypeModel.DocTypeCode.RFNo8,
                 DocTypeModel.DocTypeCode.OTHER
 
-                blnIsValid = Validate_NonEHSDocType(udtEHSPersonalInfo)
+                blnIsValid = Validate_NonEHSDocType(udtEHSPersonalInfo, udtEHSPersonalInfo.DocCode)
 
                 ' CRE20-0022 (Immu record) [Start][Martin]
             Case DocTypeModel.DocTypeCode.CCIC
@@ -1546,7 +1546,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.HKIC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1608,7 +1608,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1680,7 +1680,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.HKBC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1707,7 +1707,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ADOPC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1754,7 +1754,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.DI)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1803,7 +1803,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.ID235B)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1853,7 +1853,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.REPMT)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1908,7 +1908,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.VISA)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1925,7 +1925,7 @@ Public Class AccountMatchingBLL
     ' CRE19-001 (VSS 2019) [Start][Winnie]
     ' ----------------------------------------------------------------------------------------
     ' Non EHS Doc Type
-    Private Function Validate_NonEHSDocType(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel) As Boolean
+    Private Function Validate_NonEHSDocType(ByRef udtEHSPersonalInfo As EHSPersonalInformationModel, ByVal strDocTypeCode As String)
         Dim isValid As Boolean = True
         Dim udtSM As SystemMessage = Nothing
         Dim udtformatter As New Common.Format.Formatter
@@ -1947,7 +1947,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, strDocTypeCode)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -1986,7 +1986,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -2023,7 +2023,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.ROP140)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -2060,7 +2060,8 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
+
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If

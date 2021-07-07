@@ -82,7 +82,6 @@ Namespace Component.Scheme
             PPP
             SSSCMC
             COVID19     ' CRE20-0022 (Immu record) [Winnie SUEN]
-            COVID19CBD
             COVID19RVP
             COVID19OR
         End Enum

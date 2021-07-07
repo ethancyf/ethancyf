@@ -40,28 +40,7 @@
                         <td valign="top">
                         </td>
                     </tr>
-                    <tr>
-                        <td valign="top">
-                            <asp:Label ID="lblDOBOriginalText" runat="server"></asp:Label></td>
-                        <td valign="top">
-                            <asp:Label ID="lblDOBOriginal" runat="server" CssClass="tableText"></asp:Label></td>
-                        <td valign="top" style="padding-bottom: 5px; width: 350px;">
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td valign="top">
-                                        <asp:TextBox ID="txtDOB" runat="server" Enabled="False" MaxLength="10" Width="75px"
-                                            onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
-                                            onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
-                                            onblur="filterDateInput(this);"></asp:TextBox>&nbsp;
-                                        <asp:Image ID="imgDOBError" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
-                                </tr>
-                             
-                            </table>
-                        </td>
-                        <td style="padding-bottom: 5px;" valign="top">
-                        </td>
-                    </tr>
+                   
                     <tr>
                         <td valign="top" style="height: 25px">
                             <asp:Label ID="lblNameOriginalText" runat="server"></asp:Label></td>
@@ -99,6 +78,28 @@
                         <td valign="top">
                         </td>
                     </tr>
+                     <tr>
+                        <td valign="top">
+                            <asp:Label ID="lblDOBOriginalText" runat="server"></asp:Label></td>
+                        <td valign="top">
+                            <asp:Label ID="lblDOBOriginal" runat="server" CssClass="tableText"></asp:Label></td>
+                        <td valign="top" style="padding-bottom: 5px; width: 350px;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td valign="top">
+                                        <asp:TextBox ID="txtDOB" runat="server" Enabled="False" MaxLength="10" Width="75px"
+                                            onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
+                                            onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
+                                            onblur="filterDateInput(this);"></asp:TextBox>&nbsp;
+                                        <asp:Image ID="imgDOBError" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                            ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
+                                </tr>
+                             
+                            </table>
+                        </td>
+                        <td style="padding-bottom: 5px;" valign="top">
+                        </td>
+                    </tr>
                 </table>
             </td>
         </tr>
@@ -124,24 +125,7 @@
                     ID="imgNewDocNoErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" />
             </td>
-        </tr>
-        <tr>
-            <td valign="top" style="width: 220px; height: 25px">
-                <asp:Label ID="lblNewDOBText" runat="server" Text="<%$ Resources:Text, DOB %>" Height="25px"></asp:Label></td>
-            <td valign="top" style="width: 470px">
-                <table cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                        <td valign="top" colspan="4">
-                            <asp:TextBox ID="txtNewDOB" runat="server" MaxLength="10" Width="75px"
-                                onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
-                                onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
-                                onblur="filterDateInput(this);"></asp:TextBox>&nbsp;
-                            <asp:Image ID="imgNewDOBErr" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
-                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
+        </tr>        
         <tr>
             <td valign="top" style="width: 220px; height: 25px">
                 <asp:Label ID="lblNewNameText" runat="server" Text="<%$ Resources:Text, Name %>"
@@ -183,6 +167,23 @@
                 </asp:RadioButtonList>&nbsp;
                 <asp:Image ID="imgNewGenderErr" runat="server" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
                     ImageAlign="Top" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
+        </tr>
+        <tr>
+            <td valign="top" style="width: 220px; height: 25px">
+                <asp:Label ID="lblNewDOBText" runat="server" Text="<%$ Resources:Text, DOB %>" Height="25px"></asp:Label></td>
+            <td valign="top" style="width: 470px">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <td valign="top" colspan="4">
+                            <asp:TextBox ID="txtNewDOB" runat="server" MaxLength="10" Width="75px"
+                                onkeydown="filterDateInputKeyDownHandler(this, event);" onkeyup="filterDateInputKeyUpHandler(this, event);"
+                                onchange="filterDateInput(this);" onMouseOver="filterDateInput(this);" onMouseMove="filterDateInput(this);"
+                                onblur="filterDateInput(this);"></asp:TextBox>&nbsp;
+                            <asp:Image ID="imgNewDOBErr" runat="server" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:AlternateText, ErrorBtn%>"
+                                ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" /></td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
     <cc1:FilteredTextBoxExtender ID="filteredNewDocNo" runat="server" FilterType="Custom, Numbers, UppercaseLetters, LowercaseLetters"

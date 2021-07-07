@@ -1211,7 +1211,11 @@ Namespace BLL
                         Select Case strDocCode
                             Case DocTypeModel.DocTypeCode.ADOPC
                                 strMsgCode = "00222"
-                            Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                            Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS, _
+                                DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.RFNo8
+                                ' CRE20-0022 (Immu record) [Martin]
                                 strMsgCode = "00223"
                             Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                                 strMsgCode = "00110"
@@ -2170,7 +2174,10 @@ Namespace BLL
                             Select Case strDocCode
                                 Case DocTypeModel.DocTypeCode.ADOPC
                                     strMsgCode = "00222"
-                                Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                                Case DocTypeModel.DocTypeCode.DI, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.PASS, _
+                                    DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                                    DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                                    DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.RFNo8
                                     strMsgCode = "00223"
                                 Case DocTypeModel.DocTypeCode.EC, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
                                     strMsgCode = "00110"

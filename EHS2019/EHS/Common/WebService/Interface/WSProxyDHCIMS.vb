@@ -834,6 +834,8 @@ Namespace WebService.Interface
         End Function
 
         Private Function ConvertToCIMSDocumentType(ByVal strDocCode As String) As String
+            ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+            ' --------------------------------------------------------------------------------------
             Select Case strDocCode
                 Case DocTypeModel.DocTypeCode.HKIC
                     Return "ID"
@@ -855,15 +857,35 @@ Namespace WebService.Interface
                     Return "TW"
                 Case DocTypeModel.DocTypeCode.OC
                     Return "OC"
-                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                    ' --------------------------------------------------------------------------------------
                 Case DocTypeModel.DocTypeCode.CCIC
                     Return "CCIC" ' Revise Later
                 Case DocTypeModel.DocTypeCode.ROP140
                     Return "ROP140" ' Revise Later
                 Case DocTypeModel.DocTypeCode.PASS
                     Return "PASS" ' Revise Later
-                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+                    ' CRE20-0023-53 (Immu record) [Start][Winnie SUEN]
+                    ' --------------------------------------------------------------------------------------
+                Case DocTypeModel.DocTypeCode.MEP
+                    Return "MEP"
+                Case DocTypeModel.DocTypeCode.TWMTP
+                    Return "TWMTP"
+                Case DocTypeModel.DocTypeCode.TWVTD
+                    Return "TWVTD"
+                Case DocTypeModel.DocTypeCode.TWNS
+                    Return "TWNS"
+                Case DocTypeModel.DocTypeCode.MD
+                    Return "MD"
+                Case DocTypeModel.DocTypeCode.MP
+                    Return "MP"
+                Case DocTypeModel.DocTypeCode.TD
+                    Return "TD"
+                Case DocTypeModel.DocTypeCode.CEEP
+                    Return "CEEP"
+                Case DocTypeModel.DocTypeCode.ET
+                    Return "ET"
+                Case DocTypeModel.DocTypeCode.RFNo8
+                    Return "RFNo8"
+                    ' CRE20-0023-53 (Immu record) [End][Winnie SUEN]
                 Case Else
                     Throw New Exception(String.Format("Generate CIMS request object failed: Unhandle Document Type({0}).", strDocCode))
             End Select
@@ -890,21 +912,23 @@ Namespace WebService.Interface
                     End If
                 Case DocTypeModel.DocTypeCode.ADOPC
                     Return udtPersonalInfo.AdoptionPrefixNum + "/" + udtPersonalInfo.IdentityNum.Trim
-                Case DocTypeModel.DocTypeCode.OC
-                    Return udtPersonalInfo.IdentityNum
                 Case DocTypeModel.DocTypeCode.OW
                     Return udtPersonalInfo.IdentityNum
                 Case DocTypeModel.DocTypeCode.TW
                     Return udtPersonalInfo.IdentityNum
-                    ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-                    ' --------------------------------------------------------------------------------------
                 Case DocTypeModel.DocTypeCode.CCIC
                     Return udtPersonalInfo.IdentityNum
                 Case DocTypeModel.DocTypeCode.ROP140
                     Return udtPersonalInfo.IdentityNum
                 Case DocTypeModel.DocTypeCode.PASS
                     Return udtPersonalInfo.IdentityNum
-                    ' CRE20-0022 (Immu record) [End][Winnie SUEN]
+                    ' CRE20-0023 (Immu record) [Start][Winnie SUEN]
+                    ' --------------------------------------------------------------------------------------
+                Case DocTypeModel.DocTypeCode.OC, DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.CEEP, _
+                    DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MP, _
+                    DocTypeModel.DocTypeCode.TD, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.RFNo8
+                    Return udtPersonalInfo.IdentityNum
+                    ' CRE20-0023 (Immu record) [End][Winnie SUEN]
                 Case Else
                     Throw New Exception(String.Format("Generate CIMS request object failed: Unhandle Document Type({0}).", udtPersonalInfo.DocCode))
             End Select

@@ -48,14 +48,7 @@
                         Width="150px"></asp:Label></td>
                 <td valign="top" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyDocNo" runat="server" CssClass="tableText"></asp:Label></td>
-            </tr>
-            <tr>
-                <td valign="top"  runat="server" id="cellReadonlyDOBText" class="tableCellStyle">
-                    <asp:Label ID="lblReadonlyDOBText" runat="server" CssClass="tableTitle" 
-                        Width="150px"></asp:Label></td>
-                <td valign="top" class="tableCellStyle">
-                    <asp:Label ID="lblReadonlyDOB" runat="server" CssClass="tableText"></asp:Label></td>
-            </tr>
+            </tr>           
             <tr>
                 <td valign="top"  runat="server" id="cellReadonlyNameText" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyNameText" runat="server" CssClass="tableTitle" 
@@ -69,6 +62,13 @@
                         Width="150px"></asp:Label></td>
                 <td valign="top" class="tableCellStyle">
                     <asp:Label ID="lblReadonlyGender" runat="server" CssClass="tableText"></asp:Label></td>
+            </tr>
+             <tr>
+                <td valign="top"  runat="server" id="cellReadonlyDOBText" class="tableCellStyle">
+                    <asp:Label ID="lblReadonlyDOBText" runat="server" CssClass="tableTitle" 
+                        Width="150px"></asp:Label></td>
+                <td valign="top" class="tableCellStyle">
+                    <asp:Label ID="lblReadonlyDOB" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
         </tbody>
     </table>

@@ -891,6 +891,10 @@ Partial Public Class EHSAccountCreationV1
                     'Me.lblstep1a1HKIDText.Text = Me.GetGlobalResourceObject("Text", "IdentityDocNo")
                     Me.lblstep1a1HKID.Text = Me._udtFormatter.FormatDocIdentityNoForDisplay(udtEHSAccountPersonalInfo.DocCode, udtEHSAccountPersonalInfo.IdentityNum, False)
                     'Me.lblstep1a1HKID.Text = udtEHSAccountPersonalInfo.IdentityNum
+
+                Case DocTypeModel.DocTypeCode.ISSHK
+                    Me.lblstep1a1HKID.Text = Me._udtFormatter.FormatDocIdentityNoForDisplay(udtEHSAccountPersonalInfo.DocCode, udtEHSAccountPersonalInfo.IdentityNum, False)
+
             End Select
 
 
@@ -1238,6 +1242,16 @@ Partial Public Class EHSAccountCreationV1
                 blnProceed = Me.Step1b1PASSValidation(Me._udtEHSAccount)
                 ' CRE20-0022 (Immu record) [End][Martin]
 
+            Case DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET
+                'Fields checking for ISSHK only
+                blnProceed = Me.Step1b1ISSHKValidation(Me._udtEHSAccount, Me._udtEHSAccount.SearchDocCode)
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                DocTypeModel.DocTypeCode.CEEP
+                'Fields checking for Common only
+                blnProceed = Me.Step1b1CommonValidation(Me._udtEHSAccount, Me._udtEHSAccount.SearchDocCode)
+
         End Select
 
         If blnProceed Then
@@ -1368,7 +1382,6 @@ Partial Public Class EHSAccountCreationV1
                 'Input Tips 
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoVISA")
 
-                ' CRE20-0022 (Immu record) [Start][Martin]
             Case DocType.DocTypeModel.DocTypeCode.CCIC
                 'Input Tips 
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoCCIC")
@@ -1388,7 +1401,34 @@ Partial Public Class EHSAccountCreationV1
             Case DocType.DocTypeModel.DocTypeCode.TW
                 'Input Tips 
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTW")
-                ' CRE20-0022 (Immu record) [End][Martin]
+
+            Case DocType.DocTypeModel.DocTypeCode.ISSHK
+                'Input Tips 
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoISSHK")
+
+            Case DocType.DocTypeModel.DocTypeCode.MEP
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoMEP")
+            Case DocType.DocTypeModel.DocTypeCode.TWMTP
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTWMTP")
+            Case DocType.DocTypeModel.DocTypeCode.TWPAR
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTWPAR")
+            Case DocType.DocTypeModel.DocTypeCode.TWVTD
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTWVTD")
+            Case DocType.DocTypeModel.DocTypeCode.TWNS
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTWNS")
+            Case DocType.DocTypeModel.DocTypeCode.MD
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoMD")
+            Case DocType.DocTypeModel.DocTypeCode.MP
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoMP")
+            Case DocType.DocTypeModel.DocTypeCode.TD
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoTD")
+            Case DocType.DocTypeModel.DocTypeCode.CEEP
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoCEEP")
+            Case DocType.DocTypeModel.DocTypeCode.ET
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoET")
+            Case DocType.DocTypeModel.DocTypeCode.RFNo8
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoRFNo8")
+
         End Select
 
         'Format: Practice Name (Practice display Seq/Practice ID) [Practice Address]
@@ -1469,6 +1509,18 @@ Partial Public Class EHSAccountCreationV1
             Case DocTypeModel.DocTypeCode.PASS
                 ucInputDocType = Me.udcStep1b1InputDocumentType.GetPASSControl()
                 ' CRE20-0022 (Immu record) [End][Martin]
+
+            Case DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetISSHKControl()
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+               DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+               DocTypeModel.DocTypeCode.CEEP
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetCommonControl()
+
+            Case DocTypeModel.DocTypeCode.RFNo8
+                ucInputDocType = Me.udcStep1b1InputDocumentType.GetRFNo8Control()
+
         End Select
 
         If Not ucInputDocType Is Nothing Then
@@ -1490,7 +1542,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
         Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.HKIC)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputHKIC.SetENameError(True)
@@ -1601,7 +1653,7 @@ Partial Public Class EHSAccountCreationV1
         End If
 
         ' Name in English
-        Me._systemMessage = Me._validator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.EC)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputEC.SetENameError(True)
@@ -1716,7 +1768,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputHKBC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputHKBC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.HKBC)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputHKBC.SetENameError(True)
@@ -1779,7 +1831,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputDI.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputDI.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName, DocTypeModel.DocTypeCode.DI)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputDI.SetENameError(True)
@@ -1831,7 +1883,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputID235B.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputID235B.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ID235B)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputID235B.SetENameError(True)
@@ -1892,7 +1944,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputReentryPermit.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputReentryPermit.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName, DocType.DocTypeModel.DocTypeCode.REPMT)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputReentryPermit.SetENameError(True)
@@ -1941,7 +1993,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputVISA.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputVISA.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputVISA.ENameSurName, udcInputVISA.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputVISA.ENameSurName, udcInputVISA.ENameFirstName, DocTypeModel.DocTypeCode.VISA)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputVISA.SetENameError(True)
@@ -1988,7 +2040,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputAdoption.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputAdoption.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputAdoption.ENameSurName, udcInputAdoption.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputAdoption.ENameSurName, udcInputAdoption.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ADOPC)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputAdoption.SetENameError(True)
@@ -2049,7 +2101,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputOW.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputOW.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName, DocType.DocTypeModel.DocTypeCode.OW)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputOW.SetENameError(True)
@@ -2090,7 +2142,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputTW.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputTW.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName, DocType.DocTypeModel.DocTypeCode.TW)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputTW.SetENameError(True)
@@ -2131,7 +2183,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputRFNo8.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputRFNo8.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputRFNo8.ENameSurName, udcInputRFNo8.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputRFNo8.ENameSurName, udcInputRFNo8.ENameFirstName, DocTypeModel.DocTypeCode.RFNo8)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputRFNo8.SetENameError(True)
@@ -2174,7 +2226,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.CCIC)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputCCIC.SetENameError(True)
@@ -2228,7 +2280,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputROP140.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputROP140.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputROP140.ENameSurName, udcInputROP140.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputROP140.ENameSurName, udcInputROP140.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ROP140)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputROP140.SetENameError(True)
@@ -2309,7 +2361,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocType.DocTypeModel.DocTypeCode.PASS)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputPASS.SetENameError(True)
@@ -2362,6 +2414,104 @@ Partial Public Class EHSAccountCreationV1
     End Function
 
     ' CRE20-0022 (Immu record) [End][Martin]
+
+    'For ISSHK - NRC
+    Private Function Step1b1ISSHKValidation(ByRef udtEHSAccount As EHSAccountModel, ByVal strDocTypeCode As String) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputISSHK As ucInputISSHK = Me.udcStep1b1InputDocumentType.GetISSHKControl()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+        Dim strDOI As String = String.Empty
+        udcInputISSHK.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputISSHK.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputISSHK.ENameSurName, udcInputISSHK.ENameFirstName, strDocTypeCode)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputISSHK.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputISSHK.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputISSHK.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        ''Nationality checking
+        'If udcInputISSHK.PassportIssueRegion.Equals(String.Empty) Then
+        '    Me._systemMessage = New Common.ComObject.SystemMessage("990000", "E", "00462")
+        '    isValid = False
+        '    udcInputISSHK.SetPassportIssueRegionError(True)
+
+        '    udcMsgBoxErr.AddMessage(Me._systemMessage, _
+        '                             New String() {"%en", "%tc", "%sc"}, _
+        '                             New String() {HttpContext.GetGlobalResourceObject("Text", "Nationality", New System.Globalization.CultureInfo(CultureLanguage.English)), _
+        '                                           HttpContext.GetGlobalResourceObject("Text", "Nationality", New System.Globalization.CultureInfo(CultureLanguage.TradChinese)), _
+        '                                           HttpContext.GetGlobalResourceObject("Text", "Nationality", New System.Globalization.CultureInfo(CultureLanguage.SimpChinese)) _
+        '                                           })
+        'End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputISSHK.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputISSHK.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputISSHK.Gender
+            udtEHSAccountPersonalInfo.DocCode = strDocTypeCode
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+            'udtEHSAccountPersonalInfo.Nationality = udcInputISSHK.Nationality
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(strDocTypeCode, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+    End Function
+
+
+    'For Common doc type
+    Private Function Step1b1CommonValidation(ByRef udtEHSAccount As EHSAccountModel, ByVal strDocTypeCode As String) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputCommon As ucInputCommon = Me.udcStep1b1InputDocumentType.GetCommonControl()
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList(0)
+
+        udcInputCommon.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
+        udcInputCommon.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
+
+        Me._systemMessage = Me._validator.chkEngName(udcInputCommon.ENameSurName, udcInputCommon.ENameFirstName, strDocTypeCode)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputCommon.SetENameError(True)
+            Me.udcMsgBoxErr.AddMessage(_systemMessage)
+        End If
+
+        Me._systemMessage = Me._validator.chkGender(udcInputCommon.Gender)
+        If Not Me._systemMessage Is Nothing Then
+            isValid = False
+            udcInputCommon.SetGenderError(True)
+            Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+        End If
+
+        If isValid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputCommon.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputCommon.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputCommon.Gender
+            udtEHSAccountPersonalInfo.DocCode = strDocTypeCode
+            udtEHSAccountPersonalInfo.SetDOBTypeSelected(True)
+
+            Me._systemMessage = Me.EHSAccountBasicValidation(strDocTypeCode, udtEHSAccount)
+            If Not Me._systemMessage Is Nothing Then
+                isValid = False
+                Me.udcMsgBoxErr.AddMessage(Me._systemMessage)
+            End If
+        End If
+
+        Return isValid
+
+
+    End Function
 
     Private Function EHSAccountBasicValidation(ByVal strDocCode As String, ByVal udtEHSAccount As EHSAccountModel) As SystemMessage
         Return Me._udtClaimRulesBLL.CheckCreateEHSAccount(udtEHSAccount.SchemeCode, strDocCode, udtEHSAccount, ClaimRules.ClaimRulesBLL.Eligiblity.Check)

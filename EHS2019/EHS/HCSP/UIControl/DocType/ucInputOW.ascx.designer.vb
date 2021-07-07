@@ -86,87 +86,6 @@ Partial Public Class ucInputOW
     Protected WithEvents imgDocumentNoError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''lblDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblDOB As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''rbDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rbDOB As Global.System.Web.UI.WebControls.RadioButton
-
-    '''<summary>
-    '''txtDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtDOB As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''imgDOBError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgDOBError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''trDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trDOBInWord As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''rbDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rbDOBInWord As Global.System.Web.UI.WebControls.RadioButton
-
-    '''<summary>
-    '''ddlDOBinWordType control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlDOBinWordType As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
-    '''txtDOBInWord control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtDOBInWord As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''imgDOBInWordError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgDOBInWordError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
     '''lblEName control.
     '''</summary>
     '''<remarks>
@@ -255,6 +174,87 @@ Partial Public Class ucInputOW
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgGenderError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDOB As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rbDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rbDOB As Global.System.Web.UI.WebControls.RadioButton
+
+    '''<summary>
+    '''txtDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDOB As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgDOBError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDOBError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''trDOBInWord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trDOBInWord As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''rbDOBInWord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rbDOBInWord As Global.System.Web.UI.WebControls.RadioButton
+
+    '''<summary>
+    '''ddlDOBinWordType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlDOBinWordType As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''txtDOBInWord control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDOBInWord As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgDOBInWordError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDOBInWordError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''trTransactionNo_M control.

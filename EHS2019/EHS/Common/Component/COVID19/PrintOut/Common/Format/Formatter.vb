@@ -455,7 +455,18 @@ Namespace Component.COVID19.PrintOut.Common.Format
                         Global.Common.Component.DocType.DocTypeModel.DocTypeCode.HKP,
                         Global.Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
                         Global.Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.PASS
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.PASS,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ISSHK,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MEP,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWMTP,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWPAR,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWVTD,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TWNS,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MD,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ET
                         ' CRE19-001 (VSS 2019) [End][Winnie]
 
                         'Mask sample 1

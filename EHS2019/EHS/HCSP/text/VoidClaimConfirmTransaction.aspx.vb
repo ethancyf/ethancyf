@@ -1741,7 +1741,7 @@ Partial Public Class VoidClaimConfirmDetail
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 'No text version
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -1811,7 +1811,7 @@ Partial Public Class VoidClaimConfirmDetail
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 'No text version
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 

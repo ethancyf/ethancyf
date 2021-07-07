@@ -194,33 +194,6 @@ Partial Public Class ucReadOnlyRFno8
     Protected WithEvents lblReadonlyDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''cellReadonlyDOBText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cellReadonlyDOBText As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
-    '''lblReadonlyDOBText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblReadonlyDOBText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblReadonlyDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblReadonlyDOB As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''cellReadonlyNameText control.
     '''</summary>
     '''<remarks>
@@ -273,6 +246,33 @@ Partial Public Class ucReadOnlyRFno8
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReadonlyGender As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''cellReadonlyDOBText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cellReadonlyDOBText As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblReadonlyDOBText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyDOBText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblReadonlyDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblReadonlyDOB As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''panReadonlyHorizontal control.

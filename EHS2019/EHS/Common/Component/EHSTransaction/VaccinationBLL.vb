@@ -802,7 +802,10 @@ Namespace Component.EHSTransaction
 
                 Case DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.ADOPC, DocTypeModel.DocTypeCode.OW, _
                     DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140, DocTypeModel.DocTypeCode.PASS, _
-                    DocTypeModel.DocTypeCode.TW ' CRE20-0022 (Immu record) [Martin]
+                    DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, _
+                    DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, _
+                    DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, _
+                    DocTypeModel.DocTypeCode.RFNo8
                     Return False
 
                 Case Else

@@ -43,6 +43,8 @@ Partial Public Class ucReadOnlyDocumnetType
         Public Const CCIC As String = "ucReadOnlyDocumentType_CCIC"
         Public Const ROP140 As String = "ucReadOnlyDocumentType_ROP140"
         Public Const PASS As String = "ucReadOnlyDocumentType_PASS"
+        Public Const ISSHK As String = "ucReadOnlyDocumentType_ISSHK"
+        Public Const Common As String = "ucReadOnlyDocumentType_Common"
 
         ' CRE20-0022 (Immu record) [End][Martin]
     End Class
@@ -162,7 +164,20 @@ Partial Public Class ucReadOnlyDocumnetType
                     udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyPASS.ascx", strFolderPath))
                     udcReadOnlyDocumentType.ID = DocumentControlID.PASS
                     udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
-                    ' CRE20-0022 (Immu record) [End][Martin]
+                    ' CRE20-0022 (Immu record) [End][Martin
+
+                Case DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET
+                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyISSHK.ascx", strFolderPath))
+                    udcReadOnlyDocumentType.ID = DocumentControlID.ISSHK
+                    udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(Me._documentType)
+
+                Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                    DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                    DocTypeModel.DocTypeCode.CEEP
+                    udcReadOnlyDocumentType = Me.LoadControl(String.Format("{0}/ucReadOnlyCommon.ascx", strFolderPath))
+                    udcReadOnlyDocumentType.ID = DocumentControlID.Common
+                    udcReadOnlyDocumentType.EHSAccountPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(Me._documentType)
+
 
             End Select
             udcReadOnlyDocumentType.EHSAccount = Me._udtEHSAccount

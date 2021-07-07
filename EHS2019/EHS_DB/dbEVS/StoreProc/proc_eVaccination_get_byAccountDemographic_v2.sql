@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-53 (COVID19)
+-- Modified by:		Winnie SUEN
+-- Modified date:	2 Jul 2021
+-- Description:		Share vaccine to CIMS for new doc
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -188,8 +196,8 @@ DECLARE @rowcount_PatientNotMatch int
 DECLARE @IdentityNum2 varchar(20)  
    
  -- =============================================  
- -- Filter not support document type (HA CMS Support HKIC/HKID/HKBC/CE only)  
- -- Filter not support document type (DH CIMS Support HKIC/HKID/HKBC/CE/"Doc/I"/REPMT/VISA/ADOPC only )  
+ -- Filter not support document type (HA CMS Support HKIC/HKID/HKBC/CE/CCIC/ROP140 only)  
+ -- Filter not support document type (DH CIMS Support HKIC/HKID/HKBC/CE/"Doc/I"/REPMT/VISA/ADOPC/OC/HKP/CCIC/ROP140/PASS/MD/XOTH/RFNo8 only )  
   -- =============================================  
 IF LTRIM(RTRIM(@In_Target_System)) = 'CIMS2'
 BEGIN
@@ -208,7 +216,7 @@ END
  END
  ELSE IF LTRIM(RTRIM(@In_Target_System)) = 'CIMS'
  BEGIN
-	IF @In_Doc_Code NOT IN ('HKID','HKIC','HKBC','EC','DOCI','REPMT','VISA','ADOPC','OC','HKP','CCIC','ROP140','PASS')
+	IF @In_Doc_Code NOT IN ('HKID','HKIC','HKBC','EC','DOCI','REPMT','VISA','ADOPC','OC','HKP','CCIC','ROP140','PASS','MD','XOTH','RFNo8')
 	BEGIN   
 		SET @Out_PatientResultCode = 1 -- Patient NOT found  
 		SET @Out_VaccineResultCode = 2 -- No record returned  
@@ -359,6 +367,18 @@ CREATE TABLE #tempVaccine
 	BEGIN
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('OC')
 		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('PASS')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('MEP')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('TWMTP')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('TD')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('CEEP')
+	END
+	ELSE IF @In_Doc_Code='XOTH' -- Others
+	BEGIN
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('TWPAR')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('TWVTD')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('TWNS')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('MP')
+		INSERT INTO @AvailableDocCode (Doc_Code) VALUES('ET')
 	END
 	ELSE
 	BEGIN 	  
@@ -425,7 +445,7 @@ CREATE TABLE #tempVaccine
  SET @In_Eng_Name = REPLACE(REPLACE(REPLACE(REPLACE(@In_Eng_Name,',',''),' ',''),'-','') ,'''','') 
  
   
- -- Convert string ('001,002,003,001-0910,002-0910') to XML   
+ -- Convert string ('001,002,003,005,001-0910,002-0910') to XML   
 INSERT INTO #tempVaccineCode  
 SELECT * FROM dbo.func_split_string(@In_VaccineCode,',')
 

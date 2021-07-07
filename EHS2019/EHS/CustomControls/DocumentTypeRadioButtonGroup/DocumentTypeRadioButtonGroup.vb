@@ -25,6 +25,7 @@ Public Class DocumentTypeRadioButtonGroup
         VSS
         VSS_COVID19
         VSS_NIA_MMR
+        COVID19OR
     End Enum
 
 #End Region
@@ -215,8 +216,6 @@ Public Class DocumentTypeRadioButtonGroup
 
                 udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
 
-                ' CRE20-003 (Batch Upload) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
             Case FilterDocCode.VSS_NIA_MMR
                 Dim udtDocTypeHKIC As DocTypeModel = udtDocTypeModelList.Filter(DocType.DocTypeModel.DocTypeCode.HKIC)
                 Dim udtDocTypeEC As DocTypeModel = udtDocTypeModelList.Filter(DocType.DocTypeModel.DocTypeCode.EC)
@@ -227,10 +226,7 @@ Public Class DocumentTypeRadioButtonGroup
                 udtDocTypeList.Add(udtDocTypeEC)
 
                 udtDocTypeModelList = udtDocTypeList.SortByDisplaySeq()
-                ' CRE20-003 (Batch Upload) [End][Chris YIM]
 
-                ' CRE20-0022 (Immu record) [Start][Chris YIM]
-                ' ---------------------------------------------------------------------------------------------------------
             Case FilterDocCode.VSS
                 If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
                     Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
@@ -245,7 +241,12 @@ Public Class DocumentTypeRadioButtonGroup
 
                 udtDocTypeModelList = udtDocTypeModelList.FilterForVSSCOVID19Claim()
 
-                ' CRE20-0022 (Immu record) [End][Chris YIM]
+            Case FilterDocCode.COVID19OR
+                If Me._udtSchemeDocTypeList Is Nothing OrElse Me._udtSchemeDocTypeList.Count = 0 Then
+                    Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
+                End If
+
+                udtDocTypeModelList = udtDocTypeModelList.FilterForCOVID19ORClaim()
 
             Case FilterDocCode.None
                 'Nothing to do

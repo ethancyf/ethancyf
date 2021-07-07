@@ -3168,6 +3168,9 @@ EHS2019/EHS/HCSP/UIControl/DocType/ucInputAdoption.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputCCIC.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputCCIC.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputCCIC.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucInputCommon.ascx -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucInputCommon.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucInputCommon.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputDI.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputDI.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputDI.ascx.vb -text
@@ -3189,6 +3192,9 @@ EHS2019/EHS/HCSP/UIControl/DocType/ucInputHKIDSmartIDsignal.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputID235B.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputID235B.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputID235B.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucInputISSHK.ascx -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucInputISSHK.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucInputISSHK.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputOTHER.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputOTHER.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucInputOTHER.ascx.vb -text
@@ -3219,6 +3225,9 @@ EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyAdoption.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyCCIC.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyCCIC.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyCCIC.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyCommon.ascx -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyCommon.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyCommon.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyDI.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyDI.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyDI.ascx.vb -text
@@ -3234,6 +3243,9 @@ EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyHKIC.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyID235B.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyID235B.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyID235B.ascx.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyISSHK.ascx -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyISSHK.ascx.designer.vb -text
+EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyISSHK.ascx.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyOTHER.ascx -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyOTHER.ascx.designer.vb -text
 EHS2019/EHS/HCSP/UIControl/DocType/ucReadOnlyOTHER.ascx.vb -text
@@ -4837,6 +4849,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucInputAdoption.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputCCIC.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputCCIC.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputCCIC.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputCommon.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputCommon.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputCommon.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputDI.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputDI.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputDI.ascx.vb -text
@@ -4856,6 +4871,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucInputHKID.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputID235B.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputID235B.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputID235B.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputISSHK.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputISSHK.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucInputISSHK.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputOTHER.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputOTHER.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucInputOTHER.ascx.vb -text
@@ -4886,6 +4904,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCCIC.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCommon.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCommon.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCommon.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCommonNew.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCommonNew.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyCommonNew.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyDI.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyDI.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyDI.ascx.vb -text
@@ -4904,6 +4925,9 @@ EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyHKIC.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyID235B.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyID235B.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyID235B.ascx.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyISSHK.ascx -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyISSHK.ascx.designer.vb -text
+EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyISSHK.ascx.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyOTHER.ascx -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyOTHER.ascx.designer.vb -text
 EHS2019/EHS/HCVU/UIControl/DocType/ucReadOnlyOTHER.ascx.vb -text

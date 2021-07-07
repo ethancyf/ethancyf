@@ -12847,7 +12847,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.HKIC)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputHKIC.SetENameModificationError(True)
@@ -13170,7 +13170,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputEC.SetENameError(True)
@@ -13341,7 +13341,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName, DocTypeModel.DocTypeCode.HKBC)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputHKBC.SetENameError(True)
@@ -13420,7 +13420,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputAdopt.ENameSurName, udcInputAdopt.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputAdopt.ENameSurName, udcInputAdopt.ENameFirstName, DocTypeModel.DocTypeCode.ADOPC)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputAdopt.SetENameError(True)
@@ -13554,7 +13554,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName, DocTypeModel.DocTypeCode.DI)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputDI.SetENameError(True)
@@ -13663,7 +13663,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName, DocTypeModel.DocTypeCode.ID235B)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputID235B.SetENameError(True)
@@ -13767,7 +13767,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName, DocTypeModel.DocTypeCode.REPMT)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputReentryPermit.SetENameError(True)
@@ -13882,7 +13882,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputVisa.ENameSurName, udcInputVisa.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputVisa.ENameSurName, udcInputVisa.ENameFirstName, DocType.DocTypeModel.DocTypeCode.VISA)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputVisa.SetENameError(True)
@@ -13983,7 +13983,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName, DocType.DocTypeModel.DocTypeCode.OW)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputOW.SetENameError(True)
@@ -14070,7 +14070,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName, DocType.DocTypeModel.DocTypeCode.TW)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputTW.SetENameError(True)
@@ -14157,7 +14157,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputRFNo8.ENameSurName, udcInputRFNo8.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputRFNo8.ENameSurName, udcInputRFNo8.ENameFirstName, DocType.DocTypeModel.DocTypeCode.RFNo8)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputRFNo8.SetENameError(True)
@@ -14244,7 +14244,7 @@ Partial Public Class VaccinationFileRectification ' 010414
         End If
 
         'English Name
-        sm = Me._udtValidator.chkEngName(udcInputOTHER.ENameSurName, udcInputOTHER.ENameFirstName)
+        sm = Me._udtValidator.chkEngName(udcInputOTHER.ENameSurName, udcInputOTHER.ENameFirstName, DocType.DocTypeModel.DocTypeCode.OTHER)
         If Not IsNothing(sm) Then
             isValid = False
             udcInputOTHER.SetENameError(True)

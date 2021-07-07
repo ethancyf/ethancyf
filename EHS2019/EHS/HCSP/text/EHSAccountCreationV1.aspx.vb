@@ -988,7 +988,7 @@ Namespace Text
             udcInputHKIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
             Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = udtEHSAccount.EHSPersonalInformationList.Filter(udtEHSAccount.SearchDocCode)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName, DocTypeModel.DocTypeCode.HKIC)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputHKIC.SetENameError(True)
@@ -1098,7 +1098,7 @@ Namespace Text
             End If
 
             ' Name in English
-            Me._systemMessage = Me._validator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName, DocTypeModel.DocTypeCode.EC)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputEC.SetSurnameError(True)
@@ -1202,7 +1202,7 @@ Namespace Text
             udcInputHKBC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
             udcInputHKBC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName, DocTypeModel.DocTypeCode.HKBC)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputHKBC.SetENameError(True)
@@ -1266,7 +1266,7 @@ Namespace Text
             udcInputDI.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
             udcInputDI.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName, DocTypeModel.DocTypeCode.DI)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputDI.SetSurnameError(True)
@@ -1318,7 +1318,7 @@ Namespace Text
             udcInputID235B.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
             udcInputID235B.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName, DocTypeModel.DocTypeCode.ID235B)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputID235B.SetENameError(True)
@@ -1379,7 +1379,7 @@ Namespace Text
             udcInputReentryPermit.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
             udcInputReentryPermit.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName, DocTypeModel.DocTypeCode.REPMT)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputReentryPermit.SetENameError(True)
@@ -1427,7 +1427,7 @@ Namespace Text
             udcInputVISA.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
             udcInputVISA.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputVISA.ENameSurName, udcInputVISA.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputVISA.ENameSurName, udcInputVISA.ENameFirstName, DocTypeModel.DocTypeCode.VISA)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputVISA.SetENameError(True)
@@ -1474,7 +1474,7 @@ Namespace Text
             udcInputAdoption.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
             udcInputAdoption.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-            Me._systemMessage = Me._validator.chkEngName(udcInputAdoption.ENameSurName, udcInputAdoption.ENameFirstName)
+            Me._systemMessage = Me._validator.chkEngName(udcInputAdoption.ENameSurName, udcInputAdoption.ENameFirstName, DocTypeModel.DocTypeCode.ADOPC)
             If Not Me._systemMessage Is Nothing Then
                 isValid = False
                 udcInputAdoption.SetGivenNameError(True)

@@ -74,6 +74,8 @@ Partial Public Class ucReadOnlyDocumnetType
         Public Const CCIC As String = "ucReadOnlyCCIC.ascx"
         Public Const ROP140 As String = "ucReadOnlyROP140.ascx"
         Public Const PASS As String = "ucReadOnlyPASS.ascx"
+        Public Const ISSHK As String = "ucReadOnlyISSHK.ascx"
+        Public Const CommonNew As String = "ucReadOnlyCommonNew.ascx"
         ' CRE20-0022 (Immu record) [End][Martin]
 
     End Class
@@ -331,6 +333,32 @@ Partial Public Class ucReadOnlyDocumnetType
                             SetNormal(udcReadOnlyPASS)
                         End If
                         ' CRE20-0022 (Immu record) [End][Martin]
+
+                    Case DocTypeCode.ISSHK, DocTypeCode.ET
+                        Dim udcReadOnlyISSHK As ucReadOnlyISSHK = LoadControl(UserControlPath.ISSHK)
+                        udcReadOnlyISSHK.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyISSHK)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyISSHK)
+                        End If
+
+                    Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                        DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                        DocTypeModel.DocTypeCode.CEEP
+                        Dim udcReadOnlyCommonNew As ucReadOnlyCommonNew = LoadControl(UserControlPath.CommonNew)
+                        udcReadOnlyCommonNew.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
+                        If _blnIsInvalidAccount Then
+                            If blnAddToOriginalAccPlaceHolder Then
+                                SetOriginal(udcReadOnlyCommonNew)
+                            End If
+                        Else
+                            SetNormal(udcReadOnlyCommonNew)
+                        End If
+
+
 
                 End Select
             Case EnumDisplayFormat.EnquiryFormat

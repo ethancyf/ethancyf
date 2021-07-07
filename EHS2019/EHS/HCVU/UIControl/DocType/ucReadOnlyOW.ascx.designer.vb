@@ -194,24 +194,6 @@ Partial Public Class ucReadOnlyOW
     Protected WithEvents lblVDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblVDOBText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblVDOBText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblVDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblVDOB As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''lblVNameText control.
     '''</summary>
     '''<remarks>
@@ -255,4 +237,22 @@ Partial Public Class ucReadOnlyOW
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVGender As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVDOBText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVDOBText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblVDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVDOB As Global.System.Web.UI.WebControls.Label
 End Class

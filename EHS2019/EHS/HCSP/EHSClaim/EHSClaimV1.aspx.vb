@@ -1,4 +1,4 @@
-Imports AjaxControlToolkit
+ï»¿Imports AjaxControlToolkit
 Imports Common.ComFunction
 Imports Common.ComObject
 Imports Common.Component
@@ -1215,6 +1215,7 @@ Partial Public Class EHSClaimV1
                         ' CRE19-003 (Opt voucher capping) [End][Winnie]
 
                         isValid = Me.CheckSchemeAvailableForEHSAccount(udtEHSAccount, udtNewPracticeDisplay, udtSchemeClaim)
+
                     End If
 
                     'Log
@@ -2583,7 +2584,6 @@ Partial Public Class EHSClaimV1
                     End If
                 End If
 
-                ' CRE20-0022 (Immu record) [Start][Martin]
             Case DocTypeModel.DocTypeCode.HKBC, _
                 DocTypeModel.DocTypeCode.DI, _
                 DocTypeModel.DocTypeCode.REPMT, _
@@ -2595,8 +2595,18 @@ Partial Public Class EHSClaimV1
                 DocTypeModel.DocTypeCode.RFNo8, _
                 DocTypeModel.DocTypeCode.CCIC, _
                 DocTypeModel.DocTypeCode.ROP140, _
-                DocTypeModel.DocTypeCode.PASS
-                ' CRE20-0022 (Immu record) [End][Martin]
+                DocTypeModel.DocTypeCode.PASS, _
+                DocTypeModel.DocTypeCode.ISSHK, _
+                DocTypeModel.DocTypeCode.MEP, _
+                DocTypeModel.DocTypeCode.TWMTP, _
+                DocTypeModel.DocTypeCode.TWPAR, _
+                DocTypeModel.DocTypeCode.TWVTD, _
+                DocTypeModel.DocTypeCode.TWNS, _
+                DocTypeModel.DocTypeCode.MD, _
+                DocTypeModel.DocTypeCode.MP, _
+                DocTypeModel.DocTypeCode.TD, _
+                DocTypeModel.DocTypeCode.CEEP, _
+                DocTypeModel.DocTypeCode.ET
 
                 ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
                 ' ----------------------------------------------------------
@@ -3450,15 +3460,26 @@ Partial Public Class EHSClaimV1
             If udtSelectedSchemeClaim Is Nothing Then
                 udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
             Else
-                If udtSelectedSchemeClaim.SchemeCode = SchemeClaimModel.VSS OrElse udtSelectedSchemeClaim.SchemeCode = SchemeClaimModel.RVP Then
-                    If ClaimMode = Common.Component.ClaimMode.COVID19 Then
-                        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_COVID19)
-                    Else
-                        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
-                    End If
-                Else
-                    udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
-                End If
+                Select Case udtSelectedSchemeClaim.SchemeCode
+                    Case SchemeClaimModel.VSS, SchemeClaimModel.RVP
+                        If ClaimMode = Common.Component.ClaimMode.COVID19 Then
+                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_COVID19)
+                        Else
+                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
+                        End If
+                        'Case SchemeClaimModel.COVID19OR
+                        '    Dim udtCOVID19BLL As New COVID19.COVID19BLL
+
+                        '    If Not udtCOVID19BLL.DisplayDocTypeISSHK(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
+                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.COVID19OR)
+                        '    Else
+                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                        '    End If
+
+                    Case Else
+                        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                End Select
+
             End If
             ' CRE20-0022 (Immu record) [End][Chris YIM]
 
@@ -4380,7 +4401,6 @@ Partial Public Class EHSClaimV1
                     udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.ENHVSSO) OrElse _
                     udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.PPP) OrElse _
                     udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19) OrElse _
-                    udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19CBD) OrElse _
                     udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19RVP) OrElse _
                     udtNewSchemeClaim.ControlType.Equals(SchemeClaimModel.EnumControlType.COVID19OR) _
                 Then ' CRE20-0022 (Immu record) [End][Winnie SUEN]
@@ -4716,6 +4736,17 @@ Partial Public Class EHSClaimV1
             udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(Me.SubPlatform)
             ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+            ''If contain scheme COVID19OR and doctype ISSHK, check Centre ID whether is on list. If not on list, filter out scheme COVID19OR 
+            'If udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing AndAlso udtEHSAccount.SearchDocCode = DocType.DocTypeModel.DocTypeCode.ISSHK Then
+            '    Dim udtCOVID19BLL As New COVID19BLL
+
+            '    If Not udtCOVID19BLL.DisplayDocTypeISSHK(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
+            '        Dim udtSchemeClaimRemove As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR)
+            '        udtSchemeClaimModelCollection.Remove(udtSchemeClaimRemove)
+            '    End If
+
+            'End If
+
             Me._udtSessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaimModelCollection, FunctCode)
         End If
 
@@ -4934,7 +4965,6 @@ Partial Public Class EHSClaimV1
                     SchemeClaimModel.EnumControlType.ENHVSSO.ToString.Trim, _
                     SchemeClaimModel.EnumControlType.PPP.ToString.Trim, _
                     SchemeClaimModel.EnumControlType.COVID19.ToString.Trim, _
-                    SchemeClaimModel.EnumControlType.COVID19CBD.ToString.Trim, _
                     SchemeClaimModel.EnumControlType.COVID19RVP.ToString.Trim, _
                     SchemeClaimModel.EnumControlType.COVID19OR.ToString.Trim
                     ' CRE20-0022 (Immu record) [End][Winnie SUEN]
@@ -5300,8 +5330,7 @@ Partial Public Class EHSClaimV1
                         SchemeClaimModel.EnumControlType.HSIVSS, SchemeClaimModel.EnumControlType.RVP, _
                         SchemeClaimModel.EnumControlType.PIDVSS, SchemeClaimModel.EnumControlType.VSS, _
                         SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP, _
-                        SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
-                        SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+                        SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                         ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                         Dim udtEHSClaimVaccine As EHSClaimVaccineModel = Nothing
@@ -5322,8 +5351,7 @@ Partial Public Class EHSClaimV1
                             ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                             Case SchemeClaimModel.EnumControlType.HSIVSS, SchemeClaimModel.EnumControlType.RVP, _
                                 SchemeClaimModel.EnumControlType.VSS, SchemeClaimModel.EnumControlType.ENHVSSO, SchemeClaimModel.EnumControlType.PPP, _
-                                SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
-                                SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+                                SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
                                 If ClaimMode = Common.Component.ClaimMode.COVID19 Then
@@ -14408,6 +14436,17 @@ Partial Public Class EHSClaimV1
             udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(Me.SubPlatform)
             ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
+            ''If contain scheme COVID19OR and doctype ISSHK, check Centre ID whether is on list. If not on list, filter out scheme COVID19OR 
+            'If udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing AndAlso udtEHSAccount.SearchDocCode = DocType.DocTypeModel.DocTypeCode.ISSHK Then
+            '    Dim udtCOVID19BLL As New COVID19BLL
+
+            '    If Not udtCOVID19BLL.DisplayDocTypeISSHK(_udtSP.SPID, udtPracticeDisplay.PracticeID) Then
+            '        Dim udtSchemeClaimRemove As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR)
+            '        udtSchemeClaimModelCollection.Remove(udtSchemeClaimRemove)
+            '    End If
+
+            'End If
+
             If Not udtSchemeClaimModelCollection Is Nothing AndAlso udtSchemeClaimModelCollection.Count > 0 Then
 
                 'Retain pervious scheme, if SchemeClaim not is nothing 
@@ -15093,7 +15132,7 @@ Partial Public Class EHSClaimV1
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = "d MMMM, yyyy"
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case TradChinese, SimpChinese
-                chineseTodayDateFormat = CStr(Today.Year) + "¦~" + CStr(Today.Month) + "¤ë" + CStr(Today.Day) & "¤é"
+                chineseTodayDateFormat = CStr(Today.Year) + "å¹´" + CStr(Today.Month) + "æœˆ" + CStr(Today.Day) & "æ—¥"
                 Me.Step2aCalendarExtenderServiceDate.TodaysDateFormat = chineseTodayDateFormat
                 Me.Step2aCalendarExtenderServiceDate.DaysModeTitleFormat = "MMMM, yyyy"
             Case Else

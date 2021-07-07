@@ -13,8 +13,8 @@
             <tr>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
-                <td style="vertical-align: top">
-                    <asp:Label ID="lblHEName" runat="server" CssClass="tableText" style="word-wrap: break-word; word-break:break-all"></asp:Label>
+                <td style="vertical-align: top; word-wrap: break-word; word-break:break-all">
+                    <asp:Label ID="lblHEName" runat="server" CssClass="tableText" ></asp:Label>
                     <asp:Label ID="lblHCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblHDOBGenderText" runat="server" Text="<%$ Resources:Text, DOBLongGender %>"></asp:Label></td>
@@ -87,7 +87,7 @@
             <tr>
                 <td style="vertical-align: top">
                     <asp:Label ID="lblVNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
-                <td style="vertical-align: top">
+                <td style="vertical-align: top; width: 500px; word-wrap: break-word; word-break:break-all">
                     <asp:Label ID="lblVEName" runat="server" CssClass="tableText"></asp:Label>
                     <asp:Label ID="lblVCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
             </tr>

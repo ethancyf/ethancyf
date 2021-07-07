@@ -401,6 +401,8 @@
     <Content Include="UIControl\DocTypeText\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocTypeText\ucReadOnlyTW.ascx" />
     <Content Include="UIControl\DocType\ucInputCCIC.ascx" />
+    <Content Include="UIControl\DocType\ucInputCommon.ascx" />
+    <Content Include="UIControl\DocType\ucInputISSHK.ascx" />
     <Content Include="UIControl\DocType\ucInputOW.ascx" />
     <Content Include="UIControl\DocType\ucInputPASS.ascx" />
     <Content Include="UIControl\DocType\ucInputROP140.ascx" />
@@ -408,6 +410,8 @@
     <Content Include="UIControl\DocType\ucInputRFNo8.ascx" />
     <Content Include="UIControl\DocType\ucInputOTHER.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyCCIC.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyCommon.ascx" />
+    <Content Include="UIControl\DocType\ucReadOnlyISSHK.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyPASS.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyROP140.ascx" />
     <Content Include="UIControl\DocType\ucReadOnlyTW.ascx" />
@@ -2585,6 +2589,20 @@
       <DependentUpon>ucInputCCIC.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UIControl\DocType\ucInputCommon.ascx.designer.vb">
+      <DependentUpon>ucInputCommon.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputCommon.ascx.vb">
+      <DependentUpon>ucInputCommon.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputISSHK.ascx.designer.vb">
+      <DependentUpon>ucInputISSHK.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucInputISSHK.ascx.vb">
+      <DependentUpon>ucInputISSHK.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UIControl\DocType\ucInputOW.ascx.designer.vb">
       <DependentUpon>ucInputOW.ascx</DependentUpon>
     </Compile>
@@ -2632,6 +2650,20 @@
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyCCIC.ascx.vb">
       <DependentUpon>ucReadOnlyCCIC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCommon.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyCommon.ascx.vb">
+      <DependentUpon>ucReadOnlyCommon.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyISSHK.ascx.designer.vb">
+      <DependentUpon>ucReadOnlyISSHK.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UIControl\DocType\ucReadOnlyISSHK.ascx.vb">
+      <DependentUpon>ucReadOnlyISSHK.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UIControl\DocType\ucReadOnlyPASS.ascx.designer.vb">

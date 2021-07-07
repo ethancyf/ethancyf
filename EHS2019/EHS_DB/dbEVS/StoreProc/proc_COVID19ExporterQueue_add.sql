@@ -14,7 +14,13 @@ GO
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-0023-53
+-- Modified by:		Martin Tang
+-- Modified date:	29 Jun 2021
+-- Description:		1. Add 9 new doc types
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-0023-50 
@@ -360,6 +366,28 @@ AS
                             THEN '7'
                             WHEN pinfo.Doc_Code = 'TW'
                             THEN '9'
+							WHEN pinfo.Doc_Code = 'MEP'
+                            THEN '10'
+							WHEN pinfo.Doc_Code = 'TWMTP'
+                            THEN '11'
+							WHEN pinfo.Doc_Code = 'TWPAR'
+                            THEN '12'
+							WHEN pinfo.Doc_Code = 'TWVTD'
+                            THEN '13'
+							WHEN pinfo.Doc_Code = 'TWNS'
+                            THEN '14'
+							WHEN pinfo.Doc_Code = 'MD'
+                            THEN '15'
+							WHEN pinfo.Doc_Code = 'MP'
+                            THEN '16'
+							WHEN pinfo.Doc_Code = 'TD'
+                            THEN '17'
+							WHEN pinfo.Doc_Code = 'CEEP'
+                            THEN '18'
+							WHEN pinfo.Doc_Code = 'ET'
+                            THEN '19'
+							WHEN pinfo.Doc_Code = 'RFNo8'
+                            THEN '20'
                             ELSE '8' --others
                         END
                    ELSE CASE
@@ -382,8 +410,30 @@ AS
                             WHEN tpi.Doc_Code = 'PASS'
                             THEN '7'
                             WHEN tpi.Doc_Code = 'TW'
-                            THEN '9'
-                            ELSE '8'
+                            THEN '9'							
+							WHEN tpi.Doc_Code = 'MEP'
+                            THEN '10'
+							WHEN tpi.Doc_Code = 'TWMTP'
+                            THEN '11'
+							WHEN tpi.Doc_Code = 'TWPAR'
+                            THEN '12'
+							WHEN tpi.Doc_Code = 'TWVTD'
+                            THEN '13'
+							WHEN tpi.Doc_Code = 'TWNS'
+                            THEN '14'
+							WHEN tpi.Doc_Code = 'MD'
+                            THEN '15'
+							WHEN tpi.Doc_Code = 'MP'
+                            THEN '16'
+							WHEN tpi.Doc_Code = 'TD'
+                            THEN '17'
+							WHEN tpi.Doc_Code = 'CEEP'
+                            THEN '18'
+							WHEN tpi.Doc_Code = 'ET'
+                            THEN '19'
+							WHEN tpi.Doc_Code = 'RFNo8'
+                            THEN '20'
+                            ELSE '8' --others
                         END
                END AS 'Doc_Type',
                CASE

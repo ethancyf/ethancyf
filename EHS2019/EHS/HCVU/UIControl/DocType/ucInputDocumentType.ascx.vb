@@ -29,6 +29,8 @@ Partial Public Class ucInputDocumentType
         Public Const CCIC As String = "ucInputDocumentType_CCIC"
         Public Const ROP140 As String = "ucInputDocumentType_ROP140"
         Public Const PASS As String = "ucInputDocumentType_PASS"
+        Public Const ISSHK As String = "ucInputDocumentType_ISSHK"
+        Public Const Common As String = "ucInputDocumentType_Common"
         ' CRE20-0022 (Immu record) [End][Martin]
     End Class
 
@@ -347,9 +349,6 @@ Partial Public Class ucInputDocumentType
                 udcInputOTHER.UseDefaultAmendingHeader = _useDefaultAmendingHeader
                 Me.Built(udcInputOTHER)
 
-
-
-                ' CRE20-0022 (Immu record) [Start][Martin]
             Case DocTypeModel.DocTypeCode.CCIC
 
                 Dim udcInputCCIC As ucInputCCIC = Me.LoadControl("~/UIControl/DocType/ucInputCCIC.ascx")
@@ -421,7 +420,52 @@ Partial Public Class ucInputDocumentType
                 udcInputPASS.UseDefaultAmendingHeader = _useDefaultAmendingHeader
                 Me.Built(udcInputPASS)
 
-                ' CRE20-0022 (Immu record) [End][Martin]
+            Case DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET
+
+                Dim udcInputISSHK As ucInputISSHK = Me.LoadControl("~/UIControl/DocType/ucInputISSHK.ascx")
+                udcInputISSHK.ID = DocumentControlID.ISSHK
+                If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputISSHK.Visible = Me._fillValue
+                    udcInputISSHK.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(Me._docType)
+                    If IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputISSHK.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(Me._docType)
+                    Else
+                        udcInputISSHK.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(Me._docType)
+                    End If
+                Else
+                    If Not IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputISSHK.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(Me._docType)
+                    End If
+                End If
+                udcInputISSHK.Mode = Me._mode
+                udcInputISSHK.ActiveViewChanged = Me.ActiveViewChanged
+                udcInputISSHK.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                Me.Built(udcInputISSHK)
+
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+              DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+              DocTypeModel.DocTypeCode.CEEP
+                Dim udcInputCommon As ucInputCommon = Me.LoadControl("~/UIControl/DocType/ucInputCommon.ascx")
+                udcInputCommon.ID = DocumentControlID.Common
+                If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then
+                    udcInputCommon.UpdateValue = Me._fillValue
+                    udcInputCommon.EHSPersonalInfoOriginal = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(Me._docType)
+                    If IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputCommon.EHSPersonalInfoAmend = Me._udtEHSAccountOriginal.EHSPersonalInformationList.Filter(Me._docType)
+                    Else
+                        udcInputCommon.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(Me._docType)
+                    End If
+                Else
+                    If Not IsNothing(Me._udtEHSAccountAmend) Then
+                        udcInputCommon.EHSPersonalInfoAmend = Me._udtEHSAccountAmend.EHSPersonalInformationList.Filter(Me._docType)
+                    End If
+                End If
+                udcInputCommon.Mode = Me._mode
+                udcInputCommon.ActiveViewChanged = Me.ActiveViewChanged
+                udcInputCommon.UseDefaultAmendingHeader = _useDefaultAmendingHeader
+                Me.Built(udcInputCommon)
+
 
         End Select
 
@@ -592,6 +636,24 @@ Partial Public Class ucInputDocumentType
         Dim control As Control = Me.FindControl(DocumentControlID.PASS)
         If Not control Is Nothing Then
             Return CType(control, ucInputPASS)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function GetISSHKControl() As ucInputISSHK
+        Dim control As Control = Me.FindControl(DocumentControlID.ISSHK)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputISSHK)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    Public Function GetCommonControl() As ucInputCommon
+        Dim control As Control = Me.FindControl(DocumentControlID.Common)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCommon)
         Else
             Return Nothing
         End If

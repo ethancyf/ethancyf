@@ -12,45 +12,65 @@ Namespace Validation
         Dim udtcomfunct As ComFunction.GeneralFunction = New ComFunction.GeneralFunction
 
 
-        Public Function chkEngName(ByVal strOriSurname As String, ByVal strOriFirstname As String, Optional ByVal isMax40 As Boolean = False) As ComObject.SystemMessage
+        Public Function chkEngName(ByVal strOriSurname As String, ByVal strOriFirstname As String, ByVal strDocType As String) As ComObject.SystemMessage
             Dim sm As ComObject.SystemMessage
             Dim strFunctCode, strSeverity, strMsgCode As String
             Dim strErrMsg As String
+
             Dim intEngNameDataSize As Integer
             Dim strNameLengthMsgCode As String
+
+            Dim intPartOfEngNameDataSize As Integer
+            Dim strPartOfNameLengthMsgCode As String
+
 
             strFunctCode = "990000"
             strSeverity = "E"
             strMsgCode = ""
             strErrMsg = ""
 
-            If isMax40 = True Then
-                intEngNameDataSize = 40
-                strNameLengthMsgCode = MsgCode.MSG00068
-            Else
-                intEngNameDataSize = 82
-                strNameLengthMsgCode = MsgCode.MSG00479
-            End If
-
             strOriSurname = strOriSurname.Trim
             strOriFirstname = strOriFirstname.Trim
+
+            If strDocType = String.Empty Then 'For SP, VU user
+                intEngNameDataSize = 40
+                intPartOfEngNameDataSize = 40
+
+                strNameLengthMsgCode = MsgCode.MSG00068
+                strPartOfNameLengthMsgCode = MsgCode.MSG00489
+            ElseIf strDocType = DocTypeModel.DocTypeCode.ET Or strDocType = DocTypeModel.DocTypeCode.ISSHK Then
+                intEngNameDataSize = 82
+                intPartOfEngNameDataSize = 80
+
+                strNameLengthMsgCode = MsgCode.MSG00479
+                strPartOfNameLengthMsgCode = MsgCode.MSG00490
+            Else 'other DocType 
+                intEngNameDataSize = 82
+                intPartOfEngNameDataSize = 40
+
+                strNameLengthMsgCode = MsgCode.MSG00479
+                strPartOfNameLengthMsgCode = MsgCode.MSG00489
+            End If
+
+
 
 
             If IsEmpty(strOriSurname) Then
                 strMsgCode = "00007"
             Else
                 If IsEmpty(strOriFirstname) Then
-                    If strOriSurname.Length > intEngNameDataSize Then
-                        strMsgCode = strNameLengthMsgCode
+                    If strOriSurname.Length > intPartOfEngNameDataSize Then
+                        strMsgCode = strPartOfNameLengthMsgCode
                     Else
                         If Not IsValidEngName(strOriSurname) Then
                             strMsgCode = "00021"
                         End If
                     End If
                 Else
-                    'total length 40 for the name, and a comma and a space is reserved, so the value is 38
-                    If strOriSurname.Trim.Length + strOriFirstname.Trim.Length > intEngNameDataSize - 2 Then
-                        'strMsgCode = "00021"
+                    If strOriFirstname.Length > intPartOfEngNameDataSize Or strOriSurname.Length > intPartOfEngNameDataSize Then
+                        strMsgCode = strPartOfNameLengthMsgCode
+                        'Eg: total length 40 for the name, and a comma and a space is reserved, so the value is 38
+                    ElseIf strOriSurname.Trim.Length + strOriFirstname.Trim.Length > intEngNameDataSize - 2 Then
                         strMsgCode = strNameLengthMsgCode
                     Else
                         'Check whether Surname and/or Firstname has invalid character
@@ -3627,8 +3647,6 @@ Namespace Validation
                 Case DocTypeModel.DocTypeCode.VISA
                     systemMessage = Me.chkVisaNo(strIdentityNum)
 
-                    ' CRE19-001 (VSS 2019) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
                 Case DocTypeModel.DocTypeCode.OC,
                     DocTypeModel.DocTypeCode.OW,
                     DocTypeModel.DocTypeCode.TW,
@@ -3636,9 +3654,20 @@ Namespace Validation
                     DocTypeModel.DocTypeCode.HKP,
                     DocTypeModel.DocTypeCode.RFNo8,
                     DocTypeModel.DocTypeCode.OTHER,
-                    DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                    DocTypeModel.DocTypeCode.PASS,
+                    DocTypeModel.DocTypeCode.ISSHK,
+                    DocTypeModel.DocTypeCode.MEP,
+                    DocTypeModel.DocTypeCode.TWMTP,
+                    DocTypeModel.DocTypeCode.TWPAR,
+                    DocTypeModel.DocTypeCode.TWVTD,
+                    DocTypeModel.DocTypeCode.TWNS,
+                    DocTypeModel.DocTypeCode.MD,
+                    DocTypeModel.DocTypeCode.MP,
+                    DocTypeModel.DocTypeCode.TD,
+                    DocTypeModel.DocTypeCode.CEEP,
+                    DocTypeModel.DocTypeCode.ET ' CRE20-0022 (Immu record) [Martin]
                     systemMessage = Me.chkDocumentNoForNonEHSDocType(strIdentityNum)
-                    ' CRE19-001 (VSS 2019) [End][Winnie]
+
             End Select
 
             Return systemMessage
@@ -4612,7 +4641,6 @@ Namespace Validation
                         DocTypeModel.DocTypeCode.OW,
                         DocTypeModel.DocTypeCode.IR,
                         DocTypeModel.DocTypeCode.HKP,
-                        DocTypeModel.DocTypeCode.RFNo8,
                         DocTypeModel.DocTypeCode.OTHER
                         ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
@@ -5128,12 +5156,24 @@ Namespace Validation
                 Case DocTypeModel.DocTypeCode.DI, _
                      DocTypeModel.DocTypeCode.OW, _
                      DocTypeModel.DocTypeCode.TW, _
-                     DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                     DocTypeModel.DocTypeCode.PASS, _
+                     DocTypeModel.DocTypeCode.ISSHK, _
+                     DocTypeModel.DocTypeCode.MEP, _
+                     DocTypeModel.DocTypeCode.TWMTP, _
+                     DocTypeModel.DocTypeCode.TWPAR, _
+                     DocTypeModel.DocTypeCode.TWVTD, _
+                     DocTypeModel.DocTypeCode.TWNS, _
+                     DocTypeModel.DocTypeCode.MD, _
+                     DocTypeModel.DocTypeCode.MP, _
+                     DocTypeModel.DocTypeCode.TD, _
+                     DocTypeModel.DocTypeCode.CEEP, _
+                     DocTypeModel.DocTypeCode.ET, _
+                    DocTypeModel.DocTypeCode.RFNo8
                     strMsgCode = "00307"
                 Case DocTypeModel.DocTypeCode.HKIC, _
                      DocTypeModel.DocTypeCode.EC, _
                      DocTypeModel.DocTypeCode.CCIC, _
-                     DocTypeModel.DocTypeCode.ROP140 ' CRE20-0022 (Immu record) [Martin]
+                     DocTypeModel.DocTypeCode.ROP140
                     strMsgCode = "00301"
                 Case DocTypeModel.DocTypeCode.HKBC
                     strMsgCode = "00302"
@@ -5284,7 +5324,19 @@ Namespace Validation
                         DocTypeModel.DocTypeCode.OTHER,
                         DocTypeModel.DocTypeCode.CCIC,
                         DocTypeModel.DocTypeCode.ROP140,
-                        DocTypeModel.DocTypeCode.PASS
+                        DocTypeModel.DocTypeCode.PASS,
+                        DocTypeModel.DocTypeCode.ISSHK,
+                        DocTypeModel.DocTypeCode.MEP,
+                        DocTypeModel.DocTypeCode.TWMTP,
+                        DocTypeModel.DocTypeCode.TWPAR,
+                        DocTypeModel.DocTypeCode.TWVTD,
+                        DocTypeModel.DocTypeCode.TWNS,
+                        DocTypeModel.DocTypeCode.MD,
+                        DocTypeModel.DocTypeCode.MP,
+                        DocTypeModel.DocTypeCode.TD,
+                        DocTypeModel.DocTypeCode.CEEP,
+                        DocTypeModel.DocTypeCode.ET
+
                         ' CRE20-0022 (Immu record) [End][Martin]
 
                         If udtDocTypeList.Filter(strDocCode).ForceManualValidate Then

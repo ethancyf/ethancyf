@@ -1021,7 +1021,18 @@ Partial Public Class eHSAccountRectification
                 End If
             Case DocTypeModel.DocTypeCode.PASS
                 blnProceed = Me.ValidateRectifyDetail_PASS(udtEHSAccount_Rectify, udtAuditLogEntry)
+
+            Case DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET
+                blnProceed = Me.ValidateRectifyDetail_ISSHK(udtEHSAccount_Rectify, udtAuditLogEntry)
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                DocTypeModel.DocTypeCode.CEEP
+                blnProceed = Me.ValidateRectifyDetail_Common(udtEHSAccount_Rectify, udtAuditLogEntry)
+
+
                 ' CRE20-0022 (Immu record) [End][Martin]
+
 
         End Select
 
@@ -2282,7 +2293,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputHKIC.ENameSurName, udcInputHKIC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.HKIC)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKIC.SetENameError(True)
@@ -2546,7 +2557,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputEC.ENameSurName, udcInputEC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.EC)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputEC.SetENameError(True)
@@ -2755,7 +2766,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputHKBC.ENameSurName, udcInputHKBC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.HKBC)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputHKBC.SetENameError(True)
@@ -2827,7 +2838,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputAdopt.ENameSurName, udcInputAdopt.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputAdopt.ENameSurName, udcInputAdopt.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ADOPC)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputAdopt.SetENameError(True)
@@ -2940,7 +2951,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputDI.ENameSurName, udcInputDI.ENameFirstName, DocType.DocTypeModel.DocTypeCode.DI)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputDI.SetENameError(True)
@@ -3035,7 +3046,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputID235B.ENameSurName, udcInputID235B.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ID235B)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputID235B.SetENameError(True)
@@ -3119,7 +3130,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputReentryPermit.ENameSurName, udcInputReentryPermit.ENameFirstName, DocType.DocTypeModel.DocTypeCode.REPMT)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputReentryPermit.SetENameError(True)
@@ -3213,7 +3224,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputVisa.ENameSurName, udcInputVisa.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputVisa.ENameSurName, udcInputVisa.ENameFirstName, DocType.DocTypeModel.DocTypeCode.VISA)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputVisa.SetENameError(True)
@@ -3317,7 +3328,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputOW.ENameSurName, udcInputOW.ENameFirstName, udcInputOW.EHSPersonalInfoAmend.DocCode)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputOW.SetENameError(True)
@@ -3405,7 +3416,7 @@ Partial Public Class eHSAccountRectification
         End If
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputTW.ENameSurName, udcInputTW.ENameFirstName, DocType.DocTypeModel.DocTypeCode.TW)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputTW.SetENameError(True)
@@ -3505,7 +3516,7 @@ Partial Public Class eHSAccountRectification
 
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputOTHER.ENameSurName, udcInputOTHER.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputOTHER.ENameSurName, udcInputOTHER.ENameFirstName, DocType.DocTypeModel.DocTypeCode.OTHER)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputOTHER.SetENameError(True)
@@ -3570,7 +3581,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocType.DocTypeModel.DocTypeCode.CCIC)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputCCIC.SetENameError(True)
@@ -3661,7 +3672,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputROP140.ENameSurName, udcInputROP140.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputROP140.ENameSurName, udcInputROP140.ENameFirstName, DocType.DocTypeModel.DocTypeCode.ROP140)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputROP140.SetENameError(True)
@@ -3768,7 +3779,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocType.DocTypeModel.DocTypeCode.PASS)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputPASS.SetENameError(True)
@@ -3824,6 +3835,160 @@ Partial Public Class eHSAccountRectification
         Return isvalid
     End Function
 
+    'ISSHk
+    Private Function ValidateRectifyDetail_ISSHK(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isvalid As Boolean = True
+        Dim udcInputISSHK As ucInputISSHK = Me.ucInputDocumentType.GetISSHKControl
+        Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(udcInputISSHK.EHSPersonalInfoAmend.DocCode)
+        Dim mode As ActionModel
+        mode = CType(Session(SESS_InputMode), ActionModel)
+
+        If mode = ActionModel.Amending Then
+            'Special Account, one side
+            udcInputISSHK.SetProperty(ucInputDocTypeBase.BuildMode.Modification_OneSide)
+            udcInputISSHK.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification_OneSide, False)
+        Else
+            'Validated Account, with original
+            udcInputISSHK.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+            udcInputISSHK.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+        End If
+
+        _udtAuditLogEntry.AddDescripton("DocNo", udcInputISSHK.TravelDocNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputISSHK.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputISSHK.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputISSHK.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputISSHK.Gender)
+
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
+
+        'English Name
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputISSHK.ENameSurName, udcInputISSHK.ENameFirstName, udcInputISSHK.EHSPersonalInfoAmend.DocCode)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputISSHK.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtvalidator.chkGender(udcInputISSHK.Gender)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputISSHK.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String
+        Dim dtmDOB As Date
+
+        strDOB = udcInputISSHK.DOB
+
+        Me.udtSM = Me.udtvalidator.chkDOB(udcInputISSHK.EHSPersonalInfoAmend.DocCode, strDOB, dtmDOB, strExactDOB)
+        If Not IsNothing(udtSM) Then
+            isvalid = False
+            udcInputISSHK.SetDOBError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        Else
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        If isvalid Then
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputISSHK.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputISSHK.ENameFirstName
+            udtEHSAccountPersonalInfo.Gender = udcInputISSHK.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = strExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isvalid
+    End Function
+
+    'Common
+    Private Function ValidateRectifyDetail_Common(ByRef _udtEHSAccount As EHSAccountModel, ByRef _udtAuditLogEntry As AuditLogEntry) As Boolean
+        Dim isValid As Boolean = True
+        Dim udcInputCommon As ucInputCommon = Me.ucInputDocumentType.GetCommonControl
+        Dim mode As ActionModel
+        mode = CType(Session(SESS_InputMode), ActionModel)
+
+        If mode = ActionModel.Amending Then
+            'Special Account, one side
+            udcInputCommon.SetProperty(ucInputDocTypeBase.BuildMode.Modification_OneSide)
+            udcInputCommon.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification_OneSide, False)
+        Else
+            'Validated Account, with original
+            udcInputCommon.SetProperty(ucInputDocTypeBase.BuildMode.Modification)
+            udcInputCommon.SetErrorImage(ucInputDocTypeBase.BuildMode.Modification, False)
+        End If
+
+        _udtAuditLogEntry.AddDescripton("DocumentNo", udcInputCommon.DocumentNo)
+        _udtAuditLogEntry.AddDescripton("DOB", udcInputCommon.DOB)
+        _udtAuditLogEntry.AddDescripton("EngSurname", udcInputCommon.ENameSurName)
+        _udtAuditLogEntry.AddDescripton("EngOthername", udcInputCommon.ENameFirstName)
+        _udtAuditLogEntry.AddDescripton("Gender", udcInputCommon.Gender)
+        _udtAuditLogEntry.AddDescripton("ExactDOB", udcInputCommon.IsExactDOB)
+        _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
+        ' ----------------------------------------------------------------------------------------
+        'Doc No.
+        Me.udtSM = udtvalidator.chkDocumentNoForNonEHSDocType(udcInputCommon.DocumentNo)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputCommon.SetDocNoError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'DOB
+        Dim strExactDOB As String = String.Empty
+        Dim strDOB As String = udcInputCommon.DOB
+        Dim dtmDOB As Date
+
+        Select Case udcInputCommon.DOB.Trim
+            Case String.Empty
+                ' Please input "Date of Birth".
+                udtSM = New SystemMessage("990000", "E", "00003")
+                udcInputCommon.SetDOBError(True)
+            Case Else
+                udtSM = Me.udtvalidator.chkDOB(udcInputCommon.EHSPersonalInfoAmend.DocCode, strDOB, dtmDOB, strExactDOB)
+
+                If udtSM IsNot Nothing Then
+                    udcInputCommon.SetDOBError(True)
+                End If
+        End Select
+
+        If Not IsNothing(udtSM) Then
+            Me.udcMsgBox.AddMessage(udtSM)
+            isValid = False
+        End If
+
+        'English Name
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputCommon.ENameSurName, udcInputCommon.ENameFirstName, udcInputCommon.EHSPersonalInfoAmend.DocCode)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputCommon.SetENameError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        'Gender
+        Me.udtSM = Me.udtvalidator.chkGender(udcInputCommon.Gender)
+        If Not IsNothing(udtSM) Then
+            isValid = False
+            udcInputCommon.SetGenderError(True)
+            Me.udcMsgBox.AddMessage(udtSM)
+        End If
+
+        If isValid Then
+            Dim udtEHSAccountPersonalInfo As EHSAccountModel.EHSPersonalInformationModel = _udtEHSAccount.EHSPersonalInformationList.Filter(udcInputCommon.EHSPersonalInfoAmend.DocCode)
+            udtEHSAccountPersonalInfo.IdentityNum = udcInputCommon.DocumentNo
+            udtEHSAccountPersonalInfo.ENameSurName = udcInputCommon.ENameSurName
+            udtEHSAccountPersonalInfo.ENameFirstName = udcInputCommon.ENameFirstName
+            udtEHSAccountPersonalInfo.CName = udcInputCommon.CName
+            udtEHSAccountPersonalInfo.Gender = udcInputCommon.Gender
+            udtEHSAccountPersonalInfo.ExactDOB = udcInputCommon.IsExactDOB
+            udtEHSAccountPersonalInfo.DOB = dtmDOB
+        End If
+
+        Return isValid
+    End Function
 
 #End Region
 

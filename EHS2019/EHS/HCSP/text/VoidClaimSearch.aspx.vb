@@ -862,7 +862,7 @@ Partial Public Class VoidClaimSearch
                 'no text version
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, SchemeClaimModel.EnumControlType.COVID19RVP
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 'no text version
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
         End Select

@@ -285,7 +285,18 @@ Partial Public Class ucReadOnlyCommon
                 DocTypeCode.OTHER,
                 DocTypeCode.CCIC,
                 DocTypeCode.ROP140,
-                DocTypeCode.PASS
+                DocTypeCode.PASS,
+                DocTypeCode.ISSHK,
+                DocTypeCode.MEP,
+                DocTypeCode.TWMTP,
+                DocTypeCode.TWPAR,
+                DocTypeCode.TWVTD,
+                DocTypeCode.TWNS,
+                DocTypeCode.MD,
+                DocTypeCode.MP,
+                DocTypeCode.TD,
+                DocTypeCode.CEEP,
+                DocTypeCode.ET
                 lblVHKIDText.Text = Me.GetGlobalResourceObject("Text", "OTHERDocNo")
                 lblVHKID.Text = udtFormatter.FormatDocIdentityNoForDisplay(udtEHSPersonalInformation.DocCode, udtEHSPersonalInformation.IdentityNum, blnMaskIdentityNo)
                 ' CRE20-0022 (Immu record) [End][Martin]

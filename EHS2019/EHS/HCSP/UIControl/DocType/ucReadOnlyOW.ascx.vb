@@ -121,7 +121,7 @@ Partial Public Class ucReadOnlyOW
             Me.lblReadonlyCreationDateTimeText.Text = Me.GetGlobalResourceObject("Text", "AccountCreateDate")
             Me.lblReadonlyDocumentTypeText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
             Me.lblReadonlyNameText.Text = Me.GetGlobalResourceObject("Text", "Name")
-            Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOB")
+            Me.lblReadonlyDOBText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
             Me.lblReadonlyGenderText.Text = Me.GetGlobalResourceObject("Text", "Gender")
             Me.lblReadonlyDocNoText.Text = udtDocTypeModel.DocIdentityDesc(MyBase.SessionHandler().Language)
 

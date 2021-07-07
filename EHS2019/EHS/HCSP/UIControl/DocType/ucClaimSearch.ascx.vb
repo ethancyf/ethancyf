@@ -196,19 +196,16 @@ Partial Public Class ucClaimSearch
                     Me.lblSearchShortDOBTips.Text = Me.GetGlobalResourceObject("Text", "DOBHintDI")
                 End If
 
-            Case DocTypeModel.DocTypeCode.RFNo8
-                ' Get the Doc Identity Desc from table "DocType"
-                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.RFNo8).DocIdentityDesc(strlanguage)
-
             Case DocTypeModel.DocTypeCode.OW
                 ' Get the Doc Identity Desc from table "DocType"
                 Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.OW).DocIdentityDesc(strlanguage)
 
-                ' CRE20-0022 (Immu record) [Start][Martin]
-
-            Case DocTypeModel.DocTypeCode.TW
+            Case DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140, DocTypeModel.DocTypeCode.PASS, _
+               DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+               DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.RFNo8
                 ' Get the Doc Identity Desc from table "DocType"
-                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.TW).DocIdentityDesc(strlanguage)
+                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(strDocCode).DocIdentityDesc(strlanguage)
                 If Me._blnShowTips Then
                     Me.lblSearchShortIdentityNoTips.Visible = True
                     Me.lblSearchShortDOBTips.Visible = True
@@ -217,39 +214,7 @@ Partial Public Class ucClaimSearch
                     Me.lblSearchShortDOBTips.Text = Me.GetGlobalResourceObject("Text", "DOBHintDI")
                 End If
 
-            Case DocTypeModel.DocTypeCode.CCIC
-                ' Get the Doc Identity Desc from table "DocType"
-                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.CCIC).DocIdentityDesc(strlanguage)
-                If Me._blnShowTips Then
-                    Me.lblSearchShortIdentityNoTips.Visible = True
-                    Me.lblSearchShortDOBTips.Visible = True
 
-                    Me.lblSearchShortIdentityNoTips.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
-                    Me.lblSearchShortDOBTips.Text = Me.GetGlobalResourceObject("Text", "DOBHintDI")
-                End If
-
-            Case DocTypeModel.DocTypeCode.ROP140
-                ' Get the Doc Identity Desc from table "DocType"
-                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.ROP140).DocIdentityDesc(strlanguage)
-                If Me._blnShowTips Then
-                    Me.lblSearchShortIdentityNoTips.Visible = True
-                    Me.lblSearchShortDOBTips.Visible = True
-
-                    Me.lblSearchShortIdentityNoTips.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
-                    Me.lblSearchShortDOBTips.Text = Me.GetGlobalResourceObject("Text", "DOBHintDI")
-                End If
-
-            Case DocTypeModel.DocTypeCode.PASS
-                ' Get the Doc Identity Desc from table "DocType"
-                Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(DocTypeCode.PASS).DocIdentityDesc(strlanguage)
-                If Me._blnShowTips Then
-                    Me.lblSearchShortIdentityNoTips.Visible = True
-                    Me.lblSearchShortDOBTips.Visible = True
-
-                    Me.lblSearchShortIdentityNoTips.Text = Me.GetGlobalResourceObject("Text", "DocumentIdentityNoHint")
-                    Me.lblSearchShortDOBTips.Text = Me.GetGlobalResourceObject("Text", "DOBHintDI") '
-                End If
-                ' CRE20-0022 (Immu record) [End][Martin]
 
             Case String.Empty
                 Me.lblSearchShortIdentityNo.Text = Me.GetGlobalResourceObject("Text", "IdentityDocNo")
@@ -749,8 +714,8 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.RFNo8
                 Me.panSearchShortNo.Visible = True
 
-                Me.txtSearchShortIdentityNo.Width = 85
-                Me.txtSearchShortIdentityNo.MaxLength = 9
+                Me.txtSearchShortIdentityNo.Width = 150
+                Me.txtSearchShortIdentityNo.MaxLength = 20
 
                 If Not IsNothing(udtEHSPersonalInfo) Then
                     txtSearchShortIdentityNo.Enabled = False
@@ -794,7 +759,34 @@ Partial Public Class ucClaimSearch
 
                 Me.filteredSearchShortIdentityNo.ValidChars = "-()"
                 Me.txtSearchShortIdentityNo.Attributes("onChange") = "javascript:UpperIndentityNo(this);"
-                ' CRE20-0022 (Immu record) [End][Martin]
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+               DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.ISSHK
+                Me.panSearchShortNo.Visible = True
+
+                Me.txtSearchShortIdentityNo.Width = 150
+                Me.txtSearchShortIdentityNo.MaxLength = 20
+
+                If Not IsNothing(udtEHSPersonalInfo) Then
+                    txtSearchShortIdentityNo.Enabled = False
+                    txtSearchShortDOB.Enabled = False
+                    btnShortIdentityNoCancel.Visible = True
+
+                    txtSearchShortIdentityNo.Text = udtFormatter.FormatDocIdentityNoForDisplay(udtEHSPersonalInfo.DocCode, udtEHSPersonalInfo.IdentityNum, False)
+                    txtSearchShortDOB.Text = udtFormatter.formatDOB(udtEHSPersonalInfo.DOB, udtEHSPersonalInfo.ExactDOB, CultureLanguage.English, Nothing, Nothing)
+
+                Else
+                    txtSearchShortIdentityNo.Enabled = True
+                    txtSearchShortDOB.Enabled = True
+                    btnShortIdentityNoCancel.Visible = False
+
+                End If
+
+                Me.filteredSearchShortIdentityNo.ValidChars = ""
+                Me.txtSearchShortIdentityNo.Attributes("onChange") = "javascript:UpperIndentityNo(this);"
+
+
             Case String.Empty
                 ibtnSearchHKICCancel.Visible = False
                 btnADOPCSearchCancel.Visible = False
@@ -994,7 +986,7 @@ Partial Public Class ucClaimSearch
 
         Me.rblHKICSymbol.Text = strHKICSymbol
         Me.rblHKICSymbol.SelectedValue = strHKICSymbol
-         
+
 
 
         Me.txtSearchHKICNo.Enabled = False
@@ -1078,6 +1070,12 @@ Partial Public Class ucClaimSearch
                 Me._strDocumentIdentityNo = Me.txtSearchShortIdentityNo.Text
                 Me._strDOB = Me.txtSearchShortDOB.Text
                 ' CRE20-0022 (Immu record) [End][Martin]
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.ISSHK
+                Me._strDocumentIdentityNo = Me.txtSearchShortIdentityNo.Text
+                Me._strDOB = Me.txtSearchShortDOB.Text
 
         End Select
     End Sub

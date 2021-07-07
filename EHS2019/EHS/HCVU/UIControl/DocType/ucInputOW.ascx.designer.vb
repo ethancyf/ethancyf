@@ -104,42 +104,6 @@ Partial Public Class ucInputOW
     Protected WithEvents lblDocNo As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblDOBOriginalText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblDOBOriginalText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblDOBOriginal control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblDOBOriginal As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''txtDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtDOB As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''imgDOBError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgDOBError As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
     '''lblNameOriginalText control.
     '''</summary>
     '''<remarks>
@@ -239,6 +203,42 @@ Partial Public Class ucInputOW
     Protected WithEvents imgGenderError As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
+    '''lblDOBOriginalText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDOBOriginalText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblDOBOriginal control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblDOBOriginal As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDOB As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgDOBError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgDOBError As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
     '''filtereditEnameSurname control.
     '''</summary>
     '''<remarks>
@@ -309,33 +309,6 @@ Partial Public Class ucInputOW
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgNewDocNoErr As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''lblNewDOBText control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblNewDOBText As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''txtNewDOB control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtNewDOB As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''imgNewDOBErr control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents imgNewDOBErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''lblNewNameText control.
@@ -426,6 +399,33 @@ Partial Public Class ucInputOW
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgNewGenderErr As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblNewDOBText control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblNewDOBText As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtNewDOB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtNewDOB As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''imgNewDOBErr control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgNewDOBErr As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
     '''filteredNewDocNo control.

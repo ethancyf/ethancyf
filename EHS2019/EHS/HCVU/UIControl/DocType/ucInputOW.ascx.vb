@@ -26,7 +26,7 @@ Partial Public Class ucInputOW
         Me.lblDocumentTypeOriginalText.Text = Me.GetGlobalResourceObject("Text", "DocumentType")
         Me.lblNameOriginalText.Text = Me.GetGlobalResourceObject("Text", "EnglishName")
         Me.lblDOBOriginalText.Text = Me.GetGlobalResourceObject("Text", "DOBLong")
-        Me.lblDocNoOriginalText.Text = Me.GetGlobalResourceObject("Text", "DocNo")
+        Me.lblDocNoOriginalText.Text = Me.GetGlobalResourceObject("Text", "TravelDocNo")
         Me.lblGenderOriginalText.Text = Me.GetGlobalResourceObject("Text", "Gender")
 
         '-----------------------------------------

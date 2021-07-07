@@ -32,7 +32,6 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const PPP As String = "~/UIControl/EHSClaim/ucReadOnlyPPP.ascx"
         Public Const SSSCMC As String = "~/UIControl/EHSClaim/ucReadOnlySSSCMC.ascx"
         Public Const COVID19 As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19.ascx"  ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
-        Public Const COVID19CBD As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19CBD.ascx"
         Public Const COVID19RVP As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19RVP.ascx"
         Public Const COVID19OR As String = "~/UIControl/EHSClaim/ucReadOnlyCOVID19OR.ascx"
 

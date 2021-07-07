@@ -75,7 +75,7 @@ Namespace BLL
 
             udtFormatter.seperateEName(cfData.PersonalEnglishNameDetails.UnstructuredName.Value.ToUpper, strSurName, strFirstName)
 
-            If Not udtValidator.chkEngName(strSurName.Trim(), strFirstName.Trim()) Is Nothing Then
+            If Not udtValidator.chkEngName(strSurName.Trim(), strFirstName.Trim(), DocType.DocTypeModel.DocTypeCode.HKIC) Is Nothing Then
                 isValid = False
             End If
 

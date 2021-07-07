@@ -37,7 +37,6 @@ Partial Public Class ucReadOnlyEHSClaim
         Public Const PPP As String = "ucReadOnlyEHSClaim_PPP"
         Public Const SSSCMC As String = "ucReadOnlyEHSClaim_SSSCMC"
         Public Const COVID19 As String = "ucReadOnlyEHSClaim_COVID19"     ' CRE20-0022 (Immu record) [Winnie SUEN]
-        Public Const COVID19CBD As String = "ucReadOnlyEHSClaim_COVID19CBD"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19RVP As String = "ucReadOnlyEHSClaim_COVID19RVP"     ' CRE20-0022 (Immu record) [Winnie SUEN]
         Public Const COVID19OR As String = "ucReadOnlyEHSClaim_COVID19OR"
     End Class

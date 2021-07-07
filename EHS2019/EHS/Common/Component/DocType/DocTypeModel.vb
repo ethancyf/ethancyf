@@ -97,6 +97,72 @@ Namespace Component.DocType
             ''' <remarks></remarks>
             Public Const PASS As String = "PASS"
             ' CRE20-0022 (Immu record) [End][Martin]
+
+            ''' <summary>
+            ''' International Social Service HONG KONG Branch
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const ISSHK As String = "ISSHK"
+
+            ''' <summary>
+            ''' Chinese Travel Permit
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const MEP As String = "MEP"
+
+            ''' <summary>
+            ''' Mainland Travel Permit for Taiwan Residents
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const TWMTP As String = "TWMTP"
+
+            ''' <summary>
+            ''' Pre-arrival Registration for Taiwan Residents (PAR)
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const TWPAR As String = "TWPAR"
+
+            ''' <summary>
+            ''' Valid Travel Document for Re-entry to Taiwan
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const TWVTD As String = "TWVTD"
+
+            ''' <summary>
+            ''' Notification Slip for Pre-arrival Registration for Taiwan Residents
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const TWNS As String = "TWNS"
+
+            ''' <summary>
+            ''' Macao SAR Permanent Resident Identity Card
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const MD As String = "MD"
+
+            ''' <summary>
+            ''' Visit Permit for Residents of Macao SAR
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const MP As String = "MP"
+
+            ''' <summary>
+            ''' Travel Document
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const TD As String = "TD"
+
+            ''' <summary>
+            ''' People's Republic of China Exit and Entry Permit
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const CEEP As String = "CEEP"
+            ''' <summary>
+            ''' e-token
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const ET As String = "ET"
+
         End Class
 
 

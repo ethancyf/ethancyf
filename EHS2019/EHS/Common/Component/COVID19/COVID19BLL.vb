@@ -890,8 +890,15 @@ Namespace Component.COVID19
                          DocType.DocTypeModel.DocTypeCode.EC, _
                          DocType.DocTypeModel.DocTypeCode.OW, _
                          DocType.DocTypeModel.DocTypeCode.CCIC, _
-                         DocType.DocTypeModel.DocTypeCode.TW
-
+                         DocType.DocTypeModel.DocTypeCode.TW, _
+                         DocType.DocTypeModel.DocTypeCode.MEP, _
+                         DocType.DocTypeModel.DocTypeCode.TWMTP, _
+                         DocType.DocTypeModel.DocTypeCode.TWPAR, _
+                         DocType.DocTypeModel.DocTypeCode.TWVTD, _
+                         DocType.DocTypeModel.DocTypeCode.TWNS, _
+                         DocType.DocTypeModel.DocTypeCode.MD, _
+                         DocType.DocTypeModel.DocTypeCode.MP, _
+                         DocType.DocTypeModel.DocTypeCode.RFNo8
                         blnDisplay = True
 
                     Case DocType.DocTypeModel.DocTypeCode.PASS
@@ -922,8 +929,15 @@ Namespace Component.COVID19
                          DocType.DocTypeModel.DocTypeCode.OW, _
                          DocType.DocTypeModel.DocTypeCode.CCIC, _
                          DocType.DocTypeModel.DocTypeCode.TW, _
-                         DocType.DocTypeModel.DocTypeCode.PASS
-
+                         DocType.DocTypeModel.DocTypeCode.PASS, _
+                         DocType.DocTypeModel.DocTypeCode.MEP, _
+                         DocType.DocTypeModel.DocTypeCode.TWMTP, _
+                         DocType.DocTypeModel.DocTypeCode.TWPAR, _
+                         DocType.DocTypeModel.DocTypeCode.TWVTD, _
+                         DocType.DocTypeModel.DocTypeCode.TWNS, _
+                         DocType.DocTypeModel.DocTypeCode.MD, _
+                         DocType.DocTypeModel.DocTypeCode.MP, _
+                         DocType.DocTypeModel.DocTypeCode.RFNo8
                         blnDisplay = True
 
                 End Select
@@ -932,6 +946,34 @@ Namespace Component.COVID19
             Return blnDisplay
 
         End Function
+
+        Public Function DisplayDocTypeISSHK(ByVal strSPID As String, ByVal intPracticeID As Integer) As Boolean
+            Dim dtVC As DataTable = Me.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(strSPID, intPracticeID)
+
+            Dim strCentreIDList As String = (New GeneralFunction).GetSystemParameterParmValue1("AllowToUseISSHKByCentreID")
+            Dim strCentreID() As String = Split(strCentreIDList, "|")
+
+            Dim blnAllowToUseISSHK As Boolean = False
+
+            If dtVC IsNot Nothing AndAlso dtVC.Rows.Count > 0 Then
+                For Each drVC As DataRow In dtVC.Rows
+                    For intCt As Integer = 0 To strCentreID.Length - 1
+                        If drVC("Centre_ID").ToString.ToUpper.Trim = strCentreID(intCt).ToUpper.Trim Then
+                            blnAllowToUseISSHK = True
+                            Exit For
+                        End If
+                    Next
+
+                    If blnAllowToUseISSHK Then
+                        Exit For
+                    End If
+                Next
+            End If
+
+            Return blnAllowToUseISSHK
+
+        End Function
+
 #End Region
 
 #Region "QR Code"

@@ -667,8 +667,7 @@ Public MustInherit Class EHSClaimBasePage
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
-                 SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -862,8 +861,7 @@ Public MustInherit Class EHSClaimBasePage
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
-                 SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 
@@ -951,8 +949,7 @@ Public MustInherit Class EHSClaimBasePage
 
                 ' CRE20-0022 (Immu record) [Start][Winnie SUEN]
                 ' --------------------------------------------------------------------------------------
-            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19CBD, _
-                 SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
+            Case SchemeClaimModel.EnumControlType.COVID19, SchemeClaimModel.EnumControlType.COVID19RVP, SchemeClaimModel.EnumControlType.COVID19OR
                 udtAuditLogEntry = AuditLogCOVID19(udtAuditLogEntry, udtEHSTransaction)
                 ' CRE20-0022 (Immu record) [End][Winnie SUEN]
 

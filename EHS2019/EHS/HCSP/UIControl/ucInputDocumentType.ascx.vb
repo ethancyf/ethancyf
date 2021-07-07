@@ -27,6 +27,8 @@ Partial Public Class ucInputDocumentType
         Public Const CCIC As String = "ucInputDocumentType_CCIC"
         Public Const ROP140 As String = "ucInputDocumentType_ROP140"
         Public Const PASS As String = "ucInputDocumentType_PASS"
+        Public Const ISSHK As String = "ucInputDocumentType_ISSHK"
+        Public Const Common As String = "ucInputDocumentType_Common"
     End Class
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 
@@ -250,6 +252,18 @@ Partial Public Class ucInputDocumentType
                 udcInputDocumentType.ID = DocumentControlID.PASS
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.PASS)
                 ' CRE20-0022 (Immu record) [End][Martin]
+
+            Case DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET
+                udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputISSHK.ascx", strFolderPath))
+                udcInputDocumentType.ID = DocumentControlID.ISSHK
+                udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(Me._docType)
+
+            Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
+                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
+                DocTypeModel.DocTypeCode.CEEP
+                udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputCommon.ascx", strFolderPath))
+                udcInputDocumentType.ID = DocumentControlID.Common
+                udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(Me._docType)
         End Select
 
         udcInputDocumentType.UpdateValue = Me._fillValue
@@ -487,6 +501,26 @@ Partial Public Class ucInputDocumentType
     End Function
 
     ' CRE20-0022 (Immu record) [End][Martin]
+
+    Public Function GetISSHKControl() As ucInputISSHK
+        Dim control As Control = Me.FindControl(DocumentControlID.ISSHK)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputISSHK)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+
+    Public Function GetCommonControl() As ucInputCommon
+        Dim control As Control = Me.FindControl(DocumentControlID.Common)
+        If Not control Is Nothing Then
+            Return CType(control, ucInputCommon)
+        Else
+            Return Nothing
+        End If
+    End Function
+
 
 
 #End Region

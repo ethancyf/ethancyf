@@ -2771,7 +2771,7 @@ Partial Public Class spProfile
 
             If blnAbleToUpdate Then
                 'Check Name (in English)
-                SM = Validator.chkEngName(UCase(txtSPEditSurname.Text.Trim), UCase(txtSPEditOthername.Text.Trim), True)
+                SM = Validator.chkEngName(UCase(txtSPEditSurname.Text.Trim), UCase(txtSPEditOthername.Text.Trim), String.Empty)
                 If Not SM Is Nothing Then
                     imgSPEditEnameAlert.Visible = True
                     msgBox.AddMessage(SM)
@@ -3002,7 +3002,7 @@ Partial Public Class spProfile
 
             If blnAbleToInsert Then
                 'Check Name (in English)
-                SM = Validator.chkEngName(UCase(txtRegSurname.Text.Trim), UCase(txtRegEname.Text.Trim), True)
+                SM = Validator.chkEngName(UCase(txtRegSurname.Text.Trim), UCase(txtRegEname.Text.Trim), String.Empty)
                 If Not SM Is Nothing Then
                     imgEnameAlert.Visible = True
                     msgBox.AddMessage(SM)

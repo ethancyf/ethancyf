@@ -1990,7 +1990,18 @@ Namespace Format
                         Common.Component.DocType.DocTypeModel.DocTypeCode.HKP,
                         Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
                         Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER,
-                        Common.Component.DocType.DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.PASS,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.ISSHK,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.MEP,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.TWMTP,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.TWPAR,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.TWVTD,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.TWNS,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.MD,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.ET
 
                         ' CRE19-001 (VSS 2019) [End][Winnie]
 
@@ -2196,8 +2207,7 @@ Namespace Format
                     'DD-MM-YYYY / MM-YYYY / YYYY
                     strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
 
-                    ' CRE19-001 (VSS 2019) [Start][Winnie]
-                    ' ----------------------------------------------------------------------------------------
+
                 Case Common.Component.DocType.DocTypeModel.DocTypeCode.OC,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.OW,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.TW,
@@ -2205,8 +2215,18 @@ Namespace Format
                     Common.Component.DocType.DocTypeModel.DocTypeCode.HKP,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.OTHER,
-                    Common.Component.DocType.DocTypeModel.DocTypeCode.PASS ' CRE20-0022 (Immu record) [Martin]
-                    ' CRE19-001 (VSS 2019) [End][Winnie]
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.PASS,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.MEP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWMTP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWPAR,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWVTD,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWNS,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.MD,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ISSHK,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ET
 
                     strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
 
@@ -2265,10 +2285,20 @@ Namespace Format
                     'DD-MM-YYYY
                     strRes = dtDOI.Value.ToString(strDisplayDOBDayFormat)
 
-                Case Common.Component.DocType.DocTypeModel.DocTypeCode.VISA
-                    'No Date of Issue
-
-                Case Common.Component.DocType.DocTypeModel.DocTypeCode.PASS
+                Case Common.Component.DocType.DocTypeModel.DocTypeCode.VISA,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.PASS,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ISSHK,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.MEP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWMTP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWPAR,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWVTD,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TWNS,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.MD,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ET,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8
                     'No Date of Issue
 
             End Select

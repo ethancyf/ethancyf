@@ -361,8 +361,8 @@ Namespace Component.Scheme
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.ENHVSSO OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.PPP OrElse _
                         udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19 OrElse _
-                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19CBD OrElse _
-                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19RVP OrElse _
+                        udtSchemeClaimModel.ControlType = SchemeClaimModel.EnumControlType.COVID19OR _
                         ) AndAlso dtmCheckDate <= dtmCurrentDateTime Then
 
                         udtTranBenefitList = udtEHSTransactionBLL.getTransactionDetailBenefit(strDocCode, udtEHSAccount.getPersonalInformation(strDocCode).IdentityNum)
@@ -407,7 +407,19 @@ Namespace Component.Scheme
                                 DocTypeModel.DocTypeCode.TW, _
                                 DocTypeModel.DocTypeCode.CCIC, _
                                 DocTypeModel.DocTypeCode.RFNo8, _
-                                DocTypeModel.DocTypeCode.PASS
+                                DocTypeModel.DocTypeCode.PASS, _
+                                DocTypeModel.DocTypeCode.ISSHK, _
+                                DocTypeModel.DocTypeCode.MEP, _
+                                DocTypeModel.DocTypeCode.TWMTP, _
+                                DocTypeModel.DocTypeCode.TWPAR, _
+                                DocTypeModel.DocTypeCode.TWVTD, _
+                                DocTypeModel.DocTypeCode.TWNS, _
+                                DocTypeModel.DocTypeCode.MD, _
+                                DocTypeModel.DocTypeCode.MP, _
+                                DocTypeModel.DocTypeCode.TD, _
+                                DocTypeModel.DocTypeCode.CEEP, _
+                                DocTypeModel.DocTypeCode.ET
+
                                 'non EC case
                                 blnExceedDocument = udtClaimRulesBLL.CheckExceedDocumentLimitFromEHSClaimSearch(udtSchemeClaimModel.SchemeCode, strDocCode, personalInformation.DOB, personalInformation.ExactDOB, dtmCurrentDate)
 
