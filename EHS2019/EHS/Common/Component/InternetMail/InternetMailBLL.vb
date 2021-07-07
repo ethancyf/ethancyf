@@ -2,6 +2,7 @@ Imports System.Data.SqlClient
 Imports System.Data
 Imports System.Globalization
 Imports Common.DataAccess
+Imports Common.Component.Scheme
 
 Namespace Component.InternetMail
 
@@ -445,6 +446,15 @@ Namespace Component.InternetMail
                 udtChiParamCollection.AddParam("RMPTel", udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentTelNo").Trim)
                 udtEngParamCollection.AddParam("ProfTel", udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentTelNo2").Trim)
                 udtChiParamCollection.AddParam("ProfTel", udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentTelNo2").Trim)
+                'Share the use of email with printout
+                Dim strEnrolmentEmail As String = String.Empty
+                Dim strEnrolmentEmailHCVS As String = String.Empty
+                udtGeneralFunction.getSystemParameter("EnrolmentEmail", strEnrolmentEmail, String.Empty, "ALL")
+                udtGeneralFunction.getSystemParameter("EnrolmentEmail", strEnrolmentEmailHCVS, String.Empty, SchemeClaimModel.HCVS)
+                udtChiParamCollection.AddParam("VaccineEmail", strEnrolmentEmail)
+                udtEngParamCollection.AddParam("VaccineEmail", strEnrolmentEmail)
+                udtChiParamCollection.AddParam("HCVSEmail", strEnrolmentEmailHCVS)
+                udtEngParamCollection.AddParam("HCVSEmail", strEnrolmentEmailHCVS)
 
                 'Select Description for new enrolment and scheme enrolement
                 Dim strChiDesc As String
@@ -522,6 +532,30 @@ Namespace Component.InternetMail
                                             udtShemeBackOfficeModel.SchemeDescChi.Trim)
                         End If
                     End If
+
+                    'Handle Scheme Agreement URL
+                    Dim strEngAgreementUrl As String = String.Empty
+                    Dim strChiAgreementUrl As String = String.Empty
+                    udtGeneralFunction.getSystemParameter("EnrolmentAgreementURL", strEngAgreementUrl, strChiAgreementUrl, strSchemeCode.Trim)
+
+                    If strEngAgreementUrl <> String.Empty Or strChiAgreementUrl <> String.Empty Then
+
+                        Dim strChiAgreementUrlWithTag As String = "<a href='" & strChiAgreementUrl & "'>" & strChiAgreementUrl & "</a>"
+                        Dim strEngAgreementUrlWithTag As String = "<a href='" & strEngAgreementUrl & "'>" & strEngAgreementUrl & "</a>"
+
+                        If strChiAgreementUrl = String.Empty Then 'only have eng version
+                            strSchemeEngList += "<br>" + "&nbsp;&nbsp;(" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreement").ToString.Trim + ": " & strEngAgreementUrlWithTag & ")"
+                            strSchemeChiList += "<br>" + "&nbsp;&nbsp;&nbsp;(" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreementNoLang", langCHI).ToString.Trim + "︰ " & strEngAgreementUrlWithTag & ")" '協議（只備英文版）
+
+                        ElseIf strEngAgreementUrl = String.Empty Then 'only have chi version
+                            strSchemeEngList += "<br>" + "&nbsp;&nbsp;(" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreementNoLang").ToString.Trim + ": " & strChiAgreementUrlWithTag & ")"
+                            strSchemeChiList += "<br>" + "&nbsp;&nbsp;&nbsp;(" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreement", langCHI).ToString.Trim + "︰ " & strChiAgreementUrlWithTag & ")" 'Agreement(Chinese version only)
+                        Else
+                            strSchemeEngList += "<br>" + "&nbsp;&nbsp;(" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreement").ToString.Trim + ": " & strEngAgreementUrlWithTag & ")"
+                            strSchemeChiList += "<br>" + "&nbsp;&nbsp;&nbsp;(" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreement", langCHI).ToString.Trim + "︰ " & strChiAgreementUrlWithTag & ")"
+                        End If
+                    End If
+
                     strSchemeEngList = strSchemeEngList + "<br>"
                     strSchemeChiList = strSchemeChiList + "<br>"
                 Next

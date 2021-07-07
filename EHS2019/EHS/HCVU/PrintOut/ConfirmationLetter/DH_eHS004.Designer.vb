@@ -54,7 +54,6 @@
             Me.txtDescriptionChi3a = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtDescriptionEng5 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtFooterEng1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-            Me.txtboxEmailEng = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtDescriptionEng4b = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtDescriptionEng4ActivationPeriod = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtDescriptionChi4a = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
@@ -62,7 +61,6 @@
             Me.txtDescriptionChi4c = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtDescriptionChi4b = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtDescriptionChi5 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
-            Me.txtboxEmailChi = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtFooterChi1 = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtNameOfServiceProviderEng = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.txtNameOfServiceProviderChi = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
@@ -75,6 +73,11 @@
             Me.sreLetterEndingEng = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.sreLetterEndingChi = New GrapeCity.ActiveReports.SectionReportModel.SubReport()
             Me.txtDescriptionEng4c = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtDescriptionEng4d = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtDescriptionEng4e = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.txtDescriptionChi4e = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
+            Me.richboxEmailChi = New GrapeCity.ActiveReports.SectionReportModel.RichTextBox()
+            Me.richboxEmailEng = New GrapeCity.ActiveReports.SectionReportModel.RichTextBox()
             Me.PageFooter1 = New GrapeCity.ActiveReports.SectionReportModel.PageFooter()
             Me.txtFormCode = New GrapeCity.ActiveReports.SectionReportModel.TextBox()
             Me.ReportHeader1 = New GrapeCity.ActiveReports.SectionReportModel.ReportHeader()
@@ -103,7 +106,6 @@
             CType(Me.txtDescriptionChi3a, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionEng5, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtFooterEng1, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.txtboxEmailEng, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionEng4b, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionEng4ActivationPeriod, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionChi4a, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -111,7 +113,6 @@
             CType(Me.txtDescriptionChi4c, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionChi4b, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionChi5, System.ComponentModel.ISupportInitialize).BeginInit()
-            CType(Me.txtboxEmailChi, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtFooterChi1, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtNameOfServiceProviderEng, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtNameOfServiceProviderChi, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -122,6 +123,9 @@
             CType(Me.txtDescriptionEng3a, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionEng4a, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtDescriptionEng4c, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtDescriptionEng4d, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtDescriptionEng4e, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType(Me.txtDescriptionChi4e, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me.txtFormCode, System.ComponentModel.ISupportInitialize).BeginInit()
             CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
             '
@@ -247,8 +251,8 @@
             '
             'Detail1
             '
-            Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.sreEnrolmentSchemeEng, Me.txtPrintDateEng, Me.txtDearText, Me.txtHeaderEng, Me.txtDescriptionEng1, Me.txtDescriptionEng2, Me.txtDearSPNameChi, Me.txtHeaderChi, Me.txtDescriptionChi1, Me.txtDescriptionChi2, Me.txtDescriptionEng3, Me.txtDescriptionChi3c, Me.sreLetterHeaderEng, Me.sreSPIDandTokenNoEng, Me.PageBreak1, Me.sreLetterHeaderChi, Me.sreEnrolmentSchemeChi, Me.sreSPIDandTokenNoChi, Me.sreNameOfMOEng, Me.sreNameOfMOChi, Me.txtDescriptionChi3a, Me.txtDescriptionEng5, Me.txtFooterEng1, Me.txtboxEmailEng, Me.txtDescriptionEng4b, Me.txtDescriptionEng4ActivationPeriod, Me.txtDescriptionChi4a, Me.txtDescriptionChi4ActivationPeriod, Me.txtDescriptionChi4c, Me.txtDescriptionChi4b, Me.txtDescriptionChi5, Me.txtboxEmailChi, Me.txtFooterChi1, Me.txtNameOfServiceProviderEng, Me.txtNameOfServiceProviderChi, Me.txtStarEng, Me.txtDescriptionEng3b, Me.txtStarChi, Me.txtDescriptionChi3b, Me.txtDescriptionEng3a, Me.txtDescriptionEng4a, Me.sreLetterEndingEng, Me.sreLetterEndingChi, Me.txtDescriptionEng4c})
-            Me.Detail1.Height = 11.55208!
+            Me.Detail1.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {Me.sreEnrolmentSchemeEng, Me.txtPrintDateEng, Me.txtDearText, Me.txtHeaderEng, Me.txtDescriptionEng1, Me.txtDescriptionEng2, Me.txtDearSPNameChi, Me.txtHeaderChi, Me.txtDescriptionChi1, Me.txtDescriptionChi2, Me.txtDescriptionEng3, Me.txtDescriptionChi3c, Me.sreLetterHeaderEng, Me.sreSPIDandTokenNoEng, Me.PageBreak1, Me.sreLetterHeaderChi, Me.sreEnrolmentSchemeChi, Me.sreSPIDandTokenNoChi, Me.sreNameOfMOEng, Me.sreNameOfMOChi, Me.txtDescriptionChi3a, Me.txtDescriptionEng5, Me.txtFooterEng1, Me.txtDescriptionEng4b, Me.txtDescriptionEng4ActivationPeriod, Me.txtDescriptionChi4a, Me.txtDescriptionChi4ActivationPeriod, Me.txtDescriptionChi4c, Me.txtDescriptionChi4b, Me.txtDescriptionChi5, Me.txtFooterChi1, Me.txtNameOfServiceProviderEng, Me.txtNameOfServiceProviderChi, Me.txtStarEng, Me.txtDescriptionEng3b, Me.txtStarChi, Me.txtDescriptionChi3b, Me.txtDescriptionEng3a, Me.txtDescriptionEng4a, Me.sreLetterEndingEng, Me.sreLetterEndingChi, Me.txtDescriptionEng4c, Me.txtDescriptionEng4d, Me.txtDescriptionEng4e, Me.txtDescriptionChi4e, Me.richboxEmailChi, Me.richboxEmailEng})
+            Me.Detail1.Height = 12.13833!
             Me.Detail1.KeepTogether = True
             Me.Detail1.Name = "Detail1"
             '
@@ -304,7 +308,7 @@
             Me.txtDescriptionEng1.Style = "font-family: Arial; font-size: 10pt; text-align: justify; vertical-align: top; dd" & _
         "o-char-set: 1"
             Me.txtDescriptionEng1.Text = "We are pleased to inform you that your application for enrolment in the scheme(s)" & _
-        " listed below has/have been successful."
+        " listed below has been successful."
             Me.txtDescriptionEng1.Top = 1.34375!
             Me.txtDescriptionEng1.Width = 6.5625!
             '
@@ -327,7 +331,7 @@
             Me.txtDearSPNameChi.Name = "txtDearSPNameChi"
             Me.txtDearSPNameChi.Style = "font-family: 新細明體; font-size: 11.25pt; vertical-align: top; ddo-char-set: 1"
             Me.txtDearSPNameChi.Text = "先生 / 女士："
-            Me.txtDearSPNameChi.Top = 6.372!
+            Me.txtDearSPNameChi.Top = 6.832!
             Me.txtDearSPNameChi.Width = 6.5625!
             '
             'txtHeaderChi
@@ -338,7 +342,7 @@
             Me.txtHeaderChi.Style = "font-family: 新細明體; font-size: 14.25pt; font-weight: normal; text-align: center; t" & _
         "ext-decoration: underline; vertical-align: top; ddo-char-set: 136"
             Me.txtHeaderChi.Text = "登記確認書"
-            Me.txtHeaderChi.Top = 6.59075!
+            Me.txtHeaderChi.Top = 7.05075!
             Me.txtHeaderChi.Width = 6.5625!
             '
             'txtDescriptionChi1
@@ -350,7 +354,7 @@
             Me.txtDescriptionChi1.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 1"
             Me.txtDescriptionChi1.Text = "謹此通知，你申請登記參加下列計劃一事，已經完成辦埋。"
-            Me.txtDescriptionChi1.Top = 7.372!
+            Me.txtDescriptionChi1.Top = 7.832!
             Me.txtDescriptionChi1.Width = 6.5625!
             '
             'txtDescriptionChi2
@@ -362,7 +366,7 @@
             Me.txtDescriptionChi2.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 1"
             Me.txtDescriptionChi2.Text = "現隨信寄上上述計劃的標誌。請將標誌展示於執業處所內的顯眼位置。"
-            Me.txtDescriptionChi2.Top = 7.997!
+            Me.txtDescriptionChi2.Top = 8.45701!
             Me.txtDescriptionChi2.Width = 6.5625!
             '
             'txtDescriptionEng3
@@ -386,7 +390,7 @@
         "ddo-char-set: 1"
             Me.txtDescriptionChi3c.Text = "我們已發出一封電子郵件到你的登記電郵地址，電子郵件附有啟動上述戶口的超連結。請點擊上述電子郵件的啟動超連結，使用你的服務提供者編號及保安編碼器進行戶口啟動程序。 " & _
         ""
-            Me.txtDescriptionChi3c.Top = 9.126!
+            Me.txtDescriptionChi3c.Top = 9.58601!
             Me.txtDescriptionChi3c.Width = 6.5625!
             '
             'sreLetterHeaderEng
@@ -416,9 +420,9 @@
             Me.PageBreak1.Height = 0.01!
             Me.PageBreak1.Left = 0.0!
             Me.PageBreak1.Name = "PageBreak1"
-            Me.PageBreak1.Size = New System.Drawing.SizeF(6.594!, 0.01!)
-            Me.PageBreak1.Top = 5.96575!
-            Me.PageBreak1.Width = 6.594!
+            Me.PageBreak1.Size = New System.Drawing.SizeF(6.5!, 0.01!)
+            Me.PageBreak1.Top = 6.42575!
+            Me.PageBreak1.Width = 6.5!
             '
             'sreLetterHeaderChi
             '
@@ -428,7 +432,7 @@
             Me.sreLetterHeaderChi.Name = "sreLetterHeaderChi"
             Me.sreLetterHeaderChi.Report = Nothing
             Me.sreLetterHeaderChi.ReportName = "SubReport1"
-            Me.sreLetterHeaderChi.Top = 5.997!
+            Me.sreLetterHeaderChi.Top = 6.457!
             Me.sreLetterHeaderChi.Width = 6.5625!
             '
             'sreEnrolmentSchemeChi
@@ -439,7 +443,7 @@
             Me.sreEnrolmentSchemeChi.Name = "sreEnrolmentSchemeChi"
             Me.sreEnrolmentSchemeChi.Report = Nothing
             Me.sreEnrolmentSchemeChi.ReportName = "SubReport1"
-            Me.sreEnrolmentSchemeChi.Top = 7.6845!
+            Me.sreEnrolmentSchemeChi.Top = 8.144503!
             Me.sreEnrolmentSchemeChi.Width = 6.5625!
             '
             'sreSPIDandTokenNoChi
@@ -450,7 +454,7 @@
             Me.sreSPIDandTokenNoChi.Name = "sreSPIDandTokenNoChi"
             Me.sreSPIDandTokenNoChi.Report = Nothing
             Me.sreSPIDandTokenNoChi.ReportName = "SubReport1"
-            Me.sreSPIDandTokenNoChi.Top = 8.309502!
+            Me.sreSPIDandTokenNoChi.Top = 8.769512!
             Me.sreSPIDandTokenNoChi.Width = 6.5625!
             '
             'sreNameOfMOEng
@@ -472,7 +476,7 @@
             Me.sreNameOfMOChi.Name = "sreNameOfMOChi"
             Me.sreNameOfMOChi.Report = Nothing
             Me.sreNameOfMOChi.ReportName = "SubReport1"
-            Me.sreNameOfMOChi.Top = 6.997!
+            Me.sreNameOfMOChi.Top = 7.457!
             Me.sreNameOfMOChi.Width = 6.5625!
             '
             'txtDescriptionChi3a
@@ -484,7 +488,7 @@
             Me.txtDescriptionChi3a.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: left; text-decoration: underli" & _
         "ne; ddo-char-set: 136"
             Me.txtDescriptionChi3a.Text = "由於你現為醫院管理局的公私營醫療合作－醫療病歷互聯試驗計劃 / 電子健康紀錄互通系統的"
-            Me.txtDescriptionChi3a.Top = 8.622002!
+            Me.txtDescriptionChi3a.Top = 9.082012!
             Me.txtDescriptionChi3a.Width = 6.5!
             '
             'txtDescriptionEng5
@@ -496,7 +500,7 @@
             Me.txtDescriptionEng5.Style = "font-family: Arial; font-size: 10pt; text-align: justify; vertical-align: top; dd" & _
         "o-char-set: 1"
             Me.txtDescriptionEng5.Text = "Please feel free to contact us if you have any enquires. Our e-mail address is:"
-            Me.txtDescriptionEng5.Top = 4.621853!
+            Me.txtDescriptionEng5.Top = 5.081853!
             Me.txtDescriptionEng5.Width = 4.8125!
             '
             'txtFooterEng1
@@ -508,20 +512,8 @@
             Me.txtFooterEng1.Style = "font-family: Arial; font-size: 10pt; text-align: justify; vertical-align: top; dd" & _
         "o-char-set: 1"
             Me.txtFooterEng1.Text = "Thank you once again for your support!"
-            Me.txtFooterEng1.Top = 5.121853!
+            Me.txtFooterEng1.Top = 5.581853!
             Me.txtFooterEng1.Width = 6.5625!
-            '
-            'txtboxEmailEng
-            '
-            Me.txtboxEmailEng.Height = 0.1875!
-            Me.txtboxEmailEng.Left = 0.0!
-            Me.txtboxEmailEng.LineSpacing = 1.0!
-            Me.txtboxEmailEng.Name = "txtboxEmailEng"
-            Me.txtboxEmailEng.Style = "font-family: Arial; font-size: 10pt; text-align: justify; text-decoration: underl" & _
-        "ine; vertical-align: top; ddo-char-set: 1"
-            Me.txtboxEmailEng.Text = "<EMAIL>"
-            Me.txtboxEmailEng.Top = 4.809353!
-            Me.txtboxEmailEng.Width = 1.71875!
             '
             'txtDescriptionEng4b
             '
@@ -556,7 +548,7 @@
             Me.txtDescriptionChi4a.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 1"
             Me.txtDescriptionChi4a.Text = "請儘快啟動戶口。倘若在本信發出日期"
-            Me.txtDescriptionChi4a.Top = 9.636001!
+            Me.txtDescriptionChi4a.Top = 10.09601!
             Me.txtDescriptionChi4a.Width = 2.6875!
             '
             'txtDescriptionChi4ActivationPeriod
@@ -568,7 +560,7 @@
             Me.txtDescriptionChi4ActivationPeriod.Style = "font-family: 新細明體; font-size: 12pt; font-weight: normal; text-align: center; vert" & _
         "ical-align: top; ddo-char-set: 1"
             Me.txtDescriptionChi4ActivationPeriod.Text = "99"
-            Me.txtDescriptionChi4ActivationPeriod.Top = 9.636001!
+            Me.txtDescriptionChi4ActivationPeriod.Top = 10.09601!
             Me.txtDescriptionChi4ActivationPeriod.Width = 0.25!
             '
             'txtDescriptionChi4c
@@ -580,7 +572,7 @@
             Me.txtDescriptionChi4c.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 1"
             Me.txtDescriptionChi4c.Text = "銷，而需重新申請登記。"
-            Me.txtDescriptionChi4c.Top = 9.8135!
+            Me.txtDescriptionChi4c.Top = 10.27351!
             Me.txtDescriptionChi4c.Width = 6.5625!
             '
             'txtDescriptionChi4b
@@ -592,7 +584,7 @@
             Me.txtDescriptionChi4b.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 136"
             Me.txtDescriptionChi4b.Text = " 日內未能啟動戶口，你的登記申請可能會被視為已撤"
-            Me.txtDescriptionChi4b.Top = 9.626!
+            Me.txtDescriptionChi4b.Top = 10.08601!
             Me.txtDescriptionChi4b.Width = 3.75!
             '
             'txtDescriptionChi5
@@ -603,21 +595,9 @@
             Me.txtDescriptionChi5.Name = "txtDescriptionChi5"
             Me.txtDescriptionChi5.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 1"
-            Me.txtDescriptionChi5.Text = "如有任何查詢，請隨時與本組聯絡，電郵地址是："
-            Me.txtDescriptionChi5.Top = 10.09475!
+            Me.txtDescriptionChi5.Text = "如有任何查詢，請隨時與本署聯絡，電郵地址是："
+            Me.txtDescriptionChi5.Top = 10.855!
             Me.txtDescriptionChi5.Width = 3.5!
-            '
-            'txtboxEmailChi
-            '
-            Me.txtboxEmailChi.Height = 0.1875!
-            Me.txtboxEmailChi.Left = 0.0!
-            Me.txtboxEmailChi.LineSpacing = 1.0!
-            Me.txtboxEmailChi.Name = "txtboxEmailChi"
-            Me.txtboxEmailChi.Style = "font-family: Arial; font-size: 10pt; text-align: justify; text-decoration: underl" & _
-        "ine; vertical-align: top; ddo-char-set: 1"
-            Me.txtboxEmailChi.Text = "<EMAIL>"
-            Me.txtboxEmailChi.Top = 10.29225!
-            Me.txtboxEmailChi.Width = 3.0625!
             '
             'txtFooterChi1
             '
@@ -628,7 +608,7 @@
             Me.txtFooterChi1.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
         "ddo-char-set: 1"
             Me.txtFooterChi1.Text = "再次多謝你的支持。"
-            Me.txtFooterChi1.Top = 10.71975!
+            Me.txtFooterChi1.Top = 11.48!
             Me.txtFooterChi1.Width = 6.5625!
             '
             'txtNameOfServiceProviderEng
@@ -651,7 +631,7 @@
             Me.txtNameOfServiceProviderChi.Style = "font-family: HA_MingLiu; font-size: 14.25pt; font-weight: normal; text-align: cen" & _
         "ter; text-decoration: none; vertical-align: top; ddo-char-set: 136"
             Me.txtNameOfServiceProviderChi.Text = "<ServiceProviderName>"
-            Me.txtNameOfServiceProviderChi.Top = 6.8095!
+            Me.txtNameOfServiceProviderChi.Top = 7.2695!
             Me.txtNameOfServiceProviderChi.Width = 6.5625!
             '
             'txtStarEng
@@ -683,7 +663,7 @@
             Me.txtStarChi.Name = "txtStarChi"
             Me.txtStarChi.Style = "font-size: 11.25pt"
             Me.txtStarChi.Text = "*"
-            Me.txtStarChi.Top = 8.622001!
+            Me.txtStarChi.Top = 9.08201!
             Me.txtStarChi.Width = 0.09375!
             '
             'txtDescriptionChi3b
@@ -695,7 +675,7 @@
             Me.txtDescriptionChi3b.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; text-decoration: unde" & _
         "rline; vertical-align: top; ddo-char-set: 1"
             Me.txtDescriptionChi3b.Text = "登記用戶，請用該系統的編碼器，登入醫健通(資助)系統，以啓動戶口並進行操作。"
-            Me.txtDescriptionChi3b.Top = 8.778252!
+            Me.txtDescriptionChi3b.Top = 9.238262!
             Me.txtDescriptionChi3b.Width = 6.5625!
             '
             'txtDescriptionEng3a
@@ -732,7 +712,7 @@
             Me.sreLetterEndingEng.Name = "sreLetterEndingEng"
             Me.sreLetterEndingEng.Report = Nothing
             Me.sreLetterEndingEng.ReportName = "SubReport1"
-            Me.sreLetterEndingEng.Top = 5.559353!
+            Me.sreLetterEndingEng.Top = 6.019353!
             Me.sreLetterEndingEng.Width = 6.5625!
             '
             'sreLetterEndingChi
@@ -743,7 +723,7 @@
             Me.sreLetterEndingChi.Name = "sreLetterEndingChi"
             Me.sreLetterEndingChi.Report = Nothing
             Me.sreLetterEndingChi.ReportName = "SubReport1"
-            Me.sreLetterEndingChi.Top = 11.1885!
+            Me.sreLetterEndingChi.Top = 11.94875!
             Me.sreLetterEndingChi.Width = 6.5625!
             '
             'txtDescriptionEng4c
@@ -758,6 +738,66 @@
         "ay have to re-apply for enrolment."
             Me.txtDescriptionEng4c.Top = 4.184353!
             Me.txtDescriptionEng4c.Width = 6.5625!
+            '
+            'txtDescriptionEng4d
+            '
+            Me.txtDescriptionEng4d.Height = 0.34375!
+            Me.txtDescriptionEng4d.Left = 0.01574993!
+            Me.txtDescriptionEng4d.Name = "txtDescriptionEng4d"
+            Me.txtDescriptionEng4d.Style = "font-family: Arial; font-size: 10pt; text-align: justify; vertical-align: top; dd" & _
+        "o-char-set: 1"
+            Me.txtDescriptionEng4d.Text = "The opportunity is taken to remind you to observe and comply with the terms and c" & _
+        "onditions of the Agreement of respective scheme(s), with link(s) provided above." & _
+        ""
+            Me.txtDescriptionEng4d.Top = 6.130207!
+            Me.txtDescriptionEng4d.Width = 6.5625!
+            '
+            'txtDescriptionEng4e
+            '
+            Me.txtDescriptionEng4e.Height = 0.34375!
+            Me.txtDescriptionEng4e.Left = 0.0!
+            Me.txtDescriptionEng4e.Name = "txtDescriptionEng4e"
+            Me.txtDescriptionEng4e.Style = "font-family: Arial; font-size: 10pt; text-align: justify; vertical-align: top; dd" & _
+        "o-char-set: 1"
+            Me.txtDescriptionEng4e.Text = "The opportunity is taken to remind you to observe and comply with the terms and c" & _
+        "onditions of the Agreement of respective scheme(s), with link(s) provided above." & _
+        ""
+            Me.txtDescriptionEng4e.Top = 4.631!
+            Me.txtDescriptionEng4e.Width = 6.5625!
+            '
+            'txtDescriptionChi4e
+            '
+            Me.txtDescriptionChi4e.Height = 0.2079993!
+            Me.txtDescriptionChi4e.Left = -0.00000001490116!
+            Me.txtDescriptionChi4e.LineSpacing = 1.0!
+            Me.txtDescriptionChi4e.Name = "txtDescriptionChi4e"
+            Me.txtDescriptionChi4e.Style = "font-family: 新細明體; font-size: 11.25pt; text-align: justify; vertical-align: top; " & _
+        "ddo-char-set: 1"
+            Me.txtDescriptionChi4e.Text = "現藉此機會提示你必須留意及遵守有關計劃協議的條款和條件(上文已提供相關協議的連結)。"
+            Me.txtDescriptionChi4e.Top = 10.54!
+            Me.txtDescriptionChi4e.Width = 6.5625!
+            '
+            'richboxEmailChi
+            '
+            Me.richboxEmailChi.AutoReplaceFields = True
+            Me.richboxEmailChi.Font = New System.Drawing.Font("Arial", 10.0!)
+            Me.richboxEmailChi.Height = 0.1880002!
+            Me.richboxEmailChi.Left = 0.0!
+            Me.richboxEmailChi.Name = "richboxEmailChi"
+            Me.richboxEmailChi.RTF = resources.GetString("richboxEmailChi.RTF")
+            Me.richboxEmailChi.Top = 11.042!
+            Me.richboxEmailChi.Width = 4.812!
+            '
+            'richboxEmailEng
+            '
+            Me.richboxEmailEng.AutoReplaceFields = True
+            Me.richboxEmailEng.Font = New System.Drawing.Font("Arial", 10.0!)
+            Me.richboxEmailEng.Height = 0.1880002!
+            Me.richboxEmailEng.Left = 0.0!
+            Me.richboxEmailEng.Name = "richboxEmailEng"
+            Me.richboxEmailEng.RTF = resources.GetString("richboxEmailEng.RTF")
+            Me.richboxEmailEng.Top = 5.269!
+            Me.richboxEmailEng.Width = 4.812!
             '
             'PageFooter1
             '
@@ -791,7 +831,7 @@
             Me.PageSettings.Margins.Top = 0.0!
             Me.PageSettings.PaperHeight = 11.69!
             Me.PageSettings.PaperWidth = 8.27!
-            Me.PrintWidth = 6.594!
+            Me.PrintWidth = 6.7135!
             Me.Sections.Add(Me.ReportHeader1)
             Me.Sections.Add(Me.PageHeader1)
             Me.Sections.Add(Me.Detail1)
@@ -827,7 +867,6 @@
             CType(Me.txtDescriptionChi3a, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionEng5, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtFooterEng1, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.txtboxEmailEng, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionEng4b, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionEng4ActivationPeriod, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionChi4a, System.ComponentModel.ISupportInitialize).EndInit()
@@ -835,7 +874,6 @@
             CType(Me.txtDescriptionChi4c, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionChi4b, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionChi5, System.ComponentModel.ISupportInitialize).EndInit()
-            CType(Me.txtboxEmailChi, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtFooterChi1, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtNameOfServiceProviderEng, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtNameOfServiceProviderChi, System.ComponentModel.ISupportInitialize).EndInit()
@@ -846,6 +884,9 @@
             CType(Me.txtDescriptionEng3a, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionEng4a, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtDescriptionEng4c, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtDescriptionEng4d, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtDescriptionEng4e, System.ComponentModel.ISupportInitialize).EndInit()
+            CType(Me.txtDescriptionChi4e, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me.txtFormCode, System.ComponentModel.ISupportInitialize).EndInit()
             CType(Me, System.ComponentModel.ISupportInitialize).EndInit()
 
@@ -885,7 +926,6 @@
         Friend WithEvents txtDescriptionChi3a As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtDescriptionEng5 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtFooterEng1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
-        Friend WithEvents txtboxEmailEng As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtDescriptionEng4b As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtDescriptionEng4c As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtDescriptionEng4ActivationPeriod As GrapeCity.ActiveReports.SectionReportModel.TextBox
@@ -894,7 +934,6 @@
         Friend WithEvents txtDescriptionChi4c As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtDescriptionChi4b As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtDescriptionChi5 As GrapeCity.ActiveReports.SectionReportModel.TextBox
-        Friend WithEvents txtboxEmailChi As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtFooterChi1 As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtNameOfServiceProviderEng As GrapeCity.ActiveReports.SectionReportModel.TextBox
         Friend WithEvents txtNameOfServiceProviderChi As GrapeCity.ActiveReports.SectionReportModel.TextBox
@@ -907,5 +946,10 @@
         Friend WithEvents ReportFooter1 As GrapeCity.ActiveReports.SectionReportModel.ReportFooter
         Friend WithEvents sreLetterEndingEng As GrapeCity.ActiveReports.SectionReportModel.SubReport
         Friend WithEvents sreLetterEndingChi As GrapeCity.ActiveReports.SectionReportModel.SubReport
+        Private WithEvents txtDescriptionEng4d As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Private WithEvents richboxEmailChi As GrapeCity.ActiveReports.SectionReportModel.RichTextBox
+        Private WithEvents richboxEmailEng As GrapeCity.ActiveReports.SectionReportModel.RichTextBox
+        Friend WithEvents txtDescriptionEng4e As GrapeCity.ActiveReports.SectionReportModel.TextBox
+        Friend WithEvents txtDescriptionChi4e As GrapeCity.ActiveReports.SectionReportModel.TextBox
     End Class
 End Namespace

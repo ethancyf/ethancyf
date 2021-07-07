@@ -51,10 +51,10 @@ Namespace PrintOut.ConfirmationLetter
 
             Dim strTelNo As String
             Dim strFaxNo As String
-            Dim strEmail As String
+            'Dim strEmail As String
 
             Me.txtFormCode.Text = udtGeneralFunction.getUserDefinedParameter("Printout", "NewEnrolFormNo")
-            strEmail = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentEmail")
+            'strEmail = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentEmail")
             strTelNo = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentTelNo")
             strFaxNo = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentFax")
 
@@ -72,7 +72,6 @@ Namespace PrintOut.ConfirmationLetter
             'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
 
             Me.txtDescriptionEng4ActivationPeriod.Text = strActivationDays
-            Me.txtDescriptionEng5HCVUEmail.Text = strEmail
             Me.txtNameOfServiceProviderEng.Text = "(" + Me._udtSP.EnglishName.Trim() + ")"
 
             'Chinese Page
@@ -100,7 +99,6 @@ Namespace PrintOut.ConfirmationLetter
 
             'Me.txtPrintDateChi.Text = formatter.formatDate(DateTime.Now(), "zh-tw")
             Me.txtDescriptionChi4ActivationPeriod.Text = strActivationDays
-            Me.txtDescriptionChi5HCVUEmail.Text = strEmail
 
             'Modify the display of sentences due to existence of certain logos
             Dim blnLogoProvided = False
@@ -113,6 +111,50 @@ Namespace PrintOut.ConfirmationLetter
                     Exit For
                 End If
             Next
+
+            'handle E-mail address    
+            Dim blnHCVS As Boolean = False
+            Dim blnOthers As Boolean = False
+            Dim strEnrolmentEmail As String = String.Empty
+            Dim strEnrolmentEmailHCVS As String = String.Empty
+
+            Dim strEngEmail As String = String.Empty
+            Dim strChiEmail As String = String.Empty
+
+            udtGeneralFunction.getSystemParameter("EnrolmentEmail", strEnrolmentEmail, String.Empty, "ALL")
+            udtGeneralFunction.getSystemParameter("EnrolmentEmail", strEnrolmentEmailHCVS, String.Empty, SchemeClaimModel.HCVS)
+
+            'For Each strSchemeCode As String In _strSchemeCodeArrayList
+            '    If strSchemeCode = SchemeClaimModel.HCVS Then
+            '        blnHCVS = True
+            '    Else
+            '        blnOthers = True
+            '    End If
+            'Next
+            'If blnOthers = True Then
+            '    strEngEmail = strEnrolmentEmail & " (for vaccination scheme(s))"
+            '    strChiEmail = strEnrolmentEmail & "（疫苗相關計劃）"
+            '    If blnHCVS = True Then
+            '        strEngEmail += "<br />" & strEnrolmentEmailHCVS & " (for HCVS)"
+            '        strChiEmail += "<br />" & strEnrolmentEmailHCVS & "（醫療券計劃）"
+            '    End If
+            'Else
+            '    strEngEmail = strEnrolmentEmailHCVS & " (for HCVS)"
+            '    strChiEmail = strEnrolmentEmailHCVS & "（醫療券計劃）"
+            'End If
+            strEnrolmentEmail = "<u>" & strEnrolmentEmail & "</u>"
+            strEnrolmentEmailHCVS = "<u>" & strEnrolmentEmailHCVS & "</u>"
+
+            strEngEmail = strEnrolmentEmail & " (for vaccination scheme(s))"
+            strChiEmail = strEnrolmentEmail & " (疫苗相關計劃)"
+
+            strEngEmail += "<br />" & strEnrolmentEmailHCVS & " (for HCVS)"
+            strChiEmail += "<br />" & strEnrolmentEmailHCVS & " (醫療券計劃)"
+
+            richboxEmailEng.Html = "<body><font style='font-family:Arial; font-size:10pt;'>" + strEngEmail + "</font></body>"
+            richboxEmailChi.Html = "<body><font style='font-family:PMingLiU; font-size:11.25pt;'>" + strChiEmail + "</font></body>"
+
+
 
             'CRE15-006 (Rename of eHS) [Start][Chris YIM]
             '-----------------------------------------------------------------------------------------

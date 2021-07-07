@@ -41,7 +41,6 @@ Namespace PrintOut.ConfirmationLetter
             Dim singleLineHeight As Single = 0.344!
             'Dim singleLineHeight As Single = 0.516!
 
-            Dim strEmail As String = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentEmail")
             Dim strTelNo As String = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentTelNo")
             Dim strFaxNo As String = udtGeneralFunction.getUserDefinedParameter("Printout", "EnrolmentFax")
 
@@ -64,7 +63,6 @@ Namespace PrintOut.ConfirmationLetter
             'Me.txtboxDateEng.Text = udtFormat.formatDate(Today)
             Me.txtboxDateEng.Text = udtFormat.formatDisplayDate(Today)
             'CRE13-019-02 Extend HCVS to China [End][Chris YIM]
-            Me.txtboxEmailEng.Text = strEmail
             Me.txtNameOfServiceProviderEng.Text = "(" + Me._udtSP.EnglishName.Trim() + ")"
 
             'Chinese Page
@@ -92,7 +90,50 @@ Namespace PrintOut.ConfirmationLetter
 
             'Me.txtboxDateChi.Text = udtFormat.formatDate(udtFormat.convertDate(Today), "zh-tw")
 
-            Me.txtboxEmailChi.Text = txtboxEmailEng.Text
+
+            'handle E-mail address    
+            Dim blnHCVS As Boolean = False
+            Dim blnOthers As Boolean = False
+            Dim strEnrolmentEmail As String = String.Empty
+            Dim strEnrolmentEmailHCVS As String = String.Empty
+
+            Dim strEngEmail As String = String.Empty
+            Dim strChiEmail As String = String.Empty
+
+            udtGeneralFunction.getSystemParameter("EnrolmentEmail", strEnrolmentEmail, String.Empty, "ALL")
+            udtGeneralFunction.getSystemParameter("EnrolmentEmail", strEnrolmentEmailHCVS, String.Empty, SchemeClaimModel.HCVS)
+
+            'For Each strSchemeCode As String In _strSchemeCodeArrayList
+            '    If strSchemeCode = SchemeClaimModel.HCVS Then
+            '        blnHCVS = True
+            '    Else
+            '        blnOthers = True
+            '    End If
+            'Next
+            'If blnOthers = True Then
+            '    strEngEmail = strEnrolmentEmail & " (for vaccination scheme(s))"
+            '    strChiEmail = strEnrolmentEmail & "（疫苗相關計劃）"
+            '    If blnHCVS = True Then
+            '        strEngEmail += "<br />" & strEnrolmentEmailHCVS & " (for HCVS)"
+            '        strChiEmail += "<br />" & strEnrolmentEmailHCVS & "（醫療券計劃）"
+            '    End If
+            'Else
+            '    strEngEmail = strEnrolmentEmailHCVS & " (for HCVS)"
+            '    strChiEmail = strEnrolmentEmailHCVS & "（醫療券計劃）"
+            'End If
+
+            strEnrolmentEmail = "<u>" & strEnrolmentEmail & "</u>"
+            strEnrolmentEmailHCVS = "<u>" & strEnrolmentEmailHCVS & "</u>"
+
+            strEngEmail = strEnrolmentEmail & " (for vaccination scheme(s))"
+            strChiEmail = strEnrolmentEmail & " (疫苗相關計劃)"
+
+            strEngEmail += "<br />" & strEnrolmentEmailHCVS & " (for HCVS)"
+            strChiEmail += "<br />" & strEnrolmentEmailHCVS & " (醫療券計劃)"
+
+            'richboxEmailEng.Html = "<body>" + strEngEmail + "</body>"
+            richboxEmailEng.Html = "<body><font style='font-family:Arial; font-size:9.75pt;'>" + strEngEmail + "</font></body>"
+            richboxEmailChi.Html = "<body><font style='font-family:PMingLiU; font-size:11.25pt;'>" + strChiEmail + "</font></body>"
 
             'Modify the display of sentences due to existence of certain logos
             Dim blnLogoProvided = False
@@ -127,8 +168,9 @@ Namespace PrintOut.ConfirmationLetter
                 singleLineHeight = 0.516!
                 Me.txtDescriptionEng3a.Location = New Drawing.PointF(Me.txtDescriptionEng3a.Location.X, Me.txtDescriptionEng3a.Location.Y - singleLineHeight)
                 Me.txtDescriptionEng4.Location = New Drawing.PointF(Me.txtDescriptionEng4.Location.X, Me.txtDescriptionEng4.Location.Y - singleLineHeight)
+                Me.txtDescriptionEng4a.Location = New Drawing.PointF(Me.txtDescriptionEng4a.Location.X, Me.txtDescriptionEng4a.Location.Y - singleLineHeight)
                 Me.txtDescriptionEng5.Location = New Drawing.PointF(Me.txtDescriptionEng5.Location.X, Me.txtDescriptionEng5.Location.Y - singleLineHeight)
-                Me.txtboxEmailEng.Location = New Drawing.PointF(Me.txtboxEmailEng.Location.X, Me.txtboxEmailEng.Location.Y - singleLineHeight)
+                Me.richboxEmailEng.Location = New Drawing.PointF(Me.richboxEmailEng.Location.X, Me.richboxEmailEng.Location.Y - singleLineHeight)
                 Me.txtFooterEng1.Location = New Drawing.PointF(Me.txtFooterEng1.Location.X, Me.txtFooterEng1.Location.Y - singleLineHeight)
                 Me.sreLetterEndingEng.Location = New Drawing.PointF(Me.sreLetterEndingEng.Location.X, Me.sreLetterEndingEng.Location.Y - singleLineHeight)
                 'Me.txtFooterEng2.Location = New Drawing.PointF(Me.txtFooterEng2.Location.X, Me.txtFooterEng2.Location.Y - singleLineHeight)

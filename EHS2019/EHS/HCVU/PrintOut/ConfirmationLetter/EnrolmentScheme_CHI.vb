@@ -4,6 +4,7 @@ Imports Common
 Imports common.ComFunction
 Imports Common.Component
 Imports Common.Component.Scheme
+Imports System.Globalization
 
 Namespace PrintOut.ConfirmationLetter
 
@@ -32,10 +33,7 @@ Namespace PrintOut.ConfirmationLetter
             'Me.SchemeCodeArrayList.Sort()
             For Each strSchemeCode As String In Me.SchemeCodeArrayList
                 Me.CreateEnrolmentSchemeTextBox(strSchemeCode, sngStartTop)
-                sngStartTop += 0.219!
             Next
-
-            'sngStartTop += 0.219!
 
             SchemeCodeArrayList.Clear()
             Me.PrintWidth = 6.563!
@@ -44,27 +42,20 @@ Namespace PrintOut.ConfirmationLetter
 
 
 
-        Private Sub CreateEnrolmentSchemeTextBox(ByVal strSchemeCode As String, ByVal sngStartTop As Single)
+        Private Sub CreateEnrolmentSchemeTextBox(ByVal strSchemeCode As String, ByRef sngStartTop As Single)
 
             Dim textBox As TextBox
+            Dim textBoxAgreement As TextBox
             Dim strSchemeDesc As String = String.Empty
             Dim strSchemeDisplayCode As String = String.Empty
 
             Dim udtSchemeBackOfficeBLL As New Scheme.SchemeBackOfficeBLL
             Dim udtShemeBackOfficeModel As Scheme.SchemeBackOfficeModel
+            Dim udtGeneralFunction As GeneralFunction = New GeneralFunction
             udtShemeBackOfficeModel = udtSchemeBackOfficeBLL.GetAllSchemeBackOfficeWithSubsidizeGroup().Filter(strSchemeCode.Trim)
             strSchemeDesc = udtShemeBackOfficeModel.SchemeDescChi.Trim
 
-
-            'Add (Renew) notation 
-            'If strSchemeCode.Trim.Equals(SchemeBackOfficeSchemeCode.CIVSS) Then
-            '    Dim udtSPMigrationBLL As SPMigrationBLL = New SPMigrationBLL
-            '    Dim udtdt As DataTable = udtSPMigrationBLL.CheckDataMigrationFromIVSS(udtSPModel.HKID)
-            '    If udtdt.Rows.Count > 0 Then
-            '        strSchemeDesc = "(繼續參加) " + strSchemeDesc.Trim
-            '    End If
-            'End If
-
+            'Handle Scheme Desc
             textBox = New TextBox()
             CType(textBox, System.ComponentModel.ISupportInitialize).BeginInit()
             Me.dtlEnrolmentScheme.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {textBox})
@@ -78,11 +69,42 @@ Namespace PrintOut.ConfirmationLetter
 
             textBox.Name = "txt" + strSchemeCode.Trim() + "Text"
             textBox.Location = New System.Drawing.PointF(0.0!, sngStartTop)
-            ' CRE13-001 - EHAPP [Start][Koala]
-            ' -------------------------------------------------------------------------------------
-            textBox.Font = New System.Drawing.Font("新細明體", 12.0!, Drawing.FontStyle.Bold)
-            ' CRE13-001 - EHAPP [End][Koala]
+            sngStartTop += textBox.Height
+            textBox.Font = New System.Drawing.Font("新細明體", 12.0, Drawing.FontStyle.Bold)
             CType(textBox, System.ComponentModel.ISupportInitialize).EndInit()
+            
+            'Handle Agreement Url
+            Dim strEngAgreementUrl As String = String.Empty
+            Dim strChiAgreementUrl As String = String.Empty
+            Dim langCHI As CultureInfo = New CultureInfo("zh-TW")
+            udtGeneralFunction.getSystemParameter("EnrolmentAgreementURL", strEngAgreementUrl, strChiAgreementUrl, strSchemeCode.Trim)
+
+            If strEngAgreementUrl <> String.Empty Or strChiAgreementUrl <> String.Empty Then
+                textBoxAgreement = New TextBox()
+                CType(textBoxAgreement, System.ComponentModel.ISupportInitialize).BeginInit()
+                Me.dtlEnrolmentScheme.Controls.AddRange(New GrapeCity.ActiveReports.SectionReportModel.ARControl() {textBoxAgreement})
+                textBoxAgreement.Width = 6.563!
+                'textBoxAgreement.Height = 0.219!
+                If strChiAgreementUrl <> String.Empty Then
+                    textBoxAgreement.Text += "     (" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreement", langCHI).ToString.Trim + " : " & strChiAgreementUrl & ")"
+                    textBoxAgreement.HyperLink = strChiAgreementUrl
+                Else
+                    textBoxAgreement.Text += "     (" + HttpContext.GetGlobalResourceObject("Text", "EmailContentAgreementNoLang", langCHI).ToString.Trim + " : " & strEngAgreementUrl & ")"
+                    textBoxAgreement.HyperLink = strEngAgreementUrl
+                End If
+
+                textBoxAgreement.Name = "txt" + strSchemeCode.Trim() + "CUrlText"
+                textBoxAgreement.Location = New System.Drawing.PointF(0.0!, sngStartTop)
+                sngStartTop += textBoxAgreement.Height
+                textBoxAgreement.Font = New System.Drawing.Font("新細明體", 12)
+                CType(textBoxAgreement, System.ComponentModel.ISupportInitialize).EndInit()
+
+            End If
+
+            sngStartTop += 0.04! 'the space between two scheme     
+
+
+
 
         End Sub
 
