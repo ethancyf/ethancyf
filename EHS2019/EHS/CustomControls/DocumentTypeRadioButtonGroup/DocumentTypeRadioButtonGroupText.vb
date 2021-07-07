@@ -418,11 +418,13 @@ Public Class DocumentTypeRadioButtonGroupText
 
         ' Enable Document Type Status, according to Scheme Doc Type
         For Each udtSchemeDocTypeModel As DocType.SchemeDocTypeModel In udtSchemeDocTypeList
-            documentInfo = Me._strDocumentTypes.Item(udtSchemeDocTypeModel.DocCode.Trim())
-            If Not documentInfo Is Nothing Then
-                documentInfo.IsEnable = True
-                If udtSchemeDocTypeModel.IsMajorDoc Then
-                    strPopularDoc = udtSchemeDocTypeModel.DocCode
+            If _strDocumentTypes.ContainsKey(udtSchemeDocTypeModel.DocCode.Trim()) Then
+                documentInfo = Me._strDocumentTypes.Item(udtSchemeDocTypeModel.DocCode.Trim())
+                If Not documentInfo Is Nothing Then
+                    documentInfo.IsEnable = True
+                    If udtSchemeDocTypeModel.IsMajorDoc Then
+                        strPopularDoc = udtSchemeDocTypeModel.DocCode
+                    End If
                 End If
             End If
         Next

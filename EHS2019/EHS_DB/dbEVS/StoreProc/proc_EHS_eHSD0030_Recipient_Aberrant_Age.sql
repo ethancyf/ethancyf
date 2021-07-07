@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -84,7 +90,7 @@ AS BEGIN
 		Temp_Voucher_Acc_ID		CHAR(15),
 		Identity_No				VARBINARY(100),
 		Age						SMALLINT,
-		E_Name					VARBINARY(100),
+		E_Name					VARBINARY(200),
 		Gender					CHAR(1),		
 		Amount					MONEY,
 		Amount_RMB				MONEY,

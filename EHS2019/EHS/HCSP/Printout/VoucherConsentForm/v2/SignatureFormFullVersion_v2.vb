@@ -38,8 +38,15 @@ Namespace PrintOut.VoucherConsentForm
             ' CRE19-006 (DHC) [End][Winnie]
 
             'Recipient
-            Formatter.FormatUnderLineTextBox(udtCFInfo.RecipientEName, Me.txtRecipientName)
 
+
+
+            If udtCFInfo.RecipientEName.Length > 50 Then
+                Me.txtRecipientName.WrapMode = GrapeCity.ActiveReports.Document.Section.WrapMode.CharWrap
+                Me.txtRecipientName.Font = New System.Drawing.Font("Arial", 8.0!)
+            End If
+
+            Formatter.FormatUnderLineTextBox(udtCFInfo.RecipientEName, Me.txtRecipientName)
             Formatter.FormatUnderLineTextBox(udtCFInfo.SignDate, Me.txtRecipientDate)
 
         End Sub

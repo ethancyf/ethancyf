@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -70,7 +76,7 @@ AS BEGIN
 		EHA_Doc_Code			char(20),
 		EHA_Acc_Type			char(1),
 		With_Suspicious_Claim	char(1),
-		Encrypt_Field2			varbinary(100),
+		Encrypt_Field2			varbinary(200),
 		DOD						datetime,
 		Exact_DOD				char(1)
 	)

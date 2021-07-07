@@ -9,6 +9,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
 -- Modified date:	20 Apr 2021
 -- Description:		Extend patient name's maximum length
 -- =============================================
@@ -94,7 +101,7 @@ EXEC [proc_SymmetricKey_open]
 		Voucher_Acc_ID char(15),
 		Scheme_Code char(10), 
 		Encrypt_Field1 varbinary(100),
-		Encrypt_Field2 varbinary(100),
+		Encrypt_Field2 varbinary(200),
 		Encrypt_Field3 varbinary(100),
 		DOB datetime,
 		Exact_DOB char(1),

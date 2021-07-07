@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- Modified by:		Chris YIM
@@ -130,7 +138,7 @@ DECLARE @OtherDoc_Code table (
 DECLARE @tmpVoucherAcct Table
 (
 	Voucher_Acc_ID	CHAR(15),
-	Encrypt_Field2	VARBINARY(100),
+	Encrypt_Field2	VARBINARY(200),
 	DOB				DATETIME,
 	Exact_DOB		CHAR(1),
 	Sex				CHAR(1),
@@ -140,7 +148,7 @@ DECLARE @tmpVoucherAcct Table
 DECLARE @tmpTempVoucherAcct Table
 (
 	Voucher_Acc_ID char(15),
-	Encrypt_Field2 varbinary(100),
+	Encrypt_Field2 varbinary(200),
 	DOB datetime,
 	Exact_DOB char(1),
 	Sex char(1)
@@ -149,7 +157,7 @@ DECLARE @tmpTempVoucherAcct Table
 DECLARE @tmpSpecialAcct Table
 (
 	Voucher_Acc_ID char(15),
-	Encrypt_Field2 varbinary(100),
+	Encrypt_Field2 varbinary(200),
 	DOB datetime,
 	Exact_DOB char(1),
 	Sex char(1)
@@ -158,7 +166,7 @@ DECLARE @tmpSpecialAcct Table
 DECLARE @tmpInvalidAcct Table
 (
 	Voucher_Acc_ID char(15),
-	Encrypt_Field2 varbinary(100),
+	Encrypt_Field2 varbinary(200),
 	DOB datetime,
 	Exact_DOB char(1),
 	Sex char(1)
@@ -167,7 +175,7 @@ DECLARE @tmpInvalidAcct Table
 DECLARE @tmpVoucherTransaction Table
 (
 	Transaction_ID char(20),
-	Encrypt_Field2 varbinary(100),
+	Encrypt_Field2 varbinary(200),
 	DOB datetime,
 	Exact_DOB char(1),
 	Sex char(1)
@@ -199,7 +207,7 @@ declare @result table
 	[Practice_Name_Chi] nvarchar(100),
 	[Transaction_Dtm] datetime,
 	[Ext_Ref_Status] Varchar(10),
-	[Encrypt_Field2] varbinary(100),
+	[Encrypt_Field2] varbinary(200),
 	[DOB] datetime,
 	[Exact_DOB] char(1),
 	[Sex] char(1),

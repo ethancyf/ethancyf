@@ -211,7 +211,7 @@
                                             <asp:Label ID="lblSearchENameR2Text" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, AccountNameInEnglish %>"></asp:Label>
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="txtSearchENameR2" runat="server" Width="200px" MaxLength="70" onblur="convertToUpper(this);"></asp:TextBox>
+                                            <asp:TextBox ID="txtSearchENameR2" runat="server" Width="200px" MaxLength="82" onblur="convertToUpper(this);"></asp:TextBox>
                                             <cc1:FilteredTextBoxExtender ID="FilteredTextBoxEname" runat="server" Enabled="True"
                                                 FilterType="Custom, UppercaseLetters, LowercaseLetters" TargetControlID="txtSearchENameR2"
                                                 ValidChars=" ~!@#$%^&*()_+`-=[]\{}|;':<>?,./&quot;">
@@ -1807,7 +1807,7 @@
                                             <asp:Label ID="lblAdvancedSearchNameText" runat="server" Text="<%$ Resources:Text, ServiceProviderName %>"></asp:Label>
                                         </td>
                                         <td style="width: 180px">
-                                            <asp:TextBox ID="txtAdvancedSearchName" runat="server" MaxLength="70" onBlur="Upper(event,this)"
+                                            <asp:TextBox ID="txtAdvancedSearchName" runat="server" MaxLength="82" onBlur="Upper(event,this)"
                                                 ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>"></asp:TextBox>
                                         </td>
                                         <td style="width: 180px">

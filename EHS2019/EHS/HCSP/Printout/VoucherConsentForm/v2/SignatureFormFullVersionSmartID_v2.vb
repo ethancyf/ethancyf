@@ -41,6 +41,11 @@ Namespace PrintOut.VoucherConsentForm
                 Me.sreDeclaration3.Report = New PrintOut.VoucherConsentForm.ClaimConsentDecaraDeclaration3FullVersionUnknownSmartID_v2(udtCFInfo)
             End If
 
+
+            If udtCFInfo.RecipientEName.Length > 50 Then
+                Me.txtRecipientName.WrapMode = GrapeCity.ActiveReports.Document.Section.WrapMode.CharWrap
+                Me.txtRecipientName.Font = New System.Drawing.Font("Arial", 8.0!)
+            End If
             'Recipient
             Formatter.FormatUnderLineTextBox(udtCFInfo.RecipientEName, Me.txtRecipientName)
             Formatter.FormatUnderLineTextBox(udtCFInfo.SignDate, Me.txtRecipientDate)

@@ -37,7 +37,7 @@
                     <tr>
                         <td valign="top">
                             <asp:Label ID="lblNameOrignialText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
-                        <td>
+                        <td style="width: 350px; word-wrap: break-word; word-break:break-all;">
                             <asp:Label ID="lblNameOriginal" runat="server" CssClass="tableText"></asp:Label></td>
                         <td style="width: 350px">
                             <asp:TextBox ID="txtENameSurname" runat="server" MaxLength="40" onChange="convertToUpper(this);"

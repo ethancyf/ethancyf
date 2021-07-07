@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR# :			I-CRE20-005
@@ -39,15 +45,15 @@ AS BEGIN
 -- =============================================
 -- Declaration
 -- =============================================
-	DECLARE @C_Seq_No					int
-	DECLARE @C_Encrypt_Field1			varbinary(100)
-	DECLARE @C_DOD						datetime
-	DECLARE @C_Exact_DOD				char(1)
-	DECLARE @C_DOR						datetime
-	DECLARE @C_Encrypt_Field2			varbinary(100)
+	--DECLARE @C_Seq_No					int
+	--DECLARE @C_Encrypt_Field1			varbinary(100)
+	--DECLARE @C_DOD						datetime
+	--DECLARE @C_Exact_DOD				char(1)
+	--DECLARE @C_DOR						datetime
+	--DECLARE @C_Encrypt_Field2			varbinary(200)
 	
-	DECLARE @Duplicate_Record			int
-	DECLARE @Fail_Record				int
+	--DECLARE @Duplicate_Record			int
+	--DECLARE @Fail_Record				int
 	
 	DECLARE @Encrypt_Field1_Exception	varbinary(100)
 
@@ -58,7 +64,7 @@ AS BEGIN
 -- =============================================
 -- Initialization
 -- =============================================
-	SET @Fail_Record = 0
+	--SET @Fail_Record = 0
 
 	EXEC [proc_SymmetricKey_open]
 	

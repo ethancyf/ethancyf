@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -73,7 +79,7 @@ create table #tempAccount
 	voucher_acc_id char(15),
 	scheme_code char(10),
 	Encrypt_Field1 varbinary(100),
-	Encrypt_Field2 varbinary(100),
+	Encrypt_Field2 varbinary(200),
 	Encrypt_Field3 varbinary(100),
 	Encrypt_Field4 varbinary(50),
 	Encrypt_Field5 varbinary(50),

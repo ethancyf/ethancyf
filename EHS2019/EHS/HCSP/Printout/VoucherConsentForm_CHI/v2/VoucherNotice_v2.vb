@@ -41,6 +41,7 @@ Namespace PrintOut.VoucherConsentForm_CHI
 
             Formatter.FormatUnderLineTextBox(strRecipientName, txtNoticeTo)
 
+
             If strRecipientName = String.Empty Then
                 txtToRemark.Visible = True
             Else

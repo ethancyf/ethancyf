@@ -139,7 +139,7 @@ Partial Public Class PersonalPacticulars
         udtMsgBox.Visible = False
 
         'Check Name (in English)
-        udtSM = udtValidator.chkEngName(UCase(txtRegSurname.Text.Trim), UCase(txtRegEname.Text.Trim))
+        udtSM = udtValidator.chkEngName(UCase(txtRegSurname.Text.Trim), UCase(txtRegEname.Text.Trim), True)
         If Not udtSM Is Nothing Then
             imgEnameAlert.Visible = True
             udtMsgBox.AddMessage(udtSM)

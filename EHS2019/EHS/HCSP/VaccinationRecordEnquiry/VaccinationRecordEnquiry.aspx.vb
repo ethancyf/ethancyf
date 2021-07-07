@@ -1822,7 +1822,7 @@ Partial Public Class VaccinationRecordEnquiry
         End Select
 
         ' Name in English
-        udtSystemMessage = udtValidator.chkEngName(txtIANameSurname.Text.Trim, txtIANameFirstname.Text.Trim, hfDocCode.Value)
+        udtSystemMessage = udtValidator.chkEngName(txtIANameSurname.Text.Trim, txtIANameFirstname.Text.Trim)
         If Not IsNothing(udtSystemMessage) Then
             udcMessageBox.AddMessage(udtSystemMessage)
             imgIANameError.Visible = True

@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023 (COVID19)
@@ -95,7 +101,7 @@ Declare @DOB datetime
 Declare @Exact_DOB char(1)
 Declare @Sex char(1)
 Declare @Date_of_Issue datetime
-Declare @Encrypt_Field2	varbinary(100)
+Declare @Encrypt_Field2	varbinary(200)
 Declare @Encrypt_Field3	varbinary(100)
 Declare @Encrypt_Field4	varbinary(50)
 Declare @Encrypt_Field5	varbinary(50)

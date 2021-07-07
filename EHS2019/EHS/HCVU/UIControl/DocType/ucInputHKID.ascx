@@ -7,7 +7,7 @@
 </script>
 
 <asp:Panel runat="server" ID="pnlModify">
-    <table runat="server" border="0" cellspacing="0" cellpadding="0">
+    <table runat="server" border="0" cellspacing="0" cellpadding="0" >
         <tr>
             <td valign="top">
                 <table runat="server">
@@ -55,9 +55,9 @@
                     <tr>
                         <td valign="top">
                             <asp:Label ID="lblNameOriginalText" runat="server"></asp:Label></td>
-                        <td style="height: 25">
+                        <td style="height: 25; width: 350px; word-wrap: break-word; word-break:break-all">
                             <asp:Label ID="lblENameOriginal" runat="server" CssClass="tableText"></asp:Label></td>
-                        <td style="width: 350px;">
+                        <td style="width: 350px; ">
                             <asp:TextBox ID="txtENameSurname" runat="server" MaxLength="40" onChange="convertToUpper(this);"
                                 Width="105px"></asp:TextBox><asp:Label ID="lblENameComma" runat="server" CssClass="largeText"></asp:Label>
                             <asp:TextBox ID="txtENameFirstname" runat="server" MaxLength="40" onChange="convertToUpper(this);"></asp:TextBox>&nbsp;<asp:Image

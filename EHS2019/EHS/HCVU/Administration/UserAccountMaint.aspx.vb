@@ -1240,7 +1240,7 @@ Partial Public Class UserAccountMaint
         End Select
 
         Dim udtSMEngName As SystemMessage = Nothing
-        udtSMEngName = udtValidator.chkEngName(Me.txtSurname.Text.Trim, Me.txtGivenname.Text.Trim)
+        udtSMEngName = udtValidator.chkEngName(Me.txtSurname.Text.Trim, Me.txtGivenname.Text.Trim, True)
         If Not udtSMEngName Is Nothing Then
             Me.udcMessageBox.AddMessage(udtSMEngName)
             Me.imgUserNameAlert.Visible = True

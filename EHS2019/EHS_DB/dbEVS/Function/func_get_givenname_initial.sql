@@ -6,6 +6,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-52
+-- Modified by:		Winnie SUEN
+-- Modified date:	30 Jun 2021
+-- Description:		Extend Eng Name to 82
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			I-CRE20-005
@@ -24,9 +32,9 @@ GO
 -- ============================================= 
 CREATE FUNCTION [dbo].[func_get_givenname_initial]
 (
-	@eng_givenname varchar(40)
+	@eng_givenname varchar(100)
 )
-RETURNS varchar(40)
+RETURNS varchar(100)
 AS
 BEGIN
 	-- =============================================
@@ -35,9 +43,9 @@ BEGIN
 	DECLARE @separator char
 	DECLARE @separator_surname char
 	DECLARE @separator_index int
-	DECLARE @temp_name varchar(40)
+	DECLARE @temp_name varchar(100)
 	
-	DECLARE @result varchar(40)
+	DECLARE @result varchar(100)
 
 	-- =============================================
 	-- Validation 

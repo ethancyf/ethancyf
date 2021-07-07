@@ -150,10 +150,13 @@ Namespace PrintOut.VoucherConsentForm
             '
             'txtNoticeTo
             '
+            Me.txtNoticeTo.CanGrow = False
             Me.txtNoticeTo.Height = 0.25!
             Me.txtNoticeTo.Left = 0.375!
             Me.txtNoticeTo.Name = "txtNoticeTo"
-            Me.txtNoticeTo.Style = "font-size: 13pt; text-align: left; text-decoration: underline"
+            Me.txtNoticeTo.ShrinkToFit = True
+            Me.txtNoticeTo.Style = "font-size: 13pt; text-align: left; text-decoration: underline; ddo-shrink-to-fit:" & _
+        " true"
             Me.txtNoticeTo.Text = Nothing
             Me.txtNoticeTo.Top = 0.531!
             Me.txtNoticeTo.Width = 6.98!
@@ -163,7 +166,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.shpNotedRemainingClaimedNo.Height = 0.375!
             Me.shpNotedRemainingClaimedNo.Left = 2.56!
             Me.shpNotedRemainingClaimedNo.Name = "shpNotedRemainingClaimedNo"
-            Me.shpNotedRemainingClaimedNo.RoundingRadius = 9.999999!
+            Me.shpNotedRemainingClaimedNo.RoundingRadius = New GrapeCity.ActiveReports.Controls.CornersRadius(9.999999!, Nothing, Nothing, Nothing, Nothing)
             Me.shpNotedRemainingClaimedNo.Top = 2.16175!
             Me.shpNotedRemainingClaimedNo.Width = 4.79!
             '
@@ -275,7 +278,7 @@ Namespace PrintOut.VoucherConsentForm
             Me.Shape1.Height = 0.45!
             Me.Shape1.Left = 1.312!
             Me.Shape1.Name = "Shape1"
-            Me.Shape1.RoundingRadius = 40.0!
+            Me.Shape1.RoundingRadius = New GrapeCity.ActiveReports.Controls.CornersRadius(40.0!, Nothing, Nothing, Nothing, Nothing)
             Me.Shape1.Style = GrapeCity.ActiveReports.SectionReportModel.ShapeType.RoundRect
             Me.Shape1.Top = 2.812!
             Me.Shape1.Width = 4.688!

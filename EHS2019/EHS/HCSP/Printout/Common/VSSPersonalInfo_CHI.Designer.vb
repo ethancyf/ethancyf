@@ -57,7 +57,6 @@ Namespace PrintOut.Common
             'txtNameEng
             '
             Me.txtNameEng.Border.BottomStyle = GrapeCity.ActiveReports.BorderLineStyle.Solid
-            Me.txtNameEng.CanGrow = False
             Me.txtNameEng.Height = 0.1875!
             Me.txtNameEng.Left = 2.275!
             Me.txtNameEng.Name = "txtNameEng"

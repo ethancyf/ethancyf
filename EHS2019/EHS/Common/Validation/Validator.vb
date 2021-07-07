@@ -11,7 +11,8 @@ Namespace Validation
         Dim sm As ComObject.SystemMessage
         Dim udtcomfunct As ComFunction.GeneralFunction = New ComFunction.GeneralFunction
 
-        Public Function chkEngName(ByVal strOriSurname As String, ByVal strOriFirstname As String, Optional ByVal strDocType As String = "") As ComObject.SystemMessage
+
+        Public Function chkEngName(ByVal strOriSurname As String, ByVal strOriFirstname As String, Optional ByVal isMax40 As Boolean = False) As ComObject.SystemMessage
             Dim sm As ComObject.SystemMessage
             Dim strFunctCode, strSeverity, strMsgCode As String
             Dim strErrMsg As String
@@ -23,12 +24,12 @@ Namespace Validation
             strMsgCode = ""
             strErrMsg = ""
 
-            If strDocType = DocTypeModel.DocTypeCode.PASS Or strDocType = DocTypeModel.DocTypeCode.CCIC Then
-                intEngNameDataSize = 70
-                strNameLengthMsgCode = MsgCode.MSG00479
-            Else
+            If isMax40 = True Then
                 intEngNameDataSize = 40
                 strNameLengthMsgCode = MsgCode.MSG00068
+            Else
+                intEngNameDataSize = 82
+                strNameLengthMsgCode = MsgCode.MSG00479
             End If
 
             strOriSurname = strOriSurname.Trim

@@ -7666,7 +7666,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtValidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputCCIC.SetENameError(True)
@@ -7895,7 +7895,7 @@ Partial Public Class eHSAccountMaint
         End If
 
         'English Name
-        Me.udtSM = Me.udtValidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
+        Me.udtSM = Me.udtValidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputPASS.SetENameError(True)

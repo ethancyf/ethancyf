@@ -472,7 +472,7 @@
                                                     <tr>
                                                         <td>
                                                             <asp:TextBox ID="txtTabeHSAccountName" runat="server" Width="176" onChange="convertToUpper(this)"
-                                                                ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>" MaxLength="70"/>
+                                                                ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>" MaxLength="82"/>
                                                         </td>
                                                         <td>
                                                             <asp:Image ID="imgTabeHSAccountNameErr" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>" AlternateText="<%$ Resources:AlternateText, ErrorBtn %>" Visible="False"  style="position:relative;top:-1px;left:1px"/>

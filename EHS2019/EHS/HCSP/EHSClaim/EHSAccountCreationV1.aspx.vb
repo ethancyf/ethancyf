@@ -2174,7 +2174,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputCCIC.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputCCIC.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
+        Me._systemMessage = Me._validator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputCCIC.SetENameError(True)
@@ -2309,7 +2309,7 @@ Partial Public Class EHSAccountCreationV1
         udcInputPASS.SetErrorImage(ucInputDocTypeBase.BuildMode.Creation, False)
         udcInputPASS.SetProperty(ucInputDocTypeBase.BuildMode.Creation)
 
-        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
+        Me._systemMessage = Me._validator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
         If Not Me._systemMessage Is Nothing Then
             isValid = False
             udcInputPASS.SetENameError(True)

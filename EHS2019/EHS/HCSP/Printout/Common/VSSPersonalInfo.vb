@@ -49,6 +49,11 @@ Namespace PrintOut.Common
             Dim strChineseNameDisplay As String = _udtEHSPersonalInformation.CName
             Dim strGenderDisplay As String = HttpContext.GetGlobalResourceObject("PrintoutText", IIf(_udtEHSPersonalInformation.Gender = "M", "GenderMale", "GenderFemale"), New System.Globalization.CultureInfo(CultureLanguage.English))
 
+
+            If strEnglishNameDisplay.Length > 50 Then
+                Me.txtNameEng.WrapMode = GrapeCity.ActiveReports.Document.Section.WrapMode.CharWrap
+                Me.txtNameEng.Font = New System.Drawing.Font("Arial", 8.0!)
+            End If
             ' Fill in Name
             _udtReportFunction.formatUnderLineTextBox(strEnglishNameDisplay, txtNameEng)
             _udtReportFunction.formatUnderLineTextBox(strChineseNameDisplay, txtNameChi)

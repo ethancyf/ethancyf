@@ -65,7 +65,7 @@
                     <tr>
                         <td valign="top" style="height: 25px">
                             <asp:Label ID="lblNameOriginalText" runat="server"></asp:Label></td>
-                        <td valign="top">
+                        <td valign="top" style="width: 350px; word-wrap: break-word; word-break:break-all;">
                             <asp:Label ID="lblNameOriginal" runat="server" CssClass="tableText"></asp:Label></td>
                         <td valign="top" style="padding-bottom: 5px; width: 350px;">
                             <table border="0" cellpadding="0" cellspacing="0" style="height: 1px">

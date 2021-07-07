@@ -5,6 +5,14 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023-52
+-- Modified by:		Winnie SUEN
+-- Modified date:	30 Jun 2021
+-- Description:		Extend Eng Name to 82
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -21,13 +29,6 @@ GO
 -- =============================================
 -- =============================================
 -- Modification History
--- Modified by:			
--- Modified date:	
--- CR No.			
--- Description:		
--- =============================================
--- =============================================
--- Modification History
 -- Create by:		Chris YIM		
 -- Create date:		16 Aug 2019
 -- CR No.			CRE19-001
@@ -38,8 +39,8 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntry_upd_OverWriteByValidatedAcct]
 	@Student_File_ID				VARCHAR(15)	,
 	@Student_Seq					INT,
 	@Name_EN						VARCHAR(100),
-	@Surname_EN						VARCHAR(40),
-	@Given_Name_EN					VARCHAR(40),
+	@Surname_EN						VARCHAR(100),
+	@Given_Name_EN					VARCHAR(100),
 	@Name_CH						NVARCHAR(6),
 	@Name_CH_Excel					NVARCHAR(6),
 	@DOB							Datetime,

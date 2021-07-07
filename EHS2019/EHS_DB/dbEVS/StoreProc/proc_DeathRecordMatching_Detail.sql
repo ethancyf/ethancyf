@@ -10,6 +10,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
 -- Modified date:	20 Apr 2021
 -- Description:		Extend patient name's maximum length
 -- =============================================
@@ -45,7 +52,7 @@ AS BEGIN
 		With_Claim				char(1),
 		With_Suspicious_Claim	char(1),
 		Match_Dtm				datetime,
-		Death_Encrypt_Field2	varbinary(100),
+		Death_Encrypt_Field2	varbinary(200),
 		DOD						datetime,
 		Exact_DOD				char(1),
 		DOR						datetime

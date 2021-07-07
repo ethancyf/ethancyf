@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE20-023
@@ -90,7 +96,7 @@ SET NOCOUNT ON;
 		Service_Receive_Dtm		datetime,		
 		doc_code				char(20),
 		Encrypt_Field1			varbinary(100),
-		Encrypt_Field2			varbinary(100),
+		Encrypt_Field2			varbinary(200),
 		Encrypt_Field11			varbinary(100),
 		SP_ID					char(8),	
 		Practice_Display_Seq	smallint,
@@ -112,7 +118,7 @@ SET NOCOUNT ON;
 		Service_Receive_Dtm		datetime,		
 		doc_code				CHAR(20),
 		Encrypt_Field1			VARBINARY(100),
-		Encrypt_Field2			VARBINARY(100),
+		Encrypt_Field2			VARBINARY(200),
 		Encrypt_Field11			VARBINARY(100),
 		SP_ID					char(8),	
 		Practice_Display_Seq	smallint,

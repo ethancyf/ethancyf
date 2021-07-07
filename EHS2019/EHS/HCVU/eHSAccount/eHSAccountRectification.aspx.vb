@@ -3570,7 +3570,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputCCIC.ENameSurName, udcInputCCIC.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputCCIC.SetENameError(True)
@@ -3768,7 +3768,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
 
         'English Name
-        Me.udtSM = Me.udtvalidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
+        Me.udtSM = Me.udtvalidator.chkEngName(udcInputPASS.ENameSurName, udcInputPASS.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isvalid = False
             udcInputPASS.SetENameError(True)

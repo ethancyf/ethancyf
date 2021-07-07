@@ -6,11 +6,11 @@
             <td valign="top">
                 <table>
                     <tr>
-                        <td valign="top" style="width: 140px"></td>
-                        <td style="width: 160px">
+                        <td valign="top" style="width: 220px"></td>
+                        <td style="width: 250px">
                             <asp:Label ID="lblOriginalRecordText" Text="<%$ Resources:Text, OriginalRecord %>"
                                 runat="server" /></td>
-                        <td style="width: 500px;">
+                        <td style="width: 350px;">
                             <asp:Label ID="lblAmendingRecordText" Text="<%$ Resources:Text, AmendingRecord %>"
                                 runat="server" /></td>
                         <td valign="top"></td>
@@ -39,7 +39,7 @@
                     <tr>
                         <td valign="top">
                             <asp:Label ID="lblNameOrignialText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
-                        <td>
+                        <td style="width: 350px; word-wrap: break-word; word-break:break-all">
                             <asp:Label ID="lblNameOriginal" runat="server" CssClass="tableText"></asp:Label></td>
                         <td style="width: 350px">
                             <asp:TextBox ID="txtENameSurname" runat="server" MaxLength="40" onChange="convertToUpper(this);"
@@ -50,17 +50,9 @@
                         <td valign="top"></td>
                     </tr>
                     <tr>
-                        <td valign="top" style="height: 20"></td>
-                        <%--<td>
-                            <asp:Label ID="lblCCCodeOrginalText" runat="server" CssClass="tableText"></asp:Label>
-                        </td>--%>
-                        <td style="width: 470px;">
-                            <asp:Label ID="lblCCCodeOrginal" runat="server" CssClass="tableText"></asp:Label>
-                            <%--    <asp:Label ID="lblCCCode2Original" runat="server" Width="40px"></asp:Label>
-                            <asp:Label ID="lblCCCode3Original" runat="server" Width="40px"></asp:Label>&nbsp;
-                            <asp:Label ID="lblCCCode4Original" runat="server" Width="40px"></asp:Label>
-                            <asp:Label ID="lblCCCode5Original" runat="server" Width="40px"></asp:Label>
-                            <asp:Label ID="lblCCCode6Original" runat="server" Width="40px"></asp:Label>--%>
+                        <td valign="top" style="height: 20"></td>                        
+                        <td>
+                            <asp:Label ID="lblCCCodeOrginal" runat="server" CssClass="tableText"></asp:Label>                        
                          
                         </td>
                         <td style="width: 470px;">

@@ -51,6 +51,11 @@ Namespace PrintOut.VoucherConsentForm
                 Me.txtRecipientHKIDText.Text = "Hong Kong Identity Card No.:"
             End If
 
+
+            If udtCFInfo.RecipientEName.Length > 50 Then
+                Me.txtRecipientName.WrapMode = GrapeCity.ActiveReports.Document.Section.WrapMode.CharWrap
+                Me.txtRecipientName.Font = New System.Drawing.Font("Arial", 8.0!)
+            End If
             'Recipient
             Formatter.FormatUnderLineTextBox(udtCFInfo.RecipientEName, txtRecipientName)
 

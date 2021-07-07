@@ -470,8 +470,8 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Contact_No", SqlDbType.VarChar, 20, .ContactNo), _
                     udtDB.MakeInParam("@Doc_No", SqlDbType.VarChar, 20, .DocNo), _
                     udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .NameEN), _
-                    udtDB.MakeInParam("@Surname_EN_Original", SqlDbType.VarChar, 40, .SurnameENOriginal), _
-                    udtDB.MakeInParam("@Given_Name_EN_Original", SqlDbType.VarChar, 40, .GivenNameENOriginal), _
+                    udtDB.MakeInParam("@Surname_EN_Original", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .SurnameENOriginal), _
+                    udtDB.MakeInParam("@Given_Name_EN_Original", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .GivenNameENOriginal), _
                     udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 40, .NameCH), _
                     udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 40, String.Empty), _
                     udtDB.MakeInParam("@Doc_Code", SqlDbType.Char, 20, .DocCode), _
@@ -1718,8 +1718,8 @@ Namespace Component.StudentFile
                     udtDB.MakeInParam("@Student_File_ID", SqlDbType.VarChar, 15, .StudentFileID), _
                     udtDB.MakeInParam("@Student_Seq", SqlDbType.Int, 1, .StudentSeq), _
                     udtDB.MakeInParam("@Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .NameEN), _
-                    udtDB.MakeInParam("@Surname_EN", SqlDbType.VarChar, 40, .SurnameENOriginal), _
-                    udtDB.MakeInParam("@Given_Name_EN", SqlDbType.VarChar, 40, .GivenNameENOriginal), _
+                    udtDB.MakeInParam("@Surname_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .SurnameENOriginal), _
+                    udtDB.MakeInParam("@Given_Name_EN", SqlDbType.VarChar, SProcParameter.EngNameDataSize, .GivenNameENOriginal), _
                     udtDB.MakeInParam("@Name_CH", SqlDbType.NVarChar, 6, .NameCH), _
                     udtDB.MakeInParam("@Name_CH_Excel", SqlDbType.NVarChar, 6, IIf(blnUpdateExcelChiName, .NameCHExcel, DBNull.Value)), _
                     udtDB.MakeInParam("@DOB", SqlDbType.DateTime, 8, .DOB), _

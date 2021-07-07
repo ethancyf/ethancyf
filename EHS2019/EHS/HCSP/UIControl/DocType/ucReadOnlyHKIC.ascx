@@ -96,7 +96,7 @@
             <td valign="top" runat="server" id="cellReadonlyHorizontalNameText" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalNameText" runat="server" CssClass="tableTitle"
                     Width="160px"></asp:Label></td>
-            <td valign="top" style="width: 300px" class="tableCellStyleLite">
+            <td valign="top" style="width: 300px; word-wrap: break-word; word-break:break-all" class="tableCellStyleLite">
                 <asp:Label ID="lblReadonlyHorizontalEName" runat="server" CssClass="tableText"></asp:Label>
                 <asp:Label ID="lblReadonlyHorizontalCName" runat="server" CssClass="tableText" Font-Names="HA_MingLiu"></asp:Label></td>
             <td valign="top" runat="server" id="cellReadonlyHorizontalDOBGenderText" class="tableCellStyleLite">

@@ -499,8 +499,8 @@ Public Class ProgramMgr
 
                     'Surname
                     If (row("Surname_eng").ToString.Length > 40) Then
-                        If (row("Surname_eng").ToString.Length > 70) Then
-                            row("Surname_eng") = Left(row("Surname_eng").ToString.Trim, 70)
+                        If (row("Surname_eng").ToString.Length > 80) Then
+                            row("Surname_eng") = Left(row("Surname_eng").ToString.Trim, 80)
                         End If
 
                         strError = "Surname should not more than 40."
@@ -511,8 +511,8 @@ Public Class ProgramMgr
 
                     'GivenName
                     If (row("Given_name_eng").ToString.Length > 40) Then
-                        If (row("Given_name_eng").ToString.Length > 70) Then
-                            row("Given_name_eng") = Left(row("Given_name_eng").ToString.Trim, 70)
+                        If (row("Given_name_eng").ToString.Length > 80) Then
+                            row("Given_name_eng") = Left(row("Given_name_eng").ToString.Trim, 80)
                         End If
 
                         strError = "Given name should not more than 40."

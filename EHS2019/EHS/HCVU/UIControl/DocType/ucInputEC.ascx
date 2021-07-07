@@ -95,9 +95,9 @@
                             <asp:Label ID="lblECIssueDateHints" runat="server" CssClass="tableTitle"></asp:Label></td>        
                     </tr>
                     <tr>
-                        <td style="vertical-align: top">
+                        <td style="vertical-align: top;">
                             <asp:Label ID="lblNameOriginalText" runat="server"></asp:Label></td>
-                        <td style="height: 23">
+                        <td style="height: 23; width: 350px; word-wrap: break-word; word-break:break-all;">
                             <asp:Label ID="lblENameOriginal" runat="server" CssClass="tableText"></asp:Label></td>
                         <td style="height: 19px">
                             <asp:TextBox ID="txtENameSurname" runat="server" MaxLength="40" onChange="convertToUpper(this);"

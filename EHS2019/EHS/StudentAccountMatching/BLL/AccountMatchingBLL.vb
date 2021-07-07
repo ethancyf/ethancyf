@@ -1986,7 +1986,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.CCIC)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If
@@ -2060,7 +2060,7 @@ Public Class AccountMatchingBLL
         End If
 
         'English Name
-        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName, DocTypeModel.DocTypeCode.PASS)
+        udtSM = Me.udtValidator.chkEngName(udtEHSPersonalInfo.ENameSurName, udtEHSPersonalInfo.ENameFirstName)
         If Not IsNothing(udtSM) Then
             isValid = False
         End If

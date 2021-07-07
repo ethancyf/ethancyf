@@ -7,10 +7,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
--- Modified by:		
--- Modified date:	
--- CR No.			
--- Description:		
+-- CR No.:			CRE20-023-52
+-- Modified by:		Winnie SUEN
+-- Modified date:	30 Jun 2021
+-- Description:		Extend Eng Name to 82
 -- =============================================
 -- =============================================
 -- Modification History
@@ -43,8 +43,8 @@ CREATE PROCEDURE [dbo].[proc_StudentFileEntry_add]
 	@Doc_Code						CHAR(20),
 	@Doc_No							VARCHAR(20),
 	@Name_EN						VARCHAR(100),
-	@Surname_EN_Original			VARCHAR(40),
-	@Given_Name_EN_Original			VARCHAR(40),
+	@Surname_EN_Original			VARCHAR(100),
+	@Given_Name_EN_Original			VARCHAR(100),
 	@Name_CH						NVARCHAR(40),
 	@Name_CH_Excel					NVARCHAR(40),
 	@DOB							DATETIME,

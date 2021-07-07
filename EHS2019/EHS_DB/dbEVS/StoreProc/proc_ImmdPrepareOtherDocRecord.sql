@@ -5,7 +5,13 @@ GO
 set ANSI_NULLS ON
 set QUOTED_IDENTIFIER ON
 go
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
+-- Modified date:	16 June 2021
+-- Description:		Extend patient name's maximum length (varbinary 100->200)
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
@@ -34,7 +40,7 @@ DECLARE @tempSubmission Table
 	DOB varchar(10),
 	Date_of_Issue varchar(10),
 	Encrypt_Field1 varbinary(100),
-	Encrypt_Field2 varbinary(100),
+	Encrypt_Field2 varbinary(200),
 	Account_Purpose char(1),
 	Sex char(1),
 	Doc_Code char(20),

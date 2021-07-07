@@ -662,7 +662,7 @@
                                                 <asp:Label ID="lblAdvancedSearchNameText" runat="server" Text="<%$ Resources:Text, ServiceProviderName %>"></asp:Label>
                                             </td>
                                             <td style="width: 220px">
-                                                <asp:TextBox ID="txtAdvancedSearchName" runat="server" MaxLength="70" onBlur="Upper(event,this)"
+                                                <asp:TextBox ID="txtAdvancedSearchName" runat="server" MaxLength="82" onBlur="Upper(event,this)"
                                                     ToolTip="<%$ Resources:ToolTip, EnglishNameHint %>"></asp:TextBox>
                                             </td>
                                             <td style="width: 180px">
