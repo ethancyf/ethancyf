@@ -185,17 +185,20 @@ Namespace Component.DistrictBoard
         '    Return udtDistrictModelCollection
 
         'End Function
-        Public Function GetDistrictBoardBySPID(ByVal strSPID As String)
+        'CRE20-006 DHC itnegration [End][Nichole]
+        'INT21-0010 DHC district selection issue [Start][Nichole]
+        Public Function GetDistrictBoardBySPID(ByVal strSPID As String, ByVal intPractice As Integer)
             Dim udtDB As New Database()
             Dim dtResult As New DataTable()
 
 
-            Dim parms() As SqlParameter = {udtDB.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, strSPID.Trim)}
+            Dim parms() As SqlParameter = {udtDB.MakeInParam("@SP_ID", SqlDbType.VarChar, 8, strSPID.Trim), _
+                                           udtDB.MakeInParam("@PracticeNo", SqlDbType.SmallInt, 2, intPractice)}
 
             udtDB.RunProc("proc_DistrictBoard_get_bySPID", parms, dtResult)
             Return dtResult
         End Function
-        'CRE20-006 DHC Integration [End][Nichole]
+        'INT21-0010 DHC district selection issue [End][Nichole]
     End Class
 
 End Namespace

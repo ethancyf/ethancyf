@@ -1096,6 +1096,17 @@ Partial Public Class EHSClaimV1
 
                         If Not udtSchemeClaim Is Nothing Then
                             Select Case udtSchemeClaim.ControlType
+                                'INT21-0010 DHC district selection issue - Clear the dropdownlist [Start][Nichole]
+                                Case SchemeClaimModel.EnumControlType.VOUCHER
+                                    Dim udcInputHCVS As ucInputHCVS = Me.udcStep2aInputEHSClaim.GetHCVSControl()
+                                    If Not udcInputHCVS Is Nothing Then
+                                        udcInputHCVS.DHCDistrictDDL.Items.Clear()
+                                        udcInputHCVS.DHCDistrictDDL.SelectedValue = Nothing
+                                        udcInputHCVS.DHCDistrictDDL.SelectedIndex = -1
+                                        udcInputHCVS.DHCDistrictDDL.ClearSelection()
+                                        udcInputHCVS.DHCDistrictCHK.Checked = Nothing
+                                    End If
+                                    'INT21-0010 DHC district selection issue - Clear the dropdownlist [End][Nichole]
                                 Case SchemeClaimModel.EnumControlType.RVP
                                     If Me.ClaimMode = Common.Component.ClaimMode.COVID19 Then
                                         _udtSessionHandler.ClaimCOVID19DoseRemoveFromSession(FunctionCode)
@@ -5888,20 +5899,6 @@ Partial Public Class EHSClaimV1
                 End Select
 
             End If
-
-            '' CRE20-0023 (Immu record) [Start][Chris YIM]
-            '' ---------------------------------------------------------------------------------------------------------
-            '' Temporary handling to block document (Passport, One-way Permit) to claim COVID19 under VSS scheme
-            'If udtSchemeClaim.ControlType = SchemeClaimModel.EnumControlType.VSS AndAlso Me.ClaimMode = ClaimMode.COVID19 Then
-            '    If udtEHSAccount.SearchDocCode IsNot Nothing AndAlso _
-            '        (udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.OW OrElse udtEHSAccount.SearchDocCode = DocTypeModel.DocTypeCode.PASS) Then
-            '        If udtLatestC19Vaccine Is Nothing Then
-            '            notAvailableForClaim = True
-            '            isEligibleForClaim = False
-            '        End If
-            '    End If
-            'End If
-            '' CRE20-0023 (Immu record) [End][Chris YIM]
 
             If blnInClaimPeriod Then
 

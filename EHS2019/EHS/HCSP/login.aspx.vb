@@ -334,14 +334,24 @@ Partial Public Class login
                     udcMessageBox.BuildMessageBox("ValidationFail", udtAuditLogEntry, LogID.LOG00001, "Login Session for claim creation of DHC is expired or invalid")
                     udcMessageBox.Visible = True
 
+                    rbLoginRole.Enabled = False
                     ibtnLogin.Enabled = False
                     txtUserName.Enabled = False
                     txtPassword.Enabled = False
                     txtPinNo.Enabled = False
-                    ibtnLogin.ImageUrl = "~/Images/button/btn_login_D.png"
+
+                    ibtnLogin.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "LoginDisableBtn").ToString 'INT21-0010 (Fix DHC district selection issue) 
+                  
                 End If
-                lnkbtnTextOnlyVersion.Visible = False
+                ' lnkbtnTextOnlyVersion.Visible = False
+            Else
+               
+                If txtUserName.Text Is String.Empty Then
+                    ibtnLogin.Enabled = False
+                    ibtnLogin.ImageUrl = Me.GetGlobalResourceObject("ImageUrl", "LoginDisableBtn").ToString
+                End If
             End If
+            lnkbtnTextOnlyVersion.Visible = False 'INT21-0010 DHC district selection issue
         Else
             udcSessionHandler.ArtifactRemoveFromSession(FunctCode.FUNT021201)
         End If

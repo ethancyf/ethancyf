@@ -256,6 +256,18 @@ Namespace UIControl.EHCClaimText
                     Me.lblCoPaymentFee.Text = udtFormatter.formatMoney(txtCoPaymentFee.Text, True)
                 End If
                 ' CRE19-006 (DHC) [End][Winnie]
+
+                'INT21-0010 Fix the DHC district  selection [Start][Nichole]
+                'Restore the selected value from model
+                If Not EHSTransaction Is Nothing Then
+                    If EHSTransaction.TransactionAdditionFields.DHC_DistrictCode IsNot Nothing Then
+                        If rbDHCDistrictCode.SelectedValue = EHSTransaction.TransactionAdditionFields.DHC_DistrictCode Then
+                            rbDHCDistrictCode.SelectedValue = EHSTransaction.TransactionAdditionFields.DHC_DistrictCode
+                        End If
+
+                    End If
+                End If
+                'INT21-0010 Fix the DHC district  selection [End][Nichole]
             Else
                 ' CRE19-006 (DHC) [Start][Winnie]
                 ' ----------------------------------------------------------------------------------------
@@ -695,6 +707,17 @@ Namespace UIControl.EHCClaimText
             End Set
         End Property
 
+        Public ReadOnly Property DHCDistrictCHK() As CheckBox
+            Get
+                Return Me.chkDHCRelatedService
+            End Get
+        End Property
+
+        Public ReadOnly Property DHCDistrictRBL() As RadioButtonList
+            Get
+                Return Me.rbDHCDistrictCode
+            End Get
+        End Property
         'CRE20-006 DHC integration [End][Nichole]
 #End Region
 
@@ -726,6 +749,7 @@ Namespace UIControl.EHCClaimText
             Dim strDistrictCode As String = String.Empty
             Dim strSPID As String = String.Empty
             Dim strSelectedValue As String = String.Empty
+            Dim intPracticeNO As Integer
 
             Dim udtSP As Common.Component.ServiceProvider.ServiceProviderModel = Nothing
             Dim udtDataEntry As Common.Component.DataEntryUser.DataEntryUserModel = Nothing
@@ -733,10 +757,19 @@ Namespace UIControl.EHCClaimText
             'Temp save the selected value
             strSelectedValue = rbDHCDistrictCode.SelectedValue
 
+             
             'Data Binding
             Me.GetCurrentUserAccount(udtSP, udtDataEntry, False)
+            If MyBase.CurrentPractice IsNot Nothing Then
+                intPracticeNO = MyBase.CurrentPractice.PracticeID
+            Else
+                intPracticeNO = EHSTransaction.PracticeID
+            End If
 
-            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(udtSP.SPID)
+            rbDHCDistrictCode.Items.Clear()
+
+            'INT21-0010 DHC district selection issue
+            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(udtSP.SPID, intPracticeNO)
 
             Me.rbDHCDistrictCode.DataSource = dt
 
@@ -761,13 +794,6 @@ Namespace UIControl.EHCClaimText
                         rbDHCDistrictCode.SelectedValue = strSelectedValue
                     End If
                 Next
-
-                'Restore the selected value from model
-                If Not MyBase.EHSTransaction Is Nothing Then
-                    If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode IsNot Nothing Then
-                        rbDHCDistrictCode.SelectedValue = MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode
-                    End If
-                End If
 
                 If chkDHCRelatedService.Checked Then
                     rbDHCDistrictCode.Enabled = True

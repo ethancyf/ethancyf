@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			INT21-0010
+-- Modified by:		Nichole IP
+-- Modified date:	20 Jun 2021
+-- Description:		1. Fix the multiple display of DHC district
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			CRE20-006
 -- Modified by:		Nichole IP
 -- Modified date:	10 Mar 2021
@@ -464,7 +471,8 @@ AS BEGIN
 		STUFF((
 		SELECT ', ' + CAST([district_board] AS VARCHAR(MAX))
 		FROM #TempTable_WS05_NSP WHERE (Registration_Code = TMP.Registration_Code) and (Service_Category_Code=TMP.Service_Category_Code)
-		AND SP_ID=TMP.SP_ID
+		AND SP_ID=TMP.SP_ID 
+		AND Professional_Seq=TMP.Professional_Seq
 		FOR XML PATH('')), 1, 1, '') as DistrictName
 	INTO #TempTable_WS05_NSP_S1
 	FROM #TempTable_WS05_NSP TMP

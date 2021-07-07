@@ -142,6 +142,8 @@ Partial Public Class ucInputHCVS
         ' ----------------------------------------------------------------------------------------
         ' DHC Related Services
         BindDHCDistrictCode() 'CRE20-006 DHC integration [Nichole]
+        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
         If Not MyBase.EHSTransaction Is Nothing Then
             If Me.AvaliableForClaim Then
                 ' Load selected option
@@ -169,6 +171,32 @@ Partial Public Class ucInputHCVS
                 Else
                     Me.chkDHCRelatedService.Checked = False
                     panDHCRelatedService.Visible = False
+                End If
+            End If
+
+            'fill the value into ddlDHCdistrictcode
+            'If Not MyBase.EHSTransaction Is Nothing Then
+            If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode IsNot Nothing Then
+                If udtDHCClient Is Nothing Then
+                    ddlDHCDistrictCode.Enabled = True
+                    For Each li As ListItem In ddlDHCDistrictCode.Items
+                        If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode = li.Value Then
+                            ddlDHCDistrictCode.SelectedValue = li.Value
+                        End If
+                    Next
+
+                    'handle NSP change district
+                    If ddlDHCDistrictCode.SelectedValue <> MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode Then
+                        ddlDHCDistrictCode.Items.Clear()
+                        ddlDHCDistrictCode.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", udtDistrictBoardBLL.GetDistrictNameByDistrictCode(MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoard), MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode))
+                        lblDHCDistrictCode.Text = udtDistrictBoardBLL.GetDistrictNameByDistrictCode(MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode).DistrictBoard
+                    End If
+
+                    If ddlDHCDistrictCode.Items.Count > 1 Then
+                        ddlDHCDistrictCode.Visible = True
+                        lblDHCDistrictCode.Visible = False 'new
+                    End If
+
                 End If
             End If
 
@@ -606,28 +634,37 @@ Partial Public Class ucInputHCVS
 
 #Region "DHC District Code"
     'CRE20-006 DHC integration [Start][Nichole]
-    Private Sub BindDHCDistrictCode()
+    Public Sub BindDHCDistrictCode()
         Dim dt As DataTable = New DataTable
         Dim strDistrictCode As String = String.Empty
         Dim strSPID As String = String.Empty
+        Dim intPracticeNO As Integer
 
         Dim udtSP As Common.Component.ServiceProvider.ServiceProviderModel = Nothing
         Dim udtDataEntry As Common.Component.DataEntryUser.DataEntryUserModel = Nothing
         Me.udtSessionHandler.CurrentUserGetFromSession(udtSP, udtDataEntry)
 
         Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
         'find the SP ID
-        If udtSP IsNot Nothing Then
-            strSPID = udtSP.SPID
-        Else
+        If EHSTransaction IsNot Nothing Then
             strSPID = EHSTransaction.ServiceProviderID
+        Else
+            strSPID = udtSP.SPID
         End If
 
-        If ddlDHCDistrictCode.SelectedValue Is String.Empty Then
+        If EHSTransaction IsNot Nothing Then
+            intPracticeNO = EHSTransaction.PracticeID
+        Else
+            intPracticeNO = MyBase.CurrentPractice.PracticeID
+        End If
+
+
+        If ddlDHCDistrictCode.SelectedValue Is String.Empty OrElse ddlDHCDistrictCode.SelectedValue Is Nothing Then
             'Databind the dropdonwlist
             ddlDHCDistrictCode.Items.Clear()
             'base on sp id to find the correct list of district code for DHC selection
-            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(strSPID)
+            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(strSPID, intPracticeNO)
 
             ddlDHCDistrictCode.DataSource = dt
             ddlDHCDistrictCode.DataValueField = "DHC_DistrictCode"
@@ -641,32 +678,13 @@ Partial Public Class ucInputHCVS
 
             If dt.Rows.Count > 1 Then
                 ddlDHCDistrictCode.Items.Insert(0, New ListItem(Me.GetGlobalResourceObject("Text", "PleaseSelect"), ""))
-
-                'as back from confirm page to select the correct item
-                If Not MyBase.EHSTransaction Is Nothing Then
-                    If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode IsNot Nothing Then
-                        If udtDHCClient Is Nothing Then
-                            ddlDHCDistrictCode.Enabled = True
-                            For Each li As ListItem In ddlDHCDistrictCode.Items
-                                If MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode = li.Value Then
-                                    ddlDHCDistrictCode.SelectedValue = li.Value
-                                End If
-                            Next
-                            'ddlDHCDistrictCode.SelectedValue = MyBase.EHSTransaction.TransactionAdditionFields.DHC_DistrictCode
-                        Else
-                            ShowDistrictCode(dt)
-                        End If
-                    End If
-                Else
-                    ddlDHCDistrictCode.SelectedValue = Nothing
-                End If
-
                 If udtDHCClient Is Nothing Then
                     ddlDHCDistrictCode.Visible = True
+                    lblDHCDistrictCode.Visible = False 'new
                 End If
+
             Else
                 ShowDistrictCode(dt)
-
             End If
         Else
             'handle the label to show the correct wordings on differenet version
@@ -1015,6 +1033,17 @@ Partial Public Class ucInputHCVS
         End Set
     End Property
 
+    Public ReadOnly Property DHCDistrictCHK() As CheckBox
+        Get
+            Return Me.chkDHCRelatedService
+        End Get
+    End Property
+
+    Public ReadOnly Property DHCDistrictDDL() As DropDownList
+        Get
+            Return Me.ddlDHCDistrictCode
+        End Get
+    End Property
     ' ----------------------------------------------------------------------------------------
     'Public Property DHC_DDLDistrictCodeEnable() As Boolean
     '    Get
@@ -1043,18 +1072,68 @@ Partial Public Class ucInputHCVS
         Dim udtSchemeClaim As SchemeClaimModel = (New SchemeClaimBLL).getAllDistinctSchemeClaim_WithSubsidizeGroup().Filter(MyBase.SchemeClaim.SchemeCode)
         ' CRE12-008-02 Allowing different subsidy level for each scheme at different date period [End][Twinsen]
         Dim udtGeneralFunction As New Common.ComFunction.GeneralFunction
+        Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
+
 
         If Not IsModifyMode Then
+            'handle normal claim mode
+            udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
+
             udtEHSTransaction.VoucherClaim = Me.VoucherRedeem
             udtEHSTransaction.UIInput = Me.UIInput
             ' CRE19-006 (DHC) [Start][Winnie]
             '-----------------------------------------------------------------------------------------
             udtEHSTransaction.DHCService = Me.DHCService
             ' CRE19-006 (DHC) [End][Winnie]
+
+            'CRE20-006 DHC integration [Start][Nichole]
+            ' DHC District Code
+            Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
+
+            If udtDHCClient IsNot Nothing Then
+                If udtDHCClient.DHCDistrictCode <> String.Empty Then
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
+                    udtTransactAdditionfield.AdditionalFieldValueCode = udtDHCClient.DHCDistrictCode
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeCode
+                    udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                End If
+            Else
+                If chkDHCRelatedService.Checked Then
+                    udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                    udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
+                    udtTransactAdditionfield.AdditionalFieldValueCode = IIf(ddlDHCDistrictCode.SelectedValue IsNot String.Empty, ddlDHCDistrictCode.SelectedValue, lblDHCDistrictCode.Text)
+                    udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                    udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+                    udtTransactAdditionfield.SchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList(0).SchemeSeq
+                    udtTransactAdditionfield.SubsidizeCode = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeCode
+                    udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+                End If
+            End If
+            'CRE20-006 DHC integration [End][Nichole]
+        Else
+            'handle the claim transaction management situation
+            Dim strTmpDHCDistrictCode As String = udtEHSTransaction.TransactionAdditionFields.DHC_DistrictCode
+
+            udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
+
+            If strTmpDHCDistrictCode IsNot Nothing Then
+                udtTransactAdditionfield = New TransactionAdditionalFieldModel()
+                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
+                udtTransactAdditionfield.AdditionalFieldValueCode = strTmpDHCDistrictCode
+                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
+                udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
+                udtTransactAdditionfield.SchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList(0).SchemeSeq
+                udtTransactAdditionfield.SubsidizeCode = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeCode
+                udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
+            End If
         End If
 
-        Dim udtTransactAdditionfield As TransactionAdditionalFieldModel
-        udtEHSTransaction.TransactionAdditionFields = New TransactionAdditionalFieldModelCollection()
+
+
 
         ' Co-Payment Fee
         If udtGeneralFunction.IsCoPaymentFeeEnabled(udtEHSTransaction.ServiceDate) Then
@@ -1142,36 +1221,6 @@ Partial Public Class ucInputHCVS
                 End If
             Next
         End If
-
-        'CRE20-006 DHC integration [Start][Nichole]
-        ' DHC District Code
-        Dim udtDHCClient As DHCPersonalInformationModel = udtSessionHandler.DHCInfoGetFromSession(Common.Component.FunctCode.FUNT021201)
-
-        If udtDHCClient IsNot Nothing Then
-            If udtDHCClient.DHCDistrictCode <> String.Empty Then
-                udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
-                udtTransactAdditionfield.AdditionalFieldValueCode = udtDHCClient.DHCDistrictCode
-                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
-                udtTransactAdditionfield.SchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList(0).SchemeSeq
-                udtTransactAdditionfield.SubsidizeCode = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeCode
-                udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-            End If
-        Else
-            If chkDHCRelatedService.Checked Then
-                udtTransactAdditionfield = New TransactionAdditionalFieldModel()
-                udtTransactAdditionfield.AdditionalFieldID = TransactionAdditionalFieldModel.AdditionalFieldType.DHCDistrictCode
-                udtTransactAdditionfield.AdditionalFieldValueCode = IIf(ddlDHCDistrictCode.SelectedValue IsNot String.Empty, ddlDHCDistrictCode.SelectedValue, lblDHCDistrictCode.Text)
-                udtTransactAdditionfield.AdditionalFieldValueDesc = Nothing
-                udtTransactAdditionfield.SchemeCode = udtSchemeClaim.SchemeCode
-                udtTransactAdditionfield.SchemeSeq = udtSchemeClaim.SubsidizeGroupClaimList(0).SchemeSeq
-                udtTransactAdditionfield.SubsidizeCode = udtSchemeClaim.SubsidizeGroupClaimList(0).SubsidizeCode
-                udtEHSTransaction.TransactionAdditionFields.Add(udtTransactAdditionfield)
-            End If
-        End If
-
-        'CRE20-006 DHC integration [End][Nichole]
 
         udtEHSTransaction.TransactionAdditionFields.SortReasonForVisit()
     End Sub
@@ -1385,7 +1434,7 @@ Partial Public Class ucInputHCVS
                 udtProfessionDHC = ProfessionBLL.GetProfessionDHCByServiceCategoryCode(EHSTransactionOriginal.ServiceType.Trim)
 
             ElseIf MyBase.CurrentPractice IsNot Nothing Then
-                    udtProfessionDHC = ProfessionBLL.GetProfessionDHCByServiceCategoryCode(MyBase.CurrentPractice.ServiceCategoryCode)
+                udtProfessionDHC = ProfessionBLL.GetProfessionDHCByServiceCategoryCode(MyBase.CurrentPractice.ServiceCategoryCode)
 
             End If
 
@@ -1621,6 +1670,7 @@ Partial Public Class ucInputHCVS
 
     Public Overrides Sub Clear()
         MyBase.Clear()
+        Me.txtRedeemAmount.Text = String.Empty
         Me.txtCoPaymentFee.Text = String.Empty
         ' CRE19-006 (DHC) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------

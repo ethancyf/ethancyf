@@ -4350,6 +4350,17 @@ Namespace Text
                     End If
 
                     If Not udtSessionScheme Is Nothing AndAlso Not udtSchemeClaimModelCollection Is Nothing AndAlso udtSchemeClaimModelCollection.Count > 0 Then
+                        'INT21-0010 DHC district selection issue - Clear the radiobutton [Start][Nichole]
+                        Dim udcInputHCVS As UIControl.EHCClaimText.ucInputHCVS = Me.udcStep2aInputEHSClaim.GetHCVSControl()
+                        If Not udcInputHCVS Is Nothing Then
+                            udcInputHCVS.DHCDistrictRBL.Items.Clear()
+                            udcInputHCVS.DHCDistrictRBL.SelectedValue = Nothing
+                            udcInputHCVS.DHCDistrictRBL.SelectedIndex = -1
+                            udcInputHCVS.DHCDistrictRBL.ClearSelection()
+                            udcInputHCVS.DHCDistrictCHK.Checked = Nothing
+                        End If
+                        'INT21-0010 DHC district selection issue - Clear the radiobutton [End][Nichole]
+
                         ' Check the Session's Scheme exists in the new practice's scheme list
                         For Each udtSchemeClaimModel As SchemeClaimModel In udtSchemeClaimModelCollection
                             If udtSchemeClaimModel.SchemeCode = udtSessionScheme.SchemeCode Then
@@ -4767,6 +4778,7 @@ Namespace Text
 
             'Setup Document Type Selection
             ucDocumentTypeRadioButtonGroupText.Scheme = udtSchemeClaim.SchemeCode
+            ucDocumentTypeRadioButtonGroupText.EnableFilterDocCode = CustomControls.DocumentTypeRadioButtonGroupText.FilterDocCode.VaccinationRecordEnquriySearch
             ucDocumentTypeRadioButtonGroupText.Build()
 
             ' Check Session Object exists, if exists and the item is in the scheme, select the item

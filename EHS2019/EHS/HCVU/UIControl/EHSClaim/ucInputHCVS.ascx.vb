@@ -939,7 +939,7 @@ Partial Public Class ucInputHCVS
 
     Private Sub BindDHCDistrictCode()
         Dim dt As DataTable = New DataTable
-
+        Dim intPracticeNO As Integer
 
         Dim udtDataEntry As Common.Component.DataEntryUser.DataEntryUserModel = Nothing
         Dim udtEHSTransaction As EHSTransactionModel
@@ -948,9 +948,8 @@ Partial Public Class ucInputHCVS
  
         If ddlDistrictCode.SelectedValue Is String.Empty Then
             ddlDistrictCode.Items.Clear()
-
-            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(udtEHSTransaction.ServiceProviderID)
-
+            intPracticeNO = MyBase.CurrentPractice.PracticeID
+            dt = udtDistrictBoardBLL.GetDistrictBoardBySPID(udtEHSTransaction.ServiceProviderID, intPracticeNO) 'INT21-0010 DHC district selection issue
             ddlDistrictCode.DataSource = dt
             ddlDistrictCode.DataValueField = "DHC_DistrictCode"
             ddlDistrictCode.DataTextField = "DistrictBoard"
