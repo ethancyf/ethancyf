@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			CRE21-004-03
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jun 2021
+-- Description:		Display ‘Order of Selection’ in sequential order   (after randomization)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE21-004-02
 -- Modified by:		Koala CHENG
 -- Modified date:	9 Jun 2021
@@ -1648,11 +1655,11 @@ BEGIN
 							ELSE
 								ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq)
 							END AS 'RefNo',
-							CASE WHEN @HasVoucherScheme=0 THEN
-								ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY NEWID()) 
-							ELSE
-								CONVERT(VARCHAR(100), RIGHT('000'+ISNULL(CONVERT(VARCHAR(100),DisplaySeq),''),3)) +  CONVERT(VARCHAR(100),ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq))
-							END AS 'Seq',
+							--CASE WHEN @HasVoucherScheme=0 THEN
+							--	ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY NEWID()) 
+							--ELSE
+							--	CONVERT(VARCHAR(100), RIGHT('000'+ISNULL(CONVERT(VARCHAR(100),DisplaySeq),''),3)) +  CONVERT(VARCHAR(100),ROW_NUMBER() OVER(PARTITION BY Col01 ORDER BY CONVERT(INT,Col03), DisplaySeq))
+							--END AS 'Seq',
 							Col01 AS SP_ID,
 							Col02 AS Transaction_ID,
 							Col03 AS Practice_Display_Seq,
@@ -1692,8 +1699,8 @@ BEGIN
 							--LEFT JOIN DeathRecordEntry DRE
 							--	ON DRE.Encrypt_Field1 = DRMR.Encrypt_Field1
 				
-					ORDER BY RT.Seq
-					--ORDER BY RT.RefNo
+					--ORDER BY RT.Seq
+					ORDER BY RT.RefNo
 					--ORDER BY CONVERT(INT,RT.Practice_Display_Seq), RT.RefNo
 
 					---- ---------------------------------------------

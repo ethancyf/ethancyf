@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR No.:			CRE21-004-03
+-- Modified by:		Koala CHENG
+-- Modified date:	16 Jun 2021
+-- Description:		Display ‘Order of Selection’ in sequential order   (after randomization)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE21-004, CRE21-005
 -- Modified by:		Koala CHENG
 -- Modified date:	31 May 2021
@@ -790,6 +797,7 @@ BEGIN
 		EXEC [proc_SymmetricKey_open]
 
 		SELECT
+			'OrderOfSelection' = RT.OrderOfSelection,
 			'SPID' = RT.Col01,
 			'Practice No.' = VT.Practice_Display_Seq,
 			'Transaction ID' = [dbo].func_format_system_number(RT.Col02),
@@ -837,7 +845,9 @@ BEGIN
 				END,
 			'Transaction Status' = (SELECT Status_Description FROM StatusData WHERE Enum_Class = 'ClaimTransStatus' AND Status_Value = VT.Record_Status)
 		FROM 
-			#02_PostPaymentCheck_ResultTable RT
+			(SELECT ROW_NUMBER() OVER (ORDER BY A.Seq) AS [OrderOfSelection],*
+				FROM (SELECT NEWID() AS [Seq], * FROM #02_PostPaymentCheck_ResultTable) A
+			) RT
 				INNER JOIN VoucherTransaction VT
 					ON RT.Col02 = VT.Transaction_ID
 				INNER JOIN TransactionDetail TD
@@ -857,7 +867,7 @@ BEGIN
 				LEFT JOIN ClaimCategory CC
 					ON VT.Category_Code = CC.Category_Code
 
-		ORDER BY NEWID()
+		ORDER BY RT.Seq, SGC.Display_Code_For_Claim
 		--ORDER BY RT.Col01, VT.Practice_Display_Seq,RT.Col02
 
 		EXEC [proc_SymmetricKey_close]
