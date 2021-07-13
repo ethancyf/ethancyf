@@ -94,7 +94,7 @@
                             </tr>
                         </table>
                         <cc2:FilteredTextBoxExtender ID="FilteredVaccLotNo" runat="server" TargetControlID="txtVaccLotNo"
-                            FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers"></cc2:FilteredTextBoxExtender>
+                            FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars='-_()'></cc2:FilteredTextBoxExtender>
                     </asp:View>
                     <asp:View ID="ViewSearchResult" runat="server">
                         <asp:Button ID="btnHidden" runat="server" BackColor="Transparent" BorderStyle="None"
@@ -367,7 +367,7 @@
                                
                             </table>
                             <cc2:FilteredTextBoxExtender ID="txtVaccineLotNoFilter" runat="server" TargetControlID="txtVaccineLotNo"
-                            FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars=""></cc2:FilteredTextBoxExtender>
+                            FilterType="Custom, LowercaseLetters, UppercaseLetters, Numbers" ValidChars="-_()"></cc2:FilteredTextBoxExtender>
                         </asp:Panel>
 
                
