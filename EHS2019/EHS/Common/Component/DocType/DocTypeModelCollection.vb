@@ -123,21 +123,23 @@ Namespace Component.DocType
         ' ---------------------------------------------------------------------------------------------------------
         Public Function FilterForCOVID19ORClaim() As DocTypeModelCollection
             Dim udtDocTypeList As New DocTypeModelCollection
+            Dim udtTargetDocType As DocTypeModel = Nothing
 
             For Each udtDocType As DocTypeModel In Me
-                Select Case udtDocType.DocCode
-                    Case DocTypeModel.DocTypeCode.HKIC, _
-                        DocTypeModel.DocTypeCode.EC, _
-                        DocTypeModel.DocTypeCode.CCIC, _
-                        DocTypeModel.DocTypeCode.ROP140, _
-                        DocTypeModel.DocTypeCode.OW, _
-                        DocTypeModel.DocTypeCode.TW, _
-                        DocTypeModel.DocTypeCode.PASS
+                udtDocTypeList.Add(New DocTypeModel(udtDocType))
+            Next
 
-                        udtDocTypeList.Add(New DocTypeModel(udtDocType))
-
+            For Each udtFilterDocType As DocTypeModel In udtDocTypeList
+                Select Case udtFilterDocType.DocCode
+                    Case DocTypeModel.DocTypeCode.DS
+                        udtTargetDocType = udtFilterDocType
+                        Exit For
                 End Select
             Next
+
+            If udtTargetDocType IsNot Nothing Then
+                udtDocTypeList.Remove(udtTargetDocType)
+            End If
 
             Return udtDocTypeList
 

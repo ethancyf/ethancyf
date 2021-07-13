@@ -264,8 +264,9 @@
             Me.txtRecipientName.Height = 0.1885827!
             Me.txtRecipientName.Left = 3.396063!
             Me.txtRecipientName.Name = "txtRecipientName"
+            Me.txtRecipientName.ShrinkToFit = True
             Me.txtRecipientName.Style = "font-family: HA_MingLiu; font-size: 11pt; text-align: left; text-decoration: none" & _
-        "; ddo-char-set: 1"
+        "; ddo-char-set: 1; ddo-shrink-to-fit: true"
             Me.txtRecipientName.Text = Nothing
             Me.txtRecipientName.Top = 1.995158!
             Me.txtRecipientName.Width = 3.916535!

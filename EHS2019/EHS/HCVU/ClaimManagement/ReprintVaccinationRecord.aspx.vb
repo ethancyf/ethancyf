@@ -103,32 +103,15 @@ Partial Public Class ReprintVaccinationRecord
 
 #Region "Support Function"
     Private Sub BindDocumentType(ByVal ddlEHealthDocType As DropDownList)
-        Dim udtDocTypeModelList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
-        Dim udtDocTypeModelListFilter As New DocTypeModelCollection
-        Dim strMajorDoc As String = String.Empty
-
-        ' Display doc type for COVID19 scheme
-        Dim udtSchemeDocTypeModelist As SchemeDocTypeModelCollection = udtDocTypeBLL.getSchemeDocTypeByScheme(SchemeClaimModel.COVID19CVC)
-
-        For Each udtDocType As DocTypeModel In udtDocTypeModelList
-            For Each udtSchemeClaim As SchemeDocTypeModel In udtSchemeDocTypeModelist
-                If udtSchemeClaim.DocCode = udtDocType.DocCode Then
-                    udtDocTypeModelListFilter.Add(udtDocType)
-                    If udtSchemeClaim.IsMajorDoc Then
-                        strMajorDoc = udtDocType.DocCode
-                    End If
-                End If
-
-            Next
-        Next
+        Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
         ddlEHealthDocType.Items.Clear()
-        ddlEHealthDocType.DataSource = udtDocTypeModelListFilter
+        ddlEHealthDocType.DataSource = udtCOVID19BLL.GenerateC19DocumentTypeList()
         ddlEHealthDocType.DataTextField = "DocName"
         ddlEHealthDocType.DataValueField = "DocCode"
         ddlEHealthDocType.DataBind()
-        ddlEHealthDocType.SelectedValue = strMajorDoc
     End Sub
+
 
     Private Sub BuildClaimTransDetail(ByVal udtEHSTransaction As EHSTransactionModel)
 

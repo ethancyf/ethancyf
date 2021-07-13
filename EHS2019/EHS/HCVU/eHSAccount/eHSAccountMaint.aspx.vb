@@ -3271,7 +3271,7 @@ Partial Public Class eHSAccountMaint
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                     DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                    DocTypeModel.DocTypeCode.CEEP
+                    DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 blnProceed = Me.ValidateRectifyDetail_Common(udtEHSAccount_Amendment, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Modification, Me.txtDocCode.Text.Trim)
 
 
@@ -4912,7 +4912,7 @@ Partial Public Class eHSAccountMaint
                 'Common
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                     DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                    DocTypeModel.DocTypeCode.CEEP
+                    DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 udtEHSAccount.EHSPersonalInformationList(0).DocCode = Me.txtDocCode.Text.Trim
                 blnProceed = Me.ValidateRectifyDetail_Common(udtEHSAccount, udtAuditLogEntry, ucInputDocTypeBase.BuildMode.Creation, Me.txtDocCode.Text.Trim)
 

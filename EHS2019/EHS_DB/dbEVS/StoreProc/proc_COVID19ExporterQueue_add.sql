@@ -16,6 +16,14 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			CRE20-0023-54
+-- Modified by:		Martin Tang
+-- Modified date:	07 July 2021
+-- Description:		1. Add "DS" doc type
+--                  2. Fix Bug for sending the records with the latest personal information
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-0023-53
 -- Modified by:		Martin Tang
 -- Modified date:	29 Jun 2021
@@ -195,14 +203,31 @@ AS
         EXEC [proc_SymmetricKey_open];
 
         --check COVID19ExporterForceSendList
-        SELECT cefsl.Transaction_ID
-        INTO #ResultsWithTx
-        FROM COVID19ExporterForceSendList AS cefsl WITH(NOLOCK);
+        SELECT CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Doc_Code
+                   ELSE tpin.Doc_Code
+               END AS 'Doc_Code',
+               CASE
+                   WHEN vt.Voucher_Acc_ID <> ''
+                   THEN pin.Encrypt_Field1
+                   ELSE tpin.Encrypt_Field1
+               END AS 'Encrypt_Field1'
+        INTO #ResultsUpdatedAccount
+        FROM COVID19ExporterForceSendList AS cefsl WITH(NOLOCK)
+             INNER JOIN VoucherTransaction AS vt WITH(NOLOCK)
+             ON vt.Transaction_ID = cefsl.Transaction_ID
+             LEFT JOIN PersonalInformation AS pin WITH(NOLOCK)
+             ON pin.Voucher_Acc_ID = vt.Voucher_Acc_ID
+                AND pin.Doc_Code = vt.Doc_Code
+             LEFT JOIN TempPersonalInformation AS tpin WITH(NOLOCK)
+             ON tpin.Voucher_Acc_ID = vt.Temp_Voucher_Acc_ID
+                AND vt.Voucher_Acc_ID = '';
 
         --get TX within the period
-        INSERT INTO #ResultsWithTx
         SELECT DISTINCT 
                vt.Transaction_ID
+        INTO #ResultsWithTx
         FROM VoucherTransaction AS vt WITH(NOLOCK)
              INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
@@ -212,11 +237,11 @@ AS
                     AND vt.Transaction_Dtm < @In_Period_To)
                    OR (vt.Update_Dtm >= @In_Period_From
                        AND vt.Update_Dtm < @In_Period_To));
-        
-		-- get Doc No. which personal info has been updated
+
+        -- get Doc No. which personal info has been updated
+        INSERT INTO #ResultsUpdatedAccount
         SELECT temp.Doc_Code, 
                temp.Encrypt_Field1
-        INTO #ResultsUpdatedAccount
         FROM
             (
                 SELECT tpinfo.Doc_Code, 
@@ -235,10 +260,10 @@ AS
         INSERT INTO #ResultsWithTx
         SELECT vt.Transaction_ID
         FROM VoucherTransaction AS vt
-             INNER JOIN TransactionDetail AS td
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
-             INNER JOIN TempPersonalInformation AS tpinfo
+             INNER JOIN TempPersonalInformation AS tpinfo WITH(NOLOCK)
              ON vt.Temp_Voucher_Acc_ID = tpinfo.Voucher_Acc_ID
                 AND vt.Voucher_Acc_ID = ''
              INNER JOIN #ResultsUpdatedAccount AS rua
@@ -246,11 +271,11 @@ AS
                 AND tpinfo.Encrypt_Field1 = rua.Encrypt_Field1
         UNION
         SELECT vt.Transaction_ID
-        FROM VoucherTransaction AS vt
-             INNER JOIN TransactionDetail AS td
+        FROM VoucherTransaction AS vt WITH(NOLOCK)
+             INNER JOIN TransactionDetail AS td WITH(NOLOCK)
              ON vt.Transaction_ID = td.Transaction_ID
                 AND td.Subsidize_Item_Code = 'C19'
-             INNER JOIN PersonalInformation AS pinfo
+             INNER JOIN PersonalInformation AS pinfo WITH(NOLOCK)
              ON vt.Voucher_Acc_ID = pinfo.Voucher_Acc_ID
                 AND vt.Doc_Code = vt.Doc_Code
              INNER JOIN #ResultsUpdatedAccount AS rua
@@ -366,28 +391,30 @@ AS
                             THEN '7'
                             WHEN pinfo.Doc_Code = 'TW'
                             THEN '9'
-							WHEN pinfo.Doc_Code = 'MEP'
+                            WHEN pinfo.Doc_Code = 'MEP'
                             THEN '10'
-							WHEN pinfo.Doc_Code = 'TWMTP'
+                            WHEN pinfo.Doc_Code = 'TWMTP'
                             THEN '11'
-							WHEN pinfo.Doc_Code = 'TWPAR'
+                            WHEN pinfo.Doc_Code = 'TWPAR'
                             THEN '12'
-							WHEN pinfo.Doc_Code = 'TWVTD'
+                            WHEN pinfo.Doc_Code = 'TWVTD'
                             THEN '13'
-							WHEN pinfo.Doc_Code = 'TWNS'
+                            WHEN pinfo.Doc_Code = 'TWNS'
                             THEN '14'
-							WHEN pinfo.Doc_Code = 'MD'
+                            WHEN pinfo.Doc_Code = 'MD'
                             THEN '15'
-							WHEN pinfo.Doc_Code = 'MP'
+                            WHEN pinfo.Doc_Code = 'MP'
                             THEN '16'
-							WHEN pinfo.Doc_Code = 'TD'
+                            WHEN pinfo.Doc_Code = 'TD'
                             THEN '17'
-							WHEN pinfo.Doc_Code = 'CEEP'
+                            WHEN pinfo.Doc_Code = 'CEEP'
                             THEN '18'
-							WHEN pinfo.Doc_Code = 'ET'
+                            WHEN pinfo.Doc_Code = 'ET'
                             THEN '19'
-							WHEN pinfo.Doc_Code = 'RFNo8'
+                            WHEN pinfo.Doc_Code = 'RFNo8'
                             THEN '20'
+                            WHEN pinfo.Doc_Code = 'DS'
+                            THEN '21'
                             ELSE '8' --others
                         END
                    ELSE CASE
@@ -410,29 +437,31 @@ AS
                             WHEN tpi.Doc_Code = 'PASS'
                             THEN '7'
                             WHEN tpi.Doc_Code = 'TW'
-                            THEN '9'							
-							WHEN tpi.Doc_Code = 'MEP'
+                            THEN '9'
+                            WHEN tpi.Doc_Code = 'MEP'
                             THEN '10'
-							WHEN tpi.Doc_Code = 'TWMTP'
+                            WHEN tpi.Doc_Code = 'TWMTP'
                             THEN '11'
-							WHEN tpi.Doc_Code = 'TWPAR'
+                            WHEN tpi.Doc_Code = 'TWPAR'
                             THEN '12'
-							WHEN tpi.Doc_Code = 'TWVTD'
+                            WHEN tpi.Doc_Code = 'TWVTD'
                             THEN '13'
-							WHEN tpi.Doc_Code = 'TWNS'
+                            WHEN tpi.Doc_Code = 'TWNS'
                             THEN '14'
-							WHEN tpi.Doc_Code = 'MD'
+                            WHEN tpi.Doc_Code = 'MD'
                             THEN '15'
-							WHEN tpi.Doc_Code = 'MP'
+                            WHEN tpi.Doc_Code = 'MP'
                             THEN '16'
-							WHEN tpi.Doc_Code = 'TD'
+                            WHEN tpi.Doc_Code = 'TD'
                             THEN '17'
-							WHEN tpi.Doc_Code = 'CEEP'
+                            WHEN tpi.Doc_Code = 'CEEP'
                             THEN '18'
-							WHEN tpi.Doc_Code = 'ET'
+                            WHEN tpi.Doc_Code = 'ET'
                             THEN '19'
-							WHEN tpi.Doc_Code = 'RFNo8'
+                            WHEN tpi.Doc_Code = 'RFNo8'
                             THEN '20'
+                            WHEN tpi.Doc_Code = 'DS'
+                            THEN '21'
                             ELSE '8' --others
                         END
                END AS 'Doc_Type',
@@ -1055,7 +1084,6 @@ AS
             BEGIN
                 DROP TABLE #ResultsUpdatedAccount;
             END;
-
     END;
 
 GO

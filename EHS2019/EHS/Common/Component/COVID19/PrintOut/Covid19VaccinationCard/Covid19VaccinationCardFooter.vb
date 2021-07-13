@@ -83,12 +83,17 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
                 txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
             End If
+
+            If txtDocTypeChi.Text = txtDocType.Text Then
+                txtDocType.Visible = False
+            End If
+
             txtHKID.Text = _udtFormatter.FormatDocIdentityNoForDisplay(patientInformation.DocCode.Trim(), patientInformation.IdentityNum, False, IIf(patientInformation.DocCode = "ADOPC", patientInformation.AdoptionPrefixNum, vbNull))
             srCovid19FooterDoseTable.Report = New Covid19FooterDoseTableWithNoSignature(_udtEHSTransaction, _udtVaccinationRecordHistory, _blnIsSample, _blnDischarge)
 
             'Transaction No.
             Me.txtTransactionNumber.Text = "Ref: " + _udtFormatter.formatSystemNumber(_udtEHSTransaction.TransactionID)
-            
+
             Me.txtPrintDate.Text = "Printed on " + _udtPrintTime.ToString(_udtFormatter.DisplayVaccinationRecordClockFormat())
 
             qrCode.Text = (New QrcodeFormatter).GenerateQRCodeString(_udtEHSTransaction, _udtVaccinationRecordHistory, _udtEHSAccount, _udtPrintTime, _blnDischarge)

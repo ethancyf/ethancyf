@@ -387,7 +387,7 @@
                             <td style="padding-left: 4px">
                                 <asp:Label ID="lblDNameText" runat="server" Text="<%$ Resources: Text, Name %>"></asp:Label>
                             </td>
-                            <td>
+                            <td style="width: 100px; word-wrap: break-word; word-break:break-all">
                                 <asp:Label ID="lblDName" runat="server" CssClass="tableText"></asp:Label>
                                 <asp:Image ID="imgDName" runat="server" ImageUrl="<%$ Resources: ImageUrl, Warning %>"
                                     ToolTip="<%$ Resources: Text, NotMatchedWithTheNameInEhealthAccount %>" />

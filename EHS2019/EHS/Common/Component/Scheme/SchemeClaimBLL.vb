@@ -418,7 +418,8 @@ Namespace Component.Scheme
                                 DocTypeModel.DocTypeCode.MP, _
                                 DocTypeModel.DocTypeCode.TD, _
                                 DocTypeModel.DocTypeCode.CEEP, _
-                                DocTypeModel.DocTypeCode.ET
+                                DocTypeModel.DocTypeCode.ET, _
+                                DocTypeModel.DocTypeCode.DS
 
                                 'non EC case
                                 blnExceedDocument = udtClaimRulesBLL.CheckExceedDocumentLimitFromEHSClaimSearch(udtSchemeClaimModel.SchemeCode, strDocCode, personalInformation.DOB, personalInformation.ExactDOB, dtmCurrentDate)

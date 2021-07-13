@@ -1248,7 +1248,7 @@ Partial Public Class EHSAccountCreationV1
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                 DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                DocTypeModel.DocTypeCode.CEEP
+                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 'Fields checking for Common only
                 blnProceed = Me.Step1b1CommonValidation(Me._udtEHSAccount, Me._udtEHSAccount.SearchDocCode)
 
@@ -1428,6 +1428,8 @@ Partial Public Class EHSAccountCreationV1
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoET")
             Case DocType.DocTypeModel.DocTypeCode.RFNo8
                 Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoRFNo8")
+            Case DocType.DocTypeModel.DocTypeCode.DS
+                Me.lblStep1b1InputInfoText.Text = Me.GetGlobalResourceObject("Text", "EnterVRAInfoDS")
 
         End Select
 
@@ -1515,7 +1517,7 @@ Partial Public Class EHSAccountCreationV1
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-               DocTypeModel.DocTypeCode.CEEP
+               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 ucInputDocType = Me.udcStep1b1InputDocumentType.GetCommonControl()
 
             Case DocTypeModel.DocTypeCode.RFNo8

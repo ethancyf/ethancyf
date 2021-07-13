@@ -56,6 +56,10 @@ Namespace Component.COVID19.PrintOut.Covid19VaccinationCard
                 txtDocTypeChi.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocNameChi
                 txtDocType.Text = DocTypeObj.getAllDocType.Filter(patientInformation.DocCode).DocName
             End If
+
+            If txtDocTypeChi.Text = txtDocType.Text Then
+                txtDocTypeChi.Visible = False
+            End If
         End Sub
 
         Private Sub ChkIsSample()

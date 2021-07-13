@@ -2001,7 +2001,8 @@ Namespace Format
                         Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
                         Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
                         Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
-                        Common.Component.DocType.DocTypeModel.DocTypeCode.ET
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.ET,
+                        Common.Component.DocType.DocTypeModel.DocTypeCode.DS
 
                         ' CRE19-001 (VSS 2019) [End][Winnie]
 
@@ -2226,7 +2227,8 @@ Namespace Format
                     Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.ISSHK,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
-                    Common.Component.DocType.DocTypeModel.DocTypeCode.ET
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.ET,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.DS
 
                     strRes = formatDOB(dtDOB, strExactDOB, strLanguage, intAge, dtDOR)
 
@@ -2298,7 +2300,8 @@ Namespace Format
                     Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
                     Common.Component.DocType.DocTypeModel.DocTypeCode.ET,
-                    Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.RFNo8,
+                    Common.Component.DocType.DocTypeModel.DocTypeCode.DS
                     'No Date of Issue
 
             End Select

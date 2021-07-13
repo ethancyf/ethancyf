@@ -203,7 +203,8 @@ Partial Public Class ucClaimSearch
             Case DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.CCIC, DocTypeModel.DocTypeCode.ROP140, DocTypeModel.DocTypeCode.PASS, _
                DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.RFNo8
+               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.RFNo8, _
+               DocTypeModel.DocTypeCode.DS
                 ' Get the Doc Identity Desc from table "DocType"
                 Me.lblSearchShortIdentityNo.Text = udtDocTypeList.Filter(strDocCode).DocIdentityDesc(strlanguage)
                 If Me._blnShowTips Then
@@ -762,7 +763,7 @@ Partial Public Class ucClaimSearch
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.ISSHK
+               DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.DS
                 Me.panSearchShortNo.Visible = True
 
                 Me.txtSearchShortIdentityNo.Width = 150
@@ -1073,7 +1074,7 @@ Partial Public Class ucClaimSearch
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                 DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.ISSHK
+                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.DS
                 Me._strDocumentIdentityNo = Me.txtSearchShortIdentityNo.Text
                 Me._strDOB = Me.txtSearchShortDOB.Text
 

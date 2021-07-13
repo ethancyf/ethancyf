@@ -2606,7 +2606,8 @@ Partial Public Class EHSClaimV1
                 DocTypeModel.DocTypeCode.MP, _
                 DocTypeModel.DocTypeCode.TD, _
                 DocTypeModel.DocTypeCode.CEEP, _
-                DocTypeModel.DocTypeCode.ET
+                DocTypeModel.DocTypeCode.ET, _
+                DocTypeModel.DocTypeCode.DS
 
                 ' CRE17-010 (OCSSS integration) [Start][Chris YIM]
                 ' ----------------------------------------------------------
@@ -3467,14 +3468,14 @@ Partial Public Class EHSClaimV1
                         Else
                             udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS)
                         End If
-                        'Case SchemeClaimModel.COVID19OR
-                        '    Dim udtCOVID19BLL As New COVID19.COVID19BLL
+                    Case SchemeClaimModel.COVID19OR
+                        Dim udtCOVID19BLL As New COVID19.COVID19BLL
 
-                        '    If Not udtCOVID19BLL.DisplayDocTypeISSHK(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
-                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.COVID19OR)
-                        '    Else
-                        '        udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
-                        '    End If
+                        If Not udtCOVID19BLL.DisplaySpecificDocTypeByCentreID(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
+                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.COVID19OR)
+                        Else
+                            udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                        End If
 
                     Case Else
                         udcStep1DocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
@@ -3486,6 +3487,10 @@ Partial Public Class EHSClaimV1
             ' --- Build Search ---
 
             Dim strDocCode As String = udcStep1DocumentTypeRadioButtonGroup.SelectedValue
+
+            If udtSelectedSchemeClaim Is Nothing Then
+                strDocCode = String.Empty
+            End If
 
             ' Search message
 
@@ -4736,16 +4741,16 @@ Partial Public Class EHSClaimV1
             udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(Me.SubPlatform)
             ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
-            ''If contain scheme COVID19OR and doctype ISSHK, check Centre ID whether is on list. If not on list, filter out scheme COVID19OR 
-            'If udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing AndAlso udtEHSAccount.SearchDocCode = DocType.DocTypeModel.DocTypeCode.ISSHK Then
-            '    Dim udtCOVID19BLL As New COVID19BLL
+            'If contain scheme COVID19OR and doctype DS, check Centre ID whether is on list. If not on list, filter out scheme COVID19OR 
+            If udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing AndAlso udtEHSAccount.SearchDocCode = DocType.DocTypeModel.DocTypeCode.DS Then
+                Dim udtCOVID19BLL As New COVID19BLL
 
-            '    If Not udtCOVID19BLL.DisplayDocTypeISSHK(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
-            '        Dim udtSchemeClaimRemove As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR)
-            '        udtSchemeClaimModelCollection.Remove(udtSchemeClaimRemove)
-            '    End If
+                If Not udtCOVID19BLL.DisplaySpecificDocTypeByCentreID(_udtSP.SPID, udtSelectedPracticeDisplay.PracticeID) Then
+                    Dim udtSchemeClaimRemove As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR)
+                    udtSchemeClaimModelCollection.Remove(udtSchemeClaimRemove)
+                End If
 
-            'End If
+            End If
 
             Me._udtSessionHandler.SchemeSubsidizeListSaveToSession(udtSchemeClaimModelCollection, FunctCode)
         End If
@@ -14436,16 +14441,16 @@ Partial Public Class EHSClaimV1
             udtSchemeClaimModelCollection = udtSchemeClaimModelCollection.FilterByHCSPSubPlatform(Me.SubPlatform)
             ' CRE13-019-02 Extend HCVS to China [End][Lawrence]
 
-            ''If contain scheme COVID19OR and doctype ISSHK, check Centre ID whether is on list. If not on list, filter out scheme COVID19OR 
-            'If udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing AndAlso udtEHSAccount.SearchDocCode = DocType.DocTypeModel.DocTypeCode.ISSHK Then
-            '    Dim udtCOVID19BLL As New COVID19BLL
+            'If contain scheme COVID19OR and doctype DS, check Centre ID whether is on list. If not on list, filter out scheme COVID19OR 
+            If udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR) IsNot Nothing AndAlso udtEHSAccount.SearchDocCode = DocType.DocTypeModel.DocTypeCode.DS Then
+                Dim udtCOVID19BLL As New COVID19BLL
 
-            '    If Not udtCOVID19BLL.DisplayDocTypeISSHK(_udtSP.SPID, udtPracticeDisplay.PracticeID) Then
-            '        Dim udtSchemeClaimRemove As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR)
-            '        udtSchemeClaimModelCollection.Remove(udtSchemeClaimRemove)
-            '    End If
+                If Not udtCOVID19BLL.DisplaySpecificDocTypeByCentreID(_udtSP.SPID, udtPracticeDisplay.PracticeID) Then
+                    Dim udtSchemeClaimRemove As SchemeClaimModel = udtSchemeClaimModelCollection.Filter(SchemeClaimModel.COVID19OR)
+                    udtSchemeClaimModelCollection.Remove(udtSchemeClaimRemove)
+                End If
 
-            'End If
+            End If
 
             If Not udtSchemeClaimModelCollection Is Nothing AndAlso udtSchemeClaimModelCollection.Count > 0 Then
 

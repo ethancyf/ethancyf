@@ -805,7 +805,7 @@ Namespace Component.EHSTransaction
                     DocTypeModel.DocTypeCode.TW, DocTypeModel.DocTypeCode.ISSHK, DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, _
                     DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, _
                     DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.ET, _
-                    DocTypeModel.DocTypeCode.RFNo8
+                    DocTypeModel.DocTypeCode.RFNo8, DocTypeModel.DocTypeCode.DS
                     Return False
 
                 Case Else

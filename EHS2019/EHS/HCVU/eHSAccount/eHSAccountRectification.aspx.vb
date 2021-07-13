@@ -1027,7 +1027,7 @@ Partial Public Class eHSAccountRectification
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                 DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                DocTypeModel.DocTypeCode.CEEP
+                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 blnProceed = Me.ValidateRectifyDetail_Common(udtEHSAccount_Rectify, udtAuditLogEntry)
 
 

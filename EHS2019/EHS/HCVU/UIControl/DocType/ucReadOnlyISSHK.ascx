@@ -45,7 +45,7 @@
             <tr>
                 <td valign="top">
                     <asp:Label ID="lblVNameText" runat="server" Text="<%$ Resources:Text, Name %>"></asp:Label></td>
-                <td valign="top">
+                <td valign="top" style="word-wrap: break-word; word-break:break-all">
                     <asp:Label ID="lblVEName" runat="server" CssClass="tableText"></asp:Label></td>
             </tr>
             <tr>

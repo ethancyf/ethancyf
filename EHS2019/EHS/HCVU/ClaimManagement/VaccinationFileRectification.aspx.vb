@@ -411,6 +411,8 @@ Partial Public Class VaccinationFileRectification ' 010414
                         udcDocumentTypeRadioButtonGroup.SelectPopularDocType = False
                         If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
                             udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_NIA_MMR)
+                        ElseIf udtStudentFileHeader.SchemeCode = SchemeClaimModel.RVP Then
+                            udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
                         Else
                             udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
                         End If
@@ -5996,6 +5998,8 @@ Partial Public Class VaccinationFileRectification ' 010414
         udcDocumentTypeRadioButtonGroup.SelectPopularDocType = False
         If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
             udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_NIA_MMR)
+        ElseIf udtStudentFileHeader.SchemeCode = SchemeClaimModel.RVP Then
+            udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
         Else
             udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
         End If
@@ -6497,6 +6501,8 @@ Partial Public Class VaccinationFileRectification ' 010414
         udcDocumentTypeRadioButtonGroup.SelectPopularDocType = False
         If udtStudentFileHeader.SchemeCode = SchemeClaimModel.VSS And udtStudentFileHeader.SubsidizeCode = SubsidizeGroupClaimModel.SubsidizeCodeClass.VNIAMMR Then
             udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VSS_NIA_MMR)
+        ElseIf udtStudentFileHeader.SchemeCode = SchemeClaimModel.RVP Then
+            udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
         Else
             udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
         End If

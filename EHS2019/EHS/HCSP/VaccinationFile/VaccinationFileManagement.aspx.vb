@@ -445,7 +445,13 @@ Partial Public Class VaccinationFileManagement ' 020901
                         udcDocumentTypeRadioButtonGroup.ShowLegend = False
                         'End If
                         udcDocumentTypeRadioButtonGroup.SelectPopularDocType = False
-                        udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+
+                        Select Case udtStudentFileHeader.SchemeCode
+                            Case SchemeClaimModel.RVP
+                                udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
+                            Case Else
+                                udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                        End Select
 
                         Me.mpeDocTypeSelection.Show()
 
@@ -528,7 +534,13 @@ Partial Public Class VaccinationFileManagement ' 020901
                         udcDocumentTypeRadioButtonGroup.ShowLegend = False
                         'End If
                         udcDocumentTypeRadioButtonGroup.SelectPopularDocType = False
-                        udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+
+                        Select Case udtStudentFileHeader.SchemeCode
+                            Case SchemeClaimModel.RVP
+                                udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
+                            Case Else
+                                udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                        End Select
 
                         Me.mpeDocTypeSelection.Show()
 
@@ -6678,7 +6690,13 @@ Partial Public Class VaccinationFileManagement ' 020901
                 udcDocumentTypeRadioButtonGroup.ShowLegend = False
                 'End If
                 udcDocumentTypeRadioButtonGroup.SelectPopularDocType = False
-                udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+
+                Select Case udtStudentFileHeader.SchemeCode
+                    Case SchemeClaimModel.RVP
+                        udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.VaccinationRecordEnquriySearch)
+                    Case Else
+                        udcDocumentTypeRadioButtonGroup.Build(CustomControls.DocumentTypeRadioButtonGroup.FilterDocCode.Scheme)
+                End Select
 
                 Me.udcDocTypeSelectionErrorMessage.Clear()
                 Me.udcDocTypeSelectionInfoMessage.Clear()

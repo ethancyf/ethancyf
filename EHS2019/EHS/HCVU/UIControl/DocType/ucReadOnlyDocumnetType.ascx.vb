@@ -347,7 +347,7 @@ Partial Public Class ucReadOnlyDocumnetType
 
                     Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                         DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                        DocTypeModel.DocTypeCode.CEEP
+                        DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                         Dim udcReadOnlyCommonNew As ucReadOnlyCommonNew = LoadControl(UserControlPath.CommonNew)
                         udcReadOnlyCommonNew.Build(_udtEHSPersonalInformation, _blnMaskIdentityNo, _blnVertical, _intWidth, _intWidth2, blnAlternateRow)
                         If _blnIsInvalidAccount Then

@@ -3665,7 +3665,8 @@ Namespace Validation
                     DocTypeModel.DocTypeCode.MP,
                     DocTypeModel.DocTypeCode.TD,
                     DocTypeModel.DocTypeCode.CEEP,
-                    DocTypeModel.DocTypeCode.ET ' CRE20-0022 (Immu record) [Martin]
+                    DocTypeModel.DocTypeCode.ET,
+                    DocTypeModel.DocTypeCode.DS
                     systemMessage = Me.chkDocumentNoForNonEHSDocType(strIdentityNum)
 
             End Select
@@ -5168,7 +5169,8 @@ Namespace Validation
                      DocTypeModel.DocTypeCode.TD, _
                      DocTypeModel.DocTypeCode.CEEP, _
                      DocTypeModel.DocTypeCode.ET, _
-                    DocTypeModel.DocTypeCode.RFNo8
+                     DocTypeModel.DocTypeCode.RFNo8, _
+                     DocTypeModel.DocTypeCode.DS
                     strMsgCode = "00307"
                 Case DocTypeModel.DocTypeCode.HKIC, _
                      DocTypeModel.DocTypeCode.EC, _
@@ -5335,7 +5337,8 @@ Namespace Validation
                         DocTypeModel.DocTypeCode.MP,
                         DocTypeModel.DocTypeCode.TD,
                         DocTypeModel.DocTypeCode.CEEP,
-                        DocTypeModel.DocTypeCode.ET
+                        DocTypeModel.DocTypeCode.ET,
+                        DocTypeModel.DocTypeCode.DS
 
                         ' CRE20-0022 (Immu record) [End][Martin]
 

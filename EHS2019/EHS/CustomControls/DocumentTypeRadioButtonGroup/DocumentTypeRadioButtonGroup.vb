@@ -246,7 +246,11 @@ Public Class DocumentTypeRadioButtonGroup
                     Me._udtSchemeDocTypeList = udtDocTypeBLL.getSchemeDocTypeByScheme(Me._strScheme.Trim())
                 End If
 
+                udtDocTypeModelList = udtDocTypeModelList.FilterBySchemeDocTypeList(_udtSchemeDocTypeList)
+
                 udtDocTypeModelList = udtDocTypeModelList.FilterForCOVID19ORClaim()
+
+                udtDocTypeModelList = udtDocTypeModelList.SortByDisplaySeq()
 
             Case FilterDocCode.None
                 'Nothing to do
@@ -491,7 +495,8 @@ Public Class DocumentTypeRadioButtonGroup
 
         'Radio Buttons-----------------------------------------------------------------
         Dim practiceIndex As Integer = 0
-
+        Dim blnSelectedDocTypeExist As Boolean = False
+        Dim rboDefaultDocSelection As RadioButton = Nothing
         'Dim udtDocumentInfo As DocumentInfo = Nothing
 
         For Each docType As DocumentInfo In Me._strDocumentTypes.Values
@@ -518,11 +523,17 @@ Public Class DocumentTypeRadioButtonGroup
             radioButton.Enabled = docType.IsEnable Or Me._blnShowAllSelection
             radioButton.Checked = False
 
+            If practiceIndex = 0 Then
+                rboDefaultDocSelection = radioButton
+            End If
+
             If radioButton.Enabled Then
+
                 'Set selected Value. if value not assiged, no radiobutton checked
                 If Me.SelectedValue <> Nothing AndAlso Me.SelectedValue <> String.Empty Then
                     If docType.DocCode.Trim() = Me.SelectedValue.Trim() Then
                         radioButton.Checked = True
+                        blnSelectedDocTypeExist = True
                     End If
 
                 Else
@@ -583,6 +594,22 @@ Public Class DocumentTypeRadioButtonGroup
             'reason: Client ID is not valid, Client ID will re-Gen after added in to this control
             labelRadioButtons.Add(label, radioButton)
         Next
+
+        If Not blnSelectedDocTypeExist Then
+            Me.SelectedValue = String.Empty
+        End If
+
+		' Set Default 
+        If Me.SelectedValue = String.Empty Then
+            If rboDefaultDocSelection IsNot Nothing Then
+                If rboDefaultDocSelection.Enabled AndAlso blnSelectedDocTypeExist = False Then
+                    rboDefaultDocSelection.Checked = True
+                    Me.SelectedValue = rboDefaultDocSelection.Attributes("value")
+                End If
+            End If
+
+        End If
+
         '------------------------------------------------------------------------------
         Me.Controls.Add(table)
 
@@ -772,8 +799,6 @@ Public Class DocumentTypeRadioButtonGroup
         End Set
     End Property
 
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [Start][Chris YIM]
-    ' ---------------------------------------------------------------------------------------------------------
     Public Property SelectPopularDocType() As Boolean
         Get
             Return Me._blnSelectPopularDocType
@@ -782,7 +807,13 @@ Public Class DocumentTypeRadioButtonGroup
             Me._blnSelectPopularDocType = value
         End Set
     End Property
-    ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
+
+    Public ReadOnly Property DocumentTypeDictionary() As Dictionary(Of String, DocumentInfo)
+        Get
+            Return _strDocumentTypes
+        End Get
+    End Property
+
 
 #End Region
 

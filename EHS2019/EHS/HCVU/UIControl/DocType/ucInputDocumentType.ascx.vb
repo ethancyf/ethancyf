@@ -445,7 +445,7 @@ Partial Public Class ucInputDocumentType
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
               DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-              DocTypeModel.DocTypeCode.CEEP
+              DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 Dim udcInputCommon As ucInputCommon = Me.LoadControl("~/UIControl/DocType/ucInputCommon.ascx")
                 udcInputCommon.ID = DocumentControlID.Common
                 If Not Me._mode = ucInputDocTypeBase.BuildMode.Creation Then

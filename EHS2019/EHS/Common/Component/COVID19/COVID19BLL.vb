@@ -7,6 +7,7 @@ Imports System.Linq
 Imports System.Web.Script.Serialization
 Imports Common.ComFunction
 Imports System.IO
+Imports Common.Component.DocType
 
 Namespace Component.COVID19
     Public Class COVID19BLL
@@ -947,33 +948,63 @@ Namespace Component.COVID19
 
         End Function
 
-        Public Function DisplayDocTypeISSHK(ByVal strSPID As String, ByVal intPracticeID As Integer) As Boolean
+        Public Function DisplaySpecificDocTypeByCentreID(ByVal strSPID As String, ByVal intPracticeID As Integer) As Boolean
             Dim dtVC As DataTable = Me.GetCOVID19VaccineCentreBySPIDPracticeDisplaySeq(strSPID, intPracticeID)
 
-            Dim strCentreIDList As String = (New GeneralFunction).GetSystemParameterParmValue1("AllowToUseISSHKByCentreID")
+            Dim strCentreIDList As String = (New GeneralFunction).GetSystemParameterParmValue1("AllowToUseSpecificDocTypeByCentreID")
             Dim strCentreID() As String = Split(strCentreIDList, "|")
 
-            Dim blnAllowToUseISSHK As Boolean = False
+            Dim blnAllowToUse As Boolean = False
 
             If dtVC IsNot Nothing AndAlso dtVC.Rows.Count > 0 Then
                 For Each drVC As DataRow In dtVC.Rows
                     For intCt As Integer = 0 To strCentreID.Length - 1
                         If drVC("Centre_ID").ToString.ToUpper.Trim = strCentreID(intCt).ToUpper.Trim Then
-                            blnAllowToUseISSHK = True
+                            blnAllowToUse = True
                             Exit For
                         End If
                     Next
 
-                    If blnAllowToUseISSHK Then
+                    If blnAllowToUse Then
                         Exit For
                     End If
                 Next
             End If
 
-            Return blnAllowToUseISSHK
+            Return blnAllowToUse
 
         End Function
 
+        'CRE20-023-54 COVID19OR support DS [Start][Martin]
+        Public Function GenerateC19DocumentTypeList() As DocTypeModelCollection
+            Dim udtDocTypeBLL As New DocTypeBLL
+            Dim udtDocTypeModelList As DocTypeModelCollection = udtDocTypeBLL.getAllDocType()
+            Dim udtDocTypeModelListFilter As New DocTypeModelCollection
+
+            ' Display doc type for COVID19 scheme
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.HKIC))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.EC))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.CCIC))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.ROP140))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MEP))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWMTP))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWVTD))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TWNS))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MD))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.MP))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.OW))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TW))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.PASS))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.TD))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.CEEP))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.ET))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.RFNo8))
+            udtDocTypeModelListFilter.Add(udtDocTypeModelList.Filter(DocTypeModel.DocTypeCode.DS))
+
+            udtDocTypeModelListFilter.SortByDisplaySeq()
+            Return udtDocTypeModelListFilter
+        End Function
+        'CRE20-023-54 COVID19OR support DS [End][Martin]
 #End Region
 
 #Region "QR Code"

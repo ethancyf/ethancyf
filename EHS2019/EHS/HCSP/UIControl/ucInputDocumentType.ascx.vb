@@ -260,7 +260,7 @@ Partial Public Class ucInputDocumentType
 
             Case DocTypeModel.DocTypeCode.MEP, DocTypeModel.DocTypeCode.TWMTP, DocTypeModel.DocTypeCode.TWPAR, DocTypeModel.DocTypeCode.TWVTD, _
                 DocTypeModel.DocTypeCode.TWNS, DocTypeModel.DocTypeCode.MD, DocTypeModel.DocTypeCode.MP, DocTypeModel.DocTypeCode.TD, _
-                DocTypeModel.DocTypeCode.CEEP
+                DocTypeModel.DocTypeCode.CEEP, DocTypeModel.DocTypeCode.DS
                 udcInputDocumentType = Me.LoadControl(String.Format("{0}/ucInputCommon.ascx", strFolderPath))
                 udcInputDocumentType.ID = DocumentControlID.Common
                 udcInputDocumentType.EHSPersonalInfo = Me._udtEHSAccount.EHSPersonalInformationList.Filter(Me._docType)

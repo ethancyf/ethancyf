@@ -69,7 +69,7 @@ Namespace PrintOut.SSSCMCConsentForm_CN
             Me.shpNotedRemainingClaimedNo.Height = 0.375!
             Me.shpNotedRemainingClaimedNo.Left = 2.774!
             Me.shpNotedRemainingClaimedNo.Name = "shpNotedRemainingClaimedNo"
-            Me.shpNotedRemainingClaimedNo.RoundingRadius = 9.999999!
+            Me.shpNotedRemainingClaimedNo.RoundingRadius = New GrapeCity.ActiveReports.Controls.CornersRadius(9.999999!, Nothing, Nothing, Nothing, Nothing)
             Me.shpNotedRemainingClaimedNo.Top = 2.5335!
             Me.shpNotedRemainingClaimedNo.Width = 4.506001!
             '
@@ -144,11 +144,13 @@ Namespace PrintOut.SSSCMCConsentForm_CN
             '
             'txtNoticeTo
             '
+            Me.txtNoticeTo.CanGrow = False
             Me.txtNoticeTo.Height = 0.25!
             Me.txtNoticeTo.Left = 0.5!
             Me.txtNoticeTo.Name = "txtNoticeTo"
+            Me.txtNoticeTo.ShrinkToFit = True
             Me.txtNoticeTo.Style = "font-family: HA_MingLiu; font-size: 15.75pt; text-align: left; text-decoration: u" & _
-        "nderline; ddo-char-set: 136"
+        "nderline; ddo-char-set: 136; ddo-shrink-to-fit: true"
             Me.txtNoticeTo.Text = Nothing
             Me.txtNoticeTo.Top = 0.6587501!
             Me.txtNoticeTo.Width = 6.75!
@@ -193,6 +195,7 @@ Namespace PrintOut.SSSCMCConsentForm_CN
             Me.txtNoticeClaimedAfterNo.Name = "txtNoticeClaimedAfterNo"
             Me.txtNoticeClaimedAfterNo.Style = "font-family: 新細明體; font-size: 14pt; text-align: left; text-decoration: underline;" & _
         " vertical-align: middle; ddo-char-set: 1"
+            Me.txtNoticeClaimedAfterNo.Text = Nothing
             Me.txtNoticeClaimedAfterNo.Top = 2.596!
             Me.txtNoticeClaimedAfterNo.Width = 1.786!
             '

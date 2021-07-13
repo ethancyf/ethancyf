@@ -162,6 +162,11 @@ Namespace Component.DocType
             ''' </summary>
             ''' <remarks></remarks>
             Public Const ET As String = "ET"
+            ''' <summary>
+            ''' e-token
+            ''' </summary>
+            ''' <remarks></remarks>
+            Public Const DS As String = "DS"
 
         End Class
 

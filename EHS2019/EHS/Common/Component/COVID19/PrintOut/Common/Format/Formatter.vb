@@ -466,7 +466,8 @@ Namespace Component.COVID19.PrintOut.Common.Format
                         Global.Common.Component.DocType.DocTypeModel.DocTypeCode.MP,
                         Global.Common.Component.DocType.DocTypeModel.DocTypeCode.TD,
                         Global.Common.Component.DocType.DocTypeModel.DocTypeCode.CEEP,
-                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ET
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.ET,
+                        Global.Common.Component.DocType.DocTypeModel.DocTypeCode.DS
                         ' CRE19-001 (VSS 2019) [End][Winnie]
 
                         'Mask sample 1
