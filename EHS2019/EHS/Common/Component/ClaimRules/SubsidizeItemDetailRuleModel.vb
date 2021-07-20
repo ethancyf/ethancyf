@@ -17,6 +17,7 @@ Namespace Component.ClaimRules
             Public Const SOURCE As String = "SOURCE"
             Public Const CLINICTYPE As String = "CLINICTYPE"
             Public Const SAMECLINIC As String = "SAMECLINIC"
+            Public Const INJECTDATE As String = "INJECTDATE"
         End Class
 #End Region
 

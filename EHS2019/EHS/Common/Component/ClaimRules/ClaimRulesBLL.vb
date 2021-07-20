@@ -5737,7 +5737,7 @@ Namespace Component.ClaimRules
                             If udtInputPicker IsNot Nothing Then
                                 Dim strClinicTypeInput As String = PracticeSchemeInfo.PracticeSchemeInfoModel.ClinicTypeValue.Clinic
 
-                                If udtInputPicker.ClinicType IsNot Nothing AndAlso udtInputPicker.ClinicType <> String.Empty Then
+                                If Not String.IsNullOrEmpty(udtInputPicker.ClinicType) Then
                                     strClinicTypeInput = udtInputPicker.ClinicType.Trim
                                 End If
 
@@ -5759,6 +5759,24 @@ Namespace Component.ClaimRules
                                 blnMatched = False
                             End If
 
+                        Case SubsidizeItemDetailRuleModel.TypeClass.INJECTDATE
+                            If udtInputPicker IsNot Nothing Then
+                                If udtInputPicker.LatestC19Transaction IsNot Nothing Then
+                                    Dim strCompareValue As String = udtSubsidizeItemDetailRuleModel.CompareValue
+
+                                    Dim dtmTargetDate As DateTime = DateTime.ParseExact(strCompareValue.Trim, "yyyyMMMdd", New System.Globalization.CultureInfo("en-US"))
+
+                                    'Compare injection date with specific date
+                                    blnMatched = blnMatched AndAlso RuleComparatorDate(udtSubsidizeItemDetailRuleModel.Operator, _
+                                                                                        udtInputPicker.LatestC19Transaction.ServiceDate, _
+                                                                                        dtmTargetDate)
+                                Else
+                                    blnMatched = False
+
+                                End If
+                            Else
+                                blnMatched = False
+                            End If
                     End Select
                 End If
 
