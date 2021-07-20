@@ -8,6 +8,13 @@ GO
 
 -- =============================================
 -- Modification History
+-- CR# :			INT21-0013
+-- Modified by:		Winnie SUEN
+-- Modified date:	16 Jul 2021
+-- Description:		To include function code 020203 (COVID19 Claim page)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Martin Tang
 -- Modified date:	10 Dec 2020
@@ -58,10 +65,11 @@ AS BEGIN
 		Log_ID			char(5)
 	)
 
-	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020201')
-	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020202')
+	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020201') -- HCSP Claim
+	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020202') -- HCSP Text only Version Claim
+	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020203') -- HCSP COVID19 Claim
 	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020401') -- HCSP eHA Rectification
-	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020801')
+	INSERT INTO @Function_Code_Master (Function_Code) VALUES ('020801') -- Vaccination Record Enquiry
 
 	IF @Enquiry_System = 'CMS' 
 	BEGIN
