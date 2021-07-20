@@ -3132,7 +3132,7 @@ Partial Public Class EHSClaimV1
         Dim strDocumentNo As String = String.Empty
 
         Select Case strDocCode
-            Case DocTypeModel.DocTypeCode.PASS, DocTypeModel.DocTypeCode.OW
+            Case DocTypeModel.DocTypeCode.PASS, DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.DS
                 strDocumentNo = Me.udcClaimSearch.RawIdentityNo
             Case Else
                 strDocumentNo = Me.udcClaimSearch.IdentityNo

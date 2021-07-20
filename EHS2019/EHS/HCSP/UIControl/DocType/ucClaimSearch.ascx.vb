@@ -784,7 +784,12 @@ Partial Public Class ucClaimSearch
 
                 End If
 
-                Me.filteredSearchShortIdentityNo.ValidChars = ""
+                If strDocCode = DocTypeModel.DocTypeCode.DS Then
+                    Me.filteredSearchShortIdentityNo.ValidChars = "-"
+                Else
+                    Me.filteredSearchShortIdentityNo.ValidChars = ""
+                End If
+
                 Me.txtSearchShortIdentityNo.Attributes("onChange") = "javascript:UpperIndentityNo(this);"
 
 

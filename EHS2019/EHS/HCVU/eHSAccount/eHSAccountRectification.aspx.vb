@@ -720,7 +720,14 @@ Partial Public Class eHSAccountRectification
             Me.txtIdentityNum.Text = Me.txtIdentityNum.Text.Trim.ToUpper
 
             Dim strIdentityNumFullTemp As String
-            strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+
+            If ddlSearchDocType.SelectedValue = DocTypeModel.DocTypeCode.PASS Or ddlSearchDocType.SelectedValue = DocTypeModel.DocTypeCode.OW Then
+                strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim()
+            ElseIf ddlSearchDocType.SelectedValue = DocTypeModel.DocTypeCode.DS Then
+                strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
+            Else
+                strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+            End If
 
             Dim strIdentityNumFull() As String
             strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")

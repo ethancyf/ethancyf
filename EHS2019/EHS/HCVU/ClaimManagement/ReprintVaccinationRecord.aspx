@@ -52,7 +52,7 @@
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td>
-                                                <asp:TextBox ID="txteHSDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="30" />
+                                                <asp:TextBox ID="txteHSDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="20" />
                                             </td>
                                             <td>
                                                 <asp:Image ID="imgeHSDocNoErr" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"

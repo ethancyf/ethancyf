@@ -804,7 +804,14 @@ Partial Public Class eHSAccountEnquiry
                     Me.lblAcctListIdentityNumR2.Text = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
 
                     Dim strIdentityNumFullTemp As String
-                    strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+
+                    If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
+                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim()
+                    ElseIf strDocCode = DocTypeModel.DocTypeCode.DS Then
+                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
+                    Else
+                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+                    End If
 
                     Dim strIdentityNumFull() As String
                     strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")

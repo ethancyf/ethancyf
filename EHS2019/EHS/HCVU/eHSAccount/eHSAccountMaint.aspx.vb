@@ -975,6 +975,8 @@ Partial Public Class eHSAccountMaint
                     'only OW and PASS are free text
                     If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
                         strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
+                    ElseIf strDocCode = DocTypeModel.DocTypeCode.DS Then
+                        strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
                     Else
                         Dim strIdentityNumFullTemp As String
                         strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
@@ -2014,6 +2016,8 @@ Partial Public Class eHSAccountMaint
             'only OW and PASS are free text
             If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
                 strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim()
+            ElseIf strDocCode = DocTypeModel.DocTypeCode.DS Then
+                strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
             Else
                 Dim strIdentityNumFull() As String
                 strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")

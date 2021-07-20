@@ -229,7 +229,8 @@ Partial Public Class ReprintVaccinationRecord
                         DocTypeModel.DocTypeCode.ADOPC, DocTypeModel.DocTypeCode.HKBC, DocTypeModel.DocTypeCode.CCIC, _
                         DocTypeModel.DocTypeCode.ROP140
                         aryDocumentNo = streHSDocNo.Replace("(", "").Replace(")", "").Replace("-", "").Split("/")
-
+                    Case DocTypeModel.DocTypeCode.DS
+                        aryDocumentNo = streHSDocNo.Replace("(", "").Replace(")", "").Replace("/", "").Split("")
                     Case Else
                         'DocTypeModel.DocTypeCode.OW, DocTypeModel.DocTypeCode.PASS
                         aryDocumentNo = streHSDocNo.Split("")
