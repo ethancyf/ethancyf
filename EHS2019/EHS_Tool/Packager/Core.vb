@@ -49,7 +49,7 @@ Public Class Core
 
         Dim strMode As String = ConfigurationManager.AppSettings("Mode")
 
-        Me.Text = String.Format("{0} Packager v1.4.0", strMode)
+        Me.Text = String.Format("{0} Packager v1.5.0", strMode)
         lblStatus.Text = "Ready"
     End Sub
 
@@ -943,6 +943,9 @@ Public Class Core
 
         Dim blnAlreadyIncludeCommon As Boolean = False
 
+        Dim cllnProjectBinDestinationNotFound As Collection = New Collection
+        Dim cllnProjectFileMappingNotFound As Collection = New Collection
+
         For Each dr As DataGridViewRow In gvBL.Rows
             strInName = dr.Cells("BLFileName").Value
 
@@ -950,7 +953,8 @@ Public Class Core
 
             strProject = GetProjectFromFile(strInName)
 
-            If strInName.ToLower.EndsWith(".vb") Or strInName.ToLower.EndsWith(".vbproj") Then
+            If strInName.ToLower.EndsWith(".vb") Or strInName.ToLower.EndsWith(".vbproj") _
+                Or strInName.ToLower.EndsWith(".cs") Or strInName.ToLower.EndsWith(".csproj") Then
                 If strProject.ToLower = "common" Then
                     If blnAlreadyIncludeCommon Then
                         Continue For
@@ -960,29 +964,33 @@ Public Class Core
 
                 End If
 
-                For Each strBinDestination As String In GetProjectBinDestination(strProject)
-                    If Me.dicLibraryProject.ContainsKey(strProject.ToLower) Then
-                        For Each strDll As String In aryDllExtension
-                            strBuildFileName = String.Format("{0}{1}.{2}", strBinDestination, strProject, strDll)
-                            strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.{2}", strProject, strProject, strDll)
-                            _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                        Next
-                    ElseIf Me.dicConsoleProject.ContainsKey(strProject.ToLower) Then
-                        For Each strDll As String In aryExeExtension
-                            strBuildFileName = String.Format("{0}{1}.{2}", strBinDestination, strProject, strDll)
-                            strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.{2}", strProject, strProject, strDll)
-                            _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                        Next
-                    Else
-                        For Each strDll As String In aryDllExtension
-                            strBuildFileName = String.Format("{0}{1}.{2}", strBinDestination, strProject, strDll)
-                            strBuildFileCopyFrom = String.Format("{0}\bin\{1}.{2}", strProject, strProject, strDll)
-                            _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
-                        Next
-                    End If
+                Dim arrProjectBinDestination As ArrayList = GetProjectBinDestination(strProject)
+                If arrProjectBinDestination Is Nothing Then
+                    If Not cllnProjectBinDestinationNotFound.Contains(strProject) Then cllnProjectBinDestinationNotFound.Add(strProject, strProject)
+                Else
+                    For Each strBinDestination As String In GetProjectBinDestination(strProject)
+                        If Me.dicLibraryProject.ContainsKey(strProject.ToLower) Then
+                            For Each strDll As String In aryDllExtension
+                                strBuildFileName = String.Format("{0}{1}.{2}", strBinDestination, strProject, strDll)
+                                strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.{2}", strProject, strProject, strDll)
+                                _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                            Next
+                        ElseIf Me.dicConsoleProject.ContainsKey(strProject.ToLower) Then
+                            For Each strDll As String In aryExeExtension
+                                strBuildFileName = String.Format("{0}{1}.{2}", strBinDestination, strProject, strDll)
+                                strBuildFileCopyFrom = String.Format("{0}\bin\release\{1}.{2}", strProject, strProject, strDll)
+                                _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                            Next
+                        Else
+                            For Each strDll As String In aryDllExtension
+                                strBuildFileName = String.Format("{0}{1}.{2}", strBinDestination, strProject, strDll)
+                                strBuildFileCopyFrom = String.Format("{0}\bin\{1}.{2}", strProject, strProject, strDll)
+                                _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
+                            Next
+                        End If
 
-                Next
-
+                    Next
+                End If
                 '==================================================================================================
 
             ElseIf strInName.ToLower.StartsWith("staticpage\") Then
@@ -1011,10 +1019,15 @@ Public Class Core
 
                 '==================================================================================================
 
-                ElseIf strInName.ToLower.StartsWith("commonbin\") Then
-                    ' CommonBin folder is not a project, no compiled file will be copied
+            ElseIf strInName.ToLower.StartsWith("commonbin\") Or strInName.ToLower.StartsWith("common.dll\") Then
+                ' [eHS] CommonBin folder is not a project, no compiled file will be copied
+                ' [PCD] common.dll folder is not a project, no compiled file will be copied
 
-                    '==================================================================================================
+                '==================================================================================================
+            Else
+                Dim arrProjectFileDestination As ArrayList = GetProjectFileDestination(strProject)
+                If arrProjectFileDestination Is Nothing Then
+                    If Not cllnProjectFileMappingNotFound.Contains(strProject) Then cllnProjectFileMappingNotFound.Add(strProject, strProject)
                 Else
                     For Each strFileDestination As String In GetProjectFileDestination(strProject)
 
@@ -1028,8 +1041,8 @@ Public Class Core
 
                         _udtBuildFileList.Add(New BuildFileModel(strBuildFileName, strBuildFileCopyFrom))
                     Next
-
                 End If
+            End If
 
         Next
 
@@ -1041,6 +1054,23 @@ Public Class Core
 
         lblBBuildFileNum.Text = String.Format("No. of expected built files: {0}", _udtBuildFileList.Count)
 
+        ' Show popup message
+        Dim strMsg As String = String.Empty
+        Dim strMode As String = ConfigurationManager.AppSettings("Mode")
+        If cllnProjectFileMappingNotFound.Count > 0 Then
+            For Each strProjectNotFound As String In cllnProjectFileMappingNotFound
+                strMsg += String.Format("<{0}ProjectFileMapping>{1}", strMode, strProjectNotFound) + vbCrLf
+            Next
+        End If
+        If cllnProjectBinDestinationNotFound.Count > 0 Then
+            For Each strProjectNotFound As String In cllnProjectBinDestinationNotFound
+                strMsg += String.Format("<{0}ProjectBinDestination>{1}", strMode, strProjectNotFound) + vbCrLf
+            Next
+        End If
+
+        If strMsg <> String.Empty Then
+            MsgBox(strMsg, MsgBoxStyle.Critical, "Project setting not found")
+        End If
     End Sub
 
     Private Sub btnBVerify_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnBVerify.Click
@@ -1257,6 +1287,8 @@ Public Class Core
     End Function
 
     Private Function GetProjectFileDestination(ByVal strProject As String) As ArrayList
+        If Not dicProjectFileMapping.ContainsKey(strProject.ToLower) Then Return Nothing
+
         Return dicProjectFileMapping(strProject.ToLower)
     End Function
 
@@ -1265,6 +1297,8 @@ Public Class Core
     End Function
 
     Private Function GetProjectBinDestination(ByVal strProject As String) As ArrayList
+        If Not dicProjectBinMapping.ContainsKey(strProject.ToLower) Then Return Nothing
+
         Return dicProjectBinMapping(strProject.ToLower)
     End Function
 
