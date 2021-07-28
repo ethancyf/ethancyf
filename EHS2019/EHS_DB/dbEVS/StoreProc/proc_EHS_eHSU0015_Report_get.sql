@@ -14,6 +14,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR# :			CRE20-015-14
+-- Modified by:		Koala CHENG
+-- Modified date:	26 Jul 2021
+-- Description:		Add patient information (DOB)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			CRE20-015-13
 -- Modified by:		Koala CHENG
 -- Modified date:	19 Jul 2021
@@ -68,6 +75,8 @@ GO
 			_result_value7 nVARCHAR(100) DEFAULT '',	-- Doc. No.
 			_result_value7_NameEng nVARCHAR(100) DEFAULT '',	-- English name.
 			_result_value7_NameChi nVARCHAR(100) DEFAULT '',	-- Chinese name.
+			_result_value7_DOB nVARCHAR(100) DEFAULT '',		-- DOB,
+			_result_value7_Exact_DOB nVARCHAR(100) DEFAULT '',	-- Exact DOB.
 			_result_value7_Sex nVARCHAR(100) DEFAULT '',					-- Sex.
 			_result_value8 nVARCHAR(100) DEFAULT '',
 			_result_value9 nVARCHAR(100) DEFAULT '',
@@ -109,7 +118,72 @@ GO
     insert into
         #WS02  (_result_value1) values ('No. of records : ' + convert( varchar(MAX), (select count(1) from VoucherTransaction vt	where 	vt.scheme_code ='SSSCMC' and vt.Transaction_Dtm>=@In_From_Date and vt.Transaction_Dtm < @In_To_Date))) ;
     insert into
-        #WS02 (_result_value1) values ('')--next line
+        #WS02 (_result_value1, 
+			_result_value2,
+			_result_value3,
+			_result_value4,
+			_result_value5,
+			_result_value6,
+			_result_value7,
+			_result_value7_NameEng,
+			_result_value7_NameChi,
+			_result_value7_DOB,
+			_result_value7_Exact_DOB,
+			_result_value7_Sex,
+			_result_value8,
+			_result_value9,
+			_result_value10,
+			_result_value11,
+			_result_value12,
+			_result_value13,
+			_result_value14,
+			_result_value15,
+			_result_value16,
+			_result_value17,
+			_result_value18,
+			_result_value19,
+			_result_value20,
+			_result_value21,
+			_result_value22,
+			_result_value23,
+			_result_value24,
+			_result_value25,
+			_result_value26,
+			_result_value27) 
+		values (
+            'Column of Remarks', --'Transaction ID',
+            '', --'Service Date',
+            '', --'Practice No.',
+            '', --'Practice name',
+			'E', --'Sub-specialities',
+            '', --'Doc. Code',
+            '', --'Doc. No.',
+            '', --'Name (English)',
+            '', --'Name (Chinese)',
+            '', --'Date of Birth',
+            '', --'Date of Birth Flag',
+            '', --'Sex',
+            '', --N'全额减免病人',
+            '', --N'病人申请费用减免资料不符',
+            'M', --N'病人自付费用 ¥',
+            'N', --N'诊金 ¥',
+            'O', --N'药费 ¥',
+            'P', --N'检验费 ¥',
+            'Q', --N'其他费用 ¥',
+            'R', --N'其他费用-注明',
+            'S', --N'总服务费用 ¥ (至角)',
+            'T', --N'该次诊症户口扣除的金额¥',
+            '', --N'计划支付的減免费用 ¥',
+            'V', --N'计划承担的总额 ¥',
+            'W', --N'额外支付 ¥',
+            'X', --N'户口余额承前 ¥',
+            'Y', --N'户口余额 ¥',
+            '', --N'不需病人自付费用',
+            'AA', --N'收取费用日期',
+            '', --'Transaction date time',
+            '', --'Transaction status',
+			'' --'Reimbursement Status'
+        ) --next line
 
     insert into
         #WS02 (_result_value1, 
@@ -121,6 +195,8 @@ GO
         _result_value7,
 		_result_value7_NameEng,
 		_result_value7_NameChi,
+		_result_value7_DOB,
+		_result_value7_Exact_DOB,
 		_result_value7_Sex,
         _result_value8,
         _result_value9,
@@ -154,6 +230,8 @@ GO
             'Doc. No.',
             'Name (English)',
             'Name (Chinese)',
+            'Date of Birth',
+            'Date of Birth Flag',
             'Sex',
             N'全额减免病人',
             N'病人申请费用减免资料不符',
@@ -189,6 +267,8 @@ GO
         _result_value7,
         _result_value7_NameEng,
         _result_value7_NameChi,
+        _result_value7_DOB,
+        _result_value7_Exact_DOB,
         _result_value7_Sex,
         _result_value8,
         _result_value9,
@@ -224,6 +304,8 @@ GO
 	, convert( varchar(MAX), DecryptByKey(isnull(tp.Encrypt_Field1, pp.Encrypt_Field1) )) [Doc. No.]
 	, convert( varchar(MAX), DecryptByKey(isnull(tp.Encrypt_Field2, pp.Encrypt_Field2) )) [NameEng]
 	, convert( nvarchar(MAX), DecryptByKey(isnull(tp.Encrypt_Field3, pp.Encrypt_Field3) )) [NameChi]
+	, convert(varchar, isnull(tp.DOB, pp.DOB), 106)  [Date of Birth]
+	, isnull(tp.Exact_DOB, pp.Exact_DOB)  [Date of Birth Flag]
 	, isnull(tp.Sex, pp.Sex)  [Sex]
 	-- ,CONVERT(varchar(MAX), DecryptByKey(E_Doc_No)) AS [E_Doc_No]
 	, case vd.Subsidize_Code
@@ -366,6 +448,8 @@ GO
         ISNULL(_result_value7, ''),
         ISNULL(_result_value7_NameEng, ''),
         ISNULL(_result_value7_NameChi, ''),
+        ISNULL(_result_value7_DOB, ''),
+        ISNULL(_result_value7_Exact_DOB, ''),
         ISNULL(_result_value7_Sex, ''),
         ISNULL(_result_value8, ''),
         ISNULL(_result_value9, ''),
