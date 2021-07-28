@@ -14,6 +14,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR# :			CRE20-015-13
+-- Modified by:		Koala CHENG
+-- Modified date:	19 Jul 2021
+-- Description:		Add patient information (Name, Sex)
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR# :			I-CRE20-005
 -- Modified by:		Koala CHENG
 -- Modified date:	16 Dec 2020
@@ -52,13 +59,16 @@ GO
 		CREATE TABLE #WS02
 		(
 			_display_seq int IDENTITY(1,1),
-			_result_value1 VARCHAR(200) DEFAULT '',
-			_result_value2 VARCHAR(100) DEFAULT '',
-			_result_value3 VARCHAR(100) DEFAULT '',
-			_result_value4 nVARCHAR(100) DEFAULT '',
-			_result_value5 nVARCHAR(100) DEFAULT '',
-			_result_value6 VARCHAR(100) DEFAULT '',
-			_result_value7 nVARCHAR(100) DEFAULT '',
+			_result_value1 VARCHAR(200) DEFAULT '',		-- Transaction ID
+			_result_value2 VARCHAR(100) DEFAULT '',		-- Service Date
+			_result_value3 VARCHAR(100) DEFAULT '',		-- Practice No.
+			_result_value4 nVARCHAR(100) DEFAULT '',	-- Practice name
+			_result_value5 nVARCHAR(100) DEFAULT '',	-- Sub-specialities
+			_result_value6 VARCHAR(100) DEFAULT '',		-- Doc. Code
+			_result_value7 nVARCHAR(100) DEFAULT '',	-- Doc. No.
+			_result_value7_NameEng nVARCHAR(100) DEFAULT '',	-- English name.
+			_result_value7_NameChi nVARCHAR(100) DEFAULT '',	-- Chinese name.
+			_result_value7_Sex nVARCHAR(100) DEFAULT '',					-- Sex.
 			_result_value8 nVARCHAR(100) DEFAULT '',
 			_result_value9 nVARCHAR(100) DEFAULT '',
 			_result_value10 nVARCHAR(100) DEFAULT '',
@@ -109,6 +119,9 @@ GO
         _result_value5,
         _result_value6,
         _result_value7,
+		_result_value7_NameEng,
+		_result_value7_NameChi,
+		_result_value7_Sex,
         _result_value8,
         _result_value9,
         _result_value10,
@@ -139,14 +152,17 @@ GO
 			'Sub-specialities',
             'Doc. Code',
             'Doc. No.',
-            N'全額減免病人',
+            'Name (English)',
+            'Name (Chinese)',
+            'Sex',
+            N'全额减免病人',
             N'病人申请费用减免资料不符',
             N'病人自付费用 ¥',
-            N'診金 ¥',
-            N'藥費 ¥',
-            N'檢驗費 ¥',
-            N'其他費用 ¥',
-            N'其他費用-注明',
+            N'诊金 ¥',
+            N'药费 ¥',
+            N'检验费 ¥',
+            N'其他费用 ¥',
+            N'其他费用-注明',
             N'总服务费用 ¥ (至角)',
             N'该次诊症户口扣除的金额¥',
             N'计划支付的減免费用 ¥',
@@ -171,6 +187,9 @@ GO
         _result_value5,
         _result_value6,
         _result_value7,
+        _result_value7_NameEng,
+        _result_value7_NameChi,
+        _result_value7_Sex,
         _result_value8,
         _result_value9,
         _result_value10,
@@ -203,6 +222,9 @@ GO
 	,subspecialitiesName.Name_CN 'Sub-specialities Name'
 	,vt.doc_code 'Doc Code'
 	, convert( varchar(MAX), DecryptByKey(isnull(tp.Encrypt_Field1, pp.Encrypt_Field1) )) [Doc. No.]
+	, convert( varchar(MAX), DecryptByKey(isnull(tp.Encrypt_Field2, pp.Encrypt_Field2) )) [NameEng]
+	, convert( nvarchar(MAX), DecryptByKey(isnull(tp.Encrypt_Field3, pp.Encrypt_Field3) )) [NameChi]
+	, isnull(tp.Sex, pp.Sex)  [Sex]
 	-- ,CONVERT(varchar(MAX), DecryptByKey(E_Doc_No)) AS [E_Doc_No]
 	, case vd.Subsidize_Code
 		when 'HAS_A' then ''
@@ -342,6 +364,9 @@ GO
         ISNULL(_result_value5, ''),
         ISNULL(_result_value6, ''),
         ISNULL(_result_value7, ''),
+        ISNULL(_result_value7_NameEng, ''),
+        ISNULL(_result_value7_NameChi, ''),
+        ISNULL(_result_value7_Sex, ''),
         ISNULL(_result_value8, ''),
         ISNULL(_result_value9, ''),
         ISNULL(_result_value10, ''),
