@@ -5,7 +5,13 @@ GO
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
-
+-- =============================================
+-- Modification History
+-- CR No.:			CRE21-011
+-- Modified by:		Koala CHENG
+-- Modified date:	30 Jul 2021
+-- Description:		Revise the sampling criteria
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE21-004-03
@@ -208,10 +214,13 @@ BEGIN
 		VALUES(14,300,@ConstantNumber,15)
 
 	INSERT @tblGenerationRule(LOWER_LIMIT,UPPER_LIMIT,GENERATION_TYPE,GENERATION_VALUE)
-		VALUES(300,999,@ConstantPercentage,5)
+		VALUES(300,NULL,@ConstantPercentage,5)
 
-	INSERT @tblGenerationRule(LOWER_LIMIT,UPPER_LIMIT,GENERATION_TYPE,GENERATION_VALUE)
-		VALUES(999,NULL,@ConstantPercentage,10)
+	--INSERT @tblGenerationRule(LOWER_LIMIT,UPPER_LIMIT,GENERATION_TYPE,GENERATION_VALUE)
+	--	VALUES(300,999,@ConstantPercentage,5)
+
+	--INSERT @tblGenerationRule(LOWER_LIMIT,UPPER_LIMIT,GENERATION_TYPE,GENERATION_VALUE)
+	--	VALUES(999,NULL,@ConstantPercentage,10)
 
 	SET @SPListUpperLimit = (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'PostPaymentCheck0003SPListUpperLimit')
 	SET @TotalSPUpperLimit = (SELECT Parm_Value1 FROM SystemParameters WHERE Parameter_Name = 'PostPaymentCheck0003TotalSPUpperLimit')
@@ -892,7 +901,7 @@ BEGIN
 		DECLARE @CommonNoteStat05 varchar(1000)
 		DECLARE @CommonNoteStat06 varchar(1000)
 		DECLARE @CommonNoteStat07 varchar(1000)
-		DECLARE @CommonNoteStat08 varchar(1000)
+		--DECLARE @CommonNoteStat08 varchar(1000)
 
 		-- ---------------------------------------------
 		-- Prepare Data: Remarks
@@ -912,10 +921,10 @@ BEGIN
 		SET @CommonNoteStat02 = '2. Maximum of ' + CONVERT(VARCHAR(10),@RptTransactionPerPracticeUpperLimit) + ' transactions are retrieved randomly for each service provider.'
 		SET @CommonNoteStat03 = '3. For practice with less than ' + (SELECT CONVERT(VARCHAR(10),UPPER_LIMIT + 1) FROM @tblGenerationRule WHERE CASE_ID = 1) + ' transactions, all transaction will be retrieved.'
 		SET @CommonNoteStat04 = '4. For practice with number of transactions between ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT + 1) + ' and ' + CONVERT(VARCHAR(10),UPPER_LIMIT) + ', ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 2) + ' transaction will be retrieved.'
-		SET @CommonNoteStat05 = '5. For practice with number of transactions between ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT + 1) + ' and ' + CONVERT(VARCHAR(10),UPPER_LIMIT) + ', ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 3) + '% of total transaction will be retrieved.'
-		SET @CommonNoteStat06 = '6. For practice more than ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT) + ' transactions, ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 4) + '% of total transaction will be retrieved.'
-		SET @CommonNoteStat07 = '7. Maximum of ' + CONVERT(VARCHAR(10),@TotalSPUpperLimit) + ' service providers will be handled.'
-		SET @CommonNoteStat08 = '8. All COVID-19 claims under VSS and RVP are excluded.'
+		--SET @CommonNoteStat05 = '5. For practice with number of transactions between ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT + 1) + ' and ' + CONVERT(VARCHAR(10),UPPER_LIMIT) + ', ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 3) + '% of total transaction will be retrieved.'
+		SET @CommonNoteStat05 = '5. For practice more than ' + (SELECT CONVERT(VARCHAR(10),LOWER_LIMIT) + ' transactions, ' + CONVERT(VARCHAR(10),GENERATION_VALUE) FROM @tblGenerationRule WHERE CASE_ID = 3) + '% of total transaction will be retrieved.'
+		SET @CommonNoteStat06 = '6. Maximum of ' + CONVERT(VARCHAR(10),@TotalSPUpperLimit) + ' service providers will be handled.'
+		SET @CommonNoteStat07 = '7. All COVID-19 claims under VSS and RVP are excluded.'
 		---- ---------------------------------------------
 		---- Insert Data: Remarks
 		---- ---------------------------------------------
@@ -1016,13 +1025,13 @@ BEGIN
 
 		SET @seq = @seq + 1
 
-		INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-		VALUES (@seq, NULL, @CommonNoteStat08, '')
+		--INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
+		--VALUES (@seq, NULL, @CommonNoteStat08, '')
 
-		SET @seq = @seq + 1
+		--SET @seq = @seq + 1
 
 		INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
-		SELECT @Seq, NULL, '9. All are accumulative data unless specified as below:', ''
+		SELECT @Seq, NULL, '8. All are accumulative data unless specified as below:', ''
 
 		SET @seq = @seq + 1
 		INSERT INTO #Remarks (Seq, Seq2, Col01, Col02)
