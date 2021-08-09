@@ -15,6 +15,13 @@ GO
 -- =============================================
 -- =============================================
 -- Modification History
+-- CR No.:			INT21-0016
+-- Modified by:		Martin Tang
+-- Modified date:	06 Aug 2021
+-- Description:		Roll back search raw doc no. to handle search account timeout issue
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
 -- Modified date:	19 July 2021
@@ -135,14 +142,9 @@ BEGIN
 				ON TP.Voucher_Acc_ID = TVA.Voucher_Acc_ID  
 			INNER JOIN [VoucherAccountCreationLOG] VACL WITH (NOLOCK)
 				ON TP.Voucher_Acc_ID = VACL.Voucher_Acc_ID
-	WHERE
-		(	(	(@IdentityNum = ''
-					OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-					OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-				AND (@AdoptionPrefixNum = ''
-					OR TP.[Encrypt_Field11] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @AdoptionPrefixNum)))
-			OR (@IdentityNum3 = ''
-				OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))
+	WHERE  
+		(@IdentityNum = '' OR TP.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum) OR TP.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+		AND (@AdoptionPrefixNum = '' OR TP.[Encrypt_Field11] = EncryptByKey(KEY_GUID('sym_Key'), @AdoptionPrefixNum))
 		AND (@DocCode = '' OR TP.[Doc_Code] = @DocCode OR (@SameIDChecking = 1 AND TP.[Doc_Code] in ('HKIC', 'HKBC')))
 		AND (@VoucherAccID = '' OR TP.[Voucher_Acc_ID] = @VoucherAccID)
 		AND TVA.[Record_Status] NOT IN ('D','V')

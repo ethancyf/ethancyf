@@ -16,6 +16,13 @@ SET QUOTED_IDENTIFIER ON;
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			INT21-0016
+-- Modified by:		Martin Tang
+-- Modified date:	06 Aug 2021
+-- Description:		Roll back search raw doc no. to handle search account timeout issue
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
 -- Modified date:	19 July 2021
@@ -503,13 +510,11 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-			  AND (((@identity_no1 IS NULL
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-						AND (@Adoption_Prefix_Num IS NULL
-							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-					OR (@identity_no3 IS NULL
-						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	
+              AND (@identity_no1 IS NULL
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+              AND (@Adoption_Prefix_Num IS NULL
+                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -705,13 +710,11 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-			  AND ((	(@identity_no1 IS NULL
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-						AND (@Adoption_Prefix_Num IS NULL
-							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-					OR (@identity_no3 IS NULL
-						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	
+              AND (@identity_no1 IS NULL
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+              AND (@Adoption_Prefix_Num IS NULL
+                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -903,13 +906,11 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-			  AND ((	(@identity_no1 IS NULL
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-						AND (@Adoption_Prefix_Num IS NULL
-							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-					OR (@identity_no3 IS NULL
-						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
+              AND (@identity_no1 IS NULL
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+              AND (@Adoption_Prefix_Num IS NULL
+                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -1111,13 +1112,11 @@ AS
                    OR ENCRYPTBYKEY(KEY_GUID('sym_Key'), @sp_name) = SP.Encrypt_Field2)
               AND (@bank_acc IS NULL
                    OR @bank_acc = B.Bank_Account_No)
-			  AND ((	(@identity_no1 IS NULL
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-						AND (@Adoption_Prefix_Num IS NULL
-							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-					OR (@identity_no3 IS NULL
-						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
+              AND (@identity_no1 IS NULL
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+              AND (@Adoption_Prefix_Num IS NULL
+                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL

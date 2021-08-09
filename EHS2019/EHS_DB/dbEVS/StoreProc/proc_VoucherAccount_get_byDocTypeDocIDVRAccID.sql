@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			INT21-0016
+-- Modified by:		Martin Tang
+-- Modified date:	06 Aug 2021
+-- Description:		Roll back search raw doc no. to handle search account timeout issue
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
 -- Modified date:	19 July 2021
@@ -135,13 +142,9 @@ EXEC [proc_SymmetricKey_open]
 				ON P.Voucher_Acc_ID = VACL.Voucher_Acc_ID
 	WHERE  
 		(@doc_code = '' or P.[Doc_Code] = @doc_code or (@SameIDChecking = 1 and P.[Doc_Code] in ('HKIC', 'HKBC')))
-		AND (	(	(@IdentityNum = ''
-						OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-						OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-					AND (@Adoption_Prefix_Num = ''
-						OR P.[Encrypt_Field11] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-				OR (@IdentityNum3 = ''
-					OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
+		AND (@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+			or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+		AND (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 		AND (@VRAccID = '' or P.Voucher_Acc_ID=@VRAccID)
 	ORDER BY
 		P.[Doc_Code]

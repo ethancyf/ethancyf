@@ -7,6 +7,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Modification History
+-- CR No.:			INT21-0016
+-- Modified by:		Martin Tang
+-- Modified date:	06 Aug 2021
+-- Description:		Roll back search raw doc no. to handle search account timeout issue
+-- =============================================
+-- =============================================
+-- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
 -- Modified date:	19 July 2021
@@ -268,13 +275,9 @@ BEGIN
 			or
 			(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 		)
-		and (	(	(@IdentityNum = ''
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-					AND (@Adoption_Prefix_Num = ''
-						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-				OR (@IdentityNum3 = ''
-					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
+		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -401,13 +404,9 @@ BEGIN
 			--	or
 			--	(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 			--)
-			and (	(	(@IdentityNum = ''
-							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-						AND (@Adoption_Prefix_Num = ''
-							OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-					OR (@IdentityNum3 = ''
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))				
+			and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+				or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+			and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 			and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 			and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 			and (@DOB is NULL or TP.DOB = @DOB)
@@ -511,13 +510,9 @@ BEGIN
 				and TVA.Voucher_Acc_ID = PV.Voucher_Acc_ID	
 				and TVA.Record_Status='I' and (TVA.Account_Purpose='C' or TVA.Account_Purpose='V')
 				and DATEDIFF(Day, PV.First_Validate_Dtm, getdate()) > @day_level
-				and (	(	(@IdentityNum = ''
-								OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-								OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-							AND (@Adoption_Prefix_Num = ''
-								OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-						OR (@IdentityNum3 = ''
-							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))					
+				and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+					or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+				and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 				and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 				and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 				and (@DOB is NULL or TP.DOB = @DOB)
@@ -642,13 +637,9 @@ BEGIN
 		INNER JOIN @DocTypeList DTL
 			ON P.Doc_Code = DTL.Doc_Code
 	where 
-	 (	(	(@IdentityNum = ''
-				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-			AND (@Adoption_Prefix_Num = ''
-				OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-		OR (@IdentityNum3 = ''
-			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
+	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+	and (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
@@ -774,13 +765,9 @@ BEGIN
 		--	or
 		--	(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 		--)
-		and (	(	(@IdentityNum = ''
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-					AND (@Adoption_Prefix_Num = ''
-						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-				OR (@IdentityNum3 = ''
-					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
+		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -906,13 +893,9 @@ BEGIN
 		INNER JOIN @DocTypeList DTL
 			ON P.Doc_Code = DTL.Doc_Code
 	where 
-	(	(	(@IdentityNum = ''
-				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-			AND (@Adoption_Prefix_Num = ''
-				OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-		OR (@IdentityNum3 = ''
-			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
+	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+	and (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
@@ -1040,13 +1023,9 @@ BEGIN
 	where 
 		TVA.Special_Acc_ID = TP.Special_Acc_ID
 		and C.Voucher_Acc_Type = 'S'
-		and (	(	(@IdentityNum = ''
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
-						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
-					AND (@Adoption_Prefix_Num = ''
-						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
-				OR (@IdentityNum3 = ''
-					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
+		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
+			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
+		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
