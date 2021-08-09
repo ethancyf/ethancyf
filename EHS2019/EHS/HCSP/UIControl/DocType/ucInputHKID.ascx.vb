@@ -1,3 +1,4 @@
+Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.DocType
 Imports Common.Component.DocType.DocTypeModel
@@ -95,6 +96,14 @@ Partial Public Class ucInputHKID
 
             Me.imgDOIModificationError.ImageUrl = strErrorImageURL
             Me.imgDOIModificationError.AlternateText = strErrorImageALT
+
+            'div gender
+            Me.lblIFemale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderFemale", New System.Globalization.CultureInfo(CultureLanguage.English))
+            Me.lblIFemaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Female", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+            Me.lblIMale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderMale", New System.Globalization.CultureInfo(CultureLanguage.English))
+            Me.lblIMaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Male", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
 
         End If
     End Sub
@@ -238,10 +247,11 @@ Partial Public Class ucInputHKID
                 Me.txtCCCode5Modification.Enabled = False
                 Me.txtCCCode6Modification.Enabled = False
                 Me.rbGenderModification.Enabled = False
+                SetGenderReadOnlyStyle(True)
                 Me.txtDOIModification.Enabled = False
                 Me.btnSearchCCCodeModification.Visible = False
             Else
-                Me.rbGenderModification.Enabled = True
+                SetGenderReadOnlyStyle(False)
 
                 If MyBase.EHSPersonalInfo.CreateBySmartID Then
                     Me.txtDOBModification.Enabled = False
@@ -271,6 +281,12 @@ Partial Public Class ucInputHKID
                     Me.btnSearchCCCodeModification.Visible = True
                 End If
             End If
+            divFemale.Attributes.Add("onclick", "document.getElementById('" & rbGenderModification.ClientID & "_0').checked=true;javascript:setTimeout('__doPostBack(\'" & rbGenderModification.ClientID & "\',\'\')', 0); ")
+            divFemale.Attributes.Add("onmouseover", "document.getElementById('" & divFemale.ClientID & "').style.left='-1px'; document.getElementById('" & divFemale.ClientID & "').style.top='-1px'; ")
+            divFemale.Attributes.Add("onmouseout", "document.getElementById('" & divFemale.ClientID & "').style.left='0px'; document.getElementById('" & divFemale.ClientID & "').style.top='0px'; ")
+            divMale.Attributes.Add("onclick", "document.getElementById('" & rbGenderModification.ClientID & "_1').checked=true;javascript:setTimeout('__doPostBack(\'" & rbGenderModification.ClientID & "\',\'\')', 0); ")
+            divMale.Attributes.Add("onmouseover", "document.getElementById('" & divMale.ClientID & "').style.left='-1px'; document.getElementById('" & divMale.ClientID & "').style.top='-1px'; ")
+            divMale.Attributes.Add("onmouseout", "document.getElementById('" & divMale.ClientID & "').style.left='0px'; document.getElementById('" & divMale.ClientID & "').style.top='0px'; ")
 
         End If
     End Sub
@@ -583,8 +599,17 @@ Partial Public Class ucInputHKID
     End Sub
 
     Public Sub SetGenderModification()
-        'Fill Data - Gender only
+        'Fill Data - Gender only        
+        Dim strGender As String
         Me.rbGenderModification.SelectedValue = Me._strGender
+
+        If Me._strGender = "M" Then
+            strGender = "GenderMale"
+        Else
+            strGender = "GenderFemale"
+        End If
+        Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
+        HandleDivGenderStyle(Me._strGender)
     End Sub
 
     Public Sub SetHKIDIssuseDateModification()
@@ -721,6 +746,44 @@ Partial Public Class ucInputHKID
     Private Sub rbGender_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles rbGender.SelectedIndexChanged
         Me.changeHKID(Me.EHSPersonalInfo.DOB, CType(sender, RadioButtonList).SelectedValue)
     End Sub
+
+    Protected Sub rbGenderModification_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbGenderModification.SelectedIndexChanged
+        Dim rbGender As RadioButtonList = CType(sender, RadioButtonList)
+        HandleDivGenderStyle(rbGender.SelectedValue)
+    End Sub
+
+    Private Sub HandleDivGenderStyle(ByVal strGender As String)
+        Select Case strGender
+            Case "M"
+                divFemale.Style.Add("outline-color", "black")
+                divFemale.Style.Add("outline-width", "2px")
+
+                divMale.Style.Add("outline-color", "#3198FF")
+                divMale.Style.Add("outline-width", "8px")
+
+            Case "F"
+                divFemale.Style.Add("outline-color", "#3198FF")
+                divFemale.Style.Add("outline-width", "8px")
+
+                divMale.Style.Add("outline-color", "black")
+                divMale.Style.Add("outline-width", "2px")
+        End Select
+    End Sub
+
+    Private Sub SetGenderReadOnlyStyle(ByVal ReadOnlyMode As Boolean)
+        If ReadOnlyMode = True Then
+            Me.divGender.Visible = False
+            Me.lblReadonlyGender.Visible = True
+            Me.trGenderImageInput.Style.Remove("height")
+            Me.rbGender.Enabled = False
+        Else
+            Me.divGender.Visible = True
+            Me.lblReadonlyGender.Visible = False
+            Me.rbGender.Enabled = True
+        End If
+    End Sub
+
+
 
 #End Region
 

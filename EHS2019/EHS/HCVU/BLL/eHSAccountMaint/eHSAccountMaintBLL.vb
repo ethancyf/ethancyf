@@ -268,7 +268,7 @@ Public Class eHSAccountMaintBLL
                                             ByVal strEname As String, ByVal strCname As String, ByVal dtDOB As Nullable(Of DateTime), ByVal arrAccountID() As String, _
                                             ByVal strRefNo As String, ByVal strGender As String, _
                                             ByVal strAccountType As String, ByVal strAccountStatus As String, ByVal dtmCreationDateFrom As Nullable(Of DateTime), ByVal dtmCreationDateTo As Nullable(Of DateTime), _
-                                            Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
+                                            ByVal blnOverrideResultLimit As Boolean, ByVal strRawIdentityNum As String) As BaseBLL.BLLSearchResult
 
         ' CRE19-026 (HCVS hotline service) [Start][Winnie]
         ' Add Gender
@@ -287,13 +287,13 @@ Public Class eHSAccountMaintBLL
                                              strEname, strCname, dtDOB, String.Empty, _
                                              strRefNo, strGender, _
                                              strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                             blnOverrideResultLimit)
+                                             blnOverrideResultLimit, strRawIdentityNum)
             ElseIf arrAccountID.Length = 1 Then
                 udtBLLSearchResult = GeteHSAcctListByParticular(strFunctionCode, strDocType, strIdentityNum, strAdoptionPrefixNum, _
                                             strEname, strCname, dtDOB, arrAccountID(0), _
                                             strRefNo, strGender, _
                                              strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                             blnOverrideResultLimit)
+                                             blnOverrideResultLimit, strRawIdentityNum)
             Else
                 Dim dtTmp As DataTable = New DataTable
                 Dim arrDistinctAccountID() As String = DistinctArray(arrAccountID)
@@ -304,7 +304,7 @@ Public Class eHSAccountMaintBLL
                                                                     strEname, strCname, dtDOB, strSingleAccountID, _
                                                                     strRefNo, strGender, _
                                                                     strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                                                    blnOverrideResultLimit)
+                                                                    blnOverrideResultLimit, strRawIdentityNum)
 
 
                     If udtBLLSearchResult.SqlErrorMessage = BaseBLL.EnumSqlErrorMessage.Normal Then
@@ -346,7 +346,7 @@ Public Class eHSAccountMaintBLL
                                             ByVal strEname As String, ByVal strCname As String, ByVal dtDOB As Nullable(Of DateTime), ByVal strAccountID As String, _
                                             ByVal strRefNo As String, ByVal strGender As String, _
                                             ByVal strAccountType As String, ByVal strAccountStatus As String, ByVal dtmCreationDateFrom As Nullable(Of DateTime), ByVal dtmCreationDateTo As Nullable(Of DateTime), _
-                                            Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
+                                            ByVal blnOverrideResultLimit As Boolean, ByVal strRawIdentityNum As String) As BaseBLL.BLLSearchResult
         ' Add [Gender]
         ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
@@ -371,7 +371,8 @@ Public Class eHSAccountMaintBLL
                             db.MakeInParam("@AccountStatus", SqlDbType.Char, 1, strAccountStatus), _
                             db.MakeInParam("@CreationDateFrom", SqlDbType.DateTime, 8, IIf(Not dtmCreationDateFrom.HasValue, DBNull.Value, dtmCreationDateFrom)), _
                             db.MakeInParam("@CreationDateTo", SqlDbType.DateTime, 8, IIf(Not dtmCreationDateTo.HasValue, DBNull.Value, dtmCreationDateTo)), _
-                            db.MakeInParam("@Gender", SqlDbType.Char, 1, strGender) _
+                            db.MakeInParam("@Gender", SqlDbType.Char, 1, strGender), _
+                            db.MakeInParam("@RawIdentityNum", SqlDbType.VarChar, 20, strRawIdentityNum) _
                         }
 
             udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherAccountListForMaint_byParticular_get", parms, blnOverrideResultLimit, db)
@@ -638,7 +639,7 @@ Public Class eHSAccountMaintBLL
     ' -------------------------------------------------------------------------
     'Public Function getRectifyList(ByVal blnRetrieveSpecialAcc As Boolean, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String) As DataTable
     Public Function getRectifyList(ByVal strFunctionCode As String, ByVal blnRetrieveSpecialAcc As Boolean, ByVal strDocCode As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, _
-                                   ByVal strAccountStatus As String, Optional ByVal blnOverrideResultLimit As Boolean = False) As BaseBLL.BLLSearchResult
+                                   ByVal strAccountStatus As String, ByVal blnOverrideResultLimit As Boolean, ByVal strRawIdentityNum As String) As BaseBLL.BLLSearchResult
         ' CRE12-014 - Relax 500 rows limit in back office platform [End][Nick]
 
         Dim dtRes As DataTable = New DataTable
@@ -662,7 +663,8 @@ Public Class eHSAccountMaintBLL
                             udtDB.MakeInParam("@strDocCode", SqlDbType.Char, 20, strDocCode), _
                             udtDB.MakeInParam("@strIdentityNum", SqlDbType.VarChar, 20, strIdentityNum), _
                             udtDB.MakeInParam("@strAdoptionPrefixNum", SqlDbType.Char, 7, strAdoptionPrefixNum), _
-                            udtDB.MakeInParam("@strAccountStatus", SqlDbType.Char, 1, strAccountStatus) _
+                            udtDB.MakeInParam("@strAccountStatus", SqlDbType.Char, 1, strAccountStatus), _
+                            udtDB.MakeInParam("@strRawIdentityNum", SqlDbType.VarChar, 20, strRawIdentityNum) _
                             }
 
             ' CRE12-014 - Relax 500 rows limit in back office platform [Start][Nick]

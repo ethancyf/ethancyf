@@ -17,6 +17,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
+-- Modified date:	19 July 2021
+-- Description:		Fix "Search by any doc type issue"
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
 -- Modified date:	20 Apr 2021
 -- Description:		Extend patient name's maximum length
 -- =============================================
@@ -45,7 +52,8 @@ CREATE PROCEDURE [dbo].[proc_TempVoucherAccount_get_byDocTypeDocIDVRAccID]
 	@IdentityNum		VARCHAR(20),
 	@AdoptionPrefixNum	CHAR(7),
 	@DocCode			CHAR(20),
-	@VoucherAccID		CHAR(15)
+	@VoucherAccID		CHAR(15),	
+	@RawIdentityNum     VARCHAR(20)
 AS
 BEGIN
 
@@ -56,6 +64,7 @@ BEGIN
 	DECLARE @rowcount		INT
 	
 	DECLARE @IdentityNum2	VARCHAR(20)
+	DECLARE @IdentityNum3	VARCHAR(20)
 	DECLARE @SameIDChecking INT	
 -- =============================================
 -- Initialization
@@ -67,6 +76,7 @@ BEGIN
 			Record_Status = 'A'
 			
 	SET @IdentityNum2 = ' ' + @IdentityNum
+	SET @IdentityNum3 = @RawIdentityNum;
 
 		set @SameIDChecking = 0
 	
@@ -125,9 +135,14 @@ BEGIN
 				ON TP.Voucher_Acc_ID = TVA.Voucher_Acc_ID  
 			INNER JOIN [VoucherAccountCreationLOG] VACL WITH (NOLOCK)
 				ON TP.Voucher_Acc_ID = VACL.Voucher_Acc_ID
-	WHERE  
-		(@IdentityNum = '' OR TP.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum) OR TP.[Encrypt_Field1] = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		AND (@AdoptionPrefixNum = '' OR TP.[Encrypt_Field11] = EncryptByKey(KEY_GUID('sym_Key'), @AdoptionPrefixNum))
+	WHERE
+		(	(	(@IdentityNum = ''
+					OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+					OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+				AND (@AdoptionPrefixNum = ''
+					OR TP.[Encrypt_Field11] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @AdoptionPrefixNum)))
+			OR (@IdentityNum3 = ''
+				OR TP.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))
 		AND (@DocCode = '' OR TP.[Doc_Code] = @DocCode OR (@SameIDChecking = 1 AND TP.[Doc_Code] in ('HKIC', 'HKBC')))
 		AND (@VoucherAccID = '' OR TP.[Voucher_Acc_ID] = @VoucherAccID)
 		AND TVA.[Record_Status] NOT IN ('D','V')

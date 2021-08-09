@@ -224,6 +224,7 @@ Partial Public Class VaccinationRecordEnquiry
             udcClaimSearch.SetECError(False)
             udcClaimSearch.SetADOPCError(False)
             udcClaimSearch.SetSearchShortError(False)
+            HandleDivGenderStyle(String.Empty)
         End If
 
         ' --- Document Type ---
@@ -717,6 +718,350 @@ Partial Public Class VaccinationRecordEnquiry
 
     End Function
 
+    Private Function ReadDemoSmartID(ByVal udtSmartIDContent As SmartIDContentModel) As Boolean
+        If IsNothing(udtSmartIDContent) OrElse udtSmartIDContent.IsReadSmartID = False OrElse udtSmartIDContent.IsEndOfReadSmartID Then Return False
+
+        Dim blnValid As Boolean = True
+
+        Dim udtAuditLogEntry As New AuditLogEntry(FunctionCode, Me)
+
+        Dim ideasBLL As New IdeasBLL
+        Dim strIdeasVersion As String = ideasBLL.ConvertIdeasVersion(udtSmartIDContent.IdeasVersion)
+
+        ' Write Start Audit log
+        udtAuditLogEntry.AddDescripton("IDEAS Version", strIdeasVersion)
+        udtAuditLogEntry.WriteLog(LogID.LOG00064, "Redirect from IDEAS after Token Request")
+
+        udtSmartIDContent.IsEndOfReadSmartID = True
+
+        Dim udtSessionHandler As New SessionHandler
+        udtSessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmartIDContent)
+
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        ' Smart ID From Ideas
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        Dim ideasHelper As IHelper = HelpFactory.createHelper()
+
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        ' Get CFD
+        '--------------------------------------------------------------------------------------------------------------------------------------------------
+        Dim udtAuditLogEntry_GetCFD As AuditLogEntry = New AuditLogEntry(FunctionCode, Me)
+
+        ' CRE19-028 (IDEAS Combo) [Start][Chris YIM]
+        ' ---------------------------------------------------------------------------------------------------------
+        'Dim ideasSamlResponse As IdeasRM.IdeasResponse = Nothing
+        Dim strArtifact As String = String.Empty
+
+        If udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.Combo Or _
+            udtSmartIDContent.IdeasVersion = BLL.IdeasBLL.EnumIdeasVersion.ComboGender Then
+
+            strArtifact = udtSmartIDContent.Artifact
+            'ideasSamlResponse = udtSmartIDContent.IdeasSamlResponse
+        Else
+            strArtifact = ideasBLL.Artifact
+            'ideasSamlResponse = ideasHelper.getCardFaceData(udtSmartIDContent.TokenResponse, strArtifact, strIdeasVersion)
+
+        End If
+
+        EHSClaimBasePage.AuditLogGetCFD(udtAuditLogEntry_GetCFD, strArtifact)
+
+        ' CRE19-028 (IDEAS Combo) [End][Chris YIM]	
+
+        Dim udtPersonalInfoSmartID As EHSAccountModel.EHSPersonalInformationModel
+
+        'If strArtifact Is Nothing OrElse strArtifact = String.Empty Then
+        '    '----------------------------- Error Handling -----------------------------------------------
+
+        '    ' Error100 - 113
+        '    If Not Request.QueryString("status") Is Nothing Then
+        '        Dim strErrorCode As String = Request.QueryString("status").Trim()
+        '        Dim strErrorMsg As String = IdeasRM.ErrorMessageMapper.MapMAStatus(strErrorCode)
+
+        '        If Not strErrorMsg Is Nothing Then
+        '            udtSessionHandler.ClearVREClaim()
+
+        '            udcDocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+        '            MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Search
+
+        '            udcMessageBox.AddMessageDesc(FunctionCode, strErrorCode, strErrorMsg)
+
+        '            ' Write End Audit log
+        '            EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, strArtifact, strErrorCode, strErrorMsg, strIdeasVersion)
+
+        '            udcMessageBox.BuildMessageDescBox("SmartIDActionFail", udtAuditLogEntry_GetCFD, LogID.LOG00063, "Get CFD Fail")
+
+        '            blnValid = False
+
+        '        End If
+        '    End If
+        'End If
+
+        If blnValid Then
+            'Check Card Version
+            Dim strNewCard As String = YesNo.Yes
+            'If ideasSamlResponse.CardFaceDate IsNot Nothing Then
+            '    If ideasSamlResponse.CardFaceDate.CardVersion = "1" Then
+            '        strNewCard = YesNo.No
+            '    End If
+
+            '    If ideasSamlResponse.CardFaceDate.CardVersion = "2" Then
+            '        strNewCard = YesNo.Yes
+            '    End If
+            'End If
+
+            'Success
+            'If ideasSamlResponse.StatusCode.Equals("samlp:Success") Then
+            EHSClaimBasePage.AuditLogGetCFDComplete(udtAuditLogEntry_GetCFD, strArtifact)
+
+            Dim udtEHSAccount As EHSAccountModel = Nothing
+            Dim blnNotMatchAccountExist As Boolean = False
+            Dim blnExceedDocTypeLimit As Boolean = False
+            Dim udtEligibleResult As EligibleResult = Nothing
+            Dim strError As String = String.Empty
+            Dim goToCreation As Boolean = True
+
+            Try
+
+                ' [CRE18-019] To read new Smart HKIC in eHS(S) [Start][Winnie]
+                ' ----------------------------------------------------------------------------------------
+                udtSmartIDContent.EHSAccount = SmartIDDummyCase.GetDummyEHSAccount(String.Empty, udtSmartIDContent.IdeasVersion)
+                ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
+                udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0).CName = BLL.VoucherAccountMaintenanceBLL.GetCName(udtSmartIDContent.EHSAccount.EHSPersonalInformationList(0))
+
+            Catch ex As Exception
+                udtSmartIDContent.EHSAccount = Nothing
+                strError = ex.Message
+            End Try
+
+            Dim udtAuditlogEntry_Search As New AuditLogEntry(FunctionCode, Me)
+            Dim strHKICNo As String = String.Empty
+
+            If Not udtSmartIDContent.EHSAccount Is Nothing Then
+                strHKICNo = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum.Trim
+            End If
+
+            udtAuditlogEntry_Search.AddDescripton("HKIC No.", strHKICNo)
+            udtAuditlogEntry_Search.AddDescripton("Error", strError)
+            udtAuditlogEntry_Search.AddDescripton("IDEAS Version", strIdeasVersion)
+            udtAuditlogEntry_Search.WriteStartLog(LogID.LOG00050, "Search & validate account with CFD", New AuditLogInfo(String.Empty, String.Empty, String.Empty, String.Empty, DocTypeModel.DocTypeCode.HKIC, (New Formatter).formatDocumentIdentityNumber(DocTypeModel.DocTypeCode.HKIC, strHKICNo)))
+
+            If Not udtSmartIDContent.EHSAccount Is Nothing Then
+
+                udtPersonalInfoSmartID = udtSmartIDContent.EHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC)
+
+                '------------------------------------------------------------------------------------------------------
+                ' Card Face Data Validation
+                '------------------------------------------------------------------------------------------------------
+                Dim udtSystemMessage As SystemMessage = EHSClaimBasePage.SmartIDCardFaceDataValidation(udtPersonalInfoSmartID)
+
+                If Not udtSystemMessage Is Nothing Then
+                    blnValid = False
+                    If Not udtPersonalInfoSmartID.IdentityNum Is Nothing Then udtAuditlogEntry_Search.AddDescripton("HKID", udtPersonalInfoSmartID.IdentityNum)
+                    If udtPersonalInfoSmartID.DateofIssue.HasValue Then udtAuditlogEntry_Search.AddDescripton("DOI", udtPersonalInfoSmartID.DateofIssue)
+                    udtAuditlogEntry_Search.AddDescripton("DOB", udtPersonalInfoSmartID.DOB)
+
+                    udcMessageBox.AddMessage(udtSystemMessage)
+
+                End If
+
+                If blnValid Then
+                    'CRE16-017 (Block EHCP make voucher claim for themselves) [Start][Chris YIM]
+                    '-----------------------------------------------------------------------------------------
+                    udtSystemMessage = (New EHSClaimBLL).SearchEHSAccountSmartID("RVP", _
+                                                                                 DocTypeModel.DocTypeCode.HKIC, _
+                                                                                 udtPersonalInfoSmartID.IdentityNum, _
+                                                                                 (New Formatter).formatDOB(udtPersonalInfoSmartID.DOB, udtPersonalInfoSmartID.ExactDOB, Common.Component.CultureLanguage.English, Nothing, Nothing), _
+                                                                                 udtEHSAccount, _
+                                                                                 udtSmartIDContent.EHSAccount, _
+                                                                                 udtSmartIDContent.SmartIDReadStatus, _
+                                                                                 udtEligibleResult, _
+                                                                                 blnNotMatchAccountExist, _
+                                                                                 blnExceedDocTypeLimit, _
+                                                                                 FunctionCode, _
+                                                                                 False, _
+                                                                                 Common.Component.ClaimMode.All)
+                    'CRE16-017 (Block EHCP make voucher claim for themselves) [End][Chris YIM]
+
+                    '---------------------------------------------------------------------------------------------------------------
+                    ' Search Account Error Issue
+                    '---------------------------------------------------------------------------------------------------------------
+                    If Not udtSystemMessage Is Nothing Then
+                        ' CRE14-007 - Fix VRE display for same doc no. in HKIC and EC [Start][Lawrence]
+                        If udtSystemMessage.MessageCode = "00141" Then
+                            udtSessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmartIDContent)
+                            udtSmartIDContent.EHSAccount.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
+                            Session(SESS.EHSAccount) = udtSmartIDContent.EHSAccount
+
+                            SetupInputRecipientInformationSmartID(udtSmartIDContent.EHSAccount, udtSmartIDContent)
+                            MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.InputRecipientInformationSmartID
+
+                            Return True
+                        End If
+                        ' CRE14-007 - Fix VRE display for same doc no. in HKIC and EC [End][Lawrence]
+
+                        blnValid = False
+                        If udtSystemMessage.MessageCode = "00142" OrElse udtSystemMessage.MessageCode = "00141" Then
+                            'Me.udcClaimSearch.SetSearchShortIdentityNoError(True)
+                            Me.udcClaimSearch.SetHKICNoError(True)
+                        End If
+                        udcMessageBox.AddMessage(udtSystemMessage)
+
+                    End If
+                End If
+
+                If blnValid Then
+                    If udtEligibleResult Is Nothing Then
+                        udtSessionHandler.EligibleResultRemoveFromSession()
+                    Else
+                        Dim udtRuleResults As RuleResultCollection = New RuleResultCollection()
+
+                        udtEligibleResult.PromptConfirmed = True
+                        'Key = 1_G0002 -> not need prompt confirm popup dox -> reminder in step2a
+                        Dim strRuleResultKey As String = String.Format("{0}_{1}", 0, udtEligibleResult.RuleType)
+
+                        udtRuleResults.Add(strRuleResultKey, udtEligibleResult)
+                        udtSessionHandler.EligibleResultSaveToSession(udtRuleResults)
+                    End If
+
+                    udtEHSAccount.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
+
+                    'Only one case go to Claim directly -> Account validated && Search DocCode = PersonalInfo DocCode 
+                    'udtSmartIDContent.SmartIDReadStatus = BLL.SmartIDHandler.CheckSmartIDCardStatus(udtSmartIDContent.EHSAccount, udtEHSAccountExist)
+                    udtSessionHandler.SmartIDContentSaveToSession(FunctionCode, udtSmartIDContent)
+                    'Me._udtSessionHandler.NotMatchAccountExistSaveToSession(blnNotMatchAccountExist)
+                    'Me._udtSessionHandler.ExceedDocTypeLimitSaveToSession(blnExceedDocTypeLimit)
+                    Session(SESS.EHSAccount) = udtEHSAccount
+
+                    Select Case udtSmartIDContent.SmartIDReadStatus
+                        Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_SameDetail
+                            goToCreation = False
+
+                        Case BLL.SmartIDHandler.SmartIDResultStatus.ValidateAccountExist_DiffDetail_SameDOI_NotCreateBySmartID_SameDOB_NoCCCode
+                            goToCreation = False
+
+                            ' Update account
+                            udtPersonalInfoSmartID.VoucherAccID = udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).VoucherAccID
+                            udtPersonalInfoSmartID.Gender = udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).Gender
+                            udtPersonalInfoSmartID.TSMP = udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).TSMP
+
+                            Dim udtEHSAccountBLL As New EHSAccountBLL
+                            Dim udtSP As ServiceProviderModel = Nothing
+                            Dim udtUserAC As UserACModel = UserACBLL.GetUserAC
+
+                            If udtUserAC.UserType = SPAcctType.ServiceProvider Then
+                                udtSP = udtUserAC
+                            Else
+                                Dim udtDataEntry As DataEntryUserModel = udtUserAC
+                                udtSP = udtDataEntry.ServiceProvider
+                            End If
+
+                            Try
+                                udtEHSAccountBLL.UpdateEHSAccountNameBySmartIC(udtPersonalInfoSmartID, udtSP.SPID)
+                            Catch eSQL As SqlClient.SqlException
+                                If eSQL.Number = 50000 Then
+                                    udtSystemMessage = New SystemMessage("990001", Common.Component.SeverityCode.SEVD, eSQL.Message)
+                                    udcMessageBox.AddMessage(udtSystemMessage)
+                                Else
+                                    Throw eSQL
+                                End If
+                            End Try
+
+                            If udtSystemMessage Is Nothing Then
+                                udtEHSAccount = udtEHSAccountBLL.LoadEHSAccountByIdentity(udtEHSAccount.EHSPersonalInformationList.Filter(DocTypeModel.DocTypeCode.HKIC).IdentityNum, DocTypeModel.DocTypeCode.HKIC)
+                                udtEHSAccount.SetSearchDocCode(DocTypeModel.DocTypeCode.HKIC)
+                                Session(SESS.EHSAccount) = udtEHSAccount
+                            End If
+
+                    End Select
+
+                Else
+                    goToCreation = False
+
+                End If
+
+                udtAuditlogEntry_Search.AddDescripton("Smart IC Type", udtSmartIDContent.SmartIDReadStatus.ToString)
+                udtAuditlogEntry_Search.AddDescripton("IDEAS Version", strIdeasVersion)
+                udtAuditlogEntry_Search.AddDescripton("New Card", strNewCard)
+                udtAuditlogEntry_Search.AddDescripton("CFD", "->")
+                EHSAccountCreationBase.AuditLogHKIC(udtAuditlogEntry_Search, udtSmartIDContent.EHSAccount)
+
+                If Not udtSmartIDContent.EHSValidatedAccount Is Nothing Then
+                    udtAuditlogEntry_Search.AddDescripton("Validated EHS Account", "->")
+                    EHSAccountCreationBase.AuditLogHKIC(udtAuditlogEntry_Search, udtSmartIDContent.EHSValidatedAccount)
+                End If
+
+                udtAuditlogEntry_Search.WriteEndLog(LogID.LOG00051, "Search & validate account with CFD Complete")
+
+                If goToCreation Then
+                    SetupInputRecipientInformationSmartID(udtEHSAccount, udtSmartIDContent)
+                    MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.InputRecipientInformationSmartID
+
+                    Return True
+
+                Else
+                    If Not udtSystemMessage Is Nothing Then
+                        '---------------------------------------------------------------------------------------------------------------
+                        ' Block Case 
+                        '---------------------------------------------------------------------------------------------------------------
+                        udtSessionHandler.ClearVREClaim()
+                        udcDocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                        MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Search
+                        'udcMessageBox.AddMessage(udtSystemMessage)
+                        blnValid = False
+
+                    Else
+                        ' Go to result
+                        ' CRE20-0022 (Immu record) [Start][Chris YIM]
+                        ' ---------------------------------------------------------------------------------------------------------
+                        udcVaccinationRecord.Build(udtEHSAccount, New AuditLogEntry(FunctionCode, Me), ucVaccinationRecord.RecordType.ALL)
+                        ' CRE20-0022 (Immu record) [End][Chris YIM]
+
+                        Me.GotoViewResult()
+
+                        Return True
+
+                    End If
+
+                End If
+
+            Else
+                '---------------------------------------------------------------------------------------------------------------
+                ' udtSmartIDContent.EHSAccount is nothing, card face data may not be able to return 
+                '---------------------------------------------------------------------------------------------------------------
+                udtSessionHandler.ClearVREClaim()
+                udcDocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+                MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Search
+                udcMessageBox.AddMessage(New SystemMessage("990000", "E", "00253"))
+                blnValid = False
+            End If
+
+            udcMessageBox.BuildMessageBox("ValidationFail", udtAuditlogEntry_Search, LogID.LOG00052, "Search & validate account with CFD Fail", _
+                    New AuditLogInfo(Nothing, Nothing, Nothing, Nothing, DocTypeModel.DocTypeCode.HKIC, (New Formatter).formatDocumentIdentityNumber(DocTypeModel.DocTypeCode.HKIC, strHKICNo)))
+
+            'Else
+            '    '---------------------------------------------------------------------------------------------------------------
+            '    ' ideasSamlResponse.StatusCode is not "samlp:Success"
+            '    '---------------------------------------------------------------------------------------------------------------
+            '    udtSessionHandler.ClearVREClaim()
+            '    udcDocumentTypeRadioButtonGroup.SelectedValue = DocTypeModel.DocTypeCode.HKIC
+            '    MultiViewVaccinationRecordEnquiry.ActiveViewIndex = ViewIndex.Search
+            '    udcMessageBox.AddMessageDesc(FunctionCode, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail)
+
+            '    ' Write End Audit log
+            '    udtAuditLogEntry_GetCFD.AddDescripton("New Card", strNewCard)
+            '    EHSClaimBasePage.AuditLogGetCFDFail(udtAuditLogEntry_GetCFD, strArtifact, ideasSamlResponse.StatusMessage, ideasSamlResponse.StatusDetail, strIdeasVersion)
+
+            '    udcMessageBox.BuildMessageDescBox("SmartIDActionFail", New AuditLogEntry(FunctionCode, Me), Common.Component.LogID.LOG00063, "Get CFD Fail")
+
+            '    blnValid = False
+
+            'End If
+        End If
+
+        Return False
+
+    End Function
+
 #End Region
 
 #Region "View 1 - Search"
@@ -958,7 +1303,8 @@ Partial Public Class VaccinationRecordEnquiry
                 EHSClaimBasePage.AuditLogConnectIdeasComplete(udtAuditLogEntry, Nothing, ideasTokenResponse, "Y", strIdeasVersion)
                 ' [CRE18-019] To read new Smart HKIC in eHS(S) [End][Winnie]
 
-                RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageVRE").ToString().Replace("@", "&"))
+                ReadDemoSmartID(udtSmarIDContent)
+                'RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageVRE").ToString().Replace("@", "&"))
 
             Else
                 udtSmarIDContent.IsDemonVersion = False
@@ -1046,7 +1392,8 @@ Partial Public Class VaccinationRecordEnquiry
 
                 EHSClaimBasePage.AuditLogConnectIdeasComboComplete(udtAuditLogEntry, Nothing, ideasTokenResponse, "Y", strIdeasVersion)
 
-                RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageVRE").ToString().Replace("@", "&"))
+                ReadDemoSmartID(udtSmarIDContent)
+                'RedirectHandler.ToURL(ConfigurationManager.AppSettings("SmartIDTestRedirectPageVRE").ToString().Replace("@", "&"))
 
             Else
                 udtSmarIDContent.IsDemonVersion = False
@@ -1727,7 +2074,7 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.AddDescripton("Doc No.", lblIADocumentNo.Text)
         udtAuditLogEntry.AddDescripton("Surname", txtIANameSurname.Text)
         udtAuditLogEntry.AddDescripton("Firstname", txtIANameFirstname.Text)
-        udtAuditLogEntry.AddDescripton("Gender", rblIAGender.SelectedValue)
+        udtAuditLogEntry.AddDescripton("Gender", rbGender.SelectedValue)
 
         ' CRE16-012 Removal of DOB InWord [Start][Winnie]
         'If hfDocCode.Value = DocTypeModel.DocTypeCode.HKBC OrElse hfDocCode.Value = DocTypeModel.DocTypeCode.ADOPC Then
@@ -1758,7 +2105,7 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.AddDescripton("Doc No.", lblIADocumentNo.Text)
         udtAuditLogEntry.AddDescripton("Surname", txtIANameSurname.Text)
         udtAuditLogEntry.AddDescripton("Firstname", txtIANameFirstname.Text)
-        udtAuditLogEntry.AddDescripton("Gender", rblIAGender.SelectedValue)
+        udtAuditLogEntry.AddDescripton("Gender", rbGender.SelectedValue)
 
         ' CRE16-012 Removal of DOB InWord [Start][Winnie]
         'If hfDocCode.Value = DocTypeModel.DocTypeCode.HKBC OrElse hfDocCode.Value = DocTypeModel.DocTypeCode.ADOPC Then
@@ -1829,10 +2176,10 @@ Partial Public Class VaccinationRecordEnquiry
         End If
 
         ' Gender
-        udtSystemMessage = udtValidator.chkGender(rblIAGender.SelectedValue)
+        udtSystemMessage = udtValidator.chkGender(rbGender.SelectedValue)
         If Not IsNothing(udtSystemMessage) Then
             udcMessageBox.AddMessage(udtSystemMessage)
-            imgIAGenderError.Visible = True
+            imgGenderError.Visible = True
         End If
 
         If udcMessageBox.GetCodeTable.Rows.Count <> 0 Then
@@ -1850,7 +2197,7 @@ Partial Public Class VaccinationRecordEnquiry
         With udtEHSAccount.EHSPersonalInformationList(0)
             .ENameSurName = txtIANameSurname.Text.Trim
             .ENameFirstName = txtIANameFirstname.Text.Trim
-            .Gender = rblIAGender.SelectedValue
+            .Gender = rbGender.SelectedValue
 
             ' Convert Exact DOB
             Select Case .DocCode
@@ -1954,7 +2301,7 @@ Partial Public Class VaccinationRecordEnquiry
         udtAuditLogEntry.AddDescripton("Doc No.", lblIADocumentNo.Text)
         udtAuditLogEntry.AddDescripton("Surname", txtIANameSurname.Text)
         udtAuditLogEntry.AddDescripton("Firstname", txtIANameFirstname.Text)
-        udtAuditLogEntry.AddDescripton("Gender", rblIAGender.SelectedValue)
+        udtAuditLogEntry.AddDescripton("Gender", rbGender.SelectedValue)
 
         ' CRE16-012 Removal of DOB InWord [Start][Winnie]
         'If hfDocCode.Value = DocTypeModel.DocTypeCode.HKBC OrElse hfDocCode.Value = DocTypeModel.DocTypeCode.ADOPC Then
@@ -2083,8 +2430,8 @@ Partial Public Class VaccinationRecordEnquiry
         imgIANameError.Visible = False
 
         ' Gender
-        rblIAGender.ClearSelection()
-        imgIAGenderError.Visible = False
+        rbGender.ClearSelection()
+        imgGenderError.Visible = False
 
         ' Message Box
         udcInfoMessageBox.BuildMessageBox()
@@ -2138,8 +2485,24 @@ Partial Public Class VaccinationRecordEnquiry
         lblGivenName.Text = String.Format("({0})", Me.GetGlobalResourceObject("Text", "Givenname"))
 
         ' Gender
-        rblIAGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
-        rblIAGender.Items(1).Text = Me.GetGlobalResourceObject("Text", "GenderMale")
+        rbGender.Items(0).Text = Me.GetGlobalResourceObject("Text", "GenderFemale")
+        rbGender.Items(1).Text = Me.GetGlobalResourceObject("Text", "GenderMale")
+
+        'div gender
+        Me.lblIFemale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderFemale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIFemaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Female", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+        Me.lblIMale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderMale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIMaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Male", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+        divFemale.Attributes.Add("onclick", "document.getElementById('" & rbGender.ClientID & "_0').checked=true;javascript:setTimeout('__doPostBack(\'" & rbGender.ClientID & "\',\'\')', 0); ")
+        divFemale.Attributes.Add("onmouseover", "document.getElementById('" & divFemale.ClientID & "').style.left='-1px'; document.getElementById('" & divFemale.ClientID & "').style.top='-1px'; ")
+        divFemale.Attributes.Add("onmouseout", "document.getElementById('" & divFemale.ClientID & "').style.left='0px'; document.getElementById('" & divFemale.ClientID & "').style.top='0px'; ")
+        divMale.Attributes.Add("onclick", "document.getElementById('" & rbGender.ClientID & "_1').checked=true;javascript:setTimeout('__doPostBack(\'" & rbGender.ClientID & "\',\'\')', 0); ")
+        divMale.Attributes.Add("onmouseover", "document.getElementById('" & divMale.ClientID & "').style.left='-1px'; document.getElementById('" & divMale.ClientID & "').style.top='-1px'; ")
+        divMale.Attributes.Add("onmouseout", "document.getElementById('" & divMale.ClientID & "').style.left='0px'; document.getElementById('" & divMale.ClientID & "').style.top='0px'; ")
+
+
 
     End Sub
 
@@ -2158,6 +2521,36 @@ Partial Public Class VaccinationRecordEnquiry
 
         If strPreviousDOBType <> String.Empty Then rblECDOBType.SelectedValue = strPreviousDOBType
 
+    End Sub
+
+    Protected Sub rbGender_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbGender.SelectedIndexChanged
+        Dim rbECGender As RadioButtonList = CType(sender, RadioButtonList)
+        HandleDivGenderStyle(rbECGender.SelectedValue)
+    End Sub
+
+    Private Sub HandleDivGenderStyle(ByVal strGender As String)
+        Select Case strGender
+            Case "M"
+                divFemale.Style.Add("outline-color", "black")
+                divFemale.Style.Add("outline-width", "2px")
+
+                divMale.Style.Add("outline-color", "#3198FF")
+                divMale.Style.Add("outline-width", "8px")
+
+            Case "F"
+                divFemale.Style.Add("outline-color", "#3198FF")
+                divFemale.Style.Add("outline-width", "8px")
+
+                divMale.Style.Add("outline-color", "black")
+                divMale.Style.Add("outline-width", "2px")
+
+            Case Else
+                divFemale.Style.Add("outline-color", "black")
+                divFemale.Style.Add("outline-width", "2px")
+
+                divMale.Style.Add("outline-color", "black")
+                divMale.Style.Add("outline-width", "2px")
+        End Select
     End Sub
 
 #End Region
@@ -2541,7 +2934,7 @@ Partial Public Class VaccinationRecordEnquiry
         udcDocumentTypeRadioButtonGroup.SelectedValue = String.Empty
         ' INT16-0020 Fix HCSP VRE EC Input DOB Type Error [Start][Lawrence]
         rblECDOBType.ClearSelection()
-        rblIAGender.ClearSelection()
+        rbGender.ClearSelection()
         ' INT16-0020 Fix HCSP VRE EC Input DOB Type Error [End][Lawrence]
         BindControl(True)
         udcClaimSearch.CleanField()
@@ -2558,7 +2951,7 @@ Partial Public Class VaccinationRecordEnquiry
 
     Private Sub ResetErrorImage()
         imgIANameError.Visible = False
-        imgIAGenderError.Visible = False
+        imgGenderError.Visible = False
         'imgHKBCDOBError.Visible = False
         'imgHKBCDOBInWordError.Visible = False
 

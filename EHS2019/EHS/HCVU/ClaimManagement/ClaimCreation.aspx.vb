@@ -811,6 +811,7 @@ Partial Public Class ClaimCreation
         Dim blnError As Boolean = False
 
         Dim strOriginalDocID As String = String.Empty
+        Dim strRawDocID As String = String.Empty
         Dim strDocIDSet() As String
 
         Dim strAdoptionPrefixNum As String = String.Empty
@@ -1027,6 +1028,7 @@ Partial Public Class ClaimCreation
             strDocType = Me.ddlEnterCreationDetaileHSAccountType.SelectedValue.Trim
 
             strOriginalDocID = Me.txtEnterCreationDetaileHSAccountDocNo.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+            strRawDocID = Me.txtEnterCreationDetaileHSAccountDocNo.Text.Trim.ToUpper
 
             strDocIDSet = strOriginalDocID.Trim.Split("/")
 
@@ -1117,7 +1119,7 @@ Partial Public Class ClaimCreation
                         strValidatedAccID = strValidatedAccID.Substring(0, strValidatedAccID.Length - 1)
                     End If
 
-                    dtResValidated = udtEHSAccountBLL.LoadEHSAccountByIdentityVRID(strDocID, strAdoptionPrefixNum, strDocType, strValidatedAccID)
+                    dtResValidated = udtEHSAccountBLL.LoadEHSAccountByIdentityVRID(strDocID, strAdoptionPrefixNum, strDocType, strValidatedAccID, strRawDocID)
                 End If
 
                 'Get Temp Account(Not for ImmD Validation), and claims with PPP scheme only  
@@ -1128,7 +1130,7 @@ Partial Public Class ClaimCreation
                     If (strOriginalDocID <> String.Empty Or _
                         strReferenceID <> String.Empty) And _
                         strValidatedAccID = String.Empty Then
-                        dtResTemporary = udtEHSAccountBLL.LoadTempEHSAccountByIdentityVRID(strDocID, strAdoptionPrefixNum, strDocType, strReferenceID)
+                        dtResTemporary = udtEHSAccountBLL.LoadTempEHSAccountByIdentityVRID(strDocID, strAdoptionPrefixNum, strDocType, strReferenceID, strRawDocID)
                     End If
                 End If
 

@@ -1644,7 +1644,7 @@ Public Class ucPreCheckDetail
             End If
 
             If Session("language") = CultureLanguage.TradChinese Or Session("language") = CultureLanguage.SimpChinese Then
-                gvD.Columns(14).SortExpression = "Fail_Reason_Result_CHI"
+                gvD.Columns(14).SortExpression = "Fail_Reason_CHI"
                 gvD.Columns(16).SortExpression = "Acc_Validation_Result_CHI"
             End If
 

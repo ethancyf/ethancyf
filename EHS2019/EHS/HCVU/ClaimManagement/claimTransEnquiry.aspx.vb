@@ -1418,6 +1418,7 @@ Partial Public Class claimTransEnquiry
                     udtSearchCriteria.VoucherAccID = String.Empty
                     udtSearchCriteria.DocumentNo1 = String.Empty
                     udtSearchCriteria.DocumentNo2 = String.Empty
+                    udtSearchCriteria.RawIdentityNum = String.Empty
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
@@ -1464,7 +1465,7 @@ Partial Public Class claimTransEnquiry
                     udtSearchCriteria.DocumentType = String.Empty
                     udtSearchCriteria.VoucherAccID = String.Empty
                     udtSearchCriteria.DocumentNo1 = String.Empty
-                    udtSearchCriteria.DocumentNo2 = String.Empty
+                    udtSearchCriteria.RawIdentityNum = String.Empty
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
@@ -1526,6 +1527,8 @@ Partial Public Class claimTransEnquiry
                         udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
                         udtSearchCriteria.DocumentNo2 = String.Empty
                     End If
+
+                    udtSearchCriteria.RawIdentityNum = Me.txtTabeHSAccountDocNo.Text.Trim
                     udtSearchCriteria.VoucherRecipientName = Me.txtTabeHSAccountName.Text.Trim
                     udtSearchCriteria.VoucherRecipientChiName = Me.txtTabeHSAccountChiName.Text.Trim
 
@@ -1586,6 +1589,8 @@ Partial Public Class claimTransEnquiry
                         udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
                         udtSearchCriteria.DocumentNo2 = String.Empty
                     End If
+
+                    udtSearchCriteria.RawIdentityNum = Me.txtTabAdvancedSearchDocNo.Text.Trim
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 

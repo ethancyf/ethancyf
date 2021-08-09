@@ -94,19 +94,23 @@ Partial Public Class Disclaimer
         imgCaptchaAlert.Visible = False
         imgAgreeDisclaimerAlert.Visible = False
 
-        If CaptchaControl1.UserValidated Then
-        Else
-            Dim errorCode As String
-            errorCode = CaptchaControl1.ErrorMessage
-            imgCaptchaAlert.Visible = True
-            'SM = New Common.ComObject.SystemMessage("99000", "E", errorCode)
-            msgBox.AddMessage("990000", "E", errorCode)
-        End If
+        ' Captcha Validation
+        If Me.EnableCaptchaValidation Then
 
-        If Not Me.chkAgreeDisclaimer.Checked Then
-            imgAgreeDisclaimerAlert.Visible = True
-            'SM = New Common.ComObject.SystemMessage("020101", "E", "00001")
-            msgBox.AddMessage("020101", "E", "00001")
+            If CaptchaControl1.UserValidated Then
+            Else
+                Dim errorCode As String
+                errorCode = CaptchaControl1.ErrorMessage
+                imgCaptchaAlert.Visible = True
+                'SM = New Common.ComObject.SystemMessage("99000", "E", errorCode)
+                msgBox.AddMessage("990000", "E", errorCode)
+            End If
+
+            If Not Me.chkAgreeDisclaimer.Checked Then
+                imgAgreeDisclaimerAlert.Visible = True
+                'SM = New Common.ComObject.SystemMessage("020101", "E", "00001")
+                msgBox.AddMessage("020101", "E", "00001")
+            End If
         End If
 
         If msgBox.GetCodeTable.Rows.Count = 0 Then
@@ -165,6 +169,17 @@ Partial Public Class Disclaimer
     End Sub
     ' CRE17-015 (Disallow public using WinXP) [End][Chris YIM]
 
+    Function EnableCaptchaValidation() As Boolean
+        Dim udtGen As New Common.ComFunction.GeneralFunction
+        Dim strValue As String = String.Empty
+        If udtGen.getSytemParameterByParameterName("TurnOnCaptchaValidation_eForm", strValue, String.Empty) Then
+            If strValue.ToUpper.Equals("N") Then
+                Return False
+            End If
+        End If
+
+        Return True
+    End Function
 
 #Region "Implement IWorkingData (CRE11-004)"
 

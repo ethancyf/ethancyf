@@ -211,7 +211,7 @@
                                                         <table cellpadding="0" cellspacing="0">
                                                             <tr>
                                                                 <td>
-                                                                    <asp:TextBox ID="txtEnterCreationDetaileHSAccountDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="18"/>
+                                                                    <asp:TextBox ID="txtEnterCreationDetaileHSAccountDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="20"/>
                                                                 </td>
                                                                 <td>
                                                                     <asp:Image ID="imgEnterCreationDetaileHSAccountDocNoErr" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"

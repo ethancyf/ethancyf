@@ -496,7 +496,7 @@ Public Class DocumentTypeRadioButtonGroup
         'Radio Buttons-----------------------------------------------------------------
         Dim practiceIndex As Integer = 0
         Dim blnSelectedDocTypeExist As Boolean = False
-        Dim rboDefaultDocSelection As RadioButton = Nothing
+
         'Dim udtDocumentInfo As DocumentInfo = Nothing
 
         For Each docType As DocumentInfo In Me._strDocumentTypes.Values
@@ -523,12 +523,7 @@ Public Class DocumentTypeRadioButtonGroup
             radioButton.Enabled = docType.IsEnable Or Me._blnShowAllSelection
             radioButton.Checked = False
 
-            If practiceIndex = 0 Then
-                rboDefaultDocSelection = radioButton
-            End If
-
             If radioButton.Enabled Then
-
                 'Set selected Value. if value not assiged, no radiobutton checked
                 If Me.SelectedValue <> Nothing AndAlso Me.SelectedValue <> String.Empty Then
                     If docType.DocCode.Trim() = Me.SelectedValue.Trim() Then
@@ -599,15 +594,25 @@ Public Class DocumentTypeRadioButtonGroup
             Me.SelectedValue = String.Empty
         End If
 
-		' Set Default 
-        If Me.SelectedValue = String.Empty Then
-            If rboDefaultDocSelection IsNot Nothing Then
-                If rboDefaultDocSelection.Enabled AndAlso blnSelectedDocTypeExist = False Then
-                    rboDefaultDocSelection.Checked = True
-                    Me.SelectedValue = rboDefaultDocSelection.Attributes("value")
-                End If
-            End If
+        If Not blnSelectedDocTypeExist AndAlso _strPopularDocType IsNot Nothing Then
+            Me.SelectedValue = Me._strPopularDocType.Trim()
 
+            Dim strLabelID As String = String.Empty
+
+            For Each rbl As RadioButton In labelRadioButtons.Values
+                If rbl.Attributes.Item("value").ToUpper.Trim = Me.SelectedValue.ToUpper.Trim Then
+                    rbl.Checked = True
+                    strLabelID = rbl.Attributes.Item("RelatedLabel").Trim
+                    Exit For
+                End If
+            Next
+
+            For Each lbl As Label In labelRadioButtons.Keys
+                If lbl.ID = strLabelID Then
+                    lbl.Font.Bold = True
+                    Exit For
+                End If
+            Next
         End If
 
         '------------------------------------------------------------------------------

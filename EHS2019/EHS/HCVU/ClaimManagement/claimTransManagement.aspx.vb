@@ -1785,6 +1785,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.VoucherAccID = String.Empty
                     udtSearchCriteria.DocumentNo1 = String.Empty
                     udtSearchCriteria.DocumentNo2 = String.Empty
+                    udtSearchCriteria.RawIdentityNum = String.Empty
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
@@ -1832,6 +1833,7 @@ Partial Public Class claimTransManagement
                     udtSearchCriteria.VoucherAccID = String.Empty
                     udtSearchCriteria.DocumentNo1 = String.Empty
                     udtSearchCriteria.DocumentNo2 = String.Empty
+                    udtSearchCriteria.RawIdentityNum = String.Empty
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
@@ -1893,6 +1895,8 @@ Partial Public Class claimTransManagement
                         udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
                         udtSearchCriteria.DocumentNo2 = String.Empty
                     End If
+
+                    udtSearchCriteria.RawIdentityNum = Me.txtTabeHSAccountDocNo.Text.Trim
                     udtSearchCriteria.VoucherRecipientName = Me.txtTabeHSAccountName.Text.Trim
                     udtSearchCriteria.VoucherRecipientChiName = Me.txtTabeHSAccountChiName.Text.Trim
 
@@ -1953,6 +1957,8 @@ Partial Public Class claimTransManagement
                         udtSearchCriteria.DocumentNo1 = aryDocumentNo(0)
                         udtSearchCriteria.DocumentNo2 = String.Empty
                     End If
+
+                    udtSearchCriteria.RawIdentityNum = Me.txtTabAdvancedSearchDocNo.Text.Trim
                     udtSearchCriteria.VoucherRecipientName = String.Empty
                     udtSearchCriteria.VoucherRecipientChiName = String.Empty
 
@@ -3857,8 +3863,10 @@ Partial Public Class claimTransManagement
                 Dim blnError As Boolean = False
                 Dim strAdoptionPrefixNum As String = String.Empty
                 Dim strIdentityNum As String = String.Empty
+                Dim strRawIdentityNum As String = String.Empty
                 Dim strIdentityNumFullTemp As String
                 strIdentityNumFullTemp = Me.txtTabeHSAccountDocNo.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+                strRawIdentityNum = Me.txtTabeHSAccountDocNo.Text.Trim.ToUpper
 
                 Dim strIdentityNumFull() As String
                 strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
@@ -3893,7 +3901,7 @@ Partial Public Class claimTransManagement
 
                     'udtEHSAccountModelList = udtEHSAccountBLL.LoadEHSAccountByIdentityVRID(Me.txtSearchAccID.Text.Trim, Me.ddlSearchAccDocType.SelectedValue.Trim, streHSAccountID)
 
-                    Dim dtRes As DataTable = udtEHSAccountBLL.LoadEHSAccountByIdentityVRID(strIdentityNum, strAdoptionPrefixNum, Me.ddlTabeHSAccountDocType.SelectedValue.Trim, streHSAccountID)
+                    Dim dtRes As DataTable = udtEHSAccountBLL.LoadEHSAccountByIdentityVRID(strIdentityNum, strAdoptionPrefixNum, Me.ddlTabeHSAccountDocType.SelectedValue.Trim, streHSAccountID, strRawIdentityNum)
 
                     If IsNothing(dtRes) Then
                         blnNoRecord = True

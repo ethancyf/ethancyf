@@ -83,6 +83,7 @@ Namespace BLL
             Public Const SESS_IsMobileDevice As String = "SESS_ISMOBILEDEVICE"
             Public Const SESS_CMSVaccineResult As String = "SESS_CMSVaccineResult"
             Public Const SESS_CIMSVaccineResult As String = "SESS_CIMSVaccineResult"
+            Public Const SESS_VaccineResult As String = "SESS_VaccineResult"
 
             'CRE15-003 System-generated Form [Start][Philip Chau]
             Public Const SESS_EHSClaimTempTransactionID As String = "SESS_EHSClaimTempTransactionID"
@@ -256,9 +257,10 @@ Namespace BLL
             Me.SmartIDContentRemoveFormSession(strFunctCode)
             Me.CurrentPilotRunSmartIDRemoveFromSession(strFunctCode)
 
-            ' CMS vaccination result
+            ' CMS + CIMS vaccination result
             Me.CMSVaccineResultRemoveFromSession(strFunctCode)
             Me.CIMSVaccineResultRemoveFromSession(strFunctCode)
+            Me.VaccineResultRemoveFromSession(strFunctCode)
 
         End Sub
 
@@ -602,6 +604,20 @@ Namespace BLL
 
         Public Sub CIMSVaccineResultRemoveFromSession(ByVal strFunctionCode As String)
             HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_CIMSVaccineResult))
+        End Sub
+#End Region
+
+#Region "External vaccination source (VaccineResult)"
+        Public Sub VaccineResultSaveToSession(ByVal udtVaccineResult As Common.WebService.Interface.VaccineResultCollection, ByVal strFunctionCode As String)
+            HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_VaccineResult)) = udtVaccineResult
+        End Sub
+
+        Public Function VaccineResultGetFromSession(ByVal strFunctionCode As String) As Common.WebService.Interface.VaccineResultCollection
+            Return CType(HttpContext.Current.Session(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_VaccineResult)), Common.WebService.Interface.VaccineResultCollection)
+        End Function
+
+        Public Sub VaccineResultRemoveFromSession(ByVal strFunctionCode As String)
+            HttpContext.Current.Session.Remove(String.Format("{0}_{1}", strFunctionCode, SessionName.SESS_VaccineResult))
         End Sub
 #End Region
 

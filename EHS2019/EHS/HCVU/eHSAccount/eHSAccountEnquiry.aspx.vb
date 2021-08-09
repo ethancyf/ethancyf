@@ -805,13 +805,7 @@ Partial Public Class eHSAccountEnquiry
 
                     Dim strIdentityNumFullTemp As String
 
-                    If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
-                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim()
-                    ElseIf strDocCode = DocTypeModel.DocTypeCode.DS Then
-                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
-                    Else
-                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
-                    End If
+                    strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
 
                     Dim strIdentityNumFull() As String
                     strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
@@ -942,7 +936,7 @@ Partial Public Class eHSAccountEnquiry
                 bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListByParticularMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchENameR2.Text.Trim, Me.txtSearchCNameR2.Text.Trim, dtDOB, _
                                                                 arreHSAccountID, strRefNo, strGender, _
                                                                 strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                                                blnOverrideResultLimit)
+                                                                blnOverrideResultLimit, Me.txtSearchIdentityNumR2.Text.Trim)
                 ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             Case 1  'Manual Validaion Route

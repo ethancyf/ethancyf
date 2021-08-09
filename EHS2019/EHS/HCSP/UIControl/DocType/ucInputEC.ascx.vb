@@ -203,6 +203,14 @@ Partial Public Class ucInputEC
         Me.lblReferenceNoText_M.Text = Me.GetGlobalResourceObject("Text", "RefNo")
         Me.lblTransactionNoText_M.Text = Me.GetGlobalResourceObject("Text", "TransactionNo")
 
+        'div gender
+        Me.lblIFemale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderFemale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIFemaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Female", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+        Me.lblIMale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderMale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIMaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Male", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+
     End Sub
 
     Private Sub BindDOBType(ByVal strExactDOB As String)
@@ -258,7 +266,7 @@ Partial Public Class ucInputEC
                 ' CRE18-001(CIMS Vaccination Sharing) [End][Koala CHENG]
                 txtENameSurname.Enabled = False
                 txtENameFirstname.Enabled = False
-                rbECGender.Enabled = False
+                SetGenderReadOnlyStyle(True)
                 rbDOBType.Enabled = False
 
             Else
@@ -269,7 +277,7 @@ Partial Public Class ucInputEC
                 ' CRE18-001(CIMS Vaccination Sharing) [End][Koala CHENG]
                 txtENameSurname.Enabled = True
                 txtENameFirstname.Enabled = True
-                rbECGender.Enabled = True
+                SetGenderReadOnlyStyle(False)
                 rbDOBType.Enabled = True
 
             End If
@@ -299,7 +307,7 @@ Partial Public Class ucInputEC
                 Me.txtENameSurname.Enabled = False
                 Me.txtENameFirstname.Enabled = False
                 Me.txtCName.Enabled = False
-                Me.rbECGender.Enabled = False
+                SetGenderReadOnlyStyle(True)
 
                 Me.rbECDOA_M.Enabled = False
                 Me.rbECDOBDate_M.Enabled = False
@@ -331,7 +339,7 @@ Partial Public Class ucInputEC
                 Me.txtENameSurname.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.txtCName.Enabled = True
-                Me.rbECGender.Enabled = True
+                SetGenderReadOnlyStyle(False)
 
                 Me.rbECDOA_M.Enabled = True
                 Me.rbECDOBDate_M.Enabled = True
@@ -388,6 +396,13 @@ Partial Public Class ucInputEC
             ibtnSpecificFormat.Visible = False
             txtECSerialNo.Enabled = False
         End If
+
+        divFemale.Attributes.Add("onclick", "document.getElementById('" & rbECGender.ClientID & "_0').checked=true;javascript:setTimeout('__doPostBack(\'" & rbECGender.ClientID & "\',\'\')', 0); ")
+        divFemale.Attributes.Add("onmouseover", "document.getElementById('" & divFemale.ClientID & "').style.left='-1px'; document.getElementById('" & divFemale.ClientID & "').style.top='-1px'; ")
+        divFemale.Attributes.Add("onmouseout", "document.getElementById('" & divFemale.ClientID & "').style.left='0px'; document.getElementById('" & divFemale.ClientID & "').style.top='0px'; ")
+        divMale.Attributes.Add("onclick", "document.getElementById('" & rbECGender.ClientID & "_1').checked=true;javascript:setTimeout('__doPostBack(\'" & rbECGender.ClientID & "\',\'\')', 0); ")
+        divMale.Attributes.Add("onmouseover", "document.getElementById('" & divMale.ClientID & "').style.left='-1px'; document.getElementById('" & divMale.ClientID & "').style.top='-1px'; ")
+        divMale.Attributes.Add("onmouseout", "document.getElementById('" & divMale.ClientID & "').style.left='0px'; document.getElementById('" & divMale.ClientID & "').style.top='0px'; ")
 
     End Sub
 
@@ -471,6 +486,15 @@ Partial Public Class ucInputEC
     Public Sub SetupGender()
         If Not Me._strGender Is Nothing AndAlso Not Me._strGender.Equals(String.Empty) Then
             Me.rbECGender.SelectedValue = Me._strGender
+
+            Dim strGender As String
+            If Me._strGender = "M" Then
+                strGender = "GenderMale"
+            Else
+                strGender = "GenderFemale"
+            End If
+            Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
+            HandleDivGenderStyle(Me._strGender)
         End If
     End Sub
 
@@ -681,6 +705,50 @@ Partial Public Class ucInputEC
     End Sub
     ' CRE19-001 (New initiatives for VSS and PPP in 2019-20) [End][Chris YIM]
 #End Region
+
+
+
+#Region "Events"
+
+    Protected Sub rbGender_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbECGender.SelectedIndexChanged
+        Dim rbECGender As RadioButtonList = CType(sender, RadioButtonList)
+        HandleDivGenderStyle(rbECGender.SelectedValue)
+    End Sub
+
+    Private Sub HandleDivGenderStyle(ByVal strGender As String)
+        Select Case strGender
+            Case "M"
+                divFemale.Style.Add("outline-color", "black")
+                divFemale.Style.Add("outline-width", "2px")
+
+                divMale.Style.Add("outline-color", "#3198FF")
+                divMale.Style.Add("outline-width", "8px")
+
+            Case "F"
+                divFemale.Style.Add("outline-color", "#3198FF")
+                divFemale.Style.Add("outline-width", "8px")
+
+                divMale.Style.Add("outline-color", "black")
+                divMale.Style.Add("outline-width", "2px")
+        End Select
+    End Sub
+
+    Private Sub SetGenderReadOnlyStyle(ByVal ReadOnlyMode As Boolean)
+        If ReadOnlyMode = True Then
+            Me.divGender.Visible = False
+            Me.lblReadonlyGender.Visible = True
+            Me.trGenderImageInput.Style.Remove("height")
+            Me.rbECGender.Enabled = False
+        Else
+            Me.divGender.Visible = True
+            Me.lblReadonlyGender.Visible = False
+            Me.rbECGender.Enabled = True
+        End If
+    End Sub
+
+#End Region
+
+
 
 #Region "Property"
 

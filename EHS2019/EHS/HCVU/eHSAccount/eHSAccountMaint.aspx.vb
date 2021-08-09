@@ -972,25 +972,17 @@ Partial Public Class eHSAccountMaint
                 Else
                     Me.lblAcctListIdentityNumR2.Text = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
 
-                    'only OW and PASS are free text
-                    If strDocCode = DocTypeModel.DocTypeCode.PASS Or strDocCode = DocTypeModel.DocTypeCode.OW Then
-                        strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper
-                    ElseIf strDocCode = DocTypeModel.DocTypeCode.DS Then
-                        strIdentityNum = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
+                    Dim strIdentityNumFullTemp As String
+                    strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
+
+                    Dim strIdentityNumFull() As String
+                    strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
+                    If strIdentityNumFull.Length > 1 Then
+                        strIdentityNum = strIdentityNumFull(1)
+                        strAdoptionPrefixNum = strIdentityNumFull(0)
                     Else
-                        Dim strIdentityNumFullTemp As String
-                        strIdentityNumFullTemp = Me.txtSearchIdentityNumR2.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
-
-                        Dim strIdentityNumFull() As String
-                        strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
-                        If strIdentityNumFull.Length > 1 Then
-                            strIdentityNum = strIdentityNumFull(1)
-                            strAdoptionPrefixNum = strIdentityNumFull(0)
-                        Else
-                            strIdentityNum = strIdentityNumFullTemp
-                        End If
+                        strIdentityNum = strIdentityNumFullTemp
                     End If
-
                 End If
 
                 'English Name
@@ -1105,7 +1097,7 @@ Partial Public Class eHSAccountMaint
                 bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListByParticularMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchENameR2.Text.Trim, Me.txtSearchCNameR2.Text.Trim, dtDOB, _
                                                                 arreHSAccountID, strRefNo, strGender, _
                                                                 strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                                                blnOverrideResultLimit)
+                                                                blnOverrideResultLimit, Me.txtSearchIdentityNumR2.Text.Trim.ToUpper)
                 ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
             Case 1  'Manual Validaion Route

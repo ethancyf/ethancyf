@@ -551,7 +551,7 @@
                             <br />
                             <cc2:MessageBox ID="udcAcctEditErrorMessage" runat="server" Width="800px" />
                             <cc2:InfoMessageBox ID="udcAcctEditInfoMessage" runat="server" Width="800px" />
-                            <asp:Panel ID="pnlAcctEditInfo" runat="server">
+                            <asp:Panel ID="pnlAcctEditInfo" runat="server" ScrollBars="vertical" Height="780px">
                             <table cellpadding="0" cellspacing="0" style="width: 800px">                                        
                                 <tr>
                                     <td>

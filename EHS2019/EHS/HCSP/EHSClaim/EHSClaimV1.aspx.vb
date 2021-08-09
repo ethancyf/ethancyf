@@ -14781,13 +14781,11 @@ Partial Public Class EHSClaimV1
 
         Dim isValid As Boolean = False
         Dim udtTranDetailVaccineList As TransactionDetailVaccineModelCollection = Nothing
-        Dim udtVaccineResultBag As New VaccineResultCollection
+        Dim udtVaccineResultBag As VaccineResultCollection = Nothing
 
-        udtVaccineResultBag = _udtEHSClaimBLL.GetVaccinationRecord(udtEHSAccount,
-                                                                   udtTranDetailVaccineList, _
-                                                                   FunctCode, _
-                                                                   _udtAuditLogEntry, _
-                                                                   strSchemeCode)
+        udtTranDetailVaccineList = GetVaccinationRecordFromSession(udtEHSAccount, strSchemeCode)
+
+        udtVaccineResultBag = _udtSessionHandler.VaccineResultGetFromSession(FunctCode)
 
         ' Save the external status to session
         Dim udtSessionHandler As New SessionHandler
@@ -14872,6 +14870,7 @@ Partial Public Class EHSClaimV1
 
         udtSession.CMSVaccineResultSaveToSession(udtVaccineResultBag.HAVaccineResult, FunctCode)
         udtSession.CIMSVaccineResultSaveToSession(udtVaccineResultBag.DHVaccineResult, FunctCode)
+        udtSession.VaccineResultSaveToSession(udtVaccineResultBag, FunctCode)
 
         udtTranDetailVaccineList.Sort(TransactionDetailVaccineModelCollection.enumSortBy.ServiceDate, SortDirection.Descending)
 

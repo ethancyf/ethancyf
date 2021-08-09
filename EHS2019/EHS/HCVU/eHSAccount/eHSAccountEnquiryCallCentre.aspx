@@ -56,7 +56,7 @@
                                             <asp:Label ID="lblSearchIdentityNumText" runat="server" CssClass="tableTitle" Text="<%$ Resources:Text, IdentityDocNo %>"></asp:Label>
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="txtSearchIdentityNum" runat="server" MaxLength="18" Width="200px"
+                                            <asp:TextBox ID="txtSearchIdentityNum" runat="server" MaxLength="20" Width="200px"
                                                 onblur="convertToUpper(this);"></asp:TextBox>
                                             <asp:Image ID="imgSearchIdentityNumError" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
                                                 Visible="False" ImageAlign="AbsMiddle" />

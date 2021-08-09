@@ -2,6 +2,7 @@ Imports System.Data
 Imports System.Data.SqlClient
 Imports Common.Component
 Imports Common.DataAccess
+Imports Common.Component.EHSAccount
 Imports Common.Component.EHSAccount.EHSAccountModel.EHSPersonalInformationModel
 
 Public Class SearchEngineBLL
@@ -1562,7 +1563,7 @@ Public Class SearchEngineBLL
 
                 Case Aspect.eHSAccount
                     Dim prams() As SqlParameter = {db.MakeInParam("@doc_code", SqlDbType.Char, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentType), DBNull.Value, udtSearchCriteria.DocumentType)), _
-                                                    db.MakeInParam("@identity_no1", SqlDbType.VarChar, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo1), DBNull.Value, udtSearchCriteria.DocumentNo1)), _
+                                                    db.MakeInParam("@identity_no1", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo1), DBNull.Value, udtSearchCriteria.DocumentNo1)), _
                                                     db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo2), DBNull.Value, udtSearchCriteria.DocumentNo2)), _
                                                     db.MakeInParam("@voucher_acc_id", SqlDbType.VarChar, 15, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherAccID), DBNull.Value, udtSearchCriteria.VoucherAccID)), _
                                                     db.MakeInParam("@from_date", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.FromDate), DBNull.Value, udtSearchCriteria.FromDate + " 00:00:00")), _
@@ -1578,7 +1579,8 @@ Public Class SearchEngineBLL
                                                     db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
                                                     db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID), _
                                                     db.MakeInParam("@eHA_name", SqlDbType.VarChar, SProcParameter.EngNameDataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientName), DBNull.Value, udtSearchCriteria.VoucherRecipientName)), _
-                                                    db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)) _
+                                                    db.MakeInParam("@eHA_chi_name", SqlDbType.NVarChar, 6, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherRecipientChiName), DBNull.Value, udtSearchCriteria.VoucherRecipientChiName)), _
+                                                    db.MakeInParam("@RawIdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.RawIdentityNum), DBNull.Value, udtSearchCriteria.RawIdentityNum)) _
                                                     }
 
                     udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherTransaction_get_byEHAAspect", prams, blnOverrideResultLimit, db)
@@ -1597,7 +1599,7 @@ Public Class SearchEngineBLL
                                                   db.MakeInParam("@scheme_code", SqlDbType.Char, 10, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchemeCode), DBNull.Value, udtSearchCriteria.SchemeCode)), _
                                                   db.MakeInParam("@user_id", SqlDbType.VarChar, 20, strUserID), _
                                                   db.MakeInParam("@doc_code", SqlDbType.Char, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentType), DBNull.Value, udtSearchCriteria.DocumentType)), _
-                                                  db.MakeInParam("@identity_no1", SqlDbType.VarChar, 20, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo1), DBNull.Value, udtSearchCriteria.DocumentNo1)), _
+                                                  db.MakeInParam("@identity_no1", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo1), DBNull.Value, udtSearchCriteria.DocumentNo1)), _
                                                   db.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, IIf(udcValidator.IsEmpty(udtSearchCriteria.DocumentNo2), DBNull.Value, udtSearchCriteria.DocumentNo2)), _
                                                   db.MakeInParam("@Invalidation", SqlDbType.Char, 1, IIf(udcValidator.IsEmpty(udtSearchCriteria.Invalidation), DBNull.Value, udtSearchCriteria.Invalidation)), _
                                                   db.MakeInParam("@voucher_acc_id", SqlDbType.VarChar, 15, IIf(udcValidator.IsEmpty(udtSearchCriteria.VoucherAccID), DBNull.Value, udtSearchCriteria.VoucherAccID)), _
@@ -1605,7 +1607,8 @@ Public Class SearchEngineBLL
                                                   db.MakeInParam("@Means_Of_Input", SqlDbType.Char, 1, IIf(udtSearchCriteria.MeansOfInput = String.Empty, DBNull.Value, udtSearchCriteria.MeansOfInput)), _
                                                   db.MakeInParam("@Service_Receive_Dtm_From", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceDateFrom), DBNull.Value, udtSearchCriteria.ServiceDateFrom)), _
                                                   db.MakeInParam("@Service_Receive_Dtm_To", SqlDbType.DateTime, 8, IIf(udcValidator.IsEmpty(udtSearchCriteria.ServiceDateTo), DBNull.Value, udtSearchCriteria.ServiceDateTo)), _
-                                                  db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)) _
+                                                  db.MakeInParam("@SchoolOrRCH_code", SqlDbType.Char, 50, IIf(udcValidator.IsEmpty(udtSearchCriteria.SchoolOrRCHCode), DBNull.Value, udtSearchCriteria.SchoolOrRCHCode)), _
+                                                  db.MakeInParam("@RawIdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, IIf(udcValidator.IsEmpty(udtSearchCriteria.RawIdentityNum), DBNull.Value, udtSearchCriteria.RawIdentityNum)) _
                                               }
 
                     udtBLLSearchResult = BaseBLL.ExeSearchProc(strFunctionCode, "proc_VoucherTransaction_get_byAny", prams, blnOverrideResultLimit, db)

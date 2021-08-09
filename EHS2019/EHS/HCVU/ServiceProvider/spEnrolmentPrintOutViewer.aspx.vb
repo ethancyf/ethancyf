@@ -29,7 +29,7 @@ Partial Public Class spEnrolmentPrintOutViewer
 
         If Not IsNothing(Session(SESS_PrintSchemeCodeArrayList)) Then
             strSchemeCodeArrayList = CType(Session(SESS_PrintSchemeCodeArrayList), ArrayList)
-            Session.Remove(SESS_PrintSchemeCodeArrayList)
+            'Session.Remove(SESS_PrintSchemeCodeArrayList) 'CRE20-023-57 (Fix bug for Some information are missing when download Scheme Enrolment Letter via Chrome/Edge) [Martin]
         End If
 
         If IsNothing(strSchemeCodeArrayList) Then

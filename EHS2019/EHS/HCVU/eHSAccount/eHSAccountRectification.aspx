@@ -174,7 +174,7 @@
                                 <tr> <td class="tableText" style="width:200px" > 
                                         Identity Document No. </td>
                                     <td style="width:400px">
-                                    <asp:TextBox ID="txtIdentityNum" runat="server"></asp:TextBox>                                                     
+                                    <asp:TextBox ID="txtIdentityNum" runat="server" MaxLength="20"></asp:TextBox>                                                     
                                             &nbsp;&nbsp;&nbsp;                                                                                     
                                         <asp:CheckBox ID="cboFilterSpecialAccount" runat="server" Checked="false" AutoPostBack="false" CssClass="tableText"
                                         Text="Show Special Account" />  

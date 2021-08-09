@@ -9,6 +9,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
+-- Modified date:	19 July 2021
+-- Description:		Fix "Search by any doc type issue"
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
 -- Modified date:	20 Apr 2021
 -- Description:		Extend patient name's maximum length
 -- =============================================
@@ -45,7 +52,8 @@ CREATE PROCEDURE [dbo].[proc_VoucherAccount_get_byDocTypeDocIDVRAccID]
 	@doc_Code char(20),
 	@IdentityNum varchar(20),
 	@Adoption_Prefix_Num char(7),
-	@VRAccID char(15)
+	@VRAccID char(15),	
+	@RawIdentityNum     VARCHAR(20)
 AS
 BEGIN
 
@@ -56,6 +64,8 @@ BEGIN
 	DECLARE @rowcount int
 	
 	declare @IdentityNum2 varchar(20)
+	DECLARE @IdentityNum3	VARCHAR(20)
+
 	Declare @SameIDChecking int	
 -- =============================================
 -- Initialization
@@ -67,6 +77,7 @@ BEGIN
 			Record_Status = 'A'
 			
 	set @IdentityNum2 = ' ' + @IdentityNum
+	SET @IdentityNum3 = @RawIdentityNum;
 	
 	set @SameIDChecking = 0
 	
@@ -124,9 +135,13 @@ EXEC [proc_SymmetricKey_open]
 				ON P.Voucher_Acc_ID = VACL.Voucher_Acc_ID
 	WHERE  
 		(@doc_code = '' or P.[Doc_Code] = @doc_code or (@SameIDChecking = 1 and P.[Doc_Code] in ('HKIC', 'HKBC')))
-		AND (@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		AND (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		AND (	(	(@IdentityNum = ''
+						OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR P.[Encrypt_Field11] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR P.[Encrypt_Field1] = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 		AND (@VRAccID = '' or P.Voucher_Acc_ID=@VRAccID)
 	ORDER BY
 		P.[Doc_Code]

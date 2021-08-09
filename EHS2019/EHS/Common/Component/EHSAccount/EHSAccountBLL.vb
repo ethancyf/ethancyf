@@ -106,14 +106,14 @@ Namespace Component.EHSAccount
             Return Me.getInvalidEHSAccountByVRID(strVRAcctID, udtDB)
         End Function
 
-        Public Function LoadEHSAccountByIdentityVRID(ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, ByVal strDocCode As String, ByVal strVRAcctID As String) As DataTable
-            Return Me.getEHSAccountByIdentityNumVRID(strDocCode, strIdentityNum, strAdoptionPrefixNum, strVRAcctID)
+        Public Function LoadEHSAccountByIdentityVRID(ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, ByVal strDocCode As String, ByVal strVRAcctID As String, ByVal strRawIdentityNum As String) As DataTable
+            Return Me.getEHSAccountByIdentityNumVRID(strDocCode, strIdentityNum, strAdoptionPrefixNum, strVRAcctID, strRawIdentityNum)
         End Function
 
         ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [Start][Chris YIM]
         ' --------------------------------------------------------------------------------------
-        Public Function LoadTempEHSAccountByIdentityVRID(ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, ByVal strDocCode As String, ByVal strVRAcctID As String) As DataTable
-            Return Me.getTempEHSAccountByIdentityNumVRID(strIdentityNum, strAdoptionPrefixNum, strDocCode, strVRAcctID)
+        Public Function LoadTempEHSAccountByIdentityVRID(ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, ByVal strDocCode As String, ByVal strVRAcctID As String, ByVal strRawIdentityNum As String) As DataTable
+            Return Me.getTempEHSAccountByIdentityNumVRID(strIdentityNum, strAdoptionPrefixNum, strDocCode, strVRAcctID, strRawIdentityNum)
         End Function
         ' CRE17-018-07 (New initiatives for VSS and RVP in 2018-19) [End][Chris YIM]
 
@@ -2654,7 +2654,7 @@ Namespace Component.EHSAccount
         ''' <param name="udtdb"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function getEHSAccountByIdentityNumVRID(ByVal strDocType As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, ByVal strVoucherAccID As String, Optional ByVal udtdb As Database = Nothing) As DataTable
+        Private Function getEHSAccountByIdentityNumVRID(ByVal strDocType As String, ByVal strIdentityNum As String, ByVal strAdoptionPrefixNum As String, ByVal strVoucherAccID As String, ByVal strRawIdentityNum As String, Optional ByVal udtdb As Database = Nothing) As DataTable
 
             'Dim udtEHSAccountModelList As EHSAccountModelCollection = New EHSAccountModelCollection()
             'Dim udtEHSAccount As EHSAccountModel
@@ -2668,7 +2668,8 @@ Namespace Component.EHSAccount
                      udtdb.MakeInParam("@doc_code", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocType), _
                      udtdb.MakeInParam("@IdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strIdentityNum), _
                      udtdb.MakeInParam("@Adoption_Prefix_Num", SqlDbType.Char, 7, strAdoptionPrefixNum), _
-                     udtdb.MakeInParam("@VRAccID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, strVoucherAccID)}
+                     udtdb.MakeInParam("@VRAccID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, strVoucherAccID), _
+                     udtdb.MakeInParam("@RawIdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strRawIdentityNum)}
 
                 udtdb.RunProc("proc_VoucherAccount_get_byDocTypeDocIDVRAccID", params, dt)
 
@@ -2709,6 +2710,7 @@ Namespace Component.EHSAccount
                                                                          ByVal strAdoptionPrefixNum As String, _
                                                                          ByVal strDocCode As String, _
                                                                          ByVal strVoucherAccID As String, _
+                                                                         ByVal strRawIdentityNum As String, _
                                                                          Optional ByVal udtdb As Database = Nothing) As DataTable
 
             If udtdb Is Nothing Then udtdb = New Database()
@@ -2720,7 +2722,8 @@ Namespace Component.EHSAccount
                      udtdb.MakeInParam("@IdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strIdentityNum), _
                      udtdb.MakeInParam("@AdoptionPrefixNum", SqlDbType.Char, 7, strAdoptionPrefixNum), _
                      udtdb.MakeInParam("@DocCode", DocType.DocTypeModel.Doc_Code_DataType, DocType.DocTypeModel.Doc_Code_DataSize, strDocCode), _
-                     udtdb.MakeInParam("@VoucherAccID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, strVoucherAccID)}
+                     udtdb.MakeInParam("@VoucherAccID", EHSAccountModel.Voucher_Acc_ID_DataType, EHSAccountModel.Voucher_Acc_ID_DataSize, strVoucherAccID), _
+                     udtdb.MakeInParam("@RawIdentityNum", EHSAccountModel.IdentityNum_DataType, EHSAccountModel.IdentityNum_DataSize, strRawIdentityNum)}
 
                 udtdb.RunProc("proc_TempVoucherAccount_get_byDocTypeDocIDVRAccID", params, dt)
 

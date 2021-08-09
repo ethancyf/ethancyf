@@ -71,7 +71,7 @@
                                 </td>
                                 <td>
                                     <asp:TextBox ID="txtSDocumentNo" runat="server" Width="174" onChange="convertToUpper(this)"
-                                        MaxLength="18"></asp:TextBox>
+                                        MaxLength="20"></asp:TextBox>
                                     <asp:Image ID="imgSDocumentNo" runat="server" ImageUrl="<%$ Resources: ImageUrl, ErrorBtn %>"
                                         AlternateText="<%$ Resources: AlternateText, ErrorBtn %>" Visible="False" />
                                 </td>

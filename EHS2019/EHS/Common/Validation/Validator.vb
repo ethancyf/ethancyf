@@ -3647,15 +3647,7 @@ Namespace Validation
                 Case DocTypeModel.DocTypeCode.VISA
                     systemMessage = Me.chkVisaNo(strIdentityNum)
 
-                Case DocTypeModel.DocTypeCode.OC,
-                    DocTypeModel.DocTypeCode.OW,
-                    DocTypeModel.DocTypeCode.TW,
-                    DocTypeModel.DocTypeCode.IR,
-                    DocTypeModel.DocTypeCode.HKP,
-                    DocTypeModel.DocTypeCode.RFNo8,
-                    DocTypeModel.DocTypeCode.OTHER,
-                    DocTypeModel.DocTypeCode.PASS,
-                    DocTypeModel.DocTypeCode.ISSHK,
+                Case DocTypeModel.DocTypeCode.ISSHK,
                     DocTypeModel.DocTypeCode.MEP,
                     DocTypeModel.DocTypeCode.TWMTP,
                     DocTypeModel.DocTypeCode.TWPAR,
@@ -3666,9 +3658,22 @@ Namespace Validation
                     DocTypeModel.DocTypeCode.TD,
                     DocTypeModel.DocTypeCode.CEEP,
                     DocTypeModel.DocTypeCode.ET,
-                    DocTypeModel.DocTypeCode.DS
-                    systemMessage = Me.chkDocumentNoForNonEHSDocType(strIdentityNum)
+                    DocTypeModel.DocTypeCode.RFNo8,
+                    DocTypeModel.DocTypeCode.TW
+                    systemMessage = Me.chkDocumentNoWithAlphanumericDocType(strIdentityNum)
 
+                Case DocTypeModel.DocTypeCode.DS
+                    systemMessage = Me.chkDocumentNoWithHyphenDocType(strIdentityNum)
+
+                Case DocTypeModel.DocTypeCode.OW,
+                    DocTypeModel.DocTypeCode.PASS
+                    systemMessage = Me.chkDocumentNoForFreeTextDocType(strIdentityNum)
+
+                Case DocTypeModel.DocTypeCode.OC,
+                    DocTypeModel.DocTypeCode.IR,
+                    DocTypeModel.DocTypeCode.HKP,
+                    DocTypeModel.DocTypeCode.OTHER
+                    systemMessage = Me.chkDocumentNoForNonEHSDocType(strIdentityNum)
             End Select
 
             Return systemMessage
@@ -4116,6 +4121,98 @@ Namespace Validation
 
         End Function
         ' CRE19-001 (VSS 2019) [End][Winnie]
+        ' CRE20-023-57 (Immue Record) [Start][Martin]
+        Public Function chkDocumentNoForFreeTextDocType(ByVal strDocumentNo As String) As ComObject.SystemMessage
+            Dim strFunctCode, strSeverity, strMsgCode As String
+            strFunctCode = FunctCode.FUNT990000
+            strSeverity = SeverityCode.SEVE
+            strMsgCode = ""
+
+            strDocumentNo = strDocumentNo.Trim.ToUpper
+
+            If IsEmpty(strDocumentNo) Then
+                strMsgCode = MsgCode.MSG00211
+            Else
+                ' validate the format
+                If strDocumentNo.Length > 20 Then
+                    strMsgCode = MsgCode.MSG00212
+                End If
+            End If
+
+            If strMsgCode = "" Then
+                sm = Nothing
+            Else
+                sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+            End If
+            Return sm
+
+        End Function
+
+        Public Function chkDocumentNoWithHyphenDocType(ByVal strDocumentNo As String) As ComObject.SystemMessage
+            Dim strFunctCode, strSeverity, strMsgCode As String
+            strFunctCode = FunctCode.FUNT990000
+            strSeverity = SeverityCode.SEVE
+            strMsgCode = ""
+
+            strDocumentNo = strDocumentNo.Trim.ToUpper
+
+            If IsEmpty(strDocumentNo) Then
+                strMsgCode = MsgCode.MSG00211
+            Else
+                ' validate the format
+                If strDocumentNo.Length > 20 Then
+                    strMsgCode = MsgCode.MSG00212
+                Else
+                    If Not Me.IsAlphanumericHyphen(strDocumentNo) Then
+                        strMsgCode = MsgCode.MSG00212
+                    End If
+                End If
+            End If
+
+            If strMsgCode = "" Then
+                sm = Nothing
+            Else
+                sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+            End If
+            Return sm
+
+        End Function
+
+
+        Public Function chkDocumentNoWithAlphanumericDocType(ByVal strDocumentNo As String) As ComObject.SystemMessage
+            Dim strFunctCode, strSeverity, strMsgCode As String
+            strFunctCode = FunctCode.FUNT990000
+            strSeverity = SeverityCode.SEVE
+            strMsgCode = ""
+
+            strDocumentNo = strDocumentNo.Trim.ToUpper
+
+            If IsEmpty(strDocumentNo) Then
+                strMsgCode = MsgCode.MSG00211
+            Else
+                ' validate the format
+                If strDocumentNo.Length > 20 Then
+                    strMsgCode = MsgCode.MSG00212
+                Else
+                    If Not Me.IsAlphanumeric(strDocumentNo) Then
+                        strMsgCode = MsgCode.MSG00212
+                    End If
+                End If
+            End If
+
+            If strMsgCode = "" Then
+                sm = Nothing
+            Else
+                sm = New ComObject.SystemMessage(strFunctCode, strSeverity, strMsgCode)
+            End If
+            Return sm
+
+        End Function
+
+
+        ' CRE20-023-57 (Immue Record) [End][Martin]
+
+
 #End Region
 
         '---------------------------------------------------------------------------------------------------------

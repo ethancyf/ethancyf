@@ -134,6 +134,7 @@ Partial Public Class eHSAccountRectification
     Private Const SESS_FilterAccountStatus As String = "eHSAccountMaint_FilterAccountStatus"
     Private Const SESS_FilterDocCode As String = "eHSAccountMaint_FilterDocCode"
     Private Const SESS_FilterIdentityNum As String = "eHSAccountMaint_FilterIdentityNum"
+    Private Const SESS_RawIdentityNum As String = "eHSAccountMaint_RawIdentityNum"
     Private Const SESS_ShowSpecialAccount As String = "eHSAccountMaint_ShowSpecialAccount"
     Private Const SESS_InputMode As String = "eHSAccountMaint_InputMode"
     Private Const SESS_PageState As String = "eHSAccountRectification_PageState"
@@ -175,6 +176,7 @@ Partial Public Class eHSAccountRectification
         'Dim dt As DataTable
         Dim strDocCode As String = ""
         Dim strIdentityNum As String = ""
+        Dim strRawIdentityNum As String = ""
         Dim strAccountStatus As String = ""
         Dim strAdoptionPrefixNum As String = ""
 
@@ -184,6 +186,9 @@ Partial Public Class eHSAccountRectification
             End If
             If Not IsNothing(Me.Session(SESS_FilterIdentityNum)) Then
                 strIdentityNum = Session(SESS_FilterIdentityNum)
+            End If
+            If Not IsNothing(Me.Session(SESS_RawIdentityNum)) Then
+                strRawIdentityNum = Session(SESS_RawIdentityNum)
             End If
             If Not IsNothing(Me.Session(SESS_FilterAccountStatus)) Then
                 strAccountStatus = Session(SESS_FilterAccountStatus)
@@ -201,9 +206,9 @@ Partial Public Class eHSAccountRectification
         End If
 
         If blnOverrideResultLimit Then
-            bllSearchResult = udteHSAccountMaintBLL.getRectifyList(Me.FunctionCode, blnShowSpecialAcc, strDocCode, strIdentityNum, strAdoptionPrefixNum, strAccountStatus, True)
+            bllSearchResult = udteHSAccountMaintBLL.getRectifyList(Me.FunctionCode, blnShowSpecialAcc, strDocCode, strIdentityNum, strAdoptionPrefixNum, strAccountStatus, True, strRawIdentityNum)
         Else
-            bllSearchResult = udteHSAccountMaintBLL.getRectifyList(Me.FunctionCode, blnShowSpecialAcc, strDocCode, strIdentityNum, strAdoptionPrefixNum, strAccountStatus)
+            bllSearchResult = udteHSAccountMaintBLL.getRectifyList(Me.FunctionCode, blnShowSpecialAcc, strDocCode, strIdentityNum, strAdoptionPrefixNum, strAccountStatus, False, strRawIdentityNum)
         End If
 
         Return bllSearchResult
@@ -720,14 +725,7 @@ Partial Public Class eHSAccountRectification
             Me.txtIdentityNum.Text = Me.txtIdentityNum.Text.Trim.ToUpper
 
             Dim strIdentityNumFullTemp As String
-
-            If ddlSearchDocType.SelectedValue = DocTypeModel.DocTypeCode.PASS Or ddlSearchDocType.SelectedValue = DocTypeModel.DocTypeCode.OW Then
-                strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim()
-            ElseIf ddlSearchDocType.SelectedValue = DocTypeModel.DocTypeCode.DS Then
-                strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim.ToUpper.Replace("(", "").Replace(")", "").Replace("/", "")
-            Else
-                strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
-            End If
+            strIdentityNumFullTemp = Me.txtIdentityNum.Text.Trim.ToUpper.Replace("-", "").Replace("(", "").Replace(")", "")
 
             Dim strIdentityNumFull() As String
             strIdentityNumFull = strIdentityNumFullTemp.Trim.Split("/")
@@ -742,6 +740,7 @@ Partial Public Class eHSAccountRectification
         Session(SESS_FilterSpecialAccount) = Me.cboFilterSpecialAccount.Checked
         Session(SESS_FilterDocCode) = Me.ddlSearchDocType.SelectedValue
         Session(SESS_FilterIdentityNum) = strIdentityNum
+        Session(SESS_RawIdentityNum) = Me.txtIdentityNum.Text.Trim
         Session(SESS_FilterAdoptionPrefixNum) = strAdoptionPrefixNum
         Session(SESS_FilterAccountStatus) = ddlAcctStatus.SelectedValue
 
@@ -3303,7 +3302,7 @@ Partial Public Class eHSAccountRectification
         ' CRE19-001 (VSS 2019) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         'Doc No.
-        Me.udtSM = udtvalidator.chkDocumentNoForNonEHSDocType(udcInputOW.DocumentNo)
+        Me.udtSM = udtvalidator.chkIdentityNumber(udcInputOW.EHSPersonalInfoAmend.DocCode, udcInputOW.DocumentNo, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputOW.SetDocNoError(True)
@@ -3392,7 +3391,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
         ' ----------------------------------------------------------------------------------------
         'Doc No.
-        Me.udtSM = udtvalidator.chkDocumentNoForNonEHSDocType(udcInputTW.DocumentNo)
+        Me.udtSM = udtvalidator.chkIdentityNumber(udcInputTW.EHSPersonalInfoAmend.DocCode, udcInputTW.DocumentNo, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputTW.SetDocNoError(True)
@@ -3490,7 +3489,7 @@ Partial Public Class eHSAccountRectification
         ' CRE19-001 (VSS 2019) [Start][Winnie]
         ' ----------------------------------------------------------------------------------------
         'Doc No.
-        Me.udtSM = udtvalidator.chkDocumentNoForNonEHSDocType(udcInputOTHER.DocumentNo)
+        Me.udtSM = udtvalidator.chkIdentityNumber(udcInputOTHER.EHSPersonalInfoAmend.DocCode, udcInputOTHER.DocumentNo, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputOTHER.SetRegNoError(True)
@@ -3937,7 +3936,7 @@ Partial Public Class eHSAccountRectification
         _udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDesc.ValidateAccountDetailInfo)
         ' ----------------------------------------------------------------------------------------
         'Doc No.
-        Me.udtSM = udtvalidator.chkDocumentNoForNonEHSDocType(udcInputCommon.DocumentNo)
+        Me.udtSM = udtvalidator.chkIdentityNumber(udcInputCommon.EHSPersonalInfoAmend.DocCode, udcInputCommon.DocumentNo, String.Empty)
         If Not IsNothing(udtSM) Then
             isValid = False
             udcInputCommon.SetDocNoError(True)

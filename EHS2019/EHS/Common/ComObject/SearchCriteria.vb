@@ -48,6 +48,7 @@ Namespace SearchCriteria
         Private _strVoucherRecipientChiName As String
         Private _strDocIdentityNo1 As String
         Private _strDocIdentityNo2 As String
+        Private _strRawIdentityNum As String
         Private _strVoucherAccID As String
         Private _strReferenceNo As String
 
@@ -113,6 +114,7 @@ Namespace SearchCriteria
             _strVoucherRecipientChiName = Nothing
             _strDocIdentityNo1 = Nothing
             _strDocIdentityNo2 = Nothing
+            _strRawIdentityNum = Nothing
             _strVoucherAccID = Nothing
             _strReferenceNo = Nothing
 
@@ -430,7 +432,14 @@ Namespace SearchCriteria
                 _strDocIdentityNo2 = value
             End Set
         End Property
-
+        Public Property RawIdentityNum() As String
+            Get
+                Return _strRawIdentityNum
+            End Get
+            Set(ByVal value As String)
+                _strRawIdentityNum = value
+            End Set
+        End Property
         Public Property VoucherAccID() As String
             Get
                 Return _strVoucherAccID

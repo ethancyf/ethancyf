@@ -9,6 +9,14 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
+-- Modified date:	19 July 2021
+-- Description:		1. Fix "Search by any doc type issue"
+--					2. Add WITH (NOLOCK)
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
 -- Modified date:	16 June 2021
 -- Description:		Extend patient name's maximum length (varbinary 100->200)
 -- =============================================
@@ -65,7 +73,8 @@ CREATE PROCEDURE [dbo].[proc_VoucherAccountListForMaint_byParticular_get]
 	@CreationDateTo datetime,	
 	@result_limit_1st_enable BIT, 
 	@result_limit_override_enable BIT,
-	@override_result_limit BIT
+	@override_result_limit BIT,
+	@RawIdentityNum varchar(20)
 AS
 BEGIN
 
@@ -82,6 +91,7 @@ SET @errCode_lower = '00009'
 SET @errCode_upper = '00017'
 	
 declare @IdentityNum2 varchar(20)
+declare @IdentityNum3 varchar(20)
 DECLARE @delimiter		varchar(3)
 
 --
@@ -98,8 +108,11 @@ DECLARE @SortingTable TABLE(
 -- Initialization
 -- =============================================
 
-SET @IdentityNum2 = ' ' + @IdentityNum
-SET @delimiter = ','
+SET @IdentityNum2 = ' ' + @IdentityNum;
+SET @delimiter = ',';
+
+SET @IdentityNum3 = @RawIdentityNum;
+
 
 -- ---------------------------------------------
 -- @DocTypeList
@@ -243,7 +256,7 @@ BEGIN
 		TP.Other_Info,
 		C.Create_By_BO,
 		TVA.Deceased
-	FROM TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
+	FROM TempVoucherAccount TVA WITH (NOLOCK), TempPersonalInformation TP WITH (NOLOCK), VoucherAccountCreationLOG C WITH (NOLOCK), @DocTypeList DTL
 	WHERE
 		TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 		and C.Voucher_Acc_Type = 'T'
@@ -255,9 +268,13 @@ BEGIN
 			or
 			(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 		)
-		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		and (	(	(@IdentityNum = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -372,7 +389,7 @@ BEGIN
 			TP.Other_Info,
 			C.Create_By_BO,
 			TVA.Deceased
-		from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
+		from TempVoucherAccount TVA WITH (NOLOCK), TempPersonalInformation TP WITH (NOLOCK), VoucherAccountCreationLOG C WITH (NOLOCK), @DocTypeList DTL
 		where 
 			TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 			and C.Voucher_Acc_Type = 'T'
@@ -384,9 +401,13 @@ BEGIN
 			--	or
 			--	(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 			--)
-			and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-				or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-			and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			and (	(	(@IdentityNum = ''
+							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+						AND (@Adoption_Prefix_Num = ''
+							OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@IdentityNum3 = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))				
 			and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 			and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 			and (@DOB is NULL or TP.DOB = @DOB)
@@ -482,7 +503,7 @@ BEGIN
 				TP.Other_Info,
 				C.Create_By_BO,
 				TVA.Deceased
-			from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, TempVoucherAccPendingVerify PV, @DocTypeList DTL
+			from TempVoucherAccount TVA WITH (NOLOCK), TempPersonalInformation TP WITH (NOLOCK), VoucherAccountCreationLOG C WITH (NOLOCK), TempVoucherAccPendingVerify PV WITH (NOLOCK), @DocTypeList DTL
 			where 
 				TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 				and TP.Voucher_Acc_ID = C.Voucher_Acc_ID 
@@ -490,9 +511,13 @@ BEGIN
 				and TVA.Voucher_Acc_ID = PV.Voucher_Acc_ID	
 				and TVA.Record_Status='I' and (TVA.Account_Purpose='C' or TVA.Account_Purpose='V')
 				and DATEDIFF(Day, PV.First_Validate_Dtm, getdate()) > @day_level
-				and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-					or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-				and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+				and (	(	(@IdentityNum = ''
+								OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+								OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+							AND (@Adoption_Prefix_Num = ''
+								OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+						OR (@IdentityNum3 = ''
+							OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))					
 				and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 				and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 				and (@DOB is NULL or TP.DOB = @DOB)
@@ -609,17 +634,21 @@ BEGIN
 		C.Create_By_BO,
 		VA.Deceased
 	FROM
-		PersonalInformation P
-		inner join VoucherAccount VA
+		PersonalInformation P WITH (NOLOCK)
+		inner join VoucherAccount VA WITH (NOLOCK)
 			on P.Voucher_Acc_id = VA.voucher_acc_id	
-		inner join VoucherAccountCreationLOG C
+		inner join VoucherAccountCreationLOG C WITH (NOLOCK)
 			on VA.Voucher_Acc_ID = C.Voucher_Acc_ID and C.Voucher_Acc_Type = 'V'
 		INNER JOIN @DocTypeList DTL
 			ON P.Doc_Code = DTL.Doc_Code
 	where 
-	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-	and (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+	 (	(	(@IdentityNum = ''
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+			AND (@Adoption_Prefix_Num = ''
+				OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+		OR (@IdentityNum3 = ''
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
@@ -733,7 +762,7 @@ BEGIN
 		TP.Other_Info,
 		C.Create_By_BO,
 		TVA.Deceased
-	from TempVoucherAccount TVA, TempPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
+	from TempVoucherAccount TVA WITH (NOLOCK), TempPersonalInformation TP WITH (NOLOCK), VoucherAccountCreationLOG C WITH (NOLOCK), @DocTypeList DTL
 	where 
 		TVA.Voucher_Acc_ID = TP.Voucher_Acc_ID 
 		and C.Voucher_Acc_Type = 'T'
@@ -745,9 +774,13 @@ BEGIN
 		--	or
 		--	(TVA.Account_Purpose = 'A' and TVA.Record_Status <> 'D' )
 		--)
-		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		and (	(	(@IdentityNum = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -865,17 +898,21 @@ BEGIN
 		C.Create_By_BO,
 		VA.Deceased
 	FROM
-		PersonalInformation P
-		inner join VoucherAccount VA
+		PersonalInformation P WITH (NOLOCK)
+		inner join VoucherAccount VA WITH (NOLOCK)
 			on P.Voucher_Acc_id = VA.voucher_acc_id	
-		inner join VoucherAccountCreationLOG C
+		inner join VoucherAccountCreationLOG C WITH (NOLOCK)
 			on VA.Voucher_Acc_ID = C.Voucher_Acc_ID and C.Voucher_Acc_Type = 'V'
 		INNER JOIN @DocTypeList DTL
 			ON P.Doc_Code = DTL.Doc_Code
 	where 
-	(@IdentityNum = '' or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-		or P.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-	and (@Adoption_Prefix_Num = '' or P.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+	(	(	(@IdentityNum = ''
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+				OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+			AND (@Adoption_Prefix_Num = ''
+				OR P.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+		OR (@IdentityNum3 = ''
+			OR P.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))		
 	and (@Eng_Name = '' or P.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 	and (@Chi_Name = '' or P.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 	and (@DOB is NULL or P.DOB = @DOB)
@@ -888,7 +925,7 @@ BEGIN
 		SELECT
 			1
 		FROM
-			PersonalInfoAmendHistory
+			PersonalInfoAmendHistory WITH (NOLOCK)
 		WHERE
 			Voucher_Acc_ID = P.Voucher_Acc_ID
 				AND Doc_Code = P.Doc_Code
@@ -999,13 +1036,17 @@ BEGIN
 		TP.Other_Info,
 		C.Create_By_BO,
 		TVA.Deceased
-	from SpecialAccount TVA, SpecialPersonalInformation TP, VoucherAccountCreationLOG C, @DocTypeList DTL
+	from SpecialAccount TVA WITH (NOLOCK), SpecialPersonalInformation TP WITH (NOLOCK), VoucherAccountCreationLOG C WITH (NOLOCK), @DocTypeList DTL
 	where 
 		TVA.Special_Acc_ID = TP.Special_Acc_ID
 		and C.Voucher_Acc_Type = 'S'
-		and (@IdentityNum = '' or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum)
-			or TP.Encrypt_Field1 = EncryptByKey(KEY_GUID('sym_Key'), @IdentityNum2))
-		and (@Adoption_Prefix_Num = '' or TP.Encrypt_Field11 = EncryptByKey(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+		and (	(	(@IdentityNum = ''
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum)
+						OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum2))
+					AND (@Adoption_Prefix_Num = ''
+						OR TP.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+				OR (@IdentityNum3 = ''
+					OR TP.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @IdentityNum3)))			
 		and (@Eng_Name = '' or TP.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @Eng_Name))
 		and (@Chi_Name = '' or TP.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @Chi_Name))
 		and (@DOB is NULL or TP.DOB = @DOB)
@@ -1060,7 +1101,7 @@ END
 UPDATE #temptable
 SET Transaction_id = vt.Transaction_ID
 FROM #temptable t
-LEFT JOIN VoucherTransaction vt
+LEFT JOIN VoucherTransaction vt WITH (NOLOCK)
 ON vt.Temp_Voucher_Acc_ID = t.Voucher_Acc_ID
 WHERE t.Source='T'
 
@@ -1102,7 +1143,7 @@ select
 	t.Deceased,
 	ISNULL(S.Sorting, 99) AS SortingOrder
 from #temptable t
-INNER JOIN doctype dt
+INNER JOIN doctype dt WITH (NOLOCK)
 ON t.doc_code = dt.doc_code collate database_default
 LEFT JOIN @SortingTable S
 ON T.Source = S.Source

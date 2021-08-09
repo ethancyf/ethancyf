@@ -445,7 +445,7 @@
                                                 <table cellpadding="0" cellspacing="0">
                                                     <tr>
                                                         <td>
-                                                            <asp:TextBox ID="txtTabeHSAccountDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="18"/>
+                                                            <asp:TextBox ID="txtTabeHSAccountDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="20"/>
                                                         </td>
                                                         <td>
                                                             <asp:Image ID="imgTabeHSAccountDocNo" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"
@@ -858,7 +858,7 @@
                                                     <table cellpadding="0" cellspacing="0">
                                                         <tr>
                                                             <td>
-                                                                <asp:TextBox ID="txtTabAdvancedSearchDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="18"/>
+                                                                <asp:TextBox ID="txtTabAdvancedSearchDocNo" runat="server" Width="176" onChange="convertToUpper(this)" MaxLength="20"/>
                                                             </td>
                                                             <td>
                                                                 <asp:Image ID="imgTabAdvancedSearchDocNo" runat="server" ImageUrl="<%$ Resources:ImageUrl, ErrorBtn %>"

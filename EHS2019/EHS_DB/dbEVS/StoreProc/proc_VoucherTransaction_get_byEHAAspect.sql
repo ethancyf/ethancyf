@@ -18,6 +18,13 @@ GO
 -- Modification History
 -- CR No.:			CRE20-023
 -- Modified by:		Martin Tang
+-- Modified date:	19 July 2021
+-- Description:		Fix "Search by any doc type issue"
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			CRE20-023
+-- Modified by:		Martin Tang
 -- Modified date:	20 Apr 2021
 -- Description:		Extend patient name's maximum length
 -- =============================================
@@ -81,7 +88,8 @@ CREATE PROCEDURE [dbo].[proc_VoucherTransaction_get_byEHAAspect]
     @eHA_chi_name                 NVARCHAR(6), 
     @result_limit_1st_enable      BIT, 
     @result_limit_override_enable BIT, 
-    @override_result_limit        BIT
+    @override_result_limit        BIT,
+	@RawIdentityNum               varchar(20)
 AS
     BEGIN  
         -- =============================================  
@@ -120,6 +128,7 @@ ON #TempTransaction
         );
 
         DECLARE @identity_no2 VARCHAR(20);
+		DECLARE @identity_no3 VARCHAR(20);
 
         -- =============================================  
         -- Validation   
@@ -136,12 +145,14 @@ ON #TempTransaction
 
         IF @identity_no1 IS NULL
             BEGIN
-                SET @identity_no2 = NULL;
+                SET @identity_no2 = NULL;				
             END;
             ELSE
             BEGIN
-                SET @identity_no2 = ' ' + @identity_no1;
+                SET @identity_no2 = ' ' + @identity_no1;				
             END;
+		
+		SET @identity_no3 = @RawIdentityNum	
 
         -- =============================================  
         -- Retrieve data  
@@ -259,17 +270,17 @@ ON #TempTransaction
                    OR @voucher_acc_id = ISNULL(VT.Voucher_Acc_ID, ''))
               AND (@Invalidation IS NULL
                    OR @Invalidation = ISNULL(VT.Invalidation, ''))
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              --AND (@name is null or PINFO.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @name))
-              --AND (@name_chi is null or PINFO.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @name_chi))
+			  AND (	(	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
               AND (@eHA_name IS NULL
                    OR PINFO.Encrypt_Field2 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_name))
               AND (@eHA_chi_name IS NULL
-                   OR PINFO.Encrypt_Field3 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_chi_name))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+                   OR PINFO.Encrypt_Field3 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_chi_name))        
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL
@@ -445,13 +456,13 @@ ON #TempTransaction
                       AND @voucher_acc_id IS NULL
                       AND (@Invalidation IS NULL
                            OR @Invalidation = ISNULL(VT.Invalidation, ''))
-                      AND (@identity_no1 IS NULL
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-                      AND (@Adoption_Prefix_Num IS NULL
-                           OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
-                      --AND (@name is null or PINFO.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @name))
-                      --AND (@name_chi is null or PINFO.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @name_chi))
+					  AND (	(	(@identity_no1 IS NULL
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+								AND (@Adoption_Prefix_Num IS NULL
+									OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+							OR (@identity_no3 IS NULL
+								OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	                     
                       AND (@eHA_name IS NULL
                            OR PINFO.Encrypt_Field2 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_name))
                       AND (@eHA_chi_name IS NULL
@@ -629,13 +640,13 @@ ON #TempTransaction
                       AND @voucher_acc_id IS NULL
                       AND (@Invalidation IS NULL
                            OR @Invalidation = ISNULL(VT.Invalidation, ''))
-                      AND (@identity_no1 IS NULL
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                           OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-                      AND (@Adoption_Prefix_Num IS NULL
-                           OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
-                      --AND (@name is null or PINFO.Encrypt_Field2 = EncryptByKey(KEY_GUID('sym_Key'), @name))
-                      --AND (@name_chi is null or PINFO.Encrypt_Field3 = EncryptByKey(KEY_GUID('sym_Key'), @name_chi))
+					  AND (	(	(@identity_no1 IS NULL
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+									OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+								AND (@Adoption_Prefix_Num IS NULL
+									OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+							OR (@identity_no3 IS NULL
+								OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	                     
                       AND (@eHA_name IS NULL
                            OR PINFO.Encrypt_Field2 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @eHA_name))
                       AND (@eHA_chi_name IS NULL
@@ -821,11 +832,13 @@ ON #TempTransaction
               AND @voucher_acc_id IS NULL
               AND (@Invalidation IS NULL
                    OR @Invalidation = ISNULL(VT.Invalidation, ''))
-              AND (@identity_no1 IS NULL
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
-                   OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
-              AND (@Adoption_Prefix_Num IS NULL
-                   OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num))
+			  AND (	(	(@identity_no1 IS NULL
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no1)
+							OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no2))
+						AND (@Adoption_Prefix_Num IS NULL
+							OR PINFO.Encrypt_Field11 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @Adoption_Prefix_Num)))
+					OR (@identity_no3 IS NULL
+						OR PINFO.Encrypt_Field1 = ENCRYPTBYKEY(KEY_GUID('sym_Key'), @identity_no3)))	              
               AND (@status IS NULL
                    OR @status = VT.Record_Status)
               AND (@authorised_status IS NULL

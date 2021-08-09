@@ -374,7 +374,7 @@ Partial Public Class eHSAccountEnquiryCallCentre
                 bllSearchResult = udteHSAccountMaintBLL.GeteHSAcctListByParticularMultiple(Me.FunctionCode, strDocCode, strIdentityNum, strAdoptionPrefixNum, Me.txtSearchEName.Text.Trim, Me.txtSearchCName.Text.Trim, dtDOB, _
                                                                 arreHSAccountID, strRefNo, strGender, _
                                                                 strAccountType, strAccountStatus, dtmCreationDateFrom, dtmCreationDateTo, _
-                                                                blnOverrideResultLimit)
+                                                                blnOverrideResultLimit, Me.txtSearchIdentityNum.Text.Trim)
                 ' CRE19-026 (HCVS hotline service) [End][Winnie]
 
 

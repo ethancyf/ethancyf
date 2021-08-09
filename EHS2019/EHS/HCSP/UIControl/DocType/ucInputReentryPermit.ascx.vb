@@ -1,3 +1,4 @@
+Imports Common.Component
 Imports Common.Component.EHSAccount
 Imports Common.Component.DocType.DocTypeModel
 Imports Common.Component.DocType
@@ -61,11 +62,13 @@ Partial Public Class ucInputReentryPermit
         Me.imgDOIError.ImageUrl = strErrorImageURL
         Me.imgDOIError.AlternateText = strErrorImageALT
 
-        'Tips
-        'Me.lblENameTips.Text = Me.GetGlobalResourceObject("Text", "EnameHint")
-        'Me.lblDOITip.Text = Me.GetGlobalResourceObject("Text", "DOIHintREPMT")
-        'Me.lblDOBTip.Text = Me.GetGlobalResourceObject("Text", "DOBHintREPMT")
-        'Me.lblTDNoTip.Text = String.Empty
+        'div gender
+        Me.lblIFemale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderFemale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIFemaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Female", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
+        Me.lblIMale.Text = HttpContext.GetGlobalResourceObject("Text", "GenderMale", New System.Globalization.CultureInfo(CultureLanguage.English))
+        Me.lblIMaleChi.Text = HttpContext.GetGlobalResourceObject("Text", "Male", New System.Globalization.CultureInfo(CultureLanguage.TradChinese))
+
     End Sub
 
     Protected Overrides Sub Setup(ByVal mode As BuildMode)
@@ -109,12 +112,12 @@ Partial Public Class ucInputReentryPermit
             If MyBase.FixEnglishNameGender Then
                 txtENameSurname.Enabled = False
                 txtENameFirstname.Enabled = False
-                rbGender.Enabled = False
+                SetGenderReadOnlyStyle(True)
 
             Else
                 txtENameSurname.Enabled = True
                 txtENameFirstname.Enabled = True
-                rbGender.Enabled = True
+                SetGenderReadOnlyStyle(False)
 
             End If
 
@@ -142,7 +145,7 @@ Partial Public Class ucInputReentryPermit
 
                 Me.txtDOB.Enabled = True
                 Me.txtDOB.Enabled = True
-                Me.rbGender.Enabled = True
+                SetGenderReadOnlyStyle(False)
                 Me.txtDOI.Enabled = True
                 Me.txtENameFirstname.Enabled = True
                 Me.txtENameSurname.Enabled = True
@@ -153,7 +156,7 @@ Partial Public Class ucInputReentryPermit
                 Me.txtTravelDocNo.Enabled = False
 
                 Me.txtDOB.Enabled = False
-                Me.rbGender.Enabled = False
+                SetGenderReadOnlyStyle(True)
                 Me.txtDOI.Enabled = False
                 Me.txtENameFirstname.Enabled = False
                 Me.txtENameSurname.Enabled = False
@@ -170,6 +173,15 @@ Partial Public Class ucInputReentryPermit
             Me.SetDOIError(False)
             Me.SetREPMTNoError(False)
         End If
+
+        divFemale.Attributes.Add("onclick", "document.getElementById('" & rbGender.ClientID & "_0').checked=true;javascript:setTimeout('__doPostBack(\'" & rbGender.ClientID & "\',\'\')', 0); ")
+        divFemale.Attributes.Add("onmouseover", "document.getElementById('" & divFemale.ClientID & "').style.left='-1px'; document.getElementById('" & divFemale.ClientID & "').style.top='-1px'; ")
+        divFemale.Attributes.Add("onmouseout", "document.getElementById('" & divFemale.ClientID & "').style.left='0px'; document.getElementById('" & divFemale.ClientID & "').style.top='0px'; ")
+        divMale.Attributes.Add("onclick", "document.getElementById('" & rbGender.ClientID & "_1').checked=true;javascript:setTimeout('__doPostBack(\'" & rbGender.ClientID & "\',\'\')', 0); ")
+        divMale.Attributes.Add("onmouseover", "document.getElementById('" & divMale.ClientID & "').style.left='-1px'; document.getElementById('" & divMale.ClientID & "').style.top='-1px'; ")
+        divMale.Attributes.Add("onmouseout", "document.getElementById('" & divMale.ClientID & "').style.left='0px'; document.getElementById('" & divMale.ClientID & "').style.top='0px'; ")
+
+
     End Sub
 
 #Region "Set Up Text Box Value"
@@ -205,7 +217,16 @@ Partial Public Class ucInputReentryPermit
 
     Public Sub SetGender()
         'Fill Data - Gender only
+        Dim strGender As String
         Me.rbGender.SelectedValue = Me._strGender
+
+        If Me._strGender = "M" Then
+            strGender = "GenderMale"
+        Else
+            strGender = "GenderFemale"
+        End If
+        Me.lblReadonlyGender.Text = Me.GetGlobalResourceObject("Text", strGender)
+        HandleDivGenderStyle(Me._strGender)
     End Sub
 
     Public Sub SetReferenceNo()
@@ -260,6 +281,46 @@ Partial Public Class ucInputReentryPermit
     Public Sub SetREPMTNoError(ByVal visible As Boolean)
         Me.imgTravelDocNoError.Visible = visible
     End Sub
+#End Region
+
+#Region "Events"
+
+    Protected Sub rbGender_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rbGender.SelectedIndexChanged
+        Dim rbGender As RadioButtonList = CType(sender, RadioButtonList)
+        HandleDivGenderStyle(rbGender.SelectedValue)
+    End Sub
+
+    Private Sub HandleDivGenderStyle(ByVal strGender As String)
+        Select Case strGender
+            Case "M"
+                divFemale.Style.Add("outline-color", "black")
+                divFemale.Style.Add("outline-width", "2px")
+
+                divMale.Style.Add("outline-color", "#3198FF")
+                divMale.Style.Add("outline-width", "8px")
+
+            Case "F"
+                divFemale.Style.Add("outline-color", "#3198FF")
+                divFemale.Style.Add("outline-width", "8px")
+
+                divMale.Style.Add("outline-color", "black")
+                divMale.Style.Add("outline-width", "2px")
+        End Select
+    End Sub
+
+    Private Sub SetGenderReadOnlyStyle(ByVal ReadOnlyMode As Boolean)
+        If ReadOnlyMode = True Then
+            Me.divGender.Visible = False
+            Me.lblReadonlyGender.Visible = True
+            Me.trGenderImageInput.Style.Remove("height")
+            Me.rbGender.Enabled = False
+        Else
+            Me.divGender.Visible = True
+            Me.lblReadonlyGender.Visible = False
+            Me.rbGender.Enabled = True
+        End If
+    End Sub
+
 #End Region
 
 #Region "Property"
