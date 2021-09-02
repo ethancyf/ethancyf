@@ -453,22 +453,6 @@ Partial Public Class ReprintVaccinationRecord
             AuditLogUserType(udtAuditLogEntry)
             udtAuditLogEntry.WriteStartLog(LogID.LOG00008, AuditLogDescription.LOG00008)
 
-            'Find the nearest vaccination record for vaccination card
-            Dim udtTransactionBenefitDetailList As TransactionDetailVaccineModelCollection = Nothing
-            'Get EHS Vaccine to Benefit List
-            udtTransactionBenefitDetailList = udtEHSTransactionBLL.getTransactionDetailVaccine(udtEHSTransaction.DocCode, udtEHSTransaction.EHSAcct.getPersonalInformation(udtEHSTransaction.DocCode).IdentityNum)
-            If udtTransactionBenefitDetailList.Count > 0 Then
-                Dim udtVaccinationRecord As TransactionDetailVaccineModel = udtTransactionBenefitDetailList.FilterFindNearestRecord()
-
-                If udtEHSTransaction.TransactionDetails(0).AvailableItemCode.Trim().ToUpper() <> udtVaccinationRecord.AvailableItemCode.Trim.Trim().ToUpper() Then
-                    'If udtEHSTransaction.TransactionAdditionFields.VaccineBrand.Trim = udtVaccinationRecord.VaccineBrand.Trim.Trim().ToUpper() Then
-                    udtSessionHandler.ClaimCOVID19VaccinationCardSaveToSession(udtVaccinationRecord, FunctionCode)
-                    'End If
-
-                End If
-
-            End If
-
             'Check Discharge List
             udtSessionHandlerBLL.ClaimCOVID19DischargeRecordRemoveFromSession(FunctionCode)
 
