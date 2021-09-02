@@ -1,4 +1,4 @@
-﻿if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[proc_ImmdPrepareRecord]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[proc_ImmdPrepareRecord]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[proc_ImmdPrepareRecord]
 GO
 
@@ -6,6 +6,20 @@ set ANSI_NULLS ON
 set QUOTED_IDENTIFIER ON
 go
 
+-- =============================================
+-- Modification History
+-- CR No.:			INT21-0017 (Revise the ImmD export order)
+-- Modified by:	    Chris YIM
+-- Modified date:   13 Aug 2021
+-- Description:		Revise the ImmD export order
+-- =============================================
+-- =============================================
+-- Modification History
+-- CR No.:			INT-016 (To introduce 'Deceased' status into eHS)
+-- Modified by:	    Chris YIM
+-- Modified date:   04 Dec 2017
+-- Description:		Not to send deceased account to ImmD 
+-- =============================================
 -- =============================================
 -- Modification History
 -- CR No.:			CRE14-016 (To introduce 'Deceased' status into eHS)
@@ -180,9 +194,9 @@ BEGIN
 		)
 		AND TVA.Create_Dtm < @str_cut_off
 		AND TVA.Deceased IS NULL
+		AND TVA.Scheme_Code NOT IN ('COVID19CVC','COVID19DH','COVID19RVP','COVID19OR','COVID19SR','COVID19SB')
 
 	ORDER BY TVA.Create_Dtm ASC
-
 
 -- 2. Insert EC Amendment Case
 	-- Only Amend Record is submitted
@@ -235,6 +249,7 @@ BEGIN
 		AND	( Exact_DOB = 'D' OR Exact_DOB = 'M' OR Exact_DOB = 'Y' OR Exact_DOB = 'A' OR Exact_DOB = 'R')
 		AND TVA.Create_dtm < @str_cut_off
 		AND TVA.Deceased IS NULL
+		AND TVA.Scheme_Code NOT IN ('COVID19CVC','COVID19DH','COVID19RVP','COVID19OR','COVID19SR','COVID19SB')
 
 	ORDER BY TVA.Create_Dtm ASC
 	
@@ -292,6 +307,177 @@ BEGIN
 		AND TPI.Doc_Code = 'HKIC'
 		AND TVA.Create_Dtm < @str_cut_off
 		AND TVA.Deceased IS NULL
+		AND TVA.Scheme_Code NOT IN ('COVID19CVC','COVID19DH','COVID19RVP','COVID19OR','COVID19SR','COVID19SB')
+	ORDER BY TVA.Create_Dtm ASC
+
+-- 4. Insert Create New Account Case
+
+	Set @remain_num = @record_num - (Select Count(1) From @tempSubmission)
+
+	INSERT INTO @tempSubmission
+	(
+		Voucher_Acc_ID, 
+		DOB,
+		Date_of_Issue,
+		Encrypt_Field1,
+		Account_Purpose,
+		EC_Serial_No, 
+		EC_Reference_No,
+		EC_Age,
+		EC_Date_of_Registration,
+		EC_DOB_Type,
+		Doc_Code,
+		Original_Amend_Acc_ID
+	)
+	SELECT TOP (@remain_num)
+		TVA.Voucher_Acc_ID, 
+		CASE WHEN TPI.Exact_DOB = 'Y' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + '0000'
+			WHEN TPI.Exact_DOB = 'M' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)) + '00'
+			WHEN TPI.Exact_DOB = 'D' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(DAY,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(DAY,TPI.DOB))
+			WHEN TPI.Exact_DOB = 'R' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB))
+		ELSE '' END, --TPI.DOB
+		CASE WHEN TPI.Date_of_Issue Is NULL THEN ''
+		ELSE RIGHT(CONVERT(varchar(4),DATEPART(YEAR,TPI.Date_of_Issue)),2) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.Date_of_Issue)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.Date_of_Issue))  + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(DAY,TPI.Date_of_Issue)))) + CONVERT(varchar(2),DATEPART(DAY,TPI.Date_of_Issue)) END, --Date_of_Issue
+		TPI.Encrypt_Field1,
+		TVA.Account_Purpose,		
+		EC_Serial_No,
+		EC_Reference_No,
+		EC_Age,
+		EC_Date_of_Registration,
+		Exact_DOB,
+		TPI.Doc_Code,
+		TVA.Original_Amend_Acc_ID
+	FROM
+		[dbo].[TempVoucherAccount] TVA, [dbo].[TempPersonalInformation] TPI, [dbo].[DocType] D
+	WHERE 
+		TVA.Voucher_Acc_ID = TPI.Voucher_Acc_ID 
+		AND TPI.Doc_Code = D.Doc_Code
+		AND D.Force_Manual_Validate = 'N'
+		AND TVA.Record_Status = 'P' AND (TPI.Validating ='N' OR TPI.Validating IS NULL) AND (TVA.Account_Purpose = 'C' OR TVA.Account_Purpose = 'V')
+		AND (
+			TPI.Doc_Code = 'HKIC' OR 
+			(
+				TPI.Doc_Code = 'EC' AND 
+				--TPI.Date_of_Issue >= '2003-Jun-23' AND 
+				TPI.Date_of_Issue >= @str_EC_DOI AND 
+				( Exact_DOB = 'D' OR Exact_DOB = 'M' OR Exact_DOB = 'Y' OR Exact_DOB = 'A' OR Exact_DOB = 'R')
+			)
+		)
+		AND TVA.Create_Dtm < @str_cut_off
+		AND TVA.Deceased IS NULL
+		AND TVA.Scheme_Code IN ('COVID19CVC','COVID19DH','COVID19RVP','COVID19OR','COVID19SR','COVID19SB')
+	ORDER BY TVA.Create_Dtm ASC
+
+
+-- 5. Insert EC Amendment Case
+	-- Only Amend Record is submitted
+
+	Set @remain_num = @record_num - (Select Count(1) From @tempSubmission)
+	
+	INSERT INTO @tempSubmission
+	(
+		Voucher_Acc_ID, 
+		DOB,
+		Date_of_Issue,
+		Encrypt_Field1,
+		Account_Purpose,
+		EC_Serial_No,
+		EC_Reference_No,
+		EC_Age,
+		EC_Date_of_Registration,
+		EC_DOB_Type,
+		Doc_Code,
+		Original_Amend_Acc_ID
+	)
+	SELECT TOP (@remain_num)
+		TVA.Voucher_Acc_ID, 
+		CASE WHEN TPI.Exact_DOB = 'Y' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + '0000'
+			WHEN TPI.Exact_DOB = 'M' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)) + '00'
+			WHEN TPI.Exact_DOB = 'D' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(DAY,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(DAY,TPI.DOB))
+			WHEN TPI.Exact_DOB = 'R' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB))
+		ELSE '' END, --TPI.DOB
+		CASE WHEN TPI.Date_of_Issue Is NULL THEN ''
+		ELSE RIGHT(CONVERT(varchar(4),DATEPART(YEAR,TPI.Date_of_Issue)),2) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.Date_of_Issue)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.Date_of_Issue))  + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(DAY,TPI.Date_of_Issue)))) + CONVERT(varchar(2),DATEPART(DAY,TPI.Date_of_Issue)) END, --Date_of_Issue
+		TPI.Encrypt_Field1,
+		TVA.Account_Purpose,		
+		EC_Serial_No,
+		EC_Reference_No,
+		EC_Age,
+		EC_Date_of_Registration,
+		TPI.Exact_DOB,
+		TPI.Doc_Code,
+		TVA.Original_Amend_Acc_ID
+	FROM
+		[dbo].[TempVoucherAccount] TVA, [dbo].[TempPersonalInformation] TPI, [dbo].[DocType] D
+	WHERE 
+		TVA.Voucher_Acc_ID = TPI.Voucher_Acc_ID
+		AND TPI.Doc_Code = D.Doc_Code 
+		AND D.Force_Manual_Validate = 'N' 
+		AND TVA.Record_Status = 'P' AND (TPI.Validating ='N' OR TPI.Validating IS NULL) AND (TVA.Account_Purpose = 'A') 
+		AND TPI.Doc_Code = 'EC' 
+		-- AND TPI.Date_of_Issue >= '2003-Jun-23'
+		AND TPI.Date_of_Issue >= @str_EC_DOI  
+		AND	( Exact_DOB = 'D' OR Exact_DOB = 'M' OR Exact_DOB = 'Y' OR Exact_DOB = 'A' OR Exact_DOB = 'R')
+		AND TVA.Create_dtm < @str_cut_off
+		AND TVA.Deceased IS NULL
+		AND TVA.Scheme_Code IN ('COVID19CVC','COVID19DH','COVID19RVP','COVID19OR','COVID19SR','COVID19SB')
+	ORDER BY TVA.Create_Dtm ASC
+	
+	
+-- 6. Insert Remaining HKIC Case Amendment Case 	
+	
+	Set @remain_num = @record_num - (Select Count(1) From @tempSubmission)
+
+	if @remain_num % 2 = 1
+		Set @remain_num =@remain_num - 1
+		
+	INSERT INTO @tempSubmission
+	(
+		Voucher_Acc_ID, 
+		DOB,
+		--IsHKID,
+		Date_of_Issue,
+		Encrypt_Field1,
+		Account_Purpose,
+		EC_Serial_No,
+		EC_Reference_No,
+		--EC_Date,
+		EC_Age,
+		EC_Date_of_Registration,
+		EC_DOB_Type,
+		Doc_Code,
+		Original_Amend_Acc_ID
+	)
+	SELECT TOP (@remain_num)
+		TVA.Voucher_Acc_ID, 
+		CASE WHEN TPI.Exact_DOB = 'Y' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + '0000'
+			WHEN TPI.Exact_DOB = 'M' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)) + '00'
+			WHEN TPI.Exact_DOB = 'D' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.DOB)) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(DAY,TPI.DOB)))) + CONVERT(varchar(2),DATEPART(DAY,TPI.DOB))
+			WHEN TPI.Exact_DOB = 'R' THEN CONVERT(varchar(4),DATEPART(YEAR,TPI.DOB))
+		ELSE '' END, 
+		RIGHT(CONVERT(varchar(4),DATEPART(YEAR,TPI.Date_of_Issue)),2) + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(MONTH,TPI.Date_of_Issue)))) + CONVERT(varchar(2),DATEPART(MONTH,TPI.Date_of_Issue))  + LEFT('00', 2-LEN(CONVERT(varchar(2),DATEPART(DAY,TPI.Date_of_Issue)))) + CONVERT(varchar(2),DATEPART(DAY,TPI.Date_of_Issue)), --Date_of_Issue
+		TPI.Encrypt_Field1,
+		TVA.Account_Purpose,		
+		EC_Serial_No,
+		EC_Reference_No,
+		EC_Age,
+		EC_Date_of_Registration,
+		TPI.Exact_DOB,
+		TPI.Doc_Code,
+		TVA.Original_Amend_Acc_ID
+	FROM
+		[dbo].[TempVoucherAccount] TVA, [dbo].[TempPersonalInformation] TPI, [dbo].[DocType] D
+	WHERE 
+		TVA.Voucher_Acc_ID = TPI.Voucher_Acc_ID
+		AND TPI.Doc_Code = D.Doc_Code 
+		AND D.Force_Manual_Validate = 'N' 
+		AND TVA.Record_Status = 'P' 
+		AND (TPI.Validating ='N' OR TPI.Validating IS NULL) 
+		AND (TVA.Account_Purpose = 'A' OR TVA.Account_Purpose = 'O') 
+		AND TPI.Doc_Code = 'HKIC'
+		AND TVA.Create_Dtm < @str_cut_off
+		AND TVA.Deceased IS NULL
+		AND TVA.Scheme_Code IN ('COVID19CVC','COVID19DH','COVID19RVP','COVID19OR','COVID19SR','COVID19SB')
 	ORDER BY TVA.Create_Dtm ASC
 
 ----------------------------------------------------------------------------------------------
