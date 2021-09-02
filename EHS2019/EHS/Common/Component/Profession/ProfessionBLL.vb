@@ -28,18 +28,22 @@ Namespace Component.Profession
         End Class
 #End Region
 
-        'Database Connection
-        Private Shared _udtDB As Database = New Database()
+        ' CRE21-010 (Enhancement for the VSS 2021-22) [Start][Koala]
+        ' ----------------------------------------------------------------------------------------
+        ' Obsolete shared Database object
 
-        Public Shared Property DB() As Database
-            Get
-                Return _udtDB
-            End Get
-            Set(ByVal Value As Database)
-                _udtDB = Value
-            End Set
-        End Property
+        ''Database Connection
+        'Private Shared _udtDB As Database = New Database()
 
+        'Public Shared Property DB() As Database
+        '    Get
+        '        Return _udtDB
+        '    End Get
+        '    Set(ByVal Value As Database)
+        '        _udtDB = Value
+        '    End Set
+        'End Property
+        ' CRE21-010 (Enhancement for the VSS 2021-22) [End][Koala]
 
         Public Sub New()
 
@@ -74,7 +78,12 @@ Namespace Component.Profession
                 Dim dt As New DataTable
 
                 Try
-                    DB.RunProc("proc_Profession_get_cache", dt)
+                    ' CRE21-010 (Enhancement for the VSS 2021-22) [Start][Koala]
+                    ' ----------------------------------------------------------------------------------------
+                    Dim db As New Database
+                    db.RunProc("proc_Profession_get_cache", dt)
+                    ' CRE21-010 (Enhancement for the VSS 2021-22) [End][Koala]
+
 
                     For Each row As DataRow In dt.Rows
 
@@ -189,7 +198,11 @@ Namespace Component.Profession
                 Dim dt As New DataTable
 
                 Try
-                    DB.RunProc("proc_SubProfession_get_all_cache", dt)
+                    ' CRE21-010 (Enhancement for the VSS 2021-22) [Start][Koala]
+                    ' ----------------------------------------------------------------------------------------
+                    Dim db As New Database
+                    db.RunProc("proc_SubProfession_get_all_cache", dt)
+                    ' CRE21-010 (Enhancement for the VSS 2021-22) [End][Koala]
 
                     For Each dr As DataRow In dt.Rows
 
@@ -251,7 +264,11 @@ Namespace Component.Profession
                 Dim dt As New DataTable
 
                 Try
-                    DB.RunProc("proc_ProfessionDHC_get_all_cache", dt)
+                    ' CRE21-010 (Enhancement for the VSS 2021-22) [Start][Koala]
+                    ' ----------------------------------------------------------------------------------------
+                    Dim db As New Database
+                    db.RunProc("proc_ProfessionDHC_get_all_cache", dt)
+                    ' CRE21-010 (Enhancement for the VSS 2021-22) [End][Koala]
 
                     For Each dr As DataRow In dt.Rows
 
